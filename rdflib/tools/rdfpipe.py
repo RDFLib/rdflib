@@ -9,7 +9,7 @@ from __future__ import annotations
 import logging
 import sys
 from optparse import OptionParser
-from typing import BinaryIO, Optional
+from typing import BinaryIO
 
 import rdflib
 from rdflib import plugin
@@ -63,6 +63,7 @@ def parse_and_serialize(
 
 def _format_and_kws(fmt):
     """
+    ```python
     >>> _format_and_kws("fmt")
     ('fmt', {})
     >>> _format_and_kws("fmt:+a")
@@ -75,6 +76,8 @@ def _format_and_kws(fmt):
     ('fmt', {'c': 'd'})
     >>> _format_and_kws("fmt:a=b:c")
     ('fmt', {'a': 'b:c'})
+
+    ```
     """
     fmt, kws = fmt, {}
     if fmt and ":" in fmt:
@@ -191,7 +194,7 @@ def main():
             pfx, uri = ns_kw.split("=")
             ns_bindings[pfx] = uri
 
-    outfile: Optional[BinaryIO] = sys.stdout.buffer
+    outfile: BinaryIO | None = sys.stdout.buffer
 
     if opts.no_out:
         outfile = None

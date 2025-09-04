@@ -3,25 +3,22 @@ from __future__ import annotations
 import itertools
 import types
 import warnings
+from collections.abc import Iterator, Mapping, MutableSequence
 from io import BytesIO
 from typing import (
     IO,
     TYPE_CHECKING,
     Any,
     BinaryIO,
-    Dict,
-    Iterator,
-    List,
-    Mapping,
-    MutableSequence,
     Optional,
-    Tuple,
     Union,
     cast,
     overload,
 )
 from urllib.parse import urlparse
 from urllib.request import url2pathname
+
+from rdflib.term import IdentifiedNode, Variable
 
 __all__ = [
     "Processor",
@@ -32,14 +29,22 @@ __all__ = [
     "ResultSerializer",
     "ResultException",
     "EncodeOnlyUnicode",
+    "QueryResultValueType",
 ]
-
 import rdflib.term
 
 if TYPE_CHECKING:
+    import typing_extensions as te
+
     from rdflib.graph import Graph, _TripleType
     from rdflib.plugins.sparql.sparql import Query, Update
-    from rdflib.term import Identifier, Variable
+
+# These are the kinds of values that can be bound to a variable in the query processor.
+QueryBindingsValueType: te.TypeAlias = Union[IdentifiedNode, rdflib.term.Literal]
+
+# We assert that a QueryResult value is like _ObjectType, except that
+# it can't be a Variable, and can't be a QuotedGraph.
+QueryResultValueType: te.TypeAlias = Union[IdentifiedNode, rdflib.term.Literal]
 
 
 class Processor:
@@ -49,7 +54,6 @@ class Processor:
     This module is useful for those wanting to write a query processor
     that can plugin to rdf. If you are wanting to execute a query you
     likely want to do so through the Graph class query method.
-
     """
 
     def __init__(self, graph: Graph):
@@ -59,7 +63,7 @@ class Processor:
     def query(  # type: ignore[empty-body]
         self,
         strOrQuery: Union[str, Query],  # noqa: N803
-        initBindings: Mapping[str, Identifier] = {},  # noqa: N803
+        initBindings: Mapping[str, QueryBindingsValueType] = {},  # noqa: N803
         initNs: Mapping[str, Any] = {},  # noqa: N803
         DEBUG: bool = False,  # noqa: N803
     ) -> Mapping[str, Any]:
@@ -67,16 +71,14 @@ class Processor:
 
 
 class UpdateProcessor:
-    """
-    Update plugin interface.
+    """Update plugin interface.
 
     This module is useful for those wanting to write an update
     processor that can plugin to rdflib. If you are wanting to execute
     an update statement you likely want to do so through the Graph
     class update method.
 
-    .. versionadded:: 4.0
-
+    !!! example "New in version 4.0"
     """
 
     def __init__(self, graph: Graph):
@@ -85,7 +87,7 @@ class UpdateProcessor:
     def update(
         self,
         strOrQuery: Union[str, Update],  # noqa: N803
-        initBindings: Mapping[str, Identifier] = {},  # noqa: N803
+        initBindings: Mapping[str, QueryBindingsValueType] = {},  # noqa: N803
         initNs: Mapping[str, Any] = {},  # noqa: N803
     ) -> None:
         pass
@@ -96,12 +98,7 @@ class ResultException(Exception):  # noqa: N818
 
 
 class EncodeOnlyUnicode:
-    """
-    This is a crappy work-around for
-    http://bugs.python.org/issue11649
-
-
-    """
+    """This is a crappy work-around for http://bugs.python.org/issue11649"""
 
     def __init__(self, stream: BinaryIO):
         self.__stream = stream
@@ -116,11 +113,10 @@ class EncodeOnlyUnicode:
         return getattr(self.__stream, name)
 
 
-class ResultRow(Tuple[rdflib.term.Identifier, ...]):
-    """
-    a single result row
-    allows accessing bindings as attributes or with []
+class ResultRow(tuple[QueryResultValueType, ...]):
+    """A single result row allows accessing bindings as attributes or with []
 
+    ```python
     >>> from rdflib import URIRef, Variable
     >>> rr=ResultRow({ Variable('a'): URIRef('urn:cake') }, [Variable('a')])
 
@@ -148,27 +144,30 @@ class ResultRow(Tuple[rdflib.term.Identifier, ...]):
     >>> rr[Variable('a')]
     rdflib.term.URIRef('urn:cake')
 
-    .. versionadded:: 4.0
+    ```
 
+    !!! example "New in version 4.0"
     """
 
     labels: Mapping[str, int]
 
-    def __new__(cls, values: Mapping[Variable, Identifier], labels: List[Variable]):
+    def __new__(
+        cls, values: Mapping[Variable, QueryResultValueType], labels: list[Variable]
+    ):
         # type error: Value of type variable "Self" of "__new__" of "tuple" cannot be "ResultRow"  [type-var]
         # type error: Generator has incompatible item type "Optional[Identifier]"; expected "_T_co"  [misc]
-        instance = super(ResultRow, cls).__new__(cls, (values.get(v) for v in labels))  # type: ignore[type-var, misc, unused-ignore]
-        instance.labels = dict((str(x[1]), x[0]) for x in enumerate(labels))
-        return instance
+        self = super(ResultRow, cls).__new__(cls, (values.get(v) for v in labels))  # type: ignore[type-var, misc, unused-ignore]
+        self.labels = dict((str(x[1]), x[0]) for x in enumerate(labels))
+        return self
 
-    def __getattr__(self, name: str) -> Identifier:
+    def __getattr__(self, name: str) -> QueryResultValueType:
         if name not in self.labels:
             raise AttributeError(name)
         return tuple.__getitem__(self, self.labels[name])
 
     # type error: Signature of "__getitem__" incompatible with supertype "tuple"
     # type error: Signature of "__getitem__" incompatible with supertype "Sequence"
-    def __getitem__(self, name: Union[str, int, Any]) -> Identifier:  # type: ignore[override]
+    def __getitem__(self, name: Union[str, int, Any]) -> QueryResultValueType:  # type: ignore[override]
         try:
             # type error: Invalid index type "Union[str, int, Any]" for "tuple"; expected type "int"
             return tuple.__getitem__(self, name)  # type: ignore[index]
@@ -181,22 +180,22 @@ class ResultRow(Tuple[rdflib.term.Identifier, ...]):
             raise KeyError(name)
 
     @overload
-    def get(self, name: str, default: Identifier) -> Identifier: ...
+    def get(self, name: str, default: QueryResultValueType) -> QueryResultValueType: ...
 
     @overload
     def get(
-        self, name: str, default: Optional[Identifier] = ...
-    ) -> Optional[Identifier]: ...
+        self, name: str, default: QueryResultValueType | None = ...
+    ) -> QueryResultValueType | None: ...
 
     def get(
-        self, name: str, default: Optional[Identifier] = None
-    ) -> Optional[Identifier]:
+        self, name: str, default: Optional[QueryResultValueType] = None
+    ) -> QueryResultValueType | None:
         try:
             return self[name]
         except KeyError:
             return default
 
-    def asdict(self) -> Dict[str, Identifier]:
+    def asdict(self) -> dict[str, QueryResultValueType]:
         return dict((v, self[v]) for v in self.labels if self[v] is not None)
 
 
@@ -215,8 +214,7 @@ class Result:
     If the type is "CONSTRUCT" or "DESCRIBE" iterating will yield the
     triples.
 
-    len(result) also works.
-
+    `len(result)` also works.
     """
 
     def __init__(self, type_: str):
@@ -224,15 +222,17 @@ class Result:
             raise ResultException("Unknown Result type: %s" % type_)
 
         self.type = type_
-        #: variables contained in the result.
-        self.vars: Optional[List[Variable]] = None
-        self._bindings: MutableSequence[Mapping[Variable, Identifier]] = None  # type: ignore[assignment]
-        self._genbindings: Optional[Iterator[Mapping[Variable, Identifier]]] = None
-        self.askAnswer: Optional[bool] = None
-        self.graph: Optional[Graph] = None
+        self.vars: list[Variable] | None = None
+        """a list of variables contained in the result"""
+        self._bindings: MutableSequence[Mapping[Variable, QueryResultValueType]] = None  # type: ignore[assignment]
+        self._genbindings: Iterator[Mapping[Variable, QueryResultValueType]] | None = (
+            None
+        )
+        self.askAnswer: bool | None = None
+        self.graph: Graph | None = None
 
     @property
-    def bindings(self) -> MutableSequence[Mapping[Variable, Identifier]]:
+    def bindings(self) -> MutableSequence[Mapping[Variable, QueryResultValueType]]:
         """
         a list of variable bindings as dicts
         """
@@ -246,8 +246,8 @@ class Result:
     def bindings(
         self,
         b: Union[
-            MutableSequence[Mapping[Variable, Identifier]],
-            Iterator[Mapping[Variable, Identifier]],
+            MutableSequence[Mapping[Variable, QueryResultValueType]],
+            Iterator[Mapping[Variable, QueryResultValueType]],
         ],
     ) -> None:
         if isinstance(b, (types.GeneratorType, itertools.islice)):
@@ -259,11 +259,12 @@ class Result:
 
     @staticmethod
     def parse(
-        source: Optional[IO] = None,
-        format: Optional[str] = None,
-        content_type: Optional[str] = None,
+        source: IO | None = None,
+        format: str | None = None,
+        content_type: str | None = None,
         **kwargs: Any,
     ) -> Result:
+        """Parse a query result from a source."""
         from rdflib import plugin
 
         if format:
@@ -282,26 +283,28 @@ class Result:
 
     def serialize(
         self,
-        destination: Optional[Union[str, IO]] = None,
+        destination: str | IO | None = None,
         encoding: str = "utf-8",
         format: str = "xml",
         **args: Any,
-    ) -> Optional[bytes]:
+    ) -> bytes | None:
         """
         Serialize the query result.
 
-        The :code:`format` argument determines the Serializer class to use.
+        The `format` argument determines the Serializer class to use.
 
-        - csv: :class:`~rdflib.plugins.sparql.results.csvresults.CSVResultSerializer`
-        - json: :class:`~rdflib.plugins.sparql.results.jsonresults.JSONResultSerializer`
-        - txt: :class:`~rdflib.plugins.sparql.results.txtresults.TXTResultSerializer`
-        - xml: :class:`~rdflib.plugins.sparql.results.xmlresults.XMLResultSerializer`
+        - csv: [`CSVResultSerializer`][rdflib.plugins.sparql.results.csvresults.CSVResultSerializer]
+        - json: [`JSONResultSerializer`][rdflib.plugins.sparql.results.jsonresults.JSONResultSerializer]
+        - txt: [`TXTResultSerializer`][rdflib.plugins.sparql.results.txtresults.TXTResultSerializer]
+        - xml: [`XMLResultSerializer`][rdflib.plugins.sparql.results.xmlresults.XMLResultSerializer]
 
-        :param destination: Path of file output or BufferedIOBase object to write the output to.
-        :param encoding: Encoding of output.
-        :param format: One of ['csv', 'json', 'txt', xml']
-        :param args:
-        :return: bytes
+        Args:
+            destination: Path of file output or BufferedIOBase object to write the output to.
+            encoding: Encoding of output.
+            format: One of ['csv', 'json', 'txt', xml']
+
+        Returns:
+            bytes
         """
         if self.type in ("CONSTRUCT", "DESCRIBE"):
             # type error: Item "None" of "Optional[Graph]" has no attribute "serialize"

@@ -1,58 +1,75 @@
 """RDFLib Python binding for OWL Abstract Syntax
 
-OWL Constructor     DL Syntax       Manchester OWL Syntax   Example
-====================================================================================
-intersectionOf      C ∩ D              C AND D             Human AND Male
-unionOf             C ∪ D              C OR D              Man OR Woman
-complementOf         ¬ C               NOT C               NOT Male
-oneOf             {a} ∪ {b}...        {a b ...}            {England Italy Spain}
-someValuesFrom      ∃ R C              R SOME C            hasColleague SOME Professor
-allValuesFrom       ∀ R C              R ONLY C            hasColleague ONLY Professor
-minCardinality      ≥ N R              R MIN 3             hasColleague MIN 3
-maxCardinality      ≤ N R              R MAX 3             hasColleague MAX 3
-cardinality         = N R              R EXACTLY 3         hasColleague EXACTLY 3
-hasValue             ∃ R               {a} R VALUE a       hasColleague VALUE Matthew
+| OWL Constructor   | DL Syntax     | Manchester OWL Syntax | Example                          |
+|------------------|---------------|------------------------|----------------------------------|
+| `intersectionOf` | C ∩ D         | C AND D                | Human AND Male                   |
+| `unionOf`        | C ∪ D         | C OR D                 | Man OR Woman                     |
+| `complementOf`   | ¬C            | NOT C                  | NOT Male                         |
+| `oneOf`          | {a} ∪ {b}...  | {a b ...}              | {England Italy Spain}           |
+| `someValuesFrom` | ∃ R C         | R SOME C               | hasColleague SOME Professor      |
+| `allValuesFrom`  | ∀ R C         | R ONLY C               | hasColleague ONLY Professor      |
+| `minCardinality` | ≥ N R         | R MIN 3                | hasColleague MIN 3               |
+| `maxCardinality` | ≤ N R         | R MAX 3                | hasColleague MAX 3               |
+| `cardinality`    | = N R         | R EXACTLY 3            | hasColleague EXACTLY 3           |
+| `hasValue`       | ∃ R.{a}       | R VALUE a              | hasColleague VALUE Matthew       |
 
-see: http://www.w3.org/TR/owl-semantics/syntax.html
-     http://owl-workshop.man.ac.uk/acceptedLong/submission_9.pdf
+See:
+- http://www.w3.org/TR/owl-semantics/syntax.html
+- http://owl-workshop.man.ac.uk/acceptedLong/submission_9.pdf
 
 3.2.3 Axioms for complete classes without using owl:equivalentClass
 
 Named class description of type 2 (with owl:oneOf) or type 4-6
 (with owl:intersectionOf, owl:unionOf or owl:complementOf
 
-Uses Manchester Syntax for __repr__
+Uses Manchester Syntax for `__repr__`
 
+```python
 >>> exNs = Namespace("http://example.com/")
 >>> g = Graph()
 >>> g.bind("ex", exNs, override=False)
 
+```
+
 Now we have an empty graph, we can construct OWL classes in it
 using the Python classes defined in this module
 
+```python
 >>> a = Class(exNs.Opera, graph=g)
+
+```
 
 Now we can assert rdfs:subClassOf and owl:equivalentClass relationships
 (in the underlying graph) with other classes using the 'subClassOf'
 and 'equivalentClass' descriptors which can be set to a list
 of objects for the corresponding predicates.
 
+```python
 >>> a.subClassOf = [exNs.MusicalWork]
+
+```
 
 We can then access the rdfs:subClassOf relationships
 
+```python
 >>> print(list(a.subClassOf))
 [Class: ex:MusicalWork ]
 
+```
+
 This can also be used against already populated graphs:
 
+```python
 >>> owlGraph = Graph().parse(str(OWL))
 >>> list(Class(OWL.Class, graph=owlGraph).subClassOf)
 [Class: rdfs:Class ]
 
+```
+
 Operators are also available. For instance we can add ex:Opera to the extension
 of the ex:CreativeWork class via the '+=' operator
 
+```python
 >>> a
 Class: ex:Opera SubClassOf: ex:MusicalWork
 >>> b = Class(exNs.CreativeWork, graph=g)
@@ -60,29 +77,41 @@ Class: ex:Opera SubClassOf: ex:MusicalWork
 >>> print(sorted(a.subClassOf, key=lambda c:c.identifier))
 [Class: ex:CreativeWork , Class: ex:MusicalWork ]
 
+```
+
 And we can then remove it from the extension as well
 
+```python
 >>> b -= a
 >>> a
 Class: ex:Opera SubClassOf: ex:MusicalWork
+
+```
 
 Boolean class constructions can also  be created with Python operators.
 For example, The | operator can be used to construct a class consisting of a
 owl:unionOf the operands:
 
+```python
 >>> c =  a | b | Class(exNs.Work, graph=g)
 >>> c
 ( ex:Opera OR ex:CreativeWork OR ex:Work )
 
+```
+
 Boolean class expressions can also be operated as lists (using python list
 operators)
 
+```python
 >>> del c[c.index(Class(exNs.Work, graph=g))]
 >>> c
 ( ex:Opera OR ex:CreativeWork )
 
+```
+
 The '&' operator can be used to construct class intersection:
 
+```python
 >>> woman = Class(exNs.Female, graph=g) & Class(exNs.Human, graph=g)
 >>> woman.identifier = exNs.Woman
 >>> woman
@@ -90,40 +119,50 @@ The '&' operator can be used to construct class intersection:
 >>> len(woman)
 2
 
+```
+
 Enumerated classes can also be manipulated
 
+```python
 >>> contList = [Class(exNs.Africa, graph=g), Class(exNs.NorthAmerica, graph=g)]
 >>> EnumeratedClass(members=contList, graph=g)
 { ex:Africa ex:NorthAmerica }
 
+```
+
 owl:Restrictions can also be instantiated:
 
+```python
 >>> Restriction(exNs.hasParent, graph=g, allValuesFrom=exNs.Human)
 ( ex:hasParent ONLY ex:Human )
 
-Restrictions can also be created using Manchester OWL syntax in 'colloquial'
-Python
+```
+
+Restrictions can also be created using Manchester OWL syntax in 'colloquial' Python
+
+```python
 >>> exNs.hasParent @ some @ Class(exNs.Physician, graph=g)
 ( ex:hasParent SOME ex:Physician )
-
 >>> Property(exNs.hasParent, graph=g) @ max @ Literal(1)
 ( ex:hasParent MAX 1 )
-
 >>> print(g.serialize(format='pretty-xml'))  # doctest: +SKIP
-
+```
 """
 
 from __future__ import annotations
 
 import itertools
 import logging
-from typing import Iterable, Union
+from typing import TYPE_CHECKING, Union, cast
 
 from rdflib.collection import Collection
 from rdflib.graph import Graph, _ObjectType
 from rdflib.namespace import OWL, RDF, RDFS, XSD, Namespace, NamespaceManager
-from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
+from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, URIRef, Variable
 from rdflib.util import first
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 logger = logging.getLogger(__name__)
 
@@ -134,7 +173,6 @@ From: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/384122
 Python has the wonderful "in" operator and it would be nice to have additional
 infix operator like this. This recipe shows how (almost) arbitrary infix
 operators can be defined.
-
 """
 
 __all__ = [
@@ -368,16 +406,21 @@ class TermDeletionHelper:
 class Individual:
     """
     A typed individual, the base class of the InfixOWL classes.
-
     """
 
+    # Class variable
     factoryGraph = Graph()  # noqa: N815
+
+    # Instance typing
+    graph: Graph
+    __identifier: IdentifiedNode
+    qname: str | None
 
     def serialize(self, graph):
         for fact in self.factoryGraph.triples((self.identifier, None, None)):
             graph.add(fact)
 
-    def __init__(self, identifier=None, graph=None):
+    def __init__(self, identifier: IdentifiedNode | None = None, graph=None):
         self.__identifier = identifier is not None and identifier or BNode()
         if graph is None:
             self.graph = self.factoryGraph
@@ -422,6 +465,7 @@ class Individual:
         causing all triples that refer to it to be changed and then
         delete the individual.
 
+        ```python
         >>> g = Graph()
         >>> b = Individual(OWL.Restriction, g)
         >>> b.type = RDFS.Resource
@@ -430,6 +474,8 @@ class Individual:
         >>> del b.type
         >>> len(list(b.type))
         0
+
+        ```
         """
         for s, p, _o in self.graph.triples((None, None, self.identifier)):
             self.graph.add((s, p, classOrIdentifier(other)))
@@ -452,6 +498,7 @@ class Individual:
     @TermDeletionHelper(RDF.type)
     def _delete_type(self):
         """
+        ```python
         >>> g = Graph()
         >>> b = Individual(OWL.Restriction, g)
         >>> b.type = RDFS.Resource
@@ -460,16 +507,17 @@ class Individual:
         >>> del b.type
         >>> len(list(b.type))
         0
+
+        ```
         """
         pass  # pragma: no cover
 
     type = property(_get_type, _set_type, _delete_type)
 
-    def _get_identifier(self) -> Identifier:
+    def _get_identifier(self) -> IdentifiedNode:
         return self.__identifier
 
-    def _set_identifier(self, i: Identifier):
-        assert i
+    def _set_identifier(self, i: IdentifiedNode):
         if i != self.__identifier:
             oldstatements_out = [
                 (p, o)
@@ -522,15 +570,13 @@ ACE_NS = Namespace("http://attempto.ifi.uzh.ch/ace_lexicon#")
 
 
 class AnnotatableTerms(Individual):
-    """
-    Terms in an OWL ontology with rdfs:label and rdfs:comment
+    """Terms in an OWL ontology with rdfs:label and rdfs:comment
 
+    Interface with ATTEMPTO (http://attempto.ifi.uzh.ch/site)
 
-    ## Interface with ATTEMPTO (http://attempto.ifi.uzh.ch/site)
+    ## Verbalisation of OWL entity IRIS
 
-    ### Verbalisation of OWL entity IRIS
-
-    #### How are OWL entity IRIs verbalized?
+    ### How are OWL entity IRIs verbalized?
 
     The OWL verbalizer maps OWL entity IRIs to ACE content words such
     that
@@ -565,39 +611,38 @@ class AnnotatableTerms(Individual):
     It is possible to specify the mapping of IRIs to surface forms using
     the following annotation properties:
 
-    .. code-block:: none
-
-        http://attempto.ifi.uzh.ch/ace_lexicon#PN_sg
-        http://attempto.ifi.uzh.ch/ace_lexicon#CN_sg
-        http://attempto.ifi.uzh.ch/ace_lexicon#CN_pl
-        http://attempto.ifi.uzh.ch/ace_lexicon#TV_sg
-        http://attempto.ifi.uzh.ch/ace_lexicon#TV_pl
-        http://attempto.ifi.uzh.ch/ace_lexicon#TV_vbg
+    ```
+    http://attempto.ifi.uzh.ch/ace_lexicon#PN_sg
+    http://attempto.ifi.uzh.ch/ace_lexicon#CN_sg
+    http://attempto.ifi.uzh.ch/ace_lexicon#CN_pl
+    http://attempto.ifi.uzh.ch/ace_lexicon#TV_sg
+    http://attempto.ifi.uzh.ch/ace_lexicon#TV_pl
+    http://attempto.ifi.uzh.ch/ace_lexicon#TV_vbg
+    ```
 
     For example, the following axioms state that if the IRI "#man" is used
     as a plural common noun, then the wordform men must be used by the
     verbalizer. If, however, it is used as a singular transitive verb,
     then mans must be used.
 
-    .. code-block:: none
+    ```xml
+    <AnnotationAssertion>
+        <AnnotationProperty IRI="http://attempto.ifi.uzh.ch/ace_lexicon#CN_pl"/>
+        <IRI>#man</IRI>
+        <Literal datatypeIRI="&xsd;string">men</Literal>
+    </AnnotationAssertion>
 
-        <AnnotationAssertion>
-            <AnnotationProperty IRI="http://attempto.ifi.uzh.ch/ace_lexicon#CN_pl"/>
-            <IRI>#man</IRI>
-            <Literal datatypeIRI="&xsd;string">men</Literal>
-        </AnnotationAssertion>
-
-        <AnnotationAssertion>
-            <AnnotationProperty IRI="http://attempto.ifi.uzh.ch/ace_lexicon#TV_sg"/>
-            <IRI>#man</IRI>
-            <Literal datatypeIRI="&xsd;string">mans</Literal>
-        </AnnotationAssertion>
-
+    <AnnotationAssertion>
+        <AnnotationProperty IRI="http://attempto.ifi.uzh.ch/ace_lexicon#TV_sg"/>
+        <IRI>#man</IRI>
+        <Literal datatypeIRI="&xsd;string">mans</Literal>
+    </AnnotationAssertion>
+    ```
     """
 
     def __init__(
         self,
-        identifier,
+        identifier: IdentifiedNode | None,
         graph=None,
         nameAnnotation=None,  # noqa: N803
         nameIsLabel=False,  # noqa: N803
@@ -653,10 +698,13 @@ class AnnotatableTerms(Individual):
         ):
             yield comment
 
-    def _set_comment(self, comment):
+    def _set_comment(
+        self,
+        comment: IdentifiedNode | Literal | list[IdentifiedNode | Literal] | None,
+    ):
         if not comment:
             return
-        if isinstance(comment, Identifier):
+        if isinstance(comment, (IdentifiedNode, Literal)):
             self.graph.add((self.identifier, RDFS.comment, comment))
         else:
             for c in comment:
@@ -690,10 +738,12 @@ class AnnotatableTerms(Individual):
         for label in self.graph.objects(subject=self.identifier, predicate=RDFS.label):
             yield label
 
-    def _set_label(self, label):
+    def _set_label(
+        self, label: IdentifiedNode | Literal | list[IdentifiedNode | Literal] | None
+    ):
         if not label:
             return
-        if isinstance(label, Identifier):
+        if isinstance(label, (IdentifiedNode, Literal)):
             self.graph.add((self.identifier, RDFS.label, label))
         else:
             for l_ in label:
@@ -702,6 +752,7 @@ class AnnotatableTerms(Individual):
     @TermDeletionHelper(RDFS.label)
     def _delete_label(self):
         """
+        ```python
         >>> g = Graph()
         >>> b = Individual(OWL.Restriction,g)
         >>> b.label = Literal('boo')
@@ -710,6 +761,8 @@ class AnnotatableTerms(Individual):
         >>> del b.label
         >>> len(list(b.label))
         0
+
+        ```
         """
         pass  # pragma: no cover
 
@@ -869,6 +922,7 @@ def DeepClassClear(class_to_prune):  # noqa: N802
     Recursively clear the given class, continuing
     where any related class is an anonymous class
 
+    ```python
     >>> EX = Namespace("http://example.com/")
     >>> g = Graph()
     >>> g.bind("ex", EX, override=False)
@@ -905,6 +959,8 @@ def DeepClassClear(class_to_prune):  # noqa: N802
     >>> otherClass.delete()
     >>> list(g.triples((otherClass.identifier, None, None)))
     []
+
+    ```
     """
 
     def deepClearIfBNode(_class):  # noqa: N802
@@ -933,8 +989,8 @@ def DeepClassClear(class_to_prune):  # noqa: N802
 
 class MalformedClass(ValueError):  # noqa: N818
     """
-    .. deprecated:: TODO-NEXT-VERSION
-       This class will be removed in version ``7.0.0``.
+    !!! warning "Deprecated"
+        This class will be removed in version `7.0.0`.
     """
 
     pass
@@ -983,19 +1039,20 @@ def CastClass(c, graph=None):  # noqa: N802
 
 
 class Class(AnnotatableTerms):
-    """
-    'General form' for classes:
+    """'General form' for classes:
 
     The Manchester Syntax (supported in Protege) is used as the basis for the
     form of this class
 
     See: http://owl-workshop.man.ac.uk/acceptedLong/submission_9.pdf:
 
+    ```
     [Annotation]
     ‘Class:’ classID {Annotation
     ( (‘SubClassOf:’ ClassExpression)
     | (‘EquivalentTo’ ClassExpression)
     | (’DisjointWith’ ClassExpression)) }
+    ```
 
     Appropriate excerpts from OWL Reference:
 
@@ -1009,7 +1066,6 @@ class Class(AnnotatableTerms):
 
     "..An owl:complementOf property links a class to precisely one class
       description."
-
     """
 
     def _serialize(self, graph):
@@ -1045,7 +1101,7 @@ class Class(AnnotatableTerms):
 
     def __init__(
         self,
-        identifier=None,
+        identifier: IdentifiedNode | None = None,
         subClassOf=None,  # noqa: N803
         equivalentClass=None,  # noqa: N803
         disjointWith=None,  # noqa: N803
@@ -1152,6 +1208,7 @@ class Class(AnnotatableTerms):
 
         Chaining 3 intersections
 
+        ```python
         >>> exNs = Namespace("http://example.com/")
         >>> g = Graph()
         >>> g.bind("ex", exNs, override=False)
@@ -1165,6 +1222,8 @@ class Class(AnnotatableTerms):
         True
         >>> isinstance(youngWoman.identifier, BNode)
         True
+
+        ```
         """
         return BooleanClass(
             operator=OWL.intersectionOf, members=[self, other], graph=self.graph
@@ -1174,7 +1233,10 @@ class Class(AnnotatableTerms):
         for anc in self.graph.objects(
             subject=self.identifier, predicate=RDFS.subClassOf
         ):
-            yield Class(anc, graph=self.graph, skipOWLClassMembership=True)
+            # We must assume all objects we get back are URIRef or BNodes
+            yield Class(
+                cast(IdentifiedNode, anc), graph=self.graph, skipOWLClassMembership=True
+            )
 
     def _set_subclassof(self, other):
         if not other:
@@ -1194,7 +1256,7 @@ class Class(AnnotatableTerms):
         for ec in self.graph.objects(
             subject=self.identifier, predicate=OWL.equivalentClass
         ):
-            yield Class(ec, graph=self.graph)
+            yield Class(cast(IdentifiedNode, ec), graph=self.graph)
 
     def _set_equivalentclass(self, other):
         if not other:
@@ -1216,7 +1278,7 @@ class Class(AnnotatableTerms):
         for dc in self.graph.objects(
             subject=self.identifier, predicate=OWL.disjointWith
         ):
-            yield Class(dc, graph=self.graph)
+            yield Class(cast(IdentifiedNode, dc), graph=self.graph)
 
     def _set_disjointwith(self, other):
         if not other:
@@ -1239,7 +1301,7 @@ class Class(AnnotatableTerms):
         if not comp:
             return None
         elif len(comp) == 1:
-            return Class(comp[0], graph=self.graph)
+            return Class(cast(IdentifiedNode, comp[0]), graph=self.graph)
         else:
             raise Exception(len(comp))
 
@@ -1261,6 +1323,7 @@ class Class(AnnotatableTerms):
         computed attributes that returns a generator over taxonomic 'parents'
         by disjunction, conjunction, and subsumption
 
+        ```python
         >>> from rdflib.util import first
         >>> exNs = Namespace('http://example.com/')
         >>> g = Graph()
@@ -1281,6 +1344,7 @@ class Class(AnnotatableTerms):
         >>> list(father.parents)
         [Class: ex:Parent , Class: ex:Male ]
 
+        ```
         """
         for parent in itertools.chain(self.subClassOf, self.equivalentClass):
             yield parent
@@ -1310,7 +1374,7 @@ class Class(AnnotatableTerms):
         # sc = list(self.subClassOf)
         ec = list(self.equivalentClass)
         for _boolclass, p, rdf_list in self.graph.triples_choices(
-            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, List[URIRef], None]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
+            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, list[URIRef], None]"; expected "Union[Tuple[List[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
             (self.identifier, [OWL.intersectionOf, OWL.unionOf], None)  # type: ignore[arg-type]
         ):
             ec.append(manchesterSyntax(rdf_list, self.graph, boolean=p))
@@ -1340,7 +1404,7 @@ class Class(AnnotatableTerms):
         sc = list(self.subClassOf)
         ec = list(self.equivalentClass)
         for _boolclass, p, rdf_list in self.graph.triples_choices(
-            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, List[URIRef], None]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
+            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, list[URIRef], None]"; expected "Union[Tuple[List[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
             (self.identifier, [OWL.intersectionOf, OWL.unionOf], None)  # type: ignore[arg-type]
         ):
             ec.append(manchesterSyntax(rdf_list, self.graph, boolean=p))
@@ -1349,10 +1413,8 @@ class Class(AnnotatableTerms):
         if c:
             dc.append(c)
         klasskind = ""
-        label = list(self.graph.objects(self.identifier, RDFS.label))
-        # type error: Incompatible types in assignment (expression has type "str", variable has type "List[Node]")
-        # type error: Unsupported operand types for + ("str" and "Node")
-        label = label and "(" + label[0] + ")" or ""  # type: ignore[assignment, operator]
+        label_list = list(self.graph.objects(self.identifier, RDFS.label))
+        label = "" if len(label_list) < 1 else "(" + label_list[0] + ")"
         if sc:
             if full:
                 scjoin = "\n                "
@@ -1494,14 +1556,14 @@ class OWLRDFListProxy:
 
 
 class EnumeratedClass(OWLRDFListProxy, Class):
-    """
-    Class for owl:oneOf forms:
+    """Class for owl:oneOf forms:
 
     OWL Abstract Syntax is used
 
     axiom ::= 'EnumeratedClass('
         classID ['Deprecated'] { annotation } { individualID } ')'
 
+    ```python
     >>> exNs = Namespace("http://example.com/")
     >>> g = Graph()
     >>> g.bind("ex", exNs, override=False)
@@ -1525,6 +1587,8 @@ class EnumeratedClass(OWLRDFListProxy, Class):
         owl:oneOf ( ex:chime ex:uche ex:ejike ) .
     <BLANKLINE>
     <BLANKLINE>
+
+    ```
     """
 
     _operator = OWL.oneOf
@@ -1564,6 +1628,7 @@ BooleanPredicates = [OWL.intersectionOf, OWL.unionOf]
 
 class BooleanClassExtentHelper:
     """
+    ```python
     >>> testGraph = Graph()
     >>> Individual.factoryGraph = testGraph
     >>> EX = Namespace("http://example.com/")
@@ -1579,6 +1644,8 @@ class BooleanClassExtentHelper:
     >>> for c in BooleanClass.getUnions():
     ...     print(c) #doctest: +SKIP
     ( ex:Fire OR ex:Water )
+
+    ```
     """
 
     def __init__(self, operator):
@@ -1605,7 +1672,6 @@ class BooleanClass(OWLRDFListProxy, Class):
     See: http://www.w3.org/TR/owl-ref/#Boolean
 
     owl:complementOf is an attribute of Class, however
-
     """
 
     @BooleanClassExtentHelper(OWL.intersectionOf)
@@ -1672,6 +1738,7 @@ class BooleanClass(OWLRDFListProxy, Class):
         Converts a unionOf / intersectionOf class expression into one
         that instead uses the given operator
 
+        ```python
         >>> testGraph = Graph()
         >>> Individual.factoryGraph = testGraph
         >>> EX = Namespace("http://example.com/")
@@ -1690,6 +1757,7 @@ class BooleanClass(OWLRDFListProxy, Class):
         ...     print(e)  # doctest: +SKIP
         The new operator is already being used!
 
+        ```
         """
         assert newOperator != self._operator, "The new operator is already being used!"
         self.graph.remove((self.identifier, self._operator, self._rdfList.uri))
@@ -1720,20 +1788,20 @@ def AllDifferent(members):  # noqa: N802
     TODO: implement this function
 
     DisjointClasses(' description description { description } ')'
-
     """
     pass  # pragma: no cover
 
 
 class Restriction(Class):
     """
+    ```
     restriction ::= 'restriction('
     datavaluedPropertyID dataRestrictionComponent
     { dataRestrictionComponent } ')'
     | 'restriction(' individualvaluedPropertyID
     individualRestrictionComponent
     { individualRestrictionComponent } ')'
-
+    ```
     """
 
     restrictionKinds = [  # noqa: N815
@@ -1748,27 +1816,34 @@ class Restriction(Class):
     def __init__(
         self,
         onProperty,  # noqa: N803
-        graph=None,
-        allValuesFrom=None,  # noqa: N803
-        someValuesFrom=None,  # noqa: N803
-        value=None,
-        cardinality=None,
-        maxCardinality=None,  # noqa: N803
-        minCardinality=None,  # noqa: N803
-        identifier=None,
+        graph: Graph | None = None,
+        allValuesFrom: (  # noqa: N803
+            IdentifiedNode | Literal | Class | bool | None
+        ) = None,
+        someValuesFrom: (  # noqa: N803
+            IdentifiedNode | Literal | Class | bool | None
+        ) = None,
+        value: IdentifiedNode | Literal | Class | bool | None = None,
+        cardinality: IdentifiedNode | Literal | Class | bool | None = None,
+        maxCardinality: (  # noqa: N803
+            IdentifiedNode | Literal | Class | bool | None
+        ) = None,
+        minCardinality: (  # noqa: N803
+            IdentifiedNode | Literal | Class | bool | None
+        ) = None,
+        identifier: IdentifiedNode | None = None,
     ):
         graph = Graph() if graph is None else graph
         super(Restriction, self).__init__(
             identifier, graph=graph, skipOWLClassMembership=True
         )
+        self_id_node: IdentifiedNode = self.identifier
         if (
-            self.identifier,
+            self_id_node,
             OWL.onProperty,
             propertyOrIdentifier(onProperty),
         ) not in graph:
-            graph.add(
-                (self.identifier, OWL.onProperty, propertyOrIdentifier(onProperty))
-            )
+            graph.add((self_id_node, OWL.onProperty, propertyOrIdentifier(onProperty)))
         self.onProperty = onProperty
         restr_types = [
             (allValuesFrom, OWL.allValuesFrom),
@@ -1787,7 +1862,7 @@ class Restriction(Class):
             )
         restriction_range, restriction_type = valid_restr_props.pop()
         self.restrictionType = restriction_type
-        if isinstance(restriction_range, Identifier):
+        if isinstance(restriction_range, (IdentifiedNode, Literal)):
             self.restrictionRange = restriction_range
         elif isinstance(restriction_range, Class):
             self.restrictionRange = classOrIdentifier(restriction_range)
@@ -1795,21 +1870,22 @@ class Restriction(Class):
             # error: Incompatible types in assignment (expression has type "Optional[Identifier]", variable has type "Identifier")
             self.restrictionRange = first(  # type: ignore[assignment]
                 # type error: Argument 1 to "first" has incompatible type "Generator[Node, None, None]"; expected "Iterable[Identifier]"
-                self.graph.objects(self.identifier, restriction_type)  # type: ignore[arg-type]
+                self.graph.objects(self_id_node, restriction_type)  # type: ignore[arg-type]
             )
         if (
-            self.identifier,
+            self_id_node,
             restriction_type,
             self.restrictionRange,
         ) not in self.graph:
-            self.graph.add((self.identifier, restriction_type, self.restrictionRange))
-        assert self.restrictionRange is not None, Class(self.identifier)
-        if (self.identifier, RDF.type, OWL.Restriction) not in self.graph:
-            self.graph.add((self.identifier, RDF.type, OWL.Restriction))
-            self.graph.remove((self.identifier, RDF.type, OWL.Class))
+            self.graph.add((self_id_node, restriction_type, self.restrictionRange))
+        assert self.restrictionRange is not None, Class(self_id_node)
+        if (self_id_node, RDF.type, OWL.Restriction) not in self.graph:
+            self.graph.add((self_id_node, RDF.type, OWL.Restriction))
+            self.graph.remove((self_id_node, RDF.type, OWL.Class))
 
     def serialize(self, graph):
         """
+        ```python
         >>> g1 = Graph()
         >>> g2 = Graph()
         >>> EX = Namespace("http://example.com/")
@@ -1829,6 +1905,8 @@ class Restriction(Class):
         ... ) #doctest: +NORMALIZE_WHITESPACE +SKIP
         [rdflib.term.URIRef(
             'http://www.w3.org/2002/07/owl#DatatypeProperty')]
+
+        ```
         """
         Property(self.onProperty, graph=self.graph, baseType=None).serialize(graph)
         for s, p, o in self.graph.triples((self.identifier, None, None)):
@@ -1883,7 +1961,7 @@ class Restriction(Class):
         for i in self.graph.objects(
             subject=self.identifier, predicate=OWL.allValuesFrom
         ):
-            return Class(i, graph=self.graph)
+            return Class(cast(IdentifiedNode, i), graph=self.graph)
         return None
 
     def _set_allvaluesfrom(self, other):
@@ -1907,7 +1985,7 @@ class Restriction(Class):
         for i in self.graph.objects(
             subject=self.identifier, predicate=OWL.someValuesFrom
         ):
-            return Class(i, graph=self.graph)
+            return Class(cast(IdentifiedNode, i), graph=self.graph)
         return None
 
     def _set_somevaluesfrom(self, other):
@@ -1929,7 +2007,7 @@ class Restriction(Class):
 
     def _get_hasvalue(self):
         for i in self.graph.objects(subject=self.identifier, predicate=OWL.hasValue):
-            return Class(i, graph=self.graph)
+            return Class(cast(IdentifiedNode, i), graph=self.graph)
         return None
 
     def _set_hasvalue(self, other):
@@ -1949,7 +2027,7 @@ class Restriction(Class):
 
     def _get_cardinality(self):
         for i in self.graph.objects(subject=self.identifier, predicate=OWL.cardinality):
-            return Class(i, graph=self.graph)
+            return Class(cast(IdentifiedNode, i), graph=self.graph)
         return None
 
     def _set_cardinality(self, other):
@@ -1971,7 +2049,7 @@ class Restriction(Class):
         for i in self.graph.objects(
             subject=self.identifier, predicate=OWL.maxCardinality
         ):
-            return Class(i, graph=self.graph)
+            return Class(cast(IdentifiedNode, i), graph=self.graph)
         return None
 
     def _set_maxcardinality(self, other):
@@ -1995,7 +2073,7 @@ class Restriction(Class):
         for i in self.graph.objects(
             subject=self.identifier, predicate=OWL.minCardinality
         ):
-            return Class(i, graph=self.graph)
+            return Class(cast(IdentifiedNode, i), graph=self.graph)
         return None
 
     def _set_mincardinality(self, other):
@@ -2016,12 +2094,12 @@ class Restriction(Class):
     )
 
     def restrictionKind(self):  # noqa: N802
+        self_id_node: IdentifiedNode = self.identifier
         for s, p, o in self.graph.triples_choices(
-            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, List[URIRef], None]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
-            (self.identifier, self.restrictionKinds, None)  # type: ignore[arg-type]
+            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type
+            (self_id_node, self.restrictionKinds, None)  # type: ignore[arg-type]
         ):
-            # type error: "Node" has no attribute "split"
-            return p.split(str(OWL))[-1]  # type: ignore[attr-defined]
+            return p.split(str(OWL))[-1]
         return None
 
     def __repr__(self):
@@ -2061,6 +2139,7 @@ PropertyAbstractSyntax = """
 
 class Property(AnnotatableTerms):
     """
+    ```
     axiom ::= 'DatatypeProperty(' datavaluedPropertyID ['Deprecated']
                 { annotation }
                 { 'super(' datavaluedPropertyID ')'} ['Functional']
@@ -2073,25 +2152,21 @@ class Property(AnnotatableTerms):
                 'Functional' 'InverseFunctional' |
                 'Transitive' ]
                 { 'domain(' description ')' } { 'range(' description ')' } ')
-
+    ```
     """
 
     def setupVerbAnnotations(self, verb_annotations):  # noqa: N802
-        """
-
-        OWL properties map to ACE transitive verbs (TV)
+        """OWL properties map to ACE transitive verbs (TV)
 
         There are 6 morphological categories that determine the surface form
         of an IRI:
 
-            singular form of a transitive verb (e.g. mans)
-            plural form of a transitive verb (e.g. man)
-            past participle form a transitive verb (e.g. manned)
-
-            http://attempto.ifi.uzh.ch/ace_lexicon#TV_sg
-            http://attempto.ifi.uzh.ch/ace_lexicon#TV_pl
-            http://attempto.ifi.uzh.ch/ace_lexicon#TV_vbg
-
+        - singular form of a transitive verb (e.g. mans)
+        - plural form of a transitive verb (e.g. man)
+        - past participle form a transitive verb (e.g. manned)
+        - http://attempto.ifi.uzh.ch/ace_lexicon#TV_sg
+        - http://attempto.ifi.uzh.ch/ace_lexicon#TV_pl
+        - http://attempto.ifi.uzh.ch/ace_lexicon#TV_vbg
         """
 
         if isinstance(verb_annotations, tuple):
@@ -2190,7 +2265,7 @@ class Property(AnnotatableTerms):
                     )
                 )
             for _s, _p, roletype in self.graph.triples_choices(
-                # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, URIRef, List[URIRef]]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
+                # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, URIRef, list[URIRef]]"; expected "Union[Tuple[List[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
                 (  # type: ignore[arg-type]
                     self.identifier,
                     RDF.type,
@@ -2201,8 +2276,7 @@ class Property(AnnotatableTerms):
                     ],
                 )
             ):
-                # type error: "Node" has no attribute "split"
-                rt.append(str(roletype.split(str(OWL))[-1]))  # type: ignore[attr-defined]
+                rt.append(str(roletype).split(str(OWL), 1)[-1])
         else:
             rt.append(
                 "DatatypeProperty( %s %s"
@@ -2296,7 +2370,7 @@ class Property(AnnotatableTerms):
 
     def _get_domain(self):
         for dom in self.graph.objects(subject=self.identifier, predicate=RDFS.domain):
-            yield Class(dom, graph=self.graph)
+            yield Class(cast(IdentifiedNode, dom), graph=self.graph)
 
     def _set_domain(self, other):
         if not other:
@@ -2315,7 +2389,7 @@ class Property(AnnotatableTerms):
 
     def _get_range(self):
         for ran in self.graph.objects(subject=self.identifier, predicate=RDFS.range):
-            yield Class(ran, graph=self.graph)
+            yield Class(cast(IdentifiedNode, ran), graph=self.graph)
 
     def _set_range(self, ranges):
         if not ranges:

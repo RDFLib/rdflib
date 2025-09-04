@@ -170,19 +170,19 @@ tasks:
     desc: Clean generated documentation
     cmds:
       - task: _rimraf
-        vars: { RIMRAF_TARGET: "docs/_build/" }
+        vars: { RIMRAF_TARGET: "site/" }
 
   docs:
     desc: Build documentation
     cmds:
       - echo "PYTHONPATH=${PYTHONPATH}"
-      - "{{.VENV_PYTHON}} -m sphinx.cmd.build -T -W -b html -d docs/_build/doctree docs docs/_build/html {{.CLI_ARGS}}"
+      - "{{.VENV_PYTHON}} -m mkdocs build {{.CLI_ARGS}}"
 
   docs:live-server:
     desc: Run a live server on generated docs
     cmds:
       - 'echo "NOTE: Docs must be built for this to work"'
-      - npx -p live-server live-server docs/_build/html/ {{.CLI_ARGS}}
+      - npx -p live-server live-server site/ {{.CLI_ARGS}}
 
   default:
     desc: Run validate
@@ -272,7 +272,7 @@ tasks:
 
   pip-compile:
     cmds:
-      - cmd: "{{.PIP_COMPILE}} --quiet --annotate --emit-options --resolver=backtracking {{.CLI_ARGS}}"
+      - cmd: "{{.PIP_COMPILE}} --quiet --annotate --emit-options --no-strip-extras --resolver=backtracking {{.CLI_ARGS}}"
 
   docker:prepare:
     cmds:
@@ -356,7 +356,7 @@ tasks:
         cd var/test-sdist/rdflib-*
         poetry install
         poetry run mypy --show-error-context --show-error-codes -p rdflib
-        poetry run sphinx-build -T -W -b html -d docs/_build/doctree docs docs/_build/html
+        poetry run mkdocs build
         poetry run pytest
 
   test:no_internet:

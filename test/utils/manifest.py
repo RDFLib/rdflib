@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import logging
-from typing import Iterable, List, NamedTuple, Optional, Tuple, Union, cast
+from collections.abc import Iterable
+from typing import NamedTuple, Optional, Union, cast
 
 from rdflib import RDF, RDFS, Graph
 from rdflib.term import Identifier, Node, URIRef
@@ -10,9 +11,9 @@ from test.utils.namespace import DAWGT, MF, QT, RDFT, UT
 logger = logging.getLogger(__name__)
 
 ResultType = Union[
-    Identifier, Tuple[Optional[Node], List[Tuple[Optional[Node], Optional[Node]]]]
+    Identifier, tuple[Optional[Node], list[tuple[Optional[Node], Optional[Node]]]]
 ]
-GraphDataType = Union[List[Optional[Node]], List[Tuple[Optional[Node], Optional[Node]]]]
+GraphDataType = Union[list[Optional[Node]], list[tuple[Optional[Node], Optional[Node]]]]
 
 
 class RDFTest(NamedTuple):
@@ -20,13 +21,13 @@ class RDFTest(NamedTuple):
     name: str
     comment: str
     data: Identifier
-    graphdata: Optional[GraphDataType]
+    graphdata: GraphDataType | None
     action: Identifier
-    result: Optional[ResultType]
+    result: ResultType | None
     syntax: bool
 
 
-def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, Node, RDFTest]]:
+def read_manifest(f, base=None, legacy=False) -> Iterable[tuple[Node, Node, RDFTest]]:
     """read a manifest file"""
 
     def _str(x):
@@ -74,8 +75,8 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, Node, RDFT
                 name = g.value(e, MF.name)
                 comment = g.value(e, RDFS.comment)
                 data = None
-                graphdata: Optional[GraphDataType] = None
-                res: Optional[ResultType] = None
+                graphdata: GraphDataType | None = None
+                res: ResultType | None = None
                 syntax = True
 
                 if _type in (MF.QueryEvaluationTest, MF.CSVResultFormatTest):
@@ -92,15 +93,15 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, Node, RDFT
                     a = g.value(e, MF.action)
                     query = g.value(a, UT.request)
                     data = g.value(a, UT.data)
-                    graphdata = cast(List[Tuple[Optional[Node], Optional[Node]]], [])
+                    graphdata = cast(list[tuple[Optional[Node], Optional[Node]]], [])
                     for gd in g.objects(a, UT.graphData):
                         graphdata.append(
                             (g.value(gd, UT.graph), g.value(gd, RDFS.label))
                         )
 
                     r = g.value(e, MF.result)
-                    resdata: Optional[Node] = g.value(r, UT.data)
-                    resgraphdata: List[Tuple[Optional[Node], Optional[Node]]] = []
+                    resdata: Node | None = g.value(r, UT.data)
+                    resgraphdata: list[tuple[Node | None, Node | None]] = []
                     for gd in g.objects(r, UT.graphData):
                         resgraphdata.append(
                             (g.value(gd, UT.graph), g.value(gd, RDFS.label))

@@ -2,7 +2,9 @@
 Notation 3 (N3) RDF graph serializer for RDFLib.
 """
 
-from rdflib.graph import Graph
+from typing import cast
+
+from rdflib.graph import Graph, QuotedGraph
 from rdflib.namespace import OWL, Namespace
 from rdflib.plugins.serializers.turtle import OBJECT, SUBJECT, TurtleSerializer
 
@@ -12,6 +14,8 @@ SWAP_LOG = Namespace("http://www.w3.org/2000/10/swap/log#")
 
 
 class N3Serializer(TurtleSerializer):
+    """Notation 3 (N3) RDF graph serializer."""
+
     short_name = "n3"
 
     def __init__(self, store: Graph, parent=None):
@@ -68,7 +72,7 @@ class N3Serializer(TurtleSerializer):
         if isinstance(subject, Graph):
             self.write("\n" + self.indent())
             self.p_clause(subject, SUBJECT)
-            self.predicateList(subject)
+            self.predicateList(cast(QuotedGraph, subject))
             self.write(" .")
             return True
         else:
@@ -76,7 +80,7 @@ class N3Serializer(TurtleSerializer):
 
     def p_clause(self, node, position):
         if isinstance(node, Graph):
-            self.subjectDone(node)
+            self.subjectDone(cast(QuotedGraph, node))
             if position is OBJECT:
                 self.write(" ")
             self.write("{")

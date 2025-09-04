@@ -1,5 +1,5 @@
 """
-Large parts of this module are taken from the ``isodate`` package.
+Large parts of this module are taken from the `isodate` package.
 https://pypi.org/project/isodate/
 Modifications are made to isodate features to allow compatibility with
 XSD dates and durations that are not necessarily valid ISO8601 strings.
@@ -39,7 +39,7 @@ import re
 import sys
 from datetime import date, datetime, time, timedelta
 from decimal import ROUND_FLOOR, Decimal
-from typing import List, Tuple, Union, cast
+from typing import cast
 
 if sys.version_info[:3] < (3, 11, 0):
     from isodate import parse_date, parse_datetime, parse_time
@@ -51,17 +51,14 @@ else:
 
 
 def fquotmod(
-    val: Decimal, low: Union[Decimal, int], high: Union[Decimal, int]
-) -> Tuple[int, Decimal]:
-    """
-    A divmod function with boundaries.
-
-    """
+    val: Decimal, low: Decimal | int, high: Decimal | int
+) -> tuple[int, Decimal]:
+    """A divmod function with boundaries."""
     # assumes that all the maths is done with Decimals.
     # divmod for Decimal uses truncate instead of floor as builtin
     # divmod, so we have to do it manually here.
     a: Decimal = val - low
-    b: Union[Decimal, int] = high - low
+    b: Decimal | int = high - low
     div: Decimal = (a / b).to_integral(ROUND_FLOOR)
     mod: Decimal = a - div * b
     # if we were not using Decimal, it would look like this.
@@ -87,8 +84,7 @@ def max_days_in_month(year: int, month: int) -> int:
 
 
 class Duration:
-    """
-    A class which represents a duration.
+    """A class which represents a duration.
 
     The difference to datetime.timedelta is, that this class handles also
     differences given in years and months.
@@ -118,8 +114,8 @@ class Duration:
         minutes: float = 0,
         hours: float = 0,
         weeks: float = 0,
-        months: Union[Decimal, float, int, str] = 0,
-        years: Union[Decimal, float, int, str] = 0,
+        months: Decimal | float | int | str = 0,
+        years: Decimal | float | int | str = 0,
     ):
         """
         Initialise this Duration instance with the given parameters.
@@ -186,8 +182,7 @@ class Duration:
         return hash((self.tdelta, self.months, self.years))
 
     def __neg__(self):
-        """
-        A simple unary minus.
+        """A simple unary minus.
 
         Returns a new Duration instance with all it's negated.
         """
@@ -195,7 +190,7 @@ class Duration:
         negduration.tdelta = -self.tdelta
         return negduration
 
-    def __add__(self, other: Union[Duration, timedelta, date, datetime]):
+    def __add__(self, other: Duration | timedelta | date | datetime):
         """
         Durations can be added with Duration, timedelta, date and datetime
         objects.
@@ -222,7 +217,7 @@ class Duration:
             carry, newmonth = fquotmod(newmonth, 1, 13)
             newyear: int = other.year + int(self.years) + carry
             maxdays: int = max_days_in_month(newyear, int(newmonth))
-            newday: Union[int, float]
+            newday: int | float
             if other.day > maxdays:
                 newday = maxdays
             else:
@@ -247,7 +242,7 @@ class Duration:
 
     __rmul__ = __mul__
 
-    def __sub__(self, other: Union[Duration, timedelta]):
+    def __sub__(self, other: Duration | timedelta):
         """
         It is possible to subtract Duration and timedelta objects from Duration
         objects.
@@ -268,7 +263,7 @@ class Duration:
             pass
         return NotImplemented
 
-    def __rsub__(self, other: Union[timedelta, date, datetime]):
+    def __rsub__(self, other: timedelta | date | datetime):
         """
         It is possible to subtract Duration objects from date, datetime and
         timedelta objects.
@@ -297,7 +292,7 @@ class Duration:
             carry, newmonth = fquotmod(newmonth, 1, 13)
             newyear: int = other.year - int(self.years) + carry
             maxdays: int = max_days_in_month(newyear, int(newmonth))
-            newday: Union[int, float]
+            newday: int | float
             if other.day > maxdays:
                 newday = maxdays
             else:
@@ -344,8 +339,7 @@ class Duration:
         return True
 
     def totimedelta(self, start=None, end=None):
-        """
-        Convert this duration into a timedelta object.
+        """Convert this duration into a timedelta object.
 
         This method requires a start datetime or end datetime, but raises
         an exception if both are given.
@@ -375,20 +369,20 @@ ISO8601_PERIOD_REGEX = re.compile(
 
 def parse_xsd_duration(
     dur_string: str, as_timedelta_if_possible: bool = True
-) -> Union[Duration, timedelta]:
-    """
-    Parses an ISO 8601 durations into datetime.timedelta or Duration objects.
+) -> Duration | timedelta:
+    """Parses an ISO 8601 durations into datetime.timedelta or Duration objects.
 
     If the ISO date string does not contain years or months, a timedelta
     instance is returned, else a Duration instance is returned.
 
     The following duration formats are supported:
-      -``PnnW``                  duration in weeks
-      -``PnnYnnMnnDTnnHnnMnnS``  complete duration specification
-      -``PYYYYMMDDThhmmss``      basic alternative complete date format
-      -``PYYYY-MM-DDThh:mm:ss``  extended alternative complete date format
-      -``PYYYYDDDThhmmss``       basic alternative ordinal date format
-      -``PYYYY-DDDThh:mm:ss``    extended alternative ordinal date format
+
+    -`PnnW`                  duration in weeks
+    -`PnnYnnMnnDTnnHnnMnnS`  complete duration specification
+    -`PYYYYMMDDThhmmss`      basic alternative complete date format
+    -`PYYYY-MM-DDThh:mm:ss`  extended alternative complete date format
+    -`PYYYYDDDThhmmss`       basic alternative ordinal date format
+    -`PYYYY-DDDThh:mm:ss`    extended alternative ordinal date format
 
     The '-' is optional.
 
@@ -443,7 +437,7 @@ def parse_xsd_duration(
                 # these values are passed into a timedelta object,
                 # which works with floats.
                 groups[key] = float(groups[key][:-1].replace(",", "."))
-    ret: Union[Duration, timedelta]
+    ret: Duration | timedelta
     if as_timedelta_if_possible and groups["years"] == 0 and groups["months"] == 0:
         ret = timedelta(
             days=groups["days"],  # type: ignore[arg-type]
@@ -470,9 +464,9 @@ def parse_xsd_duration(
     return ret
 
 
-def duration_isoformat(tdt: Union[Duration, timedelta], in_weeks: bool = False) -> str:
+def duration_isoformat(tdt: Duration | timedelta, in_weeks: bool = False) -> str:
     if not in_weeks:
-        ret: List[str] = []
+        ret: list[str] = []
         minus = False
         has_year_or_month = False
         if isinstance(tdt, Duration):
@@ -591,79 +585,6 @@ def parse_xsd_date(date_string: str):
     if "-" not in date_string:
         raise ValueError("XSD Date string must contain at least two dashes")
     return parse_date(date_string if not minus else ("-" + date_string))
-
-
-def parse_xsd_gyear(gyear_string: str):
-    """
-    XSD gYear has more features than ISO8601 dates, specifically
-    XSD allows timezones on a gYear, that must be stripped off.
-    """
-    if gyear_string.endswith("Z") or gyear_string.endswith("z"):
-        gyear_string = gyear_string[:-1]
-    if gyear_string.startswith("-"):
-        gyear_string = gyear_string[1:]
-        minus = True
-    else:
-        minus = False
-    has_plus = gyear_string.rfind("+")
-    if has_plus > 0:
-        # Drop the +07:00 timezone part
-        gyear_string = gyear_string[:has_plus]
-    else:
-        split_parts = gyear_string.rsplit("-", 1)
-        if len(split_parts) > 1 and ":" in split_parts[-1]:
-            # Drop the -09:00 timezone part
-            gyear_string = split_parts[0]
-    if len(gyear_string) < 4:
-        raise ValueError("gYear string must be at least 4 numerals in length")
-    gyear_string = gyear_string.lstrip("0")  # strip all leading zeros
-    try:
-        y = int(gyear_string if not minus else ("-" + gyear_string))
-    except ValueError:
-        raise ValueError("gYear string must be a valid integer")
-    return date(y, 1, 1)
-
-
-def parse_xsd_gyearmonth(gym_string: str):
-    """
-    XSD gYearMonth has more features than ISO8601 dates, specifically
-    XSD allows timezones on a gYearMonth, that must be stripped off.
-    """
-    if gym_string.endswith("Z") or gym_string.endswith("z"):
-        gym_string = gym_string[:-1]
-    if gym_string.startswith("-"):
-        gym_string = gym_string[1:]
-        minus = True
-    else:
-        minus = False
-    has_plus = gym_string.rfind("+")
-    if has_plus > 0:
-        # Drop the +07:00 timezone part
-        gym_string = gym_string[:has_plus]
-    else:
-        split_parts = gym_string.rsplit("-", 1)
-        if len(split_parts) > 1 and ":" in split_parts[-1]:
-            # Drop the -09:00 timezone part
-            gym_string = split_parts[0]
-    year_month_parts = gym_string.split("-", 1)
-    if len(year_month_parts) < 2:
-        raise ValueError("XSD gYearMonth string must contain one dash")
-
-    if len(year_month_parts[0]) < 4:
-        raise ValueError("gYearMonth Year part must be at least 4 numerals in length")
-    elif len(year_month_parts[1]) < 2:
-        raise ValueError("gYearMonth Month part must be exactly 2 numerals in length")
-    year_string = year_month_parts[0].lstrip("0")  # strip all leading zeros
-    month_string = year_month_parts[1].lstrip("0")  # strip all leading zeros
-    try:
-        y = int(year_string if not minus else ("-" + year_string))
-    except ValueError:
-        raise ValueError("gYearMonth Year part must be a valid integer")
-    try:
-        m = int(month_string)
-    except ValueError:
-        raise ValueError("gYearMonth Month part must be a valid integer")
-    return date(y, m, 1)
 
 
 # Parse XSD Datetime is the same as ISO8601 Datetime

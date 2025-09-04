@@ -3,20 +3,14 @@ from __future__ import annotations
 import abc
 import contextlib
 import logging
+from collections.abc import Callable, Generator, Iterable, Sequence
 from collections.abc import Iterable as IterableABC
 from dataclasses import dataclass
+from re import Pattern
 from typing import (
     Any,
-    Callable,
-    Dict,
-    Generator,
     Generic,
-    Iterable,
     NoReturn,
-    Optional,
-    Pattern,
-    Sequence,
-    Type,
     TypeVar,
     Union,
     cast,
@@ -28,7 +22,7 @@ from pytest import ExceptionInfo
 AnyT = TypeVar("AnyT")
 
 OutcomePrimitive = Union[
-    AnyT, Callable[[AnyT], None], "OutcomeChecker[AnyT]", Type[Exception], Exception
+    AnyT, Callable[[AnyT], None], "OutcomeChecker[AnyT]", type[Exception], Exception
 ]
 
 OutcomePrimitives = Union[
@@ -52,27 +46,29 @@ class OutcomeChecker(abc.ABC, Generic[AnyT]):
 
         This should run inside the checker's context.
 
-        :param outcome: The actual outcome of the test.
-        :raises AssertionError: If the outcome does not match the
-            expectation.
-        :raises RuntimeError: If this method is called when no outcome
-            is expected.
+        Raises:
+            AssertionError: If the outcome does not match the
+                expectation.
+            RuntimeError: If this method is called when no outcome
+                is expected.
         """
         ...
 
     @contextlib.contextmanager
     @abc.abstractmethod
-    def context(self) -> Generator[Optional[ExceptionInfo[Exception]], None, None]:
+    def context(self) -> Generator[ExceptionInfo[Exception] | None, None, None]:
         """
         The context in which the test code should run.
 
         This is necessary for checking exception outcomes.
 
-        :return: A context manager that yields the exception info for
-            any exceptions that were raised in this context.
-        :raises AssertionError: If the test does not raise an exception
-            when one is expected, or if the exception does not match the
-            expectation.
+        Returns:
+            A context manager that yields the exception info for
+                any exceptions that were raised in this context.
+        Raises:
+            AssertionError: If the test does not raise an exception
+                when one is expected, or if the exception does not match the
+                expectation.
         """
         ...
 
@@ -93,10 +89,10 @@ class OutcomeChecker(abc.ABC, Generic[AnyT]):
             AnyT,
             Callable[[AnyT], None],
             OutcomeChecker[AnyT],
-            Type[Exception],
+            type[Exception],
             Exception,
         ],
-    ) -> Optional[OutcomeChecker[AnyT]]:
+    ) -> OutcomeChecker[AnyT] | None:
         if isinstance(primitive, OutcomeChecker):
             return primitive
         if isinstance(primitive, type) and issubclass(primitive, Exception):
@@ -156,7 +152,8 @@ class ValueChecker(NoExceptionChecker[AnyT]):
     """
     Validates that the outcome is a specific value.
 
-    :param value: The expected value.
+    Args:
+        value: The expected value.
     """
 
     expected: AnyT
@@ -170,8 +167,9 @@ class CallableChecker(NoExceptionChecker[AnyT]):
     """
     Validates the outcome with a callable.
 
-    :param callable: The callable that will be called with the outcome
-        to validate it.
+    Args:
+        callable: The callable that will be called with the outcome
+            to validate it.
     """
 
     callable: Callable[[AnyT], None]
@@ -185,16 +183,17 @@ class ExceptionChecker(OutcomeChecker[AnyT]):
     """
     Validates that the outcome is a specific exception.
 
-    :param type: The expected exception type.
-    :param match: A regular expression or string that the exception
-        message must match.
-    :param attributes: A dictionary of attributes that the exception
-        must have and their expected values.
+    Args:
+        type: The expected exception type.
+        match: A regular expression or string that the exception
+            message must match.
+        attributes: A dictionary of attributes that the exception
+            must have and their expected values.
     """
 
-    type: Type[Exception]
-    match: Optional[Union[Pattern[str], str]] = None
-    attributes: Optional[Dict[str, Any]] = None
+    type: type[Exception]
+    match: Pattern[str] | str | None = None
+    attributes: dict[str, Any] | None = None
 
     def check(self, actual: AnyT) -> NoReturn:
         raise RuntimeError("ExceptionResult.check_result should never be called")

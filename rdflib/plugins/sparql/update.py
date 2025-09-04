@@ -1,12 +1,11 @@
 """
-
 Code for carrying out Update Operations
-
 """
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterator, Mapping, Optional, Sequence
+from collections.abc import Iterator, Mapping, Sequence
+from typing import TYPE_CHECKING
 
 from rdflib.graph import Graph
 from rdflib.plugins.sparql.evaluate import evalBGP, evalPart
@@ -16,7 +15,7 @@ from rdflib.plugins.sparql.sparql import FrozenDict, QueryContext, Update
 from rdflib.term import Identifier, URIRef, Variable
 
 
-def _graphOrDefault(ctx: QueryContext, g: str) -> Optional[Graph]:
+def _graphOrDefault(ctx: QueryContext, g: str) -> Graph | None:
     if g == "DEFAULT":
         return ctx.graph
     else:
@@ -97,7 +96,7 @@ def evalInsertData(ctx: QueryContext, u: CompValue) -> None:
     # u.quads is a dict of graphURI=>[triples]
     for g in u.quads:
         # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Optional[Graph]"; expected "Union[IdentifiedNode, str, None]"
-        cg = ctx.dataset.get_context(g)  # type: ignore[arg-type]
+        cg = ctx.dataset.get_context(g)
         cg += u.quads[g]
 
 
@@ -113,7 +112,7 @@ def evalDeleteData(ctx: QueryContext, u: CompValue) -> None:
     # u.quads is a dict of graphURI=>[triples]
     for g in u.quads:
         # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Optional[Graph]"; expected "Union[IdentifiedNode, str, None]"
-        cg = ctx.dataset.get_context(g)  # type: ignore[arg-type]
+        cg = ctx.dataset.get_context(g)
         cg -= u.quads[g]
 
 
@@ -131,7 +130,7 @@ def evalDeleteWhere(ctx: QueryContext, u: CompValue) -> None:
     # type error: Incompatible types in assignment (expression has type "FrozenBindings", variable has type "QueryContext")
     for c in res:  # type: ignore[assignment]
         g = ctx.graph
-        g -= _fillTemplate(u.triples, c)
+        g -= _fillTemplate(u.triples, c)  # type: ignore[operator]
 
         for g in u.quads:
             cg = ctx.dataset.get_context(c.get(g))
@@ -142,7 +141,7 @@ def evalModify(ctx: QueryContext, u: CompValue) -> None:
     originalctx = ctx
 
     # Using replaces the dataset for evaluating the where-clause
-    dg: Optional[Graph]
+    dg: Graph | None
     if u.using:
         otherDefault = False
         for d in u.using:
@@ -283,11 +282,9 @@ def evalCopy(ctx: QueryContext, u: CompValue) -> None:
 def evalUpdate(
     graph: Graph,
     update: Update,
-    initBindings: Optional[Mapping[str, Identifier]] = None,
+    initBindings: Mapping[str, Identifier] | None = None,
 ) -> None:
-    """
-
-    http://www.w3.org/TR/sparql11-update/#updateLanguage
+    """http://www.w3.org/TR/sparql11-update/#updateLanguage
 
     'A request is a sequence of operations [...] Implementations MUST
     ensure that operations of a single request are executed in a
@@ -302,17 +299,17 @@ def evalUpdate(
 
     This will return None on success and raise Exceptions on error
 
-    .. caution::
+    !!! warning "Security Considerations"
 
         This method can access indirectly requested network endpoints, for
         example, query processing will attempt to access network endpoints
-        specified in ``SERVICE`` directives.
+        specified in `SERVICE` directives.
 
         When processing untrusted or potentially malicious queries, measures
         should be taken to restrict network and file access.
 
         For information on available security measures, see the RDFLib
-        :doc:`Security Considerations </security_considerations>`
+        [Security Considerations](../security_considerations.md)
         documentation.
 
     """

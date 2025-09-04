@@ -1,11 +1,11 @@
 """
 SPARQL Queries be prepared (i.e parsed and translated to SPARQL algebra)
-by the :meth:`rdflib.plugins.sparql.prepareQuery` method.
+by the [`prepareQuery`][rdflib.plugins.sparql.prepareQuery] method.
 
-``initNs`` can be used instead of PREFIX values.
+`initNs` can be used instead of PREFIX values.
 
 When executing, variables can be bound with the
-``initBindings`` keyword parameter.
+`initBindings` keyword parameter.
 """
 
 from pathlib import Path

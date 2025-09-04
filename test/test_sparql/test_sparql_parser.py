@@ -2,15 +2,14 @@ from __future__ import annotations
 
 import math
 import sys
-from typing import Set, Tuple
 
-from rdflib import Graph, Literal
+from rdflib import Graph, Literal, Variable
 from rdflib.namespace import Namespace
 from rdflib.plugins.sparql.processor import processUpdate
-from rdflib.term import Node
+from rdflib.term import IdentifiedNode, Node
 
 
-def triple_set(graph: Graph) -> Set[Tuple[Node, Node, Node]]:
+def triple_set(graph: Graph) -> set[tuple[Node, IdentifiedNode | Variable, Node]]:
     return set(graph.triples((None, None, None)))
 
 

@@ -1,50 +1,23 @@
 r"""
-
 This module implements the SPARQL 1.1 Property path operators, as
 defined in:
-
-http://www.w3.org/TR/sparql11-query/#propertypaths
+[http://www.w3.org/TR/sparql11-query/#propertypaths](http://www.w3.org/TR/sparql11-query/#propertypaths)
 
 In SPARQL the syntax is as follows:
 
-+--------------------+-------------------------------------------------+
-|Syntax              | Matches                                         |
-+====================+=================================================+
-|iri                 | An IRI. A path of length one.                   |
-+--------------------+-------------------------------------------------+
-|^elt                | Inverse path (object to subject).               |
-+--------------------+-------------------------------------------------+
-|elt1 / elt2         | A sequence path of elt1 followed by elt2.       |
-+--------------------+-------------------------------------------------+
-|elt1 | elt2         | A alternative path of elt1 or elt2              |
-|                    | (all possibilities are tried).                  |
-+--------------------+-------------------------------------------------+
-|elt*                | A path that connects the subject and object     |
-|                    | of the path by zero or more matches of elt.     |
-+--------------------+-------------------------------------------------+
-|elt+                | A path that connects the subject and object     |
-|                    | of the path by one or more matches of elt.      |
-+--------------------+-------------------------------------------------+
-|elt?                | A path that connects the subject and object     |
-|                    | of the path by zero or one matches of elt.      |
-+--------------------+-------------------------------------------------+
-|!iri or             | Negated property set. An IRI which is not one of|
-|!(iri\ :sub:`1`\ \| | iri\ :sub:`1`...iri\ :sub:`n`.                  |
-|... \|iri\ :sub:`n`)| !iri is short for !(iri).                       |
-+--------------------+-------------------------------------------------+
-|!^iri or            | Negated property set where the excluded matches |
-|!(^iri\ :sub:`1`\ \|| are based on reversed path. That is, not one of |
-|...\|^iri\ :sub:`n`)| iri\ :sub:`1`...iri\ :sub:`n` as reverse paths. |
-|                    | !^iri is short for !(^iri).                     |
-+--------------------+-------------------------------------------------+
-|!(iri\ :sub:`1`\ \| | A combination of forward and reverse            |
-|...\|iri\ :sub:`j`\ | properties in a negated property set.           |
-|\|^iri\ :sub:`j+1`\ |                                                 |
-|\|... \|^iri\       |                                                 |
-|:sub:`n`)|          |                                                 |
-+--------------------+-------------------------------------------------+
-|(elt)               | A group path elt, brackets control precedence.  |
-+--------------------+-------------------------------------------------+
+| Syntax              | Matches                                                                 |
+|---------------------|-------------------------------------------------------------------------|
+| `iri`               | An IRI. A path of length one.                                           |
+| `^elt`              | Inverse path (object to subject).                                       |
+| `elt1 / elt2`       | A sequence path of `elt1` followed by `elt2`.                           |
+| `elt1 \| elt2`      | An alternative path of `elt1` or `elt2` (all possibilities are tried).  |
+| `elt*`              | A path that connects subject and object by zero or more matches of `elt`.|
+| `elt+`              | A path that connects subject and object by one or more matches of `elt`.|
+| `elt?`              | A path that connects subject and object by zero or one matches of `elt`.|
+| `!iri` or <br> `!(iri1 \| ... \| irin)` | Negated property set. An IRI not among `iri1` to `irin`. <br> `!iri` is short for `!(iri)`. |
+| `!^iri` or <br> `!(^iri1 \| ... \| ^irin)` | Negated reverse property set. Excludes `^iri1` to `^irin` as reverse paths. <br> `!^iri` is short for `!(^iri)`. |
+| `!(iri1 \| ... \| irij \| ^irij+1 \| ... \| ^irin)` | A combination of forward and reverse properties in a negated property set. |
+| `(elt)`             | A grouped path `elt`, where parentheses control precedence.             |
 
 This module is used internally by the SPARQL engine, but the property paths
 can also be used to query RDFLib Graphs directly.
@@ -52,6 +25,7 @@ can also be used to query RDFLib Graphs directly.
 Where possible the SPARQL syntax is mapped to Python operators, and property
 path objects can be constructed from existing URIRefs.
 
+```python
 >>> from rdflib import Graph, Namespace
 >>> from rdflib.namespace import FOAF
 
@@ -64,16 +38,22 @@ Path(http://xmlns.com/foaf/0.1/knows / http://xmlns.com/foaf/0.1/name)
 >>> FOAF.name|FOAF.givenName
 Path(http://xmlns.com/foaf/0.1/name | http://xmlns.com/foaf/0.1/givenName)
 
+```
+
 Modifiers (?, \*, +) are done using \* (the multiplication operator) and
 the strings '\*', '?', '+', also defined as constants in this file.
 
+```python
 >>> FOAF.knows*OneOrMore
 Path(http://xmlns.com/foaf/0.1/knows+)
+
+```
 
 The path objects can also be used with the normal graph methods.
 
 First some example data:
 
+```python
 >>> g=Graph()
 
 >>> g=g.parse(data='''
@@ -90,19 +70,28 @@ First some example data:
 
 >>> e = Namespace('ex:')
 
+```
+
 Graph contains:
 
+```python
 >>> (e.a, e.p1/e.p2, e.e) in g
 True
 
+```
+
 Graph generator functions, triples, subjects, objects, etc. :
 
+```python
 >>> list(g.objects(e.c, (e.p3*OneOrMore)/e.p2)) # doctest: +NORMALIZE_WHITESPACE
 [rdflib.term.URIRef('ex:j'), rdflib.term.URIRef('ex:g'),
     rdflib.term.URIRef('ex:f')]
 
+```
+
 A more complete set of tests:
 
+```python
 >>> list(eval_path(g, (None, e.p1/e.p2, None)))==[(e.a, e.e)]
 True
 >>> list(eval_path(g, (e.a, e.p1|e.p2, None)))==[(e.a,e.c), (e.a,e.f)]
@@ -168,8 +157,11 @@ True
 >>> list(eval_path(g, (e.c, (e.p2|e.p3)*ZeroOrMore, e.j)))
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:j'))]
 
+```
+
 No vars specified:
 
+```python
 >>> sorted(list(eval_path(g, (None, e.p3*OneOrMore, None)))) #doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:g')),
@@ -178,6 +170,7 @@ No vars specified:
  (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:h')),
  (rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a'))]
 
+```
 """
 
 from __future__ import annotations
@@ -185,25 +178,22 @@ from __future__ import annotations
 import warnings
 from abc import ABC, abstractmethod
 from functools import total_ordering
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Generator,
-    Iterator,
-    List,
-    Optional,
-    Set,
-    Tuple,
-    Union,
-)
+from typing import TYPE_CHECKING, Any
 
 from rdflib.term import Node, URIRef
 
 if TYPE_CHECKING:
+    from collections.abc import Callable, Generator, Iterator
+
+    from typing_extensions import TypeAlias
+
     from rdflib._type_checking import _MulPathMod
     from rdflib.graph import Graph, _ObjectType, _PredicateType, _SubjectType
     from rdflib.namespace import NamespaceManager
+
+    SubjectType: TypeAlias = _SubjectType
+    PredicateType: TypeAlias = _PredicateType
+    ObjectType: TypeAlias = _ObjectType
 
 
 # property paths
@@ -213,9 +203,7 @@ OneOrMore = "+"
 ZeroOrOne = "?"
 
 
-def _n3(
-    arg: Union[URIRef, Path], namespace_manager: Optional[NamespaceManager] = None
-) -> str:
+def _n3(arg: URIRef | Path, namespace_manager: NamespaceManager | None = None) -> str:
     if isinstance(arg, (SequencePath, AlternativePath)) and len(arg.args) > 1:
         return "(%s)" % arg.n3(namespace_manager)
     return arg.n3(namespace_manager)
@@ -223,22 +211,24 @@ def _n3(
 
 @total_ordering
 class Path(ABC):
-    __or__: Callable[[Path, Union[URIRef, Path]], AlternativePath]
+    """Base class for all property paths."""
+
+    __or__: Callable[[Path, URIRef | Path], AlternativePath]
     __invert__: Callable[[Path], InvPath]
     __neg__: Callable[[Path], NegatedPath]
-    __truediv__: Callable[[Path, Union[URIRef, Path]], SequencePath]
+    __truediv__: Callable[[Path, URIRef | Path], SequencePath]
     __mul__: Callable[[Path, str], MulPath]
 
     @abstractmethod
     def eval(
         self,
         graph: Graph,
-        subj: Optional[_SubjectType] = None,
-        obj: Optional[_ObjectType] = None,
-    ) -> Iterator[Tuple[_SubjectType, _ObjectType]]: ...
+        subj: SubjectType | None = None,
+        obj: ObjectType | None = None,
+    ) -> Iterator[tuple[SubjectType, ObjectType]]: ...
 
     @abstractmethod
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str: ...
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str: ...
 
     def __hash__(self):
         return hash(repr(self))
@@ -255,28 +245,28 @@ class Path(ABC):
 
 
 class InvPath(Path):
-    def __init__(self, arg: Union[Path, URIRef]):
+    def __init__(self, arg: Path | URIRef):
         self.arg = arg
 
     def eval(
         self,
         graph: Graph,
-        subj: Optional[_SubjectType] = None,
-        obj: Optional[_ObjectType] = None,
-    ) -> Generator[Tuple[_ObjectType, _SubjectType], None, None]:
+        subj: SubjectType | None = None,
+        obj: ObjectType | None = None,
+    ) -> Generator[tuple[ObjectType, SubjectType], None, None]:
         for s, o in eval_path(graph, (obj, self.arg, subj)):
             yield o, s
 
     def __repr__(self) -> str:
         return "Path(~%s)" % (self.arg,)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         return "^%s" % _n3(self.arg, namespace_manager)
 
 
 class SequencePath(Path):
-    def __init__(self, *args: Union[Path, URIRef]):
-        self.args: List[Union[Path, URIRef]] = []
+    def __init__(self, *args: Path | URIRef):
+        self.args: list[Path | URIRef] = []
         for a in args:
             if isinstance(a, SequencePath):
                 self.args += a.args
@@ -286,14 +276,14 @@ class SequencePath(Path):
     def eval(
         self,
         graph: Graph,
-        subj: Optional[_SubjectType] = None,
-        obj: Optional[_ObjectType] = None,
-    ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
+        subj: SubjectType | None = None,
+        obj: ObjectType | None = None,
+    ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
         def _eval_seq(
-            paths: List[Union[Path, URIRef]],
-            subj: Optional[_SubjectType],
-            obj: Optional[_ObjectType],
-        ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
+            paths: list[Path | URIRef],
+            subj: SubjectType | None,
+            obj: ObjectType | None,
+        ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
             if paths[1:]:
                 for s, o in eval_path(graph, (subj, paths[0], None)):
                     for r in _eval_seq(paths[1:], o, obj):
@@ -304,10 +294,10 @@ class SequencePath(Path):
                     yield s, o
 
         def _eval_seq_bw(
-            paths: List[Union[Path, URIRef]],
-            subj: Optional[_SubjectType],
-            obj: _ObjectType,
-        ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
+            paths: list[Path | URIRef],
+            subj: SubjectType | None,
+            obj: ObjectType,
+        ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
             if paths[:-1]:
                 for s, o in eval_path(graph, (None, paths[-1], obj)):
                     for r in _eval_seq(paths[:-1], subj, s):
@@ -327,13 +317,13 @@ class SequencePath(Path):
     def __repr__(self) -> str:
         return "Path(%s)" % " / ".join(str(x) for x in self.args)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         return "/".join(_n3(a, namespace_manager) for a in self.args)
 
 
 class AlternativePath(Path):
-    def __init__(self, *args: Union[Path, URIRef]):
-        self.args: List[Union[Path, URIRef]] = []
+    def __init__(self, *args: Path | URIRef):
+        self.args: list[Path | URIRef] = []
         for a in args:
             if isinstance(a, AlternativePath):
                 self.args += a.args
@@ -343,9 +333,9 @@ class AlternativePath(Path):
     def eval(
         self,
         graph: Graph,
-        subj: Optional[_SubjectType] = None,
-        obj: Optional[_ObjectType] = None,
-    ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
+        subj: SubjectType | None = None,
+        obj: ObjectType | None = None,
+    ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
         for x in self.args:
             for y in eval_path(graph, (subj, x, obj)):
                 yield y
@@ -353,12 +343,12 @@ class AlternativePath(Path):
     def __repr__(self) -> str:
         return "Path(%s)" % " | ".join(str(x) for x in self.args)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         return "|".join(_n3(a, namespace_manager) for a in self.args)
 
 
 class MulPath(Path):
-    def __init__(self, path: Union[Path, URIRef], mod: _MulPathMod):
+    def __init__(self, path: Path | URIRef, mod: _MulPathMod):
         self.path = path
         self.mod = mod
 
@@ -377,10 +367,10 @@ class MulPath(Path):
     def eval(
         self,
         graph: Graph,
-        subj: Optional[_SubjectType] = None,
-        obj: Optional[_ObjectType] = None,
+        subj: SubjectType | None = None,
+        obj: ObjectType | None = None,
         first: bool = True,
-    ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
+    ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
         if self.zero and first:
             if subj and obj:
                 if subj == obj:
@@ -391,45 +381,39 @@ class MulPath(Path):
                 yield obj, obj
 
         def _fwd(
-            subj: Optional[_SubjectType] = None,
-            obj: Optional[_ObjectType] = None,
-            seen: Optional[Set[_SubjectType]] = None,
-        ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
-            # type error: Item "None" of "Optional[Set[Node]]" has no attribute "add"
-            # type error: Argument 1 to "add" of "set" has incompatible type "Optional[Node]"; expected "Node"
-            seen.add(subj)  # type: ignore[union-attr, arg-type]
+            subj: SubjectType,
+            obj: ObjectType | None,
+            seen: set[SubjectType],
+        ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
+            seen.add(subj)
 
             for s, o in eval_path(graph, (subj, self.path, None)):
                 if not obj or o == obj:
                     yield s, o
                 if self.more:
-                    # type error: Unsupported right operand type for in ("Optional[Set[Node]]")
-                    if o in seen:  # type: ignore[operator]
+                    if o in seen:
                         continue
                     for s2, o2 in _fwd(o, obj, seen):
                         yield s, o2
 
         def _bwd(
-            subj: Optional[_SubjectType] = None,
-            obj: Optional[_ObjectType] = None,
-            seen: Optional[Set[_ObjectType]] = None,
-        ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
-            # type error: Item "None" of "Optional[Set[Node]]" has no attribute "add"
-            # type error: Argument 1 to "add" of "set" has incompatible type "Optional[Node]"; expected "Node"
-            seen.add(obj)  # type: ignore[union-attr, arg-type]
+            subj: SubjectType | None,
+            obj: ObjectType,
+            seen: set[ObjectType],
+        ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
+            seen.add(obj)
 
             for s, o in eval_path(graph, (None, self.path, obj)):
                 if not subj or subj == s:
                     yield s, o
                 if self.more:
-                    # type error: Unsupported right operand type for in ("Optional[Set[Node]]")
-                    if s in seen:  # type: ignore[operator]
+                    if s in seen:
                         continue
 
                     for s2, o2 in _bwd(None, s, seen):
                         yield s2, o
 
-        def _all_fwd_paths() -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
+        def _all_fwd_paths() -> Generator[tuple[SubjectType, ObjectType], None, None]:
             if self.zero:
                 seen1 = set()
                 # According to the spec, ALL nodes are possible solutions
@@ -458,12 +442,12 @@ class MulPath(Path):
                             yield s1, o1
 
         done = set()  # the spec does, by defn, not allow duplicates
-        if subj:
+        if subj is not None:
             for x in _fwd(subj, obj, set()):
                 if x not in done:
                     done.add(x)
                     yield x
-        elif obj:
+        elif obj is not None:
             for x in _bwd(subj, obj, set()):
                 if x not in done:
                     done.add(x)
@@ -477,13 +461,13 @@ class MulPath(Path):
     def __repr__(self) -> str:
         return "Path(%s%s)" % (self.path, self.mod)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         return "%s%s" % (_n3(self.path, namespace_manager), self.mod)
 
 
 class NegatedPath(Path):
-    def __init__(self, arg: Union[AlternativePath, InvPath, URIRef]):
-        self.args: List[Union[URIRef, Path]]
+    def __init__(self, arg: AlternativePath | InvPath | URIRef):
+        self.args: list[URIRef | Path]
         if isinstance(arg, (URIRef, InvPath)):
             self.args = [arg]
         elif isinstance(arg, AlternativePath):
@@ -511,7 +495,7 @@ class NegatedPath(Path):
     def __repr__(self) -> str:
         return "Path(! %s)" % ",".join(str(x) for x in self.args)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         return "!(%s)" % ("|".join(_n3(arg, namespace_manager) for arg in self.args))
 
 
@@ -519,7 +503,7 @@ class PathList(list):
     pass
 
 
-def path_alternative(self: Union[URIRef, Path], other: Union[URIRef, Path]):
+def path_alternative(self: URIRef | Path, other: URIRef | Path):
     """
     alternative path
     """
@@ -528,7 +512,7 @@ def path_alternative(self: Union[URIRef, Path], other: Union[URIRef, Path]):
     return AlternativePath(self, other)
 
 
-def path_sequence(self: Union[URIRef, Path], other: Union[URIRef, Path]):
+def path_sequence(self: URIRef | Path, other: URIRef | Path):
     """
     sequence path
     """
@@ -539,12 +523,12 @@ def path_sequence(self: Union[URIRef, Path], other: Union[URIRef, Path]):
 
 def evalPath(  # noqa: N802
     graph: Graph,
-    t: Tuple[
-        Optional[_SubjectType],
-        Union[None, Path, _PredicateType],
-        Optional[_ObjectType],
+    t: tuple[
+        SubjectType | None,
+        Path | PredicateType | None,
+        ObjectType | None,
     ],
-) -> Iterator[Tuple[_SubjectType, _ObjectType]]:
+) -> Iterator[tuple[SubjectType, ObjectType]]:
     warnings.warn(
         DeprecationWarning(
             "rdflib.path.evalPath() is deprecated, use the (snake-cased) eval_path(). "
@@ -557,30 +541,30 @@ def evalPath(  # noqa: N802
 
 def eval_path(
     graph: Graph,
-    t: Tuple[
-        Optional[_SubjectType],
-        Union[None, Path, _PredicateType],
-        Optional[_ObjectType],
+    t: tuple[
+        SubjectType | None,
+        Path | PredicateType | None,
+        ObjectType | None,
     ],
-) -> Iterator[Tuple[_SubjectType, _ObjectType]]:
+) -> Iterator[tuple[SubjectType, ObjectType]]:
     return ((s, o) for s, p, o in graph.triples(t))
 
 
-def mul_path(p: Union[URIRef, Path], mul: _MulPathMod) -> MulPath:
+def mul_path(p: URIRef | Path, mul: _MulPathMod) -> MulPath:
     """
     cardinality path
     """
     return MulPath(p, mul)
 
 
-def inv_path(p: Union[URIRef, Path]) -> InvPath:
+def inv_path(p: URIRef | Path) -> InvPath:
     """
     inverse path
     """
     return InvPath(p)
 
 
-def neg_path(p: Union[URIRef, AlternativePath, InvPath]) -> NegatedPath:
+def neg_path(p: URIRef | AlternativePath | InvPath) -> NegatedPath:
     """
     negated path
     """
@@ -605,7 +589,7 @@ else:
     Path.__invert__ = inv_path
     # type error: Incompatible types in assignment (expression has type "Callable[[Union[URIRef, AlternativePath, InvPath]], NegatedPath]", variable has type "Callable[[Path], NegatedPath]")
     Path.__neg__ = neg_path  # type: ignore[assignment]
-    # type error: Incompatible types in assignment (expression has type "Callable[[Union[URIRef, Path], Literal['*', '+', '?']], MulPath]", variable has type "Callable[[Path, str], MulPath]")
+    # type error: Incompatible types in assignment (expression has type "Callable[[URIRef|Path, Literal['*', '+', '?']], MulPath]", variable has type "Callable[[Path, str], MulPath]")
     Path.__mul__ = mul_path  # type: ignore[assignment]
     Path.__or__ = path_alternative
     Path.__truediv__ = path_sequence

@@ -1,0 +1,180 @@
+site_name: RDFLib
+site_description: Python library for working with RDF, a simple yet powerful language for representing information.
+site_author: RDFLib Team
+site_url: https://rdflib.readthedocs.org
+repo_name: RDFLib/rdflib
+repo_url: https://github.com/RDFLib/rdflib
+edit_uri: "edit/main/docs/"
+copyright: Copyright &copy; 2002 - 2025, RDFLib Team.
+
+# poetry run mkdocs serve -a localhost:8000
+
+nav:
+  - Usage:
+    - Overview: index.md
+    - Getting started with RDFLib: gettingstarted.md
+    - Loading and saving RDF: intro_to_parsing.md
+    - Creating RDF triples: intro_to_creating_rdf.md
+    - Navigating Graphs: intro_to_graphs.md
+    - Querying with SPARQL: intro_to_sparql.md
+    - Utilities functions: utilities.md
+
+    - In depth:
+      - Plugins: plugins.md
+      - RDF terms: rdf_terms.md
+      - Namespaces and Bindings: namespaces_and_bindings.md
+      - Persistence: persistence.md
+      - Merging graphs: merging.md
+      - Security considerations: security_considerations.md
+
+    - Changes:
+      - Changelog: changelog.md
+      - Upgrading v7 to 8: upgrade7to8.md
+      - Upgrading v6 to 7: upgrade6to7.md
+      - Upgrading v5 to 6: upgrade5to6.md
+      - Upgrading v4 to 5: upgrade4to5.md
+
+  - API Reference:
+    - Examples: apidocs/examples.md
+    - Graph: apidocs/rdflib.graph.md
+    - Term: apidocs/rdflib.term.md
+    - Namespace: apidocs/rdflib.namespace.md
+    - Tools: apidocs/rdflib.tools.md
+    - Extras: apidocs/rdflib.extras.md
+    - Container: apidocs/rdflib.container.md
+    - Collection: apidocs/rdflib.collection.md
+    - Paths: apidocs/rdflib.paths.md
+    - Plugin: apidocs/rdflib.plugin.md
+    - Util: apidocs/rdflib.util.md
+    - Plugins:
+      - Parsers: apidocs/rdflib.plugins.parsers.md
+      - Serializers: apidocs/rdflib.plugins.serializers.md
+      - Stores: apidocs/rdflib.plugins.stores.md
+      - SPARQL: apidocs/rdflib.plugins.sparql.md
+
+  - Development:
+    - Contributing guide: CONTRIBUTING.md
+    - Developers guide: developers.md
+    - Documentation guide: docs.md
+    - Type Hints: type_hints.md
+    - Persisting Notation 3 Terms: persisting_n3_terms.md
+    - Code of Conduct: CODE_OF_CONDUCT.md
+    - Decision Records: decisions.md
+
+
+theme:
+  name: "material"
+  favicon: _static/RDFlib.png
+  logo: _static/RDFlib.png
+  language: en
+  # Choose color: https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/#primary-color
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      primary: blue grey
+      scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      primary: indigo
+      scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.indexes
+    - navigation.sections
+    - navigation.tabs
+    - navigation.top
+    - navigation.tracking
+    - navigation.footer
+    - content.code.copy
+    - content.code.annotate
+    - content.code.select
+    - content.tabs.link # Group tabs switch
+    - content.action.edit
+    - content.action.view
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    - content.tooltips
+    # - header.autohide
+    # - navigation.tabs.sticky
+    # - navigation.expand
+    # - navigation.instant
+
+
+plugins:
+- search
+- autorefs
+- include-markdown
+- gen-files:
+    scripts:
+      - docs/gen_ref_pages.py
+- mkdocstrings:
+    default_handler: python
+    handlers:
+      python:
+        # https://mkdocstrings.github.io/python/reference/api/#mkdocstrings_handlers.python.PythonInputOptions
+        options:
+          docstring_style: google
+          docstring_options:
+            ignore_init_summary: true
+          docstring_section_style: list
+          filters: ["!^_[^_]"]  # Exclude names starting with a single underscore
+          heading_level: 1
+          inherited_members: false  # Disable inherited members to avoid duplicates
+          merge_init_into_class: true
+          parameter_headings: true
+          separate_signature: true
+          signature_crossrefs: true
+          summary: true
+          show_bases: true
+          show_root_heading: true
+          show_root_full_path: false
+          show_signature_annotations: true
+          show_source: true
+          show_symbol_type_heading: true
+          show_symbol_type_toc: true
+          show_overloads: false
+          show_if_no_docstring: true # Showing when no docstring increases build time
+
+watch:
+  - rdflib
+  - docs
+
+
+# Supported admonititions: https://squidfunk.github.io/mkdocs-material/reference/admonitions/#supported-types
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.extra
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - attr_list
+  - smarty
+  - abbr
+  - pymdownx.snippets:
+      auto_append:
+        - docs/includes/abbreviations.md
+
+
+# extra_css:
+#   - _static/custom.css
+# extra_javascript:
+#   - _static/fontawesome.min.js
+
+extra:
+  social:
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/rdflib
+    - icon: fontawesome/brands/github
+      link: https://github.com/RDFLib
