@@ -14,11 +14,11 @@ from typing import (
     Any,
     Dict,
     List,
+    NamedTuple,
     Optional,
     Set,
     Tuple,
     Union,
-    NamedTuple,
 )
 from urllib.parse import urljoin, urlsplit
 
@@ -705,7 +705,9 @@ class Term(NamedTuple):
     #: See https://www.w3.org/TR/json-ld11/#property-based-data-indexing
     #: Ideally this wouldn't be called 'index' as it overrides the tuple's builtin index() method
     #: Hence the pyright ignore comment
-    index: str | Defined | None = None  # pyright: ignore[reportIncompatibleMethodOverride]
+    index: str | Defined | None = (
+        None  # pyright: ignore[reportIncompatibleMethodOverride]
+    )
     #: The language to be used for values of this term
     language: str | Defined | None = UNDEF
     #: Indicates that this term is a reverse property, so subject and object are swapped.
