@@ -12,9 +12,7 @@ from collections.abc import Collection, Generator
 from typing import (
     TYPE_CHECKING,
     Any,
-    Collection,
     Dict,
-    Generator,
     List,
     Optional,
     Set,
