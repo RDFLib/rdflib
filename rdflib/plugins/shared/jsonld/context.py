@@ -8,7 +8,7 @@ Implementation of the JSON-LD Context structure. See:
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/context.py
 from __future__ import annotations
 
-from collections import namedtuple
+from collections.abc import Collection, Generator
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -723,6 +723,3 @@ class Term(NamedTuple):
     #: If true, marks the term as protected, meaning it cannot be overridden by a subcontext.
     #: See https://www.w3.org/TR/json-ld11/#protected-term-definitions
     protected: bool = False
-
-
-Context.terms
