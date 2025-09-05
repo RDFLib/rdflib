@@ -97,7 +97,6 @@ EXTRA_MARKERS: dict[tuple[str | None, str], Collection[pytest.MarkDecorator | st
     ("rdflib/__init__.py", "rdflib"): [pytest.mark.webtest],
     ("rdflib/term.py", "rdflib.term.Literal.normalize"): [pytest.mark.webtest],
     ("rdflib/extras/infixowl.py", "rdflib.extras.infixowl"): [pytest.mark.webtest],
-    ("rdflib/plugins/stores/sparqlstore.py", "SPARQLStore"): [pytest.mark.webtest],
 }
 
 
