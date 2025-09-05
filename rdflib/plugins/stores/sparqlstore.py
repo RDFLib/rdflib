@@ -77,7 +77,7 @@ class SPARQLStore(SPARQLConnector, Store):
     ### Usage example
 
     ```python
-    >>> from rdflib import Dataset
+    >>> from rdflib import Dataset  # doctest: +SKIP
     >>> from rdflib.plugins.stores.sparqlstore import SPARQLStore
     >>>
     >>> g = Dataset(
