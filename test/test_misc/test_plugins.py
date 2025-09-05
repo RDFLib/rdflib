@@ -11,6 +11,8 @@ from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from typing import Any, cast
 
+import pytest
+
 import rdflib.plugin
 import rdflib.plugins.sparql
 import rdflib.plugins.sparql.evaluate
@@ -89,6 +91,7 @@ def ctx_cleaners() -> Generator[list[Callable[[], None]], None, None]:
 
 
 # Using no_cover as coverage freaks out and crashes because of what is happening here.
+@pytest.mark.webtest
 def test_sparqleval(tmp_path: Path, no_cover: None) -> None:
     with ExitStack() as stack:
         stack.enter_context(ctx_plugin(tmp_path, TEST_PLUGINS_DIR / "sparqleval"))
@@ -126,6 +129,7 @@ def test_sparqleval(tmp_path: Path, no_cover: None) -> None:
 
 
 # Using no_cover as coverage freaks out and crashes because of what is happening here.
+@pytest.mark.webtest
 def test_parser(tmp_path: Path, no_cover: None) -> None:
     with ExitStack() as stack:
         stack.enter_context(ctx_plugin(tmp_path, TEST_PLUGINS_DIR / "parser"))
