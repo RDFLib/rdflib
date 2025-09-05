@@ -31,6 +31,25 @@ def ctx_plugin(tmp_path: Path, plugin_src: Path) -> Generator[None, None, None]:
     base = tmp_path / f"{hash(plugin_src)}"
     pypath = (base / "pypath").absolute()
     plugpath = (base / "plugin").absolute()
+    wheel_cache = (base / "wheel_cache").absolute()
+    wheel_cache.mkdir(parents=True)
+    
+    # Create a local wheel cache with setuptools and wheel
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "pip",
+            "download",
+            "--no-deps",
+            "--dest",
+            f"{wheel_cache}",
+            "setuptools",
+            "wheel",
+        ],
+        check=True,
+    )
+    
     shutil.copytree(plugin_src, plugpath)
     logging.debug("Installing %s into %s", plugin_src, pypath)
     subprocess.run(
@@ -43,6 +62,8 @@ def ctx_plugin(tmp_path: Path, plugin_src: Path) -> Generator[None, None, None]:
             "--no-input",
             "--no-clean",
             "--no-index",
+            "--find-links",
+            f"{wheel_cache}",
             "--disable-pip-version-check",
             "--target",
             f"{pypath}",
