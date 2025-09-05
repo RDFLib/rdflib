@@ -77,18 +77,18 @@ class SPARQLStore(SPARQLConnector, Store):
     ### Usage example
 
     ```python
-    >>> from rdflib import Dataset  # doctest: +SKIP
+    >>> from rdflib import Dataset
     >>> from rdflib.plugins.stores.sparqlstore import SPARQLStore
     >>>
-    >>> g = Dataset(
+    >>> g = Dataset( # doctest: +SKIP
     ...    SPARQLStore("https://query.wikidata.org/sparql", returnFormat="xml"),
     ...    default_union=True
     ... )
     >>>
-    >>> res = g.query("SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 5")
+    >>> res = g.query("SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 5") # doctest: +SKIP
     >>>
     >>> # Iterate the results
-    >>> for row in res:
+    >>> for row in res: # doctest: +SKIP
     ...     pass  # but really you'd do something like: print(row)
     >>>
     >>> # Or serialize the results
