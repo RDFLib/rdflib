@@ -33,7 +33,7 @@ def ctx_plugin(tmp_path: Path, plugin_src: Path) -> Generator[None, None, None]:
     plugpath = (base / "plugin").absolute()
     wheel_cache = (base / "wheel_cache").absolute()
     wheel_cache.mkdir(parents=True)
-    
+
     # Create a local wheel cache with setuptools and wheel
     subprocess.run(
         [
@@ -49,7 +49,7 @@ def ctx_plugin(tmp_path: Path, plugin_src: Path) -> Generator[None, None, None]:
         ],
         check=True,
     )
-    
+
     shutil.copytree(plugin_src, plugpath)
     logging.debug("Installing %s into %s", plugin_src, pypath)
     subprocess.run(
