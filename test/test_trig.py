@@ -16,7 +16,7 @@ def test_empty():
 
 
 def test_repeat_triples():
-    g = rdflib.ConjunctiveGraph()
+    g = rdflib.Dataset()
     g.get_context("urn:a").add(
         (rdflib.URIRef("urn:1"), rdflib.URIRef("urn:2"), rdflib.URIRef("urn:3"))
     )
@@ -33,7 +33,7 @@ def test_repeat_triples():
 
 
 def test_same_subject():
-    g = rdflib.ConjunctiveGraph()
+    g = rdflib.Dataset()
     g.get_context("urn:a").add(
         (rdflib.URIRef("urn:1"), rdflib.URIRef("urn:p1"), rdflib.URIRef("urn:o1"))
     )
@@ -54,7 +54,7 @@ def test_same_subject():
 
 
 def test_remember_namespace():
-    g = rdflib.ConjunctiveGraph()
+    g = rdflib.Dataset()
     g.add(TRIPLE + (rdflib.URIRef("http://example.com/graph1"),))
     # In 4.2.0 the first serialization would fail to include the
     # prefix for the graph but later serialize() calls would work.
@@ -65,14 +65,14 @@ def test_remember_namespace():
 
 
 def test_graph_qname_syntax():
-    g = rdflib.ConjunctiveGraph()
+    g = rdflib.Dataset()
     g.add(TRIPLE + (rdflib.URIRef("http://example.com/graph1"),))
     out = g.serialize(format="trig", encoding="latin-1")
     assert b"ns1:graph1 {" not in out
 
 
 def test_graph_uri_syntax():
-    g = rdflib.ConjunctiveGraph()
+    g = rdflib.Dataset()
     # getQName will not abbreviate this, so it should serialize as
     # a '<...>' term.
     g.add(TRIPLE + (rdflib.URIRef("http://example.com/foo."),))
@@ -81,7 +81,7 @@ def test_graph_uri_syntax():
 
 
 def test_blank_graph_identifier():
-    g = rdflib.ConjunctiveGraph()
+    g = rdflib.Dataset()
     g.add(TRIPLE + (rdflib.BNode(),))
     out = g.serialize(format="trig", encoding="latin-1")
     graph_label_line = out.splitlines()[-4]
@@ -94,7 +94,7 @@ def test_graph_parsing():
     data = """
 <http://example.com/thing#thing_a> <http://example.com/knows> <http://example.com/thing#thing_b> .
 """
-    g = rdflib.ConjunctiveGraph()
+    g = rdflib.Dataset()
     g.parse(data=data, format="trig")
     assert len(list(g.contexts())) == 1
 
@@ -104,7 +104,7 @@ def test_graph_parsing():
 
 { <http://example.com/thing#thing_c> <http://example.com/knows> <http://example.com/thing#thing_d> . }
 """
-    g = rdflib.ConjunctiveGraph()
+    g = rdflib.Dataset()
     g.parse(data=data, format="trig")
     assert len(list(g.contexts())) == 1
 
@@ -118,7 +118,7 @@ def test_graph_parsing():
     <http://example.com/thing/thing_e> <http://example.com/knows> <http://example.com/thing#thing_f> .
 }
 """
-    g = rdflib.ConjunctiveGraph()
+    g = rdflib.Dataset()
     g.parse(data=data, format="trig")
     assert len(list(g.contexts())) == 2
 
@@ -133,7 +133,7 @@ def test_round_trips():
     <http://example.com/thing/thing_e> <http://example.com/knows> <http://example.com/thing#thing_f> .
 }
 """
-    g = rdflib.ConjunctiveGraph()
+    g = rdflib.Dataset()
     for i in range(5):
         g.parse(data=data, format="trig")
         data = g.serialize(format="trig")
@@ -154,7 +154,7 @@ def test_default_graph_serializes_without_name():
 
 { <http://example.com/thing#thing_c> <http://example.com/knows> <http://example.com/thing#thing_d> . }
 """
-    g = rdflib.ConjunctiveGraph()
+    g = rdflib.Dataset()
     g.parse(data=data, format="trig")
     data = g.serialize(format="trig", encoding="latin-1")
 
@@ -174,7 +174,7 @@ def test_prefixes():
     }
     """
 
-    cg = rdflib.ConjunctiveGraph()
+    cg = rdflib.Dataset()
     cg.parse(data=data, format="trig")
     data = cg.serialize(format="trig", encoding="latin-1")
 
