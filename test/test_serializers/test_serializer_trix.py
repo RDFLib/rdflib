@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import Dataset, Graph
 from rdflib.term import Literal, URIRef
 
 
@@ -19,7 +19,7 @@ def test_serialize():
     g2 = Graph(identifier=s2)
     g2.add((r2, label, Literal("label 3")))
 
-    g = ConjunctiveGraph()
+    g = Dataset()
     for s, p, o in g1.triples((None, None, None)):
         g.addN([(s, p, o, g1)])
     for s, p, o in g2.triples((None, None, None)):
@@ -28,14 +28,14 @@ def test_serialize():
     g.add((r3, label, Literal(4)))
 
     r = g.serialize(format="trix", encoding="utf-8")
-    g3 = ConjunctiveGraph()
+    g3 = Dataset()
 
     g3.parse(BytesIO(r), format="trix")
 
     for q in g3.quads((None, None, None)):
         # TODO: Fix once getGraph/getContext is in conjunctive graph
-        if isinstance(q[3].identifier, URIRef):
-            tg = Graph(store=g.store, identifier=q[3].identifier)
+        if isinstance(q[3], URIRef):
+            tg = Graph(store=g.store, identifier=q[3])
         else:
             # BNode, this is a bit ugly
             # we cannot match the bnode to the right graph automagically
@@ -74,7 +74,7 @@ def test_issue_250():
 
     """
 
-    graph = ConjunctiveGraph()
+    graph = Dataset()
     graph.bind(None, "http://defaultnamespace")
     sg = graph.serialize(format="trix")
     assert 'xmlns="http://defaultnamespace"' not in sg, sg
