@@ -1,50 +1,23 @@
 r"""
-
 This module implements the SPARQL 1.1 Property path operators, as
 defined in:
-
-http://www.w3.org/TR/sparql11-query/#propertypaths
+[http://www.w3.org/TR/sparql11-query/#propertypaths](http://www.w3.org/TR/sparql11-query/#propertypaths)
 
 In SPARQL the syntax is as follows:
 
-+--------------------+-------------------------------------------------+
-|Syntax              | Matches                                         |
-+====================+=================================================+
-|iri                 | An IRI. A path of length one.                   |
-+--------------------+-------------------------------------------------+
-|^elt                | Inverse path (object to subject).               |
-+--------------------+-------------------------------------------------+
-|elt1 / elt2         | A sequence path of elt1 followed by elt2.       |
-+--------------------+-------------------------------------------------+
-|elt1 | elt2         | A alternative path of elt1 or elt2              |
-|                    | (all possibilities are tried).                  |
-+--------------------+-------------------------------------------------+
-|elt*                | A path that connects the subject and object     |
-|                    | of the path by zero or more matches of elt.     |
-+--------------------+-------------------------------------------------+
-|elt+                | A path that connects the subject and object     |
-|                    | of the path by one or more matches of elt.      |
-+--------------------+-------------------------------------------------+
-|elt?                | A path that connects the subject and object     |
-|                    | of the path by zero or one matches of elt.      |
-+--------------------+-------------------------------------------------+
-|!iri or             | Negated property set. An IRI which is not one of|
-|!(iri\ :sub:`1`\ \| | iri\ :sub:`1`...iri\ :sub:`n`.                  |
-|... \|iri\ :sub:`n`)| !iri is short for !(iri).                       |
-+--------------------+-------------------------------------------------+
-|!^iri or            | Negated property set where the excluded matches |
-|!(^iri\ :sub:`1`\ \|| are based on reversed path. That is, not one of |
-|...\|^iri\ :sub:`n`)| iri\ :sub:`1`...iri\ :sub:`n` as reverse paths. |
-|                    | !^iri is short for !(^iri).                     |
-+--------------------+-------------------------------------------------+
-|!(iri\ :sub:`1`\ \| | A combination of forward and reverse            |
-|...\|iri\ :sub:`j`\ | properties in a negated property set.           |
-|\|^iri\ :sub:`j+1`\ |                                                 |
-|\|... \|^iri\       |                                                 |
-|:sub:`n`)|          |                                                 |
-+--------------------+-------------------------------------------------+
-|(elt)               | A group path elt, brackets control precedence.  |
-+--------------------+-------------------------------------------------+
+| Syntax              | Matches                                                                 |
+|---------------------|-------------------------------------------------------------------------|
+| `iri`               | An IRI. A path of length one.                                           |
+| `^elt`              | Inverse path (object to subject).                                       |
+| `elt1 / elt2`       | A sequence path of `elt1` followed by `elt2`.                           |
+| `elt1 \| elt2`      | An alternative path of `elt1` or `elt2` (all possibilities are tried).  |
+| `elt*`              | A path that connects subject and object by zero or more matches of `elt`.|
+| `elt+`              | A path that connects subject and object by one or more matches of `elt`.|
+| `elt?`              | A path that connects subject and object by zero or one matches of `elt`.|
+| `!iri` or <br> `!(iri1 \| ... \| irin)` | Negated property set. An IRI not among `iri1` to `irin`. <br> `!iri` is short for `!(iri)`. |
+| `!^iri` or <br> `!(^iri1 \| ... \| ^irin)` | Negated reverse property set. Excludes `^iri1` to `^irin` as reverse paths. <br> `!^iri` is short for `!(^iri)`. |
+| `!(iri1 \| ... \| irij \| ^irij+1 \| ... \| ^irin)` | A combination of forward and reverse properties in a negated property set. |
+| `(elt)`             | A grouped path `elt`, where parentheses control precedence.             |
 
 This module is used internally by the SPARQL engine, but the property paths
 can also be used to query RDFLib Graphs directly.
@@ -52,6 +25,7 @@ can also be used to query RDFLib Graphs directly.
 Where possible the SPARQL syntax is mapped to Python operators, and property
 path objects can be constructed from existing URIRefs.
 
+```python
 >>> from rdflib import Graph, Namespace
 >>> from rdflib.namespace import FOAF
 
@@ -64,16 +38,22 @@ Path(http://xmlns.com/foaf/0.1/knows / http://xmlns.com/foaf/0.1/name)
 >>> FOAF.name|FOAF.givenName
 Path(http://xmlns.com/foaf/0.1/name | http://xmlns.com/foaf/0.1/givenName)
 
+```
+
 Modifiers (?, \*, +) are done using \* (the multiplication operator) and
 the strings '\*', '?', '+', also defined as constants in this file.
 
+```python
 >>> FOAF.knows*OneOrMore
 Path(http://xmlns.com/foaf/0.1/knows+)
+
+```
 
 The path objects can also be used with the normal graph methods.
 
 First some example data:
 
+```python
 >>> g=Graph()
 
 >>> g=g.parse(data='''
@@ -90,19 +70,28 @@ First some example data:
 
 >>> e = Namespace('ex:')
 
+```
+
 Graph contains:
 
+```python
 >>> (e.a, e.p1/e.p2, e.e) in g
 True
 
+```
+
 Graph generator functions, triples, subjects, objects, etc. :
 
+```python
 >>> list(g.objects(e.c, (e.p3*OneOrMore)/e.p2)) # doctest: +NORMALIZE_WHITESPACE
 [rdflib.term.URIRef('ex:j'), rdflib.term.URIRef('ex:g'),
     rdflib.term.URIRef('ex:f')]
 
+```
+
 A more complete set of tests:
 
+```python
 >>> list(eval_path(g, (None, e.p1/e.p2, None)))==[(e.a, e.e)]
 True
 >>> list(eval_path(g, (e.a, e.p1|e.p2, None)))==[(e.a,e.c), (e.a,e.f)]
@@ -168,8 +157,11 @@ True
 >>> list(eval_path(g, (e.c, (e.p2|e.p3)*ZeroOrMore, e.j)))
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:j'))]
 
+```
+
 No vars specified:
 
+```python
 >>> sorted(list(eval_path(g, (None, e.p3*OneOrMore, None)))) #doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:g')),
@@ -178,6 +170,7 @@ No vars specified:
  (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:h')),
  (rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a'))]
 
+```
 """
 
 from __future__ import annotations
@@ -218,6 +211,8 @@ def _n3(arg: URIRef | Path, namespace_manager: NamespaceManager | None = None) -
 
 @total_ordering
 class Path(ABC):
+    """Base class for all property paths."""
+
     __or__: Callable[[Path, URIRef | Path], AlternativePath]
     __invert__: Callable[[Path], InvPath]
     __neg__: Callable[[Path], NegatedPath]

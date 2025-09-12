@@ -62,7 +62,7 @@ def test_checker(
 ) -> None:
     """
     Given the action, the checker raises the expected exception, or does
-    not raise anything if ``expected_exception`` is None.
+    not raise anything if `expected_exception` is None.
     """
     with ExitStack() as xstack:
         if expected_exception is not None:

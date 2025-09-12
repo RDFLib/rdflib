@@ -3,10 +3,10 @@ RDFLib Graphs (and Resources) can be "sliced" with [] syntax
 
 This is a short-hand for iterating over triples.
 
-Combined with SPARQL paths (see ``foafpaths.py``) - quite complex queries
+Combined with SPARQL paths (see `foafpaths.py`) - quite complex queries
 can be realised.
 
-See :meth:`rdflib.graph.Graph.__getitem__` for details
+See [`Graph.__getitem__`][rdflib.graph.Graph.__getitem__] for details
 """
 
 from pathlib import Path

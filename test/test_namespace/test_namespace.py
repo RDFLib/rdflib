@@ -232,7 +232,7 @@ class TestNamespacePrefix:
         # a property name within the FOAF namespace
         assert FOAF.givenName == URIRef("http://xmlns.com/foaf/0.1/givenName")
 
-        # namescape can be used as str
+        # namespace can be used as str
         assert FOAF.givenName.startswith(FOAF)
 
     def test_contains_method(self):

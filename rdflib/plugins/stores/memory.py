@@ -33,12 +33,11 @@ ANY: None = None
 
 
 class SimpleMemory(Store):
-    """\
-    A fast naive in memory implementation of a triple store.
+    """A fast naive in memory implementation of a triple store.
 
     This triple store uses nested dictionaries to store triples. Each
-    triple is stored in two such indices as follows spo[s][p][o] = 1 and
-    pos[p][o][s] = 1.
+    triple is stored in two such indices as follows `spo[s][p][o]` = 1 and
+    `pos[p][o][s]` = 1.
 
     Authors: Michel Pelletier, Daniel Krech, Stefan Niederhauser
     """
@@ -75,9 +74,7 @@ class SimpleMemory(Store):
         context: _ContextType,
         quoted: bool = False,
     ) -> None:
-        """\
-        Add a triple to the store of triples.
-        """
+        """Add a triple to the store of triples."""
         # add dictionary entries for spo[s][p][p] = 1 and pos[p][o][s]
         # = 1, creating the nested dictionaries where they do not yet
         # exits.
@@ -263,8 +260,7 @@ class SimpleMemory(Store):
 
 
 class Memory(Store):
-    """\
-    An in memory implementation of a triple store.
+    """An in memory implementation of a triple store.
 
     Same as SimpleMemory above, but is Context-aware, Graph-aware, and Formula-aware
     Authors: Ashley Sommer
@@ -313,9 +309,7 @@ class Memory(Store):
         context: _ContextType,
         quoted: bool = False,
     ) -> None:
-        """\
-        Add a triple to the store of triples.
-        """
+        """Add a triple to the store of triples."""
         # add dictionary entries for spo[s][p][p] = 1 and pos[p][o][s]
         # = 1, creating the nested dictionaries where they do not yet
         # exits.

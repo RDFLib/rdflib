@@ -1,7 +1,6 @@
 """
 This is an RDFLib store around Ivan Herman et al.'s SPARQL service wrapper.
 This was first done in layer-cake, and then ported to RDFLib
-
 """
 
 from __future__ import annotations
@@ -37,6 +36,7 @@ if TYPE_CHECKING:
         _TripleType,
         _ContextType,
         _QuadType,
+        _TripleChoiceType,
         _TriplePatternType,
         _SubjectType,
         _PredicateType,
@@ -45,6 +45,7 @@ if TYPE_CHECKING:
     )
     from rdflib.plugins.sparql.sparql import Query, Update
     from rdflib.query import Result, ResultRow
+    from .sparqlconnector import SUPPORTED_FORMATS, SUPPORTED_METHODS
 
 from .sparqlconnector import SPARQLConnector
 
@@ -68,10 +69,36 @@ def _node_to_sparql(node: Node) -> str:
 
 
 class SPARQLStore(SPARQLConnector, Store):
-    """An RDFLib store around a SPARQL endpoint
+    """An RDFLib store around a SPARQL endpoint.
 
     This is context-aware and should work as expected
     when a context is specified.
+
+    ### Usage example
+
+    ```python
+    >>> from rdflib import Dataset
+    >>> from rdflib.plugins.stores.sparqlstore import SPARQLStore
+    >>>
+    >>> g = Dataset( # doctest: +SKIP
+    ...    SPARQLStore("https://query.wikidata.org/sparql", returnFormat="xml"),
+    ...    default_union=True
+    ... )
+    >>>
+    >>> res = g.query("SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 5") # doctest: +SKIP
+    >>>
+    >>> # Iterate the results
+    >>> for row in res: # doctest: +SKIP
+    ...     pass  # but really you'd do something like: print(row)
+    >>>
+    >>> # Or serialize the results
+    >>> # something like: print(res.serialize(format="json").decode())
+    ```
+
+    !!! warning "Not all SPARQL endpoints support the same features"
+
+        Checkout the `test suite on public endpoints <https://github.com/RDFLib/rdflib/blob/main/test/test_store/test_store_sparqlstore_public.py>`_
+        for more details on how to successfully query different types of endpoints.
 
     For ConjunctiveGraphs, reading is done from the "default graph". Exactly
     what this means depends on your endpoint, because SPARQL does not offer a
@@ -80,43 +107,49 @@ class SPARQLStore(SPARQLConnector, Store):
     motivated by the SPARQL 1.1.
 
     Fuseki/TDB has a flag for specifying that the default graph
-    is the union of all graphs (``tdb:unionDefaultGraph`` in the Fuseki config).
+    is the union of all graphs (`tdb:unionDefaultGraph` in the Fuseki config).
 
-    .. warning:: By default the SPARQL Store does not support blank-nodes!
+    !!! warning "Blank nodes
 
-                 As blank-nodes act as variables in SPARQL queries,
-                 there is no way to query for a particular blank node without
-                 using non-standard SPARQL extensions.
+        By default, the SPARQL Store does not support blank-nodes!
 
-                 See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
+        As blank-nodes act as variables in SPARQL queries,
+        there is no way to query for a particular blank node without
+        using non-standard SPARQL extensions.
 
-    You can make use of such extensions through the ``node_to_sparql``
+        See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
+
+    You can make use of such extensions through the `node_to_sparql`
     argument. For example if you want to transform BNode('0001') into
     "<bnode:b0001>", you can use a function like this:
 
-    >>> def my_bnode_ext(node):
-    ...    if isinstance(node, BNode):
-    ...        return '<bnode:b%s>' % node
-    ...    return _node_to_sparql(node)
-    >>> store = SPARQLStore('http://dbpedia.org/sparql',
-    ...                     node_to_sparql=my_bnode_ext)
+    ```python
+    >> def my_bnode_ext(node):
+    ...     if isinstance(node, BNode):
+    ...         return f"<bnode:b{node}>"
+    ...     return _node_to_sparql(node)
+    ...
+    >> store = SPARQLStore(
+    ...     "http://dbpedia.org/sparql",
+    ...     node_to_sparql=my_bnode_ext
+    ... )
+    ```
 
     You can request a particular result serialization with the
-    ``returnFormat`` parameter. This is a string that must have a
-    matching plugin registered. Built in is support for ``xml``,
-    ``json``, ``csv``, ``tsv`` and ``application/rdf+xml``.
+    `returnFormat` parameter. This is a string that must have a
+    matching plugin registered. Built in is support for `xml`,
+    `json`, `csv`, `tsv` and `application/rdf+xml`.
 
     The underlying SPARQLConnector uses the urllib library.
     Any extra kwargs passed to the SPARQLStore connector are passed to
     urllib when doing HTTP calls. I.e. you have full control of
     cookies/auth/headers.
 
-    Form example:
+    HTTP basic auth is available with:
 
-    >>> store = SPARQLStore('...my endpoint ...', auth=('user','pass'))
-
-    will use HTTP basic auth.
-
+    ```python
+    >> store = SPARQLStore('...my endpoint ...', auth=('user','pass'))
+    ```
     """
 
     formula_aware = False
@@ -130,13 +163,15 @@ class SPARQLStore(SPARQLConnector, Store):
         sparql11: bool = True,
         context_aware: bool = True,
         node_to_sparql: _NodeToSparql = _node_to_sparql,
-        returnFormat: str = "xml",  # noqa: N803
+        returnFormat: SUPPORTED_FORMATS = "xml",  # noqa: N803
+        method: SUPPORTED_METHODS = "GET",
         auth: tuple[str, str] | None = None,
         **sparqlconnector_kwargs,
     ):
         super(SPARQLStore, self).__init__(
             query_endpoint=query_endpoint,
             returnFormat=returnFormat,
+            method=method,
             auth=auth,
             **sparqlconnector_kwargs,
         )
@@ -270,22 +305,22 @@ class SPARQLStore(SPARQLConnector, Store):
         * OFFSET: an integer to enable paging of results
         * ORDERBY: an instance of Variable('s'), Variable('o') or Variable('p') or, by default, the first 'None' from the given triple
 
-        .. warning::
+        !!! warning "Limit and offset
 
             - Using LIMIT or OFFSET automatically include ORDERBY otherwise this is
               because the results are retrieved in a not deterministic way (depends on
               the walking path on the graph)
             - Using OFFSET without defining LIMIT will discard the first OFFSET - 1 results
 
-        .. code-block:: python
-
-            a_graph.LIMIT = limit
-            a_graph.OFFSET = offset
-            triple_generator = a_graph.triples(mytriple):
-            # do something
-            # Removes LIMIT and OFFSET if not required for the next triple() calls
-            del a_graph.LIMIT
-            del a_graph.OFFSET
+        ```python
+        a_graph.LIMIT = limit
+        a_graph.OFFSET = offset
+        triple_generator = a_graph.triples(mytriple):
+        # do something
+        # Removes LIMIT and OFFSET if not required for the next triple() calls
+        del a_graph.LIMIT
+        del a_graph.OFFSET
+        ```
         """
 
         p: IdentifiedNode | Variable
@@ -406,23 +441,7 @@ class SPARQLStore(SPARQLConnector, Store):
 
     def triples_choices(
         self,
-        _: (
-            tuple[
-                list[_SubjectType] | tuple[_SubjectType, ...],
-                _PredicateType,
-                _ObjectType | None,
-            ]
-            | tuple[
-                _SubjectType | None,
-                list[_PredicateType] | tuple[_PredicateType, ...],
-                _ObjectType | None,
-            ]
-            | tuple[
-                _SubjectType | None,
-                _PredicateType,
-                list[_ObjectType] | tuple[_ObjectType, ...],
-            ]
-        ),
+        _: _TripleChoiceType,
         context: _ContextType | None = None,
     ) -> Generator[
         tuple[
@@ -467,8 +486,8 @@ class SPARQLStore(SPARQLConnector, Store):
         self, triple: _TripleType | None = None
     ) -> Generator[_ContextIdentifierType, None, None]:
         """
-        Iterates over results to "SELECT ?NAME { GRAPH ?NAME { ?s ?p ?o } }"
-        or "SELECT ?NAME { GRAPH ?NAME {} }" if triple is `None`.
+        Iterates over results to `SELECT ?NAME { GRAPH ?NAME { ?s ?p ?o } }`
+        or `SELECT ?NAME { GRAPH ?NAME {} }` if triple is `None`.
 
         Returns instances of this store with the SPARQL wrapper
         object updated via addNamedGraph(?NAME).
@@ -600,8 +619,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
     For Graph objects, everything works as expected.
 
-    See the :class:`SPARQLStore` base class for more information.
-
+    See the [`SPARQLStore`][rdflib.plugins.stores.sparqlstore.SPARQLStore] base class for more information.
     """
 
     where_pattern = re.compile(r"""(?P<where>WHERE\s*\{)""", re.IGNORECASE)
@@ -672,13 +690,12 @@ class SPARQLUpdateStore(SPARQLStore):
         **kwds,
     ):
         """
-        :param autocommit if set, the store will commit after every
-        writing operations. If False, we only make queries on the
-        server once commit is called.
-
-        :param dirty_reads if set, we do not commit before reading. So you
-        cannot read what you wrote before manually calling commit.
-
+        Args:
+            autocommit: if set, the store will commit after every
+                writing operations. If False, we only make queries on the
+                server once commit is called.
+            dirty_reads if set, we do not commit before reading. So you
+                cannot read what you wrote before manually calling commit.
         """
 
         SPARQLStore.__init__(
@@ -725,12 +742,12 @@ class SPARQLUpdateStore(SPARQLStore):
     def open(
         self, configuration: Union[str, tuple[str, str]], create: bool = False
     ) -> None:
-        """
-        sets the endpoint URLs for this SPARQLStore
+        """Sets the endpoint URLs for this `SPARQLStore`
 
-        :param configuration: either a tuple of (query_endpoint, update_endpoint),
-            or a string with the endpoint which is configured as query and update endpoint
-        :param create: if True an exception is thrown.
+        Args:
+            configuration: either a tuple of (query_endpoint, update_endpoint),
+                or a string with the endpoint which is configured as query and update endpoint
+            create: if True an exception is thrown.
         """
 
         if create:
@@ -751,7 +768,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
     # Transactional interfaces
     def commit(self) -> None:
-        """add(), addN(), and remove() are transactional to reduce overhead of many small edits.
+        """`add()`, `addN()`, and `remove()` are transactional to reduce overhead of many small edits.
         Read and update() calls will automatically commit any outstanding edits.
         This should behave as expected most of the time, except that alternating writes
         and reads can degenerate to the original call-per-triple situation that originally existed.
@@ -873,9 +890,8 @@ class SPARQLUpdateStore(SPARQLStore):
         queryGraph: str | None = None,  # noqa: N803
         DEBUG: bool = False,  # noqa: N803
     ):
-        """
-        Perform a SPARQL Update Query against the endpoint,
-        INSERT, LOAD, DELETE etc.
+        """Perform a SPARQL Update Query against the endpoint, INSERT, LOAD, DELETE etc.
+
         Setting initNs adds PREFIX declarations to the beginning of
         the update. Setting initBindings adds inline VALUEs to the
         beginning of every WHERE clause. By the SPARQL grammar, all
@@ -885,25 +901,24 @@ class SPARQLUpdateStore(SPARQLStore):
         substring 'WHERE {' which does not denote a WHERE clause, e.g.
         if it is part of a literal.
 
-        .. admonition:: Context-aware query rewriting
+        !!! info "Context-aware query rewriting"
 
             - **When:**  If context-awareness is enabled and the graph is not the default graph of the store.
-            - **Why:** To ensure consistency with the :class:`~rdflib.plugins.stores.memory.Memory` store.
-              The graph must accept "local" SPARQL requests (requests with no GRAPH keyword)
-              as if it was the default graph.
+            - **Why:** To ensure consistency with the [`Memory`][rdflib.plugins.stores.memory.Memory] store.
+                The graph must accept "local" SPARQL requests (requests with no GRAPH keyword)
+                as if it was the default graph.
             - **What is done:** These "local" queries are rewritten by this store.
-              The content of each block of a SPARQL Update operation is wrapped in a GRAPH block
-              except if the block is empty.
-              This basically causes INSERT, INSERT DATA, DELETE, DELETE DATA and WHERE to operate
-              only on the context.
-            - **Example:** ``"INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"`` is converted into
-              ``"INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"``.
+                The content of each block of a SPARQL Update operation is wrapped in a GRAPH block
+                except if the block is empty.
+                This basically causes INSERT, INSERT DATA, DELETE, DELETE DATA and WHERE to operate
+                only on the context.
+            - **Example:** `"INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"` is converted into
+                `"INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"`.
             - **Warning:** Queries are presumed to be "local" but this assumption is **not checked**.
-              For instance, if the query already contains GRAPH blocks, the latter will be wrapped in new GRAPH blocks.
+                For instance, if the query already contains GRAPH blocks, the latter will be wrapped in new GRAPH blocks.
             - **Warning:** A simplified grammar is used that should tolerate
-              extensions of the SPARQL grammar. Still, the process may fail in
-              uncommon situations and produce invalid output.
-
+                extensions of the SPARQL grammar. Still, the process may fail in
+                uncommon situations and produce invalid output.
         """
         if not self.update_endpoint:
             raise Exception("Update endpoint is not set!")
@@ -937,12 +952,11 @@ class SPARQLUpdateStore(SPARQLStore):
             self.commit()
 
     def _insert_named_graph(self, query: str, query_graph: str) -> str:
-        """
-        Inserts GRAPH <query_graph> {} into blocks of SPARQL Update operations
+        """Inserts GRAPH <query_graph> {} into blocks of SPARQL Update operations
 
-        For instance,  "INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"
+        For instance,  `INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }`
         is converted into
-        "INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"
+        `INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }`
         """
         if isinstance(query_graph, Node):
             query_graph = self.node_to_sparql(query_graph)

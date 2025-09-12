@@ -175,7 +175,7 @@ class RDFXMLHandler(handler.ContentHandler):
         del self._ns_contexts[-1]
 
     def startElementNS(
-        self, name: tuple[str | None, str], qname, attrs: AttributesImpl
+        self, name: tuple[str | None, str], qname, attrs: AttributesImpl  # type: ignore[override]
     ) -> None:
         stack = self.stack
         stack.append(ElementHandler())
@@ -298,7 +298,8 @@ class RDFXMLHandler(handler.ContentHandler):
         self, name: tuple[str, str], qname, attrs: AttributesImpl
     ) -> None:
         if name[0] and URIRef("".join(name)) == RDFVOC.RDF:
-            next = self.next
+            # Cheap hack so 2to3 doesn't turn it into __next__
+            next = getattr(self, "next")
             next.start = self.node_element_start
             next.end = self.node_element_end
         else:
@@ -315,7 +316,8 @@ class RDFXMLHandler(handler.ContentHandler):
         current = self.current
         absolutize = self.absolutize
 
-        next = self.next
+        # Cheap hack so 2to3 doesn't turn it into __next__
+        next = getattr(self, "next")
         next.start = self.property_element_start
         next.end = self.property_element_end
 
@@ -408,7 +410,8 @@ class RDFXMLHandler(handler.ContentHandler):
         current = self.current
         absolutize = self.absolutize
 
-        next = self.next
+        # Cheap hack so 2to3 doesn't turn it into __next__
+        next = getattr(self, "next")
         object: _ObjectType | None = None
         current.data = None
         current.list = None
@@ -629,12 +632,14 @@ def create_parser(target: InputSource, store: Graph) -> xmlreader.XMLReader:
     # type error: Argument 1 to "setDocumentLocator" of "RDFXMLHandler" has incompatible type "InputSource"; expected "Locator"
     rdfxml.setDocumentLocator(target)  # type: ignore[arg-type]
     # rdfxml.setDocumentLocator(_Locator(self.url, self.parser))
-    parser.setContentHandler(rdfxml)
+    parser.setContentHandler(rdfxml)  # type: ignore[arg-type]
     parser.setErrorHandler(ErrorHandler())
     return parser
 
 
 class RDFXMLParser(Parser):
+    """An RDF/XML parser."""
+
     def __init__(self):
         pass
 

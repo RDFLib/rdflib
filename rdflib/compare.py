@@ -7,70 +7,84 @@ comparisons.
 Warning: the time to canonicalize bnodes may increase exponentially on
 degenerate larger graphs. Use with care!
 
-Example of comparing two graphs::
+Example of comparing two graphs:
 
-    >>> g1 = Graph().parse(format='n3', data='''
-    ...     @prefix : <http://example.org/ns#> .
-    ...     <http://example.org> :rel
-    ...         <http://example.org/same>,
-    ...         [ :label "Same" ],
-    ...         <http://example.org/a>,
-    ...         [ :label "A" ] .
-    ... ''')
-    >>> g2 = Graph().parse(format='n3', data='''
-    ...     @prefix : <http://example.org/ns#> .
-    ...     <http://example.org> :rel
-    ...         <http://example.org/same>,
-    ...         [ :label "Same" ],
-    ...         <http://example.org/b>,
-    ...         [ :label "B" ] .
-    ... ''')
-    >>>
-    >>> iso1 = to_isomorphic(g1)
-    >>> iso2 = to_isomorphic(g2)
+```python
+>>> g1 = Graph().parse(format='n3', data='''
+...     @prefix : <http://example.org/ns#> .
+...     <http://example.org> :rel
+...         <http://example.org/same>,
+...         [ :label "Same" ],
+...         <http://example.org/a>,
+...         [ :label "A" ] .
+... ''')
+>>> g2 = Graph().parse(format='n3', data='''
+...     @prefix : <http://example.org/ns#> .
+...     <http://example.org> :rel
+...         <http://example.org/same>,
+...         [ :label "Same" ],
+...         <http://example.org/b>,
+...         [ :label "B" ] .
+... ''')
+>>>
+>>> iso1 = to_isomorphic(g1)
+>>> iso2 = to_isomorphic(g2)
 
-These are not isomorphic::
+```
 
-    >>> iso1 == iso2
-    False
+These are not isomorphic
 
-Diff the two graphs::
+```python
+>>> iso1 == iso2
+False
 
-    >>> in_both, in_first, in_second = graph_diff(iso1, iso2)
+```
 
-Present in both::
+Diff the two graphs:
 
-    >>> def dump_nt_sorted(g):
-    ...     for l in sorted(g.serialize(format='nt').splitlines()):
-    ...         if l: print(l.decode('ascii'))
+```python
+>>> in_both, in_first, in_second = graph_diff(iso1, iso2)
 
-    >>> dump_nt_sorted(in_both) #doctest: +SKIP
-    <http://example.org>
-        <http://example.org/ns#rel> <http://example.org/same> .
-    <http://example.org>
-        <http://example.org/ns#rel> _:cbcaabaaba17fecbc304a64f8edee4335e .
-    _:cbcaabaaba17fecbc304a64f8edee4335e
-        <http://example.org/ns#label> "Same" .
+```
 
-Only in first::
+Present in both:
 
-    >>> dump_nt_sorted(in_first) #doctest: +SKIP
-    <http://example.org>
-        <http://example.org/ns#rel> <http://example.org/a> .
-    <http://example.org>
-        <http://example.org/ns#rel> _:cb124e4c6da0579f810c0ffe4eff485bd9 .
-    _:cb124e4c6da0579f810c0ffe4eff485bd9
-        <http://example.org/ns#label> "A" .
+```python
+>>> def dump_nt_sorted(g):
+...     for l in sorted(g.serialize(format='nt').splitlines()):
+...         if l: print(l.decode('ascii'))
+>>> dump_nt_sorted(in_both) #doctest: +SKIP
+<http://example.org>
+    <http://example.org/ns#rel> <http://example.org/same> .
+<http://example.org>
+    <http://example.org/ns#rel> _:cbcaabaaba17fecbc304a64f8edee4335e .
+_:cbcaabaaba17fecbc304a64f8edee4335e
+    <http://example.org/ns#label> "Same" .
+```
 
-Only in second::
+Only in first:
 
-    >>> dump_nt_sorted(in_second) #doctest: +SKIP
-    <http://example.org>
-        <http://example.org/ns#rel> <http://example.org/b> .
-    <http://example.org>
-        <http://example.org/ns#rel> _:cb558f30e21ddfc05ca53108348338ade8 .
-    _:cb558f30e21ddfc05ca53108348338ade8
-        <http://example.org/ns#label> "B" .
+```python
+>>> dump_nt_sorted(in_first) #doctest: +SKIP
+<http://example.org>
+    <http://example.org/ns#rel> <http://example.org/a> .
+<http://example.org>
+    <http://example.org/ns#rel> _:cb124e4c6da0579f810c0ffe4eff485bd9 .
+_:cb124e4c6da0579f810c0ffe4eff485bd9
+    <http://example.org/ns#label> "A" .
+```
+
+Only in second:
+
+```python
+>>> dump_nt_sorted(in_second) #doctest: +SKIP
+<http://example.org>
+    <http://example.org/ns#rel> <http://example.org/b> .
+<http://example.org>
+    <http://example.org/ns#rel> _:cb558f30e21ddfc05ca53108348338ade8 .
+_:cb558f30e21ddfc05ca53108348338ade8
+    <http://example.org/ns#label> "B" .
+```
 """
 
 from __future__ import annotations
@@ -185,7 +199,7 @@ class IsomorphicGraph(ConjunctiveGraph):
 
     def internal_hash(self, stats=None):
         """
-        This is defined instead of __hash__ to avoid a circular recursion
+        This is defined instead of `__hash__` to avoid a circular recursion
         scenario with the Memory store for rdflib which requires a hash lookup
         in order to return a generator of triples.
         """
@@ -442,23 +456,23 @@ class _TripleCanonicalizer:
             experimental = self._experimental_path(coloring_copy)
             experimental_score = set([c.key() for c in experimental])
             if last_coloring:
-                generator = self._create_generator(  # type: ignore[unreachable]
+                generator = self._create_generator(
                     [last_coloring, experimental], generator
                 )
             last_coloring = experimental
-            if best_score is None or best_score < color_score:  # type: ignore[unreachable]
+            if best_score is None or best_score < color_score:
                 best = [refined_coloring]
                 best_score = color_score
                 best_experimental_score = experimental_score
-            elif best_score > color_score:  # type: ignore[unreachable]
+            elif best_score > color_score:
                 # prune this branch.
-                if stats is not None:
+                if stats is not None and isinstance(stats["prunings"], int):
                     stats["prunings"] += 1
             elif experimental_score != best_experimental_score:
                 best.append(refined_coloring)
             else:
                 # prune this branch.
-                if stats is not None:
+                if stats is not None and isinstance(stats["prunings"], int):
                     stats["prunings"] += 1
         discrete: list[list[Color]] = [x for x in best if self._discrete(x)]
         if len(discrete) == 0:
@@ -468,7 +482,7 @@ class _TripleCanonicalizer:
                 d = [depth[0]]
                 new_color = self._traces(coloring, stats=stats, depth=d)
                 color_score = tuple([c.key() for c in refined_coloring])
-                if best_score is None or color_score > best_score:  # type: ignore[unreachable]
+                if best_score is None or color_score > best_score:
                     discrete = [new_color]
                     best_score = color_score
                     best_depth = d[0]
@@ -538,8 +552,8 @@ def isomorphic(graph1: Graph, graph2: Graph) -> bool:
 
     Uses an algorithm to compute unique hashes which takes bnodes into account.
 
-    Examples::
-
+    Example:
+        ```python
         >>> g1 = Graph().parse(format='n3', data='''
         ...     @prefix : <http://example.org/ns#> .
         ...     <http://example.org> :rel <http://example.org/a> .
@@ -554,7 +568,6 @@ def isomorphic(graph1: Graph, graph2: Graph) -> bool:
         ... ''')
         >>> isomorphic(g1, g2)
         True
-
         >>> g3 = Graph().parse(format='n3', data='''
         ...     @prefix : <http://example.org/ns#> .
         ...     <http://example.org> :rel <http://example.org/a> .
@@ -563,6 +576,8 @@ def isomorphic(graph1: Graph, graph2: Graph) -> bool:
         ... ''')
         >>> isomorphic(g1, g3)
         False
+
+        ```
     """
     gd1 = _TripleCanonicalizer(graph1).to_hash()
     gd2 = _TripleCanonicalizer(graph2).to_hash()
@@ -599,10 +614,10 @@ def similar(g1: Graph, g2: Graph):
 
     Checks if the two graphs are "similar", by comparing sorted triples where
     all bnodes have been replaced by a singular mock bnode (the
-    ``_MOCK_BNODE``).
+    `_MOCK_BNODE`).
 
     This is a much cheaper, but less reliable, alternative to the comparison
-    algorithm in ``isomorphic``.
+    algorithm in `isomorphic`.
     """
     return all(t1 == t2 for (t1, t2) in _squashed_graphs_triples(g1, g2))
 

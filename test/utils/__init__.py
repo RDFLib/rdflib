@@ -2,7 +2,7 @@
 This module contains test utilities.
 
 The tests for test utilities should be placed inside `test.utils.test`
-(``test/utils/tests/``).
+(`test/utils/tests/`).
 """
 
 from __future__ import annotations
@@ -482,9 +482,11 @@ def idfns(*idfns: Callable[[Any], str | None]) -> Callable[[Any], str | None]:
     Returns an ID function which will try each of the provided ID
     functions in order.
 
-    :param idfns: The ID functions to try.
-    :return: An ID function which will try each of the provided ID
-        functions.
+    Args:
+        idfns: The ID functions to try.
+
+    Returns:
+        An ID function which will try each of the provided ID functions.
     """
 
     def _idfns(value: Any) -> str | None:

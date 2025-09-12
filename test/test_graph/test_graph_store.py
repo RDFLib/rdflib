@@ -229,7 +229,7 @@ def test_query_query_graph(
     query_graph: Union[str, Callable[[Graph], str]],
 ) -> None:
     """
-    The `Graph.query` method passes the correct ``queryGraph`` argument
+    The `Graph.query` method passes the correct `queryGraph` argument
     to stores that have implemented a `Store.query` method.
     """
 
@@ -287,7 +287,7 @@ def test_update_query_graph(
     query_graph: Union[str, Callable[[Graph], str]],
 ) -> None:
     """
-    The `Graph.update` method passes the correct ``queryGraph`` argument
+    The `Graph.update` method passes the correct `queryGraph` argument
     to stores that have implemented a `Store.update` method.
     """
 
