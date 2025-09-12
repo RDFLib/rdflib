@@ -36,6 +36,7 @@ if TYPE_CHECKING:
         _TripleType,
         _ContextType,
         _QuadType,
+        _TripleChoiceType,
         _TriplePatternType,
         _SubjectType,
         _PredicateType,
@@ -79,15 +80,15 @@ class SPARQLStore(SPARQLConnector, Store):
     >>> from rdflib import Dataset
     >>> from rdflib.plugins.stores.sparqlstore import SPARQLStore
     >>>
-    >>> g = Dataset(
+    >>> g = Dataset( # doctest: +SKIP
     ...    SPARQLStore("https://query.wikidata.org/sparql", returnFormat="xml"),
     ...    default_union=True
     ... )
     >>>
-    >>> res = g.query("SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 5")
+    >>> res = g.query("SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 5") # doctest: +SKIP
     >>>
     >>> # Iterate the results
-    >>> for row in res:
+    >>> for row in res: # doctest: +SKIP
     ...     pass  # but really you'd do something like: print(row)
     >>>
     >>> # Or serialize the results
@@ -440,23 +441,7 @@ class SPARQLStore(SPARQLConnector, Store):
 
     def triples_choices(
         self,
-        _: (
-            tuple[
-                list[_SubjectType] | tuple[_SubjectType, ...],
-                _PredicateType,
-                _ObjectType | None,
-            ]
-            | tuple[
-                _SubjectType | None,
-                list[_PredicateType] | tuple[_PredicateType, ...],
-                _ObjectType | None,
-            ]
-            | tuple[
-                _SubjectType | None,
-                _PredicateType,
-                list[_ObjectType] | tuple[_ObjectType, ...],
-            ]
-        ),
+        _: _TripleChoiceType,
         context: _ContextType | None = None,
     ) -> Generator[
         tuple[
