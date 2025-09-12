@@ -1,24 +1,35 @@
 """
-JSON-LD is "A JSON-based Serialization for Linked Data" (https://www.w3.org/TR/json-ld/) that RDFLib implements for RDF serialization.
+JSON-LD is "A JSON-based Serialization for Linked Data" (https://www.w3.org/TR/json-ld/)
+that RDFLib implements for RDF serialization.
 
-This file demonstrated some of the JSON-LD things you can do with RDFLib. Parsing & serializing so far. More to be added later.
+This file demonstrated some of the JSON-LD things you can do with RDFLib. Parsing &
+serializing so far. More to be added later.
 
 
 Parsing
 -------
-There are a number of "flavours" of JSON-LD - compact and verbose etc. RDFLib can parse all of these in a normal RDFLib way.
+
+There are a number of "flavours" of JSON-LD - compact and verbose etc. RDFLib can parse
+all of these in a normal RDFLib way.
 
 
 Serialization
 -------------
-JSON-LD has a number of options for serialization - more than other RDF formats. For example, IRIs within JSON-LD can be compacted down to CURIES when a "context" statment is added to the JSON-LD data that maps identifiers - short codes - to IRIs and namespace IRIs like this:
 
-# here the short code "dcterms" is mapped to the IRI http://purl.org/dc/terms/ and "schema" to https://schema.org/, as per RDFLib's in-build namespace prefixes
+JSON-LD has a number of options for serialization - more than other RDF formats. For
+example, IRIs within JSON-LD can be compacted down to CURIES when a "context" statement
+is added to the JSON-LD data that maps identifiers - short codes - to IRIs and namespace
+IRIs like this:
 
-"@context": {
-    "dct": "http://purl.org/dc/terms/",
-    "schema": "https://schema.org/"
-}
+.. code-block:: json
+
+    "@context": {
+        "dcterms": "http://purl.org/dc/terms/",
+        "schema": "https://schema.org/"
+    }
+
+Here the short code "dcterms" is mapped to the IRI http://purl.org/dc/terms/ and
+"schema" to https://schema.org/, as per RDFLib's in-build namespace prefixes.
 """
 
 # import RDFLib and other things
