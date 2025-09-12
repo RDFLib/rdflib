@@ -253,6 +253,7 @@ foo-bar:Ex foo-bar:name "Test" . """
 
     def test_float_no_norm(self):
         import rdflib
+
         _ps = rdflib.NORMALIZE_LITERALS
         try:
             bads = []
@@ -262,15 +263,15 @@ foo-bar:Ex foo-bar:name "Test" . """
                 g1.parse(data=":a :b 1e10, 1e0 .", format="n3")
                 strep = [str(o) for o in g1.objects()]
                 if norm_lit:
-                    if '1e10' not in strep and '1e0' not in strep:
+                    if "1e10" not in strep and "1e0" not in strep:
                         pass
                     else:
-                        bads.append(('NOT normalized when should have been', strep))
+                        bads.append(("NOT normalized when should have been", strep))
                 else:
-                    if '1e10' in strep and '1e0' in strep:
+                    if "1e10" in strep and "1e0" in strep:
                         pass
                     else:
-                        bads.append(('normalized when it should NOT have been', strep))
+                        bads.append(("normalized when it should NOT have been", strep))
 
         finally:
             rdflib.NORMALIZE_LITERALS = _ps

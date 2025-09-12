@@ -385,7 +385,7 @@ langcode = re.compile(r"[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*")
 
 
 class sfloat(str):
-    """ don't normalize raw XSD.double string representation """
+    """don't normalize raw XSD.double string representation"""
 
 
 class SinkParser:
