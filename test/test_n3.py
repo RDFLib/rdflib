@@ -4,7 +4,7 @@ from urllib.error import URLError
 
 import pytest
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import Dataset, Graph
 from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax
 from rdflib.term import Literal, URIRef
 from test import TEST_DIR
@@ -44,7 +44,7 @@ n3:context      a rdf:Property; rdfs:domain n3:statement;
                 n3:predicate :p;
                 n3:object :y ] a log:Truth}.
 
-# Needs more thought ... ideally, we have the implcit AND rules of
+# Needs more thought ... ideally, we have the implicit AND rules of
 # juxtaposition (introduction and elimination)
 
 {
@@ -125,9 +125,9 @@ class TestN3Case:
         )
         s = g.serialize(base="http://example.com/", format="n3", encoding="latin-1")
         assert b"<people/Bob>" in s
-        g2 = ConjunctiveGraph()
-        g2.parse(data=s, publicID="http://example.com/", format="n3")
-        assert list(g) == list(g2)
+        g2 = Dataset()
+        g2.parse(data=s, format="n3")
+        assert list(g) == list(g2.triples((None, None, None)))
 
     def test_issue23(self):
         input = """<http://example.com/article1> <http://example.com/title> "this word is in \\u201Cquotes\\u201D"."""
@@ -195,24 +195,24 @@ foo-bar:Ex foo-bar:name "Test" . """
         )
 
     def test_model(self):
-        g = ConjunctiveGraph()
+        g = Dataset()
         g.parse(data=test_data, format="n3")
         i = 0
-        for s, p, o in g:
+        for s, p, o, c in g:
             if isinstance(s, Graph):
                 i += 1
         assert i == 3
-        assert len(list(g.contexts())) == 13
+        assert len(list(g.graphs())) == 13
 
         g.close()
 
     def test_quoted_serialization(self):
-        g = ConjunctiveGraph()
+        g = Dataset()
         g.parse(data=test_data, format="n3")
         g.serialize(format="n3")
 
     def test_parse(self):
-        g = ConjunctiveGraph()
+        g = Dataset()
         try:
             g.parse(
                 "http://groups.csail.mit.edu/dig/2005/09/rein/examples/troop42-policy.n3",
@@ -229,14 +229,14 @@ foo-bar:Ex foo-bar:name "Test" . """
 
         for data in test_data:
             # N3 doesn't accept single quotes around string literals
-            g = ConjunctiveGraph()
+            g = Dataset()
             with pytest.raises(BadSyntax):
                 g.parse(data=data, format="n3")
 
-            g = ConjunctiveGraph()
+            g = Dataset()
             g.parse(data=data, format="turtle")
             assert len(g) == 1
-            for _, _, o in g:
+            for _, _, o, c in g:
                 assert o == Literal("o")
 
     def test_empty_prefix(self):
