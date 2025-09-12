@@ -380,7 +380,11 @@ _QuadSelectorType: te.TypeAlias = tuple[
     Optional["_ContextType"],
 ]
 _TripleOrQuadSelectorType: te.TypeAlias = Union[_TripleSelectorType, _QuadSelectorType]
-
+_TripleChoiceType: te.TypeAlias = Union[
+    tuple[list[_SubjectType], Optional[_PredicateType], Optional[_ObjectType]],
+    tuple[Optional[_SubjectType], list[_PredicateType], Optional[_ObjectType]],
+    tuple[Optional[_SubjectType], Optional[_PredicateType], list[_ObjectType]],
+]
 
 _GraphT = TypeVar("_GraphT", bound="Graph")
 _ConjunctiveGraphT = TypeVar("_ConjunctiveGraphT", bound="ConjunctiveGraph")
@@ -919,7 +923,7 @@ class Graph(Node):
     def subjects(
         self,
         predicate: Path | _PredicateType | None = None,
-        object: _ObjectType | None = None,
+        object: _ObjectType | list[_ObjectType] | None = None,
         unique: bool = False,
     ) -> Generator[_SubjectType, None, None]:
         """Generate subjects with the given predicate and object.
@@ -932,21 +936,27 @@ class Graph(Node):
         Yields:
             Subjects matching the given predicate and object.
         """
-        if not unique:
-            for s, p, o in self.triples((None, predicate, object)):
-                yield s
-        else:
-            subs = set()
-            for s, p, o in self.triples((None, predicate, object)):
-                if s not in subs:
+        # if the object is a list of Nodes, yield results from subject() call for each
+        if isinstance(object, list):
+            for obj in object:
+                for s in self.subjects(predicate, obj, unique):
                     yield s
-                    try:
-                        subs.add(s)
-                    except MemoryError as e:
-                        logger.error(
-                            f"{e}. Consider not setting parameter 'unique' to True"
-                        )
-                        raise
+        else:
+            if not unique:
+                for s, p, o in self.triples((None, predicate, object)):
+                    yield s
+            else:
+                subs = set()
+                for s, p, o in self.triples((None, predicate, object)):
+                    if s not in subs:
+                        yield s
+                        try:
+                            subs.add(s)
+                        except MemoryError as e:
+                            logger.error(
+                                f"{e}. Consider not setting parameter 'unique' to True"
+                            )
+                            raise
 
     def predicates(
         self,
@@ -982,7 +992,7 @@ class Graph(Node):
 
     def objects(
         self,
-        subject: _SubjectType | None = None,
+        subject: _SubjectType | list[_SubjectType] | None = None,
         predicate: Path | _PredicateType | None = None,
         unique: bool = False,
     ) -> Generator[_ObjectType, None, None]:
@@ -996,21 +1006,26 @@ class Graph(Node):
         Yields:
             Objects matching the given subject and predicate.
         """
-        if not unique:
-            for s, p, o in self.triples((subject, predicate, None)):
-                yield o
-        else:
-            objs = set()
-            for s, p, o in self.triples((subject, predicate, None)):
-                if o not in objs:
+        if isinstance(subject, list):
+            for subj in subject:
+                for o in self.objects(subj, predicate, unique):
                     yield o
-                    try:
-                        objs.add(o)
-                    except MemoryError as e:
-                        logger.error(
-                            f"{e}. Consider not setting parameter 'unique' to True"
-                        )
-                        raise
+        else:
+            if not unique:
+                for s, p, o in self.triples((subject, predicate, None)):
+                    yield o
+            else:
+                objs = set()
+                for s, p, o in self.triples((subject, predicate, None)):
+                    if o not in objs:
+                        yield o
+                        try:
+                            objs.add(o)
+                        except MemoryError as e:
+                            logger.error(
+                                f"{e}. Consider not setting parameter 'unique' to True"
+                            )
+                            raise
 
     def subject_predicates(
         self, object: _ObjectType | None = None, unique: bool = False
@@ -1079,23 +1094,7 @@ class Graph(Node):
 
     def triples_choices(
         self,
-        triple: (
-            tuple[
-                list[_SubjectType] | tuple[_SubjectType, ...],
-                _PredicateType,
-                _ObjectType | None,
-            ]
-            | tuple[
-                _SubjectType | None,
-                list[_PredicateType] | tuple[_PredicateType, ...],
-                _ObjectType | None,
-            ]
-            | tuple[
-                _SubjectType | None,
-                _PredicateType,
-                list[_ObjectType] | tuple[_ObjectType, ...],
-            ]
-        ),
+        triple: _TripleChoiceType,
         context: _ContextType | None = None,
     ) -> Generator[_TripleType, None, None]:
         subject, predicate, object_ = triple
@@ -2362,24 +2361,8 @@ class ConjunctiveGraph(Graph):
 
     def triples_choices(
         self,
-        triple: (
-            tuple[
-                list[_SubjectType] | tuple[_SubjectType, ...],
-                _PredicateType,
-                _ObjectType | None,
-            ]
-            | tuple[
-                _SubjectType | None,
-                list[_PredicateType] | tuple[_PredicateType, ...],
-                _ObjectType | None,
-            ]
-            | tuple[
-                _SubjectType | None,
-                _PredicateType,
-                list[_ObjectType] | tuple[_ObjectType, ...],
-            ]
-        ),
-        context: _ContextType | None = None,
+        triple: _TripleChoiceType,
+        context: Optional[_ContextType] = None,
     ) -> Generator[_TripleType, None, None]:
         """Iterate over all the triples in the entire conjunctive graph"""
         s, p, o = triple
@@ -3156,23 +3139,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
     def triples_choices(
         self,
-        triple: (
-            tuple[
-                list[_SubjectType] | tuple[_SubjectType, ...],
-                _PredicateType,
-                _ObjectType | None,
-            ]
-            | tuple[
-                _SubjectType | None,
-                list[_PredicateType] | tuple[_PredicateType, ...],
-                _ObjectType | None,
-            ]
-            | tuple[
-                _SubjectType | None,
-                _PredicateType,
-                list[_ObjectType] | tuple[_ObjectType, ...],
-            ]
-        ),
+        triple: _TripleChoiceType,
         context: _ContextType | None = None,
     ) -> Generator[_TripleType, None, None]:
         subject, predicate, object_ = triple
