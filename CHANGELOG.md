@@ -1,3 +1,46 @@
+## 2025-03-29 RELEASE 7.1.4
+
+A tidy-up release with no major updates over 7.1.3. This may be the last 7.x 
+release as we move to a version 8 with breaking changes to Dataset and a few
+APIs.
+
+Interesting PRs merged:
+
+* 2025-03-24 - remove old hacks against 2to3
+  [PR #3095](https://github.com/RDFLib/rdflib/pull/3095)
+* 2025-03-24 - Allow multi subjects & objects in graph funcs
+  [PR #3086](https://github.com/RDFLib/rdflib/pull/3086)
+* 2025-03-24 - Reduce test warnings
+  [PR #3085](https://github.com/RDFLib/rdflib/pull/3085)
+* 2025-03-22 - Downgrade log message about plugin
+  [PR #3063](https://github.com/RDFLib/rdflib/pull/3063)
+* 2025-03-22 - remove old hacks against 2to3
+  [PR #3076](https://github.com/RDFLib/rdflib/pull/3076)
+* 2025-03-22 - Cope with Namespace annotations in Python 3.14
+  [PR #3084](https://github.com/RDFLib/rdflib/pull/3084)
+* 2025-01-18 - small docco update
+  [PR #3053](https://github.com/RDFLib/rdflib/pull/3053)
+
+... and lots of boring dependency bump PRs merged!
+
+## 2025-01-17 RELEASE 7.1.3
+
+A fix-up release that re-adds support for Python 3.8 after it was accidentally 
+removed in Release 7.1.2.
+
+This release cherrypicks many additions to 7.1.2 added to 7.1.1 but leaves out 
+typing changes that are not compatible
+with Python 3.8.
+
+Also not carried over from 7.1.2 is the change from Poetry 1.x to 2.0.
+
+Included are PRs such as _Defined Namespace warnings fix_, _sort longturtle 
+blank nodes_, _deterministic longturtle serialisation_ and _Dataset documentation 
+improvements_.
+
+For the full list of included PRs, see the preparatory PR: 
+<https://github.com/RDFLib/rdflib/pull/3036>.
+
 ## 2025-01-10 RELEASE 7.1.2
 
 A minor release that bumped up a few dev dependencies and achieved a few small but notable improvements, particularly with longturtle sorting:
@@ -53,7 +96,6 @@ Merged PRs:
   [PR #2950](https://github.com/RDFLib/rdflib/pull/2950)
 * 2024-10-23 - build(deps-dev): bump ruff from 0.6.9 to 0.7.0
   [PR #2942](https://github.com/RDFLib/rdflib/pull/2942)
-
 
 ## 2024-10-17 RELEASE 7.1.0
 

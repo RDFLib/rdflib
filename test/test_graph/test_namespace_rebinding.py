@@ -1,6 +1,6 @@
 import pytest
 
-from rdflib import ConjunctiveGraph, Graph, Literal
+from rdflib import Dataset, Graph, Literal
 from rdflib.namespace import OWL, Namespace, NamespaceManager
 from rdflib.plugins.stores.memory import Memory
 from rdflib.term import URIRef
@@ -290,12 +290,11 @@ def test_multigraph_bindings():
     assert list(g1.namespaces()) == [("friend-of-a-friend", foaf1_uri)]
 
     # Including newly-created objects that use the store
-    cg = ConjunctiveGraph(store=store)
+    cg = Dataset(store=store, default_union=True)
     cg.namespace_manager = NamespaceManager(cg, bind_namespaces="core")
 
     assert ("foaf", foaf1_uri) not in list(cg.namespaces())
     assert ("friend-of-a-friend", foaf1_uri) in list(cg.namespaces())
-
     assert len(list(g1.namespaces())) == 6
     assert len(list(g2.namespaces())) == 6
     assert len(list(cg.namespaces())) == 6

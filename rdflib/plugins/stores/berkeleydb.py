@@ -427,7 +427,8 @@ class BerkeleyDB(Store):
                 cursor = index.cursor(txn=txn)
                 try:
                     cursor.set_range(key)
-                    current = cursor.next
+                    # Hack to stop 2to3 converting this to next(cursor)
+                    current = getattr(cursor, "next")()
                 except db.DBNotFoundError:
                     current = None
                 cursor.close()
@@ -504,7 +505,8 @@ class BerkeleyDB(Store):
             cursor = index.cursor(txn=txn)
             try:
                 cursor.set_range(key)
-                current = cursor.next
+                # Cheap hack so 2to3 doesn't convert to next(cursor)
+                current = getattr(cursor, "next")()
             except db.DBNotFoundError:
                 current = None
             cursor.close()
@@ -536,7 +538,8 @@ class BerkeleyDB(Store):
             key, value = current
             if key.startswith(prefix):
                 count += 1
-                current = cursor.next
+                # Hack to stop 2to3 converting this to next(cursor)
+                current = getattr(cursor, "next")()
             else:
                 break
         cursor.close()
@@ -589,7 +592,8 @@ class BerkeleyDB(Store):
         while current:
             prefix, namespace = current
             results.append((prefix.decode("utf-8"), namespace.decode("utf-8")))
-            current = cursor.next
+            # Hack to stop 2to3 converting this to next(cursor)
+            current = getattr(cursor, "next")()
         cursor.close()
         for prefix, namespace in results:
             yield prefix, URIRef(namespace)
@@ -628,7 +632,8 @@ class BerkeleyDB(Store):
                 cursor = index.cursor()
                 try:
                     cursor.set_range(key)
-                    current = cursor.next
+                    # Hack to stop 2to3 converting this to next(cursor)
+                    current = getattr(cursor, "next")()
                 except db.DBNotFoundError:
                     current = None
                 cursor.close()

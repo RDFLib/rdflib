@@ -33,6 +33,6 @@ def xfail_broken_parse_data(request):
 @pytest.mark.parametrize("testfile", os.listdir(broken_parse_data))
 @pytest.mark.usefixtures("xfail_broken_parse_data")
 def test_n3_serializer_roundtrip(testfile) -> None:
-    g1 = rdflib.ConjunctiveGraph()
+    g1 = rdflib.Dataset(default_union=True)
 
     g1.parse(os.path.join(broken_parse_data, testfile), format="n3")
