@@ -384,7 +384,7 @@ interesting = re.compile(r"""[\\\r\n\"\']""")
 langcode = re.compile(r"[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*")
 
 
-class sfloat(str):
+class sfloat(str):  # noqa: N801
     """don't normalize raw XSD.double string representation"""
 
 
