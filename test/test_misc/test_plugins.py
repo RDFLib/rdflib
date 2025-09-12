@@ -11,6 +11,8 @@ from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from typing import Any, cast
 
+import pytest
+
 import rdflib.plugin
 import rdflib.plugins.sparql
 import rdflib.plugins.sparql.evaluate
@@ -31,6 +33,25 @@ def ctx_plugin(tmp_path: Path, plugin_src: Path) -> Generator[None, None, None]:
     base = tmp_path / f"{hash(plugin_src)}"
     pypath = (base / "pypath").absolute()
     plugpath = (base / "plugin").absolute()
+    wheel_cache = (base / "wheel_cache").absolute()
+    wheel_cache.mkdir(parents=True)
+
+    # Create a local wheel cache with setuptools and wheel
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "pip",
+            "download",
+            "--no-deps",
+            "--dest",
+            f"{wheel_cache}",
+            "setuptools",
+            "wheel",
+        ],
+        check=True,
+    )
+
     shutil.copytree(plugin_src, plugpath)
     logging.debug("Installing %s into %s", plugin_src, pypath)
     subprocess.run(
@@ -43,6 +64,8 @@ def ctx_plugin(tmp_path: Path, plugin_src: Path) -> Generator[None, None, None]:
             "--no-input",
             "--no-clean",
             "--no-index",
+            "--find-links",
+            f"{wheel_cache}",
             "--disable-pip-version-check",
             "--target",
             f"{pypath}",
@@ -68,6 +91,7 @@ def ctx_cleaners() -> Generator[list[Callable[[], None]], None, None]:
 
 
 # Using no_cover as coverage freaks out and crashes because of what is happening here.
+@pytest.mark.webtest
 def test_sparqleval(tmp_path: Path, no_cover: None) -> None:
     with ExitStack() as stack:
         stack.enter_context(ctx_plugin(tmp_path, TEST_PLUGINS_DIR / "sparqleval"))
@@ -105,6 +129,7 @@ def test_sparqleval(tmp_path: Path, no_cover: None) -> None:
 
 
 # Using no_cover as coverage freaks out and crashes because of what is happening here.
+@pytest.mark.webtest
 def test_parser(tmp_path: Path, no_cover: None) -> None:
     with ExitStack() as stack:
         stack.enter_context(ctx_plugin(tmp_path, TEST_PLUGINS_DIR / "parser"))
