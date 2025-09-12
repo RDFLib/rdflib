@@ -70,13 +70,13 @@ jobs:
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install poetry
         run: |
           pip install -r devtools/requirements-poetry.in
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         if: ${{ matrix.extensive-tests }}
         with:
           distribution: "temurin"
@@ -137,7 +137,7 @@ jobs:
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-
       - name: Set up Python ${{env.DEFAULT_PYTHON}}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install poetry
