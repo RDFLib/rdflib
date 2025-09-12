@@ -1969,7 +1969,7 @@ class RDFSink:
         #    f.universals[n] = f.newBlankNode()
         #    return f.universals[n]
         # type error: Incompatible return value type (got "Union[int, _AnyT]", expected "Union[URIRef, Literal, BNode, _AnyT]")  [return-value]
-        return n  # type: ignore[return-value]
+        return n
 
     def intern(self, something: _AnyT) -> _AnyT:
         return something
