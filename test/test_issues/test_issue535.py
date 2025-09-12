@@ -1,8 +1,8 @@
-from rdflib import ConjunctiveGraph, URIRef
+from rdflib import Dataset, URIRef
 
 
 def test_nquads_default_graph():
-    ds = ConjunctiveGraph()
+    ds = Dataset(default_union=True)
 
     data = """
     <http://example.org/s1> <http://example.org/p1> <http://example.org/o1> .
