@@ -60,7 +60,7 @@ class TriXHandler(handler.ContentHandler):
         pass
 
     def startElementNS(
-        self, name: tuple[str | None, str], qname, attrs: AttributesImpl
+        self, name: tuple[str | None, str], qname, attrs: AttributesImpl  # type: ignore[override]
     ) -> None:
         if name[0] != str(TRIXNS):
             self.error(
@@ -268,7 +268,7 @@ def create_parser(store: Store) -> XMLReader:
         pass  # Not present in Jython (at least)
     parser.setFeature(handler.feature_namespaces, 1)
     trix = TriXHandler(store)
-    parser.setContentHandler(trix)
+    parser.setContentHandler(trix)  # type: ignore[arg-type]
     parser.setErrorHandler(ErrorHandler())
     return parser
 

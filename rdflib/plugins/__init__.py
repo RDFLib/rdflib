@@ -1,7 +1,5 @@
 """
-Default plugins for rdflib.
+Default plugins for RDFLib.
 
-This is a namespace package and contains the default plugins for
-rdflib.
-
+This is a namespace package and contains the default plugins for RDFLib.
 """

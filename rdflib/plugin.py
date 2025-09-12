@@ -1,28 +1,9 @@
-"""
-Plugin support for rdf.
-
-There are a number of plugin points for rdf: parser, serializer,
+"""There are a number of plugin points for rdf: parser, serializer,
 store, query processor, and query result. Plugins can be registered
-either through setuptools entry_points or by calling
+either automatically through entry points or by calling
 rdf.plugin.register directly.
 
-If you have a package that uses a setuptools based setup.py you can add the
-following to your setup::
-
-    entry_points = {
-        'rdf.plugins.parser': [
-            'nt =     rdf.plugins.parsers.ntriples:NTParser',
-            ],
-        'rdf.plugins.serializer': [
-            'nt =     rdf.plugins.serializers.NTSerializer:NTSerializer',
-            ],
-        }
-
-See the `setuptools dynamic discovery of services and plugins`__ for more
-information.
-
-.. __: http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
-
+For more details, see the [Plugins Usage Documentation](../plugins.md).
 """
 
 from __future__ import annotations

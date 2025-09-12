@@ -5,7 +5,7 @@ xml:base='' should resolve to the given publicID per XML Base specification
 and RDF/XML dependence on it
 """
 
-from rdflib.graph import ConjunctiveGraph
+from rdflib.graph import Dataset
 from rdflib.namespace import FOAF, RDF
 from rdflib.term import URIRef
 
@@ -36,7 +36,7 @@ baseUri2 = URIRef("http://example.com/foo/bar")  # noqa: N816
 
 class TestEmptyBase:
     def test_empty_base_ref(self):
-        self.graph = ConjunctiveGraph()
+        self.graph = Dataset()
         self.graph.parse(data=test_data, publicID=baseUri, format="xml")
         assert (
             len(list(self.graph)) > 0
@@ -50,7 +50,7 @@ class TestEmptyBase:
 
 class TestRelativeBase:
     def test_relative_base_ref(self):
-        self.graph = ConjunctiveGraph()
+        self.graph = Dataset()
         self.graph.parse(data=test_data2, publicID=baseUri2, format="xml")
         assert (
             len(self.graph) > 0
