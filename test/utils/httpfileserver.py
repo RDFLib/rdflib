@@ -185,7 +185,7 @@ class HTTPFileServer(HTTPServer):
         class Handler(BaseHTTPRequestHandler):
             server: HTTPFileServer
 
-            def do_GET(self) -> None:  # noqa: N802
+            def do_GET(self) -> None:
                 parsed_path = urlparse(self.path)
                 path_query = parse_qs(parsed_path.query)
                 body = None

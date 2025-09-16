@@ -440,7 +440,7 @@ class TestSPARQLStoreUpdate:
 
 
 class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
-    def do_POST(self):  # noqa: N802
+    def do_POST(self):
         """
         If the body should be analysed as well, just use:
         ```
@@ -477,7 +477,7 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
         self.end_headers()
         return
 
-    def do_GET(self):  # noqa: N802
+    def do_GET(self):
         # Process an HTTP GET request and return a response with an HTTP 200 status.
         self.send_response(200, "OK")
         self.end_headers()
