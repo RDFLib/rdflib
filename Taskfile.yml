@@ -363,7 +363,7 @@ tasks:
     desc: Run tests without internet access
     cmds:
       - |
-        {{.TEST_HARNESS}}{{.RUN_PREFIX}} -- firejail --net=none -- pytest -m "not webtest" {{.CLI_ARGS}}
+        {{.TEST_HARNESS}}{{.RUN_PREFIX}} firejail --net=none -- pytest -m "not webtest" {{.CLI_ARGS}}
   _rimraf:
     # This task is a utility task for recursively removing directories, it is
     # similar to rm -rf but not identical and it should work wherever there is
