@@ -1728,4 +1728,4 @@ orjson = ["orjson"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9,<4"
-content-hash = "dd3cdeebfd533aed7ec02bb76bb87a757a19e0700c9e47ac44c83a968d37c26b"
+content-hash = "a9cc938b3991e860d9081d0912b0b1362edf47b30febbc1ace7ed40e62930223"
