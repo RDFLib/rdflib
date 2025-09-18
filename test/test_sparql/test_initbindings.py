@@ -1,8 +1,8 @@
-from rdflib import ConjunctiveGraph, Literal, URIRef, Variable
+from rdflib import Dataset, Literal, URIRef, Variable
 from rdflib.plugins.sparql import prepareQuery
 from test.utils.namespace import EGDC
 
-g = ConjunctiveGraph()
+g = Dataset()
 
 
 def test_str():
@@ -272,7 +272,7 @@ def test_prepare():
 
 
 def test_data():
-    data = ConjunctiveGraph()
+    data = Dataset()
     data += [
         (URIRef("urn:a"), URIRef("urn:p"), Literal("a")),
         (URIRef("urn:b"), URIRef("urn:p"), Literal("b")),
@@ -297,7 +297,7 @@ def test_ask():
     assert a == b, "ask: %r != %r" % (a, b)
 
 
-g2 = ConjunctiveGraph()
+g2 = Dataset()
 g2.bind("", EGDC)
 g2.add((EGDC["s1"], EGDC["p"], EGDC["o1"]))
 g2.add((EGDC["s2"], EGDC["p"], EGDC["o2"]))

@@ -45,6 +45,8 @@ destructiveOpLocks = {  # noqa: N816
 
 
 class AuditableStore(Store):
+    """A store that logs destructive operations (add/remove) in reverse order."""
+
     def __init__(self, store: Store):
         self.store = store
         self.context_aware = store.context_aware

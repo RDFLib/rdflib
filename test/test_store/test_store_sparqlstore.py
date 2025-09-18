@@ -19,12 +19,11 @@ from test.utils.httpservermock import ServedBaseHTTPServerMock
 
 
 class TestSPARQLStoreGraph:
-    """
-    Tests for ``rdflib.Graph(store="SPARQLStore")``.
+    """SPARQLStore Graph Tests
 
-    .. note::
-        This is a pytest based test class to be used for new tests instead of
-        the older `unittest.TestCase` based classes.
+    !!! info "New Test Framework"
+        This is a pytest based test class that replaces the older
+        `unittest.TestCase` based classes for testing SPARQLStore functionality.
     """
 
     @pytest.mark.parametrize(
@@ -441,7 +440,7 @@ class TestSPARQLStoreUpdate:
 
 
 class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
-    def do_POST(self):  # noqa: N802
+    def do_POST(self):
         """
         If the body should be analysed as well, just use:
         ```
@@ -478,7 +477,7 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
         self.end_headers()
         return
 
-    def do_GET(self):  # noqa: N802
+    def do_GET(self):
         # Process an HTTP GET request and return a response with an HTTP 200 status.
         self.send_response(200, "OK")
         self.end_headers()

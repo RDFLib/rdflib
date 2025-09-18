@@ -49,7 +49,7 @@ from uuid import uuid4
 
 from rdflib.compat import long_type
 from rdflib.exceptions import ParserError
-from rdflib.graph import ConjunctiveGraph, Graph, QuotedGraph
+from rdflib.graph import Dataset, Graph, QuotedGraph
 from rdflib.term import (
     _XSD_PFX,
     BNode,
@@ -90,18 +90,18 @@ _AnyT = TypeVar("_AnyT")
 
 
 def splitFragP(uriref: str, punc: int = 0) -> tuple[str, str]:
-    """split a URI reference before the fragment
+    """Split a URI reference before the fragment
 
-    Punctuation is kept.
+    Punctuation is kept. e.g.
 
-    e.g.
-
+    ```python
     >>> splitFragP("abc#def")
     ('abc', '#def')
 
     >>> splitFragP("abcdef")
     ('abcdef', '')
 
+    ```
     """
 
     i = uriref.rfind("#")
@@ -119,15 +119,19 @@ def join(here: str, there: str) -> str:
     (non-ascii characters are supported/doctested;
     haven't checked the details of the IRI spec though)
 
-    ``here`` is assumed to be absolute.
-    ``there`` is URI reference.
+    `here` is assumed to be absolute.
+    `there` is URI reference.
 
+    ```python
     >>> join('http://example/x/y/z', '../abc')
     'http://example/x/abc'
+
+    ```
 
     Raise ValueError if there uses relative path
     syntax but here has no hierarchical path.
 
+    ```python
     >>> join('mid:foo@example', '../foo') # doctest: +NORMALIZE_WHITESPACE
     Traceback (most recent call last):
         raise ValueError(here)
@@ -140,13 +144,18 @@ def join(here: str, there: str) -> str:
     >>> join('mid:foo@example', '#foo')
     'mid:foo@example#foo'
 
+    ```
+
     We grok IRIs
 
+    ```python
     >>> len('Andr\\xe9')
     5
 
     >>> join('http://example.org/', '#Andr\\xe9')
     'http://example.org/#Andr\\xe9'
+
+    ```
     """
 
     #    assert(here.find("#") < 0), \
@@ -219,7 +228,6 @@ def base() -> str:
     this yield the URI of the file.
     If we had a reliable way of getting a computer name,
     we should put it in the hostname just to prevent ambiguity
-
     """
     # return "file://" + hostname + os.getcwd() + "/"
     return "file://" + _fixslash(os.getcwd()) + "/"
@@ -374,6 +382,10 @@ exponent_syntax = re.compile(
 digitstring = re.compile(r"[0-9]+")  # Unsigned integer
 interesting = re.compile(r"""[\\\r\n\"\']""")
 langcode = re.compile(r"[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*")
+
+
+class sfloat(str):  # noqa: N801
+    """don't normalize raw XSD.double string representation"""
 
 
 class SinkParser:
@@ -537,7 +549,7 @@ class SinkParser:
         we must not be at end of file.
 
         if colon, then keyword followed by colon is ok
-        (@prefix:<blah> is ok, rdf:type shortcut a must be followed by ws)
+        (`@prefix:<blah>` is ok, rdf:type shortcut a must be followed by ws)
         """
 
         assert tok[0] not in _notNameChars  # not for punctuation
@@ -1522,7 +1534,7 @@ class SinkParser:
                 m = exponent_syntax.match(argstr, i)
                 if m:
                     j = m.end()
-                    res.append(float(argstr[i:j]))
+                    res.append(sfloat(argstr[i:j]))
                     return j
 
                 m = decimal_syntax.match(argstr, i)
@@ -1913,7 +1925,7 @@ class RDFSink:
     def normalise(self, f: Formula | Graph | None, n: Decimal) -> Literal: ...
 
     @overload
-    def normalise(self, f: Formula | Graph | None, n: float) -> Literal: ...
+    def normalise(self, f: Formula | Graph | None, n: sfloat) -> Literal: ...
 
     @overload
     def normalise(self, f: Formula | Graph | None, n: Node) -> Node: ...
@@ -1921,7 +1933,7 @@ class RDFSink:
     def normalise(
         self,
         f: Formula | Graph | None,
-        n: Union[tuple[int, str], bool, int, Decimal, float, Node, _AnyT],
+        n: Union[tuple[int, str], bool, int, Decimal, sfloat, Node, _AnyT],
     ) -> Union[URIRef, Literal, BNode, Node, _AnyT]:
         if isinstance(n, tuple):
             return URIRef(str(n[1]))
@@ -1941,7 +1953,7 @@ class RDFSink:
             s = Literal(value, datatype=DECIMAL_DATATYPE)
             return s
 
-        if isinstance(n, float):
+        if isinstance(n, sfloat):
             s = Literal(str(n), datatype=DOUBLE_DATATYPE)
             return s
 
@@ -1957,7 +1969,7 @@ class RDFSink:
         #    f.universals[n] = f.newBlankNode()
         #    return f.universals[n]
         # type error: Incompatible return value type (got "Union[int, _AnyT]", expected "Union[URIRef, Literal, BNode, _AnyT]")  [return-value]
-        return n  # type: ignore[return-value]
+        return n
 
     def intern(self, something: _AnyT) -> _AnyT:
         return something
@@ -1982,9 +1994,11 @@ def hexify(ustr: str) -> bytes:
     """Use URL encoding to return an ASCII string
     corresponding to the given UTF8 string
 
+    ```python
     >>> hexify("http://example/a b")
     b'http://example/a%20b'
 
+    ```
     """
     # s1=ustr.encode('utf-8')
     s = ""
@@ -1998,8 +2012,7 @@ def hexify(ustr: str) -> bytes:
 
 
 class TurtleParser(Parser):
-    """
-    An RDFLib parser for Turtle
+    """An RDFLib parser for Turtle
 
     See http://www.w3.org/TR/turtle/
     """
@@ -2026,19 +2039,17 @@ class TurtleParser(Parser):
         # N3 parser prefers str stream
         stream = source.getCharacterStream()
         if not stream:
-            stream = source.getByteStream()
-        p.loadStream(stream)
+            stream = source.getByteStream()  # type: ignore[assignment]
+        p.loadStream(stream)  # type: ignore[arg-type]
 
         for prefix, namespace in p._bindings.items():
             graph.bind(prefix, namespace)
 
 
 class N3Parser(TurtleParser):
-    """
-    An RDFLib parser for Notation3
+    """An RDFLib parser for Notation3
 
     See http://www.w3.org/DesignIssues/Notation3.html
-
     """
 
     def __init__(self):
@@ -2057,7 +2068,7 @@ class N3Parser(TurtleParser):
         elif not fa:
             raise ParserError("Cannot parse N3 into non-formula-aware store.")
 
-        conj_graph = ConjunctiveGraph(store=graph.store)
+        conj_graph = Dataset(store=graph.store)
         conj_graph.default_context = graph  # TODO: CG __init__ should have a
         # default_context arg
         # TODO: update N3Processor so that it can use conj_graph as the sink

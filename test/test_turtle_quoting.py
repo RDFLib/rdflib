@@ -13,7 +13,7 @@ from typing import Callable
 
 import pytest
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import Dataset, Graph
 from rdflib.plugins.parsers import ntriples
 from rdflib.term import Literal, URIRef
 from test.utils.namespace import EGDC
@@ -74,7 +74,7 @@ UNQUOTE_CORRECTNESS_PAIRS = make_unquote_correctness_pairs()
 
 def ntriples_unquote_validate(input: str) -> str:
     """
-    This function wraps `ntriples.unquote` in a way that ensures that `ntriples.validate` is always ``True`` when it runs.
+    This function wraps `ntriples.unquote` in a way that ensures that `ntriples.validate` is always `True` when it runs.
     """
     old_validate = ntriples.validate
     try:
@@ -86,7 +86,7 @@ def ntriples_unquote_validate(input: str) -> str:
 
 def ntriples_unquote(input: str) -> str:
     """
-    This function wraps `ntriples.unquote` in a way that ensures that `ntriples.validate` is always ``False`` when it runs.
+    This function wraps `ntriples.unquote` in a way that ensures that `ntriples.validate` is always `False` when it runs.
     """
     old_validate = ntriples.validate
     try:
@@ -148,7 +148,7 @@ def test_parse_correctness(
         data = f'<example:Subject> <example:Predicate> "{quoted}" <example:Graph>.'
     else:
         data = f'<example:Subject> <example:Predicate> "{quoted}".'
-    graph = ConjunctiveGraph()
+    graph = Dataset(default_union=True)
     graph.parse(data=data, format=format)
     objs = list(graph.objects())
     assert len(objs) == 1

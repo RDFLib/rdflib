@@ -1,10 +1,8 @@
 """
-This parser will interpret a JSON-LD document as an RDF Graph. See:
+This parser will interpret a JSON-LD document as an RDF Graph. See http://json-ld.org/
 
-    http://json-ld.org/
-
-Example usage::
-
+Example:
+    ```python
     >>> from rdflib import Graph, URIRef, Literal
     >>> test_json = '''
     ... {
@@ -26,6 +24,7 @@ Example usage::
     ...     Literal("Someone's Homepage", lang='en'))]
     True
 
+    ```
 """
 
 # From: https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/parser.py
@@ -102,31 +101,23 @@ class JsonLDParser(rdflib.parser.Parser):
         """Parse JSON-LD from a source document.
 
         The source document can be JSON or HTML with embedded JSON script
-        elements (type attribute = "application/ld+json"). To process as HTML
-        ``source.content_type`` must be set to "text/html" or
-        "application/xhtml+xml".
+        elements (type attribute = `application/ld+json`). To process as HTML
+        `source.content_type` must be set to "text/html" or
+        `application/xhtml+xml.
 
-        :param source: InputSource with JSON-formatted data (JSON or HTML)
-
-        :param sink: Graph to receive the parsed triples
-
-        :param version: parse as JSON-LD version, defaults to 1.1
-
-        :param encoding: character encoding of the JSON (should be "utf-8"
-            or "utf-16"), defaults to "utf-8"
-
-        :param base: JSON-LD `Base IRI <https://www.w3.org/TR/json-ld/#base-iri>`_, defaults to None
-
-        :param context: JSON-LD `Context <https://www.w3.org/TR/json-ld/#the-context>`_, defaults to None
-
-        :param generalized_rdf: parse as `Generalized RDF <https://www.w3.org/TR/json-ld/#relationship-to-rdf>`_, defaults to False
-
-        :param extract_all_scripts: if source is an HTML document then extract
-            all script elements, defaults to False (extract only the first
-            script element). This is ignored if ``source.system_id`` contains
-            a fragment identifier, in which case only the script element with
-            matching id attribute is extracted.
-
+        Args:
+            source: InputSource with JSON-formatted data (JSON or HTML)
+            sink: Graph to receive the parsed triples
+            version: parse as JSON-LD version, defaults to 1.1
+            skolemize: whether to skolemize blank nodes, defaults to False
+            encoding: character encoding of the JSON (should be "utf-8"
+            base: JSON-LD [Base IRI](https://www.w3.org/TR/json-ld/#base-iri), defaults to None
+            context: JSON-LD [Context](https://www.w3.org/TR/json-ld/#the-context), defaults to None
+            generalized_rdf: parse as [Generalized RDF](https://www.w3.org/TR/json-ld/#relationship-to-rdf), defaults to False
+            extract_all_scripts: if source is an HTML document then extract
+                script element). This is ignored if `source.system_id` contains
+                a fragment identifier, in which case only the script element with
+                matching id attribute is extracted.
         """
         if encoding not in ("utf-8", "utf-16"):
             warnings.warn(
@@ -150,7 +141,7 @@ class JsonLDParser(rdflib.parser.Parser):
 
         # Get the optional fragment identifier
         try:
-            fragment_id = URIRef(source.getSystemId()).fragment
+            fragment_id = URIRef(source.getSystemId()).fragment  # type: ignore[arg-type]
         except Exception:
             fragment_id = None
 
@@ -663,7 +654,7 @@ class Parser:
 
             if rest:
                 # type error: Statement is unreachable
-                graph.add((subj, RDF.rest, rest))  # type: ignore[unreachable]
+                graph.add((subj, RDF.rest, rest))
                 subj = rest
 
             obj = self._to_object(dataset, graph, context, term, node, inlist=True)
