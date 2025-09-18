@@ -1915,7 +1915,7 @@ class RDFSink:
     def normalise(
         self,
         f: Optional[Formula],
-        n: Union[Tuple[int, str], bool, int, Decimal, sfloat, _AnyT],
+        n: Union[Tuple[int, str], bool, int, Decimal, "sfloat", _AnyT],
     ) -> Union[URIRef, Literal, BNode, _AnyT]:
         if isinstance(n, tuple):
             return URIRef(str(n[1]))
