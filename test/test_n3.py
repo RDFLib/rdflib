@@ -251,31 +251,22 @@ foo-bar:Ex foo-bar:name "Test" . """
             g2
         ), "Document with declared empty prefix must match default #"
 
-    def test_float_no_norm(self):
+    @pytest.mark.parametrize(
+        "do_normalize_literal, expected_result",
+        [(True, {"1.0", "10000000000.0"}), (False, {"1e10", "1e0"})],
+    )
+    def test_float_no_norm(self, do_normalize_literal, expected_result):
         import rdflib
-        _ps = rdflib.NORMALIZE_LITERALS
+
+        original_normalize_literal = rdflib.NORMALIZE_LITERALS
         try:
-            bads = []
-            for norm_lit in (True, False):
-                rdflib.NORMALIZE_LITERALS = norm_lit
-                g1 = Graph()
-                g1.parse(data=":a :b 1e10, 1e0 .", format="n3")
-                strep = [str(o) for o in g1.objects()]
-                if norm_lit:
-                    if '1e10' not in strep and '1e0' not in strep:
-                        pass
-                    else:
-                        bads.append(('NOT normalized when should have been', strep))
-                else:
-                    if '1e10' in strep and '1e0' in strep:
-                        pass
-                    else:
-                        bads.append(('normalized when it should NOT have been', strep))
-
+            rdflib.NORMALIZE_LITERALS = do_normalize_literal
+            g1 = Graph()
+            g1.parse(data=":a :b 1e10, 1e0 .", format="n3")
+            values = set(str(o) for o in g1.objects())
+            assert values == expected_result
         finally:
-            rdflib.NORMALIZE_LITERALS = _ps
-
-        assert not bads, bads
+            rdflib.NORMALIZE_LITERALS = original_normalize_literal
 
 
 class TestRegularExpressions:
