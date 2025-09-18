@@ -251,6 +251,23 @@ foo-bar:Ex foo-bar:name "Test" . """
             g2
         ), "Document with declared empty prefix must match default #"
 
+    @pytest.mark.parametrize(
+        "do_normalize_literal, expected_result",
+        [(True, {"1.0", "10000000000.0"}), (False, {"1e10", "1e0"})],
+    )
+    def test_float_no_norm(self, do_normalize_literal, expected_result):
+        import rdflib
+
+        original_normalize_literal = rdflib.NORMALIZE_LITERALS
+        try:
+            rdflib.NORMALIZE_LITERALS = do_normalize_literal
+            g1 = Graph()
+            g1.parse(data=":a :b 1e10, 1e0 .", format="n3")
+            values = set(str(o) for o in g1.objects())
+            assert values == expected_result
+        finally:
+            rdflib.NORMALIZE_LITERALS = original_normalize_literal
+
 
 class TestRegularExpressions:
     def test_exponents(self):
