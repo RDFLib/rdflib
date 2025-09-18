@@ -5,7 +5,6 @@ This release contains a number of fixes and improvements to RDFLib.
 New features:
 - Canonicalization is now optional in the longturtle serializer. When serializing with the `longturtle` format, set `canon=True` to enable canonicalization.
 - General type hints enhancements
-- Creation of an RDFLib Charter
 
 Fixes:
 - Fixed deskolemization of literals
