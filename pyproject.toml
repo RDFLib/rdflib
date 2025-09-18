@@ -76,8 +76,8 @@ networkx = ["networkx >=2,<4"]
 html = ["html5rdf >=1.2.1,<2"]
 # lxml support is optional, it is used only for parsing XML-formatted SPARQL results
 lxml = [
-    'lxml >=4.8.0,<6.0; python_version <"3.11"',
-    'lxml >=4.9.3,<6.0; python_version >="3.11"',
+    'lxml >=4.8.0,<7.0; python_version <"3.11"',
+    'lxml >=4.9.3,<7.0; python_version >="3.11"',
 ]
 orjson = ["orjson >=3.9.14,<4"]
 

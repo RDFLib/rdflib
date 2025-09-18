@@ -53,7 +53,7 @@ jobs:
             TOXENV_SUFFIX: "-docs"
             PREPARATION: "sudo apt-get install -y firejail"
             extensive-tests: true
-            TOX_TEST_HARNESS: "firejail --net=none --"
+            TOX_TEST_HARNESS: "-- firejail --net=none --"
             TOX_PYTEST_EXTRA_ARGS: "-m 'not webtest'"
           - python-version: "3.12"
             os: ubuntu-latest
