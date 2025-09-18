@@ -167,7 +167,7 @@ def test_longturtle():
     g.bind("sdo", SDO)
 
     # run the long turtle serializer
-    output = g.serialize(format="longturtle")
+    output = g.serialize(format="longturtle", canon=True)
 
     # fix the target
     current_dir = Path.cwd()  # Get the current directory

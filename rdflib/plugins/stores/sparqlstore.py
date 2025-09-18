@@ -35,6 +35,7 @@ if TYPE_CHECKING:
         _TripleType,
         _ContextType,
         _QuadType,
+        _TripleChoiceType,
         _TriplePatternType,
         _SubjectType,
         _PredicateType,
@@ -367,11 +368,7 @@ class SPARQLStore(SPARQLConnector, Store):
 
     def triples_choices(
         self,
-        _: Tuple[
-            Union[_SubjectType, List[_SubjectType]],
-            Union[_PredicateType, List[_PredicateType]],
-            Union[_ObjectType, List[_ObjectType]],
-        ],
+        _: _TripleChoiceType,
         context: Optional[_ContextType] = None,
     ) -> Generator[
         Tuple[

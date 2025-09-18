@@ -62,55 +62,55 @@ def test_sort_semiblank_graph() -> None:
             graph.add((outer_node, EX.has, inner_node))
             graph.add((inner_node, RDFS.seeAlso, nested))
 
-        graph_text = graph.serialize(format="longturtle", sort=True)
+        graph_text = graph.serialize(format="longturtle", canon=True)
         if first_graph_text == "":
             first_graph_text = graph_text
 
         serialization_counter[graph_text] += 1
 
     expected_serialization = """\
-PREFIX ns1: <http://example.org/ex/>
+PREFIX ex: <http://example.org/ex/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ns1:A
+ex:A
     rdfs:comment "Thing A" ;
 .
 
-ns1:C
+ex:C
     rdfs:comment "Thing C" ;
 .
 
-ns1:B
+ex:B
     rdfs:comment "Thing B" ;
 .
 
-[]    ns1:has
+[]    ex:has
         [
-            rdfs:seeAlso ns1:A ;
+            rdfs:seeAlso ex:A ;
         ] ;
 .
 
-[]    rdfs:seeAlso ns1:B ;
+[]    rdfs:seeAlso ex:B ;
 .
 
-[]    ns1:has
+[]    ex:has
         [
-            rdfs:seeAlso ns1:C ;
+            rdfs:seeAlso ex:C ;
         ] ;
 .
 
-[]    rdfs:seeAlso ns1:A ;
+[]    rdfs:seeAlso ex:A ;
 .
 
-[]    rdfs:seeAlso ns1:C ;
+[]    rdfs:seeAlso ex:C ;
 .
 
-[]    rdfs:seeAlso ns1:B ;
+[]    rdfs:seeAlso ex:B ;
 .
 
-[]    ns1:has
+[]    ex:has
         [
-            rdfs:seeAlso ns1:B ;
+            rdfs:seeAlso ex:B ;
         ] ;
 .
 
