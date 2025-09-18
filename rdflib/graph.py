@@ -1869,12 +1869,11 @@ class Graph(Node):
                 # type error: Argument 1 to "Genid" has incompatible type "Node"; expected "str"
                 s = Genid(s).de_skolemize()  # type: ignore[arg-type]
 
-            if RDFLibGenid._is_rdflib_skolem(o):
-                # type error: Argument 1 to "RDFLibGenid" has incompatible type "Node"; expected "str"
-                o = RDFLibGenid(o).de_skolemize()  # type: ignore[arg-type]
-            elif Genid._is_external_skolem(o):
-                # type error: Argument 1 to "Genid" has incompatible type "Node"; expected "str"
-                o = Genid(o).de_skolemize()  # type: ignore[arg-type]
+            if isinstance(o, URIRef):
+                if RDFLibGenid._is_rdflib_skolem(o):
+                    o = RDFLibGenid(o).de_skolemize()
+                elif Genid._is_external_skolem(o):
+                    o = Genid(o).de_skolemize()
 
             return s, p, o
 
