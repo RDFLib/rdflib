@@ -83,6 +83,7 @@ __all__ = [
     "Formula",
     "RDFSink",
     "SinkParser",
+    "sfloat",
 ]
 
 from rdflib.parser import Parser
@@ -378,6 +379,10 @@ exponent_syntax = re.compile(
 digitstring = re.compile(r"[0-9]+")  # Unsigned integer
 interesting = re.compile(r"""[\\\r\n\"\']""")
 langcode = re.compile(r"[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*")
+
+
+class sfloat(str):  # noqa: N801
+    """don't normalize raw XSD.double string representation"""
 
 
 class SinkParser:
@@ -1528,7 +1533,7 @@ class SinkParser:
                 m = exponent_syntax.match(argstr, i)
                 if m:
                     j = m.end()
-                    res.append(float(argstr[i:j]))
+                    res.append(sfloat(argstr[i:j]))
                     return j
 
                 m = decimal_syntax.match(argstr, i)
@@ -1911,7 +1916,7 @@ class RDFSink:
     def normalise(
         self,
         f: Optional[Formula],
-        n: Union[Tuple[int, str], bool, int, Decimal, float, _AnyT],
+        n: Union[Tuple[int, str], bool, int, Decimal, sfloat, _AnyT],
     ) -> Union[URIRef, Literal, BNode, _AnyT]:
         if isinstance(n, tuple):
             return URIRef(str(n[1]))
@@ -1931,7 +1936,7 @@ class RDFSink:
             s = Literal(value, datatype=DECIMAL_DATATYPE)
             return s
 
-        if isinstance(n, float):
+        if isinstance(n, sfloat):
             s = Literal(str(n), datatype=DOUBLE_DATATYPE)
             return s
 
@@ -1947,7 +1952,7 @@ class RDFSink:
         #    f.universals[n] = f.newBlankNode()
         #    return f.universals[n]
         # type error: Incompatible return value type (got "Union[int, _AnyT]", expected "Union[URIRef, Literal, BNode, _AnyT]")  [return-value]
-        return n  # type: ignore[return-value]
+        return n
 
     def intern(self, something: _AnyT) -> _AnyT:
         return something
