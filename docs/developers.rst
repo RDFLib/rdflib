@@ -552,7 +552,7 @@ Once this is all done, create another post-release pull request with the followi
 #. Use ``task docker:prepare`` to update ``docker/latest/requirements.txt``
 
 5. Port changes to the next major working branch
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If maintaining multiple long-lived version branches, ensure changes from this release are ported to the next major working branch.
 
