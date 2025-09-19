@@ -3,18 +3,19 @@
 This is a tool that can be used with git difftool to generate a diff that
 ignores type hints and comments.
 
-The name of this script, ``diffrtpy`` is short for "diff runtime python", as
+The name of this script, `diffrtpy` is short for "diff runtime python", as
 this will only compare the parts of the python code that has a runtime impact.
 
 This is to make it easier to review PRs that contain type hints.
 
 To use this script
 
-.. code-block:: bash
-    task run -- python -m pip install --upgrade strip-hints black python-minifier
-    PYLOGGING_LEVEL=INFO task run -- git difftool -y -x $(readlink -f devtools/diffrtpy.py) upstream/main | tee /var/tmp/compact.diff
+```bash
+task run -- python -m pip install --upgrade strip-hints black python-minifier
+PYLOGGING_LEVEL=INFO task run -- git difftool -y -x $(readlink -f devtools/diffrtpy.py) upstream/main | tee /var/tmp/compact.diff
+```
 
-Then attach ``/var/tmp/compact.diff`` to the PR.
+Then attach `/var/tmp/compact.diff` to the PR.
 """
 
 from __future__ import annotations
@@ -26,7 +27,6 @@ import sys
 from dataclasses import dataclass, field
 from difflib import unified_diff
 from pathlib import Path
-from typing import List
 
 import black
 import python_minifier
@@ -79,7 +79,7 @@ class Application:
         parser.add_argument("rhs_file", nargs=1, type=str)
         parser.set_defaults(handler=self.handle)
 
-    def run(self, args: List[str]) -> None:
+    def run(self, args: list[str]) -> None:
         parse_result = self.parser.parse_args(args)
 
         verbosity = parse_result.verbosity

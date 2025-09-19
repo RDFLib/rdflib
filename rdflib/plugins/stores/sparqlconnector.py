@@ -4,7 +4,7 @@ import base64
 import copy
 import logging
 from io import BytesIO
-from typing import TYPE_CHECKING, Optional, Tuple
+from typing import TYPE_CHECKING
 from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -16,6 +16,9 @@ log = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     import typing_extensions as te
+
+    SUPPORTED_METHODS = te.Literal["GET", "POST", "POST_FORM"]
+    SUPPORTED_FORMATS = te.Literal["xml", "json", "csv", "tsv", "application/rdf+xml"]
 
 
 class SPARQLConnectorException(Exception):  # noqa: N818
@@ -39,11 +42,11 @@ class SPARQLConnector:
 
     def __init__(
         self,
-        query_endpoint: Optional[str] = None,
-        update_endpoint: Optional[str] = None,
-        returnFormat: str = "xml",  # noqa: N803
-        method: te.Literal["GET", "POST", "POST_FORM"] = "GET",
-        auth: Optional[Tuple[str, str]] = None,
+        query_endpoint: str | None = None,
+        update_endpoint: str | None = None,
+        returnFormat: SUPPORTED_FORMATS = "xml",  # noqa: N803
+        method: SUPPORTED_METHODS = "GET",
+        auth: tuple[str, str] | None = None,
         **kwargs,
     ):
         """
@@ -84,8 +87,8 @@ class SPARQLConnector:
     def query(
         self,
         query: str,
-        default_graph: Optional[str] = None,
-        named_graph: Optional[str] = None,
+        default_graph: str | None = None,
+        named_graph: str | None = None,
     ) -> Result:
         if not self.query_endpoint:
             raise SPARQLConnectorException("Query endpoint not set!")
@@ -155,8 +158,8 @@ class SPARQLConnector:
     def update(
         self,
         query: str,
-        default_graph: Optional[str] = None,
-        named_graph: Optional[str] = None,
+        default_graph: str | None = None,
+        named_graph: str | None = None,
     ) -> None:
         if not self.update_endpoint:
             raise SPARQLConnectorException("Query endpoint not set!")

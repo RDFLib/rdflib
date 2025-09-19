@@ -1,10 +1,8 @@
 """
-This parser will interpret a JSON-LD document as an RDF Graph. See:
+This parser will interpret a JSON-LD document as an RDF Graph. See http://json-ld.org/
 
-    http://json-ld.org/
-
-Example usage::
-
+Example:
+    ```python
     >>> from rdflib import Graph, URIRef, Literal
     >>> test_json = '''
     ... {
@@ -26,6 +24,7 @@ Example usage::
     ...     Literal("Someone's Homepage", lang='en'))]
     True
 
+    ```
 """
 
 # From: https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/parser.py
@@ -36,13 +35,14 @@ from __future__ import annotations
 
 import secrets
 import warnings
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Union
+from collections.abc import Iterable
+from typing import TYPE_CHECKING, Any, Union
 
 import rdflib.parser
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import RDF, XSD
 from rdflib.parser import InputSource, URLInputSource
-from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef
+from rdflib.term import BNode, IdentifiedNode, Literal, URIRef
 
 from ..shared.jsonld.context import UNDEF, Context, Term
 from ..shared.jsonld.keys import (
@@ -71,6 +71,9 @@ from ..shared.jsonld.util import (
     source_to_json,
 )
 
+if TYPE_CHECKING:
+    from rdflib.graph import _ObjectType
+
 __all__ = ["JsonLDParser", "to_rdf"]
 
 TYPE_TERM = Term(str(RDF.type), TYPE, VOCAB)  # type: ignore[call-arg]
@@ -88,47 +91,33 @@ class JsonLDParser(rdflib.parser.Parser):
         sink: Graph,
         version: float = 1.1,
         skolemize: bool = False,
-        encoding: Optional[str] = "utf-8",
-        base: Optional[str] = None,
-        context: Optional[
-            Union[
-                List[Union[Dict[str, Any], str, None]],
-                Dict[str, Any],
-                str,
-            ]
-        ] = None,
-        generalized_rdf: Optional[bool] = False,
-        extract_all_scripts: Optional[bool] = False,
+        encoding: str | None = "utf-8",
+        base: str | None = None,
+        context: list[dict[str, Any] | str | None] | dict[str, Any] | str | None = None,
+        generalized_rdf: bool | None = False,
+        extract_all_scripts: bool | None = False,
         **kwargs: Any,
     ) -> None:
         """Parse JSON-LD from a source document.
 
         The source document can be JSON or HTML with embedded JSON script
-        elements (type attribute = "application/ld+json"). To process as HTML
-        ``source.content_type`` must be set to "text/html" or
-        "application/xhtml+xml".
+        elements (type attribute = `application/ld+json`). To process as HTML
+        `source.content_type` must be set to "text/html" or
+        `application/xhtml+xml.
 
-        :param source: InputSource with JSON-formatted data (JSON or HTML)
-
-        :param sink: Graph to receive the parsed triples
-
-        :param version: parse as JSON-LD version, defaults to 1.1
-
-        :param encoding: character encoding of the JSON (should be "utf-8"
-            or "utf-16"), defaults to "utf-8"
-
-        :param base: JSON-LD `Base IRI <https://www.w3.org/TR/json-ld/#base-iri>`_, defaults to None
-
-        :param context: JSON-LD `Context <https://www.w3.org/TR/json-ld/#the-context>`_, defaults to None
-
-        :param generalized_rdf: parse as `Generalized RDF <https://www.w3.org/TR/json-ld/#relationship-to-rdf>`_, defaults to False
-
-        :param extract_all_scripts: if source is an HTML document then extract
-            all script elements, defaults to False (extract only the first
-            script element). This is ignored if ``source.system_id`` contains
-            a fragment identifier, in which case only the script element with
-            matching id attribute is extracted.
-
+        Args:
+            source: InputSource with JSON-formatted data (JSON or HTML)
+            sink: Graph to receive the parsed triples
+            version: parse as JSON-LD version, defaults to 1.1
+            skolemize: whether to skolemize blank nodes, defaults to False
+            encoding: character encoding of the JSON (should be "utf-8"
+            base: JSON-LD [Base IRI](https://www.w3.org/TR/json-ld/#base-iri), defaults to None
+            context: JSON-LD [Context](https://www.w3.org/TR/json-ld/#the-context), defaults to None
+            generalized_rdf: parse as [Generalized RDF](https://www.w3.org/TR/json-ld/#relationship-to-rdf), defaults to False
+            extract_all_scripts: if source is an HTML document then extract
+                script element). This is ignored if `source.system_id` contains
+                a fragment identifier, in which case only the script element with
+                matching id attribute is extracted.
         """
         if encoding not in ("utf-8", "utf-16"):
             warnings.warn(
@@ -152,7 +141,7 @@ class JsonLDParser(rdflib.parser.Parser):
 
         # Get the optional fragment identifier
         try:
-            fragment_id = URIRef(source.getSystemId()).fragment
+            fragment_id = URIRef(source.getSystemId()).fragment  # type: ignore[arg-type]
         except Exception:
             fragment_id = None
 
@@ -183,17 +172,13 @@ class JsonLDParser(rdflib.parser.Parser):
 def to_rdf(
     data: Any,
     dataset: Graph,
-    base: Optional[str] = None,
-    context_data: Optional[
-        Union[
-            List[Union[Dict[str, Any], str, None]],
-            Dict[str, Any],
-            str,
-        ]
-    ] = None,
-    version: Optional[float] = None,
+    base: str | None = None,
+    context_data: (
+        list[dict[str, Any] | str | None] | dict[str, Any] | str | None
+    ) = None,
+    version: float | None = None,
     generalized_rdf: bool = False,
-    allow_lists_of_lists: Optional[bool] = None,
+    allow_lists_of_lists: bool | None = None,
     skolemize: bool = False,
 ):
     # TODO: docstring w. args and return value
@@ -212,7 +197,7 @@ class Parser:
     def __init__(
         self,
         generalized_rdf: bool = False,
-        allow_lists_of_lists: Optional[bool] = None,
+        allow_lists_of_lists: bool | None = None,
         skolemize: bool = False,
     ):
         self.skolemize = skolemize
@@ -226,7 +211,7 @@ class Parser:
 
     def parse(self, data: Any, context: Context, dataset: Graph) -> Graph:
         topcontext = False
-        resources: Union[Dict[str, Any], List[Any]]
+        resources: Union[dict[str, Any], list[Any]]
         if isinstance(data, list):
             resources = data
         elif isinstance(data, dict):
@@ -260,7 +245,7 @@ class Parser:
         context: Context,
         node: Any,
         topcontext: bool = False,
-    ) -> Optional[Node]:
+    ) -> IdentifiedNode | None:
         if not isinstance(node, dict) or context.get_value(node):
             # type error: Return value expected
             return  # type: ignore[return-value]
@@ -282,12 +267,13 @@ class Parser:
             if nested_id is not None and len(nested_id) > 0:
                 id_val = nested_id
 
+        subj: IdentifiedNode | None
+
         if isinstance(id_val, str):
             subj = self._to_rdf_id(context, id_val)
         else:
-            subj = BNode()
-            if self.skolemize:
-                subj = subj.skolemize()
+            _bn = BNode()
+            subj = _bn if not self.skolemize else _bn.skolemize()
 
         if subj is None:
             return None
@@ -317,7 +303,7 @@ class Parser:
         return subj
 
     # type error: Missing return statement
-    def _get_nested_id(self, context: Context, node: Dict[str, Any]) -> Optional[str]:  # type: ignore[return]
+    def _get_nested_id(self, context: Context, node: dict[str, Any]) -> str | None:  # type: ignore[return]
         for key, obj in node.items():
             if context.version >= 1.1 and key in context.get_keys(NEST):
                 term = context.terms.get(key)
@@ -341,7 +327,7 @@ class Parser:
         dataset: Graph,
         graph: Graph,
         context: Context,
-        subj: Node,
+        subj: IdentifiedNode,
         key: str,
         obj: Any,
         reverse: bool = False,
@@ -371,8 +357,7 @@ class Parser:
             if dataset.context_aware and not no_id:
                 if TYPE_CHECKING:
                     assert isinstance(dataset, ConjunctiveGraph)
-                # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Node"; expected "Union[IdentifiedNode, str, None]"
-                subgraph = dataset.get_context(subj)  # type: ignore[arg-type]
+                subgraph = dataset.get_context(subj)
             else:
                 subgraph = graph
             for onode in obj_nodes:
@@ -411,7 +396,7 @@ class Parser:
         context = context.get_context_for_term(term)
 
         # Flatten deep nested lists
-        def flatten(n: Iterable[Any]) -> List[Any]:
+        def flatten(n: Iterable[Any]) -> list[Any]:
             flattened = []
             for obj in n:
                 if isinstance(obj, dict):
@@ -453,8 +438,8 @@ class Parser:
                 graph.add((subj, pred, obj))
 
     def _parse_container(
-        self, context: Context, term: Term, obj: Dict[str, Any]
-    ) -> List[Any]:
+        self, context: Context, term: Term, obj: dict[str, Any]
+    ) -> list[Any]:
         if LANG in term.container:
             obj_nodes = []
             for lang, values in obj.items():
@@ -533,7 +518,7 @@ class Parser:
         return [obj]
 
     @staticmethod
-    def _add_type(context: Context, o: Dict[str, Any], k: str) -> Dict[str, Any]:
+    def _add_type(context: Context, o: dict[str, Any], k: str) -> dict[str, Any]:
         otype = context.get_type(o) or []
         if otype and not isinstance(otype, list):
             otype = [otype]
@@ -546,10 +531,10 @@ class Parser:
         dataset: Graph,
         graph: Graph,
         context: Context,
-        term: Optional[Term],
+        term: Term | None,
         node: Any,
         inlist: bool = False,
-    ) -> Optional[Node]:
+    ) -> _ObjectType | None:
         if isinstance(node, tuple):
             value, lang = node
             if value is None:
@@ -620,7 +605,7 @@ class Parser:
         else:
             return self._add_to_graph(dataset, graph, context, node)
 
-    def _to_rdf_id(self, context: Context, id_val: str) -> Optional[IdentifiedNode]:
+    def _to_rdf_id(self, context: Context, id_val: str) -> IdentifiedNode | None:
         bid = self._get_bnodeid(id_val)
         if bid:
             b = BNode(bid)
@@ -638,7 +623,7 @@ class Parser:
                 node = self.invalid_uri_to_bnode[id_val]
             return node
 
-    def _get_bnodeid(self, ref: str) -> Optional[str]:
+    def _get_bnodeid(self, ref: str) -> str | None:
         if not ref.startswith("_:"):
             # type error: Return value expected
             return  # type: ignore[return-value]
@@ -650,7 +635,7 @@ class Parser:
         dataset: Graph,
         graph: Graph,
         context: Context,
-        term: Optional[Term],
+        term: Term | None,
         node_list: Any,
     ) -> IdentifiedNode:
         if not isinstance(node_list, list):
@@ -669,7 +654,7 @@ class Parser:
 
             if rest:
                 # type error: Statement is unreachable
-                graph.add((subj, RDF.rest, rest))  # type: ignore[unreachable]
+                graph.add((subj, RDF.rest, rest))
                 subj = rest
 
             obj = self._to_object(dataset, graph, context, term, node, inlist=True)
@@ -689,7 +674,7 @@ class Parser:
             return RDF.nil
 
     @staticmethod
-    def _to_typed_json_value(value: Any) -> Dict[str, str]:
+    def _to_typed_json_value(value: Any) -> dict[str, str]:
         if _HAS_ORJSON:
             val_string: str = orjson.dumps(
                 value,
@@ -705,7 +690,7 @@ class Parser:
         }
 
     @classmethod
-    def _expand_nested_list(cls, obj_nodes: List[Any]) -> Dict[str, List[Any]]:
+    def _expand_nested_list(cls, obj_nodes: list[Any]) -> dict[str, list[Any]]:
         result = [
             cls._expand_nested_list(o) if isinstance(o, list) else o for o in obj_nodes
         ]

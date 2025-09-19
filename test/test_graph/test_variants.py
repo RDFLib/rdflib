@@ -6,22 +6,13 @@ import json
 import logging
 import os
 import re
-from collections import defaultdict
+from collections import OrderedDict, defaultdict
+from collections.abc import Collection, Iterable
 from dataclasses import dataclass, field
 from pathlib import Path, PurePath
+from re import Pattern
 from typing import (
     ClassVar,
-    Collection,
-    DefaultDict,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    OrderedDict,
-    Pattern,
-    Tuple,
-    Type,
-    Union,
     cast,
 )
 
@@ -43,7 +34,7 @@ TEST_DIR = Path(__file__).parent.parent.absolute()
 VARIANTS_DIR = TEST_DATA_DIR / "variants"
 
 # Put files from other directories in here.
-EXTRA_FILES: List[Path] = []
+EXTRA_FILES: list[Path] = []
 
 SUFFIX_FORMAT_MAP = {**rdflib.util.SUFFIX_FORMAT_MAP, "hext": "hext"}
 
@@ -54,8 +45,8 @@ class GraphAsserts:
     A specification of asserts that must be checked against a graph.
     """
 
-    quad_count: Optional[int] = None
-    has_subject_iris: Optional[List[str]] = None
+    quad_count: int | None = None
+    has_subject_iris: list[str] | None = None
 
     def check(self, graph: Dataset) -> None:
         """
@@ -86,11 +77,11 @@ class GraphVariantsMeta(GraphAsserts):
     Meta information about a set of variants.
     """
 
-    public_id: Optional[str] = None
+    public_id: str | None = None
     exact_match: bool = False
 
 
-_VARIANT_PREFERENCE: Dict[str, int] = dict(
+_VARIANT_PREFERENCE: dict[str, int] = dict(
     (format, index)
     for index, format in enumerate(
         [
@@ -115,7 +106,7 @@ class GraphVariants:
     """
 
     key: str
-    variants: Dict[str, GraphSource] = field(default_factory=OrderedDict)
+    variants: dict[str, GraphSource] = field(default_factory=OrderedDict)
     meta: GraphVariantsMeta = field(default_factory=GraphVariantsMeta)
 
     _variant_regex: ClassVar[Pattern[str]] = re.compile(
@@ -130,12 +121,10 @@ class GraphVariants:
 
     def pytest_param(
         self,
-        marks: Optional[
-            Union[MarkDecorator, Collection[Union[MarkDecorator, Mark]]]
-        ] = None,
+        marks: MarkDecorator | Collection[MarkDecorator | Mark] | None = None,
     ) -> ParameterSet:
         if marks is None:
-            marks = cast(Tuple[MarkDecorator], tuple())
+            marks = cast(tuple[MarkDecorator], tuple())
         return pytest.param(self, id=self.key, marks=marks)
 
     @property
@@ -143,15 +132,15 @@ class GraphVariants:
         return self.meta.public_id or f"example:rdflib:test:data:variant:{self.key}"
 
     @property
-    def preferred_variant(self) -> Tuple[str, GraphSource]:
+    def preferred_variant(self) -> tuple[str, GraphSource]:
         return self.ordered_variants[0]
 
-    def load(self, variant_key: str, graph_type: Type[_GraphT]) -> _GraphT:
+    def load(self, variant_key: str, graph_type: type[_GraphT]) -> _GraphT:
         variant = self.variants[variant_key]
         return variant.load(public_id=self.public_id, graph_type=graph_type)
 
     @classmethod
-    def _decompose_path(cls, file_path: Path, basedir: Optional[Path]):
+    def _decompose_path(cls, file_path: Path, basedir: Path | None):
         if basedir:
             file_path = file_path.absolute().resolve().relative_to(basedir)
         name_noext, ext = os.path.splitext(file_path)
@@ -165,10 +154,10 @@ class GraphVariants:
 
     @classmethod
     def for_files(
-        cls, file_paths: Iterable[Path], basedir: Optional[Path] = None
-    ) -> Dict[str, GraphVariants]:
-        graph_sources: DefaultDict[str, Dict[str, GraphSource]] = defaultdict(dict)
-        graph_meta: Dict[str, GraphVariantsMeta] = {}
+        cls, file_paths: Iterable[Path], basedir: Path | None = None
+    ) -> dict[str, GraphVariants]:
+        graph_sources: defaultdict[str, dict[str, GraphSource]] = defaultdict(dict)
+        graph_meta: dict[str, GraphVariantsMeta] = {}
         for file_path in file_paths:
             file_key, variant_key = cls._decompose_path(file_path, basedir)
             file_graph_sources = graph_sources[file_key]
@@ -198,8 +187,8 @@ class GraphVariants:
 
     @classmethod
     def for_directory(
-        cls, directory: Path, basedir: Optional[Path] = None
-    ) -> Dict[str, GraphVariants]:
+        cls, directory: Path, basedir: Path | None = None
+    ) -> dict[str, GraphVariants]:
         file_paths = []
         for file_path in directory.glob("*"):
             if not file_path.is_file():
@@ -215,7 +204,7 @@ GRAPH_VARIANTS_DICT = {
     **GraphVariants.for_files(EXTRA_FILES, TEST_DIR),
 }
 
-EXPECTED_FAILURES: Dict[Tuple[str, Optional[str]], MarkDecorator] = {
+EXPECTED_FAILURES: dict[tuple[str, str | None], MarkDecorator] = {
     ("variants/schema_only_base", ".ttl"): pytest.mark.xfail(
         reason="Some issue with handling base URI that does not end with a slash",
         raises=ValueError,
@@ -277,7 +266,7 @@ def tests_found() -> None:
     assert xml_literal.meta.quad_count == 1
 
 
-_PREFERRED_GRAPHS: Dict[str, Dataset] = {}
+_PREFERRED_GRAPHS: dict[str, Dataset] = {}
 
 
 def load_preferred(graph_variants: GraphVariants) -> Dataset:
@@ -309,9 +298,7 @@ def make_variant_source_cases() -> Iterable[ParameterSet]:
 
 
 @pytest.mark.parametrize(["graph_variants", "variant_key"], make_variant_source_cases())
-def test_variant_source(
-    graph_variants: GraphVariants, variant_key: Optional[str]
-) -> None:
+def test_variant_source(graph_variants: GraphVariants, variant_key: str | None) -> None:
     """
     All variants of a graph are isomorphic with the preferred variant,
     and thus eachother.

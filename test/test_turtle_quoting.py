@@ -8,7 +8,8 @@ from __future__ import annotations
 import itertools
 import logging
 import re
-from typing import Callable, Dict, Iterable, List, Tuple
+from collections.abc import Iterable
+from typing import Callable
 
 import pytest
 
@@ -32,7 +33,7 @@ string_escape_map = {
 }
 
 
-def make_unquote_correctness_pairs() -> List[Tuple[str, str]]:
+def make_unquote_correctness_pairs() -> list[tuple[str, str]]:
     """
     Creates pairs of quoted and unquoted strings.
     """
@@ -73,7 +74,7 @@ UNQUOTE_CORRECTNESS_PAIRS = make_unquote_correctness_pairs()
 
 def ntriples_unquote_validate(input: str) -> str:
     """
-    This function wraps `ntriples.unquote` in a way that ensures that `ntriples.validate` is always ``True`` when it runs.
+    This function wraps `ntriples.unquote` in a way that ensures that `ntriples.validate` is always `True` when it runs.
     """
     old_validate = ntriples.validate
     try:
@@ -85,7 +86,7 @@ def ntriples_unquote_validate(input: str) -> str:
 
 def ntriples_unquote(input: str) -> str:
     """
-    This function wraps `ntriples.unquote` in a way that ensures that `ntriples.validate` is always ``False`` when it runs.
+    This function wraps `ntriples.unquote` in a way that ensures that `ntriples.validate` is always `False` when it runs.
     """
     old_validate = ntriples.validate
     try:
@@ -95,7 +96,7 @@ def ntriples_unquote(input: str) -> str:
         ntriples.validate = old_validate
 
 
-unquoters: Dict[str, Callable[[str], str]] = {
+unquoters: dict[str, Callable[[str], str]] = {
     "ntriples_unquote": ntriples_unquote,
     "ntriples_unquote_validate": ntriples_unquote_validate,
 }
@@ -103,7 +104,7 @@ unquoters: Dict[str, Callable[[str], str]] = {
 
 def make_unquote_correctness_tests(
     selectors: Iterable[str],
-) -> Iterable[Tuple[str, str, str]]:
+) -> Iterable[tuple[str, str, str]]:
     """
     This function creates a cartesian product of the selectors and
     `CORRECTNESS_PAIRS` that is suitable for use as pytest parameters.

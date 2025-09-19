@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, MutableSequence
+from collections.abc import MutableSequence
+from typing import Any
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.parser import InputSource, Parser
@@ -168,8 +169,8 @@ class TrigParser(Parser):
         stream = source.getCharacterStream()  # try to get str stream first
         if not stream:
             # fallback to get the bytes stream
-            stream = source.getByteStream()
-        p.loadStream(stream)
+            stream = source.getByteStream()  # type: ignore[assignment]
+        p.loadStream(stream)  # type: ignore[arg-type]
 
         for prefix, namespace in p._bindings.items():
             conj_graph.bind(prefix, namespace)

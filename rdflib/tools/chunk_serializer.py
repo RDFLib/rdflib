@@ -8,9 +8,10 @@ file, which will be a Turtle file.
 
 from __future__ import annotations
 
+from collections.abc import Generator
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
-from typing import TYPE_CHECKING, BinaryIO, Generator, Optional, Tuple
+from typing import TYPE_CHECKING, BinaryIO
 
 from rdflib.graph import Graph
 from rdflib.plugins.serializers.nt import _nt_row
@@ -26,39 +27,26 @@ __all__ = ["serialize_in_chunks"]
 def serialize_in_chunks(
     g: Graph,
     max_triples: int = 10000,
-    max_file_size_kb: Optional[int] = None,
+    max_file_size_kb: int | None = None,
     file_name_stem: str = "chunk",
-    output_dir: Optional[Path] = None,
+    output_dir: Path | None = None,
     write_prefixes: bool = False,
 ) -> None:
-    """
-    Serializes a given Graph into a series of n-triples with a given length.
+    """Serializes a given Graph into a series of n-triples with a given length.
 
-    :param g:
-        The graph to serialize.
+    Args:
+        g: The graph to serialize.
+        max_file_size_kb: Maximum size per NT file in kB (1,000 bytes)
+            Equivalent to ~6,000 triples, depending on Literal sizes.
+        max_triples: Maximum size per NT file in triples
+            Equivalent to lines in file.
+            If both this parameter and max_file_size_kb are set, max_file_size_kb will be used.
+        file_name_stem: Prefix of each file name.
+            e.g. "chunk" = chunk_000001.nt, chunk_000002.nt...
+        output_dir: The directory you want the files to be written to.
+        write_prefixes: The first file created is a Turtle file containing original graph prefixes.
 
-    :param max_file_size_kb:
-        Maximum size per NT file in kB (1,000 bytes)
-        Equivalent to ~6,000 triples, depending on Literal sizes.
-
-    :param max_triples:
-        Maximum size per NT file in triples
-        Equivalent to lines in file.
-
-        If both this parameter and max_file_size_kb are set, max_file_size_kb will be used.
-
-    :param file_name_stem:
-        Prefix of each file name.
-        e.g. "chunk" = chunk_000001.nt, chunk_000002.nt...
-
-    :param output_dir:
-        The directory you want the files to be written to.
-
-    :param write_prefixes:
-        The first file created is a Turtle file containing original graph prefixes.
-
-
-    See ``../test/test_tools/test_chunk_serializer.py`` for examples of this in use.
+    See `../test/test_tools/test_chunk_serializer.py` for examples of this in use.
     """
 
     if output_dir is None:
@@ -70,7 +58,7 @@ def serialize_in_chunks(
         )
 
     @contextmanager
-    def _start_new_file(file_no: int) -> Generator[Tuple[Path, BinaryIO], None, None]:
+    def _start_new_file(file_no: int) -> Generator[tuple[Path, BinaryIO], None, None]:
         if TYPE_CHECKING:
             # this is here because mypy gets a bit confused
             assert output_dir is not None

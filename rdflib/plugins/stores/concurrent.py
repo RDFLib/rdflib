@@ -21,6 +21,8 @@ class ResponsibleGenerator:
 
 
 class ConcurrentStore:
+    """A store that allows concurrent reads and writes."""
+
     def __init__(self, store):
         self.store = store
 

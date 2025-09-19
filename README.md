@@ -1,7 +1,7 @@
-![](docs/_static/RDFlib.png)    
+![](docs/_static/RDFlib.png)
 
-RDFLib
-======
+# RDFLib
+
 [![Build Status](https://github.com/RDFLib/rdflib/actions/workflows/validate.yaml/badge.svg?branch=main)](https://github.com/RDFLib/rdflib/actions?query=branch%3Amain)
 [![Documentation Status](https://readthedocs.org/projects/rdflib/badge/?version=latest)](https://rdflib.readthedocs.io/en/latest/?badge=latest)
 [![Coveralls branch](https://img.shields.io/coveralls/RDFLib/rdflib/main.svg)](https://coveralls.io/r/RDFLib/rdflib?branch=main)
@@ -30,8 +30,10 @@ The RDFlib community maintains many RDF-related Python code repositories with di
 
 * [rdflib](https://github.com/RDFLib/rdflib) - the RDFLib core
 * [sparqlwrapper](https://github.com/RDFLib/sparqlwrapper) - a simple Python wrapper around a SPARQL service to remotely execute your queries
-* [pyLODE](https://github.com/RDFLib/pyLODE) - An OWL ontology documentation tool using Python and templating, based on LODE
-* [pySHACL](https://github.com/RDFLib/pySHACL) - A pure Python module which allows for the validation of RDF graphs against SHACL graphs
+* [pyLODE](https://github.com/RDFLib/pyLODE) - An OWL ontology documentation tool using Python and templating, based on LODE.
+* [pyrdfa3](https://github.com/RDFLib/pyrdfa3) - RDFa 1.1 distiller/parser library: can extract RDFa 1.1/1.0 from (X)HTML, SVG, or XML in general.
+* [pymicrodata](https://github.com/RDFLib/pymicrodata) - A module to extract RDF from an HTML5 page annotated with microdata.
+* [pySHACL](https://github.com/RDFLib/pySHACL) - A pure Python module which allows for the validation of RDF graphs against SHACL graphs.
 * [OWL-RL](https://github.com/RDFLib/OWL-RL) - A simple implementation of the OWL2 RL Profile which expands the graph with all possible triples that OWL RL defines.
 
 Please see the list for all packages/repositories here:
@@ -53,8 +55,9 @@ Help with maintenance of all of the RDFLib family of packages is always welcome 
 * `7.0.0` previous stable release, supports Python 3.8.1+ only.
     * see [Releases](https://github.com/RDFLib/rdflib/releases)
 * `6.x.y` supports Python 3.7+ only. Many improvements over 5.0.0
-    * see [Releases](https://github.com/RDFLib/rdflib/releases)
+    * see <https://github.com/RDFLib/rdflib/releases/tag/6.3.2>
 * `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html).
+  * * see <https://github.com/RDFLib/rdflib/releases/tag/5.0.0>
 
 See <https://github.com/RDFLib/rdflib/releases/> for the release details.
 
@@ -135,18 +138,21 @@ g.add((
     Literal("Nick", datatype=XSD.string)
 ))
 ```
+
 The triple (in n-triples notation) `<http://example.com/person/nick> <http://xmlns.com/foaf/0.1/givenName> "Nick"^^<http://www.w3.org/2001/XMLSchema#string> .`
 is created where the property `FOAF.givenName` is the URI `<http://xmlns.com/foaf/0.1/givenName>` and `XSD.string` is the
 URI `<http://www.w3.org/2001/XMLSchema#string>`.
 
 You can bind namespaces to prefixes to shorten the URIs for RDF/XML, Turtle, N3, TriG, TriX & JSON-LD serializations:
 
- ```python
+```python
 g.bind("foaf", FOAF)
 g.bind("xsd", XSD)
 ```
+
 This will allow the n-triples triple above to be serialised like this:
- ```python
+
+```python
 print(g.serialize(format="turtle"))
 ```
 
@@ -167,7 +173,6 @@ abstracts = list(x for x in g.objects(semweb, dbpedia['abstract']) if x.language
 ```
 
 See also [./examples](./examples)
-
 
 ## Features
 The library contains parsers and serializers for RDF/XML, N3,
@@ -214,7 +219,7 @@ python -m http.server --directory=htmlcov
 ## Contributing
 
 RDFLib survives and grows via user contributions!
-Please read our [contributing guide](https://rdflib.readthedocs.io/en/latest/CONTRIBUTING.html) and [developers guide](https://rdflib.readthedocs.io/en/latest/developers.html) to get started.
+Please read our [contributing guide](https://rdflib.readthedocs.io/en/latest/CONTRIBUTING/) and [developers guide](https://rdflib.readthedocs.io/en/latest/developers/) to get started.
 Please consider lodging Pull Requests here:
 
 * <https://github.com/RDFLib/rdflib/pulls>

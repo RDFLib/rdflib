@@ -3,8 +3,9 @@ from __future__ import annotations
 import builtins
 import datetime
 import logging
+from collections.abc import Generator
 from decimal import Decimal
-from typing import Any, Callable, Generator, Optional, Type, Union
+from typing import Any, Callable, Union
 
 from rdflib.xsd_datetime import Duration
 from test.utils import affix_tuples
@@ -52,7 +53,8 @@ from rdflib.term import (
 )
 
 
-@pytest.fixture()
+# Untyped decorator makes function untyped
+@pytest.fixture()  # type: ignore[misc, unused-ignore]
 def clear_bindings() -> Generator[None, None, None]:
     try:
         yield
@@ -94,7 +96,8 @@ def test_literal_from_bool() -> None:
     assert _l.datatype == rdflib.XSD["boolean"]
 
 
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     "lang, exception_type",
     [
         ({}, TypeError),
@@ -107,7 +110,7 @@ def test_literal_from_bool() -> None:
 )
 def test_cant_pass_invalid_lang(
     lang: Any,
-    exception_type: Type[Exception],
+    exception_type: type[Exception],
 ) -> None:
     """
     Construction of Literal fails if the language tag is invalid.
@@ -116,7 +119,8 @@ def test_cant_pass_invalid_lang(
         Literal("foo", lang=lang)
 
 
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     "lexical, datatype, is_ill_typed",
     [
         ("true", XSD.boolean, False),
@@ -157,8 +161,8 @@ def test_cant_pass_invalid_lang(
 )
 def test_ill_typed_literals(
     lexical: Union[bytes, str],
-    datatype: Optional[URIRef],
-    is_ill_typed: Optional[bool],
+    datatype: URIRef | None,
+    is_ill_typed: bool | None,
 ) -> None:
     """
     ill_typed has the correct value.
@@ -170,7 +174,8 @@ def test_ill_typed_literals(
         assert lit.value is not None
 
 
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     "a, b, op, expected_result",
     [
         pytest.param(
@@ -644,7 +649,8 @@ def test_literal_addsub(
         checker.check(result)
 
 
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     "a_value, b_value, result_value, datatype",
     [
         [3, 5, 2, XSD.integer],
@@ -831,7 +837,8 @@ def test_specific_binding(clear_bindings: None) -> None:
     assert specific_l.datatype == datatype
 
 
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     ["lexical", "literal_type", "value_cls"],
     [
         # these literals do not get converted to Python types
@@ -848,21 +855,22 @@ def test_specific_binding(clear_bindings: None) -> None:
         ("0000-00-00", XSD.date, None),
         ("NOT A VALID HEX STRING", XSD.hexBinary, None),
         ("NOT A VALID BASE64 STRING", XSD.base64Binary, None),
+        # xsd:gYear and xsd:gYearMonth also do not get converted
+        ("1921-05", XSD.gYearMonth, None),
+        ("0001-01", XSD.gYearMonth, None),
+        ("0001-12", XSD.gYearMonth, None),
+        ("2002-01", XSD.gYearMonth, None),
+        ("9999-01", XSD.gYearMonth, None),
+        ("9999-12", XSD.gYearMonth, None),
+        ("1921", XSD.gYear, None),
+        ("2000", XSD.gYear, None),
+        ("0001", XSD.gYear, None),
+        ("9999", XSD.gYear, None),
+        ("1982", XSD.gYear, None),
+        ("2002", XSD.gYear, None),
         # these literals get converted to python types
         ("1921-05-01", XSD.date, datetime.date),
         ("1921-05-01T00:00:00", XSD.dateTime, datetime.datetime),
-        ("1921-05", XSD.gYearMonth, datetime.date),
-        ("0001-01", XSD.gYearMonth, datetime.date),
-        ("0001-12", XSD.gYearMonth, datetime.date),
-        ("2002-01", XSD.gYearMonth, datetime.date),
-        ("9999-01", XSD.gYearMonth, datetime.date),
-        ("9999-12", XSD.gYearMonth, datetime.date),
-        ("1921", XSD.gYear, datetime.date),
-        ("2000", XSD.gYear, datetime.date),
-        ("0001", XSD.gYear, datetime.date),
-        ("9999", XSD.gYear, datetime.date),
-        ("1982", XSD.gYear, datetime.date),
-        ("2002", XSD.gYear, datetime.date),
         ("1921-05-01T00:00:00+00:30", XSD.dateTime, datetime.datetime),
         ("1921-05-01T00:00:00-00:30", XSD.dateTime, datetime.datetime),
         ("true", XSD.boolean, bool),
@@ -891,7 +899,7 @@ def test_specific_binding(clear_bindings: None) -> None:
     ],
 )
 def test_literal_construction_value_class(
-    lexical: str, literal_type: URIRef, value_cls: Optional[type]
+    lexical: str, literal_type: URIRef, value_cls: type | None
 ) -> None:
     literal = Literal(lexical, datatype=literal_type)
     if value_cls is not None:
@@ -942,7 +950,8 @@ class _UnknownType:
         return False
 
 
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     ["literal_maker", "outcome"],
     [
         (
@@ -1013,7 +1022,8 @@ def test_literal_construction(
         checker.check(actual_outcome)
 
 
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     ["literal_maker", "normalize_literals", "outcome"],
     [
         (

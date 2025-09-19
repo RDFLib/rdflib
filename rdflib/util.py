@@ -23,6 +23,7 @@ Date/time utilities
 from __future__ import annotations
 
 from calendar import timegm
+from collections.abc import Hashable
 from os.path import splitext
 
 # from time import daylight
@@ -30,15 +31,6 @@ from time import altzone, gmtime, localtime, time, timezone
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
-    Dict,
-    Hashable,
-    Iterable,
-    Iterator,
-    List,
-    Optional,
-    Set,
-    Tuple,
     TypeVar,
     Union,
     overload,
@@ -51,7 +43,9 @@ import rdflib.term
 from rdflib.compat import sign
 
 if TYPE_CHECKING:
-    from rdflib.graph import Graph
+    from collections.abc import Callable, Generator, Iterable
+
+    from rdflib.graph import Graph, _ObjectType, _SubjectType
 
 
 __all__ = [
@@ -74,7 +68,7 @@ _HashableT = TypeVar("_HashableT", bound=Hashable)
 _AnyT = TypeVar("_AnyT")
 
 
-def list2set(seq: Iterable[_HashableT]) -> List[_HashableT]:
+def list2set(seq: Iterable[_HashableT]) -> list[_HashableT]:
     """
     Return a new list without duplicates.
     Preserves the order, unlike set(seq)
@@ -84,7 +78,7 @@ def list2set(seq: Iterable[_HashableT]) -> List[_HashableT]:
     return [x for x in seq if x not in seen and not seen.add(x)]  # type: ignore[func-returns-value]
 
 
-def first(seq: Iterable[_AnyT]) -> Optional[_AnyT]:
+def first(seq: Iterable[_AnyT]) -> _AnyT | None:
     """
     return the first element in a python sequence
     for graphs, use graph.value instead
@@ -94,7 +88,7 @@ def first(seq: Iterable[_AnyT]) -> Optional[_AnyT]:
     return None
 
 
-def uniq(sequence: Iterable[str], strip: int = 0) -> Set[str]:
+def uniq(sequence: Iterable[str], strip: int = 0) -> set[str]:
     """removes duplicate strings from the sequence."""
     if strip:
         return set(s.strip() for s in sequence)
@@ -113,19 +107,19 @@ def more_than(sequence: Iterable[Any], number: int) -> int:
 
 
 def to_term(
-    s: Optional[str], default: Optional[rdflib.term.Identifier] = None
-) -> Optional[rdflib.term.Identifier]:
+    s: str | None, default: rdflib.term.Identifier | None = None
+) -> rdflib.term.Identifier | None:
     """
     Creates and returns an Identifier of type corresponding
-    to the pattern of the given positional argument string ``s``:
+    to the pattern of the given positional argument string `s`:
 
-    '' returns the ``default`` keyword argument value or ``None``
+    '' returns the `default` keyword argument value or `None`
 
-    '<s>' returns ``URIRef(s)`` (i.e. without angle brackets)
+    '<s>' returns `URIRef(s)` (i.e. without angle brackets)
 
-    '"s"' returns ``Literal(s)`` (i.e. without doublequotes)
+    '"s"' returns `Literal(s)` (i.e. without doublequotes)
 
-    '_s' returns ``BNode(s)`` (i.e. without leading underscore)
+    '_s' returns `BNode(s)` (i.e. without leading underscore)
 
     """
     if not s:
@@ -143,37 +137,38 @@ def to_term(
 
 def from_n3(
     s: str,
-    default: Optional[str] = None,
-    backend: Optional[str] = None,
-    nsm: Optional[rdflib.namespace.NamespaceManager] = None,
-) -> Optional[Union[rdflib.term.Node, str]]:
-    r'''
-    Creates the Identifier corresponding to the given n3 string.
+    default: str | None = None,
+    backend: str | None = None,
+    nsm: rdflib.namespace.NamespaceManager | None = None,
+) -> Union[rdflib.term.Node, str] | None:
+    r'''Creates the Identifier corresponding to the given n3 string.
 
-        >>> from rdflib.term import URIRef, Literal
-        >>> from rdflib.namespace import NamespaceManager
-        >>> from_n3('<http://ex.com/foo>') == URIRef('http://ex.com/foo')
-        True
-        >>> from_n3('"foo"@de') == Literal('foo', lang='de')
-        True
-        >>> from_n3('"""multi\nline\nstring"""@en') == Literal(
-        ...     'multi\nline\nstring', lang='en')
-        True
-        >>> from_n3('42') == Literal(42)
-        True
-        >>> from_n3(Literal(42).n3()) == Literal(42)
-        True
-        >>> from_n3('"42"^^xsd:integer') == Literal(42)
-        True
-        >>> from rdflib import RDFS
-        >>> from_n3('rdfs:label') == RDFS['label']
-        True
-        >>> nsm = NamespaceManager(rdflib.graph.Graph())
-        >>> nsm.bind('dbpedia', 'http://dbpedia.org/resource/')
-        >>> berlin = URIRef('http://dbpedia.org/resource/Berlin')
-        >>> from_n3('dbpedia:Berlin', nsm=nsm) == berlin
-        True
+    ```python
+    >>> from rdflib.term import URIRef, Literal
+    >>> from rdflib.namespace import NamespaceManager
+    >>> from_n3('<http://ex.com/foo>') == URIRef('http://ex.com/foo')
+    True
+    >>> from_n3('"foo"@de') == Literal('foo', lang='de')
+    True
+    >>> from_n3('"""multi\nline\nstring"""@en') == Literal(
+    ...     'multi\nline\nstring', lang='en')
+    True
+    >>> from_n3('42') == Literal(42)
+    True
+    >>> from_n3(Literal(42).n3()) == Literal(42)
+    True
+    >>> from_n3('"42"^^xsd:integer') == Literal(42)
+    True
+    >>> from rdflib import RDFS
+    >>> from_n3('rdfs:label') == RDFS['label']
+    True
+    >>> nsm = NamespaceManager(rdflib.graph.Graph())
+    >>> nsm.bind('dbpedia', 'http://dbpedia.org/resource/')
+    >>> berlin = URIRef('http://dbpedia.org/resource/Berlin')
+    >>> from_n3('dbpedia:Berlin', nsm=nsm) == berlin
+    True
 
+    ```
     '''
     if not s:
         return default
@@ -255,6 +250,7 @@ def from_n3(
 def date_time(t=None, local_time_zone=False):
     """http://www.w3.org/TR/NOTE-datetime ex: 1997-07-16T19:20:30Z
 
+    ```python
     >>> date_time(1126482850)
     '2005-09-11T23:54:10Z'
 
@@ -267,6 +263,8 @@ def date_time(t=None, local_time_zone=False):
 
     >>> date_time(0)
     '1970-01-01T00:00:00Z'
+
+    ```
     """
     if t is None:
         t = time()
@@ -290,6 +288,7 @@ def date_time(t=None, local_time_zone=False):
 def parse_date_time(val: str) -> int:
     """always returns seconds in UTC
 
+    ```python
     # tests are written like this to make any errors easier to understand
     >>> parse_date_time('2005-09-11T23:54:10Z') - 1126482850.0
     0.0
@@ -304,6 +303,8 @@ def parse_date_time(val: str) -> int:
     0.0
     >>> parse_date_time("2005-09-05T10:42:00") - 1125916920.0
     0.0
+
+    ```
     """
 
     if "T" not in val:
@@ -351,11 +352,13 @@ SUFFIX_FORMAT_MAP = {
 }
 
 
-def guess_format(fpath: str, fmap: Optional[Dict[str, str]] = None) -> Optional[str]:
+def guess_format(fpath: str, fmap: dict[str, str] | None = None) -> str | None:
     """
     Guess RDF serialization based on file suffix. Uses
-    ``SUFFIX_FORMAT_MAP`` unless ``fmap`` is provided. Examples:
+    `SUFFIX_FORMAT_MAP` unless `fmap` is provided.
 
+    Example:
+        ```python
         >>> guess_format('path/to/file.rdf')
         'xml'
         >>> guess_format('path/to/file.owl')
@@ -371,15 +374,20 @@ def guess_format(fpath: str, fmap: Optional[Dict[str, str]] = None) -> Optional[
         >>> guess_format('path/to/file.xhtml', {'xhtml': 'grddl'})
         'grddl'
 
-    This also works with just the suffixes, with or without leading dot, and
-    regardless of letter case::
+        ```
 
+        This also works with just the suffixes, with or without leading dot, and
+        regardless of letter case:
+
+        ```python
         >>> guess_format('.rdf')
         'xml'
         >>> guess_format('rdf')
         'xml'
         >>> guess_format('RDF')
         'xml'
+
+        ```
     """
     fmap = fmap or SUFFIX_FORMAT_MAP
     return fmap.get(_get_ext(fpath)) or fmap.get(fpath.lower())
@@ -388,8 +396,10 @@ def guess_format(fpath: str, fmap: Optional[Dict[str, str]] = None) -> Optional[
 def _get_ext(fpath: str, lower: bool = True) -> str:
     """
     Gets the file extension from a file(path); stripped of leading '.' and in
-    lower case. Examples:
+    lower case.
 
+    Example:
+        ```python
         >>> _get_ext("path/to/file.txt")
         'txt'
         >>> _get_ext("OTHER.PDF")
@@ -398,6 +408,8 @@ def _get_ext(fpath: str, lower: bool = True) -> str:
         ''
         >>> _get_ext(".rdf")
         'rdf'
+
+        ```
     """
     ext = splitext(fpath)[-1]
     if ext == "" and fpath.startswith("."):
@@ -412,20 +424,18 @@ def _get_ext(fpath: str, lower: bool = True) -> str:
 def find_roots(
     graph: Graph,
     prop: rdflib.term.URIRef,
-    roots: Optional[Set[rdflib.term.Node]] = None,
-) -> Set[rdflib.term.Node]:
-    """
-    Find the roots in some sort of transitive hierarchy.
+    roots: set[_SubjectType | _ObjectType] | None = None,
+) -> set[_SubjectType | _ObjectType]:
+    """Find the roots in some sort of transitive hierarchy.
 
     find_roots(graph, rdflib.RDFS.subClassOf)
     will return a set of all roots of the sub-class hierarchy
 
     Assumes triple of the form (child, prop, parent), i.e. the direction of
-    RDFS.subClassOf or SKOS.broader
-
+    `RDFS.subClassOf` or `SKOS.broader`
     """
 
-    non_roots: Set[rdflib.term.Node] = set()
+    non_roots: set[_SubjectType | _ObjectType] = set()
     if roots is None:
         roots = set()
     for x, y in graph.subject_objects(prop):
@@ -439,29 +449,32 @@ def find_roots(
 
 def get_tree(
     graph: Graph,
-    root: rdflib.term.Node,
+    root: Union[_SubjectType, _ObjectType],
     prop: rdflib.term.URIRef,
     mapper: Callable[[rdflib.term.Node], rdflib.term.Node] = lambda x: x,
-    sortkey: Optional[Callable[[Any], Any]] = None,
-    done: Optional[Set[rdflib.term.Node]] = None,
+    sortkey: Callable[[Any], Any] | None = None,
+    done: set[rdflib.term.Node] | None = None,
     dir: str = "down",
-) -> Optional[Tuple[rdflib.term.Node, List[Any]]]:
+) -> tuple[rdflib.term.Node, list[Any]] | None:
     """
     Return a nested list/tuple structure representing the tree
     built by the transitive property given, starting from the root given
 
     i.e.
 
-    get_tree(graph,
-       rdflib.URIRef("http://xmlns.com/foaf/0.1/Person"),
-       rdflib.RDFS.subClassOf)
+    ```python
+    get_tree(
+        graph,
+        rdflib.URIRef("http://xmlns.com/foaf/0.1/Person"),
+        rdflib.RDFS.subClassOf,
+    )
+    ```
 
     will return the structure for the subClassTree below person.
 
     dir='down' assumes triple of the form (child, prop, parent),
     i.e. the direction of RDFS.subClassOf or SKOS.broader
     Any other dir traverses in the other direction
-
     """
 
     if done is None:
@@ -472,7 +485,7 @@ def get_tree(
     done.add(root)
     tree = []
 
-    branches: Iterator[rdflib.term.Node]
+    branches: Generator[_SubjectType] | Generator[_ObjectType]
     if dir == "down":
         branches = graph.subjects(prop, root)
     else:
@@ -487,33 +500,31 @@ def get_tree(
 
 
 @overload
-def _coalesce(*args: Optional[_AnyT], default: _AnyT) -> _AnyT: ...
+def _coalesce(*args: _AnyT | None, default: _AnyT) -> _AnyT: ...
 
 
 @overload
-def _coalesce(
-    *args: Optional[_AnyT], default: Optional[_AnyT] = ...
-) -> Optional[_AnyT]: ...
+def _coalesce(*args: _AnyT | None, default: _AnyT | None = ...) -> _AnyT | None: ...
 
 
-def _coalesce(
-    *args: Optional[_AnyT], default: Optional[_AnyT] = None
-) -> Optional[_AnyT]:
+def _coalesce(*args: _AnyT | None, default: _AnyT | None = None) -> _AnyT | None:
     """
     This is a null coalescing function, it will return the first non-`None`
-    argument passed to it, otherwise it will return ``default`` which is `None`
+    argument passed to it, otherwise it will return `default` which is `None`
     by default.
 
-    For more info regarding the rationale of this function see deferred `PEP 505
-    <https://peps.python.org/pep-0505/>`_.
+    For more info regarding the rationale of this function see deferred
+    [PEP 505](https://peps.python.org/pep-0505/).
 
-    :param args: Values to consider as candidates to return, the first arg that
-        is not `None` will be returned. If no argument is passed this function
-        will return None.
-    :param default: The default value to return if none of the args are not
-        `None`.
-    :return: The first ``args`` that is not `None`, otherwise the value of
-        ``default`` if there are no ``args`` or if all ``args`` are `None`.
+    Args:
+        *args: Values to consider as candidates to return, the first arg that
+            is not `None` will be returned. If no argument is passed this function
+            will return None.
+        default: The default value to return if none of the args are not `None`.
+
+    Returns:
+        The first `args` that is not `None`, otherwise the value of
+            `default` if there are no `args` or if all `args` are `None`.
     """
     for arg in args:
         if arg is not None:
@@ -523,13 +534,13 @@ def _coalesce(
 
 _RFC3986_SUBDELIMS = "!$&'()*+,;="
 """
-``sub-delims`` production from `RFC 3986, section 2.2
-<https://www.rfc-editor.org/rfc/rfc3986.html#section-2.2>`_.
+`sub-delims` production from
+[RFC 3986, section 2.2](https://www.rfc-editor.org/rfc/rfc3986.html#section-2.2).
 """
 
 _RFC3986_PCHAR_NU = "%" + _RFC3986_SUBDELIMS + ":@"
 """
-The non-unreserved characters in the ``pchar`` production from RFC 3986.
+The non-unreserved characters in the `pchar` production from RFC 3986.
 """
 
 _QUERY_SAFE_CHARS = _RFC3986_PCHAR_NU + "/?"
@@ -537,10 +548,10 @@ _QUERY_SAFE_CHARS = _RFC3986_PCHAR_NU + "/?"
 The non-unreserved characters that are safe to use in in the query and fragment
 components.
 
-.. code-block::
-
-   pchar         = unreserved / pct-encoded / sub-delims / ":" / "@" query
-   = *( pchar / "/" / "?" ) fragment      = *( pchar / "/" / "?" )
+```
+pchar         = unreserved / pct-encoded / sub-delims / ":" / "@" query
+= *( pchar / "/" / "?" ) fragment      = *( pchar / "/" / "?" )
+```
 """
 
 _USERNAME_SAFE_CHARS = _RFC3986_SUBDELIMS + "%"
@@ -548,9 +559,9 @@ _USERNAME_SAFE_CHARS = _RFC3986_SUBDELIMS + "%"
 The non-unreserved characters that are safe to use in the username and password
 components.
 
-.. code-block::
-
-   userinfo      = *( unreserved / pct-encoded / sub-delims / ":" )
+```
+userinfo      = *( unreserved / pct-encoded / sub-delims / ":" )
+```
 
 ":" is excluded as this is only used for the username and password components,
 and they are treated separately.
@@ -560,7 +571,6 @@ _PATH_SAFE_CHARS = _RFC3986_PCHAR_NU + "/"
 """
 The non-unreserved characters that are safe to use in the path component.
 
-
 This is based on various path-related productions from RFC 3986.
 """
 
@@ -569,10 +579,13 @@ def _iri2uri(iri: str) -> str:
     """
     Prior art:
 
-    * `iri_to_uri from Werkzeug <https://github.com/pallets/werkzeug/blob/92c6380248c7272ee668e1f8bbd80447027ccce2/src/werkzeug/urls.py#L926-L931>`_
+    - [iri_to_uri from Werkzeug](https://github.com/pallets/werkzeug/blob/92c6380248c7272ee668e1f8bbd80447027ccce2/src/werkzeug/urls.py#L926-L931)
 
+    ```python
     >>> _iri2uri("https://dbpedia.org/resource/Almería")
     'https://dbpedia.org/resource/Almer%C3%ADa'
+
+    ```
     """
     # https://datatracker.ietf.org/doc/html/rfc3986
     # https://datatracker.ietf.org/doc/html/rfc3305

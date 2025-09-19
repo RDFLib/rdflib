@@ -14,7 +14,7 @@ def is_ncname(value):
 
     From the `W3C RDF Syntax doc <http://www.w3.org/TR/REC-rdf-syntax/#section-blank-nodeid-event>`_
 
-    "The value is a function of the value of the ``identifier`` accessor.
+    "The value is a function of the value of the `identifier` accessor.
     The string value begins with "_:" and the entire value MUST match
     the `N-Triples nodeID <http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID>`_ production".
 

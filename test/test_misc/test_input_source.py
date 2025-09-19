@@ -5,7 +5,8 @@ import itertools
 import logging
 import pathlib
 import re
-from contextlib import ExitStack, contextmanager
+from collections.abc import Collection, Generator, Iterable
+from contextlib import AbstractContextManager, ExitStack, contextmanager
 from dataclasses import dataclass
 from io import BytesIO, StringIO, TextIOWrapper
 from pathlib import Path
@@ -13,15 +14,9 @@ from typing import (  # Callable,
     IO,
     TYPE_CHECKING,
     BinaryIO,
-    Collection,
-    ContextManager,
-    Generator,
     Generic,
-    Iterable,
     Optional,
     TextIO,
-    Tuple,
-    Type,
     TypeVar,
     Union,
 )
@@ -70,7 +65,7 @@ DataParamType = Union[str, bytes, dict]
 
 class SourceParam(enum.Enum):
     """
-    Indicates what kind of paramter should be passed as ``source`` to create_input_source().
+    Indicates what kind of paramter should be passed as `source` to create_input_source().
     """
 
     BINARY_IO = enum.auto()
@@ -84,11 +79,13 @@ class SourceParam(enum.Enum):
     @contextmanager
     def from_path(self, path: Path) -> Generator[SourceParamType, None, None]:
         """
-        Yields a value of the type indicated by the enum value which provides the data from the file at ``path``.
+        Yields a value of the type indicated by the enum value which provides the data from the file at `path`.
 
+        Args:
+            path: Path to the file to read.
 
-        :param path: Path to the file to read.
-        :return: A context manager which yields a value of the type indicated by the enum value.
+        Returns:
+            A context manager which yields a value of the type indicated by the enum value.
         """
         if self is SourceParam.BINARY_IO:
             yield path.open("rb")
@@ -110,7 +107,7 @@ class SourceParam(enum.Enum):
 
 class LocationParam(enum.Enum):
     """
-    Indicates what kind of paramter should be passed as ``location`` to create_input_source().
+    Indicates what kind of paramter should be passed as `location` to create_input_source().
     """
 
     FILE_URI = enum.auto()
@@ -118,13 +115,16 @@ class LocationParam(enum.Enum):
 
     @contextmanager
     def from_path(
-        self, path: Optional[Path], url: Optional[str]
+        self, path: Path | None, url: str | None
     ) -> Generator[str, None, None]:
         """
-        Yields a value of the type indicated by the enum value which provides the data from the file at ``path``.
+        Yields a value of the type indicated by the enum value which provides the data from the file at `path`.
 
-        :param path: Path to the file to read.
-        :return: A context manager which yields a value of the type indicated by the enum value.
+        Args:
+            path: Path to the file to read.
+
+        Returns:
+            A context manager which yields a value of the type indicated by the enum value.
         """
         if self is LocationParam.FILE_URI:
             assert path is not None
@@ -138,7 +138,7 @@ class LocationParam(enum.Enum):
 
 class FileParam(enum.Enum):
     """
-    Indicates what kind of paramter should be passed as ``file`` to create_input_source().
+    Indicates what kind of paramter should be passed as `file` to create_input_source().
     """
 
     BINARY_IO = enum.auto()
@@ -147,10 +147,13 @@ class FileParam(enum.Enum):
     @contextmanager
     def from_path(self, path: Path) -> Generator[Union[BinaryIO, TextIO], None, None]:
         """
-        Yields a value of the type indicated by the enum value which provides the data from the file at ``path``.
+        Yields a value of the type indicated by the enum value which provides the data from the file at `path`.
 
-        :param path: Path to the file to read.
-        :return: A context manager which yields a value of the type indicated by the enum value.
+        Args:
+            path: Path to the file to read.
+
+        Returns:
+            A context manager which yields a value of the type indicated by the enum value.
         """
         if self is FileParam.BINARY_IO:
             yield path.open("rb")
@@ -162,7 +165,7 @@ class FileParam(enum.Enum):
 
 class DataParam(enum.Enum):
     """
-    Indicates what kind of paramter should be passed as ``data`` to create_input_source().
+    Indicates what kind of paramter should be passed as `data` to create_input_source().
     """
 
     STRING = enum.auto()
@@ -172,10 +175,13 @@ class DataParam(enum.Enum):
     @contextmanager
     def from_path(self, path: Path) -> Generator[Union[bytes, str, dict], None, None]:
         """
-        Yields a value of the type indicated by the enum value which provides the data from the file at ``path``.
+        Yields a value of the type indicated by the enum value which provides the data from the file at `path`.
 
-        :param path: Path to the file to read.
-        :return: A context manager which yields a value of the type indicated by the enum value.
+        Args:
+            path: Path to the file to read.
+
+        Returns:
+            A context manager which yields a value of the type indicated by the enum value.
         """
         if self is DataParam.STRING:
             yield path.read_text(encoding="utf-8")
@@ -188,13 +194,13 @@ class DataParam(enum.Enum):
 @contextmanager
 def call_create_input_source(
     input: Union[HTTPFileInfo, Path],
-    source_param: Optional[SourceParam] = None,
+    source_param: SourceParam | None = None,
     # source_slot: SourceSlot,
-    public_id: Optional[str] = None,
-    location_param: Optional[LocationParam] = None,
-    file_param: Optional[FileParam] = None,
-    data_param: Optional[DataParam] = None,
-    format: Optional[str] = None,
+    public_id: str | None = None,
+    location_param: LocationParam | None = None,
+    file_param: FileParam | None = None,
+    data_param: DataParam | None = None,
+    format: str | None = None,
 ) -> Generator[InputSource, None, None]:
     """
     Calls create_input_source() with parameters of the specified types.
@@ -208,10 +214,10 @@ def call_create_input_source(
         data_param,
     )
 
-    source: Optional[SourceParamType] = None
-    location: Optional[str] = None
-    file: Optional[FileParamType] = None
-    data: Optional[DataParamType] = None
+    source: SourceParamType | None = None
+    location: str | None = None
+    file: FileParamType | None = None
+    data: DataParamType | None = None
 
     input_url = None
     if isinstance(input, HTTPFileInfo):
@@ -271,17 +277,18 @@ class InputSourceChecker:
     """
     Checker for input source objects.
 
-    :param type: Expected type of input source.
-    :param stream_check: What kind of stream check to perform.
-    :param encoding: Expected encoding of input source. If ``None``, then the encoding is not checked. If it has a value (i.e. an instance of :class:`Holder`), then the encoding is expected to match ``encoding.value``.
+    Args:
+        type: Expected type of input source.
+        stream_check: What kind of stream check to perform.
+        encoding: Expected encoding of input source. If `None`, then the encoding is not checked. If it has a value (i.e. an instance of `Holder`), then the encoding is expected to match `encoding.value`.
     """
 
-    type: Type[InputSource]
+    type_: type[InputSource]
     stream_check: StreamCheck
-    encoding: Optional[Holder[Optional[str]]]
-    public_id: Optional[str]
-    system_id: Optional[str]
-    # extra_checks: List[Callable[[InputSource], None]] = field(factory=list)
+    encoding: Holder[str | None] | None
+    public_id: str | None
+    system_id: str | None
+    # extra_checks: list[Callable[[InputSource], None]] = field(factory=list)
 
     def check(
         self,
@@ -290,20 +297,20 @@ class InputSourceChecker:
         input_source: InputSource,
     ) -> None:
         """
-        Check that ``input_source`` matches expectations.
+        Check that `input_source` matches expectations.
         """
         logging.debug(
-            "input_source = %s / %s, self.type = %s",
+            "input_source = %s / %s, self.type_ = %s",
             type(input_source),
             input_source,
-            self.type,
+            self.type_,
         )
         assert isinstance(input_source, InputSource)
-        if self.type is not None:
-            assert isinstance(input_source, self.type)
+        if self.type_ is not None:
+            assert isinstance(input_source, self.type_)
 
         if self.stream_check is StreamCheck.BYTE:
-            binary_io: BinaryIO = input_source.getByteStream()
+            binary_io: BinaryIO = input_source.getByteStream()  # type: ignore[assignment]
             if params.data_param is DataParam.STRING:
                 assert (
                     binary_io.read() == input_path.read_text(encoding="utf-8").encode()
@@ -311,7 +318,7 @@ class InputSourceChecker:
             else:
                 assert binary_io.read() == input_path.read_bytes()
         elif self.stream_check is StreamCheck.CHAR:
-            text_io: TextIO = input_source.getCharacterStream()
+            text_io: TextIO = input_source.getCharacterStream()  # type: ignore[assignment]
             assert text_io.read() == input_path.read_text(encoding="utf-8")
         elif self.stream_check is StreamCheck.GRAPH:
             graph = Graph()
@@ -341,12 +348,15 @@ class InputSourceChecker:
     @classmethod
     def type_from_param(
         cls, param: Union[SourceParam, FileParam, DataParam, LocationParam, enum.Enum]
-    ) -> Type[InputSource]:
+    ) -> type[InputSource]:
         """
         Return the type of input source that should be created for the given parameter.
 
-        :param param: The parameter that will be passed to :func:`create_input_source`.
-        :return: Type of input source that should be created for the given parameter.
+        Args:
+            param: The parameter that will be passed to `create_input_source`.
+
+        Returns:
+            Type of input source that should be created for the given parameter.
         """
         if param in (
             SourceParam.PATH,
@@ -366,10 +376,10 @@ class InputSourceChecker:
         raise ValueError(f"unknown param {param}")
 
 
-FileParamTypeCM = ContextManager[FileParamType]
+FileParamTypeCM = AbstractContextManager[FileParamType]
 
 
-CreateInputSourceTestParamsTuple = Tuple[
+CreateInputSourceTestParamsTuple = tuple[
     Path,
     Optional[SourceParam],
     Optional[str],
@@ -380,24 +390,24 @@ CreateInputSourceTestParamsTuple = Tuple[
     Union[ExceptionChecker, InputSourceChecker],
 ]
 """
-Type alias for the tuple representation of :class:`CreateInputSourceTestParams`.
+Type alias for the tuple representation of `CreateInputSourceTestParams`.
 """
 
 
 @dataclass
 class CreateInputSourceTestParams:
     """
-    Parameters for :func:`create_input_source`.
+    Parameters for `create_input_source`.
     """
 
     input_path: Path
-    source_param: Optional[SourceParam]
-    public_id: Optional[str]
-    location_param: Optional[LocationParam]
-    file_param: Optional[FileParam]
-    data_param: Optional[DataParam]
-    format: Optional[str]
-    expected_result: Union[ExceptionChecker, InputSourceChecker]
+    source_param: SourceParam | None
+    public_id: str | None
+    location_param: LocationParam | None
+    file_param: FileParam | None
+    data_param: DataParam | None
+    format: str | None
+    expected_result: ExceptionChecker | InputSourceChecker
 
     def as_tuple(self) -> CreateInputSourceTestParamsTuple:
         return (
@@ -438,7 +448,7 @@ class CreateInputSourceTestParams:
         marks: Union[
             pytest.MarkDecorator, Collection[Union[pytest.MarkDecorator, pytest.Mark]]
         ] = (),
-        id: Optional[str] = None,
+        id: str | None = None,
     ) -> ParameterSet:
         if id is None:
             id = f"{self.input_path.as_posix()}:source_param={self.source_param}:public_id={self.public_id}:location_param={self.location_param}:file_param={self.file_param}:data_param={self.data_param}:format={self.format}:{self.expected_result}"
@@ -495,10 +505,10 @@ def generate_create_input_source_cases() -> Iterable[ParameterSet]:
     def make_params(
         param: enum.Enum,
         stream_check: StreamCheck,
-        expected_encoding: Optional[Holder[Optional[str]]],
-        format: Optional[str] = default_format,
-        id: Optional[str] = None,
-        public_id: Optional[str] = None,
+        expected_encoding: Holder[str | None] | None,
+        format: str | None = default_format,
+        id: str | None = None,
+        public_id: str | None = None,
         marks: Union[
             pytest.MarkDecorator, Collection[Union[pytest.MarkDecorator, pytest.Mark]]
         ] = (),
@@ -540,7 +550,7 @@ def generate_create_input_source_cases() -> Iterable[ParameterSet]:
             # These do not have working characther streams. Maybe they
             # should, but they don't.
             continue
-        expected_encoding: Optional[Holder[Optional[str]]]
+        expected_encoding: Holder[str | None] | None
         if param in (
             SourceParam.PATH,
             SourceParam.PATH_STRING,
@@ -550,7 +560,7 @@ def generate_create_input_source_cases() -> Iterable[ParameterSet]:
             SourceParam.BINARY_IO,
             FileParam.BINARY_IO,
         ):
-            # This should maybe be ``None`` instead of ``Holder(None)``, but as
+            # This should maybe be `None` instead of `Holder(None)`, but as
             # there is no ecoding supplied it is probably safe to assert that no
             # encoding is associated with it.
             expected_encoding = Holder(None)
@@ -580,10 +590,11 @@ def test_create_input_source(
     A given set of parameters results in an input source matching specified
     invariants.
 
-    :param test_params: The parameters to use for the test. This specifies what
-        parameters should be passed to func:`create_input_source` and what
-        invariants the resulting input source should match.
-    :param http_file_server: The HTTP file server to use for the test.
+    Args:
+        test_params: The parameters to use for the test. This specifies what
+            parameters should be passed to `create_input_source` and what
+            invariants the resulting input source should match.
+        http_file_server: The HTTP file server to use for the test.
     """
     logging.debug("test_params = %s", test_params)
     input_path = test_params.input_path
@@ -645,8 +656,8 @@ def test_create_input_source(
 
     logging.info("expected_result = %s", test_params.expected_result)
 
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
-    input_source: Optional[InputSource] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
+    input_source: InputSource | None = None
     with ExitStack() as xstack:
         if isinstance(test_params.expected_result, ExceptionChecker):
             catcher = xstack.enter_context(test_params.expected_result.context())

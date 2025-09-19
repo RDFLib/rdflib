@@ -4,13 +4,19 @@ Utilities for interacting with SHACL Shapes Graphs more easily.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 from rdflib import BNode, Graph, Literal, URIRef, paths
 from rdflib.collection import Collection
 from rdflib.namespace import RDF, SH
 from rdflib.paths import Path
-from rdflib.term import Node
+
+if TYPE_CHECKING:
+    from rdflib.graph import _ObjectType
+    from rdflib.term import IdentifiedNode
+
+if TYPE_CHECKING:
+    from rdflib.term import IdentifiedNode
 
 if TYPE_CHECKING:
     from rdflib.term import IdentifiedNode
@@ -32,18 +38,21 @@ _PATH_MOD_TO_PRED = {
 # pyshacl.helper.sparql_query_helper::SPARQLQueryHelper._shacl_path_to_sparql_path
 def parse_shacl_path(
     shapes_graph: Graph,
-    path_identifier: Node,
-) -> Union[URIRef, Path]:
+    path_identifier: _ObjectType,
+) -> URIRef | Path:
     """
     Parse a valid SHACL path (e.g. the object of a triple with predicate sh:path)
-    from a :class:`~rdflib.graph.Graph` as a :class:`~rdflib.term.URIRef` if the path
-    is simply a predicate or a :class:`~rdflib.paths.Path` otherwise.
+    from a [`Graph`][rdflib.graph.Graph] as a [`URIRef`][rdflib.term.URIRef] if the path
+    is simply a predicate or a [`Path`][rdflib.paths.Path] otherwise.
 
-    :param shapes_graph: A :class:`~rdflib.graph.Graph` containing the path to be parsed
-    :param path_identifier: A :class:`~rdflib.term.Node` of the path
-    :return: A :class:`~rdflib.term.URIRef` or a :class:`~rdflib.paths.Path`
+    Args:
+        shapes_graph: A [`Graph`][rdflib.graph.Graph] containing the path to be parsed
+        path_identifier: A [`Node`][rdflib.term.Node] of the path
+
+    Returns:
+        A [`URIRef`][rdflib.term.URIRef] or a [`Path`][rdflib.paths.Path]
     """
-    path: Optional[Union[URIRef, Path]] = None
+    path: URIRef | Path | None = None
 
     # Literals are not allowed.
     if isinstance(path_identifier, Literal):
@@ -112,11 +121,14 @@ def _build_path_component(
     Helper method that implements the recursive component of SHACL path
     triple construction.
 
-    :param graph: A :class:`~rdflib.graph.Graph` into which to insert triples
-    :param graph_component: A :class:`~rdflib.term.URIRef` or
-        :class:`~rdflib.paths.Path` that is part of a path expression
-    :return: The :class:`~rdflib.term.IdentifiedNode of the resource in the
-        graph that corresponds to the provided path_component
+    Args:
+        graph: A [`Graph`][rdflib.graph.Graph] into which to insert triples
+        graph_component: A [`URIRef`][rdflib.term.URIRef] or
+            [`Path`][rdflib.paths.Path] that is part of a path expression
+
+    Returns:
+        The [`IdentifiedNode`][rdflib.term.IdentifiedNode] of the resource in the
+            graph that corresponds to the provided path_component
     """
     # Literals or other types are not allowed
     if not isinstance(path_component, (URIRef, Path)):
@@ -181,24 +193,27 @@ def build_shacl_path(
     path: URIRef | Path, target_graph: Graph | None = None
 ) -> tuple[IdentifiedNode, Graph | None]:
     """
-    Build the SHACL Path triples for a path given by a :class:`~rdflib.term.URIRef` for
-    simple paths or a :class:`~rdflib.paths.Path` for complex paths.
+    Build the SHACL Path triples for a path given by a [`URIRef`][rdflib.term.URIRef] for
+    simple paths or a [`Path`][rdflib.paths.Path] for complex paths.
 
-    Returns an :class:`~rdflib.term.IdentifiedNode` for the path (which should be
-    the object of a triple with predicate sh:path) and the graph into which any
+    Returns an [`IdentifiedNode`][rdflib.term.IdentifiedNode] for the path (which should be
+    the object of a triple with predicate `sh:path`) and the graph into which any
     new triples were added.
 
-    :param path: A :class:`~rdflib.term.URIRef` or a :class:`~rdflib.paths.Path`
-    :param target_graph: Optionally, a :class:`~rdflib.graph.Graph` into which to put
-        constructed triples. If not provided, a new graph will be created
-    :return: A (path_identifier, graph) tuple where:
-        - path_identifier: If path is a :class:`~rdflib.term.URIRef`, this is simply
-        the provided path. If path is a :class:`~rdflib.paths.Path`, this is
-        the :class:`~rdflib.term.BNode` corresponding to the root of the SHACL
-        path expression added to the graph.
-        - graph: None if path is a :class:`~rdflib.term.URIRef` (as no new triples
-        are constructed). If path is a :class:`~rdflib.paths.Path`, this is either the
-        target_graph provided or a new graph into which the path triples were added.
+    Args:
+        path: A [`URIRef`][rdflib.term.URIRef] or a [`Path`][rdflib.paths.Path]
+        target_graph: Optionally, a [`Graph`][rdflib.graph.Graph] into which to put
+            constructed triples. If not provided, a new graph will be created
+
+    Returns:
+        A (path_identifier, graph) tuple where:
+            - path_identifier: If path is a [`URIRef`][rdflib.term.URIRef], this is simply
+            the provided path. If path is a [`Path`][rdflib.paths.Path], this is
+            the [`BNode`][rdflib.term.BNode] corresponding to the root of the SHACL
+            path expression added to the graph.
+            - graph: None if path is a [`URIRef`][rdflib.term.URIRef] (as no new triples
+            are constructed). If path is a [`Path`][rdflib.paths.Path], this is either the
+            target_graph provided or a new graph into which the path triples were added.
     """
     # If a path is a URI, that's the whole path. No graph needs to be constructed.
     if isinstance(path, URIRef):
