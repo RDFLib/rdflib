@@ -1,4 +1,11 @@
-## 2025-09-18 RELEASE 7.2.0
+## 2025-09-19 RELEASE 7.2.1
+
+A tiny clean up release.
+
+Fixes:
+- Previous RDFLib releases required all downstream projects to specify <4.0.0. This release relaxes this requirement to allow Python 3.8.1 and later.
+
+## 2025-09-19 RELEASE 7.2.0
 
 This release contains a number of fixes and improvements to RDFLib.
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rdflib"
-version = "7.2.0"
+version = "7.2.1"
 description = """RDFLib is a Python library for working with RDF, \
 a simple yet powerful language for representing information."""
 authors = ["Daniel 'eikeon' Krech <eikeon@eikeon.com>"]
@@ -38,7 +38,7 @@ rdfs2dot = 'rdflib.tools.rdfs2dot:main'
 rdfgraphisomorphism = 'rdflib.tools.graphisomorphism:main'
 
 [tool.poetry.dependencies]
-python = "^3.8.1"
+python = ">=3.8.1"
 isodate = {version=">=0.7.2,<1.0.0", python = "<3.11"}
 pyparsing = ">=2.1.0,<4"
 berkeleydb = {version = "^18.1.0", optional = true}
