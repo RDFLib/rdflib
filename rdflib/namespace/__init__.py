@@ -364,8 +364,6 @@ class DefinedNamespace(metaclass=DefinedNamespaceMeta):
 
     __slots__: tuple[str, ...] = tuple()
 
-    __slots__: tuple[str, ...] = tuple()
-
     def __init__(self):
         raise TypeError("namespace may not be instantiated")
 
