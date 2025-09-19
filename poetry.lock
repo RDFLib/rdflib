@@ -1727,5 +1727,5 @@ orjson = ["orjson"]
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.9,<4"
-content-hash = "a9cc938b3991e860d9081d0912b0b1362edf47b30febbc1ace7ed40e62930223"
+python-versions = ">=3.9"
+content-hash = "08fe09128d28a53f15f1d11cbed8e7110b95267969643b908ff1b0dec688f64d"

@@ -21,7 +21,7 @@ classifiers = [
     "Operating System :: OS Independent",
     "Natural Language :: English"
 ]
-requires-python = ">=3.9,<4"
+requires-python = ">=3.9"
 readme = "README.md"
 packages = [
     { include = "rdflib" },
