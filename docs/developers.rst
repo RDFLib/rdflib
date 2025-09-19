@@ -551,9 +551,16 @@ Once this is all done, create another post-release pull request with the followi
 #. In ``docker/latest/requirements.in`` set the version to the just released version
 #. Use ``task docker:prepare`` to update ``docker/latest/requirements.txt``
 
+5. Port changes to the next major working branch
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+If maintaining multiple long-lived version branches, ensure changes from this release are ported to the next major working branch.
 
-5. Let the world know
+For instance, releasing a ``7.x`` would require merging in changes to ``main`` for version ``8.x``.
+
+This ensures general fixes and enhancements are ported over and maintained in the next major working branch.
+
+6. Let the world know
 ~~~~~~~~~~~~~~~~~~~~~
 
 Announce the release at the following locations:

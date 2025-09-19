@@ -43,6 +43,7 @@ Help with maintenance of all of the RDFLib family of packages is always welcome 
 ## Versions & Releases
 
 * `main` branch in this repository is the current unstable release - version 8 alpha
+* `7.2.1` tiny clean up release, relaxes Python version requirement
 * `7.2.0` general fixes and usability improvements, see changelog for details
 * `7.1.4` tidy-up release, possibly last 7.x release
 * `7.1.3` current stable release, small improvements to 7.1.1
