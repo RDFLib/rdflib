@@ -39,25 +39,20 @@ _SPACIOUS_OUTPUT = False
 
 
 class LongTurtleSerializer(RecursiveSerializer):
-    """LongTurtle RDF graph serializer."""
+    """LongTurtle, a Turtle serialization format.
+
+    When the optional parameter ``canon`` is set to :py:obj:`True`, the graph is canonicalized
+    before serialization. This normalizes blank node identifiers and allows for
+    deterministic serialization of the graph. Useful when consistent outputs are required.
+    """
 
     short_name = "longturtle"
     indentString = "    "
 
     def __init__(self, store):
         self._ns_rewrite = {}
-        namespace_manager = store.namespace_manager
-        store = to_canonical_graph(store)
-        content = store.serialize(format="application/n-triples")
-        lines = content.split("\n")
-        lines.sort()
-        graph = Graph()
-        graph.parse(
-            data="\n".join(lines), format="application/n-triples", skolemize=True
-        )
-        graph = graph.de_skolemize()
-        graph.namespace_manager = namespace_manager
-        super(LongTurtleSerializer, self).__init__(graph)
+        self._canon = False
+        super(LongTurtleSerializer, self).__init__(store)
         self.keywords = {RDF.type: "a"}
         self.reset()
         self.stream = None
@@ -87,11 +82,34 @@ class LongTurtleSerializer(RecursiveSerializer):
         super(LongTurtleSerializer, self).addNamespace(prefix, namespace)
         return prefix
 
+    def canonize(self):
+        """Apply canonicalization to the store.
+
+        This normalizes blank node identifiers and allows for deterministic
+        serialization of the graph.
+        """
+        if not self._canon:
+            return
+
+        namespace_manager = self.store.namespace_manager
+        store = to_canonical_graph(self.store)
+        content = store.serialize(format="application/n-triples")
+        lines = content.split("\n")
+        lines.sort()
+        graph = Graph()
+        graph.parse(
+            data="\n".join(lines), format="application/n-triples", skolemize=True
+        )
+        graph = graph.de_skolemize()
+        graph.namespace_manager = namespace_manager
+        self.store = graph
+
     def reset(self):
         super(LongTurtleSerializer, self).reset()
         self._shortNames = {}
         self._started = False
         self._ns_rewrite = {}
+        self.canonize()
 
     def serialize(
         self,
@@ -101,6 +119,7 @@ class LongTurtleSerializer(RecursiveSerializer):
         spacious: Optional[bool] = None,
         **kwargs: Any,
     ) -> None:
+        self._canon = kwargs.get("canon", False)
         self.reset()
         self.stream = stream
         # if base is given here, use, if not and a base is set for the graph use that

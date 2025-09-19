@@ -18,6 +18,9 @@ if TYPE_CHECKING:
 if TYPE_CHECKING:
     from rdflib.term import IdentifiedNode
 
+if TYPE_CHECKING:
+    from rdflib.term import IdentifiedNode
+
 
 class SHACLPathError(Exception):
     pass

@@ -75,6 +75,7 @@ __all__ = [
     "Formula",
     "RDFSink",
     "SinkParser",
+    "sfloat",
 ]
 
 from rdflib.parser import Parser

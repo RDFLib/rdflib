@@ -1,3 +1,129 @@
+## 2025-09-19 RELEASE 7.2.1
+
+A tiny clean up release.
+
+Fixes:
+- Previous RDFLib releases required all downstream projects to specify <4.0.0. This release relaxes this requirement to allow Python 3.8.1 and later.
+
+## 2025-09-19 RELEASE 7.2.0
+
+This release contains a number of fixes and improvements to RDFLib.
+
+New features:
+- Canonicalization is now optional in the longturtle serializer. When serializing with the `longturtle` format, set `canon=True` to enable canonicalization.
+- General type hints enhancements
+
+Fixes:
+- Fixed deskolemization of literals
+- Fixed round-tripping of floats in N3 - floating point and scientific notation handling
+- Fixed CI validation workflow, including regressions in tests
+- Fixed `Literal.toPython` date conversion for gYear/gYearMonth
+- Fixed namespace prefixes in longturtle serialization
+- Fixed missing dot in RDF patch serialization
+
+PRs merged:
+
+* 2025-09-18 - [7.x] Fix incorrect deskolemization of literals
+  [PR #3223](https://github.com/RDFLib/rdflib/pull/3223)
+* 2025-09-18 - Fix incorrect deskolemization of literals
+  [PR #3127](https://github.com/RDFLib/rdflib/pull/3127)
+* 2025-09-18 - notation3.py: don't normalize float representation
+  [PR #3020](https://github.com/RDFLib/rdflib/pull/3020)
+* 2025-09-18 - [7.x] notation3.py: don't normalize float representation
+  [PR #3221](https://github.com/RDFLib/rdflib/pull/3221)
+* 2025-09-18 - Merge 7-maintenance branch into 7.x
+  [PR #3222](https://github.com/RDFLib/rdflib/pull/3222)
+* 2025-09-17 - Allow lxml 6
+  [PR #3219](https://github.com/RDFLib/rdflib/pull/3219)
+* 2025-09-16 - ci: fix firejail command for poetry 2.1.0
+  [PR #3218](https://github.com/RDFLib/rdflib/pull/3218)
+* 2025-09-16 - chore: address dependabot security vulnerabilities
+  [PR #3210](https://github.com/RDFLib/rdflib/pull/3210)
+* 2025-09-09 - Merge 7-maintenance changes into main
+  [PR #3202](https://github.com/RDFLib/rdflib/pull/3202)
+* 2025-09-08 - feat: canonicalization with longturtle serializer now optional
+  [PR #3197](https://github.com/RDFLib/rdflib/pull/3197)
+* 2025-09-03 - Specify `Optional` parameters in `Graph.triples_choices`
+  [PR #3075](https://github.com/RDFLib/rdflib/pull/3075)
+* 2025-08-29 - Fix failing webtest
+  [PR #3194](https://github.com/RDFLib/rdflib/pull/3194)
+* 2025-08-29 - Revert "remove old hacks against 2to3 (#3076)"
+  [PR #3195](https://github.com/RDFLib/rdflib/pull/3195)
+* 2025-08-18 - Fix #3181
+  [PR #3182](https://github.com/RDFLib/rdflib/pull/3182)
+* 2025-08-18 - Fix contributing guide link in README.md
+  [PR #3158](https://github.com/RDFLib/rdflib/pull/3158)
+* 2025-08-18 - Creation of an RDFLib Charter
+  [PR #3178](https://github.com/RDFLib/rdflib/pull/3178)
+* 2025-08-11 - Feature: Add Tentris Plugin to docs
+  [PR #3177](https://github.com/RDFLib/rdflib/pull/3177)
+* 2025-06-02 - Replacement for #3125
+  [PR #3146](https://github.com/RDFLib/rdflib/pull/3146)
+* 2025-06-01 - Cope with Namespace annotations in Python 3.14
+  [PR #3132](https://github.com/RDFLib/rdflib/pull/3132)
+* 2025-06-01 - replace PR 3109; improve plugins modules docs; change header colour t…
+  [PR #3145](https://github.com/RDFLib/rdflib/pull/3145)
+* 2025-06-01 - Pr/3143
+  [PR #3144](https://github.com/RDFLib/rdflib/pull/3144)
+* 2025-05-31 - fix: remove Literal.toPython date conversion for gYear/gYearMonth
+  [PR #3115](https://github.com/RDFLib/rdflib/pull/3115)
+* 2025-05-31 - fix: do not automatically generate header id in RDF patch generation and fix missing fullstop
+  [PR #3141](https://github.com/RDFLib/rdflib/pull/3141)
+* 2025-05-31 - fix namespace prefixes in longturtle serialization
+  [PR #3106](https://github.com/RDFLib/rdflib/pull/3106)
+* 2025-05-20 - [7.x] fix namespace prefixes in longturtle serialization
+  [PR #3134](https://github.com/RDFLib/rdflib/pull/3134)
+* 2025-05-20 - List on docs the COTTAS store backend
+  [PR #3139](https://github.com/RDFLib/rdflib/pull/3139)
+* 2025-03-29 - 7.1.4 pre-release
+  [PR #3098](https://github.com/RDFLib/rdflib/pull/3098)
+
+
+* 2025-09-16 - build(deps): bump poetry from 2.0.0 to 2.1.4 in /devtools
+  [PR #3176](https://github.com/RDFLib/rdflib/pull/3176)
+* 2025-09-16 - build(deps): bump library/python from `8220cce` to `58c30f5` in /docker/latest
+  [PR #3217](https://github.com/RDFLib/rdflib/pull/3217)
+* 2025-09-16 - build(deps): bump library/python from `8220cce` to `58c30f5` in /docker/unstable
+  [PR #3216](https://github.com/RDFLib/rdflib/pull/3216)
+* 2025-09-16 - build(deps-dev): bump ruff from 0.8.6 to 0.13.0
+  [PR #3213](https://github.com/RDFLib/rdflib/pull/3213)
+* 2025-09-16 - build(deps-dev): bump pip-tools from 7.4.1 to 7.5.0
+  [PR #3211](https://github.com/RDFLib/rdflib/pull/3211)
+* 2025-09-16 - build(deps-dev): bump mkdocstrings from 0.29.1 to 0.30.0
+  [PR #3214](https://github.com/RDFLib/rdflib/pull/3214)
+* 2025-09-12 - build(deps): bump library/python from 3.13.3-slim to 3.13.7-slim in /docker/unstable
+  [PR #3183](https://github.com/RDFLib/rdflib/pull/3183)
+* 2025-09-12 - build(deps): bump actions/checkout from 4 to 5
+  [PR #3184](https://github.com/RDFLib/rdflib/pull/3184)
+* 2025-09-12 - build(deps): bump library/python from 3.13.3-slim to 3.13.7-slim in /docker/latest
+  [PR #3185](https://github.com/RDFLib/rdflib/pull/3185)
+* 2025-09-12 - build(deps): bump actions/setup-java from 4 to 5
+  [PR #3189](https://github.com/RDFLib/rdflib/pull/3189)
+* 2025-09-12 - build(deps-dev): bump pytest-cov from 6.1.1 to 6.3.0
+  [PR #3203](https://github.com/RDFLib/rdflib/pull/3203)
+* 2025-09-12 - build(deps-dev): bump typing-extensions from 4.13.2 to 4.15.0
+  [PR #3204](https://github.com/RDFLib/rdflib/pull/3204)
+* 2025-09-12 - build(deps-dev): bump pytest from 8.3.5 to 8.4.2
+  [PR #3205](https://github.com/RDFLib/rdflib/pull/3205)
+* 2025-09-12 - build(deps-dev): bump mkdocs-include-markdown-plugin from 7.1.5 to 7.1.7
+  [PR #3207](https://github.com/RDFLib/rdflib/pull/3207)
+* 2025-09-12 - build(deps): bump actions/setup-python from 5 to 6
+  [PR #3206](https://github.com/RDFLib/rdflib/pull/3206)
+* 2025-09-12 - build(deps-dev): bump mkdocs-material from 9.6.14 to 9.6.19
+  [PR #3208](https://github.com/RDFLib/rdflib/pull/3208)
+* 2025-09-12 - build(deps-dev): bump coverage from 7.8.2 to 7.10.6
+  [PR #3209](https://github.com/RDFLib/rdflib/pull/3209)
+* 2025-05-31 - build(deps-dev): bump coverage from 7.7.1 to 7.8.2
+  [PR #3142](https://github.com/RDFLib/rdflib/pull/3142)
+* 2025-05-31 - build(deps-dev): bump typing-extensions from 4.13.0 to 4.13.2
+  [PR #3121](https://github.com/RDFLib/rdflib/pull/3121)
+* 2025-05-31 - build(deps): bump library/python from 3.13.1-slim@sha256:1127090f9fff0b8e7c3a1367855ef8a3299472d2c9ed122948a576c39addeaf1 to sha256:34dc8eb488136014caf530ec03a3a2403473a92d67a01a26256c365b5b2fc0d4 in /docker/unstable
+  [PR #3118](https://github.com/RDFLib/rdflib/pull/3118)
+* 2025-05-31 - build(deps): bump library/python from 3.13.1-slim@sha256:1127090f9fff0b8e7c3a1367855ef8a3299472d2c9ed122948a576c39addeaf1 to sha256:34dc8eb488136014caf530ec03a3a2403473a92d67a01a26256c365b5b2fc0d4 in /docker/latest
+  [PR #3117](https://github.com/RDFLib/rdflib/pull/3117)
+* 2025-05-27 - build(deps): bump rdflib from 7.1.2 to 7.1.4 in /docker/latest
+  [PR #3101](https://github.com/RDFLib/rdflib/pull/3101)
+
 ## 2025-03-29 RELEASE 7.1.4
 
 A tidy-up release with no major updates over 7.1.3. This may be the last 7.x 

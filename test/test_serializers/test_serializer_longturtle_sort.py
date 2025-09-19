@@ -59,7 +59,7 @@ def test_sort_semiblank_graph() -> None:
             graph.add((outer_node, EX.has, inner_node))
             graph.add((inner_node, RDFS.seeAlso, nested))
 
-        graph_text = graph.serialize(format="longturtle", sort=True)
+        graph_text = graph.serialize(format="longturtle", canon=True)
         if first_graph_text == "":
             first_graph_text = graph_text
 
