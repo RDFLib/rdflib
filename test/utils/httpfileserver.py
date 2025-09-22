@@ -120,7 +120,7 @@ class HTTPFileServer(HTTPServer):
 
     @property
     def url(self) -> str:
-        (host, port) = self.server_address
+        (host, port, *_) = self.server_address
         if isinstance(host, (bytes, bytearray)):
             host = host.decode("utf-8")
         return f"http://{host}:{port}"
