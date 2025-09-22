@@ -1676,14 +1676,14 @@ class BooleanClass(OWLRDFListProxy, Class):
 
     @BooleanClassExtentHelper(OWL.intersectionOf)
     @Callable
-    def getIntersections():  # type: ignore[misc]  # noqa: N802
+    def getIntersections():  # noqa: N802
         pass  # pragma: no cover
 
     getIntersections = Callable(getIntersections)  # noqa: N815
 
     @BooleanClassExtentHelper(OWL.unionOf)
     @Callable
-    def getUnions():  # type: ignore[misc]  # noqa: N802
+    def getUnions():  # noqa: N802
         pass  # pragma: no cover
 
     getUnions = Callable(getUnions)  # noqa: N815
