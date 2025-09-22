@@ -527,9 +527,12 @@ class Graph(Node):
         super(Graph, self).__init__()
         self.base = base
         self.__identifier: _ContextIdentifierType
-        self.__identifier = identifier or BNode()  # type: ignore[assignment]
-        if not isinstance(self.__identifier, IdentifiedNode):
-            self.__identifier = URIRef(self.__identifier)
+        if not identifier:
+            self.__identifier = BNode()
+        elif isinstance(identifier, IdentifiedNode):
+            self.__identifier = identifier
+        else:
+            self.__identifier = URIRef(identifier)
         self.__store: Store
         if not isinstance(store, Store):
             # TODO: error handling
