@@ -264,6 +264,9 @@ class TurtleSerializer(RecursiveSerializer):
             if i == VERB and node in self.keywords:
                 # predicate is a keyword
                 continue
+            if i == VERB and node.startswith(self.store.base):
+                # predicate corresponds to base namespace
+                continue
             # Don't use generated prefixes for subjects and objects
             self.getQName(node, gen_prefix=(i == VERB))
             if isinstance(node, Literal) and node.datatype:
