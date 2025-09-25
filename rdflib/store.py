@@ -208,18 +208,13 @@ class Store:
     def open(
         self, configuration: Union[str, tuple[str, str]], create: bool = False
     ) -> Optional[int]:
-        """Opens the store specified by the configuration string.
-
-        Args:
-            configuration: Store configuration as string or tuple
-            create: If True, a store will be created if it doesn't exist.
-                If False and the store doesn't exist, an exception is raised.
-
-        Returns:
-            One of: VALID_STORE, CORRUPTED_STORE, or NO_STORE
-
-        Raises:
-            Exception: If there are insufficient permissions to open the store.
+        """Opens the store specified by the configuration string or tuple. If
+        create is True a store will be created if it does not already
+        exist. If create is False and a store does not already exist
+        an exception is raised. An exception is also raised if a store
+        exists, but there is insufficient permissions to open the
+        store.  This should return one of:
+        VALID_STORE, CORRUPTED_STORE, or NO_STORE
         """
         return UNKNOWN
 
