@@ -562,7 +562,9 @@ class Graph(Node):
         self.__store.rollback()
         return self
 
-    def open(self, configuration: str, create: bool = False) -> Optional[int]:
+    def open(
+        self, configuration: Union[str, tuple[str, str]], create: bool = False
+    ) -> Optional[int]:
         """Open the graph store
 
         Might be necessary for stores that require opening a connection to a
@@ -2824,7 +2826,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def rollback(self) -> NoReturn:
         raise ModificationException()
 
-    def open(self, configuration: str, create: bool = False) -> None:
+    def open(self, configuration: str | tuple[str, str], create: bool = False) -> None:
         # TODO: is there a use case for this method?
         for graph in self.graphs:
             # type error: Too many arguments for "open" of "Graph"
