@@ -9,8 +9,10 @@ from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-from rdflib.query import Result
+from rdflib.plugin import plugins
+from rdflib.query import Result, ResultParser
 from rdflib.term import BNode
+from rdflib.util import FORMAT_MIMETYPE_MAP, RESPONSE_TABLE_FORMAT_MIMETYPE_MAP
 
 log = logging.getLogger(__name__)
 
@@ -22,16 +24,6 @@ class SPARQLConnectorException(Exception):  # noqa: N818
     pass
 
 
-# TODO: Pull in these from the result implementation plugins?
-_response_mime_types = {
-    "xml": "application/sparql-results+xml, application/rdf+xml",
-    "json": "application/sparql-results+json",
-    "csv": "text/csv",
-    "tsv": "text/tab-separated-values",
-    "application/rdf+xml": "application/rdf+xml",
-}
-
-
 class SPARQLConnector:
     """
     this class deals with nitty gritty details of talking to a SPARQL server
@@ -41,7 +33,7 @@ class SPARQLConnector:
         self,
         query_endpoint: Optional[str] = None,
         update_endpoint: Optional[str] = None,
-        returnFormat: str = "xml",  # noqa: N803
+        returnFormat: Optional[str] = "xml",  # noqa: N803
         method: te.Literal["GET", "POST", "POST_FORM"] = "GET",
         auth: Optional[Tuple[str, str]] = None,
         **kwargs,
@@ -95,7 +87,7 @@ class SPARQLConnector:
         if default_graph is not None and type(default_graph) is not BNode:
             params["default-graph-uri"] = default_graph
 
-        headers = {"Accept": _response_mime_types[self.returnFormat]}
+        headers = {"Accept": self.response_mime_types()}
 
         args = copy.deepcopy(self.kwargs)
 
@@ -170,7 +162,7 @@ class SPARQLConnector:
             params["using-named-graph-uri"] = named_graph
 
         headers = {
-            "Accept": _response_mime_types[self.returnFormat],
+            "Accept": self.response_mime_types(),
             "Content-Type": "application/sparql-update; charset=UTF-8",
         }
 
@@ -187,6 +179,28 @@ class SPARQLConnector:
                 self.update_endpoint + qsa, data=query.encode(), headers=args["headers"]
             )
         )
+
+    def response_mime_types(self) -> str:
+        """Construct a HTTP-Header Accept field to reflect the supported mime types.
+
+        If the return_format parameter is set, the mime types are restricted to these accordingly.
+        """
+        sparql_format_mimetype_map = {
+            k: FORMAT_MIMETYPE_MAP.get(k, [])
+            + RESPONSE_TABLE_FORMAT_MIMETYPE_MAP.get(k, [])
+            for k in list(FORMAT_MIMETYPE_MAP.keys())
+            + list(RESPONSE_TABLE_FORMAT_MIMETYPE_MAP.keys())
+        }
+
+        supported_formats = set()
+        for plugin in plugins(name=self.returnFormat, kind=ResultParser):
+            if "/" not in plugin.name:
+                supported_formats.update(
+                    sparql_format_mimetype_map.get(plugin.name, [])
+                )
+            else:
+                supported_formats.add(plugin.name)
+        return ", ".join(supported_formats)
 
 
 __all__ = ["SPARQLConnector", "SPARQLConnectorException"]
