@@ -244,13 +244,10 @@ class TurtleSerializer(RecursiveSerializer):
 
         self.startDocument()
 
-        firstTime = True
         for subject in subjects_list:
             if self.isDone(subject):
                 continue
-            if firstTime:
-                firstTime = False
-            if self.statement(subject) and not firstTime:
+            if self.statement(subject):
                 self.write("\n")
 
         self.endDocument()
