@@ -892,14 +892,14 @@ pyyaml = ">=5.1"
 
 [[package]]
 name = "mkdocs-include-markdown-plugin"
-version = "7.1.7"
+version = "7.2.0"
 description = "Mkdocs Markdown includer plugin."
 optional = false
 python-versions = ">=3.9"
 groups = ["docs"]
 files = [
-    {file = "mkdocs_include_markdown_plugin-7.1.7-py3-none-any.whl", hash = "sha256:a0c13efe4f6b05a419c022e201055bf43145eed90de65f2353c33fb4005b6aa5"},
-    {file = "mkdocs_include_markdown_plugin-7.1.7.tar.gz", hash = "sha256:677637e04c2d3497c50340be522e2a7f614124f592c7982d88b859f88d527a4c"},
+    {file = "mkdocs_include_markdown_plugin-7.2.0-py3-none-any.whl", hash = "sha256:d56cdaeb2d113fb66ed0fe4fb7af1da889926b0b9872032be24e19bbb09c9f5b"},
+    {file = "mkdocs_include_markdown_plugin-7.2.0.tar.gz", hash = "sha256:4a67a91ade680dc0e15f608e5b6343bec03372ffa112c40a4254c1bfb10f42f3"},
 ]
 
 [package.dependencies]
@@ -1750,4 +1750,4 @@ orjson = ["orjson"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9"
-content-hash = "a0deef742efd1c1c47465ef9e313d63ea9b9d1b45acca21469c7609fe462fe27"
+content-hash = "20d15a7e904e8a99f277ce7c14580c8032a44a242833eb51ded3780356f53651"
