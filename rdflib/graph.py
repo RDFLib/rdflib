@@ -562,6 +562,14 @@ class Graph(Node):
     def identifier(self) -> _ContextIdentifierType:
         return self.__identifier
 
+    @identifier.setter
+    def identifier(self, identifier: IdentifiedNode):
+        if not isinstance(identifier, IdentifiedNode):
+            raise TypeError(
+                "The identifier for a Graph must be an IdentifiedNode"
+            )
+        self.__identifier = identifier
+
     @property
     def namespace_manager(self) -> NamespaceManager:
         """
@@ -2796,6 +2804,13 @@ class Dataset(ConjunctiveGraph):
     def add_graph(self, g: _ContextIdentifierType | _ContextType | str | None) -> Graph:
         """alias of graph for consistency"""
         return self.graph(g)
+
+    def add_named_graph(
+            self, named_graph_identifier: IdentifiedNode, g: Optional[Union[_ContextIdentifierType, _ContextType, str]]
+    ) -> Graph:
+        new_g = self.graph(g)
+        new_g.identifier = named_graph_identifier
+        return new_g
 
     def remove_graph(
         self: _DatasetT, g: _ContextIdentifierType | _ContextType | str | None
