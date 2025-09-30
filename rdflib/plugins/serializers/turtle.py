@@ -263,9 +263,17 @@ class TurtleSerializer(RecursiveSerializer):
     def preprocessTriple(self, triple: _TripleType) -> None:
         super(TurtleSerializer, self).preprocessTriple(triple)
         for i, node in enumerate(triple):
-            if i == VERB and node in self.keywords:
-                # predicate is a keyword
-                continue
+            if i == VERB:
+                if node in self.keywords:
+                    # predicate is a keyword
+                    continue
+                if (
+                    self.base is not None
+                    and isinstance(node, URIRef)
+                    and node.startswith(self.base)
+                ):
+                    # predicate corresponds to base namespace
+                    continue
             # Don't use generated prefixes for subjects and objects
             self.getQName(node, gen_prefix=(i == VERB))
             if isinstance(node, Literal) and node.datatype:

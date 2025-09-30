@@ -22,7 +22,7 @@ from typing import IO, Any, Optional
 
 from rdflib.compare import to_canonical_graph
 from rdflib.exceptions import Error
-from rdflib.graph import Graph
+from rdflib.graph import Graph, _TripleType
 from rdflib.namespace import RDF
 from rdflib.term import BNode, Literal, URIRef
 
@@ -149,11 +149,20 @@ class LongTurtleSerializer(RecursiveSerializer):
 
         self.base = None
 
-    def preprocessTriple(self, triple):
+    def preprocessTriple(self, triple: _TripleType) -> None:
         super(LongTurtleSerializer, self).preprocessTriple(triple)
         for i, node in enumerate(triple):
-            if node in self.keywords:
-                continue
+            if i == VERB:
+                if node in self.keywords:
+                    # predicate is a keyword
+                    continue
+                if (
+                    self.base is not None
+                    and isinstance(node, URIRef)
+                    and node.startswith(self.base)
+                ):
+                    # predicate corresponds to base namespace
+                    continue
             # Don't use generated prefixes for subjects and objects
             self.getQName(node, gen_prefix=(i == VERB))
             if isinstance(node, Literal) and node.datatype:
@@ -179,6 +188,8 @@ class LongTurtleSerializer(RecursiveSerializer):
                 return None
 
         prefix, namespace, local = parts
+
+        local = local.replace(r"(", r"\(").replace(r")", r"\)")
 
         # QName cannot end with .
         if local.endswith("."):
