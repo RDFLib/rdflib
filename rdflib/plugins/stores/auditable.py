@@ -18,7 +18,7 @@ system fails): A and I out of ACID.
 from __future__ import annotations
 
 import threading
-from typing import TYPE_CHECKING, Any, Generator, Iterator, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Generator, Iterator, List, Optional, Tuple, Union
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.store import Store
@@ -62,7 +62,9 @@ class AuditableStore(Store):
         ] = []
         self.rollbackLock = threading.RLock()
 
-    def open(self, configuration: str, create: bool = True) -> Optional[int]:
+    def open(
+        self, configuration: Union[str, tuple[str, str]], create: bool = True
+    ) -> Optional[int]:
         return self.store.open(configuration, create)
 
     def close(self, commit_pending_transaction: bool = False) -> None:

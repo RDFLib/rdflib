@@ -4,7 +4,17 @@ import logging
 from os import mkdir
 from os.path import abspath, exists
 from threading import Thread
-from typing import TYPE_CHECKING, Any, Callable, Dict, Generator, List, Optional, Tuple
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    Generator,
+    List,
+    Optional,
+    Tuple,
+    Union,
+)
 from urllib.request import pathname2url
 
 from rdflib.store import NO_STORE, VALID_STORE, Store
@@ -127,10 +137,16 @@ class BerkeleyDB(Store):
     def is_open(self) -> bool:
         return self.__open
 
-    def open(self, path: str, create: bool = True) -> Optional[int]:
+    def open(
+        self, configuration: Union[str, tuple[str, str]], create: bool = True
+    ) -> Optional[int]:
         if not has_bsddb:
             return NO_STORE
-        homeDir = path  # noqa: N806
+
+        if type(configuration) is str:
+            homeDir = configuration  # noqa: N806
+        else:
+            raise Exception("Invalid configuration provided")
 
         if self.__identifier is None:
             self.__identifier = URIRef(pathname2url(abspath(homeDir)))
