@@ -180,7 +180,7 @@ def evalLeftJoin(
         for b in evalPart(c, join.p2):
             if _ebv(join.expr, b.forget(ctx)):
                 ok = True
-                yield b
+                yield b.merge(a)
         if not ok:
             # we've cheated, the ctx above may contain
             # vars bound outside our scope
