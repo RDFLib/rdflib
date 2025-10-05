@@ -1,13 +1,12 @@
 [project]
 name = "rdflib"
 version = "8.0.0a0"
-description = """RDFLib is a Python library for working with RDF, \
-a simple yet powerful language for representing information."""
+description = "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."
 authors = [{ name = "Daniel 'eikeon' Krech", email = "eikeon@eikeon.com" }]
-maintainers = [{ name = "RDFLib Team", email = "rdflib-dev@googlegroups.com" }]
-repository = "https://github.com/RDFLib/rdflib"
-documentation = "https://rdflib.readthedocs.org/"
+requires-python = ">=3.9"
+readme = "README.md"
 license = "BSD-3-Clause"
+maintainers = [{ name = "RDFLib Team", email = "rdflib-dev@googlegroups.com" }]
 classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
@@ -19,71 +18,69 @@ classifiers = [
     "License :: OSI Approved :: BSD License",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Operating System :: OS Independent",
-    "Natural Language :: English"
+    "Natural Language :: English",
 ]
-requires-python = ">=3.9"
-readme = "README.md"
-packages = [
-    { include = "rdflib" },
-]
-include = [
-    { path = "test", format = "sdist" },
-    { path = "docs", format = "sdist" },
-    { path = "examples", format = "sdist" },
-]
-dynamic = [ "dependencies" ]
 dependencies = [
     'isodate >=0.7.2,<1.0.0; python_version < "3.11"',
-    'pyparsing >=3.2.0,<4',
+    "pyparsing >=3.2.0,<4",
 ]
-
-[project.scripts]
-rdfpipe = 'rdflib.tools.rdfpipe:main'
-csv2rdf = 'rdflib.tools.csv2rdf:main'
-rdf2dot = 'rdflib.tools.rdf2dot:main'
-rdfs2dot = 'rdflib.tools.rdfs2dot:main'
-rdfgraphisomorphism = 'rdflib.tools.graphisomorphism:main'
-
-[tool.poetry.group.dev.dependencies]
-black = "24.10.0"
-mypy = "^1.18.2"
-lxml-stubs = ">=0.4,<0.6"
-pip-tools = "^7.5.0"
-
-[tool.poetry.group.tests.dependencies]
-pytest = ">=7.1.3,<9.0.0"
-pytest-cov = ">=4,<8"
-coverage = {version = "^7.10.7", extras = ["toml"]}
-types-setuptools = ">=68.0.0.3,<72.0.0.0"
-setuptools = ">=68,<72"
-wheel = ">=0.42,<0.46"
-
-[tool.poetry.group.docs.dependencies]
-typing-extensions = "^4.15.0"
-mkdocs = ">=1.6.1"
-mkdocs-material = ">=9.6.12"
-mkdocstrings = {version = ">=0.29.1", extras = ["python"]}
-mkdocs-gen-files = "^0.5.0"
-mkdocs-include-markdown-plugin = "^7.2.0"
-
-[tool.poetry.group.lint.dependencies]
-ruff = "0.13.2"
+repository = "https://github.com/RDFLib/rdflib"
+include = [
+    { format = "sdist", path = "test" },
+    { format = "sdist", path = "docs" },
+    { format = "sdist", path = "examples" },
+]
+documentation = "https://rdflib.readthedocs.org/"
+packages = [{ include = "rdflib" }]
 
 [project.optional-dependencies]
 berkeleydb = ["berkeleydb >18.1.0"]
 networkx = ["networkx >=2,<4"]
-# html support is optional, it is used only in tokenizing `rdf:HTML` type Literals
 html = ["html5rdf >=1.2.1,<2"]
-# lxml support is optional, it is used only for parsing XML-formatted SPARQL results
 lxml = [
     'lxml >=4.8.0,<7.0; python_version <"3.11"',
     'lxml >=4.9.3,<7.0; python_version >="3.11"',
 ]
 orjson = ["orjson >=3.9.14,<4"]
 
+[project.scripts]
+rdfpipe = "rdflib.tools.rdfpipe:main"
+csv2rdf = "rdflib.tools.csv2rdf:main"
+rdf2dot = "rdflib.tools.rdf2dot:main"
+rdfs2dot = "rdflib.tools.rdfs2dot:main"
+rdfgraphisomorphism = "rdflib.tools.graphisomorphism:main"
+
+[dependency-groups]
+dev = [
+    "black==24.10.0",
+    "mypy>=1.18.2,<2",
+    "lxml-stubs>=0.4,<0.6",
+    "pip-tools>=7.5.0,<8",
+]
+tests = [
+    "pytest>=7.1.3,<9.0.0",
+    "pytest-cov>=4,<8",
+    "coverage[toml]>=7.10.7,<8",
+    "types-setuptools>=68.0.0.3,<72.0.0.0",
+    "setuptools>=68,<72",
+    "wheel>=0.42,<0.46",
+]
+docs = [
+    "typing-extensions>=4.15.0,<5",
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.6.12",
+    "mkdocstrings[python]>=0.29.1",
+    "mkdocs-gen-files>=0.5.0,<0.6",
+    "mkdocs-include-markdown-plugin>=7.2.0,<8",
+]
+lint = ["ruff==0.13.2"]
+
+[tool.uv]
+default-groups = ["dev", "tests", "docs", "lint"]
+
 [build-system]
-requires = ["poetry-core>=2.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.ruff]
 # https://beta.ruff.rs/docs/configuration/
@@ -93,37 +90,37 @@ line-length = 88
 
 [tool.ruff.lint]
 select = [
-    "E", # pycodestyle errors
-    "W", # pycodestyle warnings
-    "F", # Pyflakes
-    "I", # isort
-    "N", # pep8-naming
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "N",      # pep8-naming
     "RUF100", # Unused noqa directive
-    "UP001", # Remove unused imports
-    "UP003", # Use {} instead of type(...)
-    "UP004", # Class inherits from object
-    "UP005", # is deprecated, use
-    "UP009", # UTF-8 encoding declaration is unnecessary
-    "UP010", # Unnecessary __future__ import for target Python version
-    "UP011", # Unnecessary parentheses to functools.lru_cache
-    "UP012", # Unnecessary call to encode as UTF-8
-    "UP017", # Use datetime.UTC alias
-    "UP018", # Unnecessary {literal_type} call (rewrite as a literal)
-    "UP019", # typing.Text is deprecated, use str
-    "UP020", # Use builtin open
-    "UP021", # universal_newlines is deprecated, use text
-    "UP022", # Sending stdout and stderr to PIPE is deprecated, use capture_output
-    "UP023", # cElementTree is deprecated, use ElementTree
-    "UP024", # Replace aliased errors with OSError
-    "UP025", # Remove unicode literals from strings
-    "UP026", # mock is deprecated, use unittest.mock
-    "UP029", # Unnecessary builtin import
-    "UP034", # Avoid extraneous parentheses
-    "UP035", # Import from {target} instead:
-    "UP036", # Version block is outdated for minimum Python version
-    "UP037", # Remove quotes from type annotation
-    "UP039", # Unnecessary parentheses after class definition
-    "FA", # flake8-future-annotations
+    "UP001",  # Remove unused imports
+    "UP003",  # Use {} instead of type(...)
+    "UP004",  # Class inherits from object
+    "UP005",  # is deprecated, use
+    "UP009",  # UTF-8 encoding declaration is unnecessary
+    "UP010",  # Unnecessary __future__ import for target Python version
+    "UP011",  # Unnecessary parentheses to functools.lru_cache
+    "UP012",  # Unnecessary call to encode as UTF-8
+    "UP017",  # Use datetime.UTC alias
+    "UP018",  # Unnecessary {literal_type} call (rewrite as a literal)
+    "UP019",  # typing.Text is deprecated, use str
+    "UP020",  # Use builtin open
+    "UP021",  # universal_newlines is deprecated, use text
+    "UP022",  # Sending stdout and stderr to PIPE is deprecated, use capture_output
+    "UP023",  # cElementTree is deprecated, use ElementTree
+    "UP024",  # Replace aliased errors with OSError
+    "UP025",  # Remove unicode literals from strings
+    "UP026",  # mock is deprecated, use unittest.mock
+    "UP029",  # Unnecessary builtin import
+    "UP034",  # Avoid extraneous parentheses
+    "UP035",  # Import from {target} instead:
+    "UP036",  # Version block is outdated for minimum Python version
+    "UP037",  # Remove quotes from type annotation
+    "UP039",  # Unnecessary parentheses after class definition
+    "FA",     # flake8-future-annotations
 ]
 
 ignore = [
@@ -212,9 +209,7 @@ filterwarnings = [
     # The below warning is a consequence of how pytest detects fixtures and how DefinedNamespace behaves when an undefined attribute is being accessed.
     "ignore:Code. _pytestfixturefunction is not defined in namespace .*:UserWarning",
 ]
-markers = [
-    "webtest: mark a test as using the internet",
-]
+markers = ["webtest: mark a test as using the internet"]
 # log_cli = true
 # log_cli_level = "DEBUG"
 log_format = "%(asctime)s.%(msecs)03d %(levelname)-8s %(name)-12s %(filename)s:%(lineno)s:%(funcName)s %(message)s"
@@ -226,11 +221,11 @@ log_cli_date_format = "%Y-%m-%dT%H:%M:%S"
 profile = "black"
 py_version = 39
 line_length = 88
-src_paths= ["rdflib", "test", "devtools", "examples"]
+src_paths = ["rdflib", "test", "devtools", "examples"]
 supported_extensions = ["pyw", "pyi", "py"]
 skip = [
-    '.eggs',         # exclude a few common directories in the
-    '.git',          # root of the project
+    '.eggs',           # exclude a few common directories in the
+    '.git',            # root of the project
     '.hg',
     '.mypy_cache',
     '.pytest_cache',
@@ -283,8 +278,5 @@ exclude_lines = [
     # Don't complain if non-runnable code isn't run:
     "if 0:",
     "if __name__ == .__main__.:",
-    "if __name__==.__main__.:"
+    "if __name__==.__main__.:",
 ]
-
-[tool.poetry.requires-plugins]
-poetry-plugin-export = ">=1.8.0"
