@@ -1,5 +1,4 @@
-"""
-# Testing with pytest
+"""# Testing with pytest.
 
 This test runner uses pytest for test discovery and running. It uses the argument
 spec of pytest, but with some options pre-set. To begin with, make sure you have
@@ -28,21 +27,9 @@ See https://github.com/pytest-dev/pytest-cov for details.
 import json
 import sys
 
+import pytest
+
 if __name__ == "__main__":
-    try:
-        import pytest
-    except ImportError:
-        print(
-            """\
-    Requires pytest. Try:
-
-        $ pip install pytest
-
-    Exiting. """,
-            file=sys.stderr,
-        )
-        exit(1)
-
-    finalArgs = sys.argv[1:]  # noqa: N816
-    print("Running pytest with:", json.dumps(finalArgs))
-    sys.exit(pytest.main(args=finalArgs))
+    final_args = sys.argv[1:]
+    print("Running pytest with:", json.dumps(final_args))
+    sys.exit(pytest.main(args=final_args))

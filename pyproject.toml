@@ -24,14 +24,14 @@ dependencies = [
     'isodate >=0.7.2,<1.0.0; python_version < "3.11"',
     "pyparsing >=3.2.0,<4",
 ]
-repository = "https://github.com/RDFLib/rdflib"
-include = [
-    { format = "sdist", path = "test" },
-    { format = "sdist", path = "docs" },
-    { format = "sdist", path = "examples" },
-]
-documentation = "https://rdflib.readthedocs.org/"
-packages = [{ include = "rdflib" }]
+# repository = "https://github.com/RDFLib/rdflib"
+# include = [
+#     { format = "sdist", path = "test" },
+#     { format = "sdist", path = "docs" },
+#     { format = "sdist", path = "examples" },
+# ]
+# documentation = "https://rdflib.readthedocs.org/"
+# packages = [{ include = "rdflib" }]
 
 [project.optional-dependencies]
 berkeleydb = ["berkeleydb >18.1.0"]
@@ -161,6 +161,10 @@ ignore = [
 ]
 "{test/conftest.py,rdflib/namespace/__init__.py,rdflib/__init__.py,rdflib/plugins/sparql/__init__.py}" = [
     "E402", # Module level import not at top of file
+]
+# "{test/**/*.py,run_tests.py}" = [
+"run_tests.py" = [
+    "T201", # print is fine in test code
 ]
 
 [tool.black]
