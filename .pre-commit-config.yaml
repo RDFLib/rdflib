@@ -8,13 +8,13 @@ ci:
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # WARNING: Ruff version should be the same as in `pyproject.toml`
-    rev: v0.13.2
+    rev: v0.13.3
     hooks:
       - id: ruff
         args: ["--fix"]
   - repo: https://github.com/psf/black-pre-commit-mirror
     # WARNING: Black version should be the same as in `pyproject.toml`
-    rev: "24.10.0"
+    rev: "25.9.0"
     hooks:
     - id: black
       pass_filenames: false
