@@ -62,3 +62,28 @@ def test_broken():
     ds.remove_graph(retrieved_graph)
     assert len(retrieved_graph) == 0
     assert len(ds) == 0
+
+
+def test_adding_appends_to_dataset_graph():
+    ds = Dataset(default_union=True)
+    graph_name = URIRef("urn:graph")
+    graph = Graph(identifier=graph_name)
+
+    graph.add((URIRef("urn:class"), RDF.type, RDFS.Class))
+    assert len(graph) == 1
+    assert len(ds) == 0
+
+    # Make sure to use the returned graph object with the same dataset store.
+    graph = ds.add_graph(graph)
+    assert len(ds) == 1
+
+    graph.add((URIRef("urn:instance"), RDF.type, URIRef("urn:class")))
+    assert len(graph) == 2
+    assert len(ds) == 2
+
+    # Another graph, same identifier
+    another_graph = Graph(identifier=graph_name)
+    another_graph.add((URIRef("urn:another_instance"), RDF.type, URIRef("urn:class")))
+    graph = ds.add_graph(another_graph)
+    assert len(graph) == 3
+    assert len(ds) == 3
