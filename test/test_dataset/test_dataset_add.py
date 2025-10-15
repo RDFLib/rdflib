@@ -1,9 +1,9 @@
 from rdflib import RDF, RDFS, Dataset, Graph, URIRef
 
 
-def test_working():
+def test_behaviour_where_graph_is_created_via_dataset():
     """
-    This test passes because the graph is created through the Dataset.graph method.
+    Test that the dataset store state is intact when graphs are created from the dataset.
     """
     ds = Dataset(default_union=True)
     graph_name = URIRef("urn:graph")
@@ -29,9 +29,10 @@ def test_working():
     assert len(ds) == 0
 
 
-def test_broken():
+def test_behaviour_where_graph_is_created_separately():
     """
-    This test fails because the graph is created first and then added to the Dataset.
+    Test that the graphs created externally from the dataset are added to the dataset
+    store.
     """
     ds = Dataset(default_union=True)
     graph_name = URIRef("urn:graph")
@@ -41,21 +42,15 @@ def test_broken():
     assert len(graph) == 1
     assert len(ds) == 0
 
-    # Adding an existing graph doesn’t necessarily use the same store, and therefore its contents are not copied over.
     ds.add_graph(graph)
     assert any(g.identifier == graph_name for g in ds.graphs())
 
-    # This fails
     assert len(list(ds.objects(None, None))) == 1
 
     retrieved_graph = ds.get_graph(graph_name)
     assert retrieved_graph.identifier == graph_name
     assert isinstance(retrieved_graph, Graph)
 
-    # This prints correctly
-    ds.print(format="trig")
-
-    # These fail with 0
     assert len(retrieved_graph) == 1
     assert len(ds) == 1
 
@@ -65,6 +60,10 @@ def test_broken():
 
 
 def test_adding_appends_to_dataset_graph():
+    """
+    Test that external graphs added to the dataset have their triples appended if
+    the graph identifier already exists.
+    """
     ds = Dataset(default_union=True)
     graph_name = URIRef("urn:graph")
     graph = Graph(identifier=graph_name)
