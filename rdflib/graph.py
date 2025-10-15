@@ -2104,7 +2104,18 @@ class ConjunctiveGraph(Graph):
         if not isinstance(c, Graph):
             return self.get_context(c)
         else:
-            return c
+            if isinstance(c, (Dataset, ConjunctiveGraph)):
+                # Preserve the old behaviour for datasets.
+                return c
+            else:
+                # Copy the graph triples so they're added to the store.
+                try:
+                    _graph = self.get_graph(c.identifier)
+                    assert _graph is not None
+                except IndexError:
+                    _graph = self.get_context(c.identifier)
+                _graph.__iadd__(c)
+                return _graph
 
     def addN(  # noqa: N802
         self: _ConjunctiveGraphT, quads: Iterable[_QuadType]
