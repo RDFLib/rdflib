@@ -2115,6 +2115,7 @@ class ConjunctiveGraph(Graph):
                 except IndexError:
                     _graph = self.get_context(c.identifier)
                 _graph.__iadd__(c)
+                # Return the graph with the same backing store.
                 return _graph
 
     def addN(  # noqa: N802
