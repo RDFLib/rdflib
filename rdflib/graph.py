@@ -2671,6 +2671,73 @@ class Dataset(ConjunctiveGraph):
         """Iterates over all quads in the store"""
         return self.quads((None, None, None, None))
 
+    @overload
+    def serialize(
+        self,
+        destination: None,
+        format: str,
+        base: Optional[str],
+        encoding: str,
+        **args: Any,
+    ) -> bytes: ...
+
+    # no destination and non-None keyword encoding
+    @overload
+    def serialize(
+        self,
+        destination: None = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        *,
+        encoding: str,
+        **args: Any,
+    ) -> bytes: ...
+
+    # no destination and None encoding
+    @overload
+    def serialize(
+        self,
+        destination: None = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: None = ...,
+        **args: Any,
+    ) -> str: ...
+
+    # non-None destination
+    @overload
+    def serialize(
+        self,
+        destination: Union[str, pathlib.PurePath, IO[bytes]],
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: Optional[str] = ...,
+        **args: Any,
+    ) -> Graph: ...
+
+    # fallback
+    @overload
+    def serialize(
+        self,
+        destination: Optional[Union[str, pathlib.PurePath, IO[bytes]]] = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: Optional[str] = ...,
+        **args: Any,
+    ) -> Union[bytes, str, Graph]: ...
+
+    def serialize(
+        self,
+        destination: Optional[Union[str, pathlib.PurePath, IO[bytes]]] = None,
+        format: str = "trig",
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **args: Any,
+    ) -> Union[bytes, str, Graph]:
+        return super(Dataset, self).serialize(
+            destination=destination, format=format, base=base, encoding=encoding, **args
+        )
+
 
 class QuotedGraph(Graph):
     """
