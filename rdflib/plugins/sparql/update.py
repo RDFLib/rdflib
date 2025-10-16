@@ -181,7 +181,7 @@ def evalModify(ctx: QueryContext, u: CompValue) -> None:
             g = ctx.dataset.get_context(u.withClause)
             ctx = ctx.pushGraph(g)
 
-    for c in res:
+    for c in list(res):
         dg = ctx.graph
         if u.delete:
             # type error: Unsupported left operand type for - ("None")
