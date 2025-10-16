@@ -37,8 +37,3 @@ def test_nquads_default_graph():
         assert isomorphic(graph, ds2.graph(graph.identifier)), print(
             f"{graph.identifier} not isomorphic"
         )
-
-    output2 = ds2.serialize(format="json-ld")
-    ds3 = Dataset()
-    ds3.parse(data=output2, format="json-ld")
-    ds3.print(format="trig")
