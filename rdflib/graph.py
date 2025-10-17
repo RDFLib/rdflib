@@ -1969,7 +1969,7 @@ class ConjunctiveGraph(Graph):
     All queries are carried out against the union of all graphs.
     """
 
-    default_context: _ContextType
+    _default_context: _ContextType
 
     def __init__(
         self,
@@ -1991,9 +1991,17 @@ class ConjunctiveGraph(Graph):
         )
         self.context_aware = True
         self.default_union = True  # Conjunctive!
-        self.default_context: _ContextType = Graph(
+        self._default_context: _ContextType = Graph(
             store=self.store, identifier=identifier or BNode(), base=default_graph_base
         )
+
+    @property
+    def default_context(self):
+        return self._default_context
+
+    @default_context.setter
+    def default_context(self, value):
+        self._default_context = value
 
     def __str__(self) -> str:
         pattern = (
@@ -2519,13 +2527,48 @@ class Dataset(ConjunctiveGraph):
 
         if not self.store.graph_aware:
             raise Exception("DataSet must be backed by a graph-aware store!")
-        self.default_context = Graph(
+        self._default_context = Graph(
             store=self.store,
             identifier=DATASET_DEFAULT_GRAPH_ID,
             base=default_graph_base,
         )
 
         self.default_union = default_union
+
+    @property
+    def default_context(self):
+        warnings.warn(
+            "Dataset.default_context is deprecated, use Dataset.default_graph instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self._default_context
+
+    @default_context.setter
+    def default_context(self, value):
+        warnings.warn(
+            "Dataset.default_context is deprecated, use Dataset.default_graph instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self._default_context = value
+
+    @property
+    def default_graph(self):
+        return self._default_context
+
+    @default_graph.setter
+    def default_graph(self, value):
+        self._default_context = value
+
+    @property
+    def identifier(self):
+        warnings.warn(
+            "Dataset.identifier is deprecated and will be removed in future versions.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return super(Dataset, self).identifier
 
     def __str__(self) -> str:
         pattern = (
@@ -2539,14 +2582,14 @@ class Dataset(ConjunctiveGraph):
         return (type(self), (self.store, self.default_union))
 
     def __getstate__(self) -> Tuple[Store, _ContextIdentifierType, _ContextType, bool]:
-        return self.store, self.identifier, self.default_context, self.default_union
+        return self.store, self.identifier, self.default_graph, self.default_union
 
     def __setstate__(
         self, state: Tuple[Store, _ContextIdentifierType, _ContextType, bool]
     ) -> None:
         # type error: Property "store" defined in "Graph" is read-only
         # type error: Property "identifier" defined in "Graph" is read-only
-        self.store, self.identifier, self.default_context, self.default_union = state  # type: ignore[misc]
+        self.store, self.identifier, self.default_graph, self.default_union = state  # type: ignore[misc]
 
     def graph(
         self,
@@ -2590,7 +2633,7 @@ class Dataset(ConjunctiveGraph):
 
         If the source is in a format that does not support named graphs its triples
         will be added to the default graph
-        (i.e. :attr:`.Dataset.default_context`).
+        (i.e. :attr:`.Dataset.default_graph`).
 
         .. caution::
 
@@ -2611,7 +2654,7 @@ class Dataset(ConjunctiveGraph):
         the ``publicID`` parameter will also not be used as the name for the
         graph that the data is loaded into, and instead the triples from sources
         that do not support named graphs will be loaded into the default graph
-        (i.e. :attr:`.Dataset.default_context`).
+        (i.e. :attr:`.Dataset.default_graph`).
         """
 
         ConjunctiveGraph.parse(
@@ -2632,13 +2675,28 @@ class Dataset(ConjunctiveGraph):
             g = self.get_context(g)
 
         self.store.remove_graph(g)
-        if g is None or g == self.default_context:
+        if g is None or g == self.default_graph:
             # default graph cannot be removed
             # only triples deleted, so add it back in
-            self.store.add_graph(self.default_context)
+            self.store.add_graph(self.default_graph)
         return self
 
     def contexts(
+        self, triple: Optional[_TripleType] = None
+    ) -> Generator[_ContextType, None, None]:
+        warnings.warn(
+            "Dataset.contexts is deprecated, use Dataset.graphs instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        default = False
+        for c in super(Dataset, self).contexts(triple):
+            default |= c.identifier == DATASET_DEFAULT_GRAPH_ID
+            yield c
+        if not default:
+            yield self.graph(DATASET_DEFAULT_GRAPH_ID)
+
+    def graphs(
         self, triple: Optional[_TripleType] = None
     ) -> Generator[_ContextType, None, None]:
         default = False
@@ -2648,15 +2706,13 @@ class Dataset(ConjunctiveGraph):
         if not default:
             yield self.graph(DATASET_DEFAULT_GRAPH_ID)
 
-    graphs = contexts
-
     # type error: Return type "Generator[Tuple[Node, Node, Node, Optional[Node]], None, None]" of "quads" incompatible with return type "Generator[Tuple[Node, Node, Node, Optional[Graph]], None, None]" in supertype "ConjunctiveGraph"
     def quads(  # type: ignore[override]
         self, quad: Optional[_TripleOrQuadPatternType] = None
     ) -> Generator[_OptionalIdentifiedQuadType, None, None]:
         for s, p, o, c in super(Dataset, self).quads(quad):
             # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"
-            if c.identifier == self.default_context:  # type: ignore[union-attr]
+            if c.identifier == self.default_graph:  # type: ignore[union-attr]
                 yield s, p, o, None
             else:
                 # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"  [union-attr]
