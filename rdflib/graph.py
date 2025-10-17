@@ -2346,8 +2346,7 @@ class ConjunctiveGraph(Graph):
 
         context = self.default_context
         context.parse(source, publicID=publicID, format=format, **args)
-        # TODO: FIXME: This should not return context, but self.
-        return context
+        return self
 
     def __reduce__(self) -> Tuple[Type[Graph], Tuple[Store, _ContextIdentifierType]]:
         return ConjunctiveGraph, (self.store, self.identifier)
@@ -2615,11 +2614,10 @@ class Dataset(ConjunctiveGraph):
         (i.e. :attr:`.Dataset.default_context`).
         """
 
-        c = ConjunctiveGraph.parse(
+        ConjunctiveGraph.parse(
             self, source, publicID, format, location, file, data, **args
         )
-        self.graph(c)
-        return c
+        return self
 
     def add_graph(
         self, g: Optional[Union[_ContextIdentifierType, _ContextType, str]]

@@ -1,4 +1,5 @@
 from rdflib import RDF, RDFS, Dataset, Graph, URIRef
+from test.data import TEST_DATA_DIR
 
 
 def test_behaviour_where_graph_is_created_via_dataset():
@@ -86,3 +87,15 @@ def test_adding_appends_to_dataset_graph():
     graph = ds.add_graph(another_graph)
     assert len(graph) == 3
     assert len(ds) == 3
+
+
+def test_dataset_parse_return_value():
+    """
+    Test that the return value of ds.parse has the same reference as ds.
+    """
+    ds = Dataset()
+    return_value = ds.parse(
+        source=TEST_DATA_DIR / "nquads.rdflib/example.nquads", format="nquads"
+    )
+    assert len(ds)
+    assert return_value is ds
