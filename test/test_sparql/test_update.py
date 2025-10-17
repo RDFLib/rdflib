@@ -4,6 +4,7 @@ from typing import Callable
 
 import pytest
 
+from rdflib import Literal, Namespace, Variable
 from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from test.data import TEST_DATA_DIR
 from test.utils import GraphHelper
@@ -90,3 +91,76 @@ def test_load_into_named(
         )
 
     GraphHelper.assert_collection_graphs_equal(expected_graph, actual_graph)
+
+
+def test_reevaluation_between_updates_modify() -> None:
+    """
+    during an update the values should be bound once and then deleted and inserted
+    once per valid binding.
+
+    See https://github.com/RDFLib/rdflib/issues/3246
+    """
+    ex = Namespace("http://example.com/")
+
+    g = Graph()
+    g.bind("ex", ex)
+
+    g.add((ex.foo, ex.value, Literal(1)))
+    g.add((ex.foo, ex.value, Literal(11)))
+
+    g.add((ex.bar, ex.value, Literal(3)))
+
+    g.update(
+        """
+    DELETE {
+        ex:bar ex:value ?oldValue .
+    }
+    INSERT {
+        ex:bar ex:value ?newValue .
+    }
+    WHERE {
+        ex:foo ex:value ?instValue .
+        OPTIONAL { ex:bar ex:value ?oldValue . }
+        BIND(COALESCE(?oldValue, 0) + ?instValue AS ?newValue)
+    }
+    """
+    )
+
+    result = g.query("SELECT ?x WHERE { ex:bar ex:value ?x }")
+    values = {b.get(Variable("x")) for b in result}  # type: ignore
+    assert values == {Literal(4), Literal(14)}
+
+
+def test_reevaluation_between_updates_insert() -> None:
+    """
+    during an update the values should be bound once and then deleted and inserted
+    once per valid binding.
+
+    See https://github.com/RDFLib/rdflib/issues/3246
+    """
+    ex = Namespace("http://example.com/")
+
+    g = Graph()
+    g.bind("ex", ex)
+
+    g.add((ex.foo, ex.value, Literal(1)))
+    g.add((ex.foo, ex.value, Literal(11)))
+
+    g.add((ex.bar, ex.value, Literal(3)))
+
+    g.update(
+        """
+    INSERT {
+        ex:bar ex:value ?newValue .
+    }
+    WHERE {
+        ex:foo ex:value ?instValue .
+        OPTIONAL { ex:bar ex:value ?oldValue . }
+        BIND(COALESCE(?oldValue, 0) + ?instValue AS ?newValue)
+    }
+    """
+    )
+
+    result = g.query("SELECT ?x WHERE { ex:bar ex:value ?x }")
+    values = {b.get(Variable("x")) for b in result}  # type: ignore
+    assert values == {Literal(3), Literal(4), Literal(14)}
