@@ -2714,7 +2714,7 @@ class Dataset(ConjunctiveGraph):
     ) -> Generator[_OptionalIdentifiedQuadType, None, None]:
         for s, p, o, c in super(Dataset, self).quads(quad):
             # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"
-            if c.identifier == self.default_context:  # type: ignore[union-attr]
+            if c.identifier == self.default_graph:  # type: ignore[union-attr]
                 yield s, p, o, None
             else:
                 # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"  [union-attr]
