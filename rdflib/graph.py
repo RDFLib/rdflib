@@ -2562,6 +2562,15 @@ class Dataset(ConjunctiveGraph):
     def default_graph(self, value):
         self._default_context = value
 
+    @property
+    def identifier(self):
+        warnings.warn(
+            "Dataset.identifier is deprecated and will be removed in future versions.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return super(Dataset, self).identifier
+
     def __str__(self) -> str:
         pattern = (
             "[a rdflib:Dataset;rdflib:storage " "[a rdflib:Store;rdfs:label '%s']]"

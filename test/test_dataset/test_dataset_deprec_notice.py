@@ -13,7 +13,7 @@ def test_dataset_contexts_method():
         list(ds.contexts())
 
 
-def test_dataset_default_context_method():
+def test_dataset_default_context_property():
     ds = Dataset()
     with pytest.warns(
         DeprecationWarning,
@@ -26,3 +26,12 @@ def test_dataset_default_context_method():
         match="Dataset.default_context is deprecated, use Dataset.default_graph instead.",
     ):
         ds.default_context = ds.graph()
+
+
+def test_dataset_identifier_property():
+    ds = Dataset()
+    with pytest.warns(
+        DeprecationWarning,
+        match="Dataset.identifier is deprecated and will be removed in future versions.",
+    ):
+        ds.identifier
