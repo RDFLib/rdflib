@@ -11,3 +11,18 @@ def test_dataset_contexts_method():
     ):
         # Call list() to consume the generator to emit the warning.
         list(ds.contexts())
+
+
+def test_dataset_default_context_method():
+    ds = Dataset()
+    with pytest.warns(
+        DeprecationWarning,
+        match="Dataset.default_context is deprecated, use Dataset.default_graph instead.",
+    ):
+        ds.default_context
+
+    with pytest.warns(
+        DeprecationWarning,
+        match="Dataset.default_context is deprecated, use Dataset.default_graph instead.",
+    ):
+        ds.default_context = ds.graph()
