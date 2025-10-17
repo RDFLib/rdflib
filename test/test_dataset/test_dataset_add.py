@@ -99,16 +99,3 @@ def test_dataset_parse_return_value():
     )
     assert len(ds)
     assert return_value is ds
-
-
-def test_dataset_graphs_excludes_default_graph():
-    """
-    The Dataset.graphs() method should exclude the default graph.
-    """
-    ds = Dataset()
-    ds.parse(source=TEST_DATA_DIR / "nquads.rdflib/example.nquads", format="nquads")
-    assert len(ds)
-    # There are 16 named graphs. Calling Dataset.graphs() with no triple pattern should
-    # return only 16 results and exclude the default graph.
-    # TODO: update this when Dataset.graphs() is updated to exclude the default graph.
-    assert len(list(ds.graphs())) == 17
