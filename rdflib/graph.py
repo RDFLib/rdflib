@@ -2643,6 +2643,11 @@ class Dataset(ConjunctiveGraph):
     def contexts(
         self, triple: Optional[_TripleType] = None
     ) -> Generator[_ContextType, None, None]:
+        warnings.warn(
+            "Dataset.contexts is deprecated, use Dataset.graphs instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         default = False
         for c in super(Dataset, self).contexts(triple):
             default |= c.identifier == DATASET_DEFAULT_GRAPH_ID
@@ -2650,7 +2655,15 @@ class Dataset(ConjunctiveGraph):
         if not default:
             yield self.graph(DATASET_DEFAULT_GRAPH_ID)
 
-    graphs = contexts
+    def graphs(
+        self, triple: Optional[_TripleType] = None
+    ) -> Generator[_ContextType, None, None]:
+        default = False
+        for c in super(Dataset, self).contexts(triple):
+            default |= c.identifier == DATASET_DEFAULT_GRAPH_ID
+            yield c
+        if not default:
+            yield self.graph(DATASET_DEFAULT_GRAPH_ID)
 
     # type error: Return type "Generator[Tuple[Node, Node, Node, Optional[Node]], None, None]" of "quads" incompatible with return type "Generator[Tuple[Node, Node, Node, Optional[Graph]], None, None]" in supertype "ConjunctiveGraph"
     def quads(  # type: ignore[override]
