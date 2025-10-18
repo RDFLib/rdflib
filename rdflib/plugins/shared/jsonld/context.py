@@ -8,14 +8,13 @@ Implementation of the JSON-LD Context structure. See:
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/context.py
 from __future__ import annotations
 
-from collections import namedtuple
+from collections.abc import Collection, Generator
 from typing import (
     TYPE_CHECKING,
     Any,
-    Collection,
     Dict,
-    Generator,
     List,
+    NamedTuple,
     Optional,
     Set,
     Tuple,
@@ -74,27 +73,47 @@ _ContextSourceType = Union[
 
 
 class Context:
+    """
+    A JSON-LD context, which contains term definitions
+    """
+
+    _base: str | None
+    #: _alias maps NODE_KEY to list of aliases
+    _alias: dict[str, list[str]]
+    _lookup: dict[tuple[str, Any, Defined | str, bool], Term]
+    _prefixes: dict[str, Any]
+    _context_cache: dict[str, Any]
+
+    version: float
+    language: str | None
+    doc_base: str | None
+    vocab: str | None
+    active: bool
+    propagate: bool
+    terms: dict[str, Any]
+    parent: Context | None
+
     def __init__(
         self,
         source: _ContextSourceType = None,
         base: Optional[str] = None,
         version: Optional[float] = 1.1,
     ):
-        self.version: float = version or 1.1
+        self._alias = {}
+        self._lookup = {}
+        self._prefixes = {}
+        self._context_cache = {}
+
+        self.version = version or 1.1
         self.language = None
-        self.vocab: Optional[str] = None
-        self._base: Optional[str]
-        self.base = base
         self.doc_base = base
-        self.terms: Dict[str, Any] = {}
-        # _alias maps NODE_KEY to list of aliases
-        self._alias: Dict[str, List[str]] = {}
-        self._lookup: Dict[Tuple[str, Any, Union[Defined, str], bool], Term] = {}
-        self._prefixes: Dict[str, Any] = {}
         self.active = False
-        self.parent: Optional[Context] = None
         self.propagate = True
-        self._context_cache: Dict[str, Any] = {}
+        self.vocab = None
+        self.base = base
+        self.terms = {}
+        self.parent = None
+
         if source:
             self.load(source)
 
@@ -668,9 +687,39 @@ class Context:
         return r
 
 
-Term = namedtuple(
-    "Term",
-    "id, name, type, container, index, language, reverse, context," "prefix, protected",
-)
+class Term(NamedTuple):
+    """
+    Describes how a JSON key should be interpreted when parsed as RDF
+    """
 
-Term.__new__.__defaults__ = (UNDEF, UNDEF, UNDEF, UNDEF, False, UNDEF, False, False)
+    #: The IRI or CURIE of the term.
+    id: str
+    #: The name of the term, ie an alias for the id.
+    name: str
+    #: The type of the term, such as @id, @json, @none or @vocab
+    type: Defined | str = UNDEF
+    #: The container type, such as @graph, @id, @index, @language, @list, @set or @type,
+    container: Collection[Any] | str | Defined = UNDEF
+    #: A predicate IRI that should be used to interpret keys of this object,
+    #: when used alongside `@container: @index`.
+    #: See https://www.w3.org/TR/json-ld11/#property-based-data-indexing
+    #: Ideally this wouldn't be called 'index' as it overrides the tuple's builtin index() method
+    #: Hence the pyright ignore comment
+    index: str | Defined | None = (
+        None  # pyright: ignore[reportIncompatibleMethodOverride]
+    )
+    #: The language to be used for values of this term
+    language: str | Defined | None = UNDEF
+    #: Indicates that this term is a reverse property, so subject and object are swapped.
+    #: https://www.w3.org/TR/json-ld11/#reverse-properties
+    reverse: bool = False
+    #: A scoped context used inside values that use this term.
+    #: See https://www.w3.org/TR/json-ld11/#scoped-contexts
+    context: Any = UNDEF
+    #: If true, indicates that this should be used during compaction.
+    #: If false, indicates that this term cannot be used in compaction.
+    #: See https://www.w3.org/TR/json-ld11/#compact-iris
+    prefix: bool | None = None
+    #: If true, marks the term as protected, meaning it cannot be overridden by a subcontext.
+    #: See https://www.w3.org/TR/json-ld11/#protected-term-definitions
+    protected: bool = False
