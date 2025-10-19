@@ -65,6 +65,8 @@ from typing import (
 from urllib.parse import urldefrag, urljoin, urlparse
 from uuid import uuid4
 
+from typing_extensions import Self
+
 import rdflib
 import rdflib.util
 from rdflib.compat import long_type
@@ -153,7 +155,7 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
 
     __slots__ = ()
 
-    def __new__(cls, value: str) -> Identifier:
+    def __new__(cls, value: str) -> Self:
         return str.__new__(cls, value)
 
     def eq(self, other: Any) -> bool:
@@ -288,7 +290,7 @@ class URIRef(IdentifiedNode):
     __neg__: Callable[[URIRef], NegatedPath]
     __truediv__: Callable[[URIRef, Union[URIRef, Path]], SequencePath]
 
-    def __new__(cls, value: str, base: Optional[str] = None) -> URIRef:
+    def __new__(cls, value: str, base: Optional[str] = None) -> Self:
         if base is not None:
             ends_in_hash = value.endswith("#")
             # type error: Argument "allow_fragments" to "urljoin" has incompatible type "int"; expected "bool"
@@ -464,7 +466,7 @@ class BNode(IdentifiedNode):
         value: Optional[str] = None,
         _sn_gen: Optional[Union[Callable[[], str], Generator]] = None,
         _prefix: str = _unique_id(),
-    ) -> BNode:
+    ) -> Self:
         """
         # only store implementations should pass in a value
         """
@@ -494,7 +496,7 @@ class BNode(IdentifiedNode):
             # must be valid NCNames" _:[A-Za-z][A-Za-z0-9]*
             # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
         # type error: Incompatible return value type (got "Identifier", expected "BNode")
-        return Identifier.__new__(cls, value)  # type: ignore[return-value]
+        return Identifier.__new__(cls, value)
 
     def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
         # note - for two strings, concat with + is faster than f"{x}{y}"
@@ -631,7 +633,7 @@ class Literal(Identifier):
         lang: Optional[str] = None,
         datatype: Optional[str] = None,
         normalize: Optional[bool] = None,
-    ) -> Literal:
+    ) -> Self:
         if lang == "":
             lang = None  # no empty lang-tags in RDF
 
@@ -701,7 +703,7 @@ class Literal(Identifier):
             lexical_or_value = _strip_and_collapse_whitespace(lexical_or_value)
 
         try:
-            inst: Literal = str.__new__(cls, lexical_or_value)
+            inst = str.__new__(cls, lexical_or_value)
         except UnicodeDecodeError:
             inst = str.__new__(cls, lexical_or_value, "utf-8")
 
@@ -2242,7 +2244,7 @@ class Variable(Identifier):
 
     __slots__ = ()
 
-    def __new__(cls, value: str) -> Variable:
+    def __new__(cls, value: str) -> Self:
         if len(value) == 0:
             raise Exception("Attempted to create variable with empty string as name!")
         if value[0] == "?":
