@@ -123,7 +123,9 @@ class TestN3Case:
                 URIRef("http://example.com/people/Linda"),
             )
         )
-        s = g.serialize(base="http://example.com/people/", format="n3", encoding="latin-1")
+        s = g.serialize(
+            base="http://example.com/people/", format="n3", encoding="latin-1"
+        )
         assert b"<Bob>" in s
         g2 = Dataset()
         g2.parse(data=s, format="n3")
