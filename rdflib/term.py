@@ -65,7 +65,11 @@ from typing import (
 from urllib.parse import urldefrag, urljoin, urlparse
 from uuid import uuid4
 
-from typing_extensions import Self
+try:
+    # Python 3.11+
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
 
 import rdflib
 import rdflib.util
