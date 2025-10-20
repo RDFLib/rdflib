@@ -124,7 +124,6 @@ class TestN3Case:
             )
         )
         s = g.serialize(base="http://example.com/people/", format="n3", encoding="latin-1")
-        print(s)
         assert b"<Bob>" in s
         g2 = Dataset()
         g2.parse(data=s, format="n3")
