@@ -65,12 +65,6 @@ from typing import (
 from urllib.parse import urldefrag, urljoin, urlparse
 from uuid import uuid4
 
-try:
-    # Python 3.11+
-    from typing import Self
-except ImportError:
-    from typing_extensions import Self
-
 import rdflib
 import rdflib.util
 from rdflib.compat import long_type
@@ -159,7 +153,7 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
 
     __slots__ = ()
 
-    def __new__(cls, value: str) -> Self:
+    def __new__(cls, value: str):
         return str.__new__(cls, value)
 
     def eq(self, other: Any) -> bool:
@@ -294,7 +288,7 @@ class URIRef(IdentifiedNode):
     __neg__: Callable[[URIRef], NegatedPath]
     __truediv__: Callable[[URIRef, Union[URIRef, Path]], SequencePath]
 
-    def __new__(cls, value: str, base: Optional[str] = None) -> Self:
+    def __new__(cls, value: str, base: Optional[str] = None):
         if base is not None:
             ends_in_hash = value.endswith("#")
             # type error: Argument "allow_fragments" to "urljoin" has incompatible type "int"; expected "bool"
@@ -470,7 +464,7 @@ class BNode(IdentifiedNode):
         value: Optional[str] = None,
         _sn_gen: Optional[Union[Callable[[], str], Generator]] = None,
         _prefix: str = _unique_id(),
-    ) -> Self:
+    ):
         """
         # only store implementations should pass in a value
         """
@@ -637,7 +631,7 @@ class Literal(Identifier):
         lang: Optional[str] = None,
         datatype: Optional[str] = None,
         normalize: Optional[bool] = None,
-    ) -> Self:
+    ):
         if lang == "":
             lang = None  # no empty lang-tags in RDF
 
@@ -2248,7 +2242,7 @@ class Variable(Identifier):
 
     __slots__ = ()
 
-    def __new__(cls, value: str) -> Self:
+    def __new__(cls, value: str):
         if len(value) == 0:
             raise Exception("Attempted to create variable with empty string as name!")
         if value[0] == "?":
