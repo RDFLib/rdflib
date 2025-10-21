@@ -8,7 +8,7 @@ ci:
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # WARNING: Ruff version should be the same as in `pyproject.toml`
-    rev: v0.13.3
+    rev: v0.14.1
     hooks:
       - id: ruff
         args: ["--fix"]
