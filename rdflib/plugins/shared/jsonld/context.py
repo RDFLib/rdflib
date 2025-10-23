@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from collections import namedtuple
 from collections.abc import Collection, Generator
+from enum import Enum
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -58,11 +59,11 @@ if TYPE_CHECKING:
 NODE_KEYS = {GRAPH, ID, INCLUDED, JSON, LIST, NEST, NONE, REV, SET, TYPE, VALUE, LANG}
 
 
-class Defined(int):
-    pass
+class Defined(Enum):
+    UNDEF = 0
 
 
-UNDEF = Defined(0)
+UNDEF = Defined.UNDEF
 
 # From <https://tools.ietf.org/html/rfc3986#section-2.2>
 URI_GEN_DELIMS = (":", "/", "?", "#", "[", "]", "@")
