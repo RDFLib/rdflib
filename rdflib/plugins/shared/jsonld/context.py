@@ -5,9 +5,9 @@ Implementation of the JSON-LD Context structure. See: http://json-ld.org/
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/context.py
 from __future__ import annotations
 
-from enum import Enum
 from collections import namedtuple
 from collections.abc import Collection, Generator
+from enum import Enum
 from typing import (
     TYPE_CHECKING,
     Any,
