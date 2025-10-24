@@ -1,4 +1,5 @@
 from rdflib import Dataset, Literal, URIRef, Variable
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 from rdflib.plugins.sparql import prepareQuery
 from test.utils.namespace import EGDC
 
@@ -274,8 +275,8 @@ def test_prepare():
 def test_data():
     data = Dataset()
     data += [
-        (URIRef("urn:a"), URIRef("urn:p"), Literal("a")),
-        (URIRef("urn:b"), URIRef("urn:p"), Literal("b")),
+        (URIRef("urn:a"), URIRef("urn:p"), Literal("a"), DATASET_DEFAULT_GRAPH_ID),
+        (URIRef("urn:b"), URIRef("urn:p"), Literal("b"), DATASET_DEFAULT_GRAPH_ID),
     ]
 
     a = set(
