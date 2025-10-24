@@ -2591,6 +2591,12 @@ class Dataset(ConjunctiveGraph):
         # type error: Property "identifier" defined in "Graph" is read-only
         self.store, self.identifier, self.default_graph, self.default_union = state  # type: ignore[misc]
 
+    def __iadd__(self: _DatasetT, other: Iterable[_QuadType]) -> _DatasetT:  # type: ignore[override, misc]
+        """Add all quads in Dataset other to Dataset.
+        BNode IDs are not changed."""
+        self.addN((s, p, o, g) for s, p, o, g in other)
+        return self
+
     def graph(
         self,
         identifier: Optional[Union[_ContextIdentifierType, _ContextType, str]] = None,
