@@ -2623,7 +2623,7 @@ class Dataset(ConjunctiveGraph):
         file: Optional[Union[BinaryIO, TextIO]] = None,
         data: Optional[Union[str, bytes]] = None,
         **args: Any,
-    ) -> Graph:
+    ) -> Dataset:
         """
         Parse an RDF source adding the resulting triples to the Graph.
 
