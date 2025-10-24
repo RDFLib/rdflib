@@ -4,8 +4,9 @@ from typing import Callable
 
 import pytest
 
-from rdflib import Literal, Namespace, Variable
-from rdflib.graph import ConjunctiveGraph, Dataset, Graph
+from rdflib import Literal, Namespace, URIRef, Variable
+from rdflib.compare import isomorphic
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset, Graph
 from test.data import TEST_DATA_DIR
 from test.utils import GraphHelper
 from test.utils.graph import GraphSource
@@ -164,3 +165,88 @@ def test_reevaluation_between_updates_insert() -> None:
     result = g.query("SELECT ?x WHERE { ex:bar ex:value ?x }")
     values = {b.get(Variable("x")) for b in result}  # type: ignore
     assert values == {Literal(3), Literal(4), Literal(14)}
+
+
+def test_inserts_in_named_graph():
+    trig_data = """
+    @prefix ex: <http://example.org/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+    # Named graph 1
+    ex:graph1 {
+      ex:person1 ex:name "Alice" ;
+                 ex:age 30 .
+    }
+
+    # Named graph 2
+    ex:graph2 {
+      ex:person1 ex:worksFor ex:company1 .
+      ex:company1 ex:industry "Technology" .
+    }
+    """
+    ds = Dataset().parse(data=trig_data, format="trig")
+    ds.update(
+        """
+    INSERT {
+        GRAPH <urn:graph> {
+            ?s ?p ?o
+        }
+
+        ?s ?p ?o
+    }
+    WHERE {
+        GRAPH ?g {
+            ?s ?p ?o
+        }
+    }
+    """
+    )
+
+    expected_trig = """
+    @prefix ex: <http://example.org/> .
+    @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+    {
+        ex:person1 ex:age 30 ;
+            ex:name "Alice" ;
+            ex:worksFor ex:company1 .
+
+        ex:company1 ex:industry "Technology" .
+    }
+
+    <urn:graph> {
+        ex:person1 ex:age 30 ;
+            ex:name "Alice" ;
+            ex:worksFor ex:company1 .
+
+        ex:company1 ex:industry "Technology" .
+    }
+
+    ex:graph1 {
+        ex:person1 ex:age 30 ;
+            ex:name "Alice" .
+    }
+
+    ex:graph2 {
+        ex:person1 ex:worksFor ex:company1 .
+
+        ex:company1 ex:industry "Technology" .
+    }
+    """
+    expected_ds = Dataset().parse(data=expected_trig, format="trig")
+
+    # There should be exactly 4 graphs, including the default graph.
+    # SPARQL Update inserts into the default graph should go into the default graph,
+    # not to a new graph with a blank node label.
+    # See https://github.com/RDFLib/rdflib/issues/3080
+    expected_graph_names = [
+        DATASET_DEFAULT_GRAPH_ID,
+        URIRef("urn:graph"),
+        URIRef("http://example.org/graph1"),
+        URIRef("http://example.org/graph2"),
+    ]
+    assert set(expected_graph_names) == set(graph.identifier for graph in ds.graphs())
+
+    for graph in ds.graphs():
+        expected_graph = expected_ds.graph(graph.identifier)
+        assert isomorphic(graph, expected_graph)
