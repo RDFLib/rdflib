@@ -160,6 +160,8 @@ class LongTurtleSerializer(RecursiveSerializer):
                     self.base is not None
                     and isinstance(node, URIRef)
                     and node.startswith(self.base)
+                    and "#" not in node.replace(self.base, "")
+                    and "/" not in node.replace(self.base, "")
                 ):
                     # predicate corresponds to base namespace
                     continue
