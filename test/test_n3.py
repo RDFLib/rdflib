@@ -123,8 +123,10 @@ class TestN3Case:
                 URIRef("http://example.com/people/Linda"),
             )
         )
-        s = g.serialize(base="http://example.com/", format="n3", encoding="latin-1")
-        assert b"<people/Bob>" in s
+        s = g.serialize(
+            base="http://example.com/people/", format="n3", encoding="latin-1"
+        )
+        assert b"<Bob>" in s
         g2 = Dataset()
         g2.parse(data=s, format="n3")
         assert list(g) == list(g2.triples((None, None, None)))
