@@ -1,5 +1,7 @@
 ## 2025-10-24 RELEASE 7.3.0
 
+This release delivers several important fixes and enhancements to RDFLib’s Dataset implementation, resolving long-standing issues and improving consistency across serialization and SPARQL operations. It also introduces new deprecation notices for certain Dataset methods and attributes, which will be removed in the next major release. In addition, this version includes a range of improvements to SPARQL result parsing, typing, and literal handling.
+
 ### Features
 
 - Added `Dataset.__iadd__` support
