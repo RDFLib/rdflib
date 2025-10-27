@@ -2532,7 +2532,6 @@ class Dataset(ConjunctiveGraph):
             identifier=DATASET_DEFAULT_GRAPH_ID,
             base=default_graph_base,
         )
-        self.add_graph(self._default_context)
 
         self.default_union = default_union
 
