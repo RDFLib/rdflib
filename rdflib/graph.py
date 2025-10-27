@@ -2532,6 +2532,7 @@ class Dataset(ConjunctiveGraph):
             identifier=DATASET_DEFAULT_GRAPH_ID,
             base=default_graph_base,
         )
+        self.add_graph(self._default_context)
 
         self.default_union = default_union
 
@@ -2696,7 +2697,7 @@ class Dataset(ConjunctiveGraph):
             stacklevel=2,
         )
         default = False
-        for c in super(Dataset, self).contexts(triple):
+        for c in self.store.contexts(triple):
             default |= c.identifier == DATASET_DEFAULT_GRAPH_ID
             yield c
         if not default:
@@ -2706,7 +2707,7 @@ class Dataset(ConjunctiveGraph):
         self, triple: Optional[_TripleType] = None
     ) -> Generator[_ContextType, None, None]:
         default = False
-        for c in super(Dataset, self).contexts(triple):
+        for c in self.store.contexts(triple):
             default |= c.identifier == DATASET_DEFAULT_GRAPH_ID
             yield c
         if not default:
