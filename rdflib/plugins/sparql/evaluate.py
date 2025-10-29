@@ -381,8 +381,7 @@ def evalServiceQuery(ctx: QueryContext, part: CompValue):
             res = json_dict["results"]["bindings"]
             if len(res) > 0:
                 for r in res:
-                    # type error: Argument 2 to "_yieldBindingsFromServiceCallResult" has incompatible type "str"; expected "Dict[str, Dict[str, str]]"
-                    for bound in _yieldBindingsFromServiceCallResult(ctx, r, variables):  # type: ignore[arg-type]
+                    for bound in _yieldBindingsFromServiceCallResult(ctx, r, variables):
                         yield bound
         else:
             raise Exception(

@@ -116,9 +116,7 @@ class NodePickler:
 
     def loads(self, s: bytes) -> Node:
         up = Unpickler(BytesIO(s))
-        # NOTE on type error: https://github.com/python/mypy/issues/2427
-        # type error: Cannot assign to a method
-        up.persistent_load = self._get_object  # type: ignore[assignment]
+        up.persistent_load = self._get_object
         try:
             return up.load()
         except KeyError as e:
@@ -129,9 +127,7 @@ class NodePickler:
     ):
         src = BytesIO()
         p = Pickler(src)
-        # NOTE on type error: https://github.com/python/mypy/issues/2427
-        # type error: Cannot assign to a method
-        p.persistent_id = self._get_ids  # type: ignore[assignment]
+        p.persistent_id = self._get_ids
         p.dump(obj)
         return src.getvalue()
 

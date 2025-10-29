@@ -130,8 +130,7 @@ class BytesIOWrapper(BufferedIOBase):
             name = "string"
         elif isinstance(self.wrapped, TextIOWrapper):
             inner = self.wrapped.buffer
-            # type error: TextIOWrapper.buffer cannot be a BytesIOWrapper
-            if isinstance(inner, BytesIOWrapper):  # type: ignore[unreachable]
+            if isinstance(inner, BytesIOWrapper):
                 raise Exception(
                     "BytesIOWrapper cannot be wrapped in TextIOWrapper, "
                     "then wrapped in another BytesIOWrapper"
