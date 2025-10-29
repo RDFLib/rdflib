@@ -3,6 +3,7 @@ import subprocess
 import sys
 import json
 
+from rdflib import Graph
 from rdflib.tools import sparqlquery
 from test.data import TEST_DATA_DIR
 
@@ -72,3 +73,77 @@ class TestSPARQLQUERY:
         bindings = decoded_result["results"]["bindings"]
         values = {b['x'].get('value') for b in bindings}
         assert values == {"http://example.org/john", "http://example.org/sue"}
+
+    def test_ask(self):
+        """
+        Testing sparqlquery test/data/suites/w3c/sparql11/add/add-01-pre.ttl
+                -q "ASK {?x a foaf:Person. }"
+
+        Assert that 'true' is contained in stdout and 'false' isnt.
+        """
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "rdflib.tools.sparqlquery",
+                str(EXAMPLE_SPARQL_ADD1_PATH),
+                "-q",
+                "ASK {?x a foaf:Person. }",
+                "--format", "xml",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert completed.returncode == 0, f"Failed with\n{completed.stderr}"
+        assert "true" in completed.stdout
+        assert "false" not in completed.stdout
+
+    def test_describe(self):
+        """
+        Testing sparqlquery test/data/suites/w3c/sparql11/add/add-01-pre.ttl
+                -q "DESCRIBE <http://example.org/john>"
+
+        tests if simple information like 'mailto:johnny@example.org' is somewhere
+        in the response.
+        """
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "rdflib.tools.sparqlquery",
+                str(EXAMPLE_SPARQL_ADD1_PATH),
+                "-q",
+                "DESCRIBE <http://example.org/john>",
+                "--format", "turtle",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert completed.returncode == 0, f"Failed with\n{completed.stderr}"
+        #simple information test
+        assert "mailto:johnny@example.org" in completed.stdout
+
+    def test_construct(self):
+        """
+        Testing sparqlquery test/data/suites/w3c/sparql11/add/add-01-pre.ttl
+                -q "DESCRIBE <http://example.org/john>"
+
+        tests if simple information like 'mailto:johnny@example.org' is somewhere
+        in the response.
+        """
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "rdflib.tools.sparqlquery",
+                str(EXAMPLE_SPARQL_ADD1_PATH),
+                "-q",
+                "CONSTRUCT {[] rdf:subject ?x.} WHERE {?x a foaf:Person.}",
+                "--format", "turtle",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert completed.returncode == 0, f"Failed with\n{completed.stderr}"
+        g = Graph().parse(data=completed.stdout)
+        assert len(g) == 1
