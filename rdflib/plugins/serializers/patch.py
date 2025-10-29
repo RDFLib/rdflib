@@ -34,13 +34,16 @@ class PatchSerializer(Serializer):
         encoding: Optional[str] = None,
         **kwargs: Any,
     ) -> None:
-        """
-        Serialize the store to the given stream.
-        :param stream: The stream to serialize to.
-        :param base: The base URI to use for the serialization.
-        :param encoding: The encoding to use for the serialization.
-        :param kwargs: Additional keyword arguments.
+        """Serialize the store to the given stream.
+
+        Args:
+            stream: The stream to serialize to.
+            base: The base URI to use for the serialization.
+            encoding: The encoding to use for the serialization.
+            kwargs: Additional keyword arguments.
+
         Supported keyword arguments:
+
         - operation: The operation to perform. Either 'add' or 'remove'.
         - target: The target Dataset to compare against.
         NB: Only one of 'operation' or 'target' should be provided.

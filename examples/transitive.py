@@ -1,45 +1,45 @@
 """
 An example illustrating how to use the
-:meth:`~rdflib.graph.Graph.transitive_subjects` and
-:meth:`~rdflib.graph.Graph.transitive_objects` graph methods
+[`Graph.transitive_subjects`][rdflib.graph.Graph.transitive_subjects] and
+[`Graph.transitive_objects`][rdflib.graph.Graph.transitive_objects] graph methods
 
-Formal definition
-^^^^^^^^^^^^^^^^^^
+## Formal definition
 
-The :meth:`~rdflib.graph.Graph.transitive_objects` method finds all
+
+The [`Graph.transitive_objects`][rdflib.graph.Graph.transitive_objects] method finds all
 nodes such that there is a path from subject to one of those nodes
 using only the predicate property in the triples. The
-:meth:`~rdflib.graph.Graph.transitive_subjects` method is similar; it
+[`Graph.transitive_subjects`][rdflib.graph.Graph.transitive_subjects] method is similar; it
 finds all nodes such that there is a path from the node to the object
 using only the predicate property.
 
-Informal description, with an example
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+## Informal description, with an example
 
-In brief, :meth:`~rdflib.graph.Graph.transitive_objects` walks forward
+In brief, [`Graph.transitive_objects`][rdflib.graph.Graph.transitive_objects] walks forward
 in a graph using a particular property, and
-:meth:`~rdflib.graph.Graph.transitive_subjects` walks backward. A good
-example uses a property ``ex:parent``, the semantics of which are
+[`Graph.transitive_subjects`][rdflib.graph.Graph.transitive_subjects] walks backward. A good
+example uses a property `ex:parent`, the semantics of which are
 biological parentage. The
-:meth:`~rdflib.graph.Graph.transitive_objects` method would get all
+[`Graph.transitive_objects`][rdflib.graph.Graph.transitive_objects] method would get all
 the ancestors of a particular person (all nodes such that there is a
 parent path between the person and the object). The
-:meth:`~rdflib.graph.Graph.transitive_subjects` method would get all
+[`Graph.transitive_subjects`][rdflib.graph.Graph.transitive_subjects] method would get all
 the descendants of a particular person (all nodes such that there is a
 parent path between the node and the person). So, say that your URI is
-``ex:person``.
+`ex:person`.
 
 This example would get all of your (known) ancestors, and then get all
 the (known) descendants of your maternal grandmother.
 
-.. warning:: The :meth:`~rdflib.graph.Graph.transitive_objects` method has the start node
-    as the *first* argument, but the :meth:`~rdflib.graph.Graph.transitive_subjects`
+!!! warning "Important note on arguments"
+
+    The [`Graph.transitive_objects`][rdflib.graph.Graph.transitive_objects] method has the start node
+    as the *first* argument, but the [`Graph.transitive_subjects`][rdflib.graph.Graph.transitive_subjects]
     method has the start node as the *second* argument.
 
-User-defined transitive closures
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+## User-defined transitive closures
 
-The method :meth:`~rdflib.graph.Graph.transitiveClosure` returns
+The method [`Graph.transitiveClosure`][rdflib.graph.Graph.transitiveClosure] returns
 transtive closures of user-defined functions.
 """
 

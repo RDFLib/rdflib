@@ -2,18 +2,20 @@
 This example shows how a custom evaluation function can be added to
 handle certain SPARQL Algebra elements.
 
-A custom function is added that adds ``rdfs:subClassOf`` "inference" when
-asking for ``rdf:type`` triples.
+A custom function is added that adds `rdfs:subClassOf` "inference" when
+asking for `rdf:type` triples.
 
 Here the custom eval function is added manually, normally you would use
 setuptools and entry_points to do it:
 i.e. in your setup.py::
 
-    entry_points = {
-        'rdf.plugins.sparqleval': [
-            'myfunc = mypackage:MyFunction',
-            ],
-    }
+```python
+entry_points = {
+    'rdf.plugins.sparqleval': [
+        'myfunc = mypackage:MyFunction',
+        ],
+}
+```
 """
 
 from pathlib import Path

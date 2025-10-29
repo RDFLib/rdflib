@@ -50,15 +50,15 @@ def source_to_json(
     """Extract JSON from a source document.
 
     The source document can be JSON or HTML with embedded JSON script elements (type attribute = "application/ld+json").
-    To process as HTML ``source.content_type`` must be set to "text/html" or "application/xhtml+xml".
+    To process as HTML `source.content_type` must be set to "text/html" or "application/xhtml+xml".
 
-    :param source: the input source document (JSON or HTML)
+    Args:
+        source: the input source document (JSON or HTML)
+        fragment_id: if source is an HTML document then extract only the script element with matching id attribute, defaults to None
+        extract_all_scripts: if source is an HTML document then extract all script elements (unless fragment_id is provided), defaults to False (extract only the first script element)
 
-    :param fragment_id: if source is an HTML document then extract only the script element with matching id attribute, defaults to None
-
-    :param extract_all_scripts: if source is an HTML document then extract all script elements (unless fragment_id is provided), defaults to False (extract only the first script element)
-
-    :return: Tuple with the extracted JSON document and value of the HTML base element
+    Returns:
+        Tuple with the extracted JSON document and value of the HTML base element
     """
 
     if isinstance(source, PythonInputSource):
@@ -208,6 +208,7 @@ def split_iri(iri: str) -> Tuple[str, Optional[str]]:
 
 def norm_url(base: str, url: str) -> str:
     """
+    ```python
     >>> norm_url('http://example.org/', '/one')
     'http://example.org/one'
     >>> norm_url('http://example.org/', '/one#')
@@ -220,6 +221,8 @@ def norm_url(base: str, url: str) -> str:
     'http://example.net/one'
     >>> norm_url('http://example.org/', 'http://example.org//one')
     'http://example.org//one'
+
+    ```
     """
     if "://" in url:
         return url
@@ -253,7 +256,7 @@ def norm_url(base: str, url: str) -> str:
 # type error: Missing return statement
 def context_from_urlinputsource(source: URLInputSource) -> Optional[str]:  # type: ignore[return]
     """
-    Please note that JSON-LD documents served with the application/ld+json media type
+    Please note that JSON-LD documents served with the `application/ld+json` media type
     MUST have all context information, including references to external contexts,
     within the body of the document. Contexts linked via a
     http://www.w3.org/ns/json-ld#context HTTP Link Header MUST be
