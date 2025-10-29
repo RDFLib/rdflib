@@ -723,20 +723,30 @@ class Graph(Node):
             if s is None and p is None and o is None:
                 return self.triples((s, p, o))
             elif s is None and p is None:
-                return self.subject_predicates(o)
+                # type error: Argument 1 to "subject_predicates" of "Graph" has incompatible type "Union[int, Any]"; expected "Optional[Node]"
+                return self.subject_predicates(o)  # type: ignore[arg-type]
             elif s is None and o is None:
-                return self.subject_objects(p)
+                # type error: Argument 1 to "subject_objects" of "Graph" has incompatible type "Union[int, Any]"; expected "Union[Path, Node, None]"
+                return self.subject_objects(p)  # type: ignore[arg-type]
             elif p is None and o is None:
-                return self.predicate_objects(s)
+                # type error: Argument 1 to "predicate_objects" of "Graph" has incompatible type "Union[int, Any]"; expected "Optional[Node]"
+                return self.predicate_objects(s)  # type: ignore[arg-type]
             elif s is None:
-                return self.subjects(p, o)
+                # type error: Argument 1 to "subjects" of "Graph" has incompatible type "Union[int, Any]"; expected "Union[Path, Node, None]"
+                # Argument 2 to "subjects" of "Graph" has incompatible type "Union[int, Any]"; expected "Union[Node, List[Node], None]"
+                return self.subjects(p, o)  # type: ignore[arg-type]
             elif p is None:
-                return self.predicates(s, o)
+                # type error: Argument 1 to "predicates" of "Graph" has incompatible type "Union[int, Any]"; expected "Optional[Node]"
+                # Argument 2 to "predicates" of "Graph" has incompatible type "Union[int, Any]"; expected "Optional[Node]"
+                return self.predicates(s, o)  # type: ignore[arg-type]
             elif o is None:
-                return self.objects(s, p)
+                # type error: Argument 1 to "objects" of "Graph" has incompatible type "Union[int, Any]"; expected "Union[Node, List[Node], None]"
+                # Argument 2 to "objects" of "Graph" has incompatible type "Union[int, Any]"; expected "Union[Path, Node, None]"
+                return self.objects(s, p)  # type: ignore[arg-type]
             else:
+                # type error: Unsupported operand types for in ("Tuple[Union[int, Any], Union[int, Any], Union[int, Any]]" and "Graph")
                 # all given
-                return (s, p, o) in self
+                return (s, p, o) in self  # type: ignore[operator]
 
         elif isinstance(item, (Path, Node)):
             # type error: Argument 1 to "predicate_objects" of "Graph" has incompatible type "Union[Path, Node]"; expected "Optional[Node]"
