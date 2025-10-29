@@ -67,9 +67,11 @@ wheel = ">=0.42,<0.46"
 typing-extensions = "^4.11.0"
 mkdocs = ">=1.6.1"
 mkdocs-material = ">=9.6.12"
-mkdocstrings = {version = ">=0.29.1", extras = ["python"]}
+# TODO: remove fixed version when python 3.8 is no longer supported
+mkdocstrings = {version = "==0.26.1", extras = ["python"]}
 mkdocs-gen-files = "^0.5.0"
-mkdocs-include-markdown-plugin = "^7.1.5"
+# TODO: remove fixed major version ^ when python 3.8 is no longer supported
+mkdocs-include-markdown-plugin = "^6.2.2"
 
 [tool.poetry.group.lint.dependencies]
 ruff = ">=0.0.286,<0.10.0"
