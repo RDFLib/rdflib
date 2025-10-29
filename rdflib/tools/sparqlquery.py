@@ -50,9 +50,9 @@ class _PrintHelpExit(Exception):
 def sparqlquery(
     endpoints: List[str],
     query: str,
-    fmt: Optional[str] = None,
+    result_format: Optional[str] = None,
+    result_keywords: Dict[str, str] = {},
     auth: Optional[Tuple[str, str]] = None,
-    resultparser_kwargs: Dict[str, str] = {},
     use_stdin: bool = False,
     use_remote: bool = False,
 ):
@@ -73,7 +73,7 @@ def sparqlquery(
         )
 
     results: Result = g.query(q)
-    ret_bytes = results.serialize(format=fmt, **resultparser_kwargs)
+    ret_bytes = results.serialize(format=result_format, **result_keywords)
     if ret_bytes is not None:
         print(ret_bytes.decode())
 
@@ -239,8 +239,8 @@ def main():
         loglevel = logging.CRITICAL
     logging.basicConfig(level=loglevel)
 
-    sparqlquery(endpoints, query, fmt=result_format,
-                resultparser_kwargs=format_keywords, **opts)
+    sparqlquery(endpoints, query, result_format=result_format,
+                result_keywords=format_keywords, **opts)
 
 
 if __name__ == "__main__":
