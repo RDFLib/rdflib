@@ -8,7 +8,6 @@ example usage:
     ```bash
     sparqlquery path/to/data.ttl -q "SELECT ?x WHERE {?x a foaf:Person. }"
     sparqlquery path/to/data.ttl -q "SELECT ?x WHERE {?x a foaf:Person. }" --format json
-    sparqlquery path/to/data.ttl -q "SELECT ?x WHERE {?x a foaf:Person. }" --print "custom print: {x.value}" --only-first
     sparqlquery path/to/data.ttl --query-file query.spl
     sparqlquery data1.ttl data2.ttl --query-file query.spl
     sparqlquery http://example.com/sparqlendpoint --query-file query.spl
@@ -19,11 +18,13 @@ from __future__ import annotations
 
 import argparse
 import logging
-from typing import Iterator, List, Optional, Tuple
+from typing import Iterator, List, Optional, Tuple, Dict
 from urllib.parse import urlparse
 
 # from rdflib import plugin
 from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.plugin import ResultSerializer
+from rdflib.plugin import get as get_plugin
 from rdflib.plugins.sparql import prepareQuery
 from rdflib.plugins.sparql.sparql import Query
 from rdflib.plugins.stores.sparqlstore import SPARQLStore
@@ -36,34 +37,15 @@ class _ArgumentError(Exception):
     pass
 
 
-class PrettyTerm:
-    def __init__(self, term):
-        self.term = term
-
-    def __repr__(self):
-        return self.term
-
-    def __str__(self):
-        return self.term.n3()
-
-    @property
-    def value(self):
-        return str(self.term)
-
-
 def sparqlquery(
     endpoints: List[str],
     query: str,
-    custom_print_lines: Optional[List[str]] = None,
-    only_first: bool = False,
-    format: Optional[str] = None,
+    fmt: Optional[str] = None,
     auth: Optional[Tuple[str, str]] = None,
+    format_opt: Dict[str, str] = {},
 ):
     g, search_only = _get_graph(endpoints, auth)
-    q: Query = prepareQuery(
-        query,
-        # initNs = { "foaf": FOAF }
-    )
+    q: Query = prepareQuery(query)
     if search_only and q.algebra.name not in [
         "SelectQuery",
         "DescribeQuery",
@@ -75,49 +57,9 @@ def sparqlquery(
     varlist = [str(v) for v in q.algebra._vars]
 
     results: Result = g.query(q)
-    if format is not None:
-        ret_bytes = results.serialize(format=format)
-        if ret_bytes is not None:
-            print(ret_bytes.decode())
-        return
-    elif q.algebra.name in ["SelectQuery"]:
-        resultrows: Iterator[ResultRow] = iter(results)
-        _serialize_query_results(resultrows, varlist, custom_print_lines, only_first)
-    else:
-        ret_bytes = results.serialize()
-        if ret_bytes is not None:
-            print(ret_bytes.decode())
-
-
-def _table_print(**kwargs):
-    print(list(kwargs.items()))
-
-
-def _create_custom_print(custom_print_lines):
-    mylines = list(custom_print_lines)
-
-    def custom_print(**kwargs):
-        for fmt in mylines:
-            print(fmt.format(**kwargs))
-
-    return custom_print
-
-
-def _serialize_query_results(
-    results: Iterator[ResultRow],
-    varlist: List[str],
-    custom_print_lines: Optional[List[str]],
-    only_first: bool,
-):
-    if custom_print_lines is not None and len(custom_print_lines) > 0:
-        print_function = _create_custom_print(custom_print_lines)
-    else:
-        print_function = _table_print
-    for x in results:
-        pretty_results = {label: PrettyTerm(x[label]) for label in x.labels}
-        print_function(**pretty_results)
-        if only_first:
-            return
+    ret_bytes = results.serialize(format=fmt, **format_opt)
+    if ret_bytes is not None:
+        print(ret_bytes.decode())
 
 
 def _dest_is_local(dest: str):
@@ -174,22 +116,14 @@ def parse_args():
         default=False,
         help="Output warnings to stderr " "(by default only critical errors).",
     )
+    parser.add_argument("--format", type=str, default="csv", dest="fmt",
+                        help="Print result in given format.")
     parser.add_argument(
-        "--only-first",
+        "--help-format", dest="helpformat",
         action="store_true",
         default=False,
-        help="Print only on first result. " "Only works togeter with --print",
+        help="Prints out help for controlling the result formatting.",
     )
-    parser.add_argument(
-        "--print",
-        nargs="*",
-        type=str,
-        help="custom print lines. Can be used multiple times."
-        "If set ignores '--format'."
-        "\nFormatting can use following extra methods:"
-        "\n    x.value: print out only the string",
-    )
-    parser.add_argument("--format", type=str, help="Print result in given format.")
     parser.add_argument(
         "--username", type=str, help="Username used during authentication."
     )
@@ -199,11 +133,6 @@ def parse_args():
 
     args = parser.parse_args()
     opts = {}
-    if args.print is not None:
-        opts["custom_print_lines"] = args.print
-        opts["only_first"] = args.only_first
-    elif args.format is not None:
-        opts["format"] = args.format
 
     if args.query and args.queryfile is None:
         query = args.query
@@ -221,12 +150,12 @@ def parse_args():
     else:
         parser.print_help()
         raise _ArgumentError("User only provided one of password and username")
-    return args.endpoint, query, args.warn, opts
+    return args.endpoint, query, args.fmt, args.warn, args.helpformat, opts
 
 
 def main():
     try:
-        endpoints, query, warn, opts = parse_args()
+        endpoints, query, serialize_fmt, warn, helpformat, opts = parse_args()
     except _ArgumentError as err:
         print(err)
         exit()
@@ -237,7 +166,12 @@ def main():
         loglevel = logging.CRITICAL
     logging.basicConfig(level=loglevel)
 
-    sparqlquery(endpoints, query, **opts)
+    if helpformat:
+        plgn = get_plugin(serialize_fmt, ResultSerializer)
+        help(plgn)
+        exit()
+
+    sparqlquery(endpoints, query, fmt=serialize_fmt, **opts)
 
 
 if __name__ == "__main__":
