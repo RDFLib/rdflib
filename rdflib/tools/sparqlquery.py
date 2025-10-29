@@ -37,7 +37,7 @@ from rdflib.plugins.sparql.sparql import Query
 from rdflib.plugins.stores.sparqlstore import SPARQLStore
 from rdflib.query import Result, ResultRow
 
-__all__ = ["sparqlquery", "PrettyTerm"]
+__all__ = ["sparqlquery"]
 
 
 class _ArgumentError(Exception):
