@@ -138,7 +138,7 @@ def parse_args():
         help="Output warnings to stderr " "(by default only critical errors).",
     )
     parser.add_argument("--format", type=str, default="csv",
-                        help="Print result in given format. "
+                        help="Print sparql result in given format. "
                         "Keywords as described in epilog can be given "
                         "after format like: "
                         "FORMAT:(+)KW1,-KW2,KW3=VALUE.")
@@ -211,15 +211,17 @@ def _create_epilog_from_format(format_) -> str:
     serializer_function = plugin.serialize
     module = inspect.getmodule(plugin.serialize)
     pydoc_target = ".".join([module.__name__, plugin.serialize.__qualname__])
-    qq = inspect.signature(plugin.serialize)
+    sig = inspect.signature(plugin.serialize)
     available_keywords = [
-            x for x, y in qq.parameters.items()
+            x for x, y in sig.parameters.items()
             if y.kind in [Parameter.KEYWORD_ONLY, Parameter.POSITIONAL_OR_KEYWORD]
             ]
     available_keywords.pop(0) # pop self
     epilog = f"For more customization for format '{format_}' "\
             f"use `pydoc {pydoc_target}`. "\
-            f"Known keywords are {available_keywords}. "
+            f"Known keywords are {available_keywords}."
+    if any(y.kind == Parameter.VAR_KEYWORD for x, y in sig.parameters.items()):
+        epilog += " Further keywords might be valid."
     return epilog
 
 
