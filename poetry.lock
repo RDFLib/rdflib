@@ -972,7 +972,6 @@ files = [
 
 [package.dependencies]
 click = ">=7.0"
-importlib-metadata = {version = ">=4.6", markers = "python_version < \"3.10\""}
 Jinja2 = ">=2.11.1"
 Markdown = ">=3.6"
 MarkupSafe = ">=1.1"
@@ -981,7 +980,6 @@ mkdocs-autorefs = ">=1.2"
 mkdocstrings-python = {version = ">=0.5.2", optional = true, markers = "extra == \"python\""}
 platformdirs = ">=2.2"
 pymdown-extensions = ">=6.3"
-typing-extensions = {version = ">=4.1", markers = "python_version < \"3.10\""}
 
 [package.extras]
 crystal = ["mkdocstrings-crystal (>=0.3.4)"]
@@ -1764,4 +1762,4 @@ orjson = ["orjson"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9"
-content-hash = "501fdffcdabfd16acc7b0d0fac9b78ff2d1e6c671a168cdc5da6340a3fc44ba2"
+content-hash = "a4e692e064ca4525c7aec5a8315a69b5a9f7a50585c18c1fa0361d64e14aefc3"
