@@ -71,13 +71,13 @@ class RDFPatchParser(NQuadsParser):
 
         source = inputsource.getCharacterStream()
         if not source:
-            source = inputsource.getByteStream()  # type: ignore[assignment]
-            source = getreader("utf-8")(source)  # type: ignore[arg-type]
+            source = inputsource.getByteStream()
+            source = getreader("utf-8")(source)
 
         if not hasattr(source, "read"):
             raise ParseError("Item to parse must be a file-like object.")
 
-        self.file = source  # type: ignore[assignment]
+        self.file = source
         self.buffer = ""
         while True:
             self.line = __line = self.readline()

@@ -324,7 +324,7 @@ class Converter:
         else:
             p_key = context.to_symbol(p)
             # TODO: for coercing curies - quite clumsy; unify to_symbol and find_term?
-            key_term = context.terms.get(p_key)  # type: ignore[arg-type]
+            key_term = context.terms.get(p_key)
             if key_term and (key_term.type or key_term.container):
                 p_key = p
             if not term and p == RDF.type and not self.use_rdf_type:

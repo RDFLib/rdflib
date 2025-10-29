@@ -1310,7 +1310,7 @@ class Literal(Identifier):
     #  Superclass: def __hash__(self: str) -> int
     #  Subclass: def __hash__(self) -> int
     #  NOTE for type ignore: This can possibly be fixed by changing how __hash__ is implemented in Identifier
-    def __hash__(self) -> int:
+    def __hash__(self) -> int:  # type: ignore[override]
         """Hash function for Literals to enable their use as dictionary keys.
 
         Example:
@@ -1825,7 +1825,7 @@ def _writeXML(  # noqa: N802
 ) -> bytes:
     if isinstance(xmlnode, xml.dom.minidom.DocumentFragment):
         d = xml.dom.minidom.Document()
-        d.childNodes += xmlnode.childNodes  # type: ignore
+        d.childNodes += xmlnode.childNodes
         xmlnode = d
     s = xmlnode.toxml("utf-8")
     # for clean round-tripping, remove headers -- I have great and

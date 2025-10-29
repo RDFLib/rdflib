@@ -95,7 +95,7 @@ def evalInsertData(ctx: QueryContext, u: CompValue) -> None:
     # u.quads is a dict of graphURI=>[triples]
     for g in u.quads:
         # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Optional[Graph]"; expected "Union[IdentifiedNode, str, None]"
-        cg = ctx.dataset.get_context(g)
+        cg = ctx.dataset.get_context(g)  # type: ignore[arg-type]
         cg += u.quads[g]
 
 
@@ -111,7 +111,7 @@ def evalDeleteData(ctx: QueryContext, u: CompValue) -> None:
     # u.quads is a dict of graphURI=>[triples]
     for g in u.quads:
         # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Optional[Graph]"; expected "Union[IdentifiedNode, str, None]"
-        cg = ctx.dataset.get_context(g)
+        cg = ctx.dataset.get_context(g)  # type: ignore[arg-type]
         cg -= u.quads[g]
 
 
@@ -129,7 +129,7 @@ def evalDeleteWhere(ctx: QueryContext, u: CompValue) -> None:
     # type error: Incompatible types in assignment (expression has type "FrozenBindings", variable has type "QueryContext")
     for c in res:  # type: ignore[assignment]
         g = ctx.graph
-        g -= _fillTemplate(u.triples, c)  # type: ignore[operator]
+        g -= _fillTemplate(u.triples, c)
 
         for g in u.quads:
             cg = ctx.dataset.get_context(c.get(g))

@@ -66,7 +66,7 @@ jsonldtestdoc = """
 
 
 class ContentNegotiationHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
+    def do_GET(self):  # noqa: N802
         self.send_response(200, "OK")
         # fun fun fun parsing accept header.
 

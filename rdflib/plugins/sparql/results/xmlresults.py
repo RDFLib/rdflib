@@ -76,7 +76,7 @@ class XMLResult(Result):
             )
         else:
             xml_parser = xml_etree.XMLParser(encoding=parser_encoding)
-            tree = xml_etree.parse(source, parser=xml_parser)  # type: ignore[assignment]
+            tree = xml_etree.parse(source, parser=xml_parser)
 
         boolean = tree.find(RESULTS_NS_ET + "boolean")
         results = tree.find(RESULTS_NS_ET + "results")

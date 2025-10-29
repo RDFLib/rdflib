@@ -520,7 +520,7 @@ class Graph(Node):
         self.__identifier: _ContextIdentifierType
         self.__identifier = identifier or BNode()  # type: ignore[assignment]
         if not isinstance(self.__identifier, IdentifiedNode):
-            self.__identifier = URIRef(self.__identifier)
+            self.__identifier = URIRef(self.__identifier)  # type: ignore[unreachable]
         self.__store: Store
         if not isinstance(store, Store):
             # TODO: error handling

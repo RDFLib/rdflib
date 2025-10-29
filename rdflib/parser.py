@@ -130,7 +130,8 @@ class BytesIOWrapper(BufferedIOBase):
             name = "string"
         elif isinstance(self.wrapped, TextIOWrapper):
             inner = self.wrapped.buffer
-            if isinstance(inner, BytesIOWrapper):
+            #  Subclass of "BinaryIO" and "BytesIOWrapper" cannot exist: would have incompatible method signatures
+            if isinstance(inner, BytesIOWrapper):  # type: ignore[unreachable]
                 raise Exception(
                     "BytesIOWrapper cannot be wrapped in TextIOWrapper, "
                     "then wrapped in another BytesIOWrapper"
@@ -697,15 +698,15 @@ def create_input_source(
                 f = source
                 input_source = InputSource()
                 if hasattr(source, "encoding"):
-                    input_source.setCharacterStream(source)  # type: ignore[arg-type]
+                    input_source.setCharacterStream(source)
                     input_source.setEncoding(source.encoding)
                     try:
                         b = source.buffer  # type: ignore[union-attr]
                         input_source.setByteStream(b)
                     except (AttributeError, LookupError):
-                        input_source.setByteStream(source)  # type: ignore[arg-type]
+                        input_source.setByteStream(source)
                 else:
-                    input_source.setByteStream(f)  # type: ignore[arg-type]
+                    input_source.setByteStream(f)
                 if f is sys.stdin:
                     input_source.setSystemId("file:///dev/stdin")
                 elif hasattr(f, "name"):
