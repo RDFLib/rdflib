@@ -22,8 +22,7 @@ _BNodeContextType = MutableMapping[str, BNode]
 
 
 class Operation(Enum):
-    """
-    Enum of RDF Patch operations.
+    """Enum of RDF Patch operations.
 
     Operations:
     - `AddTripleOrQuad` (A): Adds a triple or quad.
@@ -55,16 +54,13 @@ class RDFPatchParser(NQuadsParser):
         skolemize: bool = False,
         **kwargs: Any,
     ) -> Dataset:
-        """
-        Parse inputsource as an RDF Patch file.
+        """Parse inputsource as an RDF Patch file.
 
-        :type inputsource: `rdflib.parser.InputSource`
-        :param inputsource: the source of RDF Patch formatted data
-        :type sink: `rdflib.graph.Dataset`
-        :param sink: where to send parsed data
-        :type bnode_context: `dict`, optional
-        :param bnode_context: a dict mapping blank node identifiers to `~rdflib.term.BNode` instances.
-                              See `.W3CNTriplesParser.parse`
+        Args:
+            inputsource: the source of RDF Patch formatted data
+            sink: where to send parsed data
+            bnode_context: a dict mapping blank node identifiers to [`BNode`][rdflib.term.BNode]
+                instances. See `.W3CNTriplesParser.parse`
         """
         assert sink.store.context_aware, (
             "RDFPatchParser must be given" " a context aware store."

@@ -6,7 +6,6 @@ Bits and pieces borrowed from:
 http://projects.bigasterisk.com/sparqlhttp/
 
 Authors: Drew Perttula, Gunnar Aastrand Grimnes
-
 """
 
 from __future__ import annotations
@@ -27,6 +26,8 @@ except ImportError:
 
 
 class JSONResultParser(ResultParser):
+    """Parses SPARQL JSON results into a Result object."""
+
     # type error: Signature of "parse" incompatible with supertype "ResultParser"
     def parse(self, source: IO, content_type: Optional[str] = None) -> Result:  # type: ignore[override]
         inp = source.read()
@@ -43,6 +44,8 @@ class JSONResultParser(ResultParser):
 
 
 class JSONResultSerializer(ResultSerializer):
+    """Serializes SPARQL results to JSON format."""
+
     def __init__(self, result: Result):
         ResultSerializer.__init__(self, result)
 
@@ -125,8 +128,11 @@ def parseJsonTerm(d: Dict[str, str]) -> Identifier:
     """rdflib object (Literal, URIRef, BNode) for the given json-format dict.
 
     input is like:
-      { 'type': 'uri', 'value': 'http://famegame.com/2006/01/username' }
-      { 'type': 'literal', 'value': 'drewp' }
+
+    ```json
+    { 'type': 'uri', 'value': 'http://famegame.com/2006/01/username' }
+    { 'type': 'literal', 'value': 'drewp' }
+    ```
     """
 
     t = d["type"]

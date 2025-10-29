@@ -14,8 +14,7 @@ def generateVoID(  # noqa: N802
     res: Optional[Graph] = None,
     distinctForPartitions: bool = True,  # noqa: N803
 ):
-    """
-    Returns a new graph with a VoID description of the passed dataset
+    """Returns a new graph with a VoID description of the passed dataset
 
     For more info on Vocabulary of Interlinked Datasets (VoID), see:
     http://vocab.deri.ie/void
@@ -30,7 +29,6 @@ def generateVoID(  # noqa: N802
     the distinctForPartitions parameter controls whether
     distinctSubjects/objects are tracked for each class/propertyPartition
     this requires more memory again
-
     """
 
     typeMap: Dict[_SubjectType, Set[_SubjectType]] = (  # noqa: N806
