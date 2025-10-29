@@ -20,22 +20,25 @@ from __future__ import annotations
 
 import argparse
 import inspect
-from inspect import Parameter
 import logging
 import sys
-from typing import Iterator, List, Optional, Tuple, Dict
+from inspect import Parameter
+from typing import Any, Dict, List, Optional, Tuple, Type
 from urllib.parse import urlparse
 
-from .rdfpipe import _format_and_kws
+from pyparsing.exceptions import ParseException
 
 from rdflib.graph import ConjunctiveGraph, Graph
-from rdflib.plugin import ResultSerializer, PluginException
+from rdflib.plugin import PluginException
 from rdflib.plugin import get as get_plugin
 from rdflib.plugin import plugins as get_plugins
 from rdflib.plugins.sparql import prepareQuery
 from rdflib.plugins.sparql.sparql import Query
 from rdflib.plugins.stores.sparqlstore import SPARQLStore
-from rdflib.query import Result, ResultRow
+from rdflib.query import Result, ResultSerializer
+from rdflib.serializer import Serializer
+
+from .rdfpipe import _format_and_kws
 
 __all__ = ["sparqlquery"]
 
@@ -43,7 +46,12 @@ __all__ = ["sparqlquery"]
 class _ArgumentError(Exception):
     pass
 
-class _PrintHelpExit(Exception):
+
+class _PrintHelpError(Exception):
+    pass
+
+
+class InvalidQueryError(Exception):
     pass
 
 
@@ -62,18 +70,16 @@ def sparqlquery(
         raise NotImplementedError()
     else:
         g, search_only = _get_graph(endpoints, auth, use_remote)
-    q: Query = prepareQuery(query)
-    if search_only and q.algebra.name not in [
-        "SelectQuery",
-        "DescribeQuery",
-        "AskQuery",
-    ]:
-        raise NotImplementedError(
-            "Queries on local files or STDIN can only use SELECT, DESCRIBE or ASK."
-        )
+    try:
+        q: Query = prepareQuery(query)
+    except ParseException as err:
+        raise InvalidQueryError(query) from err
 
     results: Result = g.query(q)
-    ret_bytes = results.serialize(format=result_format, **result_keywords)
+    if result_format is not None:
+        ret_bytes = results.serialize(format=result_format, **result_keywords)
+    else:
+        ret_bytes = results.serialize(**result_keywords)
     if ret_bytes is not None:
         print(ret_bytes.decode())
 
@@ -81,6 +87,7 @@ def sparqlquery(
 def _dest_is_local(dest: str):
     q = urlparse(dest)
     return q.scheme in ["", "file"]
+
 
 def _dest_is_internet_addr(dest: str):
     q = urlparse(dest)
@@ -103,22 +110,24 @@ def _get_graph(endpoints, auth, use_remote: bool) -> Tuple[Graph, bool]:
         search_only = True
     return graph, search_only
 
+
 def parse_args():
-    parser = argparse.ArgumentParser(prog="sparqlquery",
-                                     description=__doc__, add_help=False)
+    parser = argparse.ArgumentParser(
+        prog="sparqlquery", description=__doc__, add_help=False
+    )
     parser.add_argument(
         "endpoint",
         nargs="+",
         type=str,
         help="Endpoints for sparql query. "
         "If  multiple use a conjunctive graph instead. "
-        "Reads from stdin if '-' is given.",
+        "Reads from stdin if '-' is given. ",
     )
     parser.add_argument(
         "-q",
         "--query",
         type=str,
-        help="Sparql query. Cannot be set together with --queryfile",
+        help="Sparql query. Cannot be set together with --queryfile.",
     )
     parser.add_argument(
         "--queryfile",
@@ -133,11 +142,16 @@ def parse_args():
         default=False,
         help="Output warnings to stderr " "(by default only critical errors).",
     )
-    parser.add_argument("--format", type=str, default="csv",
-                        help="Print sparql result in given format. "
-                        "Keywords as described in epilog can be given "
-                        "after format like: "
-                        "FORMAT:(+)KW1,-KW2,KW3=VALUE.")
+    parser.add_argument(
+        "--format",
+        type=str,
+        help="Print sparql result in given format."
+        "Defaults to 'csv' on SELECT, to 'xml' on ASK "
+        "and to 'turtle' on DESCRIBE and CONSTRUCT. "
+        "Keywords as described in epilog can be given "
+        "after format like: "
+        "FORMAT:(+)KW1,-KW2,KW3=VALUE.",
+    )
     parser.add_argument(
         "--help",
         action="store_true",
@@ -153,13 +167,7 @@ def parse_args():
     )
 
     args = parser.parse_args()
-    opts = {}
-
-    format_, format_keywords = _format_and_kws(args.format)
-    if args.help:
-        parser.epilog = _create_epilog_from_format(format_)
-        parser.print_help()
-        raise _PrintHelpExit()
+    opts: Dict[str, Any] = {}
 
     if args.query and args.queryfile is None:
         query = args.query
@@ -169,6 +177,34 @@ def parse_args():
     else:
         parser.print_help()
         raise _ArgumentError("Either -q/--query or --queryfile must be provided")
+
+    if "DESCRIBE" in query or "CONSTRUCT" in query:
+        construct = True
+    else:
+        construct = False
+
+    if args.format is not None:
+        format_, format_keywords = _format_and_kws(args.format)
+    elif construct:
+        format_keywords = {}
+        format_ = "turtle"
+        construct = True
+    elif "ASK" in query:
+        format_keywords = {}
+        format_ = "xml"
+    else:
+        format_keywords = {}
+        format_ = "csv"
+    if {"self", "stream", "encoding", "format"}.intersection(format_keywords):
+        raise _ArgumentError(
+            "'self', 'stream', 'encoding' and 'format' "
+            "mustnt be used as keywords for format."
+        )
+
+    if args.help:
+        parser.epilog = _create_epilog_from_format(format_, construct)
+        parser.print_help()
+        raise _PrintHelpError()
 
     if args.username is not None and args.password is not None:
         opts["auth"] = (args.username, args.password)
@@ -189,43 +225,58 @@ def parse_args():
             endpoints = args.endpoint
     else:
         endpoints = list(args.endpoint)
-        if any(not(_dest_is_local(x)) for x in args.endpoint):
+        if any(not (_dest_is_local(x)) for x in args.endpoint):
             raise NotImplementedError(
-                    "If multiple endpoints are given, all must be local files."
-                    )
+                "If multiple endpoints are given, all must be local files."
+            )
 
     return endpoints, query, format_, format_keywords, args.warn, opts
 
 
-def _create_epilog_from_format(format_) -> str:
+def _create_epilog_from_format(format_, construct) -> Optional[str]:
+    serializer_plugin_type: Type[ResultSerializer | Serializer]
+    if construct:
+        serializer_plugin_type = Serializer
+    else:
+        serializer_plugin_type = ResultSerializer
     try:
-        plugin = get_plugin(format_, ResultSerializer)
-    except PluginException as err:
+        plugin = get_plugin(format_, serializer_plugin_type)
+    except PluginException:
         available_plugins = [x.name for x in get_plugins(None, ResultSerializer)]
-        return f"No plugin registered for sparql result in format '{format_}'. "\
-                f"available plugins: {available_plugins}"
-    serializer_function = plugin.serialize
-    module = inspect.getmodule(plugin.serialize)
-    pydoc_target = ".".join([module.__name__, plugin.serialize.__qualname__])
-    sig = inspect.signature(plugin.serialize)
+        return (
+            f"No plugin registered for sparql result in format '{format_}'. "
+            f"available plugins: {available_plugins}"
+        )
+    serialize_method = plugin.serialize  # type: ignore[attr-defined]
+    module = inspect.getmodule(serialize_method)
+    if module is None:
+        return None
+    pydoc_target = ".".join([module.__name__, serialize_method.__qualname__])
+    sig = inspect.signature(serialize_method)
     available_keywords = [
-            x for x, y in sig.parameters.items()
-            if y.kind in [Parameter.KEYWORD_ONLY, Parameter.POSITIONAL_OR_KEYWORD]
-            ]
-    available_keywords.pop(0) # pop self
-    epilog = f"For more customization for format '{format_}' "\
-            f"use `pydoc {pydoc_target}`. "\
-            f"Known keywords are {available_keywords}."
-    if any(y.kind == Parameter.VAR_KEYWORD for x, y in sig.parameters.items()):
-        epilog += " Further keywords might be valid."
-    return epilog
+        x
+        for x, y in sig.parameters.items()
+        if y.kind in [Parameter.KEYWORD_ONLY, Parameter.POSITIONAL_OR_KEYWORD]
+    ]
+    available_keywords.pop(0)  # pop self
+    available_keywords.pop(0)  # pop stream
+    available_keywords.pop(0)  # pop encoding
 
+    epilog = (
+        f"For more customization for format '{format_}' "
+        f"use `pydoc {pydoc_target}`. "
+    )
+    if len(available_keywords) > 0:
+        epilog += f"Known keywords are {available_keywords}."
+    # there is always **kwargs in .serialize
+    epilog += " Further keywords might be valid."
+    return epilog
 
 
 def main():
     try:
         endpoints, query, result_format, format_keywords, warn, opts = parse_args()
-    except _PrintHelpExit:
+    except _PrintHelpError:
         exit()
     except _ArgumentError as err:
         print(err)
@@ -237,8 +288,13 @@ def main():
         loglevel = logging.CRITICAL
     logging.basicConfig(level=loglevel)
 
-    sparqlquery(endpoints, query, result_format=result_format,
-                result_keywords=format_keywords, **opts)
+    sparqlquery(
+        endpoints,
+        query,
+        result_format=result_format,
+        result_keywords=format_keywords,
+        **opts,
+    )
 
 
 if __name__ == "__main__":
