@@ -37,12 +37,12 @@ extras = ["regex"]
 
 [[package]]
 name = "berkeleydb"
-version = "18.1.15"
+version = "18.1.10"
 description = "Python bindings for Oracle Berkeley DB"
 optional = true
 python-versions = "*"
 files = [
-    {file = "berkeleydb-18.1.15.tar.gz", hash = "sha256:7afa53143d754c6bb2c85656c1325ebae518adcfcd1b59e13cc2abb88ddf758e"},
+    {file = "berkeleydb-18.1.10.tar.gz", hash = "sha256:426341a16007a9002d987a6f4d97226f8eafffcb1a0488488053d38a3127c81a"},
 ]
 
 [[package]]
@@ -1712,4 +1712,4 @@ orjson = ["orjson"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1"
-content-hash = "35ce70402138519fd62cf5ec9901125cab2c36fc6965ef13c66020637c8c8bd4"
+content-hash = "bcdcfe65969feaa5c97b414fa88625282f18286faac13bc78eddb01442784c26"
