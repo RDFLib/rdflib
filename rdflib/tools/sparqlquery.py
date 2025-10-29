@@ -8,6 +8,8 @@ example usage:
     ```bash
     sparqlquery path/to/data.ttl -q "SELECT ?x WHERE {?x a foaf:Person. }"
     sparqlquery path/to/data.ttl -q "SELECT ?x WHERE {?x a foaf:Person. }" --format json
+    #sparqlquery - -q "SELECT ?x WHERE {?x a foaf:Person}" << rdfpipe info.ttl
+    rdfpipe test.ttl | sparqlquery - -q "SELECT ?x WHERE {?x a foaf:Person}"
     sparqlquery path/to/data.ttl --query-file query.spl
     sparqlquery data1.ttl data2.ttl --query-file query.spl
     sparqlquery http://example.com/sparqlendpoint --query-file query.spl
@@ -17,14 +19,19 @@ example usage:
 from __future__ import annotations
 
 import argparse
+import inspect
+from inspect import Parameter
 import logging
+import sys
 from typing import Iterator, List, Optional, Tuple, Dict
 from urllib.parse import urlparse
 
-# from rdflib import plugin
+from .rdfpipe import _format_and_kws
+
 from rdflib.graph import ConjunctiveGraph, Graph
-from rdflib.plugin import ResultSerializer
+from rdflib.plugin import ResultSerializer, PluginException
 from rdflib.plugin import get as get_plugin
+from rdflib.plugin import plugins as get_plugins
 from rdflib.plugins.sparql import prepareQuery
 from rdflib.plugins.sparql.sparql import Query
 from rdflib.plugins.stores.sparqlstore import SPARQLStore
@@ -36,15 +43,25 @@ __all__ = ["sparqlquery", "PrettyTerm"]
 class _ArgumentError(Exception):
     pass
 
+class _PrintHelpExit(Exception):
+    pass
+
 
 def sparqlquery(
     endpoints: List[str],
     query: str,
     fmt: Optional[str] = None,
     auth: Optional[Tuple[str, str]] = None,
-    format_opt: Dict[str, str] = {},
+    resultparser_kwargs: Dict[str, str] = {},
+    use_stdin: bool = False,
+    use_remote: bool = False,
 ):
-    g, search_only = _get_graph(endpoints, auth)
+    if use_stdin:
+        search_only = True
+        g = Graph().parse(sys.stdin)
+        raise NotImplementedError()
+    else:
+        g, search_only = _get_graph(endpoints, auth, use_remote)
     q: Query = prepareQuery(query)
     if search_only and q.algebra.name not in [
         "SelectQuery",
@@ -52,12 +69,11 @@ def sparqlquery(
         "AskQuery",
     ]:
         raise NotImplementedError(
-            "Queries on local files can only " "use SELECT, DESCRIBE or ASK."
+            "Queries on local files or STDIN can only use SELECT, DESCRIBE or ASK."
         )
-    varlist = [str(v) for v in q.algebra._vars]
 
     results: Result = g.query(q)
-    ret_bytes = results.serialize(format=fmt, **format_opt)
+    ret_bytes = results.serialize(format=fmt, **resultparser_kwargs)
     if ret_bytes is not None:
         print(ret_bytes.decode())
 
@@ -65,6 +81,10 @@ def sparqlquery(
 def _dest_is_local(dest: str):
     q = urlparse(dest)
     return q.scheme in ["", "file"]
+
+def _dest_is_internet_addr(dest: str):
+    q = urlparse(dest)
+    return q.scheme in ["http", "https"]
 
 
 def _get_graph(endpoints, auth) -> Tuple[Graph, bool]:
@@ -87,15 +107,16 @@ def _get_graph(endpoints, auth) -> Tuple[Graph, bool]:
         search_only = True
     return graph, search_only
 
-
 def parse_args():
-    parser = argparse.ArgumentParser(prog="sparqlquery", description=__doc__)
+    parser = argparse.ArgumentParser(prog="sparqlquery",
+                                     description=__doc__, add_help=False)
     parser.add_argument(
         "endpoint",
         nargs="+",
         type=str,
         help="Endpoints for sparql query. "
-        "If  multiple use a conjunctive graph instead.",
+        "If  multiple use a conjunctive graph instead. "
+        "Reads from stdin if '-' is given.",
     )
     parser.add_argument(
         "-q",
@@ -116,13 +137,17 @@ def parse_args():
         default=False,
         help="Output warnings to stderr " "(by default only critical errors).",
     )
-    parser.add_argument("--format", type=str, default="csv", dest="fmt",
-                        help="Print result in given format.")
+    parser.add_argument("--format", type=str, default="csv",
+                        help="Print result in given format. "
+                        "Keywords as described in epilog can be given "
+                        "after format like: "
+                        "FORMAT:(+)KW1,-KW2,KW3=VALUE.")
     parser.add_argument(
-        "--help-format", dest="helpformat",
+        "--help",
         action="store_true",
         default=False,
-        help="Prints out help for controlling the result formatting.",
+        help="show help message and exit. "
+        "Also prints information about given format.",
     )
     parser.add_argument(
         "--username", type=str, help="Username used during authentication."
@@ -133,6 +158,12 @@ def parse_args():
 
     args = parser.parse_args()
     opts = {}
+
+    format_, format_keywords = _format_and_kws(args.format)
+    if args.help:
+        parser.epilog = _create_epilog_from_format(format_)
+        parser.print_help()
+        raise _PrintHelpExit()
 
     if args.query and args.queryfile is None:
         query = args.query
@@ -150,12 +181,54 @@ def parse_args():
     else:
         parser.print_help()
         raise _ArgumentError("User only provided one of password and username")
-    return args.endpoint, query, args.fmt, args.warn, args.helpformat, opts
+
+    if len(args.endpoint) == 1:
+        if args.endpoint[0] == "-":
+            endpoints = []
+            opts["use_stdin"] = True
+        elif _dest_is_internet_addr(args.endpoint[0]):
+            endpoints = args.endpoint
+            opts["use_remote"] = True
+        else:
+            endpoints = args.endpoint
+    else:
+        endpoints = list(args.endpoint)
+        if any(not(_dest_is_local(x)) for x in args.endpoint):
+            raise NotImplementedError(
+                    "If multiple endpoints are given, all must be local files."
+                    )
+
+    return endpoints, query, format_, format_keywords, args.warn, opts
+
+
+def _create_epilog_from_format(format_) -> str:
+    try:
+        plugin = get_plugin(format_, ResultSerializer)
+    except PluginException as err:
+        available_plugins = [x.name for x in get_plugins(None, ResultSerializer)]
+        return f"No plugin registered for sparql result in format '{format_}'. "\
+                f"available plugins: {available_plugins}"
+    serializer_function = plugin.serialize
+    module = inspect.getmodule(plugin.serialize)
+    pydoc_target = ".".join([module.__name__, plugin.serialize.__qualname__])
+    qq = inspect.signature(plugin.serialize)
+    available_keywords = [
+            x for x, y in qq.parameters.items()
+            if y.kind in [Parameter.KEYWORD_ONLY, Parameter.POSITIONAL_OR_KEYWORD]
+            ]
+    available_keywords.pop(0) # pop self
+    epilog = f"For more customization for format '{format_}' "\
+            f"use `pydoc {pydoc_target}`. "\
+            f"Known keywords are {available_keywords}. "
+    return epilog
+
 
 
 def main():
     try:
-        endpoints, query, serialize_fmt, warn, helpformat, opts = parse_args()
+        endpoints, query, result_format, format_keywords, warn, opts = parse_args()
+    except _PrintHelpExit:
+        exit()
     except _ArgumentError as err:
         print(err)
         exit()
@@ -166,12 +239,8 @@ def main():
         loglevel = logging.CRITICAL
     logging.basicConfig(level=loglevel)
 
-    if helpformat:
-        plgn = get_plugin(serialize_fmt, ResultSerializer)
-        help(plgn)
-        exit()
-
-    sparqlquery(endpoints, query, fmt=serialize_fmt, **opts)
+    sparqlquery(endpoints, query, fmt=result_format,
+                resultparser_kwargs=format_keywords, **opts)
 
 
 if __name__ == "__main__":
