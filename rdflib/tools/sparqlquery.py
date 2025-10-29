@@ -87,20 +87,16 @@ def _dest_is_internet_addr(dest: str):
     return q.scheme in ["http", "https"]
 
 
-def _get_graph(endpoints, auth) -> Tuple[Graph, bool]:
+def _get_graph(endpoints, auth, use_remote: bool) -> Tuple[Graph, bool]:
     graph: Graph
     search_only = True
-    if len(endpoints) == 1 and not _dest_is_local(endpoints[0]):
+    if use_remote:
         # store = plugin.get("SPARQLStore", Store)(auth=auth)
         # store.open(endpoints[0])
         store = SPARQLStore(endpoints[0], auth=auth)
         graph = ConjunctiveGraph(store)
         search_only = False
-    elif all(not (_dest_is_local(x)) for x in endpoints):
-        raise NotImplementedError("Cant use multiple remote locations.")
     else:
-        if not all(_dest_is_local(x) for x in endpoints):
-            raise NotImplementedError("Cant mix local and remote locations.")
         graph = Graph()
         for x in endpoints:
             graph.parse(location=x)
