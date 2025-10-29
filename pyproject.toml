@@ -40,7 +40,7 @@ rdfs2dot = 'rdflib.tools.rdfs2dot:main'
 rdfgraphisomorphism = 'rdflib.tools.graphisomorphism:main'
 
 [tool.poetry.dependencies]
-python = ">=3.8.1"
+python = ">=3.9"
 isodate = {version=">=0.7.2,<1.0.0", python = "<3.11"}
 pyparsing = ">=2.1.0,<4"
 berkeleydb = {version = "^18.1.0", optional = true}
@@ -67,11 +67,9 @@ wheel = ">=0.42,<0.46"
 typing-extensions = "^4.11.0"
 mkdocs = ">=1.6.1"
 mkdocs-material = ">=9.6.12"
-# TODO: remove fixed version when python 3.8 is no longer supported
-mkdocstrings = {version = "==0.26.1", extras = ["python"]}
+mkdocstrings = {version = "^0.26.2", extras = ["python"], python = ">=3.11"}
 mkdocs-gen-files = "^0.5.0"
-# TODO: remove fixed major version ^ when python 3.8 is no longer supported
-mkdocs-include-markdown-plugin = "^6.2.2"
+mkdocs-include-markdown-plugin = {version = "^7.2.0", python = ">=3.11"}
 
 [tool.poetry.group.lint.dependencies]
 ruff = ">=0.0.286,<0.10.0"

@@ -106,12 +106,7 @@ theme:
 plugins:
 - search
 - autorefs
-- include-markdown:
-    # mkdocs-include-markdown-plugin v7 disables comments by default.
-    # RDFLib must use v6 to support python 3.8, where comments default to true.
-    # To align with the v7 default behaviour, we explicitly set comments to false.
-    # TODO: remove this in RDFLib v8
-    comments: false
+- include-markdown
 - gen-files:
     scripts:
       - docs/gen_ref_pages.py

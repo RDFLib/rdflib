@@ -34,7 +34,6 @@ jobs:
           - python-version: "3.8"
             os: ubuntu-latest
             extensive-tests: true
-            TOXENV_SUFFIX: "-docs"
           - python-version: "3.8"
             os: ubuntu-latest
             extensive-tests: true
@@ -43,7 +42,6 @@ jobs:
             TOXENV_SUFFIX: "-min"
           - python-version: "3.9"
             os: ubuntu-latest
-            TOXENV_SUFFIX: "-docs"
           - python-version: "3.10"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "- black --check --diff ./rdflib"
