@@ -100,6 +100,9 @@ MARK_DICT: MarksDictType = {
     f"{REMOTE_BASE_IRI}syntax-sparql4/syn-bad-37.rq": pytest.mark.xfail(
         reason="Accepts invalid query."
     ),
+    f"{REMOTE_BASE_IRI}solution-seq/manifest#slice-3": pytest.mark.xfail(
+        reason="Literal collation with different datatypes is up to SPARQL engine implementations as it is undefined by the SPARQL spec."
+    )
 }
 
 
