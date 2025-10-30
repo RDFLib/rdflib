@@ -2,9 +2,9 @@
 Runs the SPARQL 1.0 test suite from.
 """
 
+import sys
 from contextlib import ExitStack
 from typing import Generator
-import sys
 
 import pytest
 from pytest import MonkeyPatch
@@ -103,7 +103,7 @@ MARK_DICT: MarksDictType = {
     ),
     f"{REMOTE_BASE_IRI}solution-seq/manifest#slice-3": pytest.mark.xfail(
         condition=sys.version_info >= (3, 14),
-        reason="Literal collation with different datatypes is up to SPARQL engine implementations as it is undefined by the SPARQL spec."
+        reason="Literal collation with different datatypes is up to SPARQL engine implementations as it is undefined by the SPARQL spec.",
     ),
 }
 
