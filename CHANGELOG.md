@@ -1,3 +1,16 @@
+## 2025-10-30 RELEASE 7.4.0
+
+This release addresses a couple of bugs and improves the testing matrix by adding python 3.12, 3.13 and 3.14 to the test matrix.
+
+This is also the first RDFLib release to use MkDocs for documentation.
+
+Pull requests merged:
+
+- chore(v7): upgrade ci and dev/test deps by @edmondchuc in [#3288](https://github.com/RDFLib/rdflib/pull/3288)
+- feat: v7 mkdocs by @edmondchuc in [#3287](https://github.com/RDFLib/rdflib/pull/3287)
+- fix: set changed size when iterating the store's graphs by @edmondchuc in [#3281](https://github.com/RDFLib/rdflib/pull/3281)
+- lazy fix of issue pytest failure on python 3.13.8 - Removing of xfail raise restriction by @WhiteGobo in [#3275](https://github.com/RDFLib/rdflib/pull/3275)
+
 ## 2025-10-24 RELEASE 7.3.0
 
 This release delivers several important fixes and enhancements to RDFLib’s Dataset implementation, resolving long-standing issues and improving consistency across serialization and SPARQL operations. It also introduces new deprecation notices for certain Dataset methods and attributes, which will be removed in the next major release. In addition, this version includes a range of improvements to SPARQL result parsing, typing, and literal handling.
@@ -33,22 +46,22 @@ This release delivers several important fixes and enhancements to RDFLib’s Dat
 
 Pull requests merged:
 
--   feat: add Dataset `__iadd__` support by @edmondchuc in [#3268](https://api.github.com/repos/RDFLib/rdflib/pulls/3268)
--   fix: RecursiveSerializer- outputs undeclared prefix for predicates that contains the base as a substring by @edmondchuc in [#3267](https://api.github.com/repos/RDFLib/rdflib/pulls/3267)
--   fix: allow static type checkers to infer term's `__new__` type by @edmondchuc in [#3266](https://api.github.com/repos/RDFLib/rdflib/pulls/3266)
--   fix: SPARQL Update inserts into the default graph by @edmondchuc in [#3265](https://api.github.com/repos/RDFLib/rdflib/pulls/3265)
--   chore: add deprecation notice to Dataset methods and attributes by @edmondchuc in [#3264](https://api.github.com/repos/RDFLib/rdflib/pulls/3264)
--   fix: Dataset.parse now returns Self by @edmondchuc in [#3263](https://api.github.com/repos/RDFLib/rdflib/pulls/3263)
--   fix: dataset nquads serialization including RDFLib internal default graph identifier by @edmondchuc in [#3262](https://api.github.com/repos/RDFLib/rdflib/pulls/3262)
--   patch for reevaluation in sparql modify between update loops. with test by @WhiteGobo in [#3261](https://api.github.com/repos/RDFLib/rdflib/pulls/3261)
--   feat: change dataset's default serialize format to trig by @edmondchuc in [#3260](https://api.github.com/repos/RDFLib/rdflib/pulls/3260)
--   feat: allow adding graphs backed by different stores to the same dataset by @edmondchuc in [#3259](https://api.github.com/repos/RDFLib/rdflib/pulls/3259)
--   fix(v7): remove Literal.toPython date conversion for gYear/gYearMonth (#3115) by @edmondchuc in [#3258](https://api.github.com/repos/RDFLib/rdflib/pulls/3258)
--   sparqls optionals clause can now bind variables. with test. issue 2957 by @WhiteGobo in [#3247](https://api.github.com/repos/RDFLib/rdflib/pulls/3247)
--   fix: skip prefix generation for predicates corresponding to base namespace by @edmondchuc in [#3244](https://api.github.com/repos/RDFLib/rdflib/pulls/3244)
--   Run the example queries agains the local fuseki by @white-gecko in [#3240](https://api.github.com/repos/RDFLib/rdflib/pulls/3240)
--   Adjust the type hint for Graph open to reflect a SPARQLUpdateStore configuration by @white-gecko in [#3239](https://api.github.com/repos/RDFLib/rdflib/pulls/3239)
--   SPARQL result parsing by @white-gecko in [#2796](https://api.github.com/repos/RDFLib/rdflib/pulls/2796)
+- feat: add Dataset `__iadd__` support by @edmondchuc in [#3268](https://github.com/RDFLib/rdflib/pull/3268)
+- fix: RecursiveSerializer- outputs undeclared prefix for predicates that contains the base as a substring by @edmondchuc in [#3267](https://github.com/RDFLib/rdflib/pull/3267)
+- fix: allow static type checkers to infer term's `__new__` type by @edmondchuc in [#3266](https://github.com/RDFLib/rdflib/pull/3266)
+- fix: SPARQL Update inserts into the default graph by @edmondchuc in [#3265](https://github.com/RDFLib/rdflib/pull/3265)
+- chore: add deprecation notice to Dataset methods and attributes by @edmondchuc in [#3264](https://github.com/RDFLib/rdflib/pull/3264)
+- fix: Dataset.parse now returns Self by @edmondchuc in [#3263](https://github.com/RDFLib/rdflib/pull/3263)
+- fix: dataset nquads serialization including RDFLib internal default graph identifier by @edmondchuc in [#3262](https://github.com/RDFLib/rdflib/pull/3262)
+- patch for reevaluation in sparql modify between update loops. with test by @WhiteGobo in [#3261](https://github.com/RDFLib/rdflib/pull/3261)
+- feat: change dataset's default serialize format to trig by @edmondchuc in [#3260](https://github.com/RDFLib/rdflib/pull/3260)
+- feat: allow adding graphs backed by different stores to the same dataset by @edmondchuc in [#3259](https://github.com/RDFLib/rdflib/pull/3259)
+- fix(v7): remove Literal.toPython date conversion for gYear/gYearMonth (#3115) by @edmondchuc in [#3258](https://github.com/RDFLib/rdflib/pull/3258)
+- sparqls optionals clause can now bind variables. with test. issue 2957 by @WhiteGobo in [#3247](https://github.com/RDFLib/rdflib/pull/3247)
+- fix: skip prefix generation for predicates corresponding to base namespace by @edmondchuc in [#3244](https://github.com/RDFLib/rdflib/pull/3244)
+- Run the example queries agains the local fuseki by @white-gecko in [#3240](https://github.com/RDFLib/rdflib/pull/3240)
+- Adjust the type hint for Graph open to reflect a SPARQLUpdateStore configuration by @white-gecko in [#3239](https://github.com/RDFLib/rdflib/pull/3239)
+- SPARQL result parsing by @white-gecko in [#2796](https://github.com/RDFLib/rdflib/pull/2796)
 
 ## 2025-09-19 RELEASE 7.2.1
 
