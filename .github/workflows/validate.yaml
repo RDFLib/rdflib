@@ -53,6 +53,12 @@ jobs:
             extensive-tests: true
             TOX_TEST_HARNESS: "firejail --net=none --"
             TOX_PYTEST_EXTRA_ARGS: "-m 'not webtest'"
+          - python-version: "3.12"
+            os: ubuntu-latest
+          - python-version: "3.13"
+            os: ubuntu-latest
+          - python-version: "3.14"
+            os: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Cache XDG_CACHE_HOME
