@@ -2831,7 +2831,7 @@ class Dataset(ConjunctiveGraph):
             stacklevel=2,
         )
         default = False
-        for c in self.store.contexts(triple):
+        for c in super(Dataset, self).contexts(triple):
             default |= c.identifier == DATASET_DEFAULT_GRAPH_ID
             yield c
         if not default:
@@ -2841,7 +2841,7 @@ class Dataset(ConjunctiveGraph):
         self, triple: Optional[_TripleType] = None
     ) -> Generator[_ContextType, None, None]:
         default = False
-        for c in self.store.contexts(triple):
+        for c in super(Dataset, self).contexts(triple):
             default |= c.identifier == DATASET_DEFAULT_GRAPH_ID
             yield c
         if not default:
