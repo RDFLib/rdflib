@@ -17,6 +17,7 @@ classifiers=[
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "License :: OSI Approved :: BSD License",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Operating System :: OS Independent",
@@ -50,8 +51,8 @@ lxml = {version = ">=4.3,<6.0", optional = true}
 orjson = {version = ">=3.9.14,<4", optional = true}
 
 [tool.poetry.group.dev.dependencies]
-black = "24.4.2"
-mypy = "^1.1.0"
+black = "24.8.0"
+mypy = "1.14.1"
 lxml-stubs = ">=0.4,<0.6"
 pip-tools = "^7.4.1"
 
@@ -74,7 +75,7 @@ mkdocs-gen-files = "^0.5.0"
 mkdocs-include-markdown-plugin = {version = "^7.2.0", python = ">=3.11"}
 
 [tool.poetry.group.lint.dependencies]
-ruff = ">=0.0.286,<0.10.0"
+ruff = "0.14.2"
 
 [tool.poetry.extras]
 berkeleydb = ["berkeleydb"]
@@ -173,7 +174,7 @@ ignore = [
 [tool.black]
 line-length = 88
 target-version = ['py38']
-required-version = "24.4.2"
+required-version = "24.8.0"
 include = '\.pyi?$'
 exclude = '''
 (
@@ -228,7 +229,7 @@ log_cli_date_format = "%Y-%m-%dT%H:%M:%S"
 
 [tool.isort]
 profile = "black"
-py_version = 37
+py_version = 38
 line_length = 88
 src_paths= ["rdflib", "test", "devtools", "examples"]
 supported_extensions = ["pyw", "pyi", "py"]
