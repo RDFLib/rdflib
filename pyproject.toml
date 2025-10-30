@@ -229,7 +229,7 @@ log_cli_date_format = "%Y-%m-%dT%H:%M:%S"
 
 [tool.isort]
 profile = "black"
-py_version = 37
+py_version = 38
 line_length = 88
 src_paths= ["rdflib", "test", "devtools", "examples"]
 supported_extensions = ["pyw", "pyi", "py"]
