@@ -1,5 +1,5 @@
 """
-SPARQL Update statements can be applied with :meth:`rdflib.graph.Graph.update`
+SPARQL Update statements can be applied with [`Graph.update`][rdflib.graph.Graph.update]
 """
 
 from pathlib import Path

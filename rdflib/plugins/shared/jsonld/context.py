@@ -1,8 +1,5 @@
 """
-Implementation of the JSON-LD Context structure. See:
-
-    http://json-ld.org/
-
+Implementation of the JSON-LD Context structure. See: http://json-ld.org/
 """
 
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/context.py
@@ -657,7 +654,8 @@ class Context:
         Returns a dictionary representation of the context that can be
         serialized to JSON.
 
-        :return: a dictionary representation of the context.
+        Returns:
+            a dictionary representation of the context.
         """
         r = {v: k for (k, v) in self._prefixes.items()}
         r.update({term.name: self._term_dict(term) for term in self._lookup.values()})

@@ -7,40 +7,42 @@ implement parsers, stores, and serializers that will plug into the
 rdflib package.
 
 The primary interface `rdflib` exposes to work with RDF is
-`rdflib.graph.Graph`.
+[`rdflib.graph.Graph`][rdflib.graph.Graph].
 
 A tiny example:
 
-    >>> from rdflib import Graph, URIRef, Literal
+```python
+>>> from rdflib import Graph, URIRef, Literal
 
-    >>> g = Graph()
-    >>> result = g.parse("http://www.w3.org/2000/10/swap/test/meet/blue.rdf")
+>>> g = Graph()
+>>> result = g.parse("http://www.w3.org/2000/10/swap/test/meet/blue.rdf")
 
-    >>> print("graph has %s statements." % len(g))
-    graph has 4 statements.
-    >>>
-    >>> for s, p, o in g:
-    ...     if (s, p, o) not in g:
-    ...         raise Exception("It better be!")
+>>> print("graph has %s statements." % len(g))
+graph has 4 statements.
+>>>
+>>> for s, p, o in g:
+...     if (s, p, o) not in g:
+...         raise Exception("It better be!")
 
-    >>> s = g.serialize(format='nt')
-    >>>
-    >>> sorted(g) == [
-    ...  (URIRef("http://meetings.example.com/cal#m1"),
-    ...   URIRef("http://www.example.org/meeting_organization#homePage"),
-    ...   URIRef("http://meetings.example.com/m1/hp")),
-    ...  (URIRef("http://www.example.org/people#fred"),
-    ...   URIRef("http://www.example.org/meeting_organization#attending"),
-    ...   URIRef("http://meetings.example.com/cal#m1")),
-    ...  (URIRef("http://www.example.org/people#fred"),
-    ...   URIRef("http://www.example.org/personal_details#GivenName"),
-    ...   Literal("Fred")),
-    ...  (URIRef("http://www.example.org/people#fred"),
-    ...   URIRef("http://www.example.org/personal_details#hasEmail"),
-    ...   URIRef("mailto:fred@example.com"))
-    ... ]
-    True
+>>> s = g.serialize(format='nt')
+>>>
+>>> sorted(g) == [
+...  (URIRef("http://meetings.example.com/cal#m1"),
+...   URIRef("http://www.example.org/meeting_organization#homePage"),
+...   URIRef("http://meetings.example.com/m1/hp")),
+...  (URIRef("http://www.example.org/people#fred"),
+...   URIRef("http://www.example.org/meeting_organization#attending"),
+...   URIRef("http://meetings.example.com/cal#m1")),
+...  (URIRef("http://www.example.org/people#fred"),
+...   URIRef("http://www.example.org/personal_details#GivenName"),
+...   Literal("Fred")),
+...  (URIRef("http://www.example.org/people#fred"),
+...   URIRef("http://www.example.org/personal_details#hasEmail"),
+...   URIRef("mailto:fred@example.com"))
+... ]
+True
 
+```
 """
 
 import logging
@@ -52,7 +54,7 @@ _DISTRIBUTION_METADATA = metadata.metadata("rdflib")
 __docformat__ = "restructuredtext en"
 
 __version__: str = _DISTRIBUTION_METADATA["Version"]
-__date__ = "2025-10-24"
+__date__ = "2025-10-30"
 
 __all__ = [
     "URIRef",
@@ -133,9 +135,12 @@ for Literal.__new__ can override this.
 
 For example:
 
+```python
 >>> from rdflib import Literal,XSD
 >>> Literal("01", datatype=XSD.int)
 rdflib.term.Literal("1", datatype=rdflib.term.URIRef("http://www.w3.org/2001/XMLSchema#integer"))
+
+```
 
 This flag may be changed at any time, but will only affect literals
 created after that time, previously created literals will remain
@@ -145,14 +150,13 @@ created after that time, previously created literals will remain
 
 
 DAWG_LITERAL_COLLATION = False
-"""
-DAWG_LITERAL_COLLATION determines how literals are ordered or compared
+"""DAWG_LITERAL_COLLATION determines how literals are ordered or compared
 to each other.
 
 In SPARQL, applying the >,<,>=,<= operators to literals of
 incompatible data-types is an error, i.e:
 
-Literal(2)>Literal('cake') is neither true nor false, but an error.
+`Literal(2)>Literal('cake')` is neither true nor false, but an error.
 
 This is a problem in PY3, where lists of Literals of incompatible
 types can no longer be sorted.
@@ -162,7 +166,7 @@ setting it to False will order Literals with incompatible datatypes by
 datatype URI
 
 In particular, this determines how the rich comparison operators for
-Literal work, eq, __neq__, __lt__, etc.
+Literal work, eq, `__neq__`, `__lt__`, etc.
 """
 
 

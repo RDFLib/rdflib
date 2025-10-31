@@ -1,10 +1,8 @@
 """
-This serialiser will output an RDF Graph as a JSON-LD formatted document. See:
+This serialiser will output an RDF Graph as a JSON-LD formatted document. See http://json-ld.org/
 
-    http://json-ld.org/
-
-Example usage::
-
+Example:
+    ```python
     >>> from rdflib import Graph
     >>> testrdf = '''
     ... @prefix dc: <http://purl.org/dc/terms/> .
@@ -27,6 +25,7 @@ Example usage::
       }
     ]
 
+    ```
 """
 
 # From: https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/serializer.py
@@ -56,6 +55,8 @@ PLAIN_LITERAL_TYPES = {XSD.boolean, XSD.integer, XSD.double, XSD.string}
 
 
 class JsonLDSerializer(Serializer):
+    """JSON-LD RDF graph serializer."""
+
     def __init__(self, store: Graph):
         super(JsonLDSerializer, self).__init__(store)
 

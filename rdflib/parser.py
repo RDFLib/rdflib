@@ -1,5 +1,4 @@
-"""
-Parser plugin interface.
+"""Parser plugin interface.
 
 This module defines the parser plugin interface and contains other
 related parser support code.
@@ -7,7 +6,6 @@ related parser support code.
 The module is mainly useful for those wanting to write a parser that
 can plugin to rdflib. If you are wanting to invoke a parser you likely
 want to do so through the Graph class parse method.
-
 """
 
 from __future__ import annotations
@@ -132,8 +130,7 @@ class BytesIOWrapper(BufferedIOBase):
             name = "string"
         elif isinstance(self.wrapped, TextIOWrapper):
             inner = self.wrapped.buffer
-            # type error: TextIOWrapper.buffer cannot be a BytesIOWrapper
-            if isinstance(inner, BytesIOWrapper):  # type: ignore[unreachable]
+            if isinstance(inner, BytesIOWrapper):
                 raise Exception(
                     "BytesIOWrapper cannot be wrapped in TextIOWrapper, "
                     "then wrapped in another BytesIOWrapper"
