@@ -49,6 +49,10 @@ class Repository:
         self._http_client = http_client
 
     @property
+    def http_client(self):
+        return self._http_client
+
+    @property
     def identifier(self):
         """Repository identifier."""
         return self._identifier
@@ -70,7 +74,7 @@ class Repository:
             "Accept": "application/sparql-results+json",
         }
         try:
-            response = self._http_client.post(
+            response = self.http_client.post(
                 f"/repositories/{self._identifier}", headers=headers, content="ASK {}"
             )
             response.raise_for_status()
@@ -93,6 +97,10 @@ class RepositoryManager:
     def __init__(self, http_client: httpx.Client):
         self._http_client = http_client
 
+    @property
+    def http_client(self):
+        return self._http_client
+
     def list(self) -> list[RepositoryListingResult]:
         """List all available repositories.
 
@@ -108,7 +116,7 @@ class RepositoryManager:
             "Accept": "application/sparql-results+json",
         }
         try:
-            response = self._http_client.get("/repositories", headers=headers)
+            response = self.http_client.get("/repositories", headers=headers)
             response.raise_for_status()
 
             try:
@@ -147,7 +155,7 @@ class RepositoryManager:
             httpx.RequestError: On network/connection issues.
             httpx.HTTPStatusError: Unhandled status code error.
         """
-        repo = Repository(repository_id, self._http_client)
+        repo = Repository(repository_id, self.http_client)
         try:
             repo.health()
             return repo
@@ -172,7 +180,7 @@ class RepositoryManager:
         """
         try:
             headers = {"Content-Type": format}
-            response = self._http_client.put(
+            response = self.http_client.put(
                 f"/repositories/{repository_id}", headers=headers, content=data
             )
             response.raise_for_status()
@@ -199,7 +207,7 @@ class RepositoryManager:
             httpx.HTTPStatusError: Unhandled status code error.
         """
         try:
-            response = self._http_client.delete(f"/repositories/{repository_id}")
+            response = self.http_client.delete(f"/repositories/{repository_id}")
             response.raise_for_status()
             if response.status_code != 204:
                 raise RepositoryError(
@@ -240,13 +248,17 @@ class RDF4JClient:
             raise RDF4JUnsupportedProtocolError(
                 f"RDF4J server protocol version {self.protocol} is not supported. Minimum required version is 12."
             )
-        self._repository_manager = RepositoryManager(self._http_client)
+        self._repository_manager = RepositoryManager(self.http_client)
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
+
+    @property
+    def http_client(self):
+        return self._http_client
 
     @property
     def repositories(self):
@@ -256,7 +268,7 @@ class RDF4JClient:
     @property
     def protocol(self) -> float:
         try:
-            response = self._http_client.get(
+            response = self.http_client.get(
                 "/protocol", headers={"Accept": "text/plain"}
             )
             response.raise_for_status()
@@ -266,4 +278,4 @@ class RDF4JClient:
 
     def close(self):
         """Close the underlying httpx.Client."""
-        self._http_client.close()
+        self.http_client.close()
