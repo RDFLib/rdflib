@@ -39,6 +39,8 @@ rdfgraphisomorphism = 'rdflib.tools.graphisomorphism:main'
 
 [tool.poetry.dependencies]
 # TODO: temporarily add new python version constraints for testcontainers
+# We can remove the upper bound once testcontainers releases a new version
+# https://github.com/testcontainers/testcontainers-python/pull/909
 python = ">=3.9.2, <4.0"
 isodate = {version=">=0.7.2,<1.0.0", python = "<3.11"}
 pyparsing = ">=2.1.0,<4"
