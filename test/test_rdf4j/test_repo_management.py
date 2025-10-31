@@ -1,17 +1,18 @@
 import pathlib
 
-import pytest
 import httpx
+import pytest
 
 from rdflib.rdf4j import RDF4JClient
 from rdflib.rdf4j.client import (
     RepositoryAlreadyExistsError,
-    RepositoryNotFoundError,
     RepositoryFormatError,
+    RepositoryNotFoundError,
     RepositoryNotHealthyError,
 )
 
 # TODO: only run these tests on py39 or greater. Testcontainers not available on py38.
+
 
 def test_repos(client: RDF4JClient):
     assert client.repositories.list() == []
