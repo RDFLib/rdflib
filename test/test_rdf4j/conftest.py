@@ -5,7 +5,7 @@ from testcontainers.core.container import DockerContainer
 from testcontainers.core.image import DockerImage
 from testcontainers.core.waiting_utils import wait_for_logs
 
-from rdflib.rdf4j import RDF4JClient
+from rdflib.contrib.rdf4j import RDF4JClient
 
 RDF4J_IMAGE = "eclipse/rdf4j-workbench:5.1.6-jetty"
 RDF4J_PORT = 8080

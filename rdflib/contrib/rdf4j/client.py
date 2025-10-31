@@ -1,4 +1,5 @@
 """RDF4J client module."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -6,30 +7,19 @@ from typing import Any
 
 import httpx
 
-
-class RepositoryError(Exception):
-    """Raised when interactions on a repository result in an error."""
-
-
-class RepositoryFormatError(RepositoryError):
-    """Raised when the repository format is invalid."""
-
-
-class RepositoryNotFoundError(RepositoryError):
-    """Raised when the repository is not found."""
-
-
-class RepositoryNotHealthyError(RepositoryError):
-    """Raised when the repository is not healthy."""
-
-
-class RepositoryAlreadyExistsError(RepositoryError):
-    """Raised when the repository already exists."""
+from rdflib.contrib.rdf4j.exceptions import (
+    RDF4JUnsupportedProtocolError,
+    RepositoryAlreadyExistsError,
+    RepositoryError,
+    RepositoryFormatError,
+    RepositoryNotFoundError,
+    RepositoryNotHealthyError,
+)
 
 
 @dataclass(frozen=True)
-class RepositoryResult:
-    """RDF4J repository result object.
+class RepositoryListingResult:
+    """RDF4J repository listing result.
 
     Parameters:
         identifier: Repository identifier.
@@ -38,6 +28,7 @@ class RepositoryResult:
         writable: Whether the repository is writable by the client.
         title: Repository title.
     """
+
     identifier: str
     uri: str
     readable: bool
@@ -52,6 +43,7 @@ class Repository:
         identifier: The identifier of the repository.
         http_client: The httpx.Client instance.
     """
+
     def __init__(self, identifier: str, http_client: httpx.Client):
         self._identifier = identifier
         self._http_client = http_client
@@ -101,11 +93,11 @@ class RepositoryManager:
     def __init__(self, http_client: httpx.Client):
         self._http_client = http_client
 
-    def list(self) -> list[RepositoryResult]:
+    def list(self) -> list[RepositoryListingResult]:
         """List all available repositories.
 
         Returns:
-            list[RepositoryResult]: List of repository results.
+            list[RepositoryListingResult]: List of repository results.
 
         Raises:
             RepositoryFormatError: If the response format is unrecognized.
@@ -123,7 +115,7 @@ class RepositoryManager:
                 data = response.json()
                 results = data["results"]["bindings"]
                 return [
-                    RepositoryResult(
+                    RepositoryListingResult(
                         identifier=repo["id"]["value"],
                         uri=repo["uri"]["value"],
                         readable=repo["readable"]["value"],
@@ -230,6 +222,7 @@ class RDF4JClient:
         timeout: Request timeout in seconds (default: 30.0).
         kwargs: Additional keyword arguments to pass to the httpx.Client.
     """
+
     def __init__(
         self,
         base_url: str,
@@ -242,6 +235,11 @@ class RDF4JClient:
         self._http_client = httpx.Client(
             base_url=base_url, auth=auth, timeout=timeout, **kwargs
         )
+        if self.protocol < 12:
+            self.close()
+            raise RDF4JUnsupportedProtocolError(
+                f"RDF4J server protocol version {self.protocol} is not supported. Minimum required version is 12."
+            )
         self._repository_manager = RepositoryManager(self._http_client)
 
     def __enter__(self):
@@ -254,6 +252,17 @@ class RDF4JClient:
     def repositories(self):
         """Server-level repository management operations."""
         return self._repository_manager
+
+    @property
+    def protocol(self) -> float:
+        try:
+            response = self._http_client.get(
+                "/protocol", headers={"Accept": "text/plain"}
+            )
+            response.raise_for_status()
+            return float(response.text.strip())
+        except (httpx.RequestError, httpx.HTTPStatusError):
+            raise
 
     def close(self):
         """Close the underlying httpx.Client."""

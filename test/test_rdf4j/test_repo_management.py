@@ -3,8 +3,8 @@ import pathlib
 import httpx
 import pytest
 
-from rdflib.rdf4j import RDF4JClient
-from rdflib.rdf4j.client import (
+from rdflib.contrib.rdf4j import RDF4JClient
+from rdflib.contrib.rdf4j.exceptions import (
     RepositoryAlreadyExistsError,
     RepositoryFormatError,
     RepositoryNotFoundError,
