@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import inspect
 import logging
+import os
 import sys
 from inspect import Parameter
 from typing import Any, Dict, List, Optional, Tuple, Type
@@ -83,7 +84,14 @@ def sparqlquery(
 
 
 def _dest_is_local(dest: str):
+    if os.path.isabs(dest):
+        return True
+
     q = urlparse(dest)
+    # Handle Windows drive letters (single letter followed by colon)
+    if len(q.scheme) == 1 and q.scheme.isalpha():
+        return True
+
     return q.scheme in ["", "file"]
 
 
