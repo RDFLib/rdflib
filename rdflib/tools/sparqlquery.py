@@ -30,7 +30,12 @@ from inspect import Parameter
 from typing import Any, Dict, List, Optional, Tuple, Type
 from urllib.parse import urlparse
 
-from pyparsing.exceptions import ParseException
+try:
+    # Pyparsing >=3.0.0
+    from pyparsing.exceptions import ParseException
+except ImportError:
+    # Pyparsing 2
+    from pyparsing import ParseException
 
 from rdflib.graph import Dataset, Graph
 from rdflib.plugin import PluginException
