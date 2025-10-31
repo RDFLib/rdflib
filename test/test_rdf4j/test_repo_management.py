@@ -11,8 +11,7 @@ from rdflib.rdf4j.client import (
     RepositoryNotHealthyError,
 )
 
-GRAPHDB_PORT = 7200
-
+# TODO: only run these tests on py39 or greater. Testcontainers not available on py38.
 
 def test_repos(client: RDF4JClient):
     assert client.repositories.list() == []
