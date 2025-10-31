@@ -1,3 +1,4 @@
+"""RDF4J client module."""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -28,8 +29,15 @@ class RepositoryAlreadyExistsError(RepositoryError):
 
 @dataclass(frozen=True)
 class RepositoryResult:
-    """RDF4J repository result object."""
+    """RDF4J repository result object.
 
+    Parameters:
+        identifier: Repository identifier.
+        uri: Repository URI.
+        readable: Whether the repository is readable by the client.
+        writable: Whether the repository is writable by the client.
+        title: Repository title.
+    """
     identifier: str
     uri: str
     readable: bool
@@ -38,8 +46,13 @@ class RepositoryResult:
 
 
 class Repository:
+    """RDF4J repository client.
+
+    Parameters:
+        identifier: The identifier of the repository.
+        http_client: The httpx.Client instance.
+    """
     def __init__(self, identifier: str, http_client: httpx.Client):
-        """RDF4J repository client."""
         self._identifier = identifier
         self._http_client = http_client
 
@@ -49,12 +62,16 @@ class Repository:
         return self._identifier
 
     def health(self) -> bool:
-        """Check if the repository is healthy.
+        """Repository health check.
 
-        :returns: Returns True if the repository is healthy, otherwise an error is raised.
-        :raises httpx.RequestError: On network/connection issues.
-        :raises RepositoryNotFoundError: If the repository is not found.
-        :raises RepositoryNotHealthyError: If the repository is not healthy.
+        Returns:
+            bool: True if the repository is healthy, otherwise an error is raised.
+
+        Raises:
+            RepositoryNotFoundError: If the repository is not found.
+            RepositoryNotHealthyError: If the repository is not healthy.
+            httpx.RequestError: On network/connection issues.
+            httpx.HTTPStatusError: Unhandled status code error.
         """
         headers = {
             "Content-Type": "application/sparql-query",
@@ -79,10 +96,7 @@ class Repository:
 
 
 class RepositoryManager:
-    """Client to manage server-level repository operations.
-
-    This includes listing, creating, and deleting of repositories.
-    """
+    """A client to manage server-level repository operations."""
 
     def __init__(self, http_client: httpx.Client):
         self._http_client = http_client
@@ -90,9 +104,13 @@ class RepositoryManager:
     def list(self) -> list[RepositoryResult]:
         """List all available repositories.
 
-        :returns: List of repository results.
-        :raises httpx.RequestError: On network/connection issues.
-        :raises RepositoryFormatError: If the response format is unrecognized.
+        Returns:
+            list[RepositoryResult]: List of repository results.
+
+        Raises:
+            RepositoryFormatError: If the response format is unrecognized.
+            httpx.RequestError: On network/connection issues.
+            httpx.HTTPStatusError: Unhandled status code error.
         """
         headers = {
             "Accept": "application/sparql-results+json",
@@ -116,25 +134,32 @@ class RepositoryManager:
                 ]
             except (KeyError, ValueError) as err:
                 raise RepositoryFormatError(f"Unrecognised response format: {err}")
-        except httpx.RequestError:
+        except (httpx.RequestError, httpx.HTTPStatusError):
             raise
 
     def get(self, repository_id: str) -> Repository:
         """Get a repository by ID.
 
-        This performs a health check before returning the repository object.
+        !!! note
+            This performs a health check before returning the repository object.
 
-        :param repository_id: The identifier of the repository.
-        :returns: The repository instance.
-        :raises httpx.RequestError: On network/connection issues.
-        :raises RepositoryNotFoundError: If the repository is not found.
-        :raises RepositoryNotHealthyError: If the repository is not healthy.
+        Parameters:
+            repository_id: The identifier of the repository.
+
+        Returns:
+            Repository: The repository instance.
+
+        Raises:
+            RepositoryNotFoundError: If the repository is not found.
+            RepositoryNotHealthyError: If the repository is not healthy.
+            httpx.RequestError: On network/connection issues.
+            httpx.HTTPStatusError: Unhandled status code error.
         """
         repo = Repository(repository_id, self._http_client)
         try:
             repo.health()
             return repo
-        except (httpx.RequestError, RepositoryNotFoundError, RepositoryNotHealthyError):
+        except (RepositoryNotFoundError, RepositoryNotHealthyError, httpx.RequestError):
             raise
 
     def create(
@@ -142,12 +167,16 @@ class RepositoryManager:
     ) -> Repository:
         """Create a new repository.
 
-        :param repository_id: The identifier of the repository.
-        :param data: The repository configuration in RDF.
-        :param format: The repository configuration format.
-        :raises httpx.RequestError: On network/connection issues.
-        :raises RepositoryAlreadyExistsError: If the repository already exists.
-        :raises RepositoryNotHealthyError: If the repository is not healthy.
+        Parameters:
+            repository_id: The identifier of the repository.
+            data: The repository configuration in RDF.
+            format: The repository configuration format.
+
+        Raises:
+            RepositoryAlreadyExistsError: If the repository already exists.
+            RepositoryNotHealthyError: If the repository is not healthy.
+            httpx.RequestError: On network/connection issues.
+            httpx.HTTPStatusError: Unhandled status code error.
         """
         try:
             headers = {"Content-Type": format}
@@ -168,10 +197,14 @@ class RepositoryManager:
     def delete(self, repository_id: str) -> None:
         """Delete a repository.
 
-        :param repository_id: The identifier of the repository.
-        :raises httpx.RequestError: On network/connection issues.
-        :raises RepositoryNotFoundError: If the repository is not found.
-        :raises RepositoryError: If the repository is not deleted successfully.
+        Parameters:
+            repository_id: The identifier of the repository.
+
+        Raises:
+            RepositoryNotFoundError: If the repository is not found.
+            RepositoryError: If the repository is not deleted successfully.
+            httpx.RequestError: On network/connection issues.
+            httpx.HTTPStatusError: Unhandled status code error.
         """
         try:
             response = self._http_client.delete(f"/repositories/{repository_id}")
@@ -189,6 +222,14 @@ class RepositoryManager:
 
 
 class RDF4JClient:
+    """RDF4J client.
+
+    Parameters:
+        base_url: The base URL of the RDF4J server.
+        auth: Authentication tuple (username, password).
+        timeout: Request timeout in seconds (default: 30.0).
+        kwargs: Additional keyword arguments to pass to the httpx.Client.
+    """
     def __init__(
         self,
         base_url: str,
@@ -196,13 +237,6 @@ class RDF4JClient:
         timeout: float = 30.0,
         **kwargs: Any,
     ):
-        """RDF4J client.
-
-        :param base_url: The base URL of the RDF4J server.
-        :param auth: Authentication tuple (username, password).
-        :param timeout: Request timeout in seconds (default: 30.0).
-        :param kwargs: Additional keyword arguments to pass to the httpx.Client.
-        """
         if not base_url.endswith("/"):
             base_url += "/"
         self._http_client = httpx.Client(
@@ -222,4 +256,5 @@ class RDF4JClient:
         return self._repository_manager
 
     def close(self):
+        """Close the underlying httpx.Client."""
         self._http_client.close()
