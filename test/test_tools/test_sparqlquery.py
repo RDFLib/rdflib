@@ -47,14 +47,6 @@ def get_berkeley_graph() -> Iterable[Tuple[str, Dataset]]:
     assert (
         len(g) == 0
     ), "There must be zero triples in the graph just after store (file) creation"
-    data = """
-            PREFIX : <https://example.org/>
-
-            :a :b :c .
-            :d :e :f .
-            :d :g :h .
-            """
-    g.parse(data=data, format="ttl")
 
     yield path, g
 
