@@ -24,12 +24,18 @@ from __future__ import annotations
 import argparse
 import inspect
 import logging
+import os
 import sys
 from inspect import Parameter
 from typing import Any, Dict, List, Optional, Tuple, Type
 from urllib.parse import urlparse
 
-from pyparsing.exceptions import ParseException
+try:
+    # Pyparsing >=3.0.0
+    from pyparsing.exceptions import ParseException
+except ImportError:
+    # Pyparsing 2
+    from pyparsing import ParseException
 
 from rdflib.graph import Dataset, Graph
 from rdflib.plugin import PluginException
@@ -83,7 +89,14 @@ def sparqlquery(
 
 
 def _dest_is_local(dest: str):
+    if os.path.isabs(dest):
+        return True
+
     q = urlparse(dest)
+    # Handle Windows drive letters (single letter followed by colon)
+    if len(q.scheme) == 1 and q.scheme.isalpha():
+        return True
+
     return q.scheme in ["", "file"]
 
 
