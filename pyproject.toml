@@ -224,6 +224,7 @@ filterwarnings = [
     "ignore:Code. _pytestfixturefunction is not defined in namespace .*:UserWarning",
 ]
 markers = [
+    "testcontainer: mark a test that uses testcontainer",
     "webtest: mark a test as using the internet",
 ]
 # log_cli = true

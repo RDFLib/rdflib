@@ -3,45 +3,24 @@ import pathlib
 import httpx
 import pytest
 
-from rdflib.contrib.rdf4j import RDF4JClient
+from rdflib.contrib.graphdb import GraphDBClient
 from rdflib.contrib.rdf4j.exceptions import (
     RepositoryAlreadyExistsError,
-    RepositoryFormatError,
     RepositoryNotFoundError,
     RepositoryNotHealthyError,
 )
 
-# TODO: only run these tests on py39 or greater. Testcontainers not available on py38.
+# TODO: consider parameterizing the client (RDF4JClient, GraphDBClient)
 
 
-def test_repos(client: RDF4JClient):
-    assert client.repositories.list() == []
-
-
-def test_list_repo_non_existent(client: RDF4JClient):
-    assert client.repositories.list() == []
-    with pytest.raises(RepositoryNotFoundError):
-        assert client.repositories.get("non-existent") is None
-
-
-def test_list_repo_format_error(client: RDF4JClient, monkeypatch):
-    class MockResponse:
-        def json(self):
-            return {}
-
-        def raise_for_status(self):
-            pass
-
-    monkeypatch.setattr(httpx.Client, "get", lambda *args, **kwargs: MockResponse())
-    with pytest.raises(RepositoryFormatError):
-        client.repositories.list()
-
-
-def test_repo_manager_crud(client: RDF4JClient):
+@pytest.mark.testcontainer
+def test_repo_manager_crud(client: GraphDBClient):
     # Empty state
     assert client.repositories.list() == []
 
-    config_path = pathlib.Path(__file__).parent / "repo-configs/test-repo-config.ttl"
+    config_path = (
+        pathlib.Path(__file__).parent.parent / "repo-configs/test-repo-config.ttl"
+    )
     with open(config_path) as file:
         config = file.read()
 
@@ -65,8 +44,11 @@ def test_repo_manager_crud(client: RDF4JClient):
         client.repositories.delete("test-repo")
 
 
-def test_repo_not_healthy(client: RDF4JClient, monkeypatch):
-    config_path = pathlib.Path(__file__).parent / "repo-configs/test-repo-config.ttl"
+@pytest.mark.testcontainer
+def test_repo_not_healthy(client: GraphDBClient, monkeypatch):
+    config_path = (
+        pathlib.Path(__file__).parent.parent / "repo-configs/test-repo-config.ttl"
+    )
     with open(config_path) as file:
         config = file.read()
 

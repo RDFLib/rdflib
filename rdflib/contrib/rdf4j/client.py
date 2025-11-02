@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+import io
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, BinaryIO, Iterable
 
 import httpx
 
@@ -15,6 +16,8 @@ from rdflib.contrib.rdf4j.exceptions import (
     RepositoryNotFoundError,
     RepositoryNotHealthyError,
 )
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
+from rdflib.term import IdentifiedNode, URIRef
 
 
 @dataclass(frozen=True)
@@ -90,6 +93,87 @@ class Repository:
         except httpx.RequestError:
             raise
 
+    def get(self, content_type: str = "application/n-quads") -> str | Graph | Dataset:
+        # TODO: add parameters
+        try:
+            headers = {"Accept": content_type}
+            response = self.http_client.get(
+                f"/repositories/{self.identifier}/statements", headers=headers
+            )
+            response.raise_for_status()
+            triple_formats = [
+                "application/n-triples",
+                "text/turtle",
+                "application/rdf+xml",
+            ]
+            if content_type in triple_formats:
+                return Graph().parse(data=response.text, format=content_type)
+            return Dataset().parse(data=response.text, format=content_type)
+        except (httpx.RequestError, httpx.HTTPStatusError):
+            raise
+
+    def upload(self, data, content_type: str, base_uri: str):
+        raise NotImplementedError
+
+    def overwrite(
+        self,
+        data: str | bytes | BinaryIO,
+        content_type: str,
+        graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None,
+        base_uri: str | None = None,
+    ):
+        if isinstance(data, str):
+            # Check if it looks like a file path. Assumes file path length is less than 260.
+            if "\n" not in data and len(data) < 260:
+                try:
+                    stream = open(data, "rb")
+                    should_close = True
+                except (FileNotFoundError, OSError):
+                    # Treat as raw string content
+                    stream = io.BytesIO(data.encode("utf-8"))
+                    should_close = False
+            else:
+                # Treat as raw string content
+                stream = io.BytesIO(data.encode("utf-8"))
+                should_close = False
+        elif isinstance(data, bytes):
+            stream = io.BytesIO(data)
+            should_close = False
+        else:
+            # Assume it's already a file-like object
+            stream = data
+            should_close = False
+
+        try:
+            headers = {"Content-Type": content_type}
+            params = {}
+            if graph_name is not None and isinstance(graph_name, IdentifiedNode):
+                if graph_name == DATASET_DEFAULT_GRAPH_ID:
+                    # Special RDF4J null value for context-less statements.
+                    params["context"] = "null"
+                else:
+                    params["context"] = graph_name.n3()
+            elif graph_name is not None and isinstance(graph_name, str):
+                params["context"] = URIRef(graph_name).n3()
+            elif graph_name is not None and isinstance(graph_name, Iterable):
+                graph_names = ",".join([x.n3() for x in graph_name])
+                params["context"] = graph_names
+
+            if base_uri is not None:
+                params["baseURI"] = base_uri
+
+            response = self.http_client.put(
+                f"/repositories/{self.identifier}/statements",
+                headers=headers,
+                params=params,
+                content=stream,
+            )
+            response.raise_for_status()
+
+        finally:
+            if should_close:
+                stream.close()
+
 
 class RepositoryManager:
     """A client to manage server-level repository operations."""
@@ -163,14 +247,14 @@ class RepositoryManager:
             raise
 
     def create(
-        self, repository_id: str, data: str, format: str = "text/turtle"
+        self, repository_id: str, data: str, content_type: str = "text/turtle"
     ) -> Repository:
         """Create a new repository.
 
         Parameters:
             repository_id: The identifier of the repository.
             data: The repository configuration in RDF.
-            format: The repository configuration format.
+            content_type: The repository configuration content type.
 
         Raises:
             RepositoryAlreadyExistsError: If the repository already exists.
@@ -179,7 +263,7 @@ class RepositoryManager:
             httpx.HTTPStatusError: Unhandled status code error.
         """
         try:
-            headers = {"Content-Type": format}
+            headers = {"Content-Type": content_type}
             response = self.http_client.put(
                 f"/repositories/{repository_id}", headers=headers, content=data
             )
