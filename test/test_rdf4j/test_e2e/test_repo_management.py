@@ -10,6 +10,7 @@ from rdflib.contrib.rdf4j.exceptions import (
     RepositoryNotFoundError,
     RepositoryNotHealthyError,
 )
+from rdflib import Dataset, URIRef
 
 # TODO: only run these tests on py39 or greater. Testcontainers not available on py38.
 
@@ -59,6 +60,45 @@ def test_repo_manager_crud(client: RDF4JClient):
     # Repo already exists error
     with pytest.raises(RepositoryAlreadyExistsError):
         client.repositories.create("test-repo", config)
+
+    # Confirm repo is empty
+    assert repo.size() == 0
+    ds = repo.get()
+    assert isinstance(ds, Dataset)
+    assert len(ds) == 0
+
+    # Use the overwrite method to add statements to the repo
+    with open(pathlib.Path(__file__).parent.parent / "data/quads-2.nq", "rb") as file:
+        repo.overwrite(file, "application/n-quads")
+    assert repo.size() == 1
+    ds = repo.get()
+    assert len(ds) == 1
+    str_result = ds.serialize(format="nquads")
+    assert "<http://example.org/s3> <http://example.org/p3> <http://example.org/o3> <urn:graph:a3> ." in str_result
+
+    # Overwrite with a different file.
+    with open(pathlib.Path(__file__).parent.parent / "data/quads-1.nq", "rb") as file:
+        repo.overwrite(file, "application/n-quads")
+    assert repo.size() == 2
+    ds = repo.get()
+    assert len(ds) == 2
+    str_result = ds.serialize(format="nquads")
+    assert "<http://example.org/s> <http://example.org/p> <http://example.org/o> <urn:graph:a> ." in str_result
+    assert "<http://example.org/s2> <http://example.org/p2> <http://example.org/o2> <urn:graph:b> ." in str_result
+
+    # Get statements using a filter pattern
+    ds = repo.get(subj=URIRef("http://example.org/s2"))
+    assert len(ds) == 1
+    str_result = ds.serialize(format="nquads")
+    assert "<http://example.org/s2> <http://example.org/p2> <http://example.org/o2> <urn:graph:b> ." in str_result
+
+    # Use the delete method to delete a statement using a filter pattern
+    repo.delete(subj=URIRef("http://example.org/s"))
+    assert repo.size() == 1
+    ds = repo.get()
+    assert len(ds) == 1
+    str_result = ds.serialize(format="nquads")
+    assert "<http://example.org/s2> <http://example.org/p2> <http://example.org/o2> <urn:graph:b> ." in str_result
 
     # Delete repository
     client.repositories.delete("test-repo")
