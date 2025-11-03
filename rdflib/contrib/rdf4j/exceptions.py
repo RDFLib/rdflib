@@ -23,3 +23,7 @@ class RepositoryAlreadyExistsError(RepositoryError):
 
 class RDF4JUnsupportedProtocolError(Exception):
     """Raised when the server does not support the protocol version."""
+
+
+class RDFLibParserError(Exception):
+    """Raised when there is an error parsing the RDF document."""

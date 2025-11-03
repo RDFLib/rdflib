@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import io
+import typing as t
 from dataclasses import dataclass
 from typing import Any, BinaryIO, Iterable
 
@@ -14,10 +15,15 @@ from rdflib.contrib.rdf4j.exceptions import (
     RepositoryError,
     RepositoryFormatError,
     RepositoryNotFoundError,
-    RepositoryNotHealthyError,
+    RepositoryNotHealthyError, RDFLibParserError,
 )
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
-from rdflib.term import IdentifiedNode, URIRef
+from rdflib.contrib.rdf4j.util import build_context_param
+from rdflib.graph import Dataset, Graph
+from rdflib.term import IdentifiedNode, Literal, URIRef
+
+SubjectType = t.Union[IdentifiedNode, None]
+PredicateType = t.Union[URIRef, None]
+ObjectType = t.Union[IdentifiedNode, Literal, None]
 
 
 @dataclass(frozen=True)
@@ -93,12 +99,59 @@ class Repository:
         except httpx.RequestError:
             raise
 
-    def get(self, content_type: str = "application/n-quads") -> str | Graph | Dataset:
-        # TODO: add parameters
+    def get(
+        self,
+        subj: SubjectType = None,
+        pred: PredicateType = None,
+        obj: ObjectType = None,
+        graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None,
+        infer: bool = True,
+        content_type: str | None = None,
+    ) -> Graph | Dataset:
+        """Get RDF statements from the repository matching the filtering parameters.
+
+        Args:
+            subj: Subject of the statement.
+            pred: Predicate of the statement.
+            obj: Object of the statement.
+            graph_name: Graph name(s) to restrict to.
+
+                Default value `None` queries all graphs.
+
+                To query just the default graph, use
+                [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID].
+
+            infer: Specifies whether inferred statements should be included in the result.
+            content_type: The content type of the response.
+                A triple-based format returns a [Graph][rdflib.graph.Graph], while a
+                quad-based format returns a [`Dataset`][rdflib.graph.Dataset].
+
+        Returns:
+            A [`Graph`][rdflib.graph.Graph] or [`Dataset`][rdflib.graph.Dataset] object.
+
+        Raises:
+            httpx.RequestError: On network/connection issues.
+            httpx.HTTPStatusError: Unhandled status code error.
+        """
+        if content_type is None:
+            content_type = "application/n-quads"
+        headers = {"Accept": content_type}
+        params = {}
+        build_context_param(params, graph_name)
+        if subj is not None:
+            params["subj"] = subj.n3()
+        if pred is not None:
+            params["pred"] = pred.n3()
+        if obj is not None:
+            params["obj"] = obj.n3()
+        if not infer:
+            params["infer"] = "false"
+
         try:
-            headers = {"Accept": content_type}
             response = self.http_client.get(
-                f"/repositories/{self.identifier}/statements", headers=headers
+                f"/repositories/{self.identifier}/statements",
+                headers=headers,
+                params=params,
             )
             response.raise_for_status()
             triple_formats = [
@@ -106,9 +159,12 @@ class Repository:
                 "text/turtle",
                 "application/rdf+xml",
             ]
-            if content_type in triple_formats:
-                return Graph().parse(data=response.text, format=content_type)
-            return Dataset().parse(data=response.text, format=content_type)
+            try:
+                if content_type in triple_formats:
+                    return Graph().parse(data=response.text, format=content_type)
+                return Dataset().parse(data=response.text, format=content_type)
+            except Exception as err:
+                raise RDFLibParserError(f"Error parsing RDF: {err}") from err
         except (httpx.RequestError, httpx.HTTPStatusError):
             raise
 
@@ -147,17 +203,7 @@ class Repository:
         try:
             headers = {"Content-Type": content_type}
             params = {}
-            if graph_name is not None and isinstance(graph_name, IdentifiedNode):
-                if graph_name == DATASET_DEFAULT_GRAPH_ID:
-                    # Special RDF4J null value for context-less statements.
-                    params["context"] = "null"
-                else:
-                    params["context"] = graph_name.n3()
-            elif graph_name is not None and isinstance(graph_name, str):
-                params["context"] = URIRef(graph_name).n3()
-            elif graph_name is not None and isinstance(graph_name, Iterable):
-                graph_names = ",".join([x.n3() for x in graph_name])
-                params["context"] = graph_names
+            build_context_param(params, graph_name)
 
             if base_uri is not None:
                 params["baseURI"] = base_uri
@@ -224,7 +270,7 @@ class RepositoryManager:
     def get(self, repository_id: str) -> Repository:
         """Get a repository by ID.
 
-        !!! note
+        !!! Note
             This performs a health check before returning the repository object.
 
         Parameters:
