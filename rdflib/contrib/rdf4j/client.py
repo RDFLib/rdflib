@@ -11,13 +11,18 @@ import httpx
 
 from rdflib.contrib.rdf4j.exceptions import (
     RDF4JUnsupportedProtocolError,
+    RDFLibParserError,
     RepositoryAlreadyExistsError,
     RepositoryError,
     RepositoryFormatError,
     RepositoryNotFoundError,
-    RepositoryNotHealthyError, RDFLibParserError,
+    RepositoryNotHealthyError,
 )
-from rdflib.contrib.rdf4j.util import build_context_param
+from rdflib.contrib.rdf4j.util import (
+    build_context_param,
+    build_infer_param,
+    build_spo_param,
+)
 from rdflib.graph import Dataset, Graph
 from rdflib.term import IdentifiedNode, Literal, URIRef
 
@@ -111,9 +116,9 @@ class Repository:
         """Get RDF statements from the repository matching the filtering parameters.
 
         Args:
-            subj: Subject of the statement.
-            pred: Predicate of the statement.
-            obj: Object of the statement.
+            subj: Subject of the statement to filter by, or `None` to match all.
+            pred: Predicate of the statement to filter by, or `None` to match all.
+            obj: Object of the statement to filter by, or `None` to match all.
             graph_name: Graph name(s) to restrict to.
 
                 Default value `None` queries all graphs.
@@ -138,14 +143,8 @@ class Repository:
         headers = {"Accept": content_type}
         params = {}
         build_context_param(params, graph_name)
-        if subj is not None:
-            params["subj"] = subj.n3()
-        if pred is not None:
-            params["pred"] = pred.n3()
-        if obj is not None:
-            params["obj"] = obj.n3()
-        if not infer:
-            params["infer"] = "false"
+        build_spo_param(params, subj, pred, obj)
+        build_infer_param(params, infer=infer)
 
         try:
             response = self.http_client.get(
@@ -219,6 +218,43 @@ class Repository:
         finally:
             if should_close:
                 stream.close()
+
+    def delete(
+        self,
+        subj: SubjectType = None,
+        pred: PredicateType = None,
+        obj: ObjectType = None,
+        graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None,
+    ) -> None:
+        """Deletes statements from the repository matching the filtering parameters.
+
+        Args:
+            subj: Subject of the statement to filter by, or `None` to match all.
+            pred: Predicate of the statement to filter by, or `None` to match all.
+            obj: Object of the statement to filter by, or `None` to match all.
+            graph_name: Graph name(s) to restrict to.
+
+                Default value `None` queries all graphs.
+
+                To query just the default graph, use
+                [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID].
+
+        Raises:
+            httpx.RequestError: On network/connection issues.
+            httpx.HTTPStatusError: Unhandled status code error.
+        """
+        params = {}
+        build_context_param(params, graph_name)
+        build_spo_param(params, subj, pred, obj)
+
+        try:
+            response = self.http_client.delete(
+                f"/repositories/{self.identifier}/statements",
+                params=params,
+            )
+            response.raise_for_status()
+        except (httpx.RequestError, httpx.HTTPStatusError):
+            raise
 
 
 class RepositoryManager:
