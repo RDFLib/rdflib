@@ -9,35 +9,13 @@ import httpx
 import pytest
 
 from rdflib import BNode, IdentifiedNode, URIRef
-from rdflib.contrib.rdf4j import RDF4JClient
-from rdflib.contrib.rdf4j.client import Repository, RepositoryManager
+from rdflib.contrib.rdf4j.client import Repository
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
-
-
-@pytest.fixture(scope="function")
-def client(monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.setattr(RDF4JClient, "protocol", 12)
-    with RDF4JClient("http://localhost/", auth=("admin", "admin")) as client:
-        yield client
-
-
-@pytest.fixture(scope="function")
-def repo(client: RDF4JClient, monkeypatch: pytest.MonkeyPatch):
-    with httpx.Client() as http_client:
-        monkeypatch.setattr(
-            RepositoryManager,
-            "create",
-            lambda *args, **kwargs: Repository("test-repo", http_client),
-        )
-
-        repo = client.repositories.create("test-repo", "")
-        assert repo.identifier == "test-repo"
-        yield repo
 
 
 def test_repo_overwrite_file_path(repo: Repository, monkeypatch: pytest.MonkeyPatch):
     """Test that a file path is treated as a file to be read and closed when done."""
-    file_path = pathlib.Path(__file__).parent / "data/quads-1.nq"
+    file_path = pathlib.Path(__file__).parent.parent.parent / "data/quads-1.nq"
     mock = Mock()
     monkeypatch.setattr(httpx.Client, "put", mock)
     headers = {
@@ -63,7 +41,7 @@ def test_repo_overwrite_buffered_reader(
     repo: Repository, monkeypatch: pytest.MonkeyPatch
 ):
     """Test that a file-like object is read and not closed when done."""
-    file_path = pathlib.Path(__file__).parent / "data/quads-1.nq"
+    file_path = pathlib.Path(__file__).parent.parent.parent / "data/quads-1.nq"
     mock = Mock()
     monkeypatch.setattr(httpx.Client, "put", mock)
     with open(file_path, "rb") as file:
