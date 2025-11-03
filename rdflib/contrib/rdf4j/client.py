@@ -104,6 +104,46 @@ class Repository:
         except httpx.RequestError:
             raise
 
+    def size(
+        self, graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None
+    ) -> int:
+        """The number of statements in the repository or in the specified graph name.
+
+        Args:
+            graph_name: Graph name(s) to restrict to.
+
+                Default value `None` queries all graphs.
+
+                To query just the default graph, use
+                [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID].
+
+        Returns:
+            The number of statements.
+
+        Raises:
+            RepositoryFormatError: Fails to parse the repository size.
+            httpx.RequestError: On network/connection issues.
+            httpx.HTTPStatusError: Unhandled status code error.
+        """
+        params = {}
+        build_context_param(params, graph_name)
+        try:
+            response = self.http_client.get(
+                f"/repositories/{self.identifier}/size", params=params
+            )
+            response.raise_for_status()
+            try:
+                value = int(response.text)
+                if value >= 0:
+                    return value
+                raise ValueError(f"Invalid repository size: {value}")
+            except ValueError as err:
+                raise RepositoryFormatError(
+                    f"Failed to parse repository size: {err}"
+                ) from err
+        except (httpx.RequestError, httpx.HTTPStatusError):
+            raise
+
     def get(
         self,
         subj: SubjectType = None,

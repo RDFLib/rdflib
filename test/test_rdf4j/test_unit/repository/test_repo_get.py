@@ -98,9 +98,9 @@ def test_repo_content_type(
 )
 def test_repo_get_graph_name(
     repo: Repository,
+    monkeypatch: pytest.MonkeyPatch,
     graph_name: IdentifiedNode | t.Iterable[IdentifiedNode] | str | None,
     expected_graph_name_param: str,
-    monkeypatch: pytest.MonkeyPatch,
 ):
     """
     Test that graph_name is passed as a query parameter and correctly handles the
