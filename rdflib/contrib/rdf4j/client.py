@@ -33,6 +33,167 @@ ObjectType = t.Union[IdentifiedNode, Literal, None]
 
 
 @dataclass(frozen=True)
+class NamespaceListingResult:
+    """RDF4J namespace and prefix name result."""
+
+    prefix: str
+    namespace: str
+
+
+class NamespaceManager:
+    """A namespace manager for RDF4J repositories.
+
+    Parameters:
+        identifier: The identifier of the repository.
+        http_client: The httpx.Client instance.
+    """
+
+    def __init__(self, identifier: str, http_client: httpx.Client):
+        self._identifier = identifier
+        self._http_client = http_client
+
+    @property
+    def http_client(self):
+        return self._http_client
+
+    @property
+    def identifier(self):
+        """Repository identifier."""
+        return self._identifier
+
+    def list(self) -> list[NamespaceListingResult]:
+        """List all namespace declarations in the repository.
+
+        Returns:
+            list[NamespaceListingResult]: List of namespace and prefix name results.
+
+        Raises:
+            RepositoryFormatError: If the response format is unrecognized.
+            httpx.RequestError: On network/connection issues.
+            httpx.HTTPStatusError: Unhandled status code error.
+        """
+        headers = {
+            "Accept": "application/sparql-results+json",
+        }
+        try:
+            response = self.http_client.get(
+                f"/repositories/{self.identifier}/namespaces", headers=headers
+            )
+            response.raise_for_status()
+
+            try:
+                data = response.json()
+                results = data["results"]["bindings"]
+                return [
+                    NamespaceListingResult(
+                        prefix=row["prefix"]["value"],
+                        namespace=row["namespace"]["value"],
+                    )
+                    for row in results
+                ]
+            except (KeyError, ValueError) as err:
+                raise RepositoryFormatError(f"Unrecognised response format: {err}")
+        except (httpx.RequestError, httpx.HTTPStatusError):
+            raise
+
+    def clear(self):
+        """Clear all namespace declarations in the repository.
+
+        Raises:
+            httpx.RequestError: On network/connection issues.
+            httpx.HTTPStatusError: Unhandled status code error.
+        """
+        headers = {
+            "Accept": "application/sparql-results+json",
+        }
+        try:
+            response = self.http_client.delete(
+                f"/repositories/{self.identifier}/namespaces", headers=headers
+            )
+            response.raise_for_status()
+        except (httpx.RequestError, httpx.HTTPStatusError):
+            raise
+
+    def get(self, prefix: str) -> str | None:
+        """Get the namespace URI for a given prefix.
+
+        Parameters:
+            prefix: The prefix to lookup.
+
+        Returns:
+            The namespace URI or `None` if not found.
+
+        Raises:
+            httpx.RequestError: On network/connection issues.
+            httpx.HTTPStatusError: Unhandled status code error.
+        """
+        if not prefix:
+            raise ValueError("Prefix cannot be empty.")
+        headers = {
+            "Accept": "text/plain",
+        }
+        try:
+            response = self.http_client.get(
+                f"/repositories/{self.identifier}/namespaces/{prefix}", headers=headers
+            )
+            response.raise_for_status()
+            return response.text
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 404:
+                return None
+            raise
+        except httpx.RequestError:
+            raise
+
+    def set(self, prefix: str, namespace: str):
+        """Set the namespace URI for a given prefix.
+
+        !!! note
+            If the prefix was previously mapped to a different namespace, this will be overwritten.
+
+        Parameters:
+            prefix: The prefix to set.
+            namespace: The namespace URI to set.
+
+        Raises:
+            httpx.RequestError: On network/connection issues.
+            httpx.HTTPStatusError: Unhandled status code error.
+        """
+        if not prefix:
+            raise ValueError("Prefix cannot be empty.")
+        if not namespace:
+            raise ValueError("Namespace cannot be empty.")
+        headers = {
+            "Content-Type": "text/plain",
+        }
+        try:
+            response = self.http_client.put(
+                f"/repositories/{self.identifier}/namespaces/{prefix}",
+                headers=headers,
+                content=namespace,
+            )
+            response.raise_for_status()
+        except (httpx.RequestError, httpx.HTTPStatusError):
+            raise
+
+    def remove(self, prefix: str):
+        """Remove the namespace declaration for a given prefix.
+
+        Parameters:
+            prefix: The prefix to remove.
+        """
+        if not prefix:
+            raise ValueError("Prefix cannot be empty.")
+        try:
+            response = self.http_client.delete(
+                f"/repositories/{self.identifier}/namespaces/{prefix}"
+            )
+            response.raise_for_status()
+        except (httpx.RequestError, httpx.HTTPStatusError):
+            raise
+
+
+@dataclass(frozen=True)
 class RepositoryListingResult:
     """RDF4J repository listing result.
 
@@ -62,6 +223,7 @@ class Repository:
     def __init__(self, identifier: str, http_client: httpx.Client):
         self._identifier = identifier
         self._http_client = http_client
+        self._namespace_manager: NamespaceManager | None = None
 
     @property
     def http_client(self):
@@ -71,6 +233,15 @@ class Repository:
     def identifier(self):
         """Repository identifier."""
         return self._identifier
+
+    @property
+    def namespaces(self) -> NamespaceManager:
+        """Namespace manager for the repository."""
+        if self._namespace_manager is None:
+            self._namespace_manager = NamespaceManager(
+                self.identifier, self.http_client
+            )
+        return self._namespace_manager
 
     def health(self) -> bool:
         """Repository health check.
@@ -540,7 +711,7 @@ class RDF4JClient:
         return self._http_client
 
     @property
-    def repositories(self):
+    def repositories(self) -> RepositoryManager:
         """Server-level repository management operations."""
         if self._repository_manager is None:
             self._repository_manager = RepositoryManager(self.http_client)
