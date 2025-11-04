@@ -6,6 +6,7 @@ import pytest
 from rdflib import BNode, Dataset, URIRef
 from rdflib.compare import isomorphic
 from rdflib.contrib.rdf4j import RDF4JClient
+from rdflib.contrib.rdf4j.client import Repository
 from rdflib.contrib.rdf4j.exceptions import (
     RepositoryAlreadyExistsError,
     RepositoryFormatError,
@@ -155,14 +156,7 @@ def test_repo_manager_crud(client: RDF4JClient):
 
 
 @pytest.mark.testcontainer
-def test_repo_not_healthy(client: RDF4JClient, monkeypatch):
-    config_path = pathlib.Path(__file__).parent / "repo-configs/test-repo-config.ttl"
-    with open(config_path) as file:
-        config = file.read()
-
-    repo = client.repositories.create("test-repo", config)
-    assert repo.identifier == "test-repo"
-
+def test_repo_not_healthy(repo: Repository, monkeypatch: pytest.MonkeyPatch):
     class MockResponse:
         def raise_for_status(self):
             raise httpx.HTTPStatusError(

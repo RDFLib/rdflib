@@ -26,3 +26,14 @@ def client(graphdb_container: DockerContainer):
     port = graphdb_container.get_exposed_port(7200)
     with RDF4JClient(f"http://localhost:{port}/", auth=("admin", "admin")) as client:
         yield client
+
+
+@pytest.fixture(scope="function")
+def repo(client: RDF4JClient):
+    config_path = pathlib.Path(__file__).parent / "repo-configs/test-repo-config.ttl"
+    with open(config_path) as file:
+        config = file.read()
+
+    repo = client.repositories.create("test-repo", config)
+    assert repo.identifier == "test-repo"
+    yield repo

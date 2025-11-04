@@ -35,7 +35,7 @@ def build_context_param(
         params["context"] = URIRef(graph_name).n3()
     elif graph_name is not None and isinstance(graph_name, t.Iterable):
         # type error: "str" has no attribute "n3"
-        graph_names = ",".join([x.n3() for x in graph_name]) # type: ignore[attr-defined]
+        graph_names = ",".join([x.n3() for x in graph_name])  # type: ignore[attr-defined]
         params["context"] = graph_names
 
 
