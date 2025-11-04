@@ -9,6 +9,7 @@ from typing import Any, BinaryIO, Iterable
 
 import httpx
 
+from rdflib import BNode
 from rdflib.contrib.rdf4j.exceptions import (
     RDF4JUnsupportedProtocolError,
     RDFLibParserError,
@@ -21,7 +22,7 @@ from rdflib.contrib.rdf4j.exceptions import (
 from rdflib.contrib.rdf4j.util import (
     build_context_param,
     build_infer_param,
-    build_spo_param,
+    build_spo_param, rdf_payload_to_stream,
 )
 from rdflib.graph import Dataset, Graph
 from rdflib.term import IdentifiedNode, Literal, URIRef
@@ -144,6 +145,44 @@ class Repository:
         except (httpx.RequestError, httpx.HTTPStatusError):
             raise
 
+    def graphs(self) -> list[IdentifiedNode]:
+        """Get a list of all graph names in the repository.
+
+        Returns:
+            A list of graph names.
+
+        Raises:
+            RepositoryFormatError: Fails to parse the repository graph names.
+            httpx.RequestError: On network/connection issues.
+            httpx.HTTPStatusError: Unhandled status code error.
+        """
+        try:
+            headers = {
+                "Accept": "application/sparql-results+json",
+            }
+            response = self.http_client.get(
+                f"/repositories/{self.identifier}/contexts", headers=headers
+            )
+            response.raise_for_status()
+            try:
+                values = []
+                for row in response.json()["results"]["bindings"]:
+                    value = row["contextID"]["value"]
+                    value_type = row["contextID"]["type"]
+                    if value_type == "uri":
+                        values.append(URIRef(value))
+                    elif value_type == "bnode":
+                        values.append(BNode(value))
+                    else:
+                        raise ValueError(f"Invalid graph name type: {value_type}")
+                return values
+            except Exception as err:
+                raise RepositoryFormatError(
+                    f"Failed to parse repository graph names: {err}"
+                ) from err
+        except (httpx.RequestError, httpx.HTTPStatusError):
+            raise
+
     def get(
         self,
         subj: SubjectType = None,
@@ -207,46 +246,51 @@ class Repository:
         except (httpx.RequestError, httpx.HTTPStatusError):
             raise
 
-    def upload(self, data, content_type: str, base_uri: str):
-        raise NotImplementedError
+    # TODO: This only covers appending statements to a repository.
+    #       We still need to implement sparql update and transaction document.
+    def upload(
+        self,
+        data: str | bytes | BinaryIO | Graph | Dataset,
+        base_uri: str | None = None,
+        content_type: str | None = None,
+    ):
+        """Upload and append statements to the repository."""
+        # TODO: docstring
+        stream, should_close = rdf_payload_to_stream(data)
+        try:
+            headers = {"Content-Type": content_type or "application/n-quads"}
+            params = {}
+            if base_uri is not None:
+                params["baseURI"] = base_uri
+            response = self.http_client.post(
+                f"/repositories/{self.identifier}/statements",
+                headers=headers,
+                params=params,
+                content=stream,
+            )
+            response.raise_for_status()
+        except (httpx.RequestError, httpx.HTTPStatusError):
+            raise
+        finally:
+            if should_close:
+                stream.close()
 
     def overwrite(
         self,
-        data: str | bytes | BinaryIO,
-        content_type: str,
+        data: str | bytes | BinaryIO | Graph | Dataset,
         graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None,
         base_uri: str | None = None,
+        content_type: str | None = None,
     ):
-        if isinstance(data, str):
-            # Check if it looks like a file path. Assumes file path length is less than 260.
-            if "\n" not in data and len(data) < 260:
-                try:
-                    stream = open(data, "rb")
-                    should_close = True
-                except (FileNotFoundError, OSError):
-                    # Treat as raw string content
-                    stream = io.BytesIO(data.encode("utf-8"))
-                    should_close = False
-            else:
-                # Treat as raw string content
-                stream = io.BytesIO(data.encode("utf-8"))
-                should_close = False
-        elif isinstance(data, bytes):
-            stream = io.BytesIO(data)
-            should_close = False
-        else:
-            # Assume it's already a file-like object
-            stream = data
-            should_close = False
+        # TODO: Add docstring.
+        stream, should_close = rdf_payload_to_stream(data)
 
         try:
-            headers = {"Content-Type": content_type}
+            headers = {"Content-Type": content_type or "application/n-quads"}
             params = {}
             build_context_param(params, graph_name)
-
             if base_uri is not None:
                 params["baseURI"] = base_uri
-
             response = self.http_client.put(
                 f"/repositories/{self.identifier}/statements",
                 headers=headers,
@@ -254,7 +298,8 @@ class Repository:
                 content=stream,
             )
             response.raise_for_status()
-
+        except (httpx.RequestError, httpx.HTTPStatusError):
+            raise
         finally:
             if should_close:
                 stream.close()

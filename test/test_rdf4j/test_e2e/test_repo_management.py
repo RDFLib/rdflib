@@ -3,6 +3,7 @@ import pathlib
 import httpx
 import pytest
 
+from rdflib import Dataset, URIRef
 from rdflib.contrib.rdf4j import RDF4JClient
 from rdflib.contrib.rdf4j.exceptions import (
     RepositoryAlreadyExistsError,
@@ -10,7 +11,6 @@ from rdflib.contrib.rdf4j.exceptions import (
     RepositoryNotFoundError,
     RepositoryNotHealthyError,
 )
-from rdflib import Dataset, URIRef
 
 # TODO: only run these tests on py39 or greater. Testcontainers not available on py38.
 
@@ -71,10 +71,16 @@ def test_repo_manager_crud(client: RDF4JClient):
     with open(pathlib.Path(__file__).parent.parent / "data/quads-2.nq", "rb") as file:
         repo.overwrite(file, "application/n-quads")
     assert repo.size() == 1
+    graphs = repo.graphs()
+    assert len(graphs) == 1
+    assert any(value in graphs for value in [URIRef("urn:graph:a3")])
     ds = repo.get()
     assert len(ds) == 1
     str_result = ds.serialize(format="nquads")
-    assert "<http://example.org/s3> <http://example.org/p3> <http://example.org/o3> <urn:graph:a3> ." in str_result
+    assert (
+        "<http://example.org/s3> <http://example.org/p3> <http://example.org/o3> <urn:graph:a3> ."
+        in str_result
+    )
 
     # Overwrite with a different file.
     with open(pathlib.Path(__file__).parent.parent / "data/quads-1.nq", "rb") as file:
@@ -82,15 +88,29 @@ def test_repo_manager_crud(client: RDF4JClient):
     assert repo.size() == 2
     ds = repo.get()
     assert len(ds) == 2
+    graphs = repo.graphs()
+    assert len(graphs) == 2
+    assert any(
+        value in graphs for value in [URIRef("urn:graph:a"), URIRef("urn:graph:b")]
+    )
     str_result = ds.serialize(format="nquads")
-    assert "<http://example.org/s> <http://example.org/p> <http://example.org/o> <urn:graph:a> ." in str_result
-    assert "<http://example.org/s2> <http://example.org/p2> <http://example.org/o2> <urn:graph:b> ." in str_result
+    assert (
+        "<http://example.org/s> <http://example.org/p> <http://example.org/o> <urn:graph:a> ."
+        in str_result
+    )
+    assert (
+        "<http://example.org/s2> <http://example.org/p2> <http://example.org/o2> <urn:graph:b> ."
+        in str_result
+    )
 
     # Get statements using a filter pattern
     ds = repo.get(subj=URIRef("http://example.org/s2"))
     assert len(ds) == 1
     str_result = ds.serialize(format="nquads")
-    assert "<http://example.org/s2> <http://example.org/p2> <http://example.org/o2> <urn:graph:b> ." in str_result
+    assert (
+        "<http://example.org/s2> <http://example.org/p2> <http://example.org/o2> <urn:graph:b> ."
+        in str_result
+    )
 
     # Use the delete method to delete a statement using a filter pattern
     repo.delete(subj=URIRef("http://example.org/s"))
@@ -98,7 +118,13 @@ def test_repo_manager_crud(client: RDF4JClient):
     ds = repo.get()
     assert len(ds) == 1
     str_result = ds.serialize(format="nquads")
-    assert "<http://example.org/s2> <http://example.org/p2> <http://example.org/o2> <urn:graph:b> ." in str_result
+    assert (
+        "<http://example.org/s2> <http://example.org/p2> <http://example.org/o2> <urn:graph:b> ."
+        in str_result
+    )
+
+    # Append to the repository a new RDF payload with blank node graph names
+    # TODO:
 
     # Delete repository
     client.repositories.delete("test-repo")
