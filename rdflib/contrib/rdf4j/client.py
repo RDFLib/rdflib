@@ -376,13 +376,15 @@ class Repository:
                 To query just the default graph, use
                 [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID].
 
-            infer: Specifies whether inferred statements should be included in the result.
+            infer: Specifies whether inferred statements should be included in the
+                result.
             content_type: The content type of the response.
                 A triple-based format returns a [Graph][rdflib.graph.Graph], while a
                 quad-based format returns a [`Dataset`][rdflib.graph.Dataset].
 
         Returns:
-            A [`Graph`][rdflib.graph.Graph] or [`Dataset`][rdflib.graph.Dataset] object.
+            A [`Graph`][rdflib.graph.Graph] or [`Dataset`][rdflib.graph.Dataset] object
+                with the repository namespace prefixes bound to it.
 
         Raises:
             httpx.RequestError: On network/connection issues.
