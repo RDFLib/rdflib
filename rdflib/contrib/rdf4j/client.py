@@ -259,8 +259,8 @@ class Repository:
         Parameters:
             data: The RDF data to upload.
             base_uri: The base URI to resolve against for any relative URIs in the data.
-            content_type: The content type of the data.
-                Defaults to `application/n-quads`.
+            content_type: The content type of the data. Defaults to
+                `application/n-quads` when the value is `None`.
 
         Raises:
             httpx.RequestError: On network/connection issues.
@@ -304,6 +304,8 @@ class Repository:
                 [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID].
 
             base_uri: The base URI to resolve against for any relative URIs in the data.
+            content_type: The content type of the data. Defaults to
+                `application/n-quads` when the value is `None`.
 
         Raises:
             httpx.RequestError: On network/connection issues.
@@ -525,7 +527,7 @@ class RDF4JClient:
             raise RDF4JUnsupportedProtocolError(
                 f"RDF4J server protocol version {self.protocol} is not supported. Minimum required version is 12."
             )
-        self._repository_manager = RepositoryManager(self.http_client)
+        self._repository_manager = None
 
     def __enter__(self):
         return self
@@ -540,6 +542,8 @@ class RDF4JClient:
     @property
     def repositories(self):
         """Server-level repository management operations."""
+        if self._repository_manager is None:
+            self._repository_manager = RepositoryManager(self.http_client)
         return self._repository_manager
 
     @property
