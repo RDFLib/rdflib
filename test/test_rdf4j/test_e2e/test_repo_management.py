@@ -3,7 +3,8 @@ import pathlib
 import httpx
 import pytest
 
-from rdflib import Dataset, URIRef
+from rdflib import BNode, Dataset, URIRef
+from rdflib.compare import isomorphic
 from rdflib.contrib.rdf4j import RDF4JClient
 from rdflib.contrib.rdf4j.exceptions import (
     RepositoryAlreadyExistsError,
@@ -69,7 +70,7 @@ def test_repo_manager_crud(client: RDF4JClient):
 
     # Use the overwrite method to add statements to the repo
     with open(pathlib.Path(__file__).parent.parent / "data/quads-2.nq", "rb") as file:
-        repo.overwrite(file, "application/n-quads")
+        repo.overwrite(file)
     assert repo.size() == 1
     graphs = repo.graphs()
     assert len(graphs) == 1
@@ -84,7 +85,7 @@ def test_repo_manager_crud(client: RDF4JClient):
 
     # Overwrite with a different file.
     with open(pathlib.Path(__file__).parent.parent / "data/quads-1.nq", "rb") as file:
-        repo.overwrite(file, "application/n-quads")
+        repo.overwrite(file)
     assert repo.size() == 2
     ds = repo.get()
     assert len(ds) == 2
@@ -124,7 +125,24 @@ def test_repo_manager_crud(client: RDF4JClient):
     )
 
     # Append to the repository a new RDF payload with blank node graph names
-    # TODO:
+    with open(pathlib.Path(__file__).parent.parent / "data/quads-3.nq", "rb") as file:
+        repo.upload(file)
+    assert repo.size() == 2
+    ds = repo.get()
+    assert len(ds) == 2
+    graphs = repo.graphs()
+    assert len(graphs) == 2
+    assert any(
+        value in graphs
+        for value in [URIRef("urn:graph:a"), URIRef("urn:graph:b"), BNode("c")]
+    )
+    data = """
+    <http://example.org/s2> <http://example.org/p2> <http://example.org/o2> <urn:graph:b> .
+    _:b-test <http://example.org/p> _:c _:graph .
+    """
+    ds2 = Dataset().parse(data=data, format="nquads")
+    for graph in ds.graphs():
+        assert any(isomorphic(graph, graph2) for graph2 in ds2.graphs())
 
     # Delete repository
     client.repositories.delete("test-repo")

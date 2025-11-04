@@ -61,9 +61,7 @@ def test_repo_upload_file_path(repo: Repository, monkeypatch: pytest.MonkeyPatch
     assert content.closed
 
 
-def test_repo_upload_buffered_reader(
-    repo: Repository, monkeypatch: pytest.MonkeyPatch
-):
+def test_repo_upload_buffered_reader(repo: Repository, monkeypatch: pytest.MonkeyPatch):
     """Test that a file-like object is read and not closed when done."""
     file_path = pathlib.Path(__file__).parent.parent.parent / "data/quads-1.nq"
     mock = Mock()
@@ -113,7 +111,6 @@ def test_repo_upload_data(
     content = call_args.kwargs["content"]
     assert isinstance(content, io.BytesIO)
     assert not content.closed
-
 
 
 @pytest.mark.parametrize(

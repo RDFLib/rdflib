@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import io
 import typing as t
 from dataclasses import dataclass
 from typing import Any, BinaryIO, Iterable
@@ -22,7 +21,8 @@ from rdflib.contrib.rdf4j.exceptions import (
 from rdflib.contrib.rdf4j.util import (
     build_context_param,
     build_infer_param,
-    build_spo_param, rdf_payload_to_stream,
+    build_spo_param,
+    rdf_payload_to_stream,
 )
 from rdflib.graph import Dataset, Graph
 from rdflib.term import IdentifiedNode, Literal, URIRef

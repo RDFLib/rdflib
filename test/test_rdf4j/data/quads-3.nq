@@ -1,1 +1,1 @@
-_:b-test <http://example.org/p> _:c .
+_:b-test <http://example.org/p> _:c _:graph .

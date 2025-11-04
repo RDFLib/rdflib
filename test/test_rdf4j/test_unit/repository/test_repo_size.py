@@ -79,3 +79,8 @@ def test_repo_size_values(
     else:
         with pytest.raises(expected_parsed_value):
             repo.size()
+
+    mock_httpx_get.assert_called_once_with(
+        "/repositories/test-repo/size",
+        params={},
+    )
