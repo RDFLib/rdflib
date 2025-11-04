@@ -110,10 +110,10 @@ class Repository:
     ) -> int:
         """The number of statements in the repository or in the specified graph name.
 
-        Args:
+        Parameters:
             graph_name: Graph name(s) to restrict to.
 
-                Default value `None` queries all graphs.
+                The default value `None` queries all graphs.
 
                 To query just the default graph, use
                 [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID].
@@ -194,13 +194,13 @@ class Repository:
     ) -> Graph | Dataset:
         """Get RDF statements from the repository matching the filtering parameters.
 
-        Args:
+        Parameters:
             subj: Subject of the statement to filter by, or `None` to match all.
             pred: Predicate of the statement to filter by, or `None` to match all.
             obj: Object of the statement to filter by, or `None` to match all.
             graph_name: Graph name(s) to restrict to.
 
-                Default value `None` queries all graphs.
+                The default value `None` queries all graphs.
 
                 To query just the default graph, use
                 [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID].
@@ -254,8 +254,18 @@ class Repository:
         base_uri: str | None = None,
         content_type: str | None = None,
     ):
-        """Upload and append statements to the repository."""
-        # TODO: docstring
+        """Upload and append statements to the repository.
+
+        Parameters:
+            data: The RDF data to upload.
+            base_uri: The base URI to resolve against for any relative URIs in the data.
+            content_type: The content type of the data.
+                Defaults to `application/n-quads`.
+
+        Raises:
+            httpx.RequestError: On network/connection issues.
+            httpx.HTTPStatusError: Unhandled status code error.
+        """
         stream, should_close = rdf_payload_to_stream(data)
         try:
             headers = {"Content-Type": content_type or "application/n-quads"}
@@ -282,7 +292,23 @@ class Repository:
         base_uri: str | None = None,
         content_type: str | None = None,
     ):
-        # TODO: Add docstring.
+        """Upload and overwrite statements in the repository.
+
+        Parameters:
+            data: The RDF data to upload.
+            graph_name: Graph name(s) to restrict to.
+
+                The default value `None` applies to all graphs.
+
+                To apply to just the default graph, use
+                [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID].
+
+            base_uri: The base URI to resolve against for any relative URIs in the data.
+
+        Raises:
+            httpx.RequestError: On network/connection issues.
+            httpx.HTTPStatusError: Unhandled status code error.
+        """
         stream, should_close = rdf_payload_to_stream(data)
 
         try:
@@ -313,13 +339,13 @@ class Repository:
     ) -> None:
         """Deletes statements from the repository matching the filtering parameters.
 
-        Args:
+        Parameters:
             subj: Subject of the statement to filter by, or `None` to match all.
             pred: Predicate of the statement to filter by, or `None` to match all.
             obj: Object of the statement to filter by, or `None` to match all.
             graph_name: Graph name(s) to restrict to.
 
-                Default value `None` queries all graphs.
+                The default value `None` queries all graphs.
 
                 To query just the default graph, use
                 [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID].
