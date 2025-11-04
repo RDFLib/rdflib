@@ -46,4 +46,4 @@ def test_repo_namespace_get_error(
     mock_httpx_get = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
     with pytest.raises(ValueError):
-        repo.namespaces.get(prefix)
+        repo.namespaces.get(prefix) # type: ignore

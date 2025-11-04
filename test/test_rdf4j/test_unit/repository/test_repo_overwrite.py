@@ -24,7 +24,7 @@ def test_repo_overwrite_graph(
     headers = {
         "Content-Type": "application/n-quads",
     }
-    params = {}
+    params: dict[str, str] = {}
     graph = class_type().parse(file_path)
     repo.overwrite(graph)
     mock.assert_called_once_with(
@@ -47,7 +47,7 @@ def test_repo_overwrite_file_path(repo: Repository, monkeypatch: pytest.MonkeyPa
     headers = {
         "Content-Type": "application/n-quads",
     }
-    params = {}
+    params: dict[str, str] = {}
     repo.overwrite(str(file_path), content_type="application/n-quads")
     mock.assert_called_once_with(
         "/repositories/test-repo/statements",
@@ -74,7 +74,7 @@ def test_repo_overwrite_buffered_reader(
         headers = {
             "Content-Type": "application/n-quads",
         }
-        params = {}
+        params: dict[str, str] = {}
         repo.overwrite(file, content_type="application/n-quads")
         mock.assert_called_once_with(
             "/repositories/test-repo/statements",
@@ -103,7 +103,7 @@ def test_repo_overwrite_data(
     headers = {
         "Content-Type": "application/n-quads",
     }
-    params = {}
+    params: dict[str, str] = {}
     repo.overwrite(data, content_type="application/n-quads")
     mock.assert_called_once_with(
         "/repositories/test-repo/statements",
@@ -144,7 +144,7 @@ def test_repo_overwrite_graph_name(
         "Content-Type": "application/n-quads",
     }
     if graph_name is None:
-        params = {}
+        params: dict[str, str] = {}
     else:
         params = {"context": expected_graph_name_param}
     repo.overwrite("", graph_name=graph_name, content_type="application/n-quads")
@@ -194,7 +194,7 @@ def test_repo_overwrite_nonexistent_file_path(
     headers = {
         "Content-Type": "application/n-quads",
     }
-    params = {}
+    params: dict[str, str] = {}
     nonexistent_path = "/nonexistent/path/file.nq"
     repo.overwrite(nonexistent_path, content_type="application/n-quads")
     mock.assert_called_once_with(
@@ -218,7 +218,7 @@ def test_repo_overwrite_string_with_newline(
     headers = {
         "Content-Type": "application/n-quads",
     }
-    params = {}
+    params: dict[str, str] = {}
     data_with_newline = "<http://example.com/s> <http://example.com/p> <http://example.com/o> .\n<http://example.com/s2> <http://example.com/p2> <http://example.com/o2> ."
     repo.overwrite(data_with_newline, content_type="application/n-quads")
     mock.assert_called_once_with(
@@ -240,7 +240,7 @@ def test_repo_overwrite_long_string(repo: Repository, monkeypatch: pytest.Monkey
     headers = {
         "Content-Type": "application/n-quads",
     }
-    params = {}
+    params: dict[str, str] = {}
     # Create a string longer than 260 characters
     long_string = "a" * 261
     repo.overwrite(long_string, content_type="application/n-quads")

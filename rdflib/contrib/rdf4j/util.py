@@ -34,7 +34,8 @@ def build_context_param(
     elif graph_name is not None and isinstance(graph_name, str):
         params["context"] = URIRef(graph_name).n3()
     elif graph_name is not None and isinstance(graph_name, t.Iterable):
-        graph_names = ",".join([x.n3() for x in graph_name])
+        # type error: "str" has no attribute "n3"
+        graph_names = ",".join([x.n3() for x in graph_name]) # type: ignore[attr-defined]
         params["context"] = graph_names
 
 
@@ -95,6 +96,7 @@ def rdf_payload_to_stream(
         A tuple containing the file-like object and a boolean indicating whether the
         immediate caller should close the stream.
     """
+    stream: t.BinaryIO
     if isinstance(data, str):
         # Check if it looks like a file path. Assumes file path length is less than 260.
         if "\n" not in data and len(data) < 260:

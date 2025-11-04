@@ -141,6 +141,7 @@ def test_repo_manager_crud(client: RDF4JClient):
     _:b-test <http://example.org/p> _:c _:graph .
     """
     ds2 = Dataset().parse(data=data, format="nquads")
+    assert isinstance(ds, Dataset)
     for graph in ds.graphs():
         assert any(isomorphic(graph, graph2) for graph2 in ds2.graphs())
 

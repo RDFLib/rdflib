@@ -58,7 +58,7 @@ def test_repo_namespace_list(
 
 
 def test_repo_namespace_list_error(repo: Repository, monkeypatch: pytest.MonkeyPatch):
-    response_dict = {}
+    response_dict: dict[str, str] = {}
 
     mock_response = Mock(spec=httpx.Response, json=lambda: response_dict)
     mock_httpx_get = Mock(return_value=mock_response)

@@ -297,7 +297,7 @@ class Repository:
             httpx.RequestError: On network/connection issues.
             httpx.HTTPStatusError: Unhandled status code error.
         """
-        params = {}
+        params: dict[str, str] = {}
         build_context_param(params, graph_name)
         try:
             response = self.http_client.get(
@@ -336,7 +336,7 @@ class Repository:
             )
             response.raise_for_status()
             try:
-                values = []
+                values: list[IdentifiedNode] = []
                 for row in response.json()["results"]["bindings"]:
                     value = row["contextID"]["value"]
                     value_type = row["contextID"]["type"]
@@ -391,7 +391,7 @@ class Repository:
         if content_type is None:
             content_type = "application/n-quads"
         headers = {"Accept": content_type}
-        params = {}
+        params: dict[str, str] = {}
         build_context_param(params, graph_name)
         build_spo_param(params, subj, pred, obj)
         build_infer_param(params, infer=infer)
@@ -486,7 +486,7 @@ class Repository:
 
         try:
             headers = {"Content-Type": content_type or "application/n-quads"}
-            params = {}
+            params: dict[str, str] = {}
             build_context_param(params, graph_name)
             if base_uri is not None:
                 params["baseURI"] = base_uri
@@ -527,7 +527,7 @@ class Repository:
             httpx.RequestError: On network/connection issues.
             httpx.HTTPStatusError: Unhandled status code error.
         """
-        params = {}
+        params: dict[str, str] = {}
         build_context_param(params, graph_name)
         build_spo_param(params, subj, pred, obj)
 
@@ -698,7 +698,7 @@ class RDF4JClient:
             raise RDF4JUnsupportedProtocolError(
                 f"RDF4J server protocol version {self.protocol} is not supported. Minimum required version is 12."
             )
-        self._repository_manager = None
+        self._repository_manager: RepositoryManager | None = None
 
     def __enter__(self):
         return self

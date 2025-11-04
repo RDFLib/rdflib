@@ -37,4 +37,4 @@ def test_repo_namespace_remove_error(
     mock_httpx_remove = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "delete", mock_httpx_remove)
     with pytest.raises(ValueError):
-        repo.namespaces.remove(prefix)
+        repo.namespaces.remove(prefix) # type: ignore

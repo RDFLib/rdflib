@@ -22,7 +22,7 @@ def test_repo_upload_graph(
     headers = {
         "Content-Type": "application/n-quads",
     }
-    params = {}
+    params: dict[str, str] = {}
     graph = class_type().parse(file_path)
     repo.upload(graph)
     mock.assert_called_once_with(
@@ -45,7 +45,7 @@ def test_repo_upload_file_path(repo: Repository, monkeypatch: pytest.MonkeyPatch
     headers = {
         "Content-Type": "application/n-quads",
     }
-    params = {}
+    params: dict[str, str] = {}
     repo.upload(str(file_path), content_type="application/n-quads")
     mock.assert_called_once_with(
         "/repositories/test-repo/statements",
@@ -70,7 +70,7 @@ def test_repo_upload_buffered_reader(repo: Repository, monkeypatch: pytest.Monke
         headers = {
             "Content-Type": "application/n-quads",
         }
-        params = {}
+        params: dict[str, str] = {}
         repo.upload(file, content_type="application/n-quads")
         mock.assert_called_once_with(
             "/repositories/test-repo/statements",
@@ -99,7 +99,7 @@ def test_repo_upload_data(
     headers = {
         "Content-Type": "application/n-quads",
     }
-    params = {}
+    params: dict[str, str] = {}
     repo.upload(data, content_type="application/n-quads")
     mock.assert_called_once_with(
         "/repositories/test-repo/statements",
@@ -151,7 +151,7 @@ def test_repo_upload_nonexistent_file_path(
     headers = {
         "Content-Type": "application/n-quads",
     }
-    params = {}
+    params: dict[str, str] = {}
     nonexistent_path = "/nonexistent/path/file.nq"
     repo.upload(nonexistent_path, content_type="application/n-quads")
     mock.assert_called_once_with(
@@ -175,7 +175,7 @@ def test_repo_upload_string_with_newline(
     headers = {
         "Content-Type": "application/n-quads",
     }
-    params = {}
+    params: dict[str, str] = {}
     data_with_newline = "<http://example.com/s> <http://example.com/p> <http://example.com/o> .\n<http://example.com/s2> <http://example.com/p2> <http://example.com/o2> ."
     repo.upload(data_with_newline, content_type="application/n-quads")
     mock.assert_called_once_with(
@@ -197,7 +197,7 @@ def test_repo_upload_long_string(repo: Repository, monkeypatch: pytest.MonkeyPat
     headers = {
         "Content-Type": "application/n-quads",
     }
-    params = {}
+    params: dict[str, str] = {}
     # Create a string longer than 260 characters
     long_string = "a" * 261
     repo.upload(long_string, content_type="application/n-quads")

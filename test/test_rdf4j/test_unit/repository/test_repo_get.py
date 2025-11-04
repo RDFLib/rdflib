@@ -73,7 +73,7 @@ def test_repo_content_type(
 
     result = repo.get(content_type=content_type)
     headers = {"Accept": content_type or "application/n-quads"}
-    params = {}
+    params: dict[str, str] = {}
     mock_httpx_get.assert_called_once_with(
         "/repositories/test-repo/statements",
         headers=headers,
