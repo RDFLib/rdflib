@@ -31,7 +31,9 @@ def test_e2e_repo_namespace_crud(repo: Repository):
     # Update an existing prefix (overwrite)
     repo.namespaces.set("test", "http://example.org/test-updated/")
     assert set(repo.namespaces.list()) == {
-        NamespaceListingResult(prefix="test", namespace="http://example.org/test-updated/"),
+        NamespaceListingResult(
+            prefix="test", namespace="http://example.org/test-updated/"
+        ),
         NamespaceListingResult(prefix="test2", namespace="http://example.org/test2/"),
     }
     assert repo.namespaces.get("test") == "http://example.org/test-updated/"

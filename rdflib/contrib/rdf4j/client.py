@@ -412,8 +412,12 @@ class Repository:
             ]
             try:
                 if content_type in triple_formats:
-                    return Graph().parse(data=response.text, format=content_type)
-                return Dataset().parse(data=response.text, format=content_type)
+                    retval = Graph().parse(data=response.text, format=content_type)
+                else:
+                    retval = Dataset().parse(data=response.text, format=content_type)
+                for result in self.namespaces.list():
+                    retval.bind(result.prefix, result.namespace, replace=True)
+                return retval
             except Exception as err:
                 raise RDFLibParserError(f"Error parsing RDF: {err}") from err
         except (httpx.RequestError, httpx.HTTPStatusError):

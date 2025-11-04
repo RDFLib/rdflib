@@ -5,7 +5,12 @@ from unittest.mock import Mock
 import httpx
 import pytest
 
-from rdflib.contrib.rdf4j.client import Repository
+from rdflib import Dataset, URIRef
+from rdflib.contrib.rdf4j.client import (
+    NamespaceListingResult,
+    NamespaceManager,
+    Repository,
+)
 
 
 @pytest.mark.parametrize(
@@ -47,3 +52,21 @@ def test_repo_namespace_get_error(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
     with pytest.raises(ValueError):
         repo.namespaces.get(prefix)  # type: ignore
+
+
+def test_repo_get_with_namespace_binding(
+    repo: Repository, monkeypatch: pytest.MonkeyPatch
+):
+    mock_response = Mock(spec=httpx.Response, text="")
+    mock_httpx_get = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
+    monkeypatch.setattr(
+        NamespaceManager,
+        "list",
+        lambda _: [
+            NamespaceListingResult(prefix="test", namespace="http://example.org/test/")
+        ],
+    )
+    ds = repo.get()
+    assert isinstance(ds, Dataset)
+    assert ("test", URIRef("http://example.org/test/")) in set(ds.namespaces())
