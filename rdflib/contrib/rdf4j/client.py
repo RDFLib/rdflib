@@ -69,50 +69,38 @@ class NamespaceManager:
 
         Raises:
             RepositoryFormatError: If the response format is unrecognized.
-            httpx.RequestError: On network/connection issues.
-            httpx.HTTPStatusError: Unhandled status code error.
         """
         headers = {
             "Accept": "application/sparql-results+json",
         }
-        try:
-            response = self.http_client.get(
-                f"/repositories/{self.identifier}/namespaces", headers=headers
-            )
-            response.raise_for_status()
+        response = self.http_client.get(
+            f"/repositories/{self.identifier}/namespaces", headers=headers
+        )
+        response.raise_for_status()
 
-            try:
-                data = response.json()
-                results = data["results"]["bindings"]
-                return [
-                    NamespaceListingResult(
-                        prefix=row["prefix"]["value"],
-                        namespace=row["namespace"]["value"],
-                    )
-                    for row in results
-                ]
-            except (KeyError, ValueError) as err:
-                raise RepositoryFormatError(f"Unrecognised response format: {err}")
-        except (httpx.RequestError, httpx.HTTPStatusError):
-            raise
+        try:
+            data = response.json()
+            results = data["results"]["bindings"]
+            return [
+                NamespaceListingResult(
+                    prefix=row["prefix"]["value"],
+                    namespace=row["namespace"]["value"],
+                )
+                for row in results
+            ]
+        except (KeyError, ValueError) as err:
+            raise RepositoryFormatError(f"Unrecognised response format: {err}")
+
 
     def clear(self):
-        """Clear all namespace declarations in the repository.
-
-        Raises:
-            httpx.RequestError: On network/connection issues.
-            httpx.HTTPStatusError: Unhandled status code error.
-        """
+        """Clear all namespace declarations in the repository."""
         headers = {
             "Accept": "application/sparql-results+json",
         }
-        try:
-            response = self.http_client.delete(
-                f"/repositories/{self.identifier}/namespaces", headers=headers
-            )
-            response.raise_for_status()
-        except (httpx.RequestError, httpx.HTTPStatusError):
-            raise
+        response = self.http_client.delete(
+            f"/repositories/{self.identifier}/namespaces", headers=headers
+        )
+        response.raise_for_status()
 
     def get(self, prefix: str) -> str | None:
         """Get the namespace URI for a given prefix.
@@ -122,10 +110,6 @@ class NamespaceManager:
 
         Returns:
             The namespace URI or `None` if not found.
-
-        Raises:
-            httpx.RequestError: On network/connection issues.
-            httpx.HTTPStatusError: Unhandled status code error.
         """
         if not prefix:
             raise ValueError("Prefix cannot be empty.")
@@ -142,8 +126,6 @@ class NamespaceManager:
             if err.response.status_code == 404:
                 return None
             raise
-        except httpx.RequestError:
-            raise
 
     def set(self, prefix: str, namespace: str):
         """Set the namespace URI for a given prefix.
@@ -155,10 +137,6 @@ class NamespaceManager:
         Parameters:
             prefix: The prefix to set.
             namespace: The namespace URI to set.
-
-        Raises:
-            httpx.RequestError: On network/connection issues.
-            httpx.HTTPStatusError: Unhandled status code error.
         """
         if not prefix:
             raise ValueError("Prefix cannot be empty.")
@@ -167,15 +145,12 @@ class NamespaceManager:
         headers = {
             "Content-Type": "text/plain",
         }
-        try:
-            response = self.http_client.put(
-                f"/repositories/{self.identifier}/namespaces/{prefix}",
-                headers=headers,
-                content=namespace,
-            )
-            response.raise_for_status()
-        except (httpx.RequestError, httpx.HTTPStatusError):
-            raise
+        response = self.http_client.put(
+            f"/repositories/{self.identifier}/namespaces/{prefix}",
+            headers=headers,
+            content=namespace,
+        )
+        response.raise_for_status()
 
     def remove(self, prefix: str):
         """Remove the namespace declaration for a given prefix.
@@ -185,13 +160,10 @@ class NamespaceManager:
         """
         if not prefix:
             raise ValueError("Prefix cannot be empty.")
-        try:
-            response = self.http_client.delete(
-                f"/repositories/{self.identifier}/namespaces/{prefix}"
-            )
-            response.raise_for_status()
-        except (httpx.RequestError, httpx.HTTPStatusError):
-            raise
+        response = self.http_client.delete(
+            f"/repositories/{self.identifier}/namespaces/{prefix}"
+        )
+        response.raise_for_status()
 
 
 class GraphStoreManager:
@@ -415,8 +387,6 @@ class Repository:
         Raises:
             RepositoryNotFoundError: If the repository is not found.
             RepositoryNotHealthyError: If the repository is not healthy.
-            httpx.RequestError: On network/connection issues.
-            httpx.HTTPStatusError: Unhandled status code error.
         """
         headers = {
             "Content-Type": "application/sparql-query",
@@ -436,8 +406,6 @@ class Repository:
             raise RepositoryNotHealthyError(
                 f"Repository {self._identifier} is not healthy. {err.response.status_code} - {err.response.text}"
             )
-        except httpx.RequestError:
-            raise
 
     def size(
         self, graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None
@@ -457,27 +425,22 @@ class Repository:
 
         Raises:
             RepositoryFormatError: Fails to parse the repository size.
-            httpx.RequestError: On network/connection issues.
-            httpx.HTTPStatusError: Unhandled status code error.
         """
         params: dict[str, str] = {}
         build_context_param(params, graph_name)
+        response = self.http_client.get(
+            f"/repositories/{self.identifier}/size", params=params
+        )
+        response.raise_for_status()
         try:
-            response = self.http_client.get(
-                f"/repositories/{self.identifier}/size", params=params
-            )
-            response.raise_for_status()
-            try:
-                value = int(response.text)
-                if value >= 0:
-                    return value
-                raise ValueError(f"Invalid repository size: {value}")
-            except ValueError as err:
-                raise RepositoryFormatError(
-                    f"Failed to parse repository size: {err}"
-                ) from err
-        except (httpx.RequestError, httpx.HTTPStatusError):
-            raise
+            value = int(response.text)
+            if value >= 0:
+                return value
+            raise ValueError(f"Invalid repository size: {value}")
+        except ValueError as err:
+            raise RepositoryFormatError(
+                f"Failed to parse repository size: {err}"
+            ) from err
 
     def graph_names(self) -> list[IdentifiedNode]:
         """Get a list of all graph names in the repository.
@@ -487,35 +450,30 @@ class Repository:
 
         Raises:
             RepositoryFormatError: Fails to parse the repository graph names.
-            httpx.RequestError: On network/connection issues.
-            httpx.HTTPStatusError: Unhandled status code error.
         """
+        headers = {
+            "Accept": "application/sparql-results+json",
+        }
+        response = self.http_client.get(
+            f"/repositories/{self.identifier}/contexts", headers=headers
+        )
+        response.raise_for_status()
         try:
-            headers = {
-                "Accept": "application/sparql-results+json",
-            }
-            response = self.http_client.get(
-                f"/repositories/{self.identifier}/contexts", headers=headers
-            )
-            response.raise_for_status()
-            try:
-                values: list[IdentifiedNode] = []
-                for row in response.json()["results"]["bindings"]:
-                    value = row["contextID"]["value"]
-                    value_type = row["contextID"]["type"]
-                    if value_type == "uri":
-                        values.append(URIRef(value))
-                    elif value_type == "bnode":
-                        values.append(BNode(value))
-                    else:
-                        raise ValueError(f"Invalid graph name type: {value_type}")
-                return values
-            except Exception as err:
-                raise RepositoryFormatError(
-                    f"Failed to parse repository graph names: {err}"
-                ) from err
-        except (httpx.RequestError, httpx.HTTPStatusError):
-            raise
+            values: list[IdentifiedNode] = []
+            for row in response.json()["results"]["bindings"]:
+                value = row["contextID"]["value"]
+                value_type = row["contextID"]["type"]
+                if value_type == "uri":
+                    values.append(URIRef(value))
+                elif value_type == "bnode":
+                    values.append(BNode(value))
+                else:
+                    raise ValueError(f"Invalid graph name type: {value_type}")
+            return values
+        except Exception as err:
+            raise RepositoryFormatError(
+                f"Failed to parse repository graph names: {err}"
+            ) from err
 
     def get(
         self,
@@ -548,10 +506,6 @@ class Repository:
         Returns:
             A [`Graph`][rdflib.graph.Graph] or [`Dataset`][rdflib.graph.Dataset] object
                 with the repository namespace prefixes bound to it.
-
-        Raises:
-            httpx.RequestError: On network/connection issues.
-            httpx.HTTPStatusError: Unhandled status code error.
         """
         if content_type is None:
             content_type = "application/n-quads"
@@ -561,30 +515,27 @@ class Repository:
         build_spo_param(params, subj, pred, obj)
         build_infer_param(params, infer=infer)
 
+        response = self.http_client.get(
+            f"/repositories/{self.identifier}/statements",
+            headers=headers,
+            params=params,
+        )
+        response.raise_for_status()
+        triple_formats = [
+            "application/n-triples",
+            "text/turtle",
+            "application/rdf+xml",
+        ]
         try:
-            response = self.http_client.get(
-                f"/repositories/{self.identifier}/statements",
-                headers=headers,
-                params=params,
-            )
-            response.raise_for_status()
-            triple_formats = [
-                "application/n-triples",
-                "text/turtle",
-                "application/rdf+xml",
-            ]
-            try:
-                if content_type in triple_formats:
-                    retval = Graph().parse(data=response.text, format=content_type)
-                else:
-                    retval = Dataset().parse(data=response.text, format=content_type)
-                for result in self.namespaces.list():
-                    retval.bind(result.prefix, result.namespace, replace=True)
-                return retval
-            except Exception as err:
-                raise RDFLibParserError(f"Error parsing RDF: {err}") from err
-        except (httpx.RequestError, httpx.HTTPStatusError):
-            raise
+            if content_type in triple_formats:
+                retval = Graph().parse(data=response.text, format=content_type)
+            else:
+                retval = Dataset().parse(data=response.text, format=content_type)
+            for result in self.namespaces.list():
+                retval.bind(result.prefix, result.namespace, replace=True)
+            return retval
+        except Exception as err:
+            raise RDFLibParserError(f"Error parsing RDF: {err}") from err
 
     # TODO: This only covers appending statements to a repository.
     #       We still need to implement sparql update and transaction document.
@@ -601,10 +552,6 @@ class Repository:
             base_uri: The base URI to resolve against for any relative URIs in the data.
             content_type: The content type of the data. Defaults to
                 `application/n-quads` when the value is `None`.
-
-        Raises:
-            httpx.RequestError: On network/connection issues.
-            httpx.HTTPStatusError: Unhandled status code error.
         """
         stream, should_close = rdf_payload_to_stream(data)
         try:
@@ -619,8 +566,6 @@ class Repository:
                 content=stream,
             )
             response.raise_for_status()
-        except (httpx.RequestError, httpx.HTTPStatusError):
-            raise
         finally:
             if should_close:
                 stream.close()
@@ -646,10 +591,6 @@ class Repository:
             base_uri: The base URI to resolve against for any relative URIs in the data.
             content_type: The content type of the data. Defaults to
                 `application/n-quads` when the value is `None`.
-
-        Raises:
-            httpx.RequestError: On network/connection issues.
-            httpx.HTTPStatusError: Unhandled status code error.
         """
         stream, should_close = rdf_payload_to_stream(data)
 
@@ -666,8 +607,6 @@ class Repository:
                 content=stream,
             )
             response.raise_for_status()
-        except (httpx.RequestError, httpx.HTTPStatusError):
-            raise
         finally:
             if should_close:
                 stream.close()
@@ -691,23 +630,16 @@ class Repository:
 
                 To query just the default graph, use
                 [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID].
-
-        Raises:
-            httpx.RequestError: On network/connection issues.
-            httpx.HTTPStatusError: Unhandled status code error.
         """
         params: dict[str, str] = {}
         build_context_param(params, graph_name)
         build_spo_param(params, subj, pred, obj)
 
-        try:
-            response = self.http_client.delete(
-                f"/repositories/{self.identifier}/statements",
-                params=params,
-            )
-            response.raise_for_status()
-        except (httpx.RequestError, httpx.HTTPStatusError):
-            raise
+        response = self.http_client.delete(
+            f"/repositories/{self.identifier}/statements",
+            params=params,
+        )
+        response.raise_for_status()
 
 
 class RepositoryManager:
@@ -728,33 +660,28 @@ class RepositoryManager:
 
         Raises:
             RepositoryFormatError: If the response format is unrecognized.
-            httpx.RequestError: On network/connection issues.
-            httpx.HTTPStatusError: Unhandled status code error.
         """
         headers = {
             "Accept": "application/sparql-results+json",
         }
-        try:
-            response = self.http_client.get("/repositories", headers=headers)
-            response.raise_for_status()
+        response = self.http_client.get("/repositories", headers=headers)
+        response.raise_for_status()
 
-            try:
-                data = response.json()
-                results = data["results"]["bindings"]
-                return [
-                    RepositoryListingResult(
-                        identifier=repo["id"]["value"],
-                        uri=repo["uri"]["value"],
-                        readable=repo["readable"]["value"],
-                        writable=repo["writable"]["value"],
-                        title=repo.get("title", {}).get("value"),
-                    )
-                    for repo in results
-                ]
-            except (KeyError, ValueError) as err:
-                raise RepositoryFormatError(f"Unrecognised response format: {err}")
-        except (httpx.RequestError, httpx.HTTPStatusError):
-            raise
+        try:
+            data = response.json()
+            results = data["results"]["bindings"]
+            return [
+                RepositoryListingResult(
+                    identifier=repo["id"]["value"],
+                    uri=repo["uri"]["value"],
+                    readable=repo["readable"]["value"],
+                    writable=repo["writable"]["value"],
+                    title=repo.get("title", {}).get("value"),
+                )
+                for repo in results
+            ]
+        except (KeyError, ValueError) as err:
+            raise RepositoryFormatError(f"Unrecognised response format: {err}")
 
     def get(self, repository_id: str) -> Repository:
         """Get a repository by ID.
@@ -771,15 +698,10 @@ class RepositoryManager:
         Raises:
             RepositoryNotFoundError: If the repository is not found.
             RepositoryNotHealthyError: If the repository is not healthy.
-            httpx.RequestError: On network/connection issues.
-            httpx.HTTPStatusError: Unhandled status code error.
         """
         repo = Repository(repository_id, self.http_client)
-        try:
-            repo.health()
-            return repo
-        except (RepositoryNotFoundError, RepositoryNotHealthyError, httpx.RequestError):
-            raise
+        repo.health()
+        return repo
 
     def create(
         self, repository_id: str, data: str, content_type: str = "text/turtle"
@@ -794,8 +716,6 @@ class RepositoryManager:
         Raises:
             RepositoryAlreadyExistsError: If the repository already exists.
             RepositoryNotHealthyError: If the repository is not healthy.
-            httpx.RequestError: On network/connection issues.
-            httpx.HTTPStatusError: Unhandled status code error.
         """
         try:
             headers = {"Content-Type": content_type}
@@ -804,8 +724,6 @@ class RepositoryManager:
             )
             response.raise_for_status()
             return self.get(repository_id)
-        except httpx.RequestError:
-            raise
         except httpx.HTTPStatusError as err:
             if err.response.status_code == 409:
                 raise RepositoryAlreadyExistsError(
@@ -822,8 +740,6 @@ class RepositoryManager:
         Raises:
             RepositoryNotFoundError: If the repository is not found.
             RepositoryError: If the repository is not deleted successfully.
-            httpx.RequestError: On network/connection issues.
-            httpx.HTTPStatusError: Unhandled status code error.
         """
         try:
             response = self.http_client.delete(f"/repositories/{repository_id}")
@@ -832,8 +748,6 @@ class RepositoryManager:
                 raise RepositoryError(
                     f"Unexpected response status code when deleting repository {repository_id}: {response.status_code} - {response.text.strip()}"
                 )
-        except httpx.RequestError:
-            raise
         except httpx.HTTPStatusError as err:
             if err.response.status_code == 404:
                 raise RepositoryNotFoundError(f"Repository {repository_id} not found.")
@@ -888,14 +802,11 @@ class RDF4JClient:
 
     @property
     def protocol(self) -> float:
-        try:
-            response = self.http_client.get(
-                "/protocol", headers={"Accept": "text/plain"}
-            )
-            response.raise_for_status()
-            return float(response.text.strip())
-        except (httpx.RequestError, httpx.HTTPStatusError):
-            raise
+        response = self.http_client.get(
+            "/protocol", headers={"Accept": "text/plain"}
+        )
+        response.raise_for_status()
+        return float(response.text.strip())
 
     def close(self):
         """Close the underlying httpx.Client."""
