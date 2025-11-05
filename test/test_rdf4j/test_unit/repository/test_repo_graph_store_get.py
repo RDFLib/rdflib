@@ -37,6 +37,7 @@ def test_repo_graph_store_get(
     )
     assert isinstance(graph, Graph)
     assert graph.isomorphic(Graph().parse(data=data))
+    assert graph.identifier == URIRef(graph_name)
 
 
 @pytest.mark.parametrize("graph_name", [None, ""])

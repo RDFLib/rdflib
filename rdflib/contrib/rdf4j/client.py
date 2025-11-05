@@ -220,10 +220,22 @@ class GraphStoreManager:
     def _build_graph_name_params(graph_name: URIRef | str):
         params = {}
         if isinstance(graph_name, URIRef) and graph_name == DATASET_DEFAULT_GRAPH_ID:
-            params["default"] = ""
+            # Do nothing; GraphDB does not work with `?default=`, which is the default
+            # behavior of httpx when setting the param value to an empty string.
+            # httpx completely omits query parameters whose values are `None`, so that's
+            # not an option either.
+            # The workaround is to construct our own query parameter URL when we target
+            # the default graph.
+            pass
         else:
             params["graph"] = str(graph_name)
         return params
+
+    def _build_url(self, graph_name: URIRef | str):
+        url = f"/repositories/{self.identifier}/rdf-graphs/service"
+        if isinstance(graph_name, URIRef) and graph_name == DATASET_DEFAULT_GRAPH_ID:
+            url += "?default"
+        return url
 
     def get(self, graph_name: URIRef | str) -> Graph:
         """Fetch all statements in the specified graph.
@@ -243,10 +255,10 @@ class GraphStoreManager:
         headers = {
             "Accept": self._content_type,
         }
-        params = self._build_graph_name_params(graph_name)
+        params = self._build_graph_name_params(graph_name) or None
 
         response = self.http_client.get(
-            f"/repositories/{self.identifier}/rdf-graphs/service",
+            self._build_url(graph_name),
             headers=headers,
             params=params,
         )
@@ -256,7 +268,7 @@ class GraphStoreManager:
             data=response.text, format=self._content_type
         )
 
-    def add(self, graph_name: str, data: str | bytes | BinaryIO | Graph):
+    def add(self, graph_name: URIRef | str, data: str | bytes | BinaryIO | Graph):
         """Add statements to the specified graph.
 
         Parameters:
@@ -273,10 +285,10 @@ class GraphStoreManager:
         headers = {
             "Content-Type": self._content_type,
         }
-        params = self._build_graph_name_params(graph_name)
+        params = self._build_graph_name_params(graph_name) or None
         try:
             response = self.http_client.post(
-                f"/repositories/{self.identifier}/rdf-graphs/service",
+                self._build_url(graph_name),
                 headers=headers,
                 params=params,
                 content=stream,
@@ -286,7 +298,7 @@ class GraphStoreManager:
             if should_close:
                 stream.close()
 
-    def overwrite(self, graph_name: str, data: str | bytes | BinaryIO | Graph):
+    def overwrite(self, graph_name: URIRef | str, data: str | bytes | BinaryIO | Graph):
         """Overwrite statements in the specified graph.
 
         Parameters:
@@ -303,10 +315,10 @@ class GraphStoreManager:
         headers = {
             "Content-Type": self._content_type,
         }
-        params = self._build_graph_name_params(graph_name)
+        params = self._build_graph_name_params(graph_name) or None
         try:
             response = self.http_client.put(
-                f"/repositories/{self.identifier}/rdf-graphs/service",
+                self._build_url(graph_name),
                 headers=headers,
                 params=params,
                 content=stream,
@@ -316,7 +328,7 @@ class GraphStoreManager:
             if should_close:
                 stream.close()
 
-    def clear(self, graph_name: str):
+    def clear(self, graph_name: URIRef | str):
         """Clear all statements in the specified graph.
 
         Parameters:
@@ -327,9 +339,9 @@ class GraphStoreManager:
         """
         if not graph_name:
             raise ValueError("Graph name must be provided.")
-        params = self._build_graph_name_params(graph_name)
+        params = self._build_graph_name_params(graph_name) or None
         response = self.http_client.delete(
-            f"/repositories/{self.identifier}/rdf-graphs/service", params=params
+            self._build_url(graph_name), params=params
         )
         response.raise_for_status()
 
