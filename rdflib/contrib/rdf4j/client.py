@@ -802,6 +802,11 @@ class RDF4JClient:
 
     @property
     def protocol(self) -> float:
+        """The RDF4J REST API protocol version.
+
+        Returns:
+            The protocol version number.
+        """
         response = self.http_client.get(
             "/protocol", headers={"Accept": "text/plain"}
         )
