@@ -91,7 +91,6 @@ class NamespaceManager:
         except (KeyError, ValueError) as err:
             raise RepositoryFormatError(f"Unrecognised response format: {err}")
 
-
     def clear(self):
         """Clear all namespace declarations in the repository."""
         headers = {
@@ -312,9 +311,7 @@ class GraphStoreManager:
         if not graph_name:
             raise ValueError("Graph name must be provided.")
         params = self._build_graph_name_params(graph_name) or None
-        response = self.http_client.delete(
-            self._build_url(graph_name), params=params
-        )
+        response = self.http_client.delete(self._build_url(graph_name), params=params)
         response.raise_for_status()
 
 
@@ -807,9 +804,7 @@ class RDF4JClient:
         Returns:
             The protocol version number.
         """
-        response = self.http_client.get(
-            "/protocol", headers={"Accept": "text/plain"}
-        )
+        response = self.http_client.get("/protocol", headers={"Accept": "text/plain"})
         response.raise_for_status()
         return float(response.text.strip())
 

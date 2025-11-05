@@ -2,15 +2,14 @@ from pathlib import Path
 
 import pytest
 
-from rdflib import Graph, URIRef, Dataset
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
+from rdflib import Dataset, Graph, URIRef
 from rdflib.contrib.rdf4j.client import Repository
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 
 
-@pytest.mark.parametrize("graph_name", [
-    URIRef("urn:graph:a"),
-    DATASET_DEFAULT_GRAPH_ID
-])
+@pytest.mark.parametrize(
+    "graph_name", [URIRef("urn:graph:a"), DATASET_DEFAULT_GRAPH_ID]
+)
 @pytest.mark.testcontainer
 def test_e2e_repo_graph_store_crud(repo: Repository, graph_name: URIRef):
     path = str(Path(__file__).parent.parent / "data/quads-2.nq")
@@ -34,7 +33,13 @@ def test_e2e_repo_graph_store_crud(repo: Repository, graph_name: URIRef):
     graph = repo.graphs.get(graph_name)
     assert isinstance(graph, Graph)
     assert len(graph) == 2
-    expected_graph.add((URIRef("http://example.org/s4"), URIRef("http://example.org/p4"), URIRef("http://example.org/o4")))
+    expected_graph.add(
+        (
+            URIRef("http://example.org/s4"),
+            URIRef("http://example.org/p4"),
+            URIRef("http://example.org/o4"),
+        )
+    )
     assert graph.isomorphic(expected_graph)
 
     # Overwrite the graph
@@ -46,7 +51,9 @@ def test_e2e_repo_graph_store_crud(repo: Repository, graph_name: URIRef):
     graph = repo.graphs.get(graph_name)
     assert isinstance(graph, Graph)
     assert len(graph) == 1
-    expected_graph = Graph().parse(data="<http://example.org/s5> <http://example.org/p5> <http://example.org/o5> .")
+    expected_graph = Graph().parse(
+        data="<http://example.org/s5> <http://example.org/p5> <http://example.org/o5> ."
+    )
     assert graph.isomorphic(expected_graph)
 
     # Clear the graph
