@@ -60,7 +60,7 @@ def test_repo_graphs(
     mock_response = Mock(spec=httpx.Response, json=lambda: response_dict)
     mock_httpx_get = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
-    result = repo.graphs()
+    result = repo.graph_names()
     mock_httpx_get.assert_called_once_with(
         "/repositories/test-repo/contexts",
         headers={"Accept": "application/sparql-results+json"},
@@ -95,7 +95,7 @@ def test_repo_graphs_invalid_response(
     mock_httpx_get = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
     with pytest.raises(expected_error):
-        repo.graphs()
+        repo.graph_names()
     mock_httpx_get.assert_called_once_with(
         "/repositories/test-repo/contexts",
         headers={"Accept": "application/sparql-results+json"},

@@ -73,7 +73,7 @@ def test_repo_manager_crud(client: RDF4JClient):
     with open(pathlib.Path(__file__).parent.parent / "data/quads-2.nq", "rb") as file:
         repo.overwrite(file)
     assert repo.size() == 1
-    graphs = repo.graphs()
+    graphs = repo.graph_names()
     assert len(graphs) == 1
     assert any(value in graphs for value in [URIRef("urn:graph:a3")])
     ds = repo.get()
@@ -90,7 +90,7 @@ def test_repo_manager_crud(client: RDF4JClient):
     assert repo.size() == 2
     ds = repo.get()
     assert len(ds) == 2
-    graphs = repo.graphs()
+    graphs = repo.graph_names()
     assert len(graphs) == 2
     assert any(
         value in graphs for value in [URIRef("urn:graph:a"), URIRef("urn:graph:b")]
@@ -131,7 +131,7 @@ def test_repo_manager_crud(client: RDF4JClient):
     assert repo.size() == 2
     ds = repo.get()
     assert len(ds) == 2
-    graphs = repo.graphs()
+    graphs = repo.graph_names()
     assert len(graphs) == 2
     assert any(
         value in graphs

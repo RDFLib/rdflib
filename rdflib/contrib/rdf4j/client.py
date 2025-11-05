@@ -24,7 +24,7 @@ from rdflib.contrib.rdf4j.util import (
     build_spo_param,
     rdf_payload_to_stream,
 )
-from rdflib.graph import Dataset, Graph
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
 from rdflib.term import IdentifiedNode, Literal, URIRef
 
 SubjectType = t.Union[IdentifiedNode, None]
@@ -149,7 +149,8 @@ class NamespaceManager:
         """Set the namespace URI for a given prefix.
 
         !!! note
-            If the prefix was previously mapped to a different namespace, this will be overwritten.
+            If the prefix was previously mapped to a different namespace, this will be
+            overwritten.
 
         Parameters:
             prefix: The prefix to set.
@@ -193,6 +194,146 @@ class NamespaceManager:
             raise
 
 
+class GraphStoreManager:
+    """An RDF4J Graph Store Protocol Client.
+
+    Parameters:
+        identifier: The identifier of the repository.
+        http_client: The httpx.Client instance.
+    """
+
+    def __init__(self, identifier: str, http_client: httpx.Client):
+        self._identifier = identifier
+        self._http_client = http_client
+        self._content_type = "application/n-triples"
+
+    @property
+    def http_client(self):
+        return self._http_client
+
+    @property
+    def identifier(self):
+        """Repository identifier."""
+        return self._identifier
+
+    @staticmethod
+    def _build_graph_name_params(graph_name: URIRef | str):
+        params = {}
+        if isinstance(graph_name, URIRef) and graph_name == DATASET_DEFAULT_GRAPH_ID:
+            params["default"] = ""
+        else:
+            params["graph"] = str(graph_name)
+        return params
+
+    def get(self, graph_name: URIRef | str) -> Graph:
+        """Fetch all statements in the specified graph.
+
+        Parameters:
+            graph_name: The graph name of the graph.
+
+                For the default graph, use
+                [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID].
+
+        Returns:
+            A [`Graph`][rdflib.graph.Graph] object containing all statements in the
+                graph.
+        """
+        if not graph_name:
+            raise ValueError("Graph name must be provided.")
+        headers = {
+            "Accept": self._content_type,
+        }
+        params = self._build_graph_name_params(graph_name)
+
+        response = self.http_client.get(
+            f"/repositories/{self.identifier}/rdf-graphs/service",
+            headers=headers,
+            params=params,
+        )
+        response.raise_for_status()
+
+        return Graph(identifier=graph_name).parse(
+            data=response.text, format=self._content_type
+        )
+
+    def add(self, graph_name: str, data: str | bytes | BinaryIO | Graph):
+        """Add statements to the specified graph.
+
+        Parameters:
+            graph_name: The graph name of the graph.
+
+                For the default graph, use
+                [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID].
+
+            data: The RDF data to add.
+        """
+        if not graph_name:
+            raise ValueError("Graph name must be provided.")
+        stream, should_close = rdf_payload_to_stream(data)
+        headers = {
+            "Content-Type": self._content_type,
+        }
+        params = self._build_graph_name_params(graph_name)
+        try:
+            response = self.http_client.post(
+                f"/repositories/{self.identifier}/rdf-graphs/service",
+                headers=headers,
+                params=params,
+                content=stream,
+            )
+            response.raise_for_status()
+        finally:
+            if should_close:
+                stream.close()
+
+    def overwrite(self, graph_name: str, data: str | bytes | BinaryIO | Graph):
+        """Overwrite statements in the specified graph.
+
+        Parameters:
+            graph_name: The graph name of the graph.
+
+                For the default graph, use
+                [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID].
+
+            data: The RDF data to overwrite with.
+        """
+        if not graph_name:
+            raise ValueError("Graph name must be provided.")
+        stream, should_close = rdf_payload_to_stream(data)
+        headers = {
+            "Content-Type": self._content_type,
+        }
+        params = self._build_graph_name_params(graph_name)
+        try:
+            response = self.http_client.put(
+                f"/repositories/{self.identifier}/rdf-graphs/service",
+                headers=headers,
+                params=params,
+                content=stream,
+            )
+            response.raise_for_status()
+        finally:
+            if should_close:
+                stream.close()
+
+    def clear(self, graph_name: str):
+        """Clear all statements in the specified graph.
+
+        Parameters:
+            graph_name: The graph name of the graph.
+
+                For the default graph, use
+                [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID].
+        """
+        if not graph_name:
+            raise ValueError("Graph name must be provided.")
+        params = self._build_graph_name_params(graph_name)
+        response = self.http_client.delete(
+            f"/repositories/{self.identifier}/rdf-graphs/service", params=params
+        )
+        response.raise_for_status()
+
+
 @dataclass(frozen=True)
 class RepositoryListingResult:
     """RDF4J repository listing result.
@@ -224,6 +365,7 @@ class Repository:
         self._identifier = identifier
         self._http_client = http_client
         self._namespace_manager: NamespaceManager | None = None
+        self._graph_store_manager: GraphStoreManager | None = None
 
     @property
     def http_client(self):
@@ -242,6 +384,15 @@ class Repository:
                 self.identifier, self.http_client
             )
         return self._namespace_manager
+
+    @property
+    def graphs(self) -> GraphStoreManager:
+        """Graph store manager for the repository."""
+        if self._graph_store_manager is None:
+            self._graph_store_manager = GraphStoreManager(
+                self.identifier, self.http_client
+            )
+        return self._graph_store_manager
 
     def health(self) -> bool:
         """Repository health check.
@@ -316,7 +467,7 @@ class Repository:
         except (httpx.RequestError, httpx.HTTPStatusError):
             raise
 
-    def graphs(self) -> list[IdentifiedNode]:
+    def graph_names(self) -> list[IdentifiedNode]:
         """Get a list of all graph names in the repository.
 
         Returns:
