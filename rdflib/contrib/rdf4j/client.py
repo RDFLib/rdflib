@@ -895,6 +895,68 @@ class Transaction:
             if should_close:
                 stream.close()
 
+    def get(
+        self,
+        subj: SubjectType = None,
+        pred: PredicateType = None,
+        obj: ObjectType = None,
+        graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None,
+        infer: bool = True,
+        content_type: str | None = None,
+    ) -> Graph | Dataset:
+        """Get RDF statements from the repository matching the filtering parameters.
+
+        Parameters:
+            subj: Subject of the statement to filter by, or `None` to match all.
+            pred: Predicate of the statement to filter by, or `None` to match all.
+            obj: Object of the statement to filter by, or `None` to match all.
+            graph_name: Graph name(s) to restrict to.
+
+                The default value `None` queries all graphs.
+
+                To query just the default graph, use
+                [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID].
+
+            infer: Specifies whether inferred statements should be included in the
+                result.
+            content_type: The content type of the response.
+                A triple-based format returns a [Graph][rdflib.graph.Graph], while a
+                quad-based format returns a [`Dataset`][rdflib.graph.Dataset].
+
+        Returns:
+            A [`Graph`][rdflib.graph.Graph] or [`Dataset`][rdflib.graph.Dataset] object
+                with the repository namespace prefixes bound to it.
+        """
+        if content_type is None:
+            content_type = "application/n-quads"
+        headers = {"Accept": content_type}
+        params: dict[str, str] = {"action": "GET"}
+        build_context_param(params, graph_name)
+        build_spo_param(params, subj, pred, obj)
+        build_infer_param(params, infer=infer)
+
+        response = self.repo.http_client.put(
+            self.url,
+            headers=headers,
+            params=params,
+        )
+        response.raise_for_status()
+        triple_formats = [
+            "application/n-triples",
+            "text/turtle",
+            "application/rdf+xml",
+        ]
+        try:
+            if content_type in triple_formats:
+                retval = Graph().parse(data=response.text, format=content_type)
+            else:
+                retval = Dataset().parse(data=response.text, format=content_type)
+            for result in self.repo.namespaces.list():
+                retval.bind(result.prefix, result.namespace, replace=True)
+            return retval
+        except Exception as err:
+            raise RDFLibParserError(f"Error parsing RDF: {err}") from err
+
     def delete(
         self,
         data: str | bytes | BinaryIO | Graph | Dataset,

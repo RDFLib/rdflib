@@ -4,7 +4,7 @@ import pytest
 
 from rdflib.contrib.rdf4j.client import Repository, Transaction
 from rdflib.contrib.rdf4j.exceptions import TransactionClosedError
-from rdflib.term import Literal, Variable
+from rdflib.term import Literal, URIRef, Variable
 
 
 def test_e2e_repo_transaction(repo: Repository):
@@ -71,3 +71,27 @@ def test_e2e_repo_transaction_update(repo: Repository):
         txn.update(query)
         assert txn.size() == 3
         assert txn.size("urn:graph:a2") == 1
+
+
+def test_e2e_repo_transaction_get(repo: Repository):
+    path = str(Path(__file__).parent.parent / "data/quads-1.nq")
+    repo.overwrite(path)
+    assert repo.size() == 2
+
+    with repo.transaction() as txn:
+        ds = txn.get()
+        assert len(ds) == 2
+
+    repo.upload(str(Path(__file__).parent.parent / "data/quads-2.nq"))
+    repo.upload(str(Path(__file__).parent.parent / "data/quads-3.nq"))
+    assert repo.size() == 4
+
+    with repo.transaction() as txn:
+        ds = txn.get()
+        assert len(ds) == 4
+
+        ds = txn.get(graph_name="urn:graph:a")
+        assert len(ds) == 1
+
+        ds = txn.get(pred=URIRef("http://example.org/p"))
+        assert len(ds) == 2
