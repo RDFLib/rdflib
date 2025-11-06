@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import io
 import typing as t
 from dataclasses import dataclass
 from typing import Any, BinaryIO, Iterable
@@ -25,6 +26,8 @@ from rdflib.contrib.rdf4j.util import (
     rdf_payload_to_stream,
 )
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
+from rdflib.plugins.sparql import prepareQuery
+from rdflib.query import Result
 from rdflib.term import IdentifiedNode, Literal, URIRef
 
 SubjectType = t.Union[IdentifiedNode, None]
@@ -438,6 +441,45 @@ class Repository:
             raise RepositoryFormatError(
                 f"Failed to parse repository size: {err}"
             ) from err
+
+    def query(self, query: str, **kwargs):
+        """Execute a SPARQL query against the repository.
+
+        !!! note
+            A POST request is used by default. If any keyword arguments are provided,
+            a GET request is used instead, and the arguments are passed as query parameters.
+
+        Parameters:
+            query: The SPARQL query to execute.
+            **kwargs: Additional keyword arguments to include as query parameters
+                in the request. See
+                [RDF4J REST API - Execute SPARQL query](https://rdf4j.org/documentation/reference/rest-api/#tag/SPARQL/paths/~1repositories~1%7BrepositoryID%7D/get)
+                for the list of supported query parameters.
+        """
+        prepared_query = prepareQuery(query)
+        headers = {"Content-Type": "application/sparql-query"}
+        if prepared_query.algebra.name in ("SelectQuery", "AskQuery"):
+            headers["Accept"] = "application/sparql-results+json"
+        elif prepared_query.algebra.name in ("ConstructQuery", "DescribeQuery"):
+            headers["Accept"] = "application/n-triples"
+        else:
+            raise ValueError(f"Unsupported query type: {prepared_query.algebra.name}")
+
+        if not kwargs:
+            response = self.http_client.post(
+                f"/repositories/{self.identifier}", headers=headers, content=query
+            )
+        else:
+            response = self.http_client.get(
+                f"/repositories/{self.identifier}",
+                headers=headers,
+                params={"query": query, **kwargs},
+            )
+        response.raise_for_status()
+        return Result.parse(
+            io.BytesIO(response.content),
+            content_type=response.headers["Content-Type"].split(";")[0],
+        )
 
     def graph_names(self) -> list[IdentifiedNode]:
         """Get a list of all graph names in the repository.
