@@ -43,3 +43,7 @@ class TransactionPingError(RepositoryTransactionError):
 
 class TransactionCommitError(RepositoryTransactionError):
     """Raised when there is an error committing the transaction."""
+
+
+class TransactionRollbackError(RepositoryTransactionError):
+    """Raised when there is an error rolling back the transaction."""

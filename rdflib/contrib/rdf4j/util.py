@@ -6,6 +6,7 @@ import io
 import typing as t
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
+from rdflib.plugins.sparql.processor import prepareQuery
 from rdflib.term import IdentifiedNode, URIRef
 
 if t.TYPE_CHECKING:
@@ -21,7 +22,7 @@ def build_context_param(
     !!! Note
         This mutates the params dictionary key `context`.
 
-    Args:
+    Parameters:
         params: The `httpx.Request` parameter dictionary.
         graph_name: The graph name or iterable of graph names.
 
@@ -52,7 +53,7 @@ def build_spo_param(
     !!! Note
         This mutates the params dictionary key `subj`, `pred`, and `obj`.
 
-    Args:
+    Parameters:
         params: The `httpx.Request` parameter dictionary.
         subj: The `subj` query parameter value.
         pred: The `pred` query parameter value.
@@ -75,7 +76,7 @@ def build_infer_param(
     !!! Note
         This mutates the params dictionary key `infer`.
 
-    Args:
+    Parameters:
         params: The `httpx.Request` parameter dictionary.
         infer: The `infer` query parameter value.
     """
@@ -88,7 +89,7 @@ def rdf_payload_to_stream(
 ) -> tuple[t.BinaryIO, bool]:
     """Convert an RDF payload into a file-like object.
 
-    Args:
+    Parameters:
         data: The RDF payload.
 
             This can be a python `str`, `bytes`, `BinaryIO`, or a
@@ -132,3 +133,21 @@ def rdf_payload_to_stream(
         should_close = False
 
     return stream, should_close
+
+
+def build_sparql_query_accept_header(query: str, headers: dict[str, str]):
+    """Build the SPARQL query accept header.
+
+    !!! Note
+        This mutates the headers dictionary key `Accept`.
+
+    Parameters:
+        query: The SPARQL query.
+    """
+    prepared_query = prepareQuery(query)
+    if prepared_query.algebra.name in ("SelectQuery", "AskQuery"):
+        headers["Accept"] = "application/sparql-results+json"
+    elif prepared_query.algebra.name in ("ConstructQuery", "DescribeQuery"):
+        headers["Accept"] = "application/n-triples"
+    else:
+        raise ValueError(f"Unsupported query type: {prepared_query.algebra.name}")

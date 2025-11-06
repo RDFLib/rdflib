@@ -5,10 +5,10 @@ from unittest.mock import Mock
 import httpx
 import pytest
 
-from rdflib import Graph
 from rdflib.contrib.rdf4j.client import (
-    Repository,
+    Transaction,
 )
+from rdflib.graph import Graph
 from rdflib.term import URIRef, Variable
 
 
@@ -50,8 +50,8 @@ from rdflib.term import URIRef, Variable
         ],
     ],
 )
-def test_repo_query(
-    repo: Repository,
+def test_repo_transaction_query(
+    txn: Transaction,
     monkeypatch: pytest.MonkeyPatch,
     query: str,
     accept_header: str,
@@ -63,15 +63,13 @@ def test_repo_query(
         content=response_text.encode("utf-8"),
         headers={"Content-Type": accept_header},
     )
-    mock_httpx_post = Mock(return_value=mock_response)
-    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
-    result = repo.query(query)
-    assert result.type == expected_result_type
-    headers = {"Accept": accept_header, "Content-Type": "application/sparql-query"}
-    mock_httpx_post.assert_called_once_with(
-        "/repositories/test-repo",
-        headers=headers,
-        content=query,
+    mock_httpx_put = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
+    result = txn.query(query, infer="true")
+    mock_httpx_put.assert_called_once_with(
+        txn.url,
+        params={"action": "QUERY", "query": query, "infer": "true"},
+        headers={"Accept": accept_header},
     )
 
     if expected_result_type == "SELECT":
@@ -92,24 +90,3 @@ def test_repo_query(
         )
     else:
         assert False, "Unexpected result type"
-
-
-def test_repo_query_kwargs(repo: Repository, monkeypatch: pytest.MonkeyPatch):
-    """The query method uses GET if a keyword argument is provided."""
-    mock_response = Mock(
-        spec=httpx.Response,
-        content=b"<http://example.com/s> <http://example.com/p> <http://example.com/o> .",
-        headers={"Content-Type": "application/n-triples"},
-    )
-    mock_httpx_get = Mock(return_value=mock_response)
-    monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
-    query = "construct { ?s ?p ?o } where { ?s ?p ?o }"
-    repo.query(query, infer="true")
-    mock_httpx_get.assert_called_once_with(
-        "/repositories/test-repo",
-        headers={
-            "Accept": "application/n-triples",
-            "Content-Type": "application/sparql-query",
-        },
-        params={"query": query, "infer": "true"},
-    )

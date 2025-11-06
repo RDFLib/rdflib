@@ -3,10 +3,17 @@ from __future__ import annotations
 import io
 import typing as t
 from pathlib import Path
+from unittest.mock import Mock
 
 import pytest
 
-from rdflib.contrib.rdf4j.util import build_context_param, rdf_payload_to_stream
+import rdflib.contrib.rdf4j.util
+import rdflib.plugins.sparql.processor
+from rdflib.contrib.rdf4j.util import (
+    build_context_param,
+    build_sparql_query_accept_header,
+    rdf_payload_to_stream,
+)
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
 from rdflib.term import BNode, URIRef
 
@@ -57,3 +64,12 @@ def test_rdf_payload_to_stream(
     value, should_close = rdf_payload_to_stream(data)
     assert isinstance(value, expected_value_type)
     assert should_close == expected_should_close
+
+
+def test_build_sparql_query_accept_header(monkeypatch: pytest.MonkeyPatch):
+    mock = Mock()
+    mock.algebra.name = "InvalidQueryType"
+    monkeypatch.setattr(rdflib.contrib.rdf4j.util, "prepareQuery", lambda _: mock)
+
+    with pytest.raises(ValueError, match="Unsupported query type: InvalidQueryType"):
+        build_sparql_query_accept_header("blah", {})

@@ -22,15 +22,16 @@ from rdflib.contrib.rdf4j.exceptions import (
     TransactionClosedError,
     TransactionCommitError,
     TransactionPingError,
+    TransactionRollbackError,
 )
 from rdflib.contrib.rdf4j.util import (
     build_context_param,
     build_infer_param,
+    build_sparql_query_accept_header,
     build_spo_param,
     rdf_payload_to_stream,
 )
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
-from rdflib.plugins.sparql import prepareQuery
 from rdflib.query import Result
 from rdflib.term import IdentifiedNode, Literal, URIRef
 
@@ -464,14 +465,8 @@ class Repository:
                 [RDF4J REST API - Execute SPARQL query](https://rdf4j.org/documentation/reference/rest-api/#tag/SPARQL/paths/~1repositories~1%7BrepositoryID%7D/get)
                 for the list of supported query parameters.
         """
-        prepared_query = prepareQuery(query)
         headers = {"Content-Type": "application/sparql-query"}
-        if prepared_query.algebra.name in ("SelectQuery", "AskQuery"):
-            headers["Accept"] = "application/sparql-results+json"
-        elif prepared_query.algebra.name in ("ConstructQuery", "DescribeQuery"):
-            headers["Accept"] = "application/n-triples"
-        else:
-            raise ValueError(f"Unsupported query type: {prepared_query.algebra.name}")
+        build_sparql_query_accept_header(query, headers)
 
         if not kwargs:
             response = self.http_client.post(
@@ -598,8 +593,6 @@ class Repository:
         except Exception as err:
             raise RDFLibParserError(f"Error parsing RDF: {err}") from err
 
-    # TODO: This only covers appending statements to a repository.
-    #       We still need to implement sparql update and transaction document.
     def upload(
         self,
         data: str | bytes | BinaryIO | Graph | Dataset,
@@ -713,20 +706,26 @@ class Transaction:
     """An RDF4J transaction.
 
     Parameters:
-        identifier: The identifier of the repository.
-        http_client: The httpx.Client instance.
+        repo: The repository instance.
     """
 
     def __init__(self, repo: Repository):
         self._repo = repo
-        self._url: str | None = self._start_transaction()
+        self._url: str | None = None
 
     def __enter__(self):
+        self._url = self._start_transaction()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if self._url is not None:
-            self.commit()
+        if not self.is_closed:
+            if exc_type is None:
+                self.commit()
+            else:
+                self.rollback()
+
+        # Propagate errors.
+        return False
 
     @property
     def repo(self):
@@ -738,8 +737,13 @@ class Transaction:
         """The transaction URL."""
         return self._url
 
+    @property
+    def is_closed(self) -> bool:
+        """Whether the transaction is closed."""
+        return self._url is None
+
     def _raise_for_closed(self):
-        if self._url is None:
+        if self.is_closed:
             raise TransactionClosedError("The transaction has been closed.")
 
     def _start_transaction(self) -> str:
@@ -751,6 +755,10 @@ class Transaction:
 
     def _close_transaction(self):
         self._url = None
+
+    def open(self):
+        """Opens a transaction."""
+        self._url = self._start_transaction()
 
     def commit(self):
         """Commit the transaction.
@@ -765,6 +773,15 @@ class Transaction:
         if response.status_code != 200:
             raise TransactionCommitError(
                 f"Transaction commit failed: {response.status_code} - {response.text}"
+            )
+        self._close_transaction()
+
+    def rollback(self):
+        """Roll back the transaction."""
+        response = self.repo.http_client.delete(self.url)
+        if response.status_code != 204:
+            raise TransactionRollbackError(
+                f"Transaction rollback failed: {response.status_code} - {response.text}"
             )
         self._close_transaction()
 
@@ -783,7 +800,9 @@ class Transaction:
                 f"Transaction ping failed: {response.status_code} - {response.text}"
             )
 
-    def size(self, graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None):
+    def size(
+        self, graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None
+    ):
         """The number of statements in the repository or in the specified graph name.
 
         Parameters:
@@ -806,6 +825,59 @@ class Transaction:
         response = self.repo.http_client.put(self.url, params=params)
         response.raise_for_status()
         return self.repo._to_size(response.text)
+
+    def query(self, query: str, **kwargs):
+        """Execute a SPARQL query against the repository.
+
+        Parameters:
+            query: The SPARQL query to execute.
+            **kwargs: Additional keyword arguments to include as query parameters
+                in the request. See
+                [RDF4J REST API - Execute SPARQL query](https://rdf4j.org/documentation/reference/rest-api/#tag/SPARQL/paths/~1repositories~1%7BrepositoryID%7D/get)
+                for the list of supported query parameters.
+        """
+        headers: dict[str, str] = {}
+        build_sparql_query_accept_header(query, headers)
+        params = {"action": "QUERY", "query": query}
+        response = self.repo.http_client.put(
+            self.url, headers=headers, params={**params, **kwargs}
+        )
+        response.raise_for_status()
+        return Result.parse(
+            io.BytesIO(response.content),
+            content_type=response.headers["Content-Type"].split(";")[0],
+        )
+
+    def upload(
+        self,
+        data: str | bytes | BinaryIO | Graph | Dataset,
+        base_uri: str | None = None,
+        content_type: str | None = None,
+    ):
+        """Upload and append statements to the repository.
+
+        Parameters:
+            data: The RDF data to upload.
+            base_uri: The base URI to resolve against for any relative URIs in the data.
+            content_type: The content type of the data. Defaults to
+                `application/n-quads` when the value is `None`.
+        """
+        stream, should_close = rdf_payload_to_stream(data)
+        try:
+            headers = {"Content-Type": content_type or "application/n-quads"}
+            params = {"action": "ADD"}
+            if base_uri is not None:
+                params["baseURI"] = base_uri
+            response = self.repo.http_client.put(
+                self.url,
+                headers=headers,
+                params=params,
+                content=stream,
+            )
+            response.raise_for_status()
+        finally:
+            if should_close:
+                stream.close()
 
 
 class RepositoryManager:
