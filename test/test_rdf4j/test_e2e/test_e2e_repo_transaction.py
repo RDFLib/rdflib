@@ -4,7 +4,7 @@ import pytest
 
 from rdflib.contrib.rdf4j.client import Repository, Transaction
 from rdflib.contrib.rdf4j.exceptions import TransactionClosedError
-from rdflib.term import Variable, Literal
+from rdflib.term import Literal, Variable
 
 
 def test_e2e_repo_transaction(repo: Repository):
@@ -45,3 +45,17 @@ def test_e2e_repo_transaction(repo: Repository):
 
     # Transaction committed, size is now 3.
     assert repo.size() == 3
+
+
+def test_e2e_repo_transaction_delete(repo: Repository):
+    path = str(Path(__file__).parent.parent / "data/quads-1.nq")
+    repo.overwrite(path)
+    data = "<http://example.org/s> <http://example.org/p-another> <http://example.org/o-another> <urn:graph:a2> ."
+    repo.upload(data)
+    assert repo.size() == 3
+    assert repo.size("urn:graph:a2") == 1
+
+    with repo.transaction() as txn:
+        txn.delete(data)
+        assert txn.size() == 2
+        assert txn.size("urn:graph:a2") == 0

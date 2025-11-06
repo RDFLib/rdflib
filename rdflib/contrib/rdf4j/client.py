@@ -863,11 +863,48 @@ class Transaction:
                 `application/n-quads` when the value is `None`.
         """
         stream, should_close = rdf_payload_to_stream(data)
+        headers = {"Content-Type": content_type or "application/n-quads"}
+        params = {"action": "ADD"}
+        if base_uri is not None:
+            params["baseURI"] = base_uri
         try:
-            headers = {"Content-Type": content_type or "application/n-quads"}
-            params = {"action": "ADD"}
-            if base_uri is not None:
-                params["baseURI"] = base_uri
+            response = self.repo.http_client.put(
+                self.url,
+                headers=headers,
+                params=params,
+                content=stream,
+            )
+            response.raise_for_status()
+        finally:
+            if should_close:
+                stream.close()
+
+    def delete(
+        self,
+        data: str | bytes | BinaryIO | Graph | Dataset,
+        base_uri: str | None = None,
+        content_type: str | None = None,
+    ) -> None:
+        """Delete statements from the repository.
+
+        !!! Note
+            This function operates differently to [`Repository.delete`][] as it does
+            not use filter parameters. Instead, it expects a data payload.
+            See the notes from [graphdb.js#Deleting](https://github.com/Ontotext-AD/graphdb.js?tab=readme-ov-file#deleting-1)
+            for more information.
+
+        Parameters:
+            data: The RDF data to upload.
+            base_uri: The base URI to resolve against for any relative URIs in the data.
+            content_type: The content type of the data. Defaults to
+                `application/n-quads` when the value is `None`.
+        """
+        params: dict[str, str] = {"action": "DELETE"}
+        stream, should_close = rdf_payload_to_stream(data)
+        headers = {"Content-Type": content_type or "application/n-quads"}
+        if base_uri is not None:
+            params["baseURI"] = base_uri
+        try:
             response = self.repo.http_client.put(
                 self.url,
                 headers=headers,
