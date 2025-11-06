@@ -18,7 +18,7 @@ def test_repo_update(repo: Repository, monkeypatch: pytest.MonkeyPatch):
         "insert data { <http://example.org/s> <http://example.org/p> <http://example.org/o> }"
     )
     mock_httpx_post.assert_called_once_with(
-        "/repositories/test-repo",
+        "/repositories/test-repo/statements",
         headers={"Content-Type": "application/sparql-update"},
         content="insert data { <http://example.org/s> <http://example.org/p> <http://example.org/o> }",
     )
