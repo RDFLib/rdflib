@@ -481,6 +481,18 @@ class Repository:
             content_type=response.headers["Content-Type"].split(";")[0],
         )
 
+    def update(self, query: str):
+        """Execute a SPARQL update operation on the repository.
+
+        Parameters:
+            query: The SPARQL update query to execute.
+        """
+        headers = {"Content-Type": "application/sparql-update"}
+        response = self.http_client.post(
+            f"/repositories/{self.identifier}/statements", headers=headers, content=query
+        )
+        response.raise_for_status()
+
     def graph_names(self) -> list[IdentifiedNode]:
         """Get a list of all graph names in the repository.
 
