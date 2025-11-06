@@ -848,6 +848,22 @@ class Transaction:
             content_type=response.headers["Content-Type"].split(";")[0],
         )
 
+    def update(self, query: str, **kwargs):
+        """Execute a SPARQL update operation on the repository.
+
+        Parameters:
+            query: The SPARQL update query to execute.
+            **kwargs: Additional keyword arguments to include as query parameters
+                See [RDF4J REST API - Execute a transaction action](https://rdf4j.org/documentation/reference/rest-api/#tag/Transactions/paths/~1repositories~1%7BrepositoryID%7D~1transactions~1%7BtransactionID%7D/put)
+                for the list of supported query parameters.
+        """
+        params = {"action": "UPDATE", "update": query}
+        response = self.repo.http_client.put(
+            self.url,
+            params={**params, **kwargs},
+        )
+        response.raise_for_status()
+
     def upload(
         self,
         data: str | bytes | BinaryIO | Graph | Dataset,

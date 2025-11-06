@@ -59,3 +59,15 @@ def test_e2e_repo_transaction_delete(repo: Repository):
         txn.delete(data)
         assert txn.size() == 2
         assert txn.size("urn:graph:a2") == 0
+
+
+def test_e2e_repo_transaction_update(repo: Repository):
+    path = str(Path(__file__).parent.parent / "data/quads-1.nq")
+    repo.overwrite(path)
+    assert repo.size() == 2
+
+    query = "INSERT DATA { GRAPH <urn:graph:a2> { <http://example.org/s> <http://example.org/p-another> <http://example.org/o-another> } }"
+    with repo.transaction() as txn:
+        txn.update(query)
+        assert txn.size() == 3
+        assert txn.size("urn:graph:a2") == 1
