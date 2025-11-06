@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import io
 import typing as t
+from pathlib import Path
 
 import pytest
 
@@ -37,7 +38,7 @@ def test_build_context_param(graph_name, expected_graph_name_param):
     "data, expected_value_type, expected_should_close",
     [
         [
-            open("test/test_rdf4j/test_unit/repository/test_repo_delete.py", "rb"),
+            open(Path(__file__), "rb"),
             io.BufferedReader,
             False,
         ],
