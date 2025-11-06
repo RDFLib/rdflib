@@ -430,10 +430,17 @@ class Repository:
         Raises:
             RepositoryFormatError: Fails to parse the repository size.
         """
+        return self._size(graph_name)
+
+    def _size(
+        self,
+        graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None,
+        url: str | None = None,
+    ):
         params: dict[str, str] = {}
         build_context_param(params, graph_name)
         response = self.http_client.get(
-            f"/repositories/{self.identifier}/size", params=params
+            url or f"/repositories/{self.identifier}/size", params=params
         )
         response.raise_for_status()
         try:
