@@ -6,12 +6,27 @@ import httpx
 import pytest
 
 from rdflib.contrib.rdf4j.client import (
-    Repository,
+    Repository, Transaction,
 )
 from rdflib.contrib.rdf4j.exceptions import (
     TransactionClosedError,
     TransactionPingError,
 )
+
+
+@pytest.fixture
+def txn(repo: Repository, monkeypatch: pytest.MonkeyPatch):
+    transaction_url = "http://example.com/transaction/1"
+    mock_transaction_create_response = Mock(
+        spec=httpx.Response, headers={"Location": transaction_url}
+    )
+    mock_httpx_post = Mock(return_value=mock_transaction_create_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+    with repo.transaction() as txn:
+        yield txn
+        mock_commit_response = Mock(spec=httpx.Response, status_code=200)
+        mock_httpx_put = Mock(return_value=mock_commit_response)
+        monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
 
 
 def test_repo_transaction_commit(
@@ -54,32 +69,32 @@ def test_repo_transaction_commit(
         txn.ping()
 
 
-def test_repo_transaction_ping(repo: Repository, monkeypatch: pytest.MonkeyPatch):
-    transaction_url = "http://example.com/transaction/1"
-    mock_transaction_create_response = Mock(
-        spec=httpx.Response, headers={"Location": transaction_url}
+def test_repo_transaction_ping(txn: Transaction, monkeypatch: pytest.MonkeyPatch):
+    # Test a successful ping.
+    mock_ping_response = Mock(spec=httpx.Response, status_code=200)
+    mock_httpx_put = Mock(return_value=mock_ping_response)
+    monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
+    txn.ping()
+    mock_httpx_put.assert_called_once_with(
+        txn.url,
+        params={"action": "PING"},
     )
-    mock_httpx_post = Mock(return_value=mock_transaction_create_response)
-    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
-    with repo.transaction() as txn:
-        # Test a successful ping.
-        mock_ping_response = Mock(spec=httpx.Response, status_code=200)
-        mock_httpx_put = Mock(return_value=mock_ping_response)
-        monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
+
+    # Ensure it raises TransactionPingError.
+    mock_ping_response = Mock(spec=httpx.Response, status_code=405)
+    mock_httpx_put = Mock(return_value=mock_ping_response)
+    monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
+    with pytest.raises(TransactionPingError):
         txn.ping()
-        mock_httpx_put.assert_called_once_with(
-            transaction_url,
-            params={"action": "PING"},
-        )
 
-        # Ensure it raises TransactionPingError.
-        mock_ping_response = Mock(spec=httpx.Response, status_code=405)
-        mock_httpx_put = Mock(return_value=mock_ping_response)
-        monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
-        with pytest.raises(TransactionPingError):
-            txn.ping()
 
-        # Mock successful commit.
-        mock_commit_response = Mock(spec=httpx.Response, status_code=200)
-        mock_httpx_put = Mock(return_value=mock_commit_response)
-        monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
+def test_repo_transaction_size(txn: Transaction, monkeypatch: pytest.MonkeyPatch):
+    mock_response = Mock(spec=httpx.Response, text="10")
+    mock_httpx_put = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
+    size = txn.size()
+    mock_httpx_put.assert_called_once_with(
+        txn.url,
+        params={"action": "SIZE"},
+    )
+    assert size == 10

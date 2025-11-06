@@ -13,6 +13,8 @@ def test_e2e_repo_transaction(repo: Repository):
 
     with repo.transaction() as txn:
         txn.ping()
+        assert txn.size() == 2
+        assert txn.size("urn:graph:a") == 1
 
     with pytest.raises(TransactionClosedError):
         txn.ping()
