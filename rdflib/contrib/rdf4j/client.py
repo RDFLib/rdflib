@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import io
 import typing as t
 from dataclasses import dataclass
@@ -18,6 +19,9 @@ from rdflib.contrib.rdf4j.exceptions import (
     RepositoryFormatError,
     RepositoryNotFoundError,
     RepositoryNotHealthyError,
+    TransactionClosedError,
+    TransactionCommitError,
+    TransactionPingError,
 )
 from rdflib.contrib.rdf4j.util import (
     build_context_param,
@@ -489,7 +493,9 @@ class Repository:
         """
         headers = {"Content-Type": "application/sparql-update"}
         response = self.http_client.post(
-            f"/repositories/{self.identifier}/statements", headers=headers, content=query
+            f"/repositories/{self.identifier}/statements",
+            headers=headers,
+            content=query,
         )
         response.raise_for_status()
 
@@ -692,9 +698,99 @@ class Repository:
         )
         response.raise_for_status()
 
+    @contextlib.contextmanager
+    def transaction(self):
+        """Create a new transaction for the repository."""
+        with Transaction(self.identifier, self.http_client) as txn:
+            yield txn
+
+
+class Transaction:
+    """An RDF4J transaction.
+
+    Parameters:
+        identifier: The identifier of the repository.
+        http_client: The httpx.Client instance.
+    """
+
+    def __init__(self, identifier: str, http_client: httpx.Client):
+        self._identifier = identifier
+        self._http_client = http_client
+        self._url: str | None = self._start_transaction()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self._url is not None:
+            self.commit()
+
+    @property
+    def http_client(self):
+        return self._http_client
+
+    @property
+    def identifier(self):
+        """Repository identifier."""
+        return self._identifier
+
+    @property
+    def url(self):
+        """The transaction URL."""
+        return self._url
+
+    def _raise_for_closed(self):
+        if self._url is None:
+            raise TransactionClosedError("The transaction has been closed.")
+
+    def _start_transaction(self) -> str:
+        response = self.http_client.post(
+            f"/repositories/{self.identifier}/transactions"
+        )
+        response.raise_for_status()
+        return response.headers["Location"]
+
+    def _close_transaction(self):
+        self._url = None
+
+    def commit(self):
+        """Commit the transaction.
+
+        Raises:
+            TransactionCommitError: If the transaction commit fails.
+            TransactionClosedError: If the transaction is closed.
+        """
+        self._raise_for_closed()
+        params = {"action": "COMMIT"}
+        response = self.http_client.put(self.url, params=params)
+        if response.status_code != 200:
+            raise TransactionCommitError(
+                f"Transaction commit failed: {response.status_code} - {response.text}"
+            )
+        self._close_transaction()
+
+    def ping(self):
+        """Ping the transaction.
+
+        Raises:
+            RepositoryTransactionPingError: If the transaction ping fails.
+            TransactionClosedError: If the transaction is closed.
+        """
+        self._raise_for_closed()
+        params = {"action": "PING"}
+        response = self.http_client.put(self.url, params=params)
+        if response.status_code != 200:
+            raise TransactionPingError(
+                f"Transaction ping failed: {response.status_code} - {response.text}"
+            )
+
 
 class RepositoryManager:
-    """A client to manage server-level repository operations."""
+    """A client to manage server-level repository operations.
+
+    Parameters:
+        http_client: The httpx.Client instance.
+    """
 
     def __init__(self, http_client: httpx.Client):
         self._http_client = http_client

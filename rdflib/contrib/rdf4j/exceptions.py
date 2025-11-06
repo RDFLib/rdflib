@@ -27,3 +27,19 @@ class RDF4JUnsupportedProtocolError(Exception):
 
 class RDFLibParserError(Exception):
     """Raised when there is an error parsing the RDF document."""
+
+
+class RepositoryTransactionError(Exception):
+    """Raised when there is an error with the transaction."""
+
+
+class TransactionClosedError(RepositoryTransactionError):
+    """Raised when the transaction has been closed."""
+
+
+class TransactionPingError(RepositoryTransactionError):
+    """Raised when there is an error pinging the transaction."""
+
+
+class TransactionCommitError(RepositoryTransactionError):
+    """Raised when there is an error committing the transaction."""
