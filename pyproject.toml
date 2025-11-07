@@ -213,6 +213,8 @@ addopts = [
     "--ignore=admin",
     "--ignore=devtools",
     "--ignore=rdflib/extras/external_graph_libs.py",
+    "--ignore=rdflib/contrib/graphdb/client.py",
+    "--ignore=rdflib/contrib/rdf4j/client.py",
     "--ignore-glob=docs/*.py",
     "--ignore-glob=site/*",
     "--strict-markers",
