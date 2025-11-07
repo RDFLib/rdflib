@@ -3,11 +3,13 @@ from pathlib import Path
 import pytest
 
 from rdflib.contrib.rdf4j import has_httpx
-from rdflib.contrib.rdf4j.client import Repository
 
 pytestmark = pytest.mark.skipif(
     not has_httpx, reason="skipping rdf4j tests, httpx not available"
 )
+
+if has_httpx:
+    from rdflib.contrib.rdf4j.client import Repository
 
 
 def test_e2e_repo_query(repo: Repository):

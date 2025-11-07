@@ -1,22 +1,25 @@
 import pathlib
 
-import httpx
 import pytest
 
 from rdflib import BNode, Dataset, URIRef
 from rdflib.compare import isomorphic
-from rdflib.contrib.rdf4j import RDF4JClient, has_httpx
-from rdflib.contrib.rdf4j.client import Repository
-from rdflib.contrib.rdf4j.exceptions import (
-    RepositoryAlreadyExistsError,
-    RepositoryFormatError,
-    RepositoryNotFoundError,
-    RepositoryNotHealthyError,
-)
+from rdflib.contrib.rdf4j import has_httpx
 
 pytestmark = pytest.mark.skipif(
     not has_httpx, reason="skipping rdf4j tests, httpx not available"
 )
+
+if has_httpx:
+    import httpx
+    from rdflib.contrib.rdf4j import RDF4JClient
+    from rdflib.contrib.rdf4j.client import Repository
+    from rdflib.contrib.rdf4j.exceptions import (
+        RepositoryAlreadyExistsError,
+        RepositoryFormatError,
+        RepositoryNotFoundError,
+        RepositoryNotHealthyError,
+    )
 
 
 @pytest.mark.testcontainer

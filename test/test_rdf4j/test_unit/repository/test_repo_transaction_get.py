@@ -3,23 +3,25 @@ from __future__ import annotations
 import typing as t
 from unittest.mock import Mock
 
-import httpx
 import pytest
 
 from rdflib import BNode, Dataset, Graph, IdentifiedNode, URIRef
 from rdflib.contrib.rdf4j import has_httpx
-from rdflib.contrib.rdf4j.client import (
-    NamespaceManager,
-    ObjectType,
-    PredicateType,
-    SubjectType,
-    Transaction,
-)
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 
 pytestmark = pytest.mark.skipif(
     not has_httpx, reason="skipping rdf4j tests, httpx not available"
 )
+
+if has_httpx:
+    import httpx
+    from rdflib.contrib.rdf4j.client import (
+        NamespaceManager,
+        ObjectType,
+        PredicateType,
+        SubjectType,
+        Transaction,
+    )
 
 
 def test_repo_transaction_get(txn: Transaction, monkeypatch: pytest.MonkeyPatch):

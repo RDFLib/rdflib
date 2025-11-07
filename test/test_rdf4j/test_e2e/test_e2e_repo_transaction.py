@@ -3,13 +3,15 @@ from pathlib import Path
 import pytest
 
 from rdflib.contrib.rdf4j import has_httpx
-from rdflib.contrib.rdf4j.client import Repository, Transaction
-from rdflib.contrib.rdf4j.exceptions import TransactionClosedError
 from rdflib.term import Literal, URIRef, Variable
 
 pytestmark = pytest.mark.skipif(
     not has_httpx, reason="skipping rdf4j tests, httpx not available"
 )
+
+if has_httpx:
+    from rdflib.contrib.rdf4j.client import Repository, Transaction
+    from rdflib.contrib.rdf4j.exceptions import TransactionClosedError
 
 
 def test_e2e_repo_transaction(repo: Repository):

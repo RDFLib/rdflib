@@ -2,15 +2,18 @@ from __future__ import annotations
 
 from unittest.mock import Mock
 
-import httpx
 import pytest
 
-from rdflib.contrib.rdf4j import RDF4JClient, has_httpx
-from rdflib.contrib.rdf4j.client import Repository, RepositoryManager
+from rdflib.contrib.rdf4j import has_httpx
 
 pytestmark = pytest.mark.skipif(
     not has_httpx, reason="skipping rdf4j tests, httpx not available"
 )
+
+if has_httpx:
+    import httpx
+    from rdflib.contrib.rdf4j import RDF4JClient
+    from rdflib.contrib.rdf4j.client import Repository, RepositoryManager
 
 
 @pytest.fixture(scope="function")

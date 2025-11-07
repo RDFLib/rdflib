@@ -1,11 +1,14 @@
 import pytest
 
-from rdflib.contrib.rdf4j import RDF4JClient, has_httpx
-from rdflib.contrib.rdf4j.exceptions import RDF4JUnsupportedProtocolError
+from rdflib.contrib.rdf4j import has_httpx
 
 pytestmark = pytest.mark.skipif(
     not has_httpx, reason="skipping rdf4j tests, httpx not available"
 )
+
+if has_httpx:
+    from rdflib.contrib.rdf4j import RDF4JClient
+    from rdflib.contrib.rdf4j.exceptions import RDF4JUnsupportedProtocolError
 
 
 @pytest.mark.testcontainer

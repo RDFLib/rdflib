@@ -5,17 +5,19 @@ import pathlib
 from typing import Iterable
 from unittest.mock import ANY, Mock
 
-import httpx
 import pytest
 
 from rdflib import BNode, Dataset, Graph, IdentifiedNode, URIRef
 from rdflib.contrib.rdf4j import has_httpx
-from rdflib.contrib.rdf4j.client import Repository
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 
 pytestmark = pytest.mark.skipif(
     not has_httpx, reason="skipping rdf4j tests, httpx not available"
 )
+
+if has_httpx:
+    import httpx
+    from rdflib.contrib.rdf4j.client import Repository
 
 
 @pytest.mark.parametrize("class_type", [Graph, Dataset])
