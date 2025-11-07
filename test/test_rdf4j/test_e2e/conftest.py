@@ -5,7 +5,11 @@ from testcontainers.core.container import DockerContainer
 from testcontainers.core.image import DockerImage
 from testcontainers.core.waiting_utils import wait_for_logs
 
-from rdflib.contrib.rdf4j import RDF4JClient
+from rdflib.contrib.rdf4j import RDF4JClient, has_httpx
+
+pytestmark = pytest.mark.skipif(
+    not has_httpx, reason="skipping rdf4j tests, httpx not available"
+)
 
 GRAPHDB_PORT = 7200
 

@@ -5,7 +5,12 @@ from unittest.mock import Mock
 import httpx
 import pytest
 
+from rdflib.contrib.rdf4j import has_httpx
 from rdflib.contrib.rdf4j.client import Repository
+
+pytestmark = pytest.mark.skipif(
+    not has_httpx, reason="skipping rdf4j tests, httpx not available"
+)
 
 
 @pytest.mark.parametrize(

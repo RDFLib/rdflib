@@ -2,6 +2,11 @@ import pytest
 from testcontainers.core.container import DockerContainer
 
 from rdflib.contrib.graphdb import GraphDBClient
+from rdflib.contrib.rdf4j import has_httpx
+
+pytestmark = pytest.mark.skipif(
+    not has_httpx, reason="skipping rdf4j tests, httpx not available"
+)
 
 
 @pytest.fixture(scope="function")

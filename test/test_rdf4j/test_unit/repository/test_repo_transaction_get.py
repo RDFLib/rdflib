@@ -7,6 +7,7 @@ import httpx
 import pytest
 
 from rdflib import BNode, Dataset, Graph, IdentifiedNode, URIRef
+from rdflib.contrib.rdf4j import has_httpx
 from rdflib.contrib.rdf4j.client import (
     NamespaceManager,
     ObjectType,
@@ -15,6 +16,10 @@ from rdflib.contrib.rdf4j.client import (
     Transaction,
 )
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
+
+pytestmark = pytest.mark.skipif(
+    not has_httpx, reason="skipping rdf4j tests, httpx not available"
+)
 
 
 def test_repo_transaction_get(txn: Transaction, monkeypatch: pytest.MonkeyPatch):
