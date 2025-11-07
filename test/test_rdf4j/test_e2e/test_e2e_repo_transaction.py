@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 from pathlib import Path
 
 import pytest
 
 from rdflib.contrib.rdf4j import has_httpx
+from rdflib.contrib.rdf4j.exceptions import TransactionClosedError
 from rdflib.term import Literal, URIRef, Variable
 
 pytestmark = pytest.mark.skipif(
@@ -11,7 +14,6 @@ pytestmark = pytest.mark.skipif(
 
 if has_httpx:
     from rdflib.contrib.rdf4j.client import Repository, Transaction
-    from rdflib.contrib.rdf4j.exceptions import TransactionClosedError
 
 
 def test_e2e_repo_transaction(repo: Repository):

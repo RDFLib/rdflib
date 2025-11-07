@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pathlib
 
 import pytest
@@ -12,6 +14,7 @@ pytestmark = pytest.mark.skipif(
 
 if has_httpx:
     import httpx
+
     from rdflib.contrib.rdf4j import RDF4JClient
     from rdflib.contrib.rdf4j.client import Repository
     from rdflib.contrib.rdf4j.exceptions import (

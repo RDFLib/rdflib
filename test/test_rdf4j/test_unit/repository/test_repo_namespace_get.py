@@ -13,6 +13,7 @@ pytestmark = pytest.mark.skipif(
 
 if has_httpx:
     import httpx
+
     from rdflib.contrib.rdf4j.client import (
         NamespaceListingResult,
         NamespaceManager,

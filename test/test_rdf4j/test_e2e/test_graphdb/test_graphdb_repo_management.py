@@ -1,8 +1,15 @@
+from __future__ import annotations
+
 import pathlib
 
 import pytest
 
 from rdflib.contrib.rdf4j import has_httpx
+from rdflib.contrib.rdf4j.exceptions import (
+    RepositoryAlreadyExistsError,
+    RepositoryNotFoundError,
+    RepositoryNotHealthyError,
+)
 
 pytestmark = pytest.mark.skipif(
     not has_httpx, reason="skipping rdf4j tests, httpx not available"
@@ -10,12 +17,9 @@ pytestmark = pytest.mark.skipif(
 
 if has_httpx:
     import httpx
+
     from rdflib.contrib.graphdb import GraphDBClient
-    from rdflib.contrib.rdf4j.exceptions import (
-        RepositoryAlreadyExistsError,
-        RepositoryNotFoundError,
-        RepositoryNotHealthyError,
-    )
+
 
 # TODO: consider parameterizing the client (RDF4JClient, GraphDBClient)
 

@@ -5,6 +5,7 @@ from unittest.mock import Mock
 import pytest
 
 from rdflib.contrib.rdf4j import has_httpx
+from rdflib.contrib.rdf4j.exceptions import TransactionClosedError, TransactionPingError
 
 pytestmark = pytest.mark.skipif(
     not has_httpx, reason="skipping rdf4j tests, httpx not available"
@@ -12,12 +13,9 @@ pytestmark = pytest.mark.skipif(
 
 if has_httpx:
     import httpx
+
     from rdflib.contrib.rdf4j.client import (
         Repository,
-    )
-    from rdflib.contrib.rdf4j.exceptions import (
-        TransactionClosedError,
-        TransactionPingError,
     )
 
 

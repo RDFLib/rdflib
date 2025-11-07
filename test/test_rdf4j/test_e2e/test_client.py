@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 import pytest
 
 from rdflib.contrib.rdf4j import has_httpx
+from rdflib.contrib.rdf4j.exceptions import RDF4JUnsupportedProtocolError
 
 pytestmark = pytest.mark.skipif(
     not has_httpx, reason="skipping rdf4j tests, httpx not available"
@@ -8,7 +11,12 @@ pytestmark = pytest.mark.skipif(
 
 if has_httpx:
     from rdflib.contrib.rdf4j import RDF4JClient
-    from rdflib.contrib.rdf4j.exceptions import RDF4JUnsupportedProtocolError
+
+    @pytest.mark.testcontainer
+    def test_client_protocol_error(monkeypatch):
+        monkeypatch.setattr(RDF4JClient, "protocol", 11)
+        with pytest.raises(RDF4JUnsupportedProtocolError):
+            RDF4JClient("http://example.com/")
 
 
 @pytest.mark.testcontainer
@@ -20,10 +28,3 @@ def test_client_close_method(client: RDF4JClient):
 @pytest.mark.testcontainer
 def test_client_protocol(client: RDF4JClient):
     assert client.protocol >= 12
-
-
-@pytest.mark.testcontainer
-def test_client_protocol_error(monkeypatch):
-    monkeypatch.setattr(RDF4JClient, "protocol", 11)
-    with pytest.raises(RDF4JUnsupportedProtocolError):
-        RDF4JClient("http://example.com/")
