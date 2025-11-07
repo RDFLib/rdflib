@@ -1,3 +1,6 @@
-from .client import GraphDBClient
+from rdflib.contrib.rdf4j import has_httpx
 
-__all__ = ["GraphDBClient"]
+if has_httpx:
+    from .client import GraphDBClient
+
+    __all__ = ["GraphDBClient"]
