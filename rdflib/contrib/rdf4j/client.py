@@ -479,10 +479,15 @@ class Repository:
                 params={"query": query, **kwargs},
             )
         response.raise_for_status()
-        return Result.parse(
-            io.BytesIO(response.content),
-            content_type=response.headers["Content-Type"].split(";")[0],
-        )
+        try:
+            return Result.parse(
+                io.BytesIO(response.content),
+                content_type=response.headers["Content-Type"].split(";")[0],
+            )
+        except KeyError as err:
+            raise RDFLibParserError(
+                f"Failed to parse SPARQL query result {response.headers.get('Content-Type')}: {err}"
+            ) from err
 
     def update(self, query: str):
         """Execute a SPARQL update operation on the repository.
@@ -722,7 +727,10 @@ class Transaction:
             if exc_type is None:
                 self.commit()
             else:
-                self.rollback()
+                try:
+                    self.rollback()
+                except Exception:
+                    pass
 
         # Propagate errors.
         return False
@@ -843,10 +851,15 @@ class Transaction:
             self.url, headers=headers, params={**params, **kwargs}
         )
         response.raise_for_status()
-        return Result.parse(
-            io.BytesIO(response.content),
-            content_type=response.headers["Content-Type"].split(";")[0],
-        )
+        try:
+            return Result.parse(
+                io.BytesIO(response.content),
+                content_type=response.headers["Content-Type"].split(";")[0],
+            )
+        except KeyError as err:
+            raise RDFLibParserError(
+                f"Failed to parse SPARQL query result {response.headers.get('Content-Type')}: {err}"
+            ) from err
 
     def update(self, query: str, **kwargs):
         """Execute a SPARQL update operation on the repository.
@@ -1133,12 +1146,19 @@ class RDF4JClient:
         self._http_client = httpx.Client(
             base_url=base_url, auth=auth, timeout=timeout, **kwargs
         )
-        if self.protocol < 12:
+        self._repository_manager: RepositoryManager | None = None
+        try:
+            protocol_version = self.protocol
+        except httpx.RequestError as err:
             self.close()
             raise RDF4JUnsupportedProtocolError(
-                f"RDF4J server protocol version {self.protocol} is not supported. Minimum required version is 12."
+                f"Failed to check protocol version: {err}"
+            ) from err
+        if protocol_version < 12:
+            self.close()
+            raise RDF4JUnsupportedProtocolError(
+                f"RDF4J server protocol version {protocol_version} is not supported. Minimum required version is 12."
             )
-        self._repository_manager: RepositoryManager | None = None
 
     def __enter__(self):
         return self
