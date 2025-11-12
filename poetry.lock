@@ -36,14 +36,14 @@ extras = ["regex"]
 
 [[package]]
 name = "berkeleydb"
-version = "18.1.14"
+version = "18.1.15"
 description = "Python bindings for Oracle Berkeley DB"
 optional = true
 python-versions = "*"
 groups = ["main"]
 markers = "extra == \"berkeleydb\""
 files = [
-    {file = "berkeleydb-18.1.14.tar.gz", hash = "sha256:8c260282f57ebd5b9c3ce53da0eb75be5957addb303e3190935b716448f32f7d"},
+    {file = "berkeleydb-18.1.15.tar.gz", hash = "sha256:7afa53143d754c6bb2c85656c1325ebae518adcfcd1b59e13cc2abb88ddf758e"},
 ]
 
 [[package]]
