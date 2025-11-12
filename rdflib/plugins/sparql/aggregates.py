@@ -4,20 +4,11 @@ Aggregation functions
 
 from __future__ import annotations
 
+from collections.abc import Callable, Iterable, Mapping, MutableMapping
 from decimal import Decimal
 from typing import (
     Any,
-    Callable,
-    Dict,
-    Iterable,
-    List,
-    Mapping,
-    MutableMapping,
-    Optional,
-    Set,
-    Tuple,
     TypeVar,
-    Union,
     overload,
 )
 
@@ -34,7 +25,7 @@ class Accumulator:
     """abstract base class for different aggregation functions"""
 
     def __init__(self, aggregation: CompValue):
-        self.get_value: Callable[[], Optional[Literal]]
+        self.get_value: Callable[[], Literal | None]
         self.update: Callable[[FrozenBindings, Aggregator], None]
         self.var = aggregation.res
         self.expr = aggregation.vars
@@ -44,7 +35,7 @@ class Accumulator:
             self.distinct = False
         else:
             self.distinct = aggregation.distinct
-            self.seen: Set[Any] = set()
+            self.seen: set[Any] = set()
 
     def dont_care(self, row: FrozenBindings) -> bool:
         """skips distinct test"""
@@ -97,21 +88,19 @@ class Counter(Accumulator):
 
 
 @overload
-def type_safe_numbers(*args: int) -> Tuple[int]: ...
+def type_safe_numbers(*args: int) -> tuple[int]: ...
 
 
 @overload
-def type_safe_numbers(
-    *args: Union[Decimal, float, int]
-) -> Tuple[Union[float, int]]: ...
+def type_safe_numbers(*args: Decimal | float | int) -> tuple[float | int, ...]: ...
 
 
-def type_safe_numbers(*args: Union[Decimal, float, int]) -> Iterable[Union[float, int]]:
+def type_safe_numbers(*args: Decimal | float | int) -> Iterable[float | int]:
     if any(isinstance(arg, float) for arg in args) and any(
         isinstance(arg, Decimal) for arg in args
     ):
         return map(float, args)
-    # type error: Incompatible return value type (got "Tuple[Union[Decimal, float, int], ...]", expected "Iterable[Union[float, int]]")
+    # type error: Incompatible return value type (got "Tuple[Decimal|float|int, ...]", expected "Iterable[float, int]")
     # NOTE on type error: if args contains a Decimal it will nopt get here.
     return args  # type: ignore[return-value]
 
@@ -120,7 +109,7 @@ class Sum(Accumulator):
     def __init__(self, aggregation: CompValue):
         super(Sum, self).__init__(aggregation)
         self.value = 0
-        self.datatype: Optional[str] = None
+        self.datatype: str | None = None
 
     def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
         try:
@@ -148,7 +137,7 @@ class Average(Accumulator):
         super(Average, self).__init__(aggregation)
         self.counter = 0
         self.sum = 0
-        self.datatype: Optional[str] = None
+        self.datatype: str | None = None
 
     def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
         try:
@@ -246,7 +235,7 @@ class Sample(Accumulator):
 
 
 class GroupConcat(Accumulator):
-    value: List[Literal]
+    value: list[Literal]
 
     def __init__(self, aggregation: CompValue):
         super(GroupConcat, self).__init__(aggregation)
@@ -291,9 +280,9 @@ class Aggregator:
         "Aggregate_GroupConcat": GroupConcat,
     }
 
-    def __init__(self, aggregations: List[CompValue]):
-        self.bindings: Dict[Variable, Identifier] = {}
-        self.accumulators: Dict[str, Accumulator] = {}
+    def __init__(self, aggregations: list[CompValue]):
+        self.bindings: dict[Variable, Identifier] = {}
+        self.accumulators: dict[str, Accumulator] = {}
         for a in aggregations:
             accumulator_class = self.accumulator_classes.get(a.name)
             if accumulator_class is None:

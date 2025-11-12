@@ -30,7 +30,7 @@ from rdflib import Dataset, Graph, Literal, URIRef
 # mypy: ignore_errors=true
 
 #######################################################################################
-#   1. Creating & Growing
+#   1. Creating & Adding
 #######################################################################################
 
 # Create an empty Dataset

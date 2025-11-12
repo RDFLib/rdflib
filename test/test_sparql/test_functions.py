@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from decimal import Decimal
 
@@ -147,7 +149,7 @@ EG = Namespace("https://example.com/")
         ),
     ],
 )
-def test_function(expression: str, expected_result: Identifier) -> None:
+def test_function(expression: str, expected_result: Identifier | type) -> None:
     graph = Graph()
     query_string = """
     PREFIX eg: <https://example.com/>

@@ -4,7 +4,7 @@ import os
 from contextlib import ExitStack
 from dataclasses import dataclass
 from pathlib import PurePosixPath, PureWindowsPath
-from typing import Any, List, Optional, Tuple, Type, Union
+from typing import Any, Union
 
 import pytest
 
@@ -21,8 +21,8 @@ from test.utils import (
 
 def check(
     file_uri: str,
-    expected_windows_path: Optional[str],
-    expected_posix_path: Optional[str],
+    expected_windows_path: str | None,
+    expected_posix_path: str | None,
 ) -> None:
     if expected_windows_path is not None:
         expected_windows_path_object = PureWindowsPath(expected_windows_path)
@@ -98,8 +98,8 @@ def check(
 )
 def test_paths(
     file_uri: str,
-    expected_windows_path: Optional[str],
-    expected_posix_path: Optional[str],
+    expected_windows_path: str | None,
+    expected_posix_path: str | None,
 ) -> None:
     check(file_uri, expected_windows_path, expected_posix_path)
 
@@ -107,7 +107,7 @@ def test_paths(
 @dataclass
 class SetsEqualTestCase:
     equal: bool
-    format: Union[str, Tuple[str, str]]
+    format: str | tuple[str, str]
     bnode_handling: BNodeHandling
     lhs: str
     rhs: str
@@ -380,10 +380,10 @@ def test_assert_sets_equal(test_case: SetsEqualTestCase):
     ],
 )
 def test_prefix_tuples(
-    tuples: List[Tuple[Any, ...]],
-    prefix: Tuple[Any, ...],
-    suffix: Tuple[Any, ...],
-    expected_result: List[Tuple[Any, ...]],
+    tuples: list[tuple[Any, ...]],
+    prefix: tuple[Any, ...],
+    suffix: tuple[Any, ...],
+    expected_result: list[tuple[Any, ...]],
 ) -> None:
     assert expected_result == list(affix_tuples(prefix, tuples, suffix))
 
@@ -468,17 +468,17 @@ def test_prefix_tuples(
     ],
 )
 def test_assert_cgraph_isomorphic(
-    graph_type: Type[ConjunctiveGraph],
+    graph_type: type[ConjunctiveGraph],
     format: str,
     lhs: str,
     rhs: str,
-    expected_result: Union[None, Type[Exception]],
+    expected_result: Union[None, type[Exception]],
 ) -> None:
     lhs_graph = graph_type()
     lhs_graph.parse(data=lhs, format=format)
     rhs_graph = graph_type()
     rhs_graph.parse(data=rhs, format=format)
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
     with ExitStack() as xstack:
         if expected_result is not None:
             catcher = xstack.enter_context(pytest.raises(expected_result))

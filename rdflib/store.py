@@ -21,22 +21,13 @@ from __future__ import annotations
 
 import pickle
 from io import BytesIO
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Generator,
-    Iterable,
-    Iterator,
-    Mapping,
-    Optional,
-    Tuple,
-    Union,
-)
+from typing import TYPE_CHECKING, Any
 
 from rdflib.events import Dispatcher, Event
 
 if TYPE_CHECKING:
+    from collections.abc import Generator, Iterable, Iterator, Mapping
+
     from rdflib.graph import (
         Graph,
         _ContextType,
@@ -100,11 +91,11 @@ class TripleRemovedEvent(Event):
 
 class NodePickler:
     def __init__(self) -> None:
-        self._objects: Dict[str, Any] = {}
-        self._ids: Dict[Any, str] = {}
+        self._objects: dict[str, Any] = {}
+        self._ids: dict[Any, str] = {}
         self._get_object = self._objects.__getitem__
 
-    def _get_ids(self, key: Any) -> Optional[str]:
+    def _get_ids(self, key: Any) -> str | None:
         try:
             return self._ids.get(key)
         except TypeError:
@@ -118,20 +109,18 @@ class NodePickler:
         up = Unpickler(BytesIO(s))
         # NOTE on type error: https://github.com/python/mypy/issues/2427
         # type error: Cannot assign to a method
-        up.persistent_load = self._get_object  # type: ignore[assignment]
+        up.persistent_load = self._get_object  # type: ignore[method-assign]
         try:
             return up.load()
         except KeyError as e:
             raise UnpicklingError("Could not find Node class for %s" % e)
 
-    def dumps(
-        self, obj: Node, protocol: Optional[Any] = None, bin: Optional[Any] = None
-    ):
+    def dumps(self, obj: Node, protocol: Any | None = None, bin: Any | None = None):
         src = BytesIO()
         p = Pickler(src)
         # NOTE on type error: https://github.com/python/mypy/issues/2427
         # type error: Cannot assign to a method
-        p.persistent_id = self._get_ids  # type: ignore[assignment]
+        p.persistent_id = self._get_ids  # type: ignore[method-assign]
         p.dump(obj)
         return src.getvalue()
 
@@ -159,8 +148,8 @@ class Store:
 
     def __init__(
         self,
-        configuration: Optional[str] = None,
-        identifier: Optional[Identifier] = None,
+        configuration: str | None = None,
+        identifier: Identifier | None = None,
     ):
         """Initialize the Store.
 
@@ -169,7 +158,7 @@ class Store:
             configuration: String containing information open can use to
                 connect to datastore.
         """
-        self.__node_pickler: Optional[NodePickler] = None
+        self.__node_pickler: NodePickler | None = None
         self.dispatcher = Dispatcher()
         if configuration:
             self.open(configuration)
@@ -195,9 +184,7 @@ class Store:
     def create(self, configuration: str) -> None:
         self.dispatcher.dispatch(StoreCreatedEvent(configuration=configuration))
 
-    def open(
-        self, configuration: Union[str, tuple[str, str]], create: bool = False
-    ) -> Optional[int]:
+    def open(self, configuration: str, create: bool = False) -> int | None:
         """Opens the store specified by the configuration string.
 
         Args:
@@ -277,7 +264,7 @@ class Store:
     def remove(
         self,
         triple: _TriplePatternType,
-        context: Optional[_ContextType] = None,
+        context: _ContextType | None = None,
     ) -> None:
         """Remove the set of triples matching the pattern from the store"""
         self.dispatcher.dispatch(TripleRemovedEvent(triple=triple, context=context))
@@ -285,11 +272,11 @@ class Store:
     def triples_choices(
         self,
         triple: _TripleChoiceType,
-        context: Optional[_ContextType] = None,
+        context: _ContextType | None = None,
     ) -> Generator[
-        Tuple[
+        tuple[
             _TripleType,
-            Iterator[Optional[_ContextType]],
+            Iterator[_ContextType | None],
         ],
         None,
         None,
@@ -301,9 +288,12 @@ class Store:
         over each term in the list and dispatch to triples
         """
         subject, predicate, object_ = triple
-        if isinstance(object_, list):
-            assert not isinstance(subject, list), "object_ / subject are both lists"
-            assert not isinstance(predicate, list), "object_ / predicate are both lists"
+        if isinstance(object_, (list, tuple)):
+            # MyPy thinks these are unreachable due to the triple pattern signature.
+            if isinstance(subject, (list, tuple)):
+                raise ValueError("object_ / subject are both lists")
+            if isinstance(predicate, (list, tuple)):
+                raise ValueError("object_ / predicate are both lists")
             if object_:
                 for obj in object_:
                     for (s1, p1, o1), cg in self.triples(
@@ -316,8 +306,9 @@ class Store:
                 ):
                     yield (s1, p1, o1), cg
 
-        elif isinstance(subject, list):
-            assert not isinstance(predicate, list), "subject / predicate are both lists"
+        elif isinstance(subject, (list, tuple)):
+            if isinstance(predicate, (list, tuple)):
+                raise ValueError("subject / predicate are both lists")
             if subject:
                 for subj in subject:
                     for (s1, p1, o1), cg in self.triples(
@@ -330,8 +321,7 @@ class Store:
                 ):
                     yield (s1, p1, o1), cg
 
-        elif isinstance(predicate, list):
-            assert not isinstance(subject, list), "predicate / subject are both lists"
+        elif isinstance(predicate, (list, tuple)):
             if predicate:
                 for pred in predicate:
                     for (s1, p1, o1), cg in self.triples(
@@ -346,8 +336,8 @@ class Store:
     def triples(  # type: ignore[return]
         self,
         triple_pattern: _TriplePatternType,
-        context: Optional[_ContextType] = None,
-    ) -> Iterator[Tuple[_TripleType, Iterator[Optional[_ContextType]]]]:
+        context: _ContextType | None = None,
+    ) -> Iterator[tuple[_TripleType, Iterator[_ContextType | None]]]:
         """
         A generator over all the triples matching the pattern. Pattern can
         include any objects for used for comparing against nodes in the store,
@@ -364,7 +354,7 @@ class Store:
     # variants of triples will be done if / when optimization is needed
 
     # type error: Missing return statement
-    def __len__(self, context: Optional[_ContextType] = None) -> int:  # type: ignore[empty-body]
+    def __len__(self, context: _ContextType | None = None) -> int:  # type: ignore[empty-body]
         """
         Number of statements in the store. This should only account for non-
         quoted (asserted) statements if the context is not specified,
@@ -377,7 +367,7 @@ class Store:
 
     # type error: Missing return statement
     def contexts(  # type: ignore[empty-body]
-        self, triple: Optional[_TripleType] = None
+        self, triple: _TripleType | None = None
     ) -> Generator[_ContextType, None, None]:
         """
         Generator over all contexts in the graph. If triple is specified,
@@ -391,7 +381,7 @@ class Store:
     # TODO FIXME: the result of query is inconsistent.
     def query(
         self,
-        query: Union[Query, str],
+        query: Query | str,
         initNs: Mapping[str, Any],  # noqa: N803
         initBindings: Mapping[str, Identifier],  # noqa: N803
         queryGraph: str,  # noqa: N803
@@ -412,7 +402,7 @@ class Store:
 
     def update(
         self,
-        update: Union[Update, str],
+        update: Update | str,
         initNs: Mapping[str, Any],  # noqa: N803
         initBindings: Mapping[str, Identifier],  # noqa: N803
         queryGraph: str,  # noqa: N803
@@ -443,13 +433,13 @@ class Store:
                 to another prefix
         """
 
-    def prefix(self, namespace: URIRef) -> Optional[str]:
+    def prefix(self, namespace: URIRef) -> str | None:
         """"""
 
-    def namespace(self, prefix: str) -> Optional[URIRef]:
+    def namespace(self, prefix: str) -> URIRef | None:
         """ """
 
-    def namespaces(self) -> Iterator[Tuple[str, URIRef]]:
+    def namespaces(self) -> Iterator[tuple[str, URIRef]]:
         """ """
         # This is here so that the function becomes an empty generator.
         # See https://stackoverflow.com/q/13243766 and

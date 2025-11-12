@@ -8,9 +8,9 @@ from __future__ import annotations  # noqa: I001
 
 import re
 import sys
-from typing import Any, BinaryIO, List
+from typing import Any, BinaryIO
 from typing import Optional as OptionalType
-from typing import TextIO, Tuple, Union
+from typing import TextIO, Union
 
 from pyparsing import CaselessKeyword as Keyword  # watch out :)
 from pyparsing import (
@@ -46,22 +46,22 @@ def neg(literal: rdflib.Literal) -> rdflib.Literal:
     return rdflib.Literal(-literal, datatype=literal.datatype)
 
 
-def setLanguage(terms: Tuple[Any, OptionalType[str]]) -> rdflib.Literal:
+def setLanguage(terms: tuple[Any, OptionalType[str]]) -> rdflib.Literal:
     return rdflib.Literal(terms[0], lang=terms[1])
 
 
-def setDataType(terms: Tuple[Any, OptionalType[str]]) -> rdflib.Literal:
+def setDataType(terms: tuple[Any, OptionalType[str]]) -> rdflib.Literal:
     return rdflib.Literal(terms[0], datatype=terms[1])
 
 
-def expandTriples(terms: ParseResults) -> List[Any]:
+def expandTriples(terms: ParseResults) -> list[Any]:
     """
     Expand ; and , syntax for repeat predicates, subjects
     """
     # import pdb; pdb.set_trace()
     last_subject, last_predicate = None, None  # Used for ; and ,
     try:
-        res: List[Any] = []
+        res: list[Any] = []
         if DEBUG:
             print("Terms", terms)
         l_ = len(terms)
@@ -117,7 +117,7 @@ def expandTriples(terms: ParseResults) -> List[Any]:
         raise
 
 
-def expandBNodeTriples(terms: ParseResults) -> List[Any]:
+def expandBNodeTriples(terms: ParseResults) -> list[Any]:
     """
     expand [ ?p ?o ] syntax for implicit bnodes
     """
@@ -134,14 +134,14 @@ def expandBNodeTriples(terms: ParseResults) -> List[Any]:
         raise
 
 
-def expandCollection(terms: ParseResults) -> List[List[Any]]:
+def expandCollection(terms: ParseResults) -> list[list[Any]]:
     """
     expand ( 1 2 3 ) notation for collections
     """
     if DEBUG:
         print("Collection: ", terms)
 
-    res: List[Any] = []
+    res: list[Any] = []
     other = []
     for x in terms:
         if isinstance(x, list):  # is this a [ .. ] ?

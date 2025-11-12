@@ -153,13 +153,16 @@ from __future__ import annotations
 
 import itertools
 import logging
-from typing import Iterable, Union
+from typing import TYPE_CHECKING, Union, cast
 
 from rdflib.collection import Collection
 from rdflib.graph import Graph, _ObjectType
 from rdflib.namespace import OWL, RDF, RDFS, XSD, Namespace, NamespaceManager
-from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
+from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, URIRef, Variable
 from rdflib.util import first
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 logger = logging.getLogger(__name__)
 
@@ -405,13 +408,19 @@ class Individual:
     A typed individual, the base class of the InfixOWL classes.
     """
 
+    # Class variable
     factoryGraph = Graph()  # noqa: N815
+
+    # Instance typing
+    graph: Graph
+    __identifier: IdentifiedNode
+    qname: str | None
 
     def serialize(self, graph):
         for fact in self.factoryGraph.triples((self.identifier, None, None)):
             graph.add(fact)
 
-    def __init__(self, identifier=None, graph=None):
+    def __init__(self, identifier: IdentifiedNode | None = None, graph=None):
         self.__identifier = identifier is not None and identifier or BNode()
         if graph is None:
             self.graph = self.factoryGraph
@@ -505,11 +514,10 @@ class Individual:
 
     type = property(_get_type, _set_type, _delete_type)
 
-    def _get_identifier(self) -> Identifier:
+    def _get_identifier(self) -> IdentifiedNode:
         return self.__identifier
 
-    def _set_identifier(self, i: Identifier):
-        assert i
+    def _set_identifier(self, i: IdentifiedNode):
         if i != self.__identifier:
             oldstatements_out = [
                 (p, o)
@@ -634,7 +642,7 @@ class AnnotatableTerms(Individual):
 
     def __init__(
         self,
-        identifier,
+        identifier: IdentifiedNode | None,
         graph=None,
         nameAnnotation=None,  # noqa: N803
         nameIsLabel=False,  # noqa: N803
@@ -690,10 +698,13 @@ class AnnotatableTerms(Individual):
         ):
             yield comment
 
-    def _set_comment(self, comment):
+    def _set_comment(
+        self,
+        comment: IdentifiedNode | Literal | list[IdentifiedNode | Literal] | None,
+    ):
         if not comment:
             return
-        if isinstance(comment, Identifier):
+        if isinstance(comment, (IdentifiedNode, Literal)):
             self.graph.add((self.identifier, RDFS.comment, comment))
         else:
             for c in comment:
@@ -727,10 +738,12 @@ class AnnotatableTerms(Individual):
         for label in self.graph.objects(subject=self.identifier, predicate=RDFS.label):
             yield label
 
-    def _set_label(self, label):
+    def _set_label(
+        self, label: IdentifiedNode | Literal | list[IdentifiedNode | Literal] | None
+    ):
         if not label:
             return
-        if isinstance(label, Identifier):
+        if isinstance(label, (IdentifiedNode, Literal)):
             self.graph.add((self.identifier, RDFS.label, label))
         else:
             for l_ in label:
@@ -1088,7 +1101,7 @@ class Class(AnnotatableTerms):
 
     def __init__(
         self,
-        identifier=None,
+        identifier: IdentifiedNode | None = None,
         subClassOf=None,  # noqa: N803
         equivalentClass=None,  # noqa: N803
         disjointWith=None,  # noqa: N803
@@ -1220,7 +1233,10 @@ class Class(AnnotatableTerms):
         for anc in self.graph.objects(
             subject=self.identifier, predicate=RDFS.subClassOf
         ):
-            yield Class(anc, graph=self.graph, skipOWLClassMembership=True)
+            # We must assume all objects we get back are URIRef or BNodes
+            yield Class(
+                cast(IdentifiedNode, anc), graph=self.graph, skipOWLClassMembership=True
+            )
 
     def _set_subclassof(self, other):
         if not other:
@@ -1240,7 +1256,7 @@ class Class(AnnotatableTerms):
         for ec in self.graph.objects(
             subject=self.identifier, predicate=OWL.equivalentClass
         ):
-            yield Class(ec, graph=self.graph)
+            yield Class(cast(IdentifiedNode, ec), graph=self.graph)
 
     def _set_equivalentclass(self, other):
         if not other:
@@ -1262,7 +1278,7 @@ class Class(AnnotatableTerms):
         for dc in self.graph.objects(
             subject=self.identifier, predicate=OWL.disjointWith
         ):
-            yield Class(dc, graph=self.graph)
+            yield Class(cast(IdentifiedNode, dc), graph=self.graph)
 
     def _set_disjointwith(self, other):
         if not other:
@@ -1285,7 +1301,7 @@ class Class(AnnotatableTerms):
         if not comp:
             return None
         elif len(comp) == 1:
-            return Class(comp[0], graph=self.graph)
+            return Class(cast(IdentifiedNode, comp[0]), graph=self.graph)
         else:
             raise Exception(len(comp))
 
@@ -1358,7 +1374,7 @@ class Class(AnnotatableTerms):
         # sc = list(self.subClassOf)
         ec = list(self.equivalentClass)
         for _boolclass, p, rdf_list in self.graph.triples_choices(
-            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, List[URIRef], None]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
+            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, list[URIRef], None]"; expected "Union[Tuple[List[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
             (self.identifier, [OWL.intersectionOf, OWL.unionOf], None)  # type: ignore[arg-type]
         ):
             ec.append(manchesterSyntax(rdf_list, self.graph, boolean=p))
@@ -1388,7 +1404,7 @@ class Class(AnnotatableTerms):
         sc = list(self.subClassOf)
         ec = list(self.equivalentClass)
         for _boolclass, p, rdf_list in self.graph.triples_choices(
-            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, List[URIRef], None]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
+            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, list[URIRef], None]"; expected "Union[Tuple[List[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
             (self.identifier, [OWL.intersectionOf, OWL.unionOf], None)  # type: ignore[arg-type]
         ):
             ec.append(manchesterSyntax(rdf_list, self.graph, boolean=p))
@@ -1397,10 +1413,8 @@ class Class(AnnotatableTerms):
         if c:
             dc.append(c)
         klasskind = ""
-        label = list(self.graph.objects(self.identifier, RDFS.label))
-        # type error: Incompatible types in assignment (expression has type "str", variable has type "List[Node]")
-        # type error: Unsupported operand types for + ("str" and "Node")
-        label = label and "(" + label[0] + ")" or ""  # type: ignore[assignment, operator]
+        label_list = list(self.graph.objects(self.identifier, RDFS.label))
+        label = "" if len(label_list) < 1 else "(" + label_list[0] + ")"
         if sc:
             if full:
                 scjoin = "\n                "
@@ -1662,14 +1676,14 @@ class BooleanClass(OWLRDFListProxy, Class):
 
     @BooleanClassExtentHelper(OWL.intersectionOf)
     @Callable
-    def getIntersections():  # type: ignore[misc]  # noqa: N802
+    def getIntersections():  # noqa: N802
         pass  # pragma: no cover
 
     getIntersections = Callable(getIntersections)  # noqa: N815
 
     @BooleanClassExtentHelper(OWL.unionOf)
     @Callable
-    def getUnions():  # type: ignore[misc]  # noqa: N802
+    def getUnions():  # noqa: N802
         pass  # pragma: no cover
 
     getUnions = Callable(getUnions)  # noqa: N815
@@ -1802,27 +1816,34 @@ class Restriction(Class):
     def __init__(
         self,
         onProperty,  # noqa: N803
-        graph=None,
-        allValuesFrom=None,  # noqa: N803
-        someValuesFrom=None,  # noqa: N803
-        value=None,
-        cardinality=None,
-        maxCardinality=None,  # noqa: N803
-        minCardinality=None,  # noqa: N803
-        identifier=None,
+        graph: Graph | None = None,
+        allValuesFrom: (  # noqa: N803
+            IdentifiedNode | Literal | Class | bool | None
+        ) = None,
+        someValuesFrom: (  # noqa: N803
+            IdentifiedNode | Literal | Class | bool | None
+        ) = None,
+        value: IdentifiedNode | Literal | Class | bool | None = None,
+        cardinality: IdentifiedNode | Literal | Class | bool | None = None,
+        maxCardinality: (  # noqa: N803
+            IdentifiedNode | Literal | Class | bool | None
+        ) = None,
+        minCardinality: (  # noqa: N803
+            IdentifiedNode | Literal | Class | bool | None
+        ) = None,
+        identifier: IdentifiedNode | None = None,
     ):
         graph = Graph() if graph is None else graph
         super(Restriction, self).__init__(
             identifier, graph=graph, skipOWLClassMembership=True
         )
+        self_id_node: IdentifiedNode = self.identifier
         if (
-            self.identifier,
+            self_id_node,
             OWL.onProperty,
             propertyOrIdentifier(onProperty),
         ) not in graph:
-            graph.add(
-                (self.identifier, OWL.onProperty, propertyOrIdentifier(onProperty))
-            )
+            graph.add((self_id_node, OWL.onProperty, propertyOrIdentifier(onProperty)))
         self.onProperty = onProperty
         restr_types = [
             (allValuesFrom, OWL.allValuesFrom),
@@ -1841,7 +1862,7 @@ class Restriction(Class):
             )
         restriction_range, restriction_type = valid_restr_props.pop()
         self.restrictionType = restriction_type
-        if isinstance(restriction_range, Identifier):
+        if isinstance(restriction_range, (IdentifiedNode, Literal)):
             self.restrictionRange = restriction_range
         elif isinstance(restriction_range, Class):
             self.restrictionRange = classOrIdentifier(restriction_range)
@@ -1849,18 +1870,18 @@ class Restriction(Class):
             # error: Incompatible types in assignment (expression has type "Optional[Identifier]", variable has type "Identifier")
             self.restrictionRange = first(  # type: ignore[assignment]
                 # type error: Argument 1 to "first" has incompatible type "Generator[Node, None, None]"; expected "Iterable[Identifier]"
-                self.graph.objects(self.identifier, restriction_type)  # type: ignore[arg-type]
+                self.graph.objects(self_id_node, restriction_type)  # type: ignore[arg-type]
             )
         if (
-            self.identifier,
+            self_id_node,
             restriction_type,
             self.restrictionRange,
         ) not in self.graph:
-            self.graph.add((self.identifier, restriction_type, self.restrictionRange))
-        assert self.restrictionRange is not None, Class(self.identifier)
-        if (self.identifier, RDF.type, OWL.Restriction) not in self.graph:
-            self.graph.add((self.identifier, RDF.type, OWL.Restriction))
-            self.graph.remove((self.identifier, RDF.type, OWL.Class))
+            self.graph.add((self_id_node, restriction_type, self.restrictionRange))
+        assert self.restrictionRange is not None, Class(self_id_node)
+        if (self_id_node, RDF.type, OWL.Restriction) not in self.graph:
+            self.graph.add((self_id_node, RDF.type, OWL.Restriction))
+            self.graph.remove((self_id_node, RDF.type, OWL.Class))
 
     def serialize(self, graph):
         """
@@ -1940,7 +1961,7 @@ class Restriction(Class):
         for i in self.graph.objects(
             subject=self.identifier, predicate=OWL.allValuesFrom
         ):
-            return Class(i, graph=self.graph)
+            return Class(cast(IdentifiedNode, i), graph=self.graph)
         return None
 
     def _set_allvaluesfrom(self, other):
@@ -1964,7 +1985,7 @@ class Restriction(Class):
         for i in self.graph.objects(
             subject=self.identifier, predicate=OWL.someValuesFrom
         ):
-            return Class(i, graph=self.graph)
+            return Class(cast(IdentifiedNode, i), graph=self.graph)
         return None
 
     def _set_somevaluesfrom(self, other):
@@ -1986,7 +2007,7 @@ class Restriction(Class):
 
     def _get_hasvalue(self):
         for i in self.graph.objects(subject=self.identifier, predicate=OWL.hasValue):
-            return Class(i, graph=self.graph)
+            return Class(cast(IdentifiedNode, i), graph=self.graph)
         return None
 
     def _set_hasvalue(self, other):
@@ -2006,7 +2027,7 @@ class Restriction(Class):
 
     def _get_cardinality(self):
         for i in self.graph.objects(subject=self.identifier, predicate=OWL.cardinality):
-            return Class(i, graph=self.graph)
+            return Class(cast(IdentifiedNode, i), graph=self.graph)
         return None
 
     def _set_cardinality(self, other):
@@ -2028,7 +2049,7 @@ class Restriction(Class):
         for i in self.graph.objects(
             subject=self.identifier, predicate=OWL.maxCardinality
         ):
-            return Class(i, graph=self.graph)
+            return Class(cast(IdentifiedNode, i), graph=self.graph)
         return None
 
     def _set_maxcardinality(self, other):
@@ -2052,7 +2073,7 @@ class Restriction(Class):
         for i in self.graph.objects(
             subject=self.identifier, predicate=OWL.minCardinality
         ):
-            return Class(i, graph=self.graph)
+            return Class(cast(IdentifiedNode, i), graph=self.graph)
         return None
 
     def _set_mincardinality(self, other):
@@ -2073,12 +2094,12 @@ class Restriction(Class):
     )
 
     def restrictionKind(self):  # noqa: N802
+        self_id_node: IdentifiedNode = self.identifier
         for s, p, o in self.graph.triples_choices(
-            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, List[URIRef], None]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
-            (self.identifier, self.restrictionKinds, None)  # type: ignore[arg-type]
+            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type
+            (self_id_node, self.restrictionKinds, None)  # type: ignore[arg-type]
         ):
-            # type error: "Node" has no attribute "split"
-            return p.split(str(OWL))[-1]  # type: ignore[attr-defined]
+            return p.split(str(OWL))[-1]
         return None
 
     def __repr__(self):
@@ -2244,7 +2265,7 @@ class Property(AnnotatableTerms):
                     )
                 )
             for _s, _p, roletype in self.graph.triples_choices(
-                # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, URIRef, List[URIRef]]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
+                # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, URIRef, list[URIRef]]"; expected "Union[Tuple[List[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
                 (  # type: ignore[arg-type]
                     self.identifier,
                     RDF.type,
@@ -2255,8 +2276,7 @@ class Property(AnnotatableTerms):
                     ],
                 )
             ):
-                # type error: "Node" has no attribute "split"
-                rt.append(str(roletype.split(str(OWL))[-1]))  # type: ignore[attr-defined]
+                rt.append(str(roletype).split(str(OWL), 1)[-1])
         else:
             rt.append(
                 "DatatypeProperty( %s %s"
@@ -2350,7 +2370,7 @@ class Property(AnnotatableTerms):
 
     def _get_domain(self):
         for dom in self.graph.objects(subject=self.identifier, predicate=RDFS.domain):
-            yield Class(dom, graph=self.graph)
+            yield Class(cast(IdentifiedNode, dom), graph=self.graph)
 
     def _set_domain(self, other):
         if not other:
@@ -2369,7 +2389,7 @@ class Property(AnnotatableTerms):
 
     def _get_range(self):
         for ran in self.graph.objects(subject=self.identifier, predicate=RDFS.range):
-            yield Class(ran, graph=self.graph)
+            yield Class(cast(IdentifiedNode, ran), graph=self.graph)
 
     def _set_range(self, ranges):
         if not ranges:

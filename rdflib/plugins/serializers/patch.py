@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import IO, Any, Optional
-from uuid import uuid4
+from typing import IO, Any
 
 from rdflib import Dataset
 from rdflib.plugins.serializers.nquads import _nq_row
@@ -30,8 +29,8 @@ class PatchSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
+        base: str | None = None,
+        encoding: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Serialize the store to the given stream.
@@ -54,8 +53,6 @@ class PatchSerializer(Serializer):
         target = kwargs.get("target")
         header_id = kwargs.get("header_id")
         header_prev = kwargs.get("header_prev")
-        if not header_id:
-            header_id = f"uuid:{uuid4()}"
         encoding = self.encoding
         if base is not None:
             warnings.warn("PatchSerializer does not support base.")
@@ -66,9 +63,10 @@ class PatchSerializer(Serializer):
             )
 
         def write_header():
-            stream.write(f"H id <{header_id}> .\n".encode(encoding, "replace"))
+            if header_id:
+                stream.write(f"H id <{header_id}> .\n".encode(encoding, "replace"))
             if header_prev:
-                stream.write(f"H prev <{header_prev}>\n".encode(encoding, "replace"))
+                stream.write(f"H prev <{header_prev}> .\n".encode(encoding, "replace"))
             stream.write("TX .\n".encode(encoding, "replace"))
 
         def write_triples(contexts, op_code, use_passed_contexts=False):

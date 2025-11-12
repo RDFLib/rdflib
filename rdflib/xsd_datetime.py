@@ -39,7 +39,7 @@ import re
 import sys
 from datetime import date, datetime, time, timedelta
 from decimal import ROUND_FLOOR, Decimal
-from typing import List, Tuple, Union, cast
+from typing import cast
 
 if sys.version_info[:3] < (3, 11, 0):
     from isodate import parse_date, parse_datetime, parse_time
@@ -51,14 +51,14 @@ else:
 
 
 def fquotmod(
-    val: Decimal, low: Union[Decimal, int], high: Union[Decimal, int]
-) -> Tuple[int, Decimal]:
+    val: Decimal, low: Decimal | int, high: Decimal | int
+) -> tuple[int, Decimal]:
     """A divmod function with boundaries."""
     # assumes that all the maths is done with Decimals.
     # divmod for Decimal uses truncate instead of floor as builtin
     # divmod, so we have to do it manually here.
     a: Decimal = val - low
-    b: Union[Decimal, int] = high - low
+    b: Decimal | int = high - low
     div: Decimal = (a / b).to_integral(ROUND_FLOOR)
     mod: Decimal = a - div * b
     # if we were not using Decimal, it would look like this.
@@ -114,8 +114,8 @@ class Duration:
         minutes: float = 0,
         hours: float = 0,
         weeks: float = 0,
-        months: Union[Decimal, float, int, str] = 0,
-        years: Union[Decimal, float, int, str] = 0,
+        months: Decimal | float | int | str = 0,
+        years: Decimal | float | int | str = 0,
     ):
         """
         Initialise this Duration instance with the given parameters.
@@ -190,7 +190,7 @@ class Duration:
         negduration.tdelta = -self.tdelta
         return negduration
 
-    def __add__(self, other: Union[Duration, timedelta, date, datetime]):
+    def __add__(self, other: Duration | timedelta | date | datetime):
         """
         Durations can be added with Duration, timedelta, date and datetime
         objects.
@@ -217,7 +217,7 @@ class Duration:
             carry, newmonth = fquotmod(newmonth, 1, 13)
             newyear: int = other.year + int(self.years) + carry
             maxdays: int = max_days_in_month(newyear, int(newmonth))
-            newday: Union[int, float]
+            newday: int | float
             if other.day > maxdays:
                 newday = maxdays
             else:
@@ -242,7 +242,7 @@ class Duration:
 
     __rmul__ = __mul__
 
-    def __sub__(self, other: Union[Duration, timedelta]):
+    def __sub__(self, other: Duration | timedelta):
         """
         It is possible to subtract Duration and timedelta objects from Duration
         objects.
@@ -263,7 +263,7 @@ class Duration:
             pass
         return NotImplemented
 
-    def __rsub__(self, other: Union[timedelta, date, datetime]):
+    def __rsub__(self, other: timedelta | date | datetime):
         """
         It is possible to subtract Duration objects from date, datetime and
         timedelta objects.
@@ -292,7 +292,7 @@ class Duration:
             carry, newmonth = fquotmod(newmonth, 1, 13)
             newyear: int = other.year - int(self.years) + carry
             maxdays: int = max_days_in_month(newyear, int(newmonth))
-            newday: Union[int, float]
+            newday: int | float
             if other.day > maxdays:
                 newday = maxdays
             else:
@@ -369,7 +369,7 @@ ISO8601_PERIOD_REGEX = re.compile(
 
 def parse_xsd_duration(
     dur_string: str, as_timedelta_if_possible: bool = True
-) -> Union[Duration, timedelta]:
+) -> Duration | timedelta:
     """Parses an ISO 8601 durations into datetime.timedelta or Duration objects.
 
     If the ISO date string does not contain years or months, a timedelta
@@ -437,7 +437,7 @@ def parse_xsd_duration(
                 # these values are passed into a timedelta object,
                 # which works with floats.
                 groups[key] = float(groups[key][:-1].replace(",", "."))
-    ret: Union[Duration, timedelta]
+    ret: Duration | timedelta
     if as_timedelta_if_possible and groups["years"] == 0 and groups["months"] == 0:
         ret = timedelta(
             days=groups["days"],  # type: ignore[arg-type]
@@ -464,9 +464,9 @@ def parse_xsd_duration(
     return ret
 
 
-def duration_isoformat(tdt: Union[Duration, timedelta], in_weeks: bool = False) -> str:
+def duration_isoformat(tdt: Duration | timedelta, in_weeks: bool = False) -> str:
     if not in_weeks:
-        ret: List[str] = []
+        ret: list[str] = []
         minus = False
         has_year_or_month = False
         if isinstance(tdt, Duration):

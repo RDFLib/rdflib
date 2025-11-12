@@ -4,13 +4,19 @@ Utilities for interacting with SHACL Shapes Graphs more easily.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 from rdflib import BNode, Graph, Literal, URIRef, paths
 from rdflib.collection import Collection
 from rdflib.namespace import RDF, SH
 from rdflib.paths import Path
-from rdflib.term import Node
+
+if TYPE_CHECKING:
+    from rdflib.graph import _ObjectType
+    from rdflib.term import IdentifiedNode
+
+if TYPE_CHECKING:
+    from rdflib.term import IdentifiedNode
 
 if TYPE_CHECKING:
     from rdflib.term import IdentifiedNode
@@ -32,8 +38,8 @@ _PATH_MOD_TO_PRED = {
 # pyshacl.helper.sparql_query_helper::SPARQLQueryHelper._shacl_path_to_sparql_path
 def parse_shacl_path(
     shapes_graph: Graph,
-    path_identifier: Node,
-) -> Union[URIRef, Path]:
+    path_identifier: _ObjectType,
+) -> URIRef | Path:
     """
     Parse a valid SHACL path (e.g. the object of a triple with predicate sh:path)
     from a [`Graph`][rdflib.graph.Graph] as a [`URIRef`][rdflib.term.URIRef] if the path
@@ -46,7 +52,7 @@ def parse_shacl_path(
     Returns:
         A [`URIRef`][rdflib.term.URIRef] or a [`Path`][rdflib.paths.Path]
     """
-    path: Optional[Union[URIRef, Path]] = None
+    path: URIRef | Path | None = None
 
     # Literals are not allowed.
     if isinstance(path_identifier, Literal):

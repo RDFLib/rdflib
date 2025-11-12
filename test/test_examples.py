@@ -1,8 +1,8 @@
 import logging
 import subprocess
 import sys
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 import pytest
 from _pytest.mark.structures import ParameterSet

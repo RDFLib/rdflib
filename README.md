@@ -57,8 +57,9 @@ Help with maintenance of all of the RDFLib family of packages is always welcome 
 * `7.0.0` previous stable release, supports Python 3.8.1+ only.
     * see [Releases](https://github.com/RDFLib/rdflib/releases)
 * `6.x.y` supports Python 3.7+ only. Many improvements over 5.0.0
-    * see [Releases](https://github.com/RDFLib/rdflib/releases)
+    * see <https://github.com/RDFLib/rdflib/releases/tag/6.3.2>
 * `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html).
+  * * see <https://github.com/RDFLib/rdflib/releases/tag/5.0.0>
 
 See <https://github.com/RDFLib/rdflib/releases/> for the release details.
 
@@ -175,7 +176,6 @@ abstracts = list(x for x in g.objects(semweb, dbpedia['abstract']) if x.language
 
 See also [./examples](./examples)
 
-
 ## Features
 The library contains parsers and serializers for RDF/XML, N3,
 NTriples, N-Quads, Turtle, TriX, JSON-LD, RDFa and Microdata.
@@ -221,7 +221,7 @@ python -m http.server --directory=htmlcov
 ## Contributing
 
 RDFLib survives and grows via user contributions!
-Please read our [contributing guide](https://rdflib.readthedocs.io/en/latest/CONTRIBUTING.html) and [developers guide](https://rdflib.readthedocs.io/en/latest/developers.html) to get started.
+Please read our [contributing guide](https://rdflib.readthedocs.io/en/latest/CONTRIBUTING/) and [developers guide](https://rdflib.readthedocs.io/en/latest/developers/) to get started.
 Please consider lodging Pull Requests here:
 
 * <https://github.com/RDFLib/rdflib/pulls>

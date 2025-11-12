@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import codecs
 import warnings
-from typing import IO, TYPE_CHECKING, Any, Optional, Tuple, Union
+from typing import IO, TYPE_CHECKING, Any
 
 from rdflib.graph import Graph
 from rdflib.serializer import Serializer
@@ -29,8 +29,8 @@ class NTSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = "utf-8",
+        base: str | None = None,
+        encoding: str | None = "utf-8",
         **kwargs: Any,
     ) -> None:
         if base is not None:
@@ -89,7 +89,7 @@ def _quote_encode(l_: str) -> str:
 
 def _nt_unicode_error_resolver(
     err: UnicodeError,
-) -> Tuple[Union[str, bytes], int]:
+) -> tuple[str | bytes, int]:
     """
     Do unicode char replaces as defined in https://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#ntrip_strings
     """
