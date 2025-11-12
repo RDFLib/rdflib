@@ -430,13 +430,13 @@ RDFLib 5.0.0 maintained compatibility with Python versions 2.7, 3.4, 3.5, 3.6, 3
 
 Create a release-preparation pull request with the following changes:
 
-* Updated version and date in `CITATION.cff`.
-* Updated copyright year in the `LICENSE` file.
-* Updated copyright year in the `docs/conf.py` file.
-* Updated main branch version and current version in the `README.md` file.
-* Updated version in the `pyproject.toml` file.
-* Updated `__date__` in the `rdflib/__init__.py` file.
-* Accurate `CHANGELOG.md` entry for the release.
+* Updated version and date in [`CITATION.cff`](../CITATION.cff).
+* Updated copyright year in the [`LICENSE`](../LICENSE) file.
+* Updated copyright year in the [`mkdocs.yml`](../mkdocs.yml) file.
+* Updated main branch version and current version in the [`README.md`](../README.md) file.
+* Updated version in the [`pyproject.toml`](../pyproject.toml) file.
+* Updated `__date__` in the [`rdflib/__init__.py`](../rdflib/__init__.py) file.
+* Updated [`CHANGELOG.md`](../CHANGELOG.md) entry for the release with admin tools as described in [`admin/README.md`](../admin/README.md).
 
 Once the PR is merged, switch to the main branch, build the release and upload it to PyPI:
 

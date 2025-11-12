@@ -11,6 +11,7 @@ from typing import (
     IO,
     TYPE_CHECKING,
     Any,
+    TypeVar,
 )
 
 from rdflib.exceptions import Error
@@ -18,6 +19,8 @@ from rdflib.graph import Graph
 from rdflib.namespace import RDF, RDFS
 from rdflib.serializer import Serializer
 from rdflib.term import BNode, Literal, Node, URIRef
+
+_StrT = TypeVar("_StrT", bound=str)
 
 if TYPE_CHECKING:
     from rdflib.graph import _ObjectType, _PredicateType, _SubjectType, _TripleType
@@ -165,6 +168,18 @@ class RecursiveSerializer(Serializer):
         # type error: Item "None" of "Optional[IO[bytes]]" has no attribute "write"
         self.stream.write(text.encode(self.encoding, "replace"))  # type: ignore[union-attr]
 
+    def relativize(self, uri: _StrT) -> _StrT | URIRef:
+        base = self.base
+        if (
+            base is not None
+            and uri.startswith(base)
+            and "#" not in uri.replace(base, "")
+            and "/" not in uri.replace(base, "")
+        ):
+            # type error: Incompatible types in assignment (expression has type "str", variable has type "Node")
+            uri = URIRef(uri.replace(base, "", 1))  # type: ignore[assignment]
+        return uri
+
 
 SUBJECT = 0
 VERB = 1
@@ -258,9 +273,19 @@ class TurtleSerializer(RecursiveSerializer):
     def preprocessTriple(self, triple: _TripleType) -> None:
         super(TurtleSerializer, self).preprocessTriple(triple)
         for i, node in enumerate(triple):
-            if i == VERB and node in self.keywords:
-                # predicate is a keyword
-                continue
+            if i == VERB:
+                if node in self.keywords:
+                    # predicate is a keyword
+                    continue
+                if (
+                    self.base is not None
+                    and isinstance(node, URIRef)
+                    and node.startswith(self.base)
+                    and "#" not in node.replace(self.base, "")
+                    and "/" not in node.replace(self.base, "")
+                ):
+                    # predicate corresponds to base namespace
+                    continue
             # Don't use generated prefixes for subjects and objects
             self.getQName(node, gen_prefix=(i == VERB))
             if isinstance(node, Literal) and node.datatype:

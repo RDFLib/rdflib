@@ -2140,7 +2140,7 @@ class ConjunctiveGraph(Graph):
     All queries are carried out against the union of all graphs.
     """
 
-    default_context: _ContextType
+    _default_context: _ContextType
 
     def __init__(
         self,
@@ -2162,12 +2162,20 @@ class ConjunctiveGraph(Graph):
         )
         self.context_aware = True
         self.default_union = True  # Conjunctive!
-        self.default_context: _ContextType = Graph(
+        self._default_context: _ContextType = Graph(
             store=self.store, identifier=identifier or BNode(), base=default_graph_base
         )
 
     def __getnewargs__(self) -> tuple[Any, ...]:
         return (self.store, self.__identifier, self.default_context.base)
+
+    @property
+    def default_context(self):
+        return self._default_context
+
+    @default_context.setter
+    def default_context(self, value):
+        self._default_context = value
 
     def __str__(self) -> str:
         pattern = (
@@ -2275,7 +2283,19 @@ class ConjunctiveGraph(Graph):
         if not isinstance(c, Graph):
             return self.get_context(c)
         else:
-            return c
+            if isinstance(c, (Dataset, ConjunctiveGraph)):
+                # Preserve the old behaviour for datasets.
+                return c
+            else:
+                # Copy the graph triples so they're added to the store.
+                try:
+                    _graph = self.get_graph(c.identifier)
+                    assert _graph is not None
+                except IndexError:
+                    _graph = self.get_context(c.identifier)
+                _graph.__iadd__(c)
+                # Return the graph with the same backing store.
+                return _graph
 
     def addN(  # noqa: N802
         self: _ConjunctiveGraphT, quads: Iterable[_QuadType]
@@ -2506,8 +2526,7 @@ class ConjunctiveGraph(Graph):
 
         context = self.default_context
         context.parse(source, publicID=publicID, format=format, **args)
-        # TODO: FIXME: This should not return context, but self.
-        return context
+        return self
 
     def __reduce__(self) -> tuple[type[Graph], tuple[Store, _ContextIdentifierType]]:
         return ConjunctiveGraph, (self.store, self.identifier)
@@ -2680,13 +2699,48 @@ class Dataset(ConjunctiveGraph):
 
         if not self.store.graph_aware:
             raise Exception("Dataset must be backed by a graph-aware store!")
-        self.default_context = Graph(
+        self._default_context = Graph(
             store=self.store,
             identifier=DATASET_DEFAULT_GRAPH_ID,
             base=default_graph_base,
         )
 
         self.default_union = default_union
+
+    @property
+    def default_context(self):
+        warnings.warn(
+            "Dataset.default_context is deprecated, use Dataset.default_graph instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self._default_context
+
+    @default_context.setter
+    def default_context(self, value):
+        warnings.warn(
+            "Dataset.default_context is deprecated, use Dataset.default_graph instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self._default_context = value
+
+    @property
+    def default_graph(self):
+        return self._default_context
+
+    @default_graph.setter
+    def default_graph(self, value):
+        self._default_context = value
+
+    @property
+    def identifier(self):
+        warnings.warn(
+            "Dataset.identifier is deprecated and will be removed in future versions.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return super(Dataset, self).identifier
 
     def __getnewargs__(self) -> tuple[Any, ...]:
         return (self.store, self.default_union, self.default_context.base)
@@ -2703,14 +2757,20 @@ class Dataset(ConjunctiveGraph):
         return type(self), (self.store, self.default_union)
 
     def __getstate__(self) -> tuple[Store, _ContextIdentifierType, _ContextType, bool]:
-        return self.store, self.identifier, self.default_context, self.default_union
+        return self.store, self.identifier, self.default_graph, self.default_union
 
     def __setstate__(
         self, state: tuple[Store, _ContextIdentifierType, _ContextType, bool]
     ) -> None:
         # type error: Property "store" defined in "Graph" is read-only
         # type error: Property "identifier" defined in "Graph" is read-only
-        self.store, self.identifier, self.default_context, self.default_union = state  # type: ignore[misc]
+        self.store, self.identifier, self.default_graph, self.default_union = state  # type: ignore[misc]
+
+    def __iadd__(self: _DatasetT, other: Iterable[_QuadType]) -> _DatasetT:  # type: ignore[override, misc]
+        """Add all quads in Dataset other to Dataset.
+        BNode IDs are not changed."""
+        self.addN((s, p, o, g) for s, p, o, g in other)
+        return self
 
     def graph(
         self,
@@ -2744,7 +2804,7 @@ class Dataset(ConjunctiveGraph):
         file: BinaryIO | TextIO | None = None,
         data: str | bytes | None = None,
         **args: Any,
-    ) -> Graph:
+    ) -> Dataset:
         """Parse an RDF source adding the resulting triples to the Graph.
 
         See rdflib.graph.Graph.parse for documentation on arguments.
@@ -2765,7 +2825,7 @@ class Dataset(ConjunctiveGraph):
             The source is specified using one of source, location, file or data.
 
             If the source is in a format that does not support named graphs its triples
-            will be added to the default graph (i.e. Dataset.default_context).
+            will be added to the default graph (i.e. Dataset.default_graph).
 
         !!! warning "Caution"
             This method can access directly or indirectly requested network or
@@ -2784,14 +2844,13 @@ class Dataset(ConjunctiveGraph):
             sources that do not support named graphs, the `publicID` parameter will
             also not be used as the name for the graph that the data is loaded into,
             and instead the triples from sources that do not support named graphs will
-            be loaded into the default graph (i.e. Dataset.default_context).
+            be loaded into the default graph (i.e. Dataset.default_graph).
         """
 
-        c = ConjunctiveGraph.parse(
+        ConjunctiveGraph.parse(
             self, source, publicID, format, location, file, data, **args
         )
-        self.graph(c)
-        return c
+        return self
 
     def add_graph(self, g: _ContextIdentifierType | _ContextType | str | None) -> Graph:
         """alias of graph for consistency"""
@@ -2804,14 +2863,29 @@ class Dataset(ConjunctiveGraph):
             g = self.get_context(g)
 
         self.store.remove_graph(g)
-        if g is None or g == self.default_context:
+        if g is None or g == self.default_graph:
             # default graph cannot be removed
             # only triples deleted, so add it back in
-            self.store.add_graph(self.default_context)
+            self.store.add_graph(self.default_graph)
         return self
 
     def contexts(
         self, triple: _TripleType | None = None
+    ) -> Generator[_ContextType, None, None]:
+        warnings.warn(
+            "Dataset.contexts is deprecated, use Dataset.graphs instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        default = False
+        for c in super(Dataset, self).contexts(triple):
+            default |= c.identifier == DATASET_DEFAULT_GRAPH_ID
+            yield c
+        if not default:
+            yield self.graph(DATASET_DEFAULT_GRAPH_ID)
+
+    def graphs(
+        self, triple: Optional[_TripleType] = None
     ) -> Generator[_ContextType, None, None]:
         default = False
         for c in super(Dataset, self).contexts(triple):
@@ -2820,15 +2894,13 @@ class Dataset(ConjunctiveGraph):
         if not default:
             yield self.graph(DATASET_DEFAULT_GRAPH_ID)
 
-    graphs = contexts
-
     # type error: Return type "Generator[tuple[Node, Node, Node, Optional[Node]], None, None]" of "quads" incompatible with return type "Generator[tuple[Node, Node, Node, Optional[Graph]], None, None]" in supertype "ConjunctiveGraph"
     def quads(  # type: ignore[override]
         self, quad: _TripleOrQuadPatternType | None = None
     ) -> Generator[_OptionalIdentifiedQuadType, None, None]:
         for s, p, o, c in super(Dataset, self).quads(quad):
             # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"
-            if c.identifier == self.default_context:  # type: ignore[union-attr]
+            if c.identifier == self.default_graph:  # type: ignore[union-attr]
                 yield s, p, o, None
             else:
                 # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"  [union-attr]
@@ -2840,6 +2912,73 @@ class Dataset(ConjunctiveGraph):
     ) -> Generator[_OptionalIdentifiedQuadType, None, None]:
         """Iterates over all quads in the store"""
         return self.quads((None, None, None, None))
+
+    @overload
+    def serialize(
+        self,
+        destination: None,
+        format: str,
+        base: Optional[str],
+        encoding: str,
+        **args: Any,
+    ) -> bytes: ...
+
+    # no destination and non-None keyword encoding
+    @overload
+    def serialize(
+        self,
+        destination: None = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        *,
+        encoding: str,
+        **args: Any,
+    ) -> bytes: ...
+
+    # no destination and None encoding
+    @overload
+    def serialize(
+        self,
+        destination: None = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: None = ...,
+        **args: Any,
+    ) -> str: ...
+
+    # non-None destination
+    @overload
+    def serialize(
+        self,
+        destination: Union[str, pathlib.PurePath, IO[bytes]],
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: Optional[str] = ...,
+        **args: Any,
+    ) -> Graph: ...
+
+    # fallback
+    @overload
+    def serialize(
+        self,
+        destination: Optional[Union[str, pathlib.PurePath, IO[bytes]]] = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: Optional[str] = ...,
+        **args: Any,
+    ) -> Union[bytes, str, Graph]: ...
+
+    def serialize(
+        self,
+        destination: Optional[Union[str, pathlib.PurePath, IO[bytes]]] = None,
+        format: str = "trig",
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **args: Any,
+    ) -> Union[bytes, str, Graph]:
+        return super(Dataset, self).serialize(
+            destination=destination, format=format, base=base, encoding=encoding, **args
+        )
 
 
 class QuotedGraph(Graph, IdentifiedNode):
@@ -3027,7 +3166,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def rollback(self) -> NoReturn:
         raise ModificationException()
 
-    def open(self, configuration: str, create: bool = False) -> None:
+    def open(self, configuration: str | tuple[str, str], create: bool = False) -> None:
         # TODO: is there a use case for this method?
         for graph in self.graphs:
             # type error: Too many arguments for "open" of "Graph"

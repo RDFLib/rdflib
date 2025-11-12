@@ -14,6 +14,8 @@
 #
 # We would appreciate acknowledgement if the software is used.
 
+from __future__ import annotations
+
 import random
 from collections import defaultdict
 
