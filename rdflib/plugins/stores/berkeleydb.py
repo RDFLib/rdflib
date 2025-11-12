@@ -126,10 +126,14 @@ class BerkeleyDB(Store):
     def is_open(self) -> bool:
         return self.__open
 
-    def open(self, path: str, create: bool = True) -> int | None:
+    def open(self, configuration: str, create: bool = True) -> int | None:
         if not has_bsddb:
             return NO_STORE
-        homeDir = path  # noqa: N806
+
+        if type(configuration) is str:
+            homeDir = configuration  # noqa: N806
+        else:
+            raise Exception("Invalid configuration provided")
 
         if self.__identifier is None:
             self.__identifier = URIRef(pathname2url(abspath(homeDir)))
