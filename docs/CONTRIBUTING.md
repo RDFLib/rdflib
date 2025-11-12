@@ -88,8 +88,8 @@ Some ways in which you can contribute to RDFLib are:
 
 ## Technical contributions
 
-If you would like to make technical contributions to RDFLIb, the _main_ way to do
-this is via creating Pull Requests to fix bugs or add features.
+Contributions that involve changes to the RDFLib repository have to be made with
+pull requests and should follow the [RDFLib developers guide](./developers.md).
 
 Please read the [RDFLib developers guide](./developers.md) for this.
 

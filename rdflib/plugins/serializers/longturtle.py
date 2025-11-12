@@ -22,7 +22,7 @@ from typing import IO, Any, Optional
 
 from rdflib.compare import to_canonical_graph
 from rdflib.exceptions import Error
-from rdflib.graph import Graph
+from rdflib.graph import Graph, _TripleType
 from rdflib.namespace import RDF
 from rdflib.term import BNode, Literal, URIRef
 
@@ -41,7 +41,7 @@ _SPACIOUS_OUTPUT = False
 class LongTurtleSerializer(RecursiveSerializer):
     """LongTurtle, a Turtle serialization format.
 
-    When the optional parameter ``canon`` is set to :py:obj:`True`, the graph is canonicalized
+    When the optional parameter `canon` is set to `True`, the graph is canonicalized
     before serialization. This normalizes blank node identifiers and allows for
     deterministic serialization of the graph. Useful when consistent outputs are required.
     """
@@ -146,11 +146,22 @@ class LongTurtleSerializer(RecursiveSerializer):
 
         self.base = None
 
-    def preprocessTriple(self, triple):
+    def preprocessTriple(self, triple: _TripleType) -> None:
         super(LongTurtleSerializer, self).preprocessTriple(triple)
         for i, node in enumerate(triple):
-            if node in self.keywords:
-                continue
+            if i == VERB:
+                if node in self.keywords:
+                    # predicate is a keyword
+                    continue
+                if (
+                    self.base is not None
+                    and isinstance(node, URIRef)
+                    and node.startswith(self.base)
+                    and "#" not in node.replace(self.base, "")
+                    and "/" not in node.replace(self.base, "")
+                ):
+                    # predicate corresponds to base namespace
+                    continue
             # Don't use generated prefixes for subjects and objects
             self.getQName(node, gen_prefix=(i == VERB))
             if isinstance(node, Literal) and node.datatype:
@@ -176,6 +187,8 @@ class LongTurtleSerializer(RecursiveSerializer):
                 return None
 
         prefix, namespace, local = parts
+
+        local = local.replace(r"(", r"\(").replace(r")", r"\)")
 
         # QName cannot end with .
         if local.endswith("."):

@@ -549,7 +549,7 @@ class Memory(Store):
         self, triple: _TripleType | None = None
     ) -> Generator[_ContextType, None, None]:
         if triple is None or triple == (None, None, None):
-            return (context for context in self.__all_contexts)
+            return (context for context in list(self.__all_contexts))
 
         subj, pred, obj = triple
         try:

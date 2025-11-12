@@ -15,9 +15,6 @@ if TYPE_CHECKING:
     from rdflib.graph import _ObjectType
     from rdflib.term import IdentifiedNode
 
-if TYPE_CHECKING:
-    from rdflib.term import IdentifiedNode
-
 
 class SHACLPathError(Exception):
     pass

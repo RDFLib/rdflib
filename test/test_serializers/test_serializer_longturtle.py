@@ -1,5 +1,6 @@
 import difflib
 from pathlib import Path
+from textwrap import dedent
 
 from rdflib import Graph, Namespace
 from rdflib.namespace import GEO, SDO
@@ -181,3 +182,31 @@ def test_longturtle():
     diff = "\n".join(list(difflib.unified_diff(target.split("\n"), output.split("\n"))))
 
     assert not diff, diff
+
+
+def test_longturtle_undeclared_prefix_when_using_base():
+    """
+    See https://github.com/RDFLib/rdflib/issues/3160
+    """
+    from rdflib import Graph, Literal, URIRef
+
+    g = Graph()
+    g.add(
+        (
+            URIRef("https://example.com/subject"),
+            URIRef("https://example.com/p/predicate"),
+            Literal("object"),
+        )
+    )
+    output = g.serialize(format="longturtle", base="https://example.com/")
+    expected = dedent(
+        """
+        BASE <https://example.com/>
+        PREFIX ns1: <https://example.com/p/>
+
+        <subject>
+            ns1:predicate "object" ;
+        .
+    """
+    )
+    assert output.strip() == expected.strip()

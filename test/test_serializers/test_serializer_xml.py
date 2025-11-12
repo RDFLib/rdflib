@@ -40,7 +40,7 @@ _blank = BNode()
 
 
 def _mangled_copy(g):
-    """Makes a copy of the graph, replacing all bnodes with the bnode ``_blank``."""
+    """Makes a copy of the graph, replacing all bnodes with the bnode `_blank`."""
     gcopy = Dataset()
 
     def isbnode(v):
