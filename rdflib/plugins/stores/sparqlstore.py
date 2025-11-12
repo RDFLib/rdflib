@@ -135,6 +135,8 @@ class SPARQLStore(SPARQLConnector, Store):
     ... )
     ```
 
+    ```
+
     You can request a particular result serialization with the
     `returnFormat` parameter. This is a string that must have a
     matching plugin registered. Built in is support for `xml`,
@@ -188,7 +190,7 @@ class SPARQLStore(SPARQLConnector, Store):
         """This method is included so that calls to this Store via Graph, e.g. Graph("SPARQLStore"),
         can set the required parameters
         """
-        if type(configuration) == str:  # noqa: E721
+        if type(configuration) is str:
             self.query_endpoint = configuration
         else:
             raise Exception(

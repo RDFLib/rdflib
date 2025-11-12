@@ -1,3 +1,68 @@
+## 2025-10-30 RELEASE 7.4.0
+
+This release addresses a couple of bugs and improves the testing matrix by adding python 3.12, 3.13 and 3.14 to the test matrix.
+
+This is also the first RDFLib release to use MkDocs for documentation.
+
+Pull requests merged:
+
+- chore(v7): upgrade ci and dev/test deps by @edmondchuc in [#3288](https://github.com/RDFLib/rdflib/pull/3288)
+- feat: v7 mkdocs by @edmondchuc in [#3287](https://github.com/RDFLib/rdflib/pull/3287)
+- fix: set changed size when iterating the store's graphs by @edmondchuc in [#3281](https://github.com/RDFLib/rdflib/pull/3281)
+- lazy fix of issue pytest failure on python 3.13.8 - Removing of xfail raise restriction by @WhiteGobo in [#3275](https://github.com/RDFLib/rdflib/pull/3275)
+
+## 2025-10-24 RELEASE 7.3.0
+
+This release delivers several important fixes and enhancements to RDFLib’s Dataset implementation, resolving long-standing issues and improving consistency across serialization and SPARQL operations. It also introduces new deprecation notices for certain Dataset methods and attributes, which will be removed in the next major release. In addition, this version includes a range of improvements to SPARQL result parsing, typing, and literal handling.
+
+### Features
+
+- Added `Dataset.__iadd__` support
+- Dataset's default serialize format is now `trig`
+- Datasets can now add graphs backed by different stores
+
+### Fixes and Improvements
+
+- Fixed an issue where the `RecursiveSerializer` would output undeclared prefixes for predicates that contained the base as a substring
+- Prevented prefix generation for predicates corresponding to the base namespace
+- SPARQL Update now correctly inserts into the default graph
+- Dataset.parse now returns Self
+- N-Quads serialization no longer includes the RDFLib internal default graph identifier
+- Static type checkers can now infer the type of `Term.__new__`
+- Removed automatic date conversion for gYear and gYearMonth literals
+- Optional clauses in SPARQL queries can now bind variables
+- Fixed reevaluation logic in SPARQL Update between update loops
+
+### Maintenance
+
+- Added deprecation notices to certain Dataset methods and attributes
+  - Use Dataset.graphs instead of Dataset.contexts method
+  - Use Dataset.default_graph instead of Dataset.default_context
+  - Deprecate Dataset.identifier entirely.
+- Updated type hints for Graph.open() with SPARQLUpdateStore configuration
+- SPARQL Result Parsing Improvements
+  - Simplified and modernized the SPARQL result parsing system:
+  - These changes maintain backward compatibility while making the SPARQL API more flexible and extensible.
+
+Pull requests merged:
+
+- feat: add Dataset `__iadd__` support by @edmondchuc in [#3268](https://github.com/RDFLib/rdflib/pull/3268)
+- fix: RecursiveSerializer- outputs undeclared prefix for predicates that contains the base as a substring by @edmondchuc in [#3267](https://github.com/RDFLib/rdflib/pull/3267)
+- fix: allow static type checkers to infer term's `__new__` type by @edmondchuc in [#3266](https://github.com/RDFLib/rdflib/pull/3266)
+- fix: SPARQL Update inserts into the default graph by @edmondchuc in [#3265](https://github.com/RDFLib/rdflib/pull/3265)
+- chore: add deprecation notice to Dataset methods and attributes by @edmondchuc in [#3264](https://github.com/RDFLib/rdflib/pull/3264)
+- fix: Dataset.parse now returns Self by @edmondchuc in [#3263](https://github.com/RDFLib/rdflib/pull/3263)
+- fix: dataset nquads serialization including RDFLib internal default graph identifier by @edmondchuc in [#3262](https://github.com/RDFLib/rdflib/pull/3262)
+- patch for reevaluation in sparql modify between update loops. with test by @WhiteGobo in [#3261](https://github.com/RDFLib/rdflib/pull/3261)
+- feat: change dataset's default serialize format to trig by @edmondchuc in [#3260](https://github.com/RDFLib/rdflib/pull/3260)
+- feat: allow adding graphs backed by different stores to the same dataset by @edmondchuc in [#3259](https://github.com/RDFLib/rdflib/pull/3259)
+- fix(v7): remove Literal.toPython date conversion for gYear/gYearMonth (#3115) by @edmondchuc in [#3258](https://github.com/RDFLib/rdflib/pull/3258)
+- sparqls optionals clause can now bind variables. with test. issue 2957 by @WhiteGobo in [#3247](https://github.com/RDFLib/rdflib/pull/3247)
+- fix: skip prefix generation for predicates corresponding to base namespace by @edmondchuc in [#3244](https://github.com/RDFLib/rdflib/pull/3244)
+- Run the example queries agains the local fuseki by @white-gecko in [#3240](https://github.com/RDFLib/rdflib/pull/3240)
+- Adjust the type hint for Graph open to reflect a SPARQLUpdateStore configuration by @white-gecko in [#3239](https://github.com/RDFLib/rdflib/pull/3239)
+- SPARQL result parsing by @white-gecko in [#2796](https://github.com/RDFLib/rdflib/pull/2796)
+
 ## 2025-09-19 RELEASE 7.2.1
 
 A tiny clean up release.
@@ -169,26 +234,12 @@ For the full list of included PRs, see the preparatory PR:
 
 ## 2025-01-10 RELEASE 7.1.2
 
-A minor release that bumped up a few dev dependencies and achieved a few small but notable improvements, particularly with longturtle sorting:
+A minor release that inadvertently removed support for Python 3.8. This release 
+how now been deleted.
 
-Feature PRs:
-
-* [PR #2963](https://github.com/RDFLib/rdflib/pull/2963) Big typing updates
-* [PR #2964](https://github.com/RDFLib/rdflib/pull/2964) Defined Namesapce warnings fix
-* [PR #2971](https://github.com/RDFLib/rdflib/pull/2971) convert uses of Optional and some Union usage to union operator |
-* [PR #2989](https://github.com/RDFLib/rdflib/pull/2989) Fixed incorrect ASK behaviour for dataset with one element
-* [PR #2997](https://github.com/RDFLib/rdflib/pull/2997) sort longturtle blank nodes
-* [PR #3008](https://github.com/RDFLib/rdflib/pull/3008) deterministic longturtle serialisation using RDF canonicalization + n-triples sort
-* [PR #3012](https://github.com/RDFLib/rdflib/pull/3012) Dataset documentation improvements
-
-Dependency bumps:
-
-* ruff from 0.71 -> 0.8.6
-* orjson  3.10.10 -> 
-* pytest-cov to 6.0.0
-* coverage to 7.6.10
-* pytest to 8.3.4
-* poetry to 2.0.0
+All the improved features initially made available in this release that were 
+compatible with Python 3.8 have been preserved in the 7.1.3 release. The main 
+additions to 7.1.2 not preserved in 7.1.3 are updated type hints.
 
 ## 2024-10-17 RELEASE 7.1.1
 

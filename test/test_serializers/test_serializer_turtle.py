@@ -1,3 +1,5 @@
+from textwrap import dedent
+
 from rdflib import RDF, RDFS, BNode, Graph, Literal, Namespace, URIRef
 from rdflib.collection import Collection
 from rdflib.plugins.serializers.turtle import TurtleSerializer
@@ -113,3 +115,29 @@ def test_turtle_namespace():
     assert "GENO:0000385" in output
     assert "SERIAL:0167-6423" in output
     assert r"EX:name_with_\(parenthesis\)" in output
+
+
+def test_turtle_undeclared_prefix_when_using_base():
+    """
+    See https://github.com/RDFLib/rdflib/issues/3160
+    """
+    from rdflib import Graph, Literal, URIRef
+
+    g = Graph()
+    g.add(
+        (
+            URIRef("https://example.com/subject"),
+            URIRef("https://example.com/p/predicate"),
+            Literal("object"),
+        )
+    )
+    output = g.serialize(format="turtle", base="https://example.com/")
+    expected = dedent(
+        """
+        @base <https://example.com/> .
+        @prefix ns1: <https://example.com/p/> .
+
+        <subject> ns1:predicate "object" .
+    """
+    )
+    assert output.strip() == expected.strip()
