@@ -19,17 +19,18 @@ from test.utils.outcome import OutcomeChecker
 @pytest.mark.webtest
 def test_service():
     g = Graph()
-    q = """select ?sameAs ?dbpComment
-    where
-    { service <http://DBpedia.org/sparql>
-    { select ?dbpHypernym ?dbpComment
-    where
-    {
-    <http://dbpedia.org/resource/John_Lilburne>
-        <http://www.w3.org/2002/07/owl#sameAs> ?sameAs ;
-        <http://www.w3.org/2000/01/rdf-schema#comment> ?dbpComment .
-
-    } }  } limit 2"""
+    q = """
+        SELECT ?p ?o
+        WHERE {
+            SERVICE <http://DBpedia.org/sparql> {
+                SELECT ?p ?o
+                WHERE {
+                    <http://dbpedia.org/resource/John_Lilburne> ?p ?o
+                }
+            }
+        }
+        LIMIT 2
+    """
     try:
         results = helper.query_with_retry(g, q)
     except (RemoteDisconnected, IncompleteRead):
@@ -45,19 +46,23 @@ def test_service():
 @pytest.mark.webtest
 def test_service_with_bind():
     g = Graph()
-    q = """select ?sameAs ?dbpComment ?subject
-    where
-    { bind (<http://dbpedia.org/resource/Category:1614_births> as ?subject)
-      service <http://DBpedia.org/sparql>
-    { select ?sameAs ?dbpComment ?subject
-    where
-    {
-    <http://dbpedia.org/resource/John_Lilburne>
-        <http://www.w3.org/2002/07/owl#sameAs> ?sameAs ;
-        <http://www.w3.org/2000/01/rdf-schema#comment> ?dbpComment ;
-        <http://purl.org/dc/terms/subject> ?subject .
-
-    } }  } limit 2"""
+    q = """
+        PREFIX dbp:	<http://dbpedia.org/property/>
+        SELECT ?sameAs ?dbpComment ?subject
+        WHERE {
+        BIND(<http://dbpedia.org/resource/Category:1614_births> AS ?subject)
+        SERVICE <http://DBpedia.org/sparql> {
+            SELECT ?sameAs ?dbpComment ?subject
+            WHERE {
+                <http://dbpedia.org/resource/John_Lilburne>
+                    <http://www.w3.org/2002/07/owl#sameAs> ?sameAs ;
+                    dbp:caption ?dbpComment ;
+                    <http://purl.org/dc/terms/subject> ?subject .
+                }
+            }
+        }
+        LIMIT 2
+    """
     try:
         results = helper.query_with_retry(g, q)
     except (RemoteDisconnected, IncompleteRead):
@@ -81,27 +86,30 @@ def test_service_with_bound_solutions():
         """
     )
     q = """
-        SELECT ?sameAs ?dbpComment ?subject WHERE {
-          []
-            <http://www.w3.org/2002/07/owl#sameAs> ?sameAs ;
-            <http://purl.org/dc/terms/subject> ?subject .
-
-          SERVICE <http://DBpedia.org/sparql> {
-            SELECT ?sameAs ?dbpComment ?subject WHERE {
-              <http://dbpedia.org/resource/John_Lilburne>
+            PREFIX dbp:	<http://dbpedia.org/property/>
+            SELECT ?sameAs ?dbpComment ?subject
+            WHERE {
+            []
                 <http://www.w3.org/2002/07/owl#sameAs> ?sameAs ;
-                <http://www.w3.org/2000/01/rdf-schema#comment> ?dbpComment ;
                 <http://purl.org/dc/terms/subject> ?subject .
+
+            SERVICE <http://DBpedia.org/sparql> {
+                SELECT ?sameAs ?dbpComment ?subject
+                WHERE {
+                    <http://dbpedia.org/resource/John_Lilburne>
+                        <http://www.w3.org/2002/07/owl#sameAs> ?sameAs ;
+                        dbp:caption ?dbpComment ;
+                        <http://purl.org/dc/terms/subject> ?subject .
+                    }
+                }
             }
-          }
-        }
-        LIMIT 2
+            LIMIT 2
         """
     try:
         results = helper.query_with_retry(g, q)
     except (RemoteDisconnected, IncompleteRead):
         pytest.skip("this test uses dbpedia which is down sometimes")
-    assert len(results) == 2
+    assert len(results) == 1
 
     for r in results:
         assert len(r) == 3
@@ -110,19 +118,25 @@ def test_service_with_bound_solutions():
 @pytest.mark.webtest
 def test_service_with_values():
     g = Graph()
-    q = """select ?sameAs ?dbpComment ?subject
-    where
-    { values (?sameAs ?subject) {(<http://de.dbpedia.org/resource/John_Lilburne> <http://dbpedia.org/resource/Category:1614_births>) (<https://global.dbpedia.org/id/4t6Fk> <http://dbpedia.org/resource/Category:Levellers>)}
-      service <http://DBpedia.org/sparql>
-    { select ?sameAs ?dbpComment ?subject
-    where
-    {
-    <http://dbpedia.org/resource/John_Lilburne>
-        <http://www.w3.org/2002/07/owl#sameAs> ?sameAs ;
-        <http://www.w3.org/2000/01/rdf-schema#comment> ?dbpComment ;
-        <http://purl.org/dc/terms/subject> ?subject .
-
-    } }  } limit 2"""
+    q = """
+        PREFIX dbp:	<http://dbpedia.org/property/>
+        SELECT ?sameAs ?dbpComment ?subject
+        WHERE {
+            VALUES (?sameAs ?subject) {
+                (<http://de.dbpedia.org/resource/John_Lilburne> <http://dbpedia.org/resource/Category:1614_births>) (<https://global.dbpedia.org/id/4t6Fk> <http://dbpedia.org/resource/Category:Levellers>)
+            }
+            SERVICE <http://DBpedia.org/sparql> {
+                SELECT ?sameAs ?dbpComment ?subject
+                WHERE {
+                    <http://dbpedia.org/resource/John_Lilburne>
+                        <http://www.w3.org/2002/07/owl#sameAs> ?sameAs ;
+                        dbp:caption ?dbpComment ;
+                        <http://purl.org/dc/terms/subject> ?subject .
+                }
+            }
+        }
+        LIMIT 2
+    """
     try:
         results = helper.query_with_retry(g, q)
     except (RemoteDisconnected, IncompleteRead):

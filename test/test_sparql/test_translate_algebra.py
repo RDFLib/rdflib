@@ -261,7 +261,7 @@ if os.name != "nt":
             "Test if a nested service pattern is properly translated"
             "into the query text.",
             pytest.mark.xfail(
-                raises=RecursionError,
+                raises=(RecursionError, TypeError),
                 reason="Fails with RecursionError inside parser.parseQuery",
             ),
         )

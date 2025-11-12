@@ -29,3 +29,20 @@ def test_memory_store(get_graph):
     g.remove(triple1)
     assert len(g) == 1
     assert len(g.serialize()) > 0
+
+
+def test_sparql_bindings_creating_new_graph():
+    # Test for https://github.com/RDFLib/rdflib/issues/3102
+    dataset = rdflib.Dataset()
+    # Create a graph
+    dataset.graph(identifier="urn:example:graph")
+    sparql_query = """
+    SELECT *
+    WHERE {
+      GRAPH ?g_1 { }
+      GRAPH ?g_2 { }
+    }"""
+
+    # Ensure it doesn't raise RuntimeError: Set changed size during iteration
+    results = dataset.query(sparql_query)
+    assert len(results) == 1

@@ -56,8 +56,6 @@ nav:
     - Contributing guide: CONTRIBUTING.md
     - Developers guide: developers.md
     - Documentation guide: docs.md
-    - Type Hints: type_hints.md
-    - Persisting Notation 3 Terms: persisting_n3_terms.md
     - Code of Conduct: CODE_OF_CONDUCT.md
     - Decision Records: decisions.md
 

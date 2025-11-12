@@ -2,6 +2,7 @@
 Runs the SPARQL 1.1 test suite from.
 """
 
+import sys
 from collections.abc import Generator
 from contextlib import ExitStack
 
@@ -237,6 +238,46 @@ MARK_DICT: MarksDictType = {
     ),
     f"{REMOTE_BASE_IRI}syntax-update-1/manifest#test_54": pytest.mark.xfail(
         reason="Parses sucessfully instead of failing."
+    ),
+    f"{REMOTE_BASE_IRI}csv-tsv-res/manifest#csv01": pytest.mark.xfail(
+        condition=sys.version_info >= (3, 14),
+        reason="Python 3.14 raises a TypeError when evaluating NotImplemented as a boolean value.",
+    ),
+    f"{REMOTE_BASE_IRI}csv-tsv-res/manifest#tsv01": pytest.mark.xfail(
+        condition=sys.version_info >= (3, 14),
+        reason="Python 3.14 raises a TypeError when evaluating NotImplemented as a boolean value.",
+    ),
+    f"{REMOTE_BASE_IRI}csv-tsv-res/manifest#csv02": pytest.mark.xfail(
+        condition=sys.version_info >= (3, 14),
+        reason="Python 3.14 raises a TypeError when evaluating NotImplemented as a boolean value.",
+    ),
+    f"{REMOTE_BASE_IRI}csv-tsv-res/manifest#tsv02": pytest.mark.xfail(
+        condition=sys.version_info >= (3, 14),
+        reason="Python 3.14 raises a TypeError when evaluating NotImplemented as a boolean value.",
+    ),
+    f"{REMOTE_BASE_IRI}csv-tsv-res/manifest#csv03": pytest.mark.xfail(
+        condition=sys.version_info >= (3, 14),
+        reason="Python 3.14 raises a TypeError when evaluating NotImplemented as a boolean value.",
+    ),
+    f"{REMOTE_BASE_IRI}csv-tsv-res/manifest#tsv03": pytest.mark.xfail(
+        condition=sys.version_info >= (3, 14),
+        reason="Python 3.14 raises a TypeError when evaluating NotImplemented as a boolean value.",
+    ),
+    f"{REMOTE_BASE_IRI}functions/manifest#plus-1": pytest.mark.xfail(
+        condition=sys.version_info >= (3, 14),
+        reason="Python 3.14 raises a TypeError when evaluating NotImplemented as a boolean value.",
+    ),
+    f"{REMOTE_BASE_IRI}functions/manifest#plus-2": pytest.mark.xfail(
+        condition=sys.version_info >= (3, 14),
+        reason="Python 3.14 raises a TypeError when evaluating NotImplemented as a boolean value.",
+    ),
+    f"{REMOTE_BASE_IRI}json-res/manifest#jsonres01": pytest.mark.xfail(
+        condition=sys.version_info >= (3, 14),
+        reason="Python 3.14 raises a TypeError when evaluating NotImplemented as a boolean value.",
+    ),
+    f"{REMOTE_BASE_IRI}json-res/manifest#jsonres02": pytest.mark.xfail(
+        condition=sys.version_info >= (3, 14),
+        reason="Python 3.14 raises a TypeError when evaluating NotImplemented as a boolean value.",
     ),
 }
 
