@@ -5,7 +5,9 @@ from testcontainers.core.container import DockerContainer
 from testcontainers.core.image import DockerImage
 from testcontainers.core.waiting_utils import wait_for_logs
 
+from rdflib import Dataset
 from rdflib.contrib.rdf4j import has_httpx
+from rdflib.plugins.stores.rdf4j import RDF4JStore
 
 pytestmark = pytest.mark.skipif(
     not has_httpx, reason="skipping rdf4j tests, httpx not available"
@@ -45,3 +47,16 @@ if has_httpx:
         repo = client.repositories.create("test-repo", config)
         assert repo.identifier == "test-repo"
         yield repo
+
+    @pytest.fixture(scope="function")
+    def ds(graphdb_container: DockerContainer):
+        port = graphdb_container.get_exposed_port(7200)
+        store = RDF4JStore(
+            f"http://localhost:{port}/",
+            "test-repo",
+            auth=("admin", "admin"),
+            create=True,
+        )
+        ds = Dataset(store)
+        yield ds
+        ds.close()
