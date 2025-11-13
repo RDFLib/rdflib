@@ -13,6 +13,7 @@ from rdflib.graph import (
     _TripleChoiceType,
     _TriplePatternType,
     _TripleType,
+    Dataset,
 )
 from rdflib.plugins.sparql.sparql import Query, Update
 from rdflib.query import Result
@@ -153,7 +154,7 @@ class RDF4JStore(Store):
         None,
         None,
     ]:
-        # This is not supported on sparql store. See if we should support it here.
+        # This is not supported on the sparql store. See if we should support it here.
         # TODO:
         pass
 
@@ -162,8 +163,17 @@ class RDF4JStore(Store):
         triple_pattern: _TriplePatternType,
         context: Optional[_ContextType] = None,
     ) -> Iterator[Tuple[_TripleType, Iterator[Optional[_ContextType]]]]:
-        # TODO:
-        pass
+        s, p, o = triple_pattern
+        graph_name = context.identifier if context is not None else None
+        result_graph = self.repo.get(s, p, o, graph_name)
+        if isinstance(result_graph, Dataset):
+            for s, p, o, g in result_graph:
+                yield (s, p, o), iter([Graph(self, identifier=g)])
+        else:
+            # It's a Graph object.
+            for triple in result_graph:
+                # Returning None for _ContextType as it's not used by the caller.
+                yield triple, iter([None])
 
     def contexts(  # type: ignore[empty-body]
         self, triple: Optional[_TripleType] = None

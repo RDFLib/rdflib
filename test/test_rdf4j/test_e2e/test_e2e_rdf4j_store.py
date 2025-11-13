@@ -162,3 +162,96 @@ def test_namespaces(ds: Dataset):
     assert ds.store.namespace("foo") is None
     assert ds.store.prefix(skos_namespace) == "skos"
     assert ds.store.prefix(URIRef("http://example.com/")) is None
+
+
+def test_triples(ds: Dataset):
+    repo: Repository = ds.store.repo
+    data = f"""
+        <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+        <http://example.com/s> <{SKOS.definition}> "Definition" .
+    """
+    repo.upload(data)
+    assert len(ds) == 4
+
+    # We don't have default_union enabled, returns the single statement from the
+    # default graph.
+    triples = set(ds.triples((None, None, None)))
+    assert triples == {
+        (URIRef("http://example.com/s"), SKOS.definition, Literal("Definition")),
+    }
+
+    # Enable default_union, returns all distinct statements.
+    ds.default_union = True
+    triples = set(ds.triples((None, None, None)))
+    assert triples == {
+        (URIRef("http://example.com/s"), RDF.type, SKOS.Concept),
+        (URIRef("http://example.com/s"), SKOS.prefLabel, Literal("Label")),
+        (URIRef("http://example.com/s"), SKOS.definition, Literal("Definition")),
+    }
+
+    # Triple pattern, return only the matching statements.
+    triples = set(ds.triples((None, SKOS.prefLabel, None)))
+    assert triples == {
+        (URIRef("http://example.com/s"), SKOS.prefLabel, Literal("Label")),
+    }
+
+    # Disable default_union, returns no statements.
+    ds.default_union = False
+    triples = set(ds.triples((None, SKOS.prefLabel, None)))
+    assert triples == set()
+
+    # Triple pattern, return matching statements in the default graph.
+    triples = set(ds.triples((None, SKOS.definition, None)))
+    assert triples == {
+        (URIRef("http://example.com/s"), SKOS.definition, Literal("Definition")),
+    }
+
+
+def test_quads(ds: Dataset):
+    repo: Repository = ds.store.repo
+    data = f"""
+            <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+            <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+            <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+            <http://example.com/s> <{SKOS.definition}> "Definition" .
+        """
+    repo.upload(data)
+    assert len(ds) == 4
+
+    quads = set(ds.quads((None, None, None, DATASET_DEFAULT_GRAPH_ID)))
+    assert quads == {
+        (
+            URIRef("http://example.com/s"),
+            SKOS.definition,
+            Literal("Definition"),
+            DATASET_DEFAULT_GRAPH_ID,
+        ),
+    }
+
+    quads = set(ds.quads((None, None, None, URIRef("urn:graph:a"))))
+    assert quads == {
+        (
+            URIRef("http://example.com/s"),
+            RDF.type,
+            SKOS.Concept,
+            URIRef("urn:graph:a"),
+        ),
+        (
+            URIRef("http://example.com/s"),
+            SKOS.prefLabel,
+            Literal("Label"),
+            URIRef("urn:graph:a"),
+        ),
+    }
+
+    quads = set(ds.quads((None, None, None, URIRef("urn:graph:b"))))
+    assert quads == {
+        (
+            URIRef("http://example.com/s"),
+            SKOS.prefLabel,
+            Literal("Label"),
+            URIRef("urn:graph:b"),
+        )
+    }
