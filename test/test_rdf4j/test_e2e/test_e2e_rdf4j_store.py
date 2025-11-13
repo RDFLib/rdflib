@@ -1,4 +1,3 @@
-
 from rdflib import RDF, SKOS, Dataset, Graph, Literal, URIRef
 from rdflib.contrib.rdf4j.client import Repository
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
@@ -151,3 +150,15 @@ def test_remove_graph(ds: Dataset):
     assert len(graphs) == 2
     assert graphs[0].identifier == URIRef("urn:graph:b")
     assert graphs[1].identifier == DATASET_DEFAULT_GRAPH_ID
+
+
+def test_namespaces(ds: Dataset):
+    assert list(ds.namespaces()) == []
+
+    skos_namespace = URIRef(str(SKOS))
+    ds.bind("skos", skos_namespace)
+    assert list(ds.namespaces()) == [("skos", skos_namespace)]
+    assert ds.store.namespace("skos") == skos_namespace
+    assert ds.store.namespace("foo") is None
+    assert ds.store.prefix(skos_namespace) == "skos"
+    assert ds.store.prefix(URIRef("http://example.com/")) is None

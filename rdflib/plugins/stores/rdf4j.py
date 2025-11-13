@@ -208,20 +208,22 @@ class RDF4JStore(Store):
         pass
 
     def bind(self, prefix: str, namespace: URIRef, override: bool = True) -> None:
-        # TODO:
-        pass
+        # Note: RDF4J namespaces always override.
+        self.repo.namespaces.set(prefix, namespace)
 
     def prefix(self, namespace: URIRef) -> Optional[str]:
-        # TODO:
-        pass
+        namespace_prefixes = dict(
+            [(x.namespace, x.prefix) for x in self.repo.namespaces.list()]
+        )
+        return namespace_prefixes.get(str(namespace))
 
     def namespace(self, prefix: str) -> Optional[URIRef]:
-        # TODO:
-        pass
+        result = self.repo.namespaces.get(prefix)
+        return URIRef(result) if result is not None else None
 
     def namespaces(self) -> Iterator[Tuple[str, URIRef]]:
-        # TODO:
-        pass
+        for result in self.repo.namespaces.list():
+            yield result.prefix, URIRef(result.namespace)
 
     def add_graph(self, graph: Graph) -> None:
         if graph.identifier != DATASET_DEFAULT_GRAPH_ID:
