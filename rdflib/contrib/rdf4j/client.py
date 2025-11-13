@@ -198,8 +198,14 @@ class GraphStoreManager:
     @staticmethod
     def _build_graph_name_params(graph_name: URIRef | str):
         params = {}
-        if isinstance(graph_name, URIRef) and graph_name == DATASET_DEFAULT_GRAPH_ID:
-            # Do nothing; GraphDB does not work with `?default=`, which is the default
+        if (
+            isinstance(graph_name, URIRef)
+            and graph_name == DATASET_DEFAULT_GRAPH_ID
+            or isinstance(graph_name, str)
+            and graph_name == str(DATASET_DEFAULT_GRAPH_ID)
+        ):
+            # Do nothing; GraphDB does not work with `?default=`
+            # (note the trailing equal character), which is the default
             # behavior of httpx when setting the param value to an empty string.
             # httpx completely omits query parameters whose values are `None`, so that's
             # not an option either.
