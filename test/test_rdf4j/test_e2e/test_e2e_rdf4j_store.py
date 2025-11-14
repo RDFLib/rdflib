@@ -1,3 +1,5 @@
+import pytest
+
 from rdflib import RDF, SKOS, Dataset, Graph, Literal, URIRef
 from rdflib.contrib.rdf4j.client import Repository
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
@@ -255,3 +257,28 @@ def test_quads(ds: Dataset):
             URIRef("urn:graph:b"),
         )
     }
+
+
+@pytest.mark.parametrize(
+    "s, p, o, g, expected_size",
+    [
+        [None, None, None, None, 0],
+        [URIRef("http://example.com/s"), None, None, None, 0],
+        [None, RDF.type, None, None, 3],
+        [None, SKOS.prefLabel, None, None, 2],
+        [None, SKOS.prefLabel, None, URIRef("urn:graph:a"), 3],
+        [None, None, None, DATASET_DEFAULT_GRAPH_ID, 3],
+    ],
+)
+def test_remove(ds: Dataset, s, p, o, g, expected_size):
+    repo: Repository = ds.store.repo
+    data = f"""
+                <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+                <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+                <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+                <http://example.com/s> <{SKOS.definition}> "Definition" .
+            """
+    repo.upload(data)
+    assert len(ds) == 4
+    repo.delete(s, p, o, g)
+    assert len(ds) == expected_size

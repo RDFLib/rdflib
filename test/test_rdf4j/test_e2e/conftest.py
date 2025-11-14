@@ -7,6 +7,7 @@ from testcontainers.core.waiting_utils import wait_for_logs
 
 from rdflib import Dataset
 from rdflib.contrib.rdf4j import has_httpx
+from rdflib.contrib.rdf4j.exceptions import RepositoryNotFoundError
 from rdflib.namespace import NamespaceManager
 from rdflib.plugins.stores.rdf4j import RDF4JStore
 
@@ -19,7 +20,7 @@ if has_httpx:
 
     GRAPHDB_PORT = 7200
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture(scope="package")
     def graphdb_container():
         with DockerImage(str(pathlib.Path(__file__).parent / "docker")) as image:
             container = DockerContainer(str(image))
@@ -36,6 +37,10 @@ if has_httpx:
             f"http://localhost:{port}/", auth=("admin", "admin")
         ) as client:
             yield client
+            try:
+                client.repositories.delete("test-repo")
+            except RepositoryNotFoundError:
+                pass
 
     @pytest.fixture(scope="function")
     def repo(client: RDF4JClient):
@@ -48,6 +53,7 @@ if has_httpx:
         repo = client.repositories.create("test-repo", config)
         assert repo.identifier == "test-repo"
         yield repo
+        client.repositories.delete("test-repo")
 
     @pytest.fixture(scope="function")
     def ds(graphdb_container: DockerContainer):
@@ -61,4 +67,5 @@ if has_httpx:
         ds = Dataset(store)
         ds.namespace_manager = NamespaceManager(ds, "none")
         yield ds
+        ds.store.client.repositories.delete("test-repo")
         ds.close()

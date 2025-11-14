@@ -159,7 +159,7 @@ def validate_graph_name(graph_name: URIRef | t.Iterable[URIRef] | str | None):
         or isinstance(graph_name, t.Iterable)
         and any(isinstance(x, BNode) for x in graph_name)
     ):
-        raise ValueError("Graph name must not contain a BNode.")
+        raise ValueError("Graph name must not be a BNode.")
 
 
 def validate_no_bnodes(
