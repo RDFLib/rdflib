@@ -4,7 +4,7 @@ from textwrap import dedent
 from typing import Any, Generator, Iterable, Iterator, Mapping, Optional, Tuple
 
 from rdflib import Graph
-from rdflib.contrib.rdf4j import RDF4JClient
+from rdflib.contrib.rdf4j import has_httpx
 from rdflib.contrib.rdf4j.exceptions import RepositoryNotFoundError
 from rdflib.graph import (
     DATASET_DEFAULT_GRAPH_ID,
@@ -16,6 +16,9 @@ from rdflib.graph import (
 )
 from rdflib.store import VALID_STORE, Store
 from rdflib.term import BNode, Node, URIRef, Variable
+
+if has_httpx:
+    from rdflib.contrib.rdf4j import RDF4JClient
 
 
 def _inject_prefixes(query: str, extra_bindings: Mapping[str, Any]) -> str:

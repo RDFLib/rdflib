@@ -15,6 +15,7 @@ if has_httpx:
     from rdflib.contrib.rdf4j.client import Repository
 
 
+@pytest.mark.testcontainer
 def test_e2e_repo_query(repo: Repository):
     path = str(Path(__file__).parent.parent / "data/quads-1.nq")
     repo.overwrite(path)

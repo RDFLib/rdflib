@@ -1,18 +1,29 @@
 from __future__ import annotations
 
+import typing as t
+
 import pytest
 
 from rdflib import RDF, SKOS, BNode, Dataset, Graph, Literal, URIRef, Variable
-from rdflib.contrib.rdf4j.client import Repository
+from rdflib.contrib.rdf4j import has_httpx
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, _TripleChoiceType
 
+pytestmark = pytest.mark.skipif(
+    not has_httpx, reason="skipping rdf4j tests, httpx not available"
+)
 
+if has_httpx and t.TYPE_CHECKING:
+    from rdflib.contrib.rdf4j.client import Repository
+
+
+@pytest.mark.testcontainer
 def test_rdf4j_store_add(ds: Dataset):
     assert len(ds) == 0
     ds.add((URIRef("http://example.com/s"), RDF.type, SKOS.Concept))
     assert len(ds) == 1
 
 
+@pytest.mark.testcontainer
 def test_rdf4j_store_addn(ds: Dataset):
     assert len(ds) == 0
     ds.addN(
@@ -40,6 +51,7 @@ def test_rdf4j_store_addn(ds: Dataset):
     assert len(ds) == 3
 
 
+@pytest.mark.testcontainer
 def test_graphs_method_default_graph(ds: Dataset):
     repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
@@ -57,6 +69,7 @@ def test_graphs_method_default_graph(ds: Dataset):
     assert len(graph) == 1
 
 
+@pytest.mark.testcontainer
 def test_graphs_method_default_and_named_graphs(ds: Dataset):
     repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
@@ -102,6 +115,7 @@ def test_graphs_method_default_and_named_graphs(ds: Dataset):
     assert len(graph_a) == 2
 
 
+@pytest.mark.testcontainer
 def test_add_graph(ds: Dataset):
     assert len(ds) == 0
     graphs = list(ds.graphs())
@@ -133,6 +147,7 @@ def test_add_graph(ds: Dataset):
     assert len(graph_a) == 2
 
 
+@pytest.mark.testcontainer
 def test_remove_graph(ds: Dataset):
     repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
@@ -156,6 +171,7 @@ def test_remove_graph(ds: Dataset):
     assert graphs[1].identifier == DATASET_DEFAULT_GRAPH_ID
 
 
+@pytest.mark.testcontainer
 def test_namespaces(ds: Dataset):
     assert list(ds.namespaces()) == []
 
@@ -168,6 +184,7 @@ def test_namespaces(ds: Dataset):
     assert ds.store.prefix(URIRef("http://example.com/")) is None
 
 
+@pytest.mark.testcontainer
 def test_triples(ds: Dataset):
     repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
@@ -213,6 +230,7 @@ def test_triples(ds: Dataset):
     }
 
 
+@pytest.mark.testcontainer
 def test_quads(ds: Dataset):
     repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
@@ -261,6 +279,7 @@ def test_quads(ds: Dataset):
     }
 
 
+@pytest.mark.testcontainer
 @pytest.mark.parametrize(
     "s, p, o, g, expected_size",
     [
@@ -286,6 +305,7 @@ def test_remove(ds: Dataset, s, p, o, g, expected_size):
     assert len(ds) == expected_size
 
 
+@pytest.mark.testcontainer
 @pytest.mark.parametrize(
     "default_union, triples_choices, expected_triples",
     [
@@ -354,6 +374,7 @@ def test_triples_choices_default_union_on(
     assert triples == expected_triples
 
 
+@pytest.mark.testcontainer
 @pytest.mark.parametrize(
     "default_union, query, expected_result_bindings",
     [
@@ -397,6 +418,7 @@ def test_query_default_graph_behaviour(
     assert set(tuple(x.values()) for x in result.bindings) == expected_result_bindings
 
 
+@pytest.mark.testcontainer
 def test_query_init_ns(ds: Dataset):
     repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
@@ -423,6 +445,7 @@ def test_query_init_ns(ds: Dataset):
     }
 
 
+@pytest.mark.testcontainer
 def test_query_init_bindings(ds: Dataset):
     repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
@@ -451,6 +474,7 @@ def test_query_init_bindings(ds: Dataset):
     }
 
 
+@pytest.mark.testcontainer
 def test_query_update_delete_default_graph_triples(ds: Dataset):
     repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
@@ -475,6 +499,7 @@ def test_query_update_delete_default_graph_triples(ds: Dataset):
     assert len(ds) == 4
 
 
+@pytest.mark.testcontainer
 def test_query_update(ds: Dataset):
     repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
