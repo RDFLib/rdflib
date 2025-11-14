@@ -4,14 +4,14 @@ A commandline tool for querying with SPARQL on local files and remote sparql end
 
 example usage:
 ```bash
-    sparqlquery path/to/data.ttl -q "SELECT ?x WHERE {?x a foaf:Person. }"
+    sq path/to/data.ttl -q "SELECT ?x WHERE {?x a foaf:Person. }"
     rdfpipe test.ttl | sparqlquery - -q "SELECT ?x WHERE {?x a foaf:Person. }" --format json
-    sparqlquery data.ttl -q "ASK {:john a foaf:Person}" --format xml | grep true
-    sparqlquery path/to/data.ttl --query-file query.rq
-    sparqlquery data1.ttl data2.ttl -q "DESCRIBE <http://example.com/john>" --format turtle:+spacious
-    sparqlquery http://example.com/sparqlendpoint --query-file query.rq
-    sparqlquery http://example.com/sparqlendpoint --query-file query.rq --username user --password secret
-    sparqlquery /pyth/to/berkeley.db -q "SELECT ?x WHERE {?x a foaf:Person. }" --remote-storetype BerkeleyDB
+    sq data.ttl -q "ASK {:john a foaf:Person}" --format xml | grep true
+    sq path/to/data.ttl --query-file query.rq
+    sq data1.ttl data2.ttl -q "DESCRIBE <http://example.com/john>" --format turtle:+spacious
+    sq http://example.com/sparqlendpoint --query-file query.rq
+    sq http://example.com/sparqlendpoint --query-file query.rq --username user --password secret
+    sq /pyth/to/berkeley.db -q "SELECT ?x WHERE {?x a foaf:Person. }" --remote-storetype BerkeleyDB
 ```
 
 Tip: You can check the truth value for an ASK query, by regex in stdout for 'true'
