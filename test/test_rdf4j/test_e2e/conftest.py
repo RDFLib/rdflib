@@ -39,7 +39,7 @@ if has_httpx:
             yield client
             try:
                 client.repositories.delete("test-repo")
-            except RepositoryNotFoundError:
+            except (RepositoryNotFoundError, RuntimeError):
                 pass
 
     @pytest.fixture(scope="function")
