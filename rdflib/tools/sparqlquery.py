@@ -175,7 +175,7 @@ def parse_args():
         "-q",
         "--query",
         type=str,
-        help="Sparql query. Cannot be set together with --queryfile.",
+        help="Sparql query. Cannot be set together with -qf/--queryfile.",
     )
     parser.add_argument(
         "-qf",
@@ -258,7 +258,7 @@ def parse_args():
 
     if opts.get("query") is None:
         parser.print_help()
-        raise _ArgumentError("Either -q/--query or --queryfile must be provided")
+        raise _ArgumentError("Either -q/--query or -qf/--queryfile must be provided")
 
     remote_storetype = args.remote_storetype
 
