@@ -1,0 +1,528 @@
+from __future__ import annotations
+
+import typing as t
+
+import pytest
+
+from rdflib import RDF, SKOS, BNode, Dataset, Graph, Literal, URIRef, Variable
+from rdflib.contrib.rdf4j import has_httpx
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, _TripleChoiceType
+
+pytestmark = pytest.mark.skipif(
+    not has_httpx, reason="skipping rdf4j tests, httpx not available"
+)
+
+if has_httpx and t.TYPE_CHECKING:
+    from rdflib.contrib.rdf4j.client import Repository
+
+
+@pytest.mark.testcontainer
+def test_rdf4j_store_add(ds: Dataset):
+    assert len(ds) == 0
+    ds.add((URIRef("http://example.com/s"), RDF.type, SKOS.Concept))
+    assert len(ds) == 1
+
+
+@pytest.mark.testcontainer
+def test_rdf4j_store_addn(ds: Dataset):
+    assert len(ds) == 0
+    ds.addN(
+        [
+            (
+                URIRef("http://example.com/s"),
+                RDF.type,
+                SKOS.Concept,
+                URIRef("urn:graph:a"),  # type: ignore[list-item]
+            ),
+            (
+                URIRef("http://example.com/s"),
+                SKOS.prefLabel,
+                Literal("Label"),
+                DATASET_DEFAULT_GRAPH_ID,  # type: ignore[list-item]
+            ),
+            (
+                URIRef("http://example.com/s"),
+                SKOS.definition,
+                Literal("Definition"),
+                URIRef("urn:graph:b"),  # type: ignore[list-item]
+            ),
+        ]
+    )
+    assert len(ds) == 3
+
+
+@pytest.mark.testcontainer
+def test_graphs_method_default_graph(ds: Dataset):
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
+    data = f"""
+        <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> .
+    """
+    # This returns 1 graph, the default graph, even when there are no triples.
+    graphs = list(ds.graphs())
+    assert len(graphs) == 1
+    assert graphs[0].identifier == DATASET_DEFAULT_GRAPH_ID
+    repo.upload(data)
+    graphs = list(ds.graphs())
+    assert len(graphs) == 1
+    graph = graphs[0]
+    assert graph.identifier == DATASET_DEFAULT_GRAPH_ID
+    assert len(graph) == 1
+
+
+@pytest.mark.testcontainer
+def test_graphs_method_default_and_named_graphs(ds: Dataset):
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
+    data = f"""
+            <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+            <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+            <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+            <http://example.com/s> <{SKOS.definition}> "Definition" .
+        """
+    # This returns 1 graph, the default graph, even when there are no triples.
+    graphs = list(ds.graphs())
+    assert len(graphs) == 1
+    assert graphs[0].identifier == DATASET_DEFAULT_GRAPH_ID
+    repo.upload(data)
+
+    # Retrieve graphs with no triple pattern.
+    graphs = list(ds.graphs())
+    assert len(graphs) == 3
+
+    graph_a = graphs[0]
+    assert graph_a.identifier == URIRef("urn:graph:b")
+    assert len(graph_a) == 1
+
+    graph_b = graphs[1]
+    assert graph_b.identifier == URIRef("urn:graph:a")
+    assert len(graph_b) == 2
+
+    default_graph = graphs[2]
+    assert default_graph.identifier == DATASET_DEFAULT_GRAPH_ID
+    assert len(default_graph) == 1
+
+    # Retrieve graphs with a triple pattern.
+    graphs = list(
+        ds.graphs(triple=(URIRef("http://example.com/s"), RDF.type, SKOS.Concept))
+    )
+    # Note: it's returning 2 graphs instead of 1 because the Dataset class always
+    # includes the default graph.
+    # I don't think this is the correct behaviour. TODO: raise a ticket for this.
+    # What should happen is, ds.graphs() includes the default graph if the triple
+    # pattern is None. Otherwise, it should only include graphs that contain the triple.
+    assert len(graphs) == 2
+    graph_a = graphs[0]
+    assert graph_a.identifier == URIRef("urn:graph:a")
+    assert len(graph_a) == 2
+
+
+@pytest.mark.testcontainer
+def test_add_graph(ds: Dataset):
+    assert len(ds) == 0
+    graphs = list(ds.graphs())
+    assert len(graphs) == 1
+    assert graphs[0].identifier == DATASET_DEFAULT_GRAPH_ID
+
+    graph_name = URIRef("urn:graph:a")
+
+    # Add a graph to the dataset using a URIRef.
+    # Note, this is a no-op since RDF4J doesn't support named graphs with no statements,
+    # which is why the length of the graphs is 1 (the default graph).
+    ds.add_graph(graph_name)
+    graphs = list(ds.graphs())
+    assert len(graphs) == 1
+    assert graphs[0].identifier == DATASET_DEFAULT_GRAPH_ID
+
+    # Add a graph object to the dataset.
+    # This will create a new graph in RDF4J, along with the statements.
+    graph = Graph(identifier=graph_name)
+    graph.add((URIRef("http://example.com/s"), RDF.type, SKOS.Concept))
+    graph.add((URIRef("http://example.com/s"), SKOS.prefLabel, Literal("Label")))
+    ds.add_graph(graph)
+    # Verify that the graph was added.
+    graphs = list(ds.graphs())
+    assert len(graphs) == 2
+    graph_a = graphs[0]
+    assert graphs[1].identifier == DATASET_DEFAULT_GRAPH_ID
+    assert graph_a.identifier == graph_name
+    assert len(graph_a) == 2
+
+
+@pytest.mark.testcontainer
+def test_remove_graph(ds: Dataset):
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
+    data = f"""
+            <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+            <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+            <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+            <http://example.com/s> <{SKOS.definition}> "Definition" .
+        """
+    # This returns 1 graph, the default graph, even when there are no triples.
+    graphs = list(ds.graphs())
+    assert len(graphs) == 1
+    assert graphs[0].identifier == DATASET_DEFAULT_GRAPH_ID
+    repo.upload(data)
+    assert len(ds) == 4
+
+    ds.remove_graph(URIRef("urn:graph:a"))
+    assert len(ds) == 2
+    graphs = list(ds.graphs())
+    assert len(graphs) == 2
+    assert graphs[0].identifier == URIRef("urn:graph:b")
+    assert graphs[1].identifier == DATASET_DEFAULT_GRAPH_ID
+
+
+@pytest.mark.testcontainer
+def test_namespaces(ds: Dataset):
+    assert list(ds.namespaces()) == []
+
+    skos_namespace = URIRef(str(SKOS))
+    ds.bind("skos", skos_namespace)
+    assert list(ds.namespaces()) == [("skos", skos_namespace)]
+    assert ds.store.namespace("skos") == skos_namespace
+    assert ds.store.namespace("foo") is None
+    assert ds.store.prefix(skos_namespace) == "skos"
+    assert ds.store.prefix(URIRef("http://example.com/")) is None
+
+
+@pytest.mark.testcontainer
+def test_triples(ds: Dataset):
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
+    data = f"""
+        <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+        <http://example.com/s> <{SKOS.definition}> "Definition" .
+    """
+    repo.upload(data)
+    assert len(ds) == 4
+
+    # We don't have default_union enabled, returns the single statement from the
+    # default graph.
+    triples = set(ds.triples((None, None, None)))
+    assert triples == {
+        (URIRef("http://example.com/s"), SKOS.definition, Literal("Definition")),
+    }
+
+    # Enable default_union, returns all distinct statements.
+    ds.default_union = True
+    triples = set(ds.triples((None, None, None)))
+    assert triples == {
+        (URIRef("http://example.com/s"), RDF.type, SKOS.Concept),
+        (URIRef("http://example.com/s"), SKOS.prefLabel, Literal("Label")),
+        (URIRef("http://example.com/s"), SKOS.definition, Literal("Definition")),
+    }
+
+    # Triple pattern, return only the matching statements.
+    triples = set(ds.triples((None, SKOS.prefLabel, None)))
+    assert triples == {
+        (URIRef("http://example.com/s"), SKOS.prefLabel, Literal("Label")),
+    }
+
+    # Disable default_union, returns no statements.
+    ds.default_union = False
+    triples = set(ds.triples((None, SKOS.prefLabel, None)))
+    assert triples == set()
+
+    # Triple pattern, return matching statements in the default graph.
+    triples = set(ds.triples((None, SKOS.definition, None)))
+    assert triples == {
+        (URIRef("http://example.com/s"), SKOS.definition, Literal("Definition")),
+    }
+
+
+@pytest.mark.testcontainer
+def test_quads(ds: Dataset):
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
+    data = f"""
+            <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+            <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+            <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+            <http://example.com/s> <{SKOS.definition}> "Definition" .
+        """
+    repo.upload(data)
+    assert len(ds) == 4
+
+    quads = set(ds.quads((None, None, None, DATASET_DEFAULT_GRAPH_ID)))  # type: ignore[arg-type]
+    assert quads == {
+        (
+            URIRef("http://example.com/s"),
+            SKOS.definition,
+            Literal("Definition"),
+            DATASET_DEFAULT_GRAPH_ID,
+        ),
+    }
+
+    quads = set(ds.quads((None, None, None, URIRef("urn:graph:a"))))  # type: ignore[arg-type]
+    assert quads == {
+        (
+            URIRef("http://example.com/s"),
+            RDF.type,
+            SKOS.Concept,
+            URIRef("urn:graph:a"),
+        ),
+        (
+            URIRef("http://example.com/s"),
+            SKOS.prefLabel,
+            Literal("Label"),
+            URIRef("urn:graph:a"),
+        ),
+    }
+
+    quads = set(ds.quads((None, None, None, URIRef("urn:graph:b"))))  # type: ignore[arg-type]
+    assert quads == {
+        (
+            URIRef("http://example.com/s"),
+            SKOS.prefLabel,
+            Literal("Label"),
+            URIRef("urn:graph:b"),
+        )
+    }
+
+
+@pytest.mark.testcontainer
+@pytest.mark.parametrize(
+    "s, p, o, g, expected_size",
+    [
+        [None, None, None, None, 0],
+        [URIRef("http://example.com/s"), None, None, None, 0],
+        [None, RDF.type, None, None, 3],
+        [None, SKOS.prefLabel, None, None, 2],
+        [None, SKOS.prefLabel, None, URIRef("urn:graph:a"), 3],
+        [None, None, None, DATASET_DEFAULT_GRAPH_ID, 3],
+    ],
+)
+def test_remove(ds: Dataset, s, p, o, g, expected_size):
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
+    data = f"""
+        <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+        <http://example.com/s> <{SKOS.definition}> "Definition" .
+    """
+    repo.upload(data)
+    assert len(ds) == 4
+    repo.delete(s, p, o, g)
+    assert len(ds) == expected_size
+
+
+@pytest.mark.testcontainer
+@pytest.mark.parametrize(
+    "default_union, triples_choices, expected_triples",
+    [
+        [
+            False,
+            (None, [SKOS.prefLabel, SKOS.definition], None),
+            {
+                (
+                    URIRef("http://example.com/s"),
+                    SKOS.definition,
+                    Literal("Definition"),
+                ),
+            },
+        ],
+        [
+            True,
+            (None, [SKOS.prefLabel, SKOS.definition], None),
+            {
+                (URIRef("http://example.com/s"), SKOS.prefLabel, Literal("Label")),
+                (
+                    URIRef("http://example.com/s"),
+                    SKOS.definition,
+                    Literal("Definition"),
+                ),
+            },
+        ],
+        [
+            True,
+            (None, [RDF.type, SKOS.prefLabel], None),
+            {
+                (URIRef("http://example.com/s"), RDF.type, SKOS.Concept),
+                (URIRef("http://example.com/s"), SKOS.prefLabel, Literal("Label")),
+            },
+        ],
+        [
+            True,
+            (None, [RDF.type, SKOS.definition], None),
+            {
+                (URIRef("http://example.com/s"), RDF.type, SKOS.Concept),
+                (
+                    URIRef("http://example.com/s"),
+                    SKOS.definition,
+                    Literal("Definition"),
+                ),
+            },
+        ],
+    ],
+)
+def test_triples_choices_default_union_on(
+    ds: Dataset,
+    default_union: bool,
+    triples_choices: _TripleChoiceType,
+    expected_triples,
+):
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
+    data = f"""
+        <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+        <http://example.com/s> <{SKOS.definition}> "Definition" .
+    """
+    repo.upload(data)
+    assert len(ds) == 4
+    ds.default_union = default_union
+    triples = set(ds.triples_choices(triples_choices))
+    assert triples == expected_triples
+
+
+@pytest.mark.testcontainer
+@pytest.mark.parametrize(
+    "default_union, query, expected_result_bindings",
+    [
+        [
+            False,
+            "select * where { ?s ?p ?o }",
+            {(URIRef("http://example.com/s"), SKOS.definition, Literal("Definition"))},
+        ],
+        [
+            True,
+            "select * where { ?s ?p ?o }",
+            {
+                (URIRef("http://example.com/s"), RDF.type, SKOS.Concept),
+                (URIRef("http://example.com/s"), SKOS.prefLabel, Literal("Label")),
+                (
+                    URIRef("http://example.com/s"),
+                    SKOS.definition,
+                    Literal("Definition"),
+                ),
+            },
+        ],
+    ],
+)
+def test_query_default_graph_behaviour(
+    ds: Dataset,
+    default_union: bool,
+    query: str,
+    expected_result_bindings: list[dict[Variable, URIRef | BNode | Literal]],
+):
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
+    data = f"""
+        <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+        <http://example.com/s> <{SKOS.definition}> "Definition" .
+    """
+    repo.upload(data)
+    assert len(ds) == 4
+    ds.default_union = default_union
+    result = ds.query(query)
+    assert set(tuple(x.values()) for x in result.bindings) == expected_result_bindings
+
+
+@pytest.mark.testcontainer
+def test_query_init_ns(ds: Dataset):
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
+    data = f"""
+        <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+        <http://example.com/s> <{RDF.type}> <http://example.com/type/Term> <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+        <http://example.com/s> <{SKOS.definition}> "Definition" .
+    """
+    repo.upload(data)
+    assert len(ds) == 5
+    query = """
+            select distinct ?s
+            where {
+                graph ?g {
+                    ?s a ex:Term .
+                }
+            }
+        """
+    result = ds.query(query, initNs={"ex": "http://example.com/type/"})
+    assert len(result) == 1
+    assert set(tuple(x.values()) for x in result.bindings) == {
+        (URIRef("http://example.com/s"),)
+    }
+
+
+@pytest.mark.testcontainer
+def test_query_init_bindings(ds: Dataset):
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
+    data = f"""
+            <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+            <http://example.com/s> <{RDF.type}> <http://example.com/type/Term> <urn:graph:a> .
+            <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+            <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+            <http://example.com/s> <{SKOS.definition}> "Definition" .
+        """
+    repo.upload(data)
+    assert len(ds) == 5
+
+    query = """
+            SELECT ?o
+            WHERE {
+                GRAPH ?g {
+                    ?s ?p ?o .
+                }
+            }
+        """
+    result = ds.query(query, initBindings={"p": RDF.type})
+    assert len(result) == 2
+    assert set(tuple(x.values()) for x in result.bindings) == {
+        (SKOS.Concept,),
+        (URIRef("http://example.com/type/Term"),),
+    }
+
+
+@pytest.mark.testcontainer
+def test_query_update_delete_default_graph_triples(ds: Dataset):
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
+    data = f"""
+                <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+                <http://example.com/s> <{RDF.type}> <http://example.com/type/Term> <urn:graph:a> .
+                <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+                <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+                <http://example.com/s> <{SKOS.definition}> "Definition" .
+            """
+    repo.upload(data)
+    assert len(ds) == 5
+
+    query = """
+        DELETE {
+            ?s ?p ?o
+        }
+        WHERE {
+            ?s ?p ?o
+        }
+    """
+    ds.update(query)
+    assert len(ds) == 4
+
+
+@pytest.mark.testcontainer
+def test_query_update(ds: Dataset):
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
+    data = f"""
+                <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+                <http://example.com/s> <{RDF.type}> <http://example.com/type/Term> <urn:graph:a> .
+                <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+                <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+                <http://example.com/s> <{SKOS.definition}> "Definition" .
+            """
+    repo.upload(data)
+    assert len(ds) == 5
+
+    query = """
+        DELETE {
+            GRAPH ?g {
+                ?s ?p ?o
+            }
+        }
+        WHERE {
+            GRAPH ?g {
+                ?s ?p ?o
+            }
+        }
+    """
+    ds.update(query)
+    assert len(ds) == 1
