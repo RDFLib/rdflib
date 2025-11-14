@@ -378,3 +378,11 @@ tasks:
             sys.stderr.write(f"removing {path}\n")
             shutil.rmtree(path, ignore_errors=True)
         ' {{.RIMRAF_TARGET}}
+
+  test:rdf4j:
+    desc: Run fast tests against rdflib.contrib.rdf4j package
+    cmd: '{{.TEST_HARNESS}}{{.RUN_PREFIX}} pytest -m "not (testcontainer or webtest)" test/test_rdf4j'
+
+  test:rdf4j:all:
+    desc: Run all tests against rdflib.contrib.rdf4j package
+    cmd: '{{.TEST_HARNESS}}{{.RUN_PREFIX}} pytest test/test_rdf4j'
