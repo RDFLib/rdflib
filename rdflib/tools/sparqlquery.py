@@ -178,12 +178,14 @@ def parse_args():
         help="Sparql query. Cannot be set together with --queryfile.",
     )
     parser.add_argument(
+        "-qf",
         "--queryfile",
         type=str,
         help="File from where the sparql query is read. "
         "Cannot be set together with -q/--query",
     )
     parser.add_argument(
+        "-f",
         "--format",
         type=str,
         help="Print sparql result in given format. "
@@ -212,6 +214,7 @@ def parse_args():
         help="Output warnings to stderr " "(by default only critical errors).",
     )
     parser.add_argument(
+        "-h",
         "--help",
         # action="store_true",
         # default=False,
@@ -220,12 +223,15 @@ def parse_args():
         "Also prints information about given format.",
     )
     parser.add_argument(
+        "-u",
         "--username", type=str, help="Username used during authentication."
     )
     parser.add_argument(
+        "-p",
         "--password", type=str, help="Password used during authentication."
     )
     parser.add_argument(
+        "-rs",
         "--remote-storetype",
         type=str,
         help="You can specify which storetype should be used. "
