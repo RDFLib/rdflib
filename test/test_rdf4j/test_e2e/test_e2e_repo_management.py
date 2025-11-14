@@ -176,3 +176,41 @@ def test_repo_not_healthy(repo: Repository, monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(httpx.Client, "post", lambda *args, **kwargs: MockResponse())
     with pytest.raises(RepositoryNotHealthyError):
         repo.health()
+
+
+@pytest.mark.xfail(
+    reason="RDF4J REST API does not support referencing blank nodes directly."
+)
+def test_repo_delete_statement_with_bnode(client: RDF4JClient):
+    config_path = pathlib.Path(__file__).parent / "repo-configs/test-repo-config.ttl"
+    with open(config_path) as file:
+        config = file.read()
+
+    repo = client.repositories.create("test-repo", config)
+    assert repo.identifier == "test-repo"
+    assert repo.health()
+    with open(pathlib.Path(__file__).parent.parent / "data/quads-2.nq", "rb") as file:
+        repo.overwrite(file)
+
+    assert repo.size() == 1
+    repo.delete(subj=BNode("b-test"))
+    assert repo.size() == 0
+
+
+@pytest.mark.xfail(
+    reason="RDF4J REST API does not support referencing blank nodes directly."
+)
+def test_repo_delete_statement_with_bnode_graph(client: RDF4JClient):
+    config_path = pathlib.Path(__file__).parent / "repo-configs/test-repo-config.ttl"
+    with open(config_path) as file:
+        config = file.read()
+
+    repo = client.repositories.create("test-repo", config)
+    assert repo.identifier == "test-repo"
+    assert repo.health()
+    with open(pathlib.Path(__file__).parent.parent / "data/quads-3.nq", "rb") as file:
+        repo.overwrite(file)
+
+    assert repo.size() == 1
+    repo.delete(subj=BNode("graph"))
+    assert repo.size() == 0

@@ -30,14 +30,16 @@ from rdflib.contrib.rdf4j.util import (
     build_sparql_query_accept_header,
     build_spo_param,
     rdf_payload_to_stream,
+    validate_graph_name,
+    validate_no_bnodes,
 )
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
 from rdflib.query import Result
 from rdflib.term import IdentifiedNode, Literal, URIRef
 
-SubjectType = t.Union[IdentifiedNode, None]
+SubjectType = t.Union[URIRef, None]
 PredicateType = t.Union[URIRef, None]
-ObjectType = t.Union[IdentifiedNode, Literal, None]
+ObjectType = t.Union[URIRef, Literal, None]
 
 
 @dataclass(frozen=True)
@@ -237,6 +239,7 @@ class GraphStoreManager:
         """
         if not graph_name:
             raise ValueError("Graph name must be provided.")
+        validate_graph_name(graph_name)
         headers = {
             "Accept": self._content_type,
         }
@@ -266,6 +269,7 @@ class GraphStoreManager:
         """
         if not graph_name:
             raise ValueError("Graph name must be provided.")
+        validate_graph_name(graph_name)
         stream, should_close = rdf_payload_to_stream(data)
         headers = {
             "Content-Type": self._content_type,
@@ -296,6 +300,7 @@ class GraphStoreManager:
         """
         if not graph_name:
             raise ValueError("Graph name must be provided.")
+        validate_graph_name(graph_name)
         stream, should_close = rdf_payload_to_stream(data)
         headers = {
             "Content-Type": self._content_type,
@@ -324,6 +329,7 @@ class GraphStoreManager:
         """
         if not graph_name:
             raise ValueError("Graph name must be provided.")
+        validate_graph_name(graph_name)
         params = self._build_graph_name_params(graph_name) or None
         response = self.http_client.delete(self._build_url(graph_name), params=params)
         response.raise_for_status()
@@ -418,9 +424,7 @@ class Repository:
                 f"Repository {self._identifier} is not healthy. {err.response.status_code} - {err.response.text}"
             )
 
-    def size(
-        self, graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None
-    ) -> int:
+    def size(self, graph_name: URIRef | Iterable[URIRef] | str | None = None) -> int:
         """The number of statements in the repository or in the specified graph name.
 
         Parameters:
@@ -437,6 +441,7 @@ class Repository:
         Raises:
             RepositoryFormatError: Fails to parse the repository size.
         """
+        validate_graph_name(graph_name)
         params: dict[str, str] = {}
         build_context_param(params, graph_name)
         response = self.http_client.get(
@@ -547,11 +552,15 @@ class Repository:
         subj: SubjectType = None,
         pred: PredicateType = None,
         obj: ObjectType = None,
-        graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None,
+        graph_name: URIRef | Iterable[URIRef] | str | None = None,
         infer: bool = True,
         content_type: str | None = None,
     ) -> Graph | Dataset:
         """Get RDF statements from the repository matching the filtering parameters.
+
+        !!! Note
+            The terms for `subj`, `pred`, `obj` or `graph_name` cannot be
+            [`BNodes`][rdflib.term.BNode].
 
         Parameters:
             subj: Subject of the statement to filter by, or `None` to match all.
@@ -574,6 +583,7 @@ class Repository:
             A [`Graph`][rdflib.graph.Graph] or [`Dataset`][rdflib.graph.Dataset] object
                 with the repository namespace prefixes bound to it.
         """
+        validate_no_bnodes(subj, pred, obj, graph_name)
         if content_type is None:
             content_type = "application/n-quads"
         headers = {"Accept": content_type}
@@ -638,7 +648,7 @@ class Repository:
     def overwrite(
         self,
         data: str | bytes | BinaryIO | Graph | Dataset,
-        graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None,
+        graph_name: URIRef | Iterable[URIRef] | str | None = None,
         base_uri: str | None = None,
         content_type: str | None = None,
     ):
@@ -658,7 +668,7 @@ class Repository:
                 `application/n-quads` when the value is `None`.
         """
         stream, should_close = rdf_payload_to_stream(data)
-
+        validate_graph_name(graph_name)
         try:
             headers = {"Content-Type": content_type or "application/n-quads"}
             params: dict[str, str] = {}
@@ -681,9 +691,13 @@ class Repository:
         subj: SubjectType = None,
         pred: PredicateType = None,
         obj: ObjectType = None,
-        graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None,
+        graph_name: URIRef | Iterable[URIRef] | str | None = None,
     ) -> None:
         """Deletes statements from the repository matching the filtering parameters.
+
+        !!! Note
+            The terms for `subj`, `pred`, `obj` or `graph_name` cannot be
+            [`BNodes`][rdflib.term.BNode].
 
         Parameters:
             subj: Subject of the statement to filter by, or `None` to match all.
@@ -696,6 +710,7 @@ class Repository:
                 To query just the default graph, use
                 [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID].
         """
+        validate_no_bnodes(subj, pred, obj, graph_name)
         params: dict[str, str] = {}
         build_context_param(params, graph_name)
         build_spo_param(params, subj, pred, obj)
@@ -814,9 +829,7 @@ class Transaction:
                 f"Transaction ping failed: {response.status_code} - {response.text}"
             )
 
-    def size(
-        self, graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None
-    ):
+    def size(self, graph_name: URIRef | Iterable[URIRef] | str | None = None):
         """The number of statements in the repository or in the specified graph name.
 
         Parameters:
@@ -834,6 +847,7 @@ class Transaction:
             RepositoryFormatError: Fails to parse the repository size.
         """
         self._raise_for_closed()
+        validate_graph_name(graph_name)
         params = {"action": "SIZE"}
         build_context_param(params, graph_name)
         response = self.repo.http_client.put(self.url, params=params)
@@ -919,11 +933,15 @@ class Transaction:
         subj: SubjectType = None,
         pred: PredicateType = None,
         obj: ObjectType = None,
-        graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None,
+        graph_name: URIRef | Iterable[URIRef] | str | None = None,
         infer: bool = True,
         content_type: str | None = None,
     ) -> Graph | Dataset:
         """Get RDF statements from the repository matching the filtering parameters.
+
+        !!! Note
+            The terms for `subj`, `pred`, `obj` or `graph_name` cannot be
+            [`BNodes`][rdflib.term.BNode].
 
         Parameters:
             subj: Subject of the statement to filter by, or `None` to match all.
@@ -946,6 +964,7 @@ class Transaction:
             A [`Graph`][rdflib.graph.Graph] or [`Dataset`][rdflib.graph.Dataset] object
                 with the repository namespace prefixes bound to it.
         """
+        validate_no_bnodes(subj, pred, obj, graph_name)
         if content_type is None:
             content_type = "application/n-quads"
         headers = {"Accept": content_type}

@@ -5,7 +5,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from rdflib import BNode, Dataset, Graph, IdentifiedNode, URIRef
+from rdflib import Dataset, Graph, URIRef
 from rdflib.contrib.rdf4j import has_httpx
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 
@@ -113,18 +113,13 @@ def test_repo_transaction_get_content_type(
         [DATASET_DEFAULT_GRAPH_ID, "null"],
         ["http://example.com/graph", "<http://example.com/graph>"],
         [URIRef("http://example.com/graph"), "<http://example.com/graph>"],
-        [BNode("some-bnode"), "_:some-bnode"],
-        [
-            [URIRef("http://example.com/graph"), BNode("some-bnode")],
-            "<http://example.com/graph>,_:some-bnode",
-        ],
         [None, None],
     ],
 )
 def test_repo_transaction_get_graph_name(
     txn: Transaction,
     monkeypatch: pytest.MonkeyPatch,
-    graph_name: IdentifiedNode | t.Iterable[IdentifiedNode] | str | None,
+    graph_name: URIRef | t.Iterable[URIRef] | str | None,
     expected_graph_name_param: str,
 ):
     """
@@ -199,17 +194,6 @@ def test_repo_transaction_get_infer(
             None,
             {
                 "action": "GET",
-            },
-        ],
-        [
-            BNode("some-bnode"),
-            URIRef("http://example.com/p"),
-            BNode("some-bnode-2"),
-            {
-                "action": "GET",
-                "subj": "_:some-bnode",
-                "pred": "<http://example.com/p>",
-                "obj": "_:some-bnode-2",
             },
         ],
     ],

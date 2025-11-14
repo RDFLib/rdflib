@@ -8,7 +8,7 @@ import pytest
 from rdflib.contrib.rdf4j import has_httpx
 from rdflib.contrib.rdf4j.exceptions import RepositoryFormatError
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
-from rdflib.term import BNode, IdentifiedNode, URIRef
+from rdflib.term import IdentifiedNode, URIRef
 
 pytestmark = pytest.mark.skipif(
     not has_httpx, reason="skipping rdf4j tests, httpx not available"
@@ -28,11 +28,6 @@ if has_httpx:
         [DATASET_DEFAULT_GRAPH_ID, "null"],
         ["http://example.com/graph", "<http://example.com/graph>"],
         [URIRef("http://example.com/graph"), "<http://example.com/graph>"],
-        [BNode("some-bnode"), "_:some-bnode"],
-        [
-            [URIRef("http://example.com/graph"), BNode("some-bnode")],
-            "<http://example.com/graph>,_:some-bnode",
-        ],
         [None, None],
     ],
 )

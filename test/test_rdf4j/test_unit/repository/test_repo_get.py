@@ -8,7 +8,7 @@ import pytest
 from rdflib import Dataset, Graph
 from rdflib.contrib.rdf4j import has_httpx
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
-from rdflib.term import BNode, IdentifiedNode, URIRef
+from rdflib.term import URIRef
 
 pytestmark = pytest.mark.skipif(
     not has_httpx, reason="skipping rdf4j tests, httpx not available"
@@ -98,18 +98,13 @@ def test_repo_content_type(
         [DATASET_DEFAULT_GRAPH_ID, "null"],
         ["http://example.com/graph", "<http://example.com/graph>"],
         [URIRef("http://example.com/graph"), "<http://example.com/graph>"],
-        [BNode("some-bnode"), "_:some-bnode"],
-        [
-            [URIRef("http://example.com/graph"), BNode("some-bnode")],
-            "<http://example.com/graph>,_:some-bnode",
-        ],
         [None, None],
     ],
 )
 def test_repo_get_graph_name(
     repo: Repository,
     monkeypatch: pytest.MonkeyPatch,
-    graph_name: IdentifiedNode | t.Iterable[IdentifiedNode] | str | None,
+    graph_name: URIRef | t.Iterable[URIRef] | str | None,
     expected_graph_name_param: str,
 ):
     """
@@ -177,16 +172,6 @@ def test_repo_get_infer(
             },
         ],
         [None, None, None, {}],
-        [
-            BNode("some-bnode"),
-            URIRef("http://example.com/p"),
-            BNode("some-bnode-2"),
-            {
-                "subj": "_:some-bnode",
-                "pred": "<http://example.com/p>",
-                "obj": "_:some-bnode-2",
-            },
-        ],
     ],
 )
 def test_repo_get_spo(

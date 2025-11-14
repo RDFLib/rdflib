@@ -13,9 +13,10 @@ from rdflib.contrib.rdf4j.util import (
     build_context_param,
     build_sparql_query_accept_header,
     rdf_payload_to_stream,
+    validate_no_bnodes,
 )
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
-from rdflib.term import BNode, URIRef
+from rdflib.term import BNode, Literal, URIRef
 
 
 @pytest.mark.parametrize(
@@ -73,3 +74,23 @@ def test_build_sparql_query_accept_header(monkeypatch: pytest.MonkeyPatch):
 
     with pytest.raises(ValueError, match="Unsupported query type: InvalidQueryType"):
         build_sparql_query_accept_header("blah", {})
+
+
+@pytest.mark.parametrize(
+    "subj, pred, obj, graph_name",
+    [
+        [BNode(), None, None, None],
+        [None, BNode(), None, None],
+        [None, None, BNode(), None],
+        [None, None, None, BNode()],
+        [None, None, None, [BNode(), URIRef("http://example.com/graph")]],
+    ],
+)
+def test_validate_no_bnodes(
+    subj: URIRef | BNode | None,
+    pred: URIRef | None,
+    obj: URIRef | BNode | Literal | None,
+    graph_name,
+):
+    with pytest.raises(ValueError, match="must not be a BNode"):
+        validate_no_bnodes(subj, pred, obj, graph_name)
