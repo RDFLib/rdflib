@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 """
-
-A commandline tool for querying with sparql
-on local files and remote sparql endpoints with custom serialization.
+A commandline tool for querying with SPARQL on local files and remote sparql endpoints with custom serialization.
 
 example usage:
 ```bash
