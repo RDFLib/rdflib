@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from textwrap import dedent
-from typing import Any, Generator, Iterable, Iterator, Mapping, Optional, Tuple, Union
+from typing import Any, Generator, Iterable, Iterator, Mapping, Optional, Tuple
 
 from rdflib import Graph
 from rdflib.contrib.rdf4j import RDF4JClient
@@ -14,10 +14,21 @@ from rdflib.graph import (
     _TriplePatternType,
     _TripleType,
 )
-from rdflib.plugins.sparql.sparql import Query, Update
-from rdflib.query import Result
 from rdflib.store import VALID_STORE, Store
-from rdflib.term import BNode, Identifier, Node, URIRef, Variable
+from rdflib.term import BNode, Node, URIRef, Variable
+
+
+def _inject_prefixes(query: str, extra_bindings: Mapping[str, Any]) -> str:
+    bindings = set(list(extra_bindings.items()))
+    if not bindings:
+        return query
+    return "\n".join(
+        [
+            "\n".join(["PREFIX %s: <%s>" % (k, v) for k, v in bindings]),
+            "",  # separate ns_bindings from query with an empty line
+            query,
+        ]
+    )
 
 
 def _node_to_sparql(node: Node) -> str:
@@ -178,28 +189,6 @@ class RDF4JStore(Store):
             result = self.repo.query(query)
             for row in result:
                 yield Graph(self, identifier=row["graph"])
-
-    def query(
-        self,
-        query: Union[Query, str],
-        initNs: Mapping[str, Any],  # noqa: N803
-        initBindings: Mapping[str, Identifier],  # noqa: N803
-        queryGraph: str,  # noqa: N803
-        **kwargs: Any,
-    ) -> Result:
-        # TODO:
-        pass
-
-    def update(
-        self,
-        update: Union[Update, str],
-        initNs: Mapping[str, Any],  # noqa: N803
-        initBindings: Mapping[str, Identifier],  # noqa: N803
-        queryGraph: str,  # noqa: N803
-        **kwargs: Any,
-    ) -> None:
-        # TODO:
-        pass
 
     def bind(self, prefix: str, namespace: URIRef, override: bool = True) -> None:
         # Note: RDF4J namespaces always override.

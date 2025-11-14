@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import pytest
 
-from rdflib import RDF, SKOS, Dataset, Graph, Literal, URIRef
+from rdflib import RDF, SKOS, BNode, Dataset, Graph, Literal, URIRef, Variable
 from rdflib.contrib.rdf4j.client import Repository
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, _TripleChoiceType
 
@@ -273,11 +275,11 @@ def test_quads(ds: Dataset):
 def test_remove(ds: Dataset, s, p, o, g, expected_size):
     repo: Repository = ds.store.repo
     data = f"""
-                <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
-                <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
-                <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
-                <http://example.com/s> <{SKOS.definition}> "Definition" .
-            """
+        <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+        <http://example.com/s> <{SKOS.definition}> "Definition" .
+    """
     repo.upload(data)
     assert len(ds) == 4
     repo.delete(s, p, o, g)
@@ -340,13 +342,162 @@ def test_triples_choices_default_union_on(
 ):
     repo: Repository = ds.store.repo
     data = f"""
-                    <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
-                    <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
-                    <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
-                    <http://example.com/s> <{SKOS.definition}> "Definition" .
-                """
+        <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+        <http://example.com/s> <{SKOS.definition}> "Definition" .
+    """
     repo.upload(data)
     assert len(ds) == 4
     ds.default_union = default_union
     triples = set(ds.triples_choices(triples_choices))
     assert triples == expected_triples
+
+
+@pytest.mark.parametrize(
+    "default_union, query, expected_result_bindings",
+    [
+        [
+            False,
+            "select * where { ?s ?p ?o }",
+            {(URIRef("http://example.com/s"), SKOS.definition, Literal("Definition"))},
+        ],
+        [
+            True,
+            "select * where { ?s ?p ?o }",
+            {
+                (URIRef("http://example.com/s"), RDF.type, SKOS.Concept),
+                (URIRef("http://example.com/s"), SKOS.prefLabel, Literal("Label")),
+                (
+                    URIRef("http://example.com/s"),
+                    SKOS.definition,
+                    Literal("Definition"),
+                ),
+            },
+        ],
+    ],
+)
+def test_query_default_graph_behaviour(
+    ds: Dataset,
+    default_union: bool,
+    query: str,
+    expected_result_bindings: list[dict[Variable, URIRef | BNode | Literal]],
+):
+    repo: Repository = ds.store.repo
+    data = f"""
+        <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+        <http://example.com/s> <{SKOS.definition}> "Definition" .
+    """
+    repo.upload(data)
+    assert len(ds) == 4
+    ds.default_union = default_union
+    result = ds.query(query)
+    assert set(tuple(x.values()) for x in result.bindings) == expected_result_bindings
+
+
+def test_query_init_ns(ds: Dataset):
+    repo: Repository = ds.store.repo
+    data = f"""
+        <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+        <http://example.com/s> <{RDF.type}> <http://example.com/type/Term> <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+        <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+        <http://example.com/s> <{SKOS.definition}> "Definition" .
+    """
+    repo.upload(data)
+    assert len(ds) == 5
+    query = """
+            select distinct ?s
+            where {
+                graph ?g {
+                    ?s a ex:Term .
+                }
+            }
+        """
+    result = ds.query(query, initNs={"ex": "http://example.com/type/"})
+    assert len(result) == 1
+    assert set(tuple(x.values()) for x in result.bindings) == {
+        (URIRef("http://example.com/s"),)
+    }
+
+
+def test_query_init_bindings(ds: Dataset):
+    repo: Repository = ds.store.repo
+    data = f"""
+            <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+            <http://example.com/s> <{RDF.type}> <http://example.com/type/Term> <urn:graph:a> .
+            <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+            <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+            <http://example.com/s> <{SKOS.definition}> "Definition" .
+        """
+    repo.upload(data)
+    assert len(ds) == 5
+
+    query = """
+            SELECT ?o
+            WHERE {
+                GRAPH ?g {
+                    ?s ?p ?o .
+                }
+            }
+        """
+    result = ds.query(query, initBindings={"p": RDF.type})
+    assert len(result) == 2
+    assert set(tuple(x.values()) for x in result.bindings) == {
+        (SKOS.Concept,),
+        (URIRef("http://example.com/type/Term"),),
+    }
+
+
+def test_query_update_delete_default_graph_triples(ds: Dataset):
+    repo: Repository = ds.store.repo
+    data = f"""
+                <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+                <http://example.com/s> <{RDF.type}> <http://example.com/type/Term> <urn:graph:a> .
+                <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+                <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+                <http://example.com/s> <{SKOS.definition}> "Definition" .
+            """
+    repo.upload(data)
+    assert len(ds) == 5
+
+    query = """
+        DELETE {
+            ?s ?p ?o
+        }
+        WHERE {
+            ?s ?p ?o
+        }
+    """
+    ds.update(query)
+    assert len(ds) == 4
+
+
+def test_query_update(ds: Dataset):
+    repo: Repository = ds.store.repo
+    data = f"""
+                <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+                <http://example.com/s> <{RDF.type}> <http://example.com/type/Term> <urn:graph:a> .
+                <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+                <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+                <http://example.com/s> <{SKOS.definition}> "Definition" .
+            """
+    repo.upload(data)
+    assert len(ds) == 5
+
+    query = """
+        DELETE {
+            GRAPH ?g {
+                ?s ?p ?o
+            }
+        }
+        WHERE {
+            GRAPH ?g {
+                ?s ?p ?o
+            }
+        }
+    """
+    ds.update(query)
+    assert len(ds) == 1
