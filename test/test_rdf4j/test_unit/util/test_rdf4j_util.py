@@ -87,9 +87,9 @@ def test_build_sparql_query_accept_header(monkeypatch: pytest.MonkeyPatch):
     ],
 )
 def test_validate_no_bnodes(
-    subj: URIRef | BNode | None,
+    subj: URIRef | None,
     pred: URIRef | None,
-    obj: URIRef | BNode | Literal | None,
+    obj: URIRef | Literal | None,
     graph_name,
 ):
     with pytest.raises(ValueError, match="must not be a BNode"):

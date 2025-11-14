@@ -153,7 +153,7 @@ class RDF4JStore(Store):
         g = context.identifier if context is not None else None
         self.repo.delete(s, p, o, g)
 
-    def triples(  # type: ignore[return]
+    def triples(
         self,
         triple_pattern: _TriplePatternType,
         context: Optional[_ContextType] = None,
@@ -170,7 +170,7 @@ class RDF4JStore(Store):
                 # Returning None for _ContextType as it's not used by the caller.
                 yield triple, iter([None])
 
-    def contexts(  # type: ignore[empty-body]
+    def contexts(
         self, triple: Optional[_TripleType] = None
     ) -> Generator[_ContextType, None, None]:
         if triple is None:

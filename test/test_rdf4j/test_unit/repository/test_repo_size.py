@@ -8,7 +8,7 @@ import pytest
 from rdflib.contrib.rdf4j import has_httpx
 from rdflib.contrib.rdf4j.exceptions import RepositoryFormatError
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
-from rdflib.term import IdentifiedNode, URIRef
+from rdflib.term import URIRef
 
 pytestmark = pytest.mark.skipif(
     not has_httpx, reason="skipping rdf4j tests, httpx not available"
@@ -34,7 +34,7 @@ if has_httpx:
 def test_repo_size_graph_name(
     repo: Repository,
     monkeypatch: pytest.MonkeyPatch,
-    graph_name: IdentifiedNode | t.Iterable[IdentifiedNode] | str | None,
+    graph_name: URIRef | t.Iterable[URIRef] | str | None,
     expected_graph_name_param: str,
 ):
     """

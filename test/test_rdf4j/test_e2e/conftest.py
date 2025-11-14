@@ -67,5 +67,5 @@ if has_httpx:
         ds = Dataset(store)
         ds.namespace_manager = NamespaceManager(ds, "none")
         yield ds
-        ds.store.client.repositories.delete("test-repo")
+        ds.store.client.repositories.delete("test-repo")  # type: ignore[attr-defined]
         ds.close()

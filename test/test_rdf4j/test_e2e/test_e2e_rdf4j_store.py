@@ -21,19 +21,19 @@ def test_rdf4j_store_addn(ds: Dataset):
                 URIRef("http://example.com/s"),
                 RDF.type,
                 SKOS.Concept,
-                URIRef("urn:graph:a"),
+                URIRef("urn:graph:a"),  # type: ignore[list-item]
             ),
             (
                 URIRef("http://example.com/s"),
                 SKOS.prefLabel,
                 Literal("Label"),
-                DATASET_DEFAULT_GRAPH_ID,
+                DATASET_DEFAULT_GRAPH_ID,  # type: ignore[list-item]
             ),
             (
                 URIRef("http://example.com/s"),
                 SKOS.definition,
                 Literal("Definition"),
-                URIRef("urn:graph:b"),
+                URIRef("urn:graph:b"),  # type: ignore[list-item]
             ),
         ]
     )
@@ -41,7 +41,7 @@ def test_rdf4j_store_addn(ds: Dataset):
 
 
 def test_graphs_method_default_graph(ds: Dataset):
-    repo: Repository = ds.store.repo
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
         <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> .
     """
@@ -58,7 +58,7 @@ def test_graphs_method_default_graph(ds: Dataset):
 
 
 def test_graphs_method_default_and_named_graphs(ds: Dataset):
-    repo: Repository = ds.store.repo
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
             <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
             <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
@@ -134,7 +134,7 @@ def test_add_graph(ds: Dataset):
 
 
 def test_remove_graph(ds: Dataset):
-    repo: Repository = ds.store.repo
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
             <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
             <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
@@ -169,7 +169,7 @@ def test_namespaces(ds: Dataset):
 
 
 def test_triples(ds: Dataset):
-    repo: Repository = ds.store.repo
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
         <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
         <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
@@ -214,7 +214,7 @@ def test_triples(ds: Dataset):
 
 
 def test_quads(ds: Dataset):
-    repo: Repository = ds.store.repo
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
             <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
             <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
@@ -224,7 +224,7 @@ def test_quads(ds: Dataset):
     repo.upload(data)
     assert len(ds) == 4
 
-    quads = set(ds.quads((None, None, None, DATASET_DEFAULT_GRAPH_ID)))
+    quads = set(ds.quads((None, None, None, DATASET_DEFAULT_GRAPH_ID)))  # type: ignore[arg-type]
     assert quads == {
         (
             URIRef("http://example.com/s"),
@@ -234,7 +234,7 @@ def test_quads(ds: Dataset):
         ),
     }
 
-    quads = set(ds.quads((None, None, None, URIRef("urn:graph:a"))))
+    quads = set(ds.quads((None, None, None, URIRef("urn:graph:a"))))  # type: ignore[arg-type]
     assert quads == {
         (
             URIRef("http://example.com/s"),
@@ -250,7 +250,7 @@ def test_quads(ds: Dataset):
         ),
     }
 
-    quads = set(ds.quads((None, None, None, URIRef("urn:graph:b"))))
+    quads = set(ds.quads((None, None, None, URIRef("urn:graph:b"))))  # type: ignore[arg-type]
     assert quads == {
         (
             URIRef("http://example.com/s"),
@@ -273,7 +273,7 @@ def test_quads(ds: Dataset):
     ],
 )
 def test_remove(ds: Dataset, s, p, o, g, expected_size):
-    repo: Repository = ds.store.repo
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
         <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
         <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
@@ -340,7 +340,7 @@ def test_triples_choices_default_union_on(
     triples_choices: _TripleChoiceType,
     expected_triples,
 ):
-    repo: Repository = ds.store.repo
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
         <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
         <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
@@ -383,7 +383,7 @@ def test_query_default_graph_behaviour(
     query: str,
     expected_result_bindings: list[dict[Variable, URIRef | BNode | Literal]],
 ):
-    repo: Repository = ds.store.repo
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
         <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
         <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
@@ -398,7 +398,7 @@ def test_query_default_graph_behaviour(
 
 
 def test_query_init_ns(ds: Dataset):
-    repo: Repository = ds.store.repo
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
         <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
         <http://example.com/s> <{RDF.type}> <http://example.com/type/Term> <urn:graph:a> .
@@ -424,7 +424,7 @@ def test_query_init_ns(ds: Dataset):
 
 
 def test_query_init_bindings(ds: Dataset):
-    repo: Repository = ds.store.repo
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
             <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
             <http://example.com/s> <{RDF.type}> <http://example.com/type/Term> <urn:graph:a> .
@@ -452,7 +452,7 @@ def test_query_init_bindings(ds: Dataset):
 
 
 def test_query_update_delete_default_graph_triples(ds: Dataset):
-    repo: Repository = ds.store.repo
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
                 <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
                 <http://example.com/s> <{RDF.type}> <http://example.com/type/Term> <urn:graph:a> .
@@ -476,7 +476,7 @@ def test_query_update_delete_default_graph_triples(ds: Dataset):
 
 
 def test_query_update(ds: Dataset):
-    repo: Repository = ds.store.repo
+    repo: Repository = ds.store.repo  # type: ignore[attr-defined]
     data = f"""
                 <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
                 <http://example.com/s> <{RDF.type}> <http://example.com/type/Term> <urn:graph:a> .

@@ -193,7 +193,7 @@ def test_repo_delete_statement_with_bnode(client: RDF4JClient):
         repo.overwrite(file)
 
     assert repo.size() == 1
-    repo.delete(subj=BNode("b-test"))
+    repo.delete(subj=BNode("b-test"))  # type: ignore[arg-type]
     assert repo.size() == 0
 
 
@@ -212,5 +212,5 @@ def test_repo_delete_statement_with_bnode_graph(client: RDF4JClient):
         repo.overwrite(file)
 
     assert repo.size() == 1
-    repo.delete(subj=BNode("graph"))
+    repo.delete(subj=BNode("graph"))  # type: ignore[arg-type]
     assert repo.size() == 0

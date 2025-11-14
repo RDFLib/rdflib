@@ -7,7 +7,7 @@ from unittest.mock import ANY, Mock
 
 import pytest
 
-from rdflib import Dataset, Graph, IdentifiedNode, URIRef
+from rdflib import Dataset, Graph, URIRef
 from rdflib.contrib.rdf4j import has_httpx
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 
@@ -136,7 +136,7 @@ def test_repo_overwrite_data(
 )
 def test_repo_overwrite_graph_name(
     repo: Repository,
-    graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None,
+    graph_name: URIRef | Iterable[URIRef] | str | None,
     expected_graph_name_param: str,
     monkeypatch: pytest.MonkeyPatch,
 ):
