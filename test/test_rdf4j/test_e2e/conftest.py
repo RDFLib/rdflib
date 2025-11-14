@@ -7,8 +7,8 @@ from testcontainers.core.waiting_utils import wait_for_logs
 
 from rdflib import Dataset
 from rdflib.contrib.rdf4j import has_httpx
-from rdflib.plugins.stores.rdf4j import RDF4JStore
 from rdflib.namespace import NamespaceManager
+from rdflib.plugins.stores.rdf4j import RDF4JStore
 
 pytestmark = pytest.mark.skipif(
     not has_httpx, reason="skipping rdf4j tests, httpx not available"

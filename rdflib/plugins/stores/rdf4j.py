@@ -8,12 +8,12 @@ from rdflib.contrib.rdf4j import RDF4JClient
 from rdflib.contrib.rdf4j.exceptions import RepositoryNotFoundError
 from rdflib.graph import (
     DATASET_DEFAULT_GRAPH_ID,
+    Dataset,
     _ContextType,
     _QuadType,
     _TripleChoiceType,
     _TriplePatternType,
     _TripleType,
-    Dataset,
 )
 from rdflib.plugins.sparql.sparql import Query, Update
 from rdflib.query import Result
