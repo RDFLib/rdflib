@@ -1,9 +1,7 @@
 import pathlib
+from importlib.util import find_spec
 
 import pytest
-from testcontainers.core.container import DockerContainer
-from testcontainers.core.image import DockerImage
-from testcontainers.core.waiting_utils import wait_for_logs
 
 from rdflib import Dataset
 from rdflib.contrib.rdf4j import has_httpx
@@ -11,11 +9,18 @@ from rdflib.contrib.rdf4j.exceptions import RepositoryNotFoundError
 from rdflib.namespace import NamespaceManager
 from rdflib.plugins.stores.rdf4j import RDF4JStore
 
+has_testcontainers = find_spec("testcontainers") is not None
+
 pytestmark = pytest.mark.skipif(
-    not has_httpx, reason="skipping rdf4j tests, httpx not available"
+    not (has_httpx and has_testcontainers),
+    reason="skipping rdf4j tests, httpx or testcontainers not available",
 )
 
-if has_httpx:
+if has_httpx and has_testcontainers:
+    from testcontainers.core.container import DockerContainer
+    from testcontainers.core.image import DockerImage
+    from testcontainers.core.waiting_utils import wait_for_logs
+
     from rdflib.contrib.rdf4j import RDF4JClient
 
     GRAPHDB_PORT = 7200
