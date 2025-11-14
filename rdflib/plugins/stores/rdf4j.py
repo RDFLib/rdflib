@@ -122,7 +122,7 @@ class RDF4JStore(Store):
         statement = f"{s.n3()} {p.n3()} {o.n3()} {graph_name} ."
         self.repo.upload(statement)
 
-    def addN(self, quads: Iterable[_QuadType]) -> None:
+    def addN(self, quads: Iterable[_QuadType]) -> None:  # noqa: N802
         statements = ""
         for s, p, o, c in quads:
             graph_name = (
@@ -139,8 +139,9 @@ class RDF4JStore(Store):
         triple: _TriplePatternType,
         context: Optional[_ContextType] = None,
     ) -> None:
-        # TODO:
-        pass
+        s, p, o = triple
+        g = context.identifier if context is not None else None
+        self.repo.delete(s, p, o, g)
 
     def triples_choices(
         self,
