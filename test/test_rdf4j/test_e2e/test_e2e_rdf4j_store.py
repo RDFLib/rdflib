@@ -2,7 +2,7 @@ import pytest
 
 from rdflib import RDF, SKOS, Dataset, Graph, Literal, URIRef
 from rdflib.contrib.rdf4j.client import Repository
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, _TripleChoiceType
 
 
 def test_rdf4j_store_add(ds: Dataset):
@@ -282,3 +282,71 @@ def test_remove(ds: Dataset, s, p, o, g, expected_size):
     assert len(ds) == 4
     repo.delete(s, p, o, g)
     assert len(ds) == expected_size
+
+
+@pytest.mark.parametrize(
+    "default_union, triples_choices, expected_triples",
+    [
+        [
+            False,
+            (None, [SKOS.prefLabel, SKOS.definition], None),
+            {
+                (
+                    URIRef("http://example.com/s"),
+                    SKOS.definition,
+                    Literal("Definition"),
+                ),
+            },
+        ],
+        [
+            True,
+            (None, [SKOS.prefLabel, SKOS.definition], None),
+            {
+                (URIRef("http://example.com/s"), SKOS.prefLabel, Literal("Label")),
+                (
+                    URIRef("http://example.com/s"),
+                    SKOS.definition,
+                    Literal("Definition"),
+                ),
+            },
+        ],
+        [
+            True,
+            (None, [RDF.type, SKOS.prefLabel], None),
+            {
+                (URIRef("http://example.com/s"), RDF.type, SKOS.Concept),
+                (URIRef("http://example.com/s"), SKOS.prefLabel, Literal("Label")),
+            },
+        ],
+        [
+            True,
+            (None, [RDF.type, SKOS.definition], None),
+            {
+                (URIRef("http://example.com/s"), RDF.type, SKOS.Concept),
+                (
+                    URIRef("http://example.com/s"),
+                    SKOS.definition,
+                    Literal("Definition"),
+                ),
+            },
+        ],
+    ],
+)
+def test_triples_choices_default_union_on(
+    ds: Dataset,
+    default_union: bool,
+    triples_choices: _TripleChoiceType,
+    expected_triples,
+):
+    repo: Repository = ds.store.repo
+    data = f"""
+                    <http://example.com/s> <{RDF.type}> <{SKOS.Concept}> <urn:graph:a> .
+                    <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:a> .
+                    <http://example.com/s> <{SKOS.prefLabel}> "Label" <urn:graph:b> .
+                    <http://example.com/s> <{SKOS.definition}> "Definition" .
+                """
+    repo.upload(data)
+    assert len(ds) == 4
+    ds.default_union = default_union
+    triples = set(ds.triples_choices(triples_choices))
+    assert triples == expected_triples

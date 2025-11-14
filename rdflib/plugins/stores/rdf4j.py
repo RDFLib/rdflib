@@ -11,7 +11,6 @@ from rdflib.graph import (
     Dataset,
     _ContextType,
     _QuadType,
-    _TripleChoiceType,
     _TriplePatternType,
     _TripleType,
 )
@@ -142,22 +141,6 @@ class RDF4JStore(Store):
         s, p, o = triple
         g = context.identifier if context is not None else None
         self.repo.delete(s, p, o, g)
-
-    def triples_choices(
-        self,
-        triple: _TripleChoiceType,
-        context: Optional[_ContextType] = None,
-    ) -> Generator[
-        Tuple[
-            _TripleType,
-            Iterator[Optional[_ContextType]],
-        ],
-        None,
-        None,
-    ]:
-        # This is not supported on the sparql store. See if we should support it here.
-        # TODO:
-        pass
 
     def triples(  # type: ignore[return]
         self,
