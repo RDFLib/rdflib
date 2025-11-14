@@ -43,6 +43,7 @@ nav:
     - Container: apidocs/rdflib.container.md
     - Collection: apidocs/rdflib.collection.md
     - Paths: apidocs/rdflib.paths.md
+    - RDF4J: apidocs/rdflib.contrib.rdf4j.md
     - Util: apidocs/rdflib.util.md
     - Plugins:
       - Parsers: apidocs/rdflib.plugins.parsers.md
