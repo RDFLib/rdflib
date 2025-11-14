@@ -16,7 +16,7 @@ if has_httpx:
 
     from rdflib.contrib.rdf4j.client import (
         NamespaceListingResult,
-        NamespaceManager,
+        RDF4JNamespaceManager,
         Repository,
     )
 
@@ -69,7 +69,7 @@ def test_repo_get_with_namespace_binding(
     mock_httpx_get = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
     monkeypatch.setattr(
-        NamespaceManager,
+        RDF4JNamespaceManager,
         "list",
         lambda _: [
             NamespaceListingResult(prefix="test", namespace="http://example.org/test/")

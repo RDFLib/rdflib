@@ -18,9 +18,9 @@ if has_httpx:
     import httpx
 
     from rdflib.contrib.rdf4j.client import (
-        NamespaceManager,
         ObjectType,
         PredicateType,
+        RDF4JNamespaceManager,
         Repository,
         SubjectType,
     )
@@ -79,7 +79,7 @@ def test_repo_content_type(
     mock_response = Mock(spec=httpx.Response, text=data)
     mock_httpx_get = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
-    monkeypatch.setattr(NamespaceManager, "list", lambda _: [])
+    monkeypatch.setattr(RDF4JNamespaceManager, "list", lambda _: [])
 
     result = repo.get(content_type=content_type)
     headers = {"Accept": content_type or "application/n-quads"}
@@ -114,7 +114,7 @@ def test_repo_get_graph_name(
     mock_response = Mock(spec=httpx.Response, text="")
     mock_httpx_get = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
-    monkeypatch.setattr(NamespaceManager, "list", lambda _: [])
+    monkeypatch.setattr(RDF4JNamespaceManager, "list", lambda _: [])
     headers = {
         "Accept": "application/n-quads",
     }
@@ -141,7 +141,7 @@ def test_repo_get_infer(
     mock_response = Mock(spec=httpx.Response, text="")
     mock_httpx_get = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
-    monkeypatch.setattr(NamespaceManager, "list", lambda _: [])
+    monkeypatch.setattr(RDF4JNamespaceManager, "list", lambda _: [])
     headers = {
         "Accept": "application/n-quads",
     }
@@ -186,7 +186,7 @@ def test_repo_get_spo(
     mock_response = Mock(spec=httpx.Response, text="")
     mock_httpx_get = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
-    monkeypatch.setattr(NamespaceManager, "list", lambda _: [])
+    monkeypatch.setattr(RDF4JNamespaceManager, "list", lambda _: [])
     headers = {
         "Accept": "application/n-quads",
     }

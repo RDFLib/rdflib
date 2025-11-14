@@ -50,7 +50,7 @@ class NamespaceListingResult:
     namespace: str
 
 
-class NamespaceManager:
+class RDF4JNamespaceManager:
     """A namespace manager for RDF4J repositories.
 
     Parameters:
@@ -365,7 +365,7 @@ class Repository:
     def __init__(self, identifier: str, http_client: httpx.Client):
         self._identifier = identifier
         self._http_client = http_client
-        self._namespace_manager: NamespaceManager | None = None
+        self._namespace_manager: RDF4JNamespaceManager | None = None
         self._graph_store_manager: GraphStoreManager | None = None
 
     @property
@@ -378,10 +378,10 @@ class Repository:
         return self._identifier
 
     @property
-    def namespaces(self) -> NamespaceManager:
+    def namespaces(self) -> RDF4JNamespaceManager:
         """Namespace manager for the repository."""
         if self._namespace_manager is None:
-            self._namespace_manager = NamespaceManager(
+            self._namespace_manager = RDF4JNamespaceManager(
                 self.identifier, self.http_client
             )
         return self._namespace_manager

@@ -17,9 +17,9 @@ if has_httpx:
     import httpx
 
     from rdflib.contrib.rdf4j.client import (
-        NamespaceManager,
         ObjectType,
         PredicateType,
+        RDF4JNamespaceManager,
         SubjectType,
         Transaction,
     )
@@ -32,7 +32,7 @@ def test_repo_transaction_get(txn: Transaction, monkeypatch: pytest.MonkeyPatch)
     )
     mock_httpx_put = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
-    monkeypatch.setattr(NamespaceManager, "list", lambda _: [])
+    monkeypatch.setattr(RDF4JNamespaceManager, "list", lambda _: [])
     txn.get(pred=URIRef("http://example.org/p"))
     mock_httpx_put.assert_called_once_with(
         txn.url,
@@ -94,7 +94,7 @@ def test_repo_transaction_get_content_type(
     mock_response = Mock(spec=httpx.Response, text=data)
     mock_httpx_put = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
-    monkeypatch.setattr(NamespaceManager, "list", lambda _: [])
+    monkeypatch.setattr(RDF4JNamespaceManager, "list", lambda _: [])
 
     result = txn.get(content_type=content_type)
     headers = {"Accept": content_type or "application/n-quads"}
@@ -129,7 +129,7 @@ def test_repo_transaction_get_graph_name(
     mock_response = Mock(spec=httpx.Response, text="")
     mock_httpx_put = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
-    monkeypatch.setattr(NamespaceManager, "list", lambda _: [])
+    monkeypatch.setattr(RDF4JNamespaceManager, "list", lambda _: [])
     headers = {
         "Accept": "application/n-quads",
     }
@@ -157,7 +157,7 @@ def test_repo_transaction_get_infer(
     mock_response = Mock(spec=httpx.Response, text="")
     mock_httpx_put = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
-    monkeypatch.setattr(NamespaceManager, "list", lambda _: [])
+    monkeypatch.setattr(RDF4JNamespaceManager, "list", lambda _: [])
     headers = {
         "Accept": "application/n-quads",
     }
@@ -210,7 +210,7 @@ def test_repo_transaction_get_spo(
     mock_response = Mock(spec=httpx.Response, text="")
     mock_httpx_put = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
-    monkeypatch.setattr(NamespaceManager, "list", lambda _: [])
+    monkeypatch.setattr(RDF4JNamespaceManager, "list", lambda _: [])
     headers = {
         "Accept": "application/n-quads",
     }
