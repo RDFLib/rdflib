@@ -1,13 +1,19 @@
+from importlib.util import find_spec
+
 import pytest
-from testcontainers.core.container import DockerContainer
 
 from rdflib.contrib.rdf4j import has_httpx
 
+has_testcontainers = find_spec("testcontainers") is not None
+
 pytestmark = pytest.mark.skipif(
-    not has_httpx, reason="skipping rdf4j tests, httpx not available"
+    not (has_httpx and has_testcontainers),
+    reason="skipping rdf4j tests, httpx or testcontainers not available",
 )
 
-if has_httpx:
+if has_httpx and has_testcontainers:
+    from testcontainers.core.container import DockerContainer
+
     from rdflib.contrib.graphdb import GraphDBClient
 
     @pytest.fixture(scope="function")

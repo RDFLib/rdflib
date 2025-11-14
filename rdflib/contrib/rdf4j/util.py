@@ -7,7 +7,7 @@ import typing as t
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
 from rdflib.plugins.sparql.processor import prepareQuery
-from rdflib.term import IdentifiedNode, URIRef
+from rdflib.term import BNode, IdentifiedNode, URIRef
 
 if t.TYPE_CHECKING:
     from rdflib.contrib.rdf4j.client import ObjectType, PredicateType, SubjectType
@@ -151,3 +151,32 @@ def build_sparql_query_accept_header(query: str, headers: dict[str, str]):
         headers["Accept"] = "application/n-triples"
     else:
         raise ValueError(f"Unsupported query type: {prepared_query.algebra.name}")
+
+
+def validate_graph_name(graph_name: URIRef | t.Iterable[URIRef] | str | None):
+    if (
+        isinstance(graph_name, BNode)
+        or isinstance(graph_name, t.Iterable)
+        and any(isinstance(x, BNode) for x in graph_name)
+    ):
+        raise ValueError("Graph name must not be a BNode.")
+
+
+def validate_no_bnodes(
+    subj: SubjectType,
+    pred: PredicateType,
+    obj: ObjectType,
+    graph_name: URIRef | t.Iterable[URIRef] | str | None,
+) -> None:
+    """Validate that the subject, predicate, and object are not BNodes."""
+    if (
+        isinstance(subj, BNode)
+        or isinstance(pred, BNode)
+        or isinstance(obj, BNode)
+        or isinstance(graph_name, BNode)
+    ):
+        raise ValueError(
+            "Subject, predicate, and object must not be a BNode: "
+            f"{subj}, {pred}, {obj}"
+        )
+    validate_graph_name(graph_name)

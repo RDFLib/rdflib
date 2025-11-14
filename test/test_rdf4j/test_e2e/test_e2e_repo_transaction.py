@@ -16,6 +16,7 @@ if has_httpx:
     from rdflib.contrib.rdf4j.client import Repository, Transaction
 
 
+@pytest.mark.testcontainer
 def test_e2e_repo_transaction(repo: Repository):
     path = str(Path(__file__).parent.parent / "data/quads-1.nq")
     repo.overwrite(path)
@@ -56,6 +57,7 @@ def test_e2e_repo_transaction(repo: Repository):
     assert repo.size() == 3
 
 
+@pytest.mark.testcontainer
 def test_e2e_repo_transaction_delete(repo: Repository):
     path = str(Path(__file__).parent.parent / "data/quads-1.nq")
     repo.overwrite(path)
@@ -70,6 +72,7 @@ def test_e2e_repo_transaction_delete(repo: Repository):
         assert txn.size("urn:graph:a2") == 0
 
 
+@pytest.mark.testcontainer
 def test_e2e_repo_transaction_update(repo: Repository):
     path = str(Path(__file__).parent.parent / "data/quads-1.nq")
     repo.overwrite(path)
@@ -82,6 +85,7 @@ def test_e2e_repo_transaction_update(repo: Repository):
         assert txn.size("urn:graph:a2") == 1
 
 
+@pytest.mark.testcontainer
 def test_e2e_repo_transaction_get(repo: Repository):
     path = str(Path(__file__).parent.parent / "data/quads-1.nq")
     repo.overwrite(path)
