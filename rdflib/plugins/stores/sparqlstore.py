@@ -47,6 +47,12 @@ if TYPE_CHECKING:
     from rdflib.query import Result, ResultRow
     from .sparqlconnector import SUPPORTED_FORMATS, SUPPORTED_METHODS
 
+from pyparsing.core import ZeroOrMore
+
+from rdflib.plugins.sparql.algebra import translateAlgebra, translateQuery
+from rdflib.plugins.sparql.parser import DataBlockValue, parseQuery
+from rdflib.plugins.sparql.parserutils import CompValue
+
 from .sparqlconnector import SPARQLConnector
 
 # Defines some SPARQL keywords
@@ -255,6 +261,31 @@ class SPARQLStore(SPARQLConnector, Store):
             ]
         )
 
+    def _inject_bindings(self, query: str | Query, init_bindings, query_graph: str | None = None, init_ns: Mapping[str, Any] | None = None) -> Query:
+        if not isinstance(query, str):
+            # Translate back any Query object to a string, since we need the parse tree
+            # this is superfluous if we can do the operations on the algebra
+            query = translateAlgebra(query)
+
+        # inject the bindings on the algebra
+        v = list(init_bindings)
+
+        parse_tree = parseQuery(query)
+        inline_data = CompValue(
+            "InlineData",
+            var=[Variable(x) for x in v],
+            value=[
+                # This string parsing is also not elegant, but I could not figure out, how to create the ParseResults by hand
+                ZeroOrMore(DataBlockValue).parseString(
+                    " ".join(self.node_to_sparql(init_bindings[x]) for x in v)
+                )
+            ],
+        )
+        parse_tree[1]["where"]["part"].append(inline_data)
+
+        # finally translate the parse tree to a propper Query object with algebra to be able to call translateAlgebra on it
+        return translateQuery(parse_tree, query_graph, init_ns)
+
     # type error: Signature of "query" incompatible with supertype "SPARQLConnector"
     # type error: Signature of "query" incompatible with supertype "Store"
     def query(  # type: ignore[override]
@@ -266,21 +297,17 @@ class SPARQLStore(SPARQLConnector, Store):
         DEBUG: bool = False,  # noqa: N803
     ) -> Result:
         self.debug = DEBUG
-        assert isinstance(query, str)
-
-        if initNs is not None and len(initNs) > 0:
-            query = self._inject_prefixes(query, initNs)
 
         if initBindings:
             if not self.sparql11:
                 raise Exception("initBindings not supported for SPARQL 1.0 Endpoints.")
-            v = list(initBindings)
+            query = self._inject_bindings(query, initBindings, queryGraph, initNs)
+        elif initNs is not None and len(initNs) > 0:
+            query = self._inject_prefixes(query, initNs)
 
-            # VALUES was added to SPARQL 1.1 on 2012/07/24
-            query += "\nVALUES ( %s )\n{ ( %s ) }\n" % (
-                " ".join("?" + str(x) for x in v),
-                " ".join(self.node_to_sparql(initBindings[x]) for x in v),
-            )
+        if not isinstance(query, str):
+            # make sure we finally have a string since the sparql connector only operates on strings
+            query = translateAlgebra(query)
 
         return self._query(
             query, default_graph=queryGraph if self._is_contextual(queryGraph) else None
