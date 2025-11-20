@@ -1,7 +1,7 @@
 """Serializer plugin interface.
 
 The RDF serialization plugins used during
-[RDFlibs common serialization of a graph][rdflib.graph.Graph.serialize]
+[RDFlib's common serialization of a graph][rdflib.graph.Graph.serialize]
 is described in this module.
 
 TODO: info for how to write a serializer that can plugin to rdflib.
