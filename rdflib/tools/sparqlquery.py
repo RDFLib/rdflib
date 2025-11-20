@@ -221,12 +221,10 @@ def parse_args():
         "Also prints information about given format.",
     )
     parser.add_argument(
-        "-u",
-        "--username", type=str, help="Username used during authentication."
+        "-u", "--username", type=str, help="Username used during authentication."
     )
     parser.add_argument(
-        "-p",
-        "--password", type=str, help="Password used during authentication."
+        "-p", "--password", type=str, help="Password used during authentication."
     )
     parser.add_argument(
         "-rs",
