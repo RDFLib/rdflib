@@ -1,4 +1,4 @@
-[Eclipse RDF4J](https://rdf4j.org/) is an open-source Java framework for working with RDF. Out of the box, it supports running database servers and allows clients to interact with them through an HTTP protocol known as the RDF4J REST API. This API fully supports all SPARQL 1.1 W3C Recommendations and also provides additional operations for managing RDF4J concepts such as repositories and transactions. For more details about the RDF4J REST API and its capabilities, see the [official documentation](https://rdf4j.org/documentation/reference/rest-api/).
+[Eclipse RDF4J](https://rdf4j.org/) is an open-source Java framework for working with RDF. Out of the box, it supports running RDF database servers and allows clients to interact with these servers through an HTTP protocol known as the RDF4J REST API. This API fully supports all SPARQL 1.1 W3C Recommendations and also provides additional operations for managing RDF4J concepts such as repositories and transactions. For more details about the RDF4J REST API and its capabilities, see the [official documentation](https://rdf4j.org/documentation/reference/rest-api/).
 
 RDFLib provides two options to interface with the RDF4J REST API:
 
@@ -17,11 +17,11 @@ pip install rdflib[rdf4j]
 
 ## RDF4J Store
 
-An RDF4J Store connects to a single RDF4J repository. If you need to work with multiple repositories, you can create multiple Store instances. The RDF4J Store exposes only the subset of repository operations that integrate cleanly with RDFLib’s Graph and Dataset interfaces. If you need to perform additional operations such as managing repositories, you should use the RDF4J Client instead.
+An RDF4J Store connects to a single RDF4J repository. If you need to work with multiple repositories, you can create multiple Store instances. The RDF4J Store exposes only the subset of repository operations that map directly with RDFLib’s Graph and Dataset interfaces. If you need to perform additional operations such as managing repositories, you should use the RDF4J Client instead.
 
 ### Connecting to an existing repository
 
-To get started, import the RDF4J Store class, create an instance of it, and pass it to the store parameter when creating a [`Graph`][rdflib.Graph] or [`Dataset`][rdflib.Dataset].
+To get started, import the RDF4J Store class, create an instance of it, and pass it as the store parameter when creating a [`Graph`][rdflib.Graph] or [`Dataset`][rdflib.Dataset].
 
 The following example connects to a local RDF4J server running on port 7200 and accesses an existing repository with the identifier `my-repository`.
 
@@ -33,19 +33,19 @@ from rdflib.plugins.stores.rdf4j import RDF4JStore
 store = RDF4JStore(
     base_url="http://localhost:7200/",
     repository_id="my-repository",
-    auth=("admin", "admin"),
+    auth=("username", "password"),
 )
 ```
 
 ### Creating a new repository
 
-If the repository does not exist, an exception will be raised. To create the repository, set the `create` parameter to `True`. This will create the repository using RDF4J’s default configuration settings and then connect to it.
+If the repository does not exist (and the `create` parameter is set to `False`), an exception will be raised. To create the repository, set the `create` parameter to `True`. This will create the repository using RDF4J’s default configuration settings and then connect to it.
 
 ```python
 store = RDF4JStore(
     base_url="http://localhost:7200/",
     repository_id="my-repository",
-    auth=("admin", "admin"),
+    auth=("username", "password"),
     create=True,
 )
 ```
@@ -58,7 +58,7 @@ See the RDF4J documentation for more information on [Repository and SAIL Configu
 store = RDF4JStore(
     base_url="http://localhost:7200/",
     repository_id="my-repository",
-    auth=("admin", "admin"),
+    auth=("username", "password"),
     configuration=configuration,
     create=True,
 )
@@ -85,13 +85,15 @@ ds = Dataset(store=store)
 ds.namespace_manager = NamespaceManager(ds, "none")
 ```
 
+See [`NamespaceManager`][rdflib.namespace.NamespaceManager] for more namespace binding options.
+
 ## RDF4J Client
 
 This section covers examples of how to use the RDF4J Client. For the full reference documentation of the RDF4J Client, see [rdflib.contrib.rdf4j.client](/apidocs/rdflib.contrib.rdf4j.client).
 
 ### Creating a client instance
 
-The `RDF4JClient` class is the main entry point for interacting with the RDF4J REST API. To create an instance, pass the base URL of the RDF4J server to the constructor and optionally a tuple containing the username and password for basic authentication.
+The `RDF4JClient` class is the main entry point for interacting with the RDF4J REST API. To create an instance, pass the base URL of the RDF4J server to the constructor and optionally a username and password tuple for basic authentication.
 
 The preferred way to create a client instance is to use Python's context manager syntax (`with` statement). When using this syntax, the client will automatically close when the block is exited.
 
@@ -119,9 +121,9 @@ finally:
 
 ### HTTP client configuration
 
-The RDF4J Client uses the [httpx](https://www.python-httpx.org/) library for making HTTP requests. When creating an RDF4J client instance, you can pass additional keyword arguments that will be passed to the underlying [`httpx.Client`](https://www.python-httpx.org/api/#client) instance.
+The RDF4J Client uses the [httpx](https://www.python-httpx.org/) library for making HTTP requests. When creating an RDF4J client instance, any additional keyword arguments to [`RDF4JClient`][rdflib.contrib.rdf4j.client.RDF4JClient] will be passed on to the underlying [`httpx.Client`](https://www.python-httpx.org/api/#client) instance.
 
-For example, setting additional headers can be done as follows:
+For example, setting additional headers (such as an Authorization header) for all requests can be done as follows:
 
 ```python
 token = "secret"
@@ -141,7 +143,7 @@ client.http_client
 
 ### The repository manager
 
-The RDF4J Client provides a [`RepositoryManager`][rdflib.contrib.rdf4j.client.RepositoryManager] class that allows you to manage RDF4J repositories. The repository manager is responsible for creating, deleting, listing, and retrieving [`Repository`][rdflib.contrib.rdf4j.client.Repository] instances.
+The RDF4J Client provides a [`RepositoryManager`][rdflib.contrib.rdf4j.client.RepositoryManager] class that allows you to manage RDF4J repositories. It does not represent a repository itself; instead, it is responsible for creating, deleting, listing, and retrieving [`Repository`][rdflib.contrib.rdf4j.client.Repository] instances.
 
 You can access the repository manager on the RDF4J client instance using the [`repositories`][rdflib.contrib.rdf4j.client.RDF4JClient.repositories] property.
 
@@ -207,7 +209,7 @@ repo = client.repositories.get("my-repository")
 To get the number of statements in a repository, call the [`size`][rdflib.contrib.rdf4j.client.Repository.size] method.
 
 ```python
-repo.size
+repo.size()
 ```
 
 #### Repository data
@@ -244,7 +246,7 @@ The following example demonstrates the [`delete`][rdflib.contrib.rdf4j.client.Re
 repo.delete(subject=URIRef("https://example.com/Bob"))
 ```
 
-The following example demonstrates the [`get`][rdflib.contrib.rdf4j.client.Repository.get] method, which returns a new in-memory [`Dataset`][rdflib.Dataset] object containing all of the statements relating to `https://example.com/Bob`.
+The following example demonstrates the [`get`][rdflib.contrib.rdf4j.client.Repository.get] method, which returns a new in-memory [`Dataset`][rdflib.Dataset] object containing all the statements with `https://example.com/Bob` as the subject.
 
 ```python
 ds = repo.get(subject=URIRef("https://example.com/Bob"))
@@ -252,19 +254,36 @@ ds = repo.get(subject=URIRef("https://example.com/Bob"))
 
 !!! note
 
-    Methods such as these that allow a `graph_name` parameter can be used to restrict the query pattern to a specific graph. `None` is used as a wildcard to indicate that the pattern should match all graphs. To restrict to the default graph, use the special [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID].
+    Methods that accept a `graph_name` parameter can restrict the operation to a specific graph. Use `None` to match all graphs, or [`DATASET_DEFAULT_GRAPH_ID`][rdflib.graph.DATASET_DEFAULT_GRAPH_ID] to match only the default graph.
+
+To retrieve a list of graph names in the repository, use the [`graph_names`][rdflib.contrib.rdf4j.client.Repository.graph_names] method. This returns a list of [`IdentifiedNode`][rdflib.term.IdentifiedNode].
+
+```python
+repo.graph_names()
+```
 
 #### Querying the repository with SPARQL
 
 SPARQL queries can be executed against a repository using the [`query`][rdflib.contrib.rdf4j.client.Repository.query] method.
 
-RDF4J supports additional query parameters on top of standard SPARQL. To include additional query parameters, pass them as optional keyword arguments to the method. See [RDF4J REST API - Execute SPARQL query](https://rdf4j.org/documentation/reference/rest-api/#tag/SPARQL/paths/~1repositories~1%7BrepositoryID%7D/get) for the list of supported query parameters. 
+The return object is a [`Result`][rdflib.query.Result]. You can use [`Result.type`][rdflib.query.Result.type] to determine the type of the result. For example, an ASK query will provide a boolean result in [`Result.askAnswer`][rdflib.query.Result.askAnswer], a DESCRIBE or CONSTRUCT query will provide a [`Graph`][rdflib.Graph] result in [`Result.graph`][rdflib.query.Result.graph], and a SELECT query will provide results in [`Result.bindings`][rdflib.query.Result.bindings].
 
 ```python
 query = "SELECT * WHERE { ?s ?p ?o } LIMIT 10"
-kwargs = {}
-result = repo.query(query, **kwargs)
+result = repo.query(query)
+if result.type == "ASK":
+    print(result.askAnswer)
+elif result.type in ("CONSTRUCT", "DESCRIBE"):
+    print(result.graph)
+else:
+    # SELECT
+    for row in result.bindings:
+        print(row["s"])
 ```
+
+!!! note
+
+    RDF4J supports optional query parameters that further restrict the context of the SPARQL query. To include these query parameters, pass in keyword arguments to the [`query`][rdflib.contrib.rdf4j.client.Repository.query] method. See [RDF4J REST API - Execute SPARQL query](https://rdf4j.org/documentation/reference/rest-api/#tag/SPARQL/paths/~1repositories~1%7BrepositoryID%7D/get) for the list of supported query parameters.
 
 #### Updating the repository with SPARQL Update
 
@@ -297,7 +316,7 @@ To clear a graph, use the [`clear`][rdflib.contrib.rdf4j.client.GraphStoreManage
 
 !!! note
 
-    Once a named graph is cleared, it will be deleted from the repository. RDF4J does not support empty graphs.
+    RDF4J does not support empty named graphs. Once a graph is cleared, it will be deleted from the repository and will not appear in the list of [`graph_names`][rdflib.contrib.rdf4j.client.Repository.graph_names].
 
 ```python
 repo.graphs.clear(graph_name="my-graph")
@@ -335,7 +354,7 @@ with repo.transaction() as txn:
 
 !!! note
 
-    The methods available on the [`Transaction`][rdflib.contrib.rdf4j.client.Transaction] object vary slightly from the methods available on the [`Repository`][rdflib.contrib.rdf4j.client.Repository] object. This is due to slight variations between the two endpoint types in the RDF4J REST API.
+    The methods available on the [`Transaction`][rdflib.contrib.rdf4j.client.Transaction] object vary slightly from the methods available on the [`Repository`][rdflib.contrib.rdf4j.client.Repository] object. This is due to slight variations between the two endpoints (repositories and transactions) in the RDF4J REST API.
 
 For the full reference documentation of the Transaction class, see [`Transaction`][rdflib.contrib.rdf4j.client.Transaction].
 
@@ -368,7 +387,11 @@ repo.namespaces.remove("schema")
 To list all namespace prefixes, use the [`list`][rdflib.contrib.rdf4j.client.RDF4JNamespaceManager.list] method. This returns a list of [`NamespaceListingResult`][rdflib.contrib.rdf4j.client.NamespaceListingResult]
 
 ```python
+import dataclasses
+
 namespace_prefixes = repo.namespaces.list()
+for prefix, namespace in [dataclasses.astuple(np) for np in namespace_prefixes]:
+    print(prefix, namespace) 
 ```
 
 To clear all namespace prefixes, use the [`clear`][rdflib.contrib.rdf4j.client.RDF4JNamespaceManager.clear] method.
