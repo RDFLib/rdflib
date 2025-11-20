@@ -283,20 +283,25 @@ class Result:
         """
         Serialize the query result.
 
-        The `format` argument determines the Serializer class to use.
-
-        - csv: [`CSVResultSerializer`][rdflib.plugins.sparql.results.csvresults.CSVResultSerializer]
-        - json: [`JSONResultSerializer`][rdflib.plugins.sparql.results.jsonresults.JSONResultSerializer]
-        - txt: [`TXTResultSerializer`][rdflib.plugins.sparql.results.txtresults.TXTResultSerializer]
-        - xml: [`XMLResultSerializer`][rdflib.plugins.sparql.results.xmlresults.XMLResultSerializer]
 
         Args:
-            destination: Path of file output or BufferedIOBase object to write the output to.
+            destination: Path of file output or BufferedIOBase object
+                to write the output to. If `None` this function
+                will return the output as  `bytes`
             encoding: Encoding of output.
-            format: One of ['csv', 'json', 'txt', xml']
+            format: The format used for serialization.
+                See [sparql.results module][rdflib.plugins.sparql.results]
+                for all builtin SPARQL result serialization.
+                Further serializer can be loaded [as plugin][rdflib.plugin].
+                Some example formats are
+                [csv][rdflib.plugins.sparql.results.csvresults.CSVResultSerializer],
+                [json][rdflib.plugins.sparql.results.jsonresults.JSONResultSerializer],
+                [txt][rdflib.plugins.sparql.results.txtresults.TXTResultSerializer]
+                or
+                [xml][rdflib.plugins.sparql.results.xmlresults.XMLResultSerializer]
 
         Returns:
-            bytes
+            Serialized result, when destination is not given.
         """
         if self.type in ("CONSTRUCT", "DESCRIBE"):
             # type error: Item "None" of "Optional[Graph]" has no attribute "serialize"
