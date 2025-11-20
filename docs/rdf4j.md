@@ -89,7 +89,7 @@ See [`NamespaceManager`][rdflib.namespace.NamespaceManager] for more namespace b
 
 ## RDF4J Client
 
-This section covers examples of how to use the RDF4J Client. For the full reference documentation of the RDF4J Client, see [rdflib.contrib.rdf4j.client](/apidocs/rdflib.contrib.rdf4j.client).
+This section covers examples of how to use the RDF4J Client. For the full reference documentation of the RDF4J Client, see [rdflib.contrib.rdf4j.client](apidocs/rdflib.contrib.rdf4j.client.md).
 
 ### Creating a client instance
 
