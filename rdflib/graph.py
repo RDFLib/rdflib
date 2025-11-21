@@ -476,30 +476,40 @@ class Graph(Node):
 
         ```
 
-    !!! info "Graph stores"
-        The constructor accepts one argument, the "store" that will be used to store the
-        graph data with the default being the [`Memory`][rdflib.plugins.stores.memory.Memory]
-        (in memory) Store. Other Stores that persist content to disk using various file
-        databases or Stores that use remote servers (SPARQL systems) are supported. See
-        the `rdflib.plugins.stores` package for Stores currently shipped with RDFLib.
-        Other Stores not shipped with RDFLib can be added, such as
-        [HDT](https://github.com/rdflib/rdflib-hdt/).
 
-        Stores can be context-aware or unaware. Unaware stores take up
-        (some) less space but cannot support features that require
-        context, such as true merging/demerging of sub-graphs and
-        provenance.
+    Args:
+        store: The constructor accepts one argument, the "store" that will be used to store the
+            graph data with the default being the [`Memory`][rdflib.plugins.stores.memory.Memory]
+            (in memory) Store. Other Stores that persist content to disk using various file
+            databases or Stores that use remote servers (SPARQL systems) are supported.
+            All [builtin storetypes][rdflib.plugins.stores] can be accessed via
+            their registered names.
+            Other Stores not shipped with RDFLib can be added as plugins, such as
+            [HDT](https://github.com/rdflib/rdflib-hdt/).
+            Registration of external plugins
+            is described in [`rdflib.plugin`][rdflib.plugin].
 
-        Even if used with a context-aware store, Graph will only expose the quads which
-        belong to the default graph. To access the rest of the data the
-        `Dataset` class can be used instead.
+            Stores can be context-aware or unaware. Unaware stores take up
+            (some) less space but cannot support features that require
+            context, such as true merging/demerging of sub-graphs and
+            provenance.
 
-        The Graph constructor can take an identifier which identifies the Graph
-        by name. If none is given, the graph is assigned a BNode for its
-        identifier.
+            Even if used with a context-aware store, Graph will only expose the quads which
+            belong to the default graph. To access the rest of the data the
+            `Dataset` class can be used instead.
 
-        For more on Named Graphs, see the RDFLib `Dataset` class and the TriG Specification,
-        <https://www.w3.org/TR/trig/>.
+            The Graph constructor can take an identifier which identifies the Graph
+            by name. If none is given, the graph is assigned a BNode for its
+            identifier.
+
+            For more on Named Graphs, see the RDFLib `Dataset` class and the TriG Specification,
+            <https://www.w3.org/TR/trig/>.
+        identifier: identifier of the graph itself
+        namespace_manager: Used namespace manager.
+            Create with bind_namespaces if `None`.
+        base: Base used for [URIs][rdflib.term.URIRef]
+        bind_namespaces: Used bind_namespaces for namespace_manager
+            Is only used, when no namespace_manager is provided.
     """
 
     context_aware: bool
@@ -1450,9 +1460,11 @@ class Graph(Node):
                 string or pathlib.PurePath object, or it can be an IO[bytes] like object.
                 If this parameter is not supplied the serialized graph will be returned.
             format: The format that the output should be written in. This value
-                references a Serializer plugin. Format support can be extended with plugins,
-                but "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig", "nquads",
-                "json-ld" and "hext" are built in. Defaults to "turtle".
+                references a Serializer plugin.
+                Format support is managed with [plugins][rdflib.plugin].
+                Defaults to "turtle" and some other formats are builtin,
+                like "xml" and "trix".
+                See also [serialize module][rdflib.plugins.parsers].
             base: The base IRI for formats that support it. For the turtle format this
                 will be used as the @base directive.
             encoding: Encoding of output.
@@ -1539,9 +1551,10 @@ class Graph(Node):
                 RFC 3986 <https://datatracker.ietf.org/doc/html/rfc3986#section-5.1.4>`_,
                 given the source document does not define a base URI.
             format: Used if format can not be determined from source, e.g.
-                file extension or Media Type. Defaults to text/turtle. Format
-                support can be extended with plugins, but "xml", "n3" (use for
-                turtle), "nt" & "trix" are built in.
+                file extension or Media Type. Format support is managed
+                with [plugins][rdflib.plugin].
+                Available formats are e.g. "turle", "xml", "n3", "nt" and "trix"
+                or see [parser module][rdflib.plugins.parsers].
             location: A string indicating the relative or absolute URL of the
                 source. `Graph`'s absolutize method is used if a relative location
                 is specified.
