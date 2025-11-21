@@ -1,5 +1,10 @@
-"""
-This serialiser will output an RDF Graph as a JSON-LD formatted document. See http://json-ld.org/
+"""This serialiser will output an RDF Graph as a JSON-LD formatted document.
+
+Implements serialization for [JSON-LD version 1.1](https://www.w3.org/TR/json-ld11/).
+For more information, see [json-ld.org](http://json-ld.org/).
+Additional `args` support by [`Graph.serialize`][rdflib.graph.Graph.serialize]
+are described by
+[`JsonLDSerializer.serialize`][rdflib.plugins.serializers.jsonld.JsonLDSerializer.serialize].
 
 Example:
     ```python
@@ -37,7 +42,7 @@ Example:
 from __future__ import annotations
 
 import warnings
-from typing import IO, Any, Dict, List, Optional
+from typing import IO, Any, Dict, List, Optional, Tuple
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph, _ObjectType
 from rdflib.namespace import RDF, XSD
@@ -52,6 +57,7 @@ __all__ = ["JsonLDSerializer", "from_rdf"]
 
 
 PLAIN_LITERAL_TYPES = {XSD.boolean, XSD.integer, XSD.double, XSD.string}
+"""List of rdf types, which correspond to a native JSON type."""
 
 
 class JsonLDSerializer(Serializer):
@@ -64,29 +70,55 @@ class JsonLDSerializer(Serializer):
         self,
         stream: IO[bytes],
         base: Optional[str] = None,
-        encoding: Optional[str] = None,
+        encoding: Optional[str] = "utf-8",
+        context: Optional[Dict[str, str] | Context] = None,
+        use_native_types: bool = False,
+        use_rdf_type: bool = False,
+        auto_compact: bool = False,
+        indent: int = 2,
+        separators: Optional[Tuple[str, str]] = (",", ": "),
+        sort_keys: bool = True,
+        ensure_ascii: bool = False,
         **kwargs: Any,
     ) -> None:
-        # TODO: docstring w. args and return value
-        encoding = encoding or "utf-8"
-        if encoding not in ("utf-8", "utf-16"):
+        """Serialize data from connected store as JSON-LD and print it to stream.
+
+        Conforms to JSON-LD version 1.1
+
+        Args:
+            stream: Print data to this stream.
+            base: Base used for relative IRIs.
+                See [w3.org](https://www.w3.org/TR/json-ld11/#base-iri)
+                for detailed description.
+            encoding: Encoding used for stream. Use only "utf-8" or "utf-16",
+                because JSON should be encoded as unicode.
+            context: context data
+            use_native_types: Use JSON's native types instead of rdf types.
+                Transforms all Literal with one of the types
+                from [`PLAIN_LITERAL_TYPES`][rdflib.plugins.serializers.jsonld.PLAIN_LITERAL_TYPES]
+                to a native type from JSON.
+                If `context` is given as `Context`, will always be `true`, when
+                `context.active`.
+            use_rdf_type: Don't translate triples `(?x rdf:type ?class)`
+                to JSON's `@type` key.
+            auto_compact: Generate context if not given.
+            indent: Indent used for JSON document
+            separators: Separators used for JSON document.
+                Same as separators used in `json.dumps`.
+            sort_keys: Sort dictionaries by keys.
+            ensure_ascii: Escape non-ASCII characters in JSON strings.
+                Doesnt work with `orjson`.
+        """
+        if encoding is None:
+            encoding = "utf-8"
+        elif encoding not in ("utf-8", "utf-16"):
             warnings.warn(
-                "JSON should be encoded as unicode. " f"Given encoding was: {encoding}"
+                f"JSON should be encoded as unicode. Given encoding was: {encoding}"
             )
-
-        context_data = kwargs.get("context")
-        use_native_types = (kwargs.get("use_native_types", False),)
-        use_rdf_type = kwargs.get("use_rdf_type", False)
-        auto_compact = kwargs.get("auto_compact", False)
-
-        indent = kwargs.get("indent", 2)
-        separators = kwargs.get("separators", (",", ": "))
-        sort_keys = kwargs.get("sort_keys", True)
-        ensure_ascii = kwargs.get("ensure_ascii", False)
 
         obj = from_rdf(
             self.store,
-            context_data,
+            context,
             base,
             use_native_types,
             use_rdf_type,
@@ -114,12 +146,12 @@ class JsonLDSerializer(Serializer):
 
 
 def from_rdf(
-    graph,
-    context_data=None,
-    base=None,
-    use_native_types=False,
-    use_rdf_type=False,
-    auto_compact=False,
+    graph: Graph,
+    context_data: Optional[Dict[str, str] | Context] = None,
+    base: Optional[str] = None,
+    use_native_types: bool = False,
+    use_rdf_type: bool = False,
+    auto_compact: bool = False,
     startnode=None,
     index=False,
 ):
