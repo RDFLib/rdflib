@@ -6,6 +6,8 @@ We've also added a new CLI tool, `sq` (the script is [rdflib/tools/sparqlquery.p
 
 Other enhancements include documentation improvements that fix crosslinking issues between modules, and new documentation content for RDFLib plugins, parsers, and serializers.
 
+For RDFLib developers, this release introduces [httpx](https://www.python-httpx.org/) as an optional dependency to support the new RDF4J functionality. The RDF4J test suite now also uses [testcontainers](https://testcontainers-python.readthedocs.io/en/latest/) on Linux environments running Python 3.9.2 or later.
+
 Pull requests merged:
 
 - Documentation rework that plugins usage and modules are crosslinked by @WhiteGobo in [#3320](https://github.com/RDFLib/rdflib/pull/3320)
