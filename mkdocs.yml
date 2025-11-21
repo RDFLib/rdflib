@@ -27,6 +27,9 @@ nav:
       - Merging graphs: merging.md
       - Security considerations: security_considerations.md
 
+    - Extras:
+        - RDF4J: rdf4j.md
+
     - Changes:
       - Changelog: changelog.md
       - Upgrading v6 to 7: upgrade6to7.md
