@@ -1,3 +1,20 @@
+## 2025-11-21 RELEASE 7.5.0
+
+This release introduces a new major feature to RDFLib: RDF4J Store integration and RDF4J Client. Users can use this to connect to RDF4J database servers through RDFLib's Graph and Dataset classes, as well as manage repositories and transactions using the RDF4J Client. A comprehensive user guide for the new RDF4J features is available under the extras section of the [RDFLib documentation](https://rdflib.readthedocs.io/en/stable/).
+
+We've also added a new CLI tool, `sq` (the script is [rdflib/tools/sparqlquery.py](rdflib/tools/sparqlquery.py)), for executing SPARQL queries against local files or remote SPARQL endpoints with custom serialization. This provides a convenient way to query RDF data straight from the command line.
+
+Other enhancements include documentation improvements that fix crosslinking issues between modules, and new documentation content for RDFLib plugins, parsers, and serializers.
+
+Pull requests merged:
+
+- Documentation rework that plugins usage and modules are crosslinked by @WhiteGobo in [#3320](https://github.com/RDFLib/rdflib/pull/3320)
+- formatting: black conforming sparqlquery.py by @WhiteGobo in [#3318](https://github.com/RDFLib/rdflib/pull/3318)
+- chore: delete merged_prs.json by @edmondchuc in [#3313](https://github.com/RDFLib/rdflib/pull/3313)
+- feat: RDF4J Client by @edmondchuc in [#3306](https://github.com/RDFLib/rdflib/pull/3306)
+- test: fix dbpedia webtests by @edmondchuc in [#3304](https://github.com/RDFLib/rdflib/pull/3304)
+- Created script sparqlquery. by @WhiteGobo in [#3290](https://github.com/RDFLib/rdflib/pull/3290)
+
 ## 2025-10-30 RELEASE 7.4.0
 
 This release addresses a couple of bugs and improves the testing matrix by adding python 3.12, 3.13 and 3.14 to the test matrix.
