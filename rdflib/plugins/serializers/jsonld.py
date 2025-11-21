@@ -2,7 +2,7 @@
 
 Implements serialization for [JSON-LD version 1.1](https://www.w3.org/TR/json-ld11/).
 For more information, see [json-ld.org](http://json-ld.org/).
-Additional `args` support by [`Graph.serialize`][rdflib.graph.Graph.serialize]
+Additional `args` supported by [`Graph.serialize`][rdflib.graph.Graph.serialize]
 are described by
 [`JsonLDSerializer.serialize`][rdflib.plugins.serializers.jsonld.JsonLDSerializer.serialize].
 
