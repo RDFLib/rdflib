@@ -224,10 +224,13 @@ class SPARQLConnector:
         else:
             return ", ".join(rdf_mimetype_map)
 
-    def __get_query_type__(self, query: str) -> str:
-        q = prepareQuery(query)
-        algebra = getattr(q, "algebra", None)
-        name = getattr(algebra, "name", None) # e.g. 'SelectQuery', 'ConstructQuery', 'DescribeQuery', 'AskQuery'
-        return name
+    def __get_query_type__(self, query: str) -> str | None:
+        try:
+            q = prepareQuery(query)
+            algebra = getattr(q, "algebra", None)
+            name = getattr(algebra, "name", None) 
+            return name # e.g. 'SelectQuery', 'ConstructQuery', 'DescribeQuery', 'AskQuery'
+        except Exception:
+            log.debug(f"cannot parse query: {query}")
 
 __all__ = ["SPARQLConnector", "SPARQLConnectorException"]
