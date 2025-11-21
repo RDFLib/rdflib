@@ -45,6 +45,7 @@ Help with maintenance of all of the RDFLib family of packages is always welcome 
 ## Versions & Releases
 
 * `main` branch in this repository is the current unstable release - version 8 alpha
+* `7.5.0` RDF4J Store integration, RDF4J Client, and other improvements. See changelog for details
 * `7.4.0` a few small fixes, add test matrix for active python versions, and move v7 documentation to MkDocs
 * `7.3.0` many fixes and usability improvements, particularly for the Dataset class. See changelog for details
 * `7.2.1` tiny clean up release, relaxes Python version requirement
