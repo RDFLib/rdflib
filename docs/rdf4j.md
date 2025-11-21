@@ -135,7 +135,7 @@ with RDF4JClient("http://localhost:7200/", headers=headers) as client:
     ...
 ```
 
-The [`httpx.Client`](https://www.python-httpx.org/api/#client) instance is available on the RDF4j client's [`http_client`][rdflib.contrib.rdf4j.client.RDF4JClient.http_client] property.
+The [`httpx.Client`](https://www.python-httpx.org/api/#client) instance is available on the RDF4J client's [`http_client`][rdflib.contrib.rdf4j.client.RDF4JClient.http_client] property.
 
 ```python
 client.http_client
