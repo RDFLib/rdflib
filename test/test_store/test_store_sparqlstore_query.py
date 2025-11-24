@@ -127,3 +127,5 @@ def test_query_construct_format(
     logging.debug("request = %s", request)
     logging.debug("request.headers = %s", request.headers.as_string())
     assert request.path_query["query"][0] == query
+    assert "application/rdf+xml" in request.headers["Accept"]
+    assert "application/sparql-results+xml" in request.headers["Accept"]
