@@ -918,28 +918,28 @@ cache = ["platformdirs"]
 
 [[package]]
 name = "mkdocs-material"
-version = "9.6.23"
+version = "9.7.0"
 description = "Documentation that simply works"
 optional = false
 python-versions = ">=3.8"
 groups = ["docs"]
 files = [
-    {file = "mkdocs_material-9.6.23-py3-none-any.whl", hash = "sha256:3bf3f1d82d269f3a14ed6897bfc3a844cc05e1dc38045386691b91d7e6945332"},
-    {file = "mkdocs_material-9.6.23.tar.gz", hash = "sha256:62ebc9cdbe90e1ae4f4e9b16a6aa5c69b93474c7b9e79ebc0b11b87f9f055e00"},
+    {file = "mkdocs_material-9.7.0-py3-none-any.whl", hash = "sha256:da2866ea53601125ff5baa8aa06404c6e07af3c5ce3d5de95e3b52b80b442887"},
+    {file = "mkdocs_material-9.7.0.tar.gz", hash = "sha256:602b359844e906ee402b7ed9640340cf8a474420d02d8891451733b6b02314ec"},
 ]
 
 [package.dependencies]
-babel = ">=2.10,<3.0"
-backrefs = ">=5.7.post1,<6.0"
-colorama = ">=0.4,<1.0"
-jinja2 = ">=3.1,<4.0"
-markdown = ">=3.2,<4.0"
-mkdocs = ">=1.6,<2.0"
-mkdocs-material-extensions = ">=1.3,<2.0"
-paginate = ">=0.5,<1.0"
-pygments = ">=2.16,<3.0"
-pymdown-extensions = ">=10.2,<11.0"
-requests = ">=2.26,<3.0"
+babel = ">=2.10"
+backrefs = ">=5.7.post1"
+colorama = ">=0.4"
+jinja2 = ">=3.1"
+markdown = ">=3.2"
+mkdocs = ">=1.6"
+mkdocs-material-extensions = ">=1.3"
+paginate = ">=0.5"
+pygments = ">=2.16"
+pymdown-extensions = ">=10.2"
+requests = ">=2.26"
 
 [package.extras]
 git = ["mkdocs-git-committers-plugin-2 (>=1.1,<3)", "mkdocs-git-revision-date-localized-plugin (>=1.2.4,<2.0)"]
