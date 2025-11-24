@@ -1248,14 +1248,14 @@ files = [
 
 [[package]]
 name = "pip-tools"
-version = "7.5.1"
+version = "7.5.2"
 description = "pip-tools keeps your pinned dependencies fresh."
 optional = false
 python-versions = ">=3.8"
 groups = ["dev"]
 files = [
-    {file = "pip_tools-7.5.1-py3-none-any.whl", hash = "sha256:f5ff803823529edc0e6e40c86b1aa7da7266fb1078093c8beea4e5b77877036a"},
-    {file = "pip_tools-7.5.1.tar.gz", hash = "sha256:a051a94794ba52df9acad2d7c9b0b09ae001617db458a543f8287fea7b89c2cf"},
+    {file = "pip_tools-7.5.2-py3-none-any.whl", hash = "sha256:2fe16db727bbe5bf28765aeb581e792e61be51fc275545ef6725374ad720a1ce"},
+    {file = "pip_tools-7.5.2.tar.gz", hash = "sha256:2d64d72da6a044da1110257d333960563d7a4743637e8617dd2610ae7b82d60f"},
 ]
 
 [package.dependencies]
@@ -1771,4 +1771,4 @@ orjson = ["orjson"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9"
-content-hash = "f5b7fc14c38cc2963b0b1b300f0661b10ef981f57962339a418ff7588f278fce"
+content-hash = "577a97e0093b6023f5d44c25aa3d7004b22873cd37c7e946e7be16c06a71b698"
