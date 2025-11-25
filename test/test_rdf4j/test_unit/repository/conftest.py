@@ -15,12 +15,13 @@ if has_httpx:
 
     from rdflib.contrib.rdf4j import RDF4JClient
     from rdflib.contrib.rdf4j.client import Repository, RepositoryManager
+    from rdflib.contrib.graphdb import GraphDBClient
 
 
-@pytest.fixture(scope="function")
-def client(monkeypatch: pytest.MonkeyPatch):
+@pytest.fixture(scope="function", params=[RDF4JClient, GraphDBClient])
+def client(monkeypatch: pytest.MonkeyPatch, request):
     monkeypatch.setattr(RDF4JClient, "protocol", 12)
-    with RDF4JClient("http://localhost/", auth=("admin", "admin")) as client:
+    with request.param("http://localhost/", auth=("admin", "admin")) as client:
         yield client
 
 
