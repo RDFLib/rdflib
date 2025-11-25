@@ -21,8 +21,8 @@ if has_httpx and has_testcontainers:
     from testcontainers.core.image import DockerImage
     from testcontainers.core.waiting_utils import wait_for_logs
 
-    from rdflib.contrib.rdf4j import RDF4JClient
     from rdflib.contrib.graphdb import GraphDBClient
+    from rdflib.contrib.rdf4j import RDF4JClient
 
     GRAPHDB_PORT = 7200
 
@@ -39,7 +39,9 @@ if has_httpx and has_testcontainers:
     @pytest.fixture(scope="function", params=[RDF4JClient, GraphDBClient])
     def client(graphdb_container: DockerContainer, request):
         port = graphdb_container.get_exposed_port(7200)
-        with request.param(f"http://localhost:{port}/", auth=("admin", "admin")) as client:
+        with request.param(
+            f"http://localhost:{port}/", auth=("admin", "admin")
+        ) as client:
             yield client
             try:
                 client.repositories.delete("test-repo")
