@@ -13,9 +13,9 @@ pytestmark = pytest.mark.skipif(
 if has_httpx:
     import httpx
 
+    from rdflib.contrib.graphdb import GraphDBClient
     from rdflib.contrib.rdf4j import RDF4JClient
     from rdflib.contrib.rdf4j.client import Repository, RepositoryManager
-    from rdflib.contrib.graphdb import GraphDBClient
 
 
 @pytest.fixture(scope="function", params=[RDF4JClient, GraphDBClient])
