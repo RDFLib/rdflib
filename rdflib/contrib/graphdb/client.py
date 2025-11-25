@@ -82,4 +82,5 @@ class RepositoryManager(rdflib.contrib.rdf4j.client.RepositoryManager):
 class GraphDBClient(RDF4JClient):
     """GraphDB Client"""
 
-    # TODO: GraphDB specific API methods.
+    # Use the GraphDB RepositoryManager class.
+    repository_manager_cls = RepositoryManager
