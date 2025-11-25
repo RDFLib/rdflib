@@ -1,3 +1,7 @@
+"""GraphDB client module."""
+
+from __future__ import annotations
+
 import httpx
 
 import rdflib.contrib.rdf4j
@@ -9,7 +13,12 @@ from rdflib.contrib.rdf4j.exceptions import (
 
 
 class Repository(rdflib.contrib.rdf4j.client.Repository):
-    """GraphDB Repository"""
+    """GraphDB Repository client.
+
+    Parameters:
+        identifier: The identifier of the repository.
+        http_client: The httpx.Client instance.
+    """
 
     def health(self, timeout: int = 5) -> bool:
         """Repository health check.
@@ -51,6 +60,21 @@ class RepositoryManager(rdflib.contrib.rdf4j.client.RepositoryManager):
     """GraphDB Repository Manager"""
 
     def get(self, repository_id: str) -> Repository:
+        """Get a repository by ID.
+
+        !!! Note
+            This performs a health check before returning the repository object.
+
+        Parameters:
+            repository_id: The identifier of the repository.
+
+        Returns:
+            Repository: The repository instance.
+
+        Raises:
+            RepositoryNotFoundError: If the repository is not found.
+            RepositoryNotHealthyError: If the repository is not healthy.
+        """
         _repo = super().get(repository_id)
         return Repository(_repo.identifier, _repo.http_client)
 
