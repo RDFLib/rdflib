@@ -19,7 +19,6 @@ if has_httpx and has_testcontainers:
     from testcontainers.core.waiting_utils import wait_for_logs
 
     from rdflib.contrib.graphdb import GraphDBClient
-    from rdflib.contrib.rdf4j import RDF4JClient
 
     GRAPHDB_PORT = 7200
 
@@ -40,7 +39,8 @@ if has_httpx and has_testcontainers:
             f"http://localhost:{port}/", auth=("admin", "admin")
         ) as client:
             config_path = (
-                pathlib.Path(__file__).parent / "repo-configs/test-graphdb-repo-config.ttl"
+                pathlib.Path(__file__).parent
+                / "repo-configs/test-graphdb-repo-config.ttl"
             )
             with open(config_path) as file:
                 config = file.read()

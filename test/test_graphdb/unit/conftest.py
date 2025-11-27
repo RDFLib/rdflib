@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from unittest.mock import Mock
-
 import pytest
 
 from rdflib.contrib.rdf4j import has_httpx
@@ -11,10 +9,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 if has_httpx:
-    import httpx
-
     from rdflib.contrib.graphdb import GraphDBClient
-    from rdflib.contrib.graphdb.client import Repository, RepositoryManager
 
 
 @pytest.fixture(scope="function")

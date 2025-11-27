@@ -88,8 +88,8 @@ class RepositoryManager(rdflib.contrib.rdf4j.client.RepositoryManager):
         return Repository(_repo.identifier, _repo.http_client)
 
 
-class GraphDB:
-    """GraphDB REST API client."""
+class RepositoryManagement:
+    """GraphDB Repository Management client."""
 
     def __init__(self, http_client: httpx.Client):
         self._http_client = http_client
@@ -112,6 +112,44 @@ class GraphDB:
             raise ResponseFormatError("Failed to parse GraphDB response.") from err
 
 
+class TalkToYourGraph:
+    """GraphDB Talk to Your Graph client."""
+
+    def __init__(self, http_client: httpx.Client):
+        self._http_client = http_client
+
+    @property
+    def http_client(self):
+        return self._http_client
+
+    def query(self, agent_id: str, tool_type: str, query: str):
+        """Call agent query method/assistant tool.
+
+        Parameters:
+            agent_id: The agent identifier.
+            tool_type: The tool type.
+            query: The query for the tool.
+        """
+        headers = {"Content-Type": "text/plain", "Accept": "text/plain"}
+        response = self.http_client.post(
+            f"/rest/ttyg/agents/{agent_id}/{tool_type}", headers=headers, content=query
+        )
+        response.raise_for_status()
+        return response.text
+
+
+class GraphDB:
+    """GraphDB REST API client."""
+
+    def __init__(self, http_client: httpx.Client):
+        self._http_client = http_client
+        self._repos: RepositoryManagement | None = None
+
+    @property
+    def http_client(self):
+        return self._http_client
+
+
 class GraphDBClient(RDF4JClient):
     """GraphDB Client"""
 
@@ -126,10 +164,17 @@ class GraphDBClient(RDF4JClient):
         **kwargs: Any,
     ):
         super().__init__(base_url, auth, timeout, **kwargs)
-        self._graphdb: GraphDB | None = None
+        self._repos: RepositoryManagement | None = None
+        self._ttyg: TalkToYourGraph | None = None
 
     @property
-    def graphdb(self):
-        if self._graphdb is None:
-            self._graphdb = GraphDB(self.http_client)
-        return self._graphdb
+    def repos(self):
+        if self._repos is None:
+            self._repos = RepositoryManagement(self.http_client)
+        return self._repos
+
+    @property
+    def ttyg(self):
+        if self._ttyg is None:
+            self._ttyg = TalkToYourGraph(self.http_client)
+        return self._ttyg

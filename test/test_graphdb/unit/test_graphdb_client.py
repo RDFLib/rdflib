@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from rdflib.contrib.graphdb import GraphDBClient
-from rdflib.contrib.graphdb.client import GraphDB, RepositoryManager
+from rdflib.contrib.graphdb.client import RepositoryManagement, RepositoryManager
 
 
 def test_client_has_graphdb_repository_manager(client: GraphDBClient):
@@ -9,4 +9,4 @@ def test_client_has_graphdb_repository_manager(client: GraphDBClient):
 
 
 def test_client_has_graphdb_rest_client(client: GraphDBClient):
-    assert isinstance(client.graphdb, GraphDB)
+    assert isinstance(client.repos, RepositoryManagement)
