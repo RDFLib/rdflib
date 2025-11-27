@@ -16,9 +16,9 @@ from rdflib.contrib.rdf4j.exceptions import (
     RDFLibParserError,
     RepositoryAlreadyExistsError,
     RepositoryError,
-    RepositoryFormatError,
     RepositoryNotFoundError,
     RepositoryNotHealthyError,
+    RepositoryResponseFormatError,
     TransactionClosedError,
     TransactionCommitError,
     TransactionPingError,
@@ -78,7 +78,7 @@ class RDF4JNamespaceManager:
             list[NamespaceListingResult]: List of namespace and prefix name results.
 
         Raises:
-            RepositoryFormatError: If the response format is unrecognized.
+            RepositoryResponseFormatError: If the response format is unrecognized.
         """
         headers = {
             "Accept": "application/sparql-results+json",
@@ -99,7 +99,7 @@ class RDF4JNamespaceManager:
                 for row in results
             ]
         except (KeyError, ValueError) as err:
-            raise RepositoryFormatError(f"Unrecognised response format: {err}")
+            raise RepositoryResponseFormatError(f"Unrecognised response format: {err}")
 
     def clear(self):
         """Clear all namespace declarations in the repository."""
@@ -439,7 +439,7 @@ class Repository:
             The number of statements.
 
         Raises:
-            RepositoryFormatError: Fails to parse the repository size.
+            RepositoryResponseFormatError: Fails to parse the repository size.
         """
         validate_graph_name(graph_name)
         params: dict[str, str] = {}
@@ -458,7 +458,7 @@ class Repository:
                 return value
             raise ValueError(f"Invalid repository size: {value}")
         except ValueError as err:
-            raise RepositoryFormatError(
+            raise RepositoryResponseFormatError(
                 f"Failed to parse repository size: {err}"
             ) from err
 
@@ -521,7 +521,7 @@ class Repository:
             A list of graph names.
 
         Raises:
-            RepositoryFormatError: Fails to parse the repository graph names.
+            RepositoryResponseFormatError: Fails to parse the repository graph names.
         """
         headers = {
             "Accept": "application/sparql-results+json",
@@ -543,7 +543,7 @@ class Repository:
                     raise ValueError(f"Invalid graph name type: {value_type}")
             return values
         except Exception as err:
-            raise RepositoryFormatError(
+            raise RepositoryResponseFormatError(
                 f"Failed to parse repository graph names: {err}"
             ) from err
 
@@ -844,7 +844,7 @@ class Transaction:
             The number of statements.
 
         Raises:
-            RepositoryFormatError: Fails to parse the repository size.
+            RepositoryResponseFormatError: Fails to parse the repository size.
         """
         self._raise_for_closed()
         validate_graph_name(graph_name)
@@ -1054,7 +1054,7 @@ class RepositoryManager:
             list[RepositoryListingResult]: List of repository results.
 
         Raises:
-            RepositoryFormatError: If the response format is unrecognized.
+            RepositoryResponseFormatError: If the response format is unrecognized.
         """
         headers = {
             "Accept": "application/sparql-results+json",
@@ -1076,7 +1076,7 @@ class RepositoryManager:
                 for repo in results
             ]
         except (KeyError, ValueError) as err:
-            raise RepositoryFormatError(f"Unrecognised response format: {err}")
+            raise RepositoryResponseFormatError(f"Unrecognised response format: {err}")
 
     def get(self, repository_id: str) -> Repository:
         """Get a repository by ID.

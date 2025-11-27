@@ -1,12 +1,16 @@
 """RDF4J exceptions."""
 
 
-class RepositoryError(Exception):
+class RDF4JError(Exception):
+    """Base class for RDF4J exceptions."""
+
+
+class RepositoryError(RDF4JError):
     """Raised when interactions on a repository result in an error."""
 
 
-class RepositoryFormatError(RepositoryError):
-    """Raised when the repository format is invalid."""
+class RepositoryResponseFormatError(RepositoryError):
+    """Raised when the repository response format is invalid."""
 
 
 class RepositoryNotFoundError(RepositoryError):
@@ -21,15 +25,15 @@ class RepositoryAlreadyExistsError(RepositoryError):
     """Raised when the repository already exists."""
 
 
-class RDF4JUnsupportedProtocolError(Exception):
+class RDF4JUnsupportedProtocolError(RDF4JError):
     """Raised when the server does not support the protocol version."""
 
 
-class RDFLibParserError(Exception):
+class RDFLibParserError(RDF4JError):
     """Raised when there is an error parsing the RDF document."""
 
 
-class RepositoryTransactionError(Exception):
+class RepositoryTransactionError(RDF4JError):
     """Raised when there is an error with the transaction."""
 
 

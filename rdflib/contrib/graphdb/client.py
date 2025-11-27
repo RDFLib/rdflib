@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import httpx
 
 import rdflib.contrib.rdf4j
+from rdflib.contrib.graphdb.exceptions import ResponseFormatError
+from rdflib.contrib.graphdb.models import RepositorySizeInfo
 from rdflib.contrib.rdf4j import RDF4JClient
 from rdflib.contrib.rdf4j.exceptions import (
     RepositoryNotFoundError,
@@ -14,6 +18,8 @@ from rdflib.contrib.rdf4j.exceptions import (
 
 class Repository(rdflib.contrib.rdf4j.client.Repository):
     """GraphDB Repository client.
+
+    Overrides specific methods of the RDF4J Repository class.
 
     Parameters:
         identifier: The identifier of the repository.
@@ -57,7 +63,10 @@ class Repository(rdflib.contrib.rdf4j.client.Repository):
 
 
 class RepositoryManager(rdflib.contrib.rdf4j.client.RepositoryManager):
-    """GraphDB Repository Manager"""
+    """GraphDB Repository Manager.
+
+    Overrides specific methods of the RDF4J RepositoryManager class.
+    """
 
     def get(self, repository_id: str) -> Repository:
         """Get a repository by ID.
@@ -79,8 +88,48 @@ class RepositoryManager(rdflib.contrib.rdf4j.client.RepositoryManager):
         return Repository(_repo.identifier, _repo.http_client)
 
 
+class GraphDB:
+    """GraphDB REST API client."""
+
+    def __init__(self, http_client: httpx.Client):
+        self._http_client = http_client
+
+    @property
+    def http_client(self):
+        return self._http_client
+
+    def size(self, repository_id: str, location: str | None = None):
+        params = {}
+        if location:
+            params["location"] = location
+        response = self.http_client.get(
+            f"/rest/repositories/{repository_id}/size", params=params
+        )
+        response.raise_for_status()
+        try:
+            return RepositorySizeInfo(**response.json())
+        except (ValueError, TypeError) as err:
+            raise ResponseFormatError("Failed to parse GraphDB response.") from err
+
+
 class GraphDBClient(RDF4JClient):
     """GraphDB Client"""
 
     # Use the GraphDB RepositoryManager class.
     repository_manager_cls = RepositoryManager
+
+    def __init__(
+        self,
+        base_url: str,
+        auth: tuple[str, str] | None = None,
+        timeout: float = 30.0,
+        **kwargs: Any,
+    ):
+        super().__init__(base_url, auth, timeout, **kwargs)
+        self._graphdb: GraphDB | None = None
+
+    @property
+    def graphdb(self):
+        if self._graphdb is None:
+            self._graphdb = GraphDB(self.http_client)
+        return self._graphdb
