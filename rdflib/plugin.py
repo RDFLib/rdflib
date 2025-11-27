@@ -379,6 +379,12 @@ register(
     "TurtleParser",
 )
 register(
+    "application/x-turtle",
+    Parser,
+    "rdflib.plugins.parsers.notation3",
+    "TurtleParser",
+)
+register(
     "turtle",
     Parser,
     "rdflib.plugins.parsers.notation3",
