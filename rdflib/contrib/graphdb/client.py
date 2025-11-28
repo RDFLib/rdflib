@@ -98,7 +98,16 @@ class RepositoryManagement:
     def http_client(self):
         return self._http_client
 
-    def size(self, repository_id: str, location: str | None = None):
+    def size(self, repository_id: str, location: str | None = None) -> RepositorySizeInfo:
+        """Get repository size.
+
+        Parameters:
+            repository_id: The identifier of the repository.
+            location: The location of the repository.
+
+        Raises:
+            ResponseFormatError: If the response cannot be parsed.
+        """
         params = {}
         if location:
             params["location"] = location
