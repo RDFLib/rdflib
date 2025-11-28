@@ -2,10 +2,18 @@ from __future__ import annotations
 
 from unittest.mock import Mock
 
-import httpx
 import pytest
 
-from rdflib.contrib.graphdb import GraphDBClient
+from rdflib.contrib.rdf4j import has_httpx
+
+pytestmark = pytest.mark.skipif(
+    not has_httpx, reason="skipping graphdb tests, httpx not available"
+)
+
+if has_httpx:
+    import httpx
+
+    from rdflib.contrib.graphdb import GraphDBClient
 
 
 def test_ttyg(client: GraphDBClient, monkeypatch: pytest.MonkeyPatch):

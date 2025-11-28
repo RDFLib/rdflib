@@ -13,7 +13,7 @@ if has_httpx:
 
 
 @pytest.fixture(scope="function")
-def client(monkeypatch: pytest.MonkeyPatch, request):
+def client(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(GraphDBClient, "protocol", 12)
     with GraphDBClient("http://localhost/", auth=("admin", "admin")) as client:
         yield client
