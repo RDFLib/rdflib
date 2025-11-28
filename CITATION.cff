@@ -70,6 +70,6 @@ authors:
   given-names: "Veyndan"
 title: "RDFLib"
 version: 7.5.0
-date-released: 2025-11-21
+date-released: 2025-11-28
 url: "https://github.com/RDFLib/rdflib"
 doi: 10.5281/zenodo.6845245

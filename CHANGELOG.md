@@ -1,4 +1,4 @@
-## 2025-11-21 RELEASE 7.5.0
+## 2025-11-28 RELEASE 7.5.0
 
 This release introduces a new major feature to RDFLib: RDF4J Store integration and RDF4J Client. Users can use this to connect to RDF4J database servers through RDFLib's Graph and Dataset classes, as well as manage repositories and transactions using the RDF4J Client. A comprehensive user guide for the new RDF4J features is available under the extras section of the [RDFLib documentation](https://rdflib.readthedocs.io/en/stable/).
 
