@@ -89,16 +89,22 @@ def testCbdReified(get_graph):  # noqa: N802
     # this cbd() call should get the 3 basic triples with ex:R5 as subject as well as 5 more from the reified
     # statement
     assert len(g.cbd(EX.R5)) == (3 + 5), "cbd() for R5 should return 8 triples"
+    assert len(g.cbd(EX.R5, include_reifications=False)) == (
+        3 + 0
+    ), "cbd() for R5 with no reifications should return 3 triples"
 
     # add crazy reified triples to the testing graph
     g.parse(
         data="""
             PREFIX ex: <http://ex/>
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
             ex:R6
                 ex:propOne ex:P1 ;
                 ex:propTwo ex:P2 ;
-                ex:propRei ex:Pre1 .
+                ex:propRei ex:Pre1 ;
+                ex:propRei2 ex:Pre2 .
+
             ex:S1
                 a rdf:Statement ;
                 rdf:subject ex:R6 ;
@@ -112,11 +118,22 @@ def testCbdReified(get_graph):  # noqa: N802
                 rdf:object ex:Pre2 ;
                 ex:otherReiProp ex:Pre4 ;
                 ex:otherReiProp ex:Pre5 .
+
+            # This one should not be included because the statement this reifies is not in the graph
+            ex:S3
+                rdf:subject ex:R6 ;
+                rdf:predicate ex:propRei3 ;
+                rdf:object ex:Pre3 ;
+                ex:otherReiProp ex:Pre4 ;
+                ex:otherReiProp ex:Pre5 .
         """,
         format="turtle",
     )
 
-    assert len(g.cbd(EX.R6)) == (3 + 5 + 5), "cbd() for R6 should return 12 triples"
+    assert len(g.cbd(EX.R6)) == (4 + 5 + 5 + 0), "cbd() for R6 should return 12 triples"
+    assert len(g.cbd(EX.R6, include_reifications=False)) == (
+        4 + 0 + 0 + 0
+    ), "cbd() for R6 with no reifications should return 4 triples"
 
 
 def test_cbd_example():
