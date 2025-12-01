@@ -27,10 +27,10 @@ if has_httpx:
 @pytest.mark.parametrize(
     "content_type, expected_exception",
     [
-        ("application/json", None),
+        ("application/json", ResponseFormatError),
         ("text/turtle", None),
         ("application/rdf+xml", ValueError),
-        (None, None),
+        (None, ResponseFormatError),
     ],
 )
 def test_repo_config_headers_and_parameters(

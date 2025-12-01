@@ -44,8 +44,6 @@ class Repository(rdflib.contrib.rdf4j.client.Repository):
         Raises:
             RepositoryNotFoundError: If the repository is not found.
             RepositoryNotHealthyError: If the repository is not healthy.
-            httpx.RequestError: On network/connection issues.
-            httpx.HTTPStatusError: Unhandled status code error.
         """
         try:
             params = {"passive": str(timeout)}
@@ -62,8 +60,6 @@ class Repository(rdflib.contrib.rdf4j.client.Repository):
             raise RepositoryNotHealthyError(
                 f"Repository {self._identifier} is not healthy. {err.response.status_code} - {err.response.text}"
             )
-        except httpx.RequestError:
-            raise
 
 
 class RepositoryManager(rdflib.contrib.rdf4j.client.RepositoryManager):
@@ -107,7 +103,7 @@ class RepositoryManagement:
         repository_id: str,
         content_type: str | None = None,
         location: str | None = None,
-    ) -> RepositoryConfigBean | Graph | dict[Any, Any]:
+    ) -> RepositoryConfigBean | Graph:
         """Get a repository's configuration.
 
         Parameters:
@@ -119,7 +115,6 @@ class RepositoryManagement:
         Returns:
             RepositoryConfigBean: The repository configuration.
             Graph: The repository configuration in RDF.
-            dict: An empty dictionary.
 
         Raises:
             ValueError: If the content type is not supported.
@@ -142,14 +137,12 @@ class RepositoryManagement:
             response.raise_for_status()
 
             if content_type == "application/json":
-                if response.json():
-                    try:
-                        return RepositoryConfigBean(**response.json())
-                    except (ValueError, TypeError) as err:
-                        raise ResponseFormatError(
-                            "Failed to parse GraphDB response."
-                        ) from err
-                return {}
+                try:
+                    return RepositoryConfigBean(**response.json())
+                except (ValueError, TypeError) as err:
+                    raise ResponseFormatError(
+                        "Failed to parse GraphDB response."
+                    ) from err
             elif content_type == "text/turtle":
                 try:
                     return Graph().parse(data=response.text, format="turtle")
@@ -241,7 +234,7 @@ class TalkToYourGraph:
     def http_client(self):
         return self._http_client
 
-    def query(self, agent_id: str, tool_type: str, query: str):
+    def query(self, agent_id: str, tool_type: str, query: str) -> str:
         """Call agent query method/assistant tool.
 
         Parameters:
@@ -255,18 +248,6 @@ class TalkToYourGraph:
         )
         response.raise_for_status()
         return response.text
-
-
-class GraphDB:
-    """GraphDB REST API client."""
-
-    def __init__(self, http_client: httpx.Client):
-        self._http_client = http_client
-        self._repos: RepositoryManagement | None = None
-
-    @property
-    def http_client(self):
-        return self._http_client
 
 
 class GraphDBClient(RDF4JClient):
