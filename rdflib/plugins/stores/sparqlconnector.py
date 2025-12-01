@@ -92,7 +92,7 @@ class SPARQLConnector:
             params["default-graph-uri"] = default_graph
 
         headers = {"Accept": self.response_mime_types()}
-        
+
         # change Accept header to an RDF mime type in case of a construct query
         qtype = self.__get_query_type__(query)
         if qtype in ("ConstructQuery", "DescribeQuery"):
@@ -216,7 +216,9 @@ class SPARQLConnector:
 
         If the return_format parameter is set, the mime types are restricted to these accordingly.
         """
-        rdf_mimetype_map = [mime for mlist in FORMAT_MIMETYPE_MAP.values() for mime in mlist]
+        rdf_mimetype_map = [
+            mime for mlist in FORMAT_MIMETYPE_MAP.values() for mime in mlist
+        ]
 
         # use the matched returnType if it matches one of the rdf mime types
         if self.returnFormat in FORMAT_MIMETYPE_MAP:
@@ -228,9 +230,11 @@ class SPARQLConnector:
         try:
             q = prepareQuery(query)
             algebra = getattr(q, "algebra", None)
-            name = getattr(algebra, "name", None) 
-            return name # e.g. 'SelectQuery', 'ConstructQuery', 'DescribeQuery', 'AskQuery'
+            name = getattr(algebra, "name", None)
+            return name  # e.g. 'SelectQuery', 'ConstructQuery', 'DescribeQuery', 'AskQuery'
         except Exception:
             log.debug(f"cannot parse query: {query}")
+        return None
+
 
 __all__ = ["SPARQLConnector", "SPARQLConnectorException"]

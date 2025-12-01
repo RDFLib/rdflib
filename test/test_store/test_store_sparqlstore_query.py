@@ -128,8 +128,9 @@ def test_query_construct_format(
     logging.debug("request.headers = %s", request.headers.as_string())
     assert request.path_query["query"][0] == query
 
+
 def test_query_construct_accept_header(
-    function_httpmock: ServedBaseHTTPServerMock
+    function_httpmock: ServedBaseHTTPServerMock,
 ) -> None:
     """
     Test that no SPARQL result media types are used for construct queries
@@ -150,7 +151,8 @@ def test_query_construct_accept_header(
                 b"<> a <#test> .",
                 {"Content-Type": ["text/turtle"]},
             )
-        ] * 2  # two identical responses
+        ]
+        * 2  # two identical responses
     )
 
     # case 1: construct query
@@ -159,7 +161,7 @@ def test_query_construct_accept_header(
     graph.query(query_construct)
 
     request_construct = function_httpmock.requests[MethodName.GET].pop()
-    accept_header_construct = request_construct.headers.get('Accept').lower()
+    accept_header_construct = request_construct.headers.get("Accept", "").lower()
     # 'Accept' header must not include types for XML or JSON sparql results
     assert "application/sparql-results" not in accept_header_construct
     # 'Accept' header should be at least the default RDF/XML
@@ -171,6 +173,6 @@ def test_query_construct_accept_header(
     graph.query(query_select)
 
     request_select = function_httpmock.requests[MethodName.GET].pop()
-    accept_header_select = request_select.headers.get('Accept').lower()
+    accept_header_select = request_select.headers.get("Accept", "").lower()
     # 'Accept' header should include types for XML or JSON sparql results
     assert "application/sparql-results" in accept_header_select
