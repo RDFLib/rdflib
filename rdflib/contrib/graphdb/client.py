@@ -7,14 +7,16 @@ from typing import Any
 import httpx
 
 import rdflib.contrib.rdf4j
+from rdflib import Graph
 from rdflib.contrib.graphdb.exceptions import (
     ForbiddenError,
+    InternalServerError,
     RepositoryNotFoundError,
     RepositoryNotHealthyError,
     ResponseFormatError,
     UnauthorisedError,
 )
-from rdflib.contrib.graphdb.models import RepositorySizeInfo
+from rdflib.contrib.graphdb.models import RepositoryConfigBean, RepositorySizeInfo
 from rdflib.contrib.rdf4j import RDF4JClient
 
 
@@ -100,6 +102,70 @@ class RepositoryManagement:
     def http_client(self):
         return self._http_client
 
+    def get(
+        self,
+        repository_id: str,
+        content_type: str | None = None,
+        location: str | None = None,
+    ) -> RepositoryConfigBean | Graph | dict[Any, Any]:
+        """Get a repository's configuration.
+
+        Parameters:
+            repository_id: The identifier of the repository.
+            content_type: The content type of the response. Can be `application/json` or
+                `text/turtle`. Defaults to `application/json`.
+            location: The location of the repository.
+
+        Returns:
+            RepositoryConfigBean: The repository configuration.
+            Graph: The repository configuration in RDF.
+            dict: An empty dictionary.
+
+        Raises:
+            ValueError: If the content type is not supported.
+            ResponseFormatError: If the response cannot be parsed.
+            RepositoryNotFoundError: If the repository is not found.
+            InternalServerError: If the server returns an internal error.
+        """
+        if content_type is None:
+            content_type = "application/json"
+        if content_type not in ("application/json", "text/turtle"):
+            raise ValueError(f"Unsupported content type: {content_type}.")
+        headers = {"Accept": content_type}
+        params = {}
+        if location is not None:
+            params["location"] = location
+        try:
+            response = self.http_client.get(
+                f"/rest/repositories/{repository_id}", headers=headers, params=params
+            )
+            response.raise_for_status()
+
+            if content_type == "application/json":
+                if response.json():
+                    try:
+                        return RepositoryConfigBean(**response.json())
+                    except (ValueError, TypeError) as err:
+                        raise ResponseFormatError(
+                            "Failed to parse GraphDB response."
+                        ) from err
+                return {}
+            elif content_type == "text/turtle":
+                try:
+                    return Graph().parse(data=response.text, format="turtle")
+                except Exception as err:
+                    raise ResponseFormatError(f"Error parsing RDF: {err}") from err
+            else:
+                raise ValueError(f"Unhandled content type: {content_type}.")
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 404:
+                raise RepositoryNotFoundError(
+                    f"Repository {repository_id} not found."
+                ) from err
+            elif err.response.status_code == 500:
+                raise InternalServerError("Internal server error.") from err
+            raise
+
     def restart(
         self, repository_id: str, sync: bool | None = None, location: str | None = None
     ) -> str:
@@ -138,7 +204,7 @@ class RepositoryManagement:
                 raise RepositoryNotFoundError(
                     f"Repository {repository_id} not found."
                 ) from err
-            raise err
+            raise
 
     def size(
         self, repository_id: str, location: str | None = None

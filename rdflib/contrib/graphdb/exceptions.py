@@ -27,3 +27,7 @@ class UnauthorisedError(GraphDBError):
 
 class ForbiddenError(GraphDBError):
     """Raised when the user is forbidden."""
+
+
+class InternalServerError(GraphDBError):
+    """Raised when the server returns an internal server error."""
