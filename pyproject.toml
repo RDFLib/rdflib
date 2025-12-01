@@ -68,7 +68,7 @@ mkdocs-gen-files = "^0.6.0"
 mkdocs-include-markdown-plugin = "^7.2.0"
 
 [tool.poetry.group.lint.dependencies]
-ruff = "0.14.3"
+ruff = "0.14.7"
 
 [project.optional-dependencies]
 berkeleydb = ["berkeleydb >18.1.0"]
