@@ -53,7 +53,7 @@ def test_size_values(
     client: GraphDBClient,
     monkeypatch: pytest.MonkeyPatch,
     response_value: str,
-    expected_parsed_value: int | type[ResponseFormatError],
+    expected_parsed_value: RepositorySizeInfo | type[ResponseFormatError],
 ):
     """Test that the return value of the response is correctly parsed."""
     mock_response = Mock(spec=httpx.Response, json=lambda: response_value)

@@ -1159,7 +1159,7 @@ class RDF4JClient:
         kwargs: Additional keyword arguments to pass to the httpx.Client.
     """
 
-    repository_manager_cls: RepositoryManager = RepositoryManager
+    repository_manager_cls: type[RepositoryManager] = RepositoryManager
 
     def __init__(
         self,
@@ -1198,7 +1198,7 @@ class RDF4JClient:
         return self._http_client
 
     @property
-    def repositories(self) -> repository_manager_cls:
+    def repositories(self) -> RepositoryManager:
         """Server-level repository management operations."""
         if self._repository_manager is None:
             self._repository_manager = self.repository_manager_cls(self.http_client)

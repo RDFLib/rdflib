@@ -221,7 +221,7 @@ class GraphDBClient(RDF4JClient):
         self._ttyg: TalkToYourGraph | None = None
 
     @property
-    def repos(self):
+    def repos(self) -> RepositoryManagement:
         if self._repos is None:
             self._repos = RepositoryManagement(self.http_client)
         return self._repos
