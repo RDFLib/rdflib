@@ -7,13 +7,15 @@ from typing import Any
 import httpx
 
 import rdflib.contrib.rdf4j
-from rdflib.contrib.graphdb.exceptions import ResponseFormatError
-from rdflib.contrib.graphdb.models import RepositorySizeInfo
-from rdflib.contrib.rdf4j import RDF4JClient
-from rdflib.contrib.rdf4j.exceptions import (
+from rdflib.contrib.graphdb.exceptions import (
+    ForbiddenError,
     RepositoryNotFoundError,
     RepositoryNotHealthyError,
+    ResponseFormatError,
+    UnauthorisedError,
 )
+from rdflib.contrib.graphdb.models import RepositorySizeInfo
+from rdflib.contrib.rdf4j import RDF4JClient
 
 
 class Repository(rdflib.contrib.rdf4j.client.Repository):
@@ -98,7 +100,49 @@ class RepositoryManagement:
     def http_client(self):
         return self._http_client
 
-    def size(self, repository_id: str, location: str | None = None) -> RepositorySizeInfo:
+    def restart(
+        self, repository_id: str, sync: bool | None = None, location: str | None = None
+    ) -> str:
+        """Restart a repository.
+
+        Parameters:
+            repository_id: The identifier of the repository.
+            sync: Whether to sync the repository.
+            location: The location of the repository.
+
+        Returns:
+            str: The response text.
+
+        Raises:
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            RepositoryNotFoundError: If the repository is not found.
+        """
+        params = {}
+        if sync is not None:
+            params["sync"] = str(sync).lower()
+        if location is not None:
+            params["location"] = location
+        try:
+            response = self.http_client.post(
+                f"/rest/repositories/{repository_id}/restart", params=params
+            )
+            response.raise_for_status()
+            return response.text
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 401:
+                raise UnauthorisedError("Request is unauthorised.") from err
+            elif err.response.status_code == 403:
+                raise ForbiddenError("Request is forbidden.") from err
+            elif err.response.status_code == 404:
+                raise RepositoryNotFoundError(
+                    f"Repository {repository_id} not found."
+                ) from err
+            raise err
+
+    def size(
+        self, repository_id: str, location: str | None = None
+    ) -> RepositorySizeInfo:
         """Get repository size.
 
         Parameters:
