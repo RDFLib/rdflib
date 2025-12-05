@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+import typing as t
 
 import httpx
 
@@ -97,6 +97,38 @@ class RepositoryManagement:
     @property
     def http_client(self):
         return self._http_client
+
+    @t.overload
+    def get(
+        self,
+        repository_id: str,
+        content_type: t.Literal["application/json"],
+        location: str | None = None,
+    ) -> RepositoryConfigBean: ...
+
+    @t.overload
+    def get(
+        self,
+        repository_id: str,
+        content_type: None = None,
+        location: str | None = None,
+    ) -> RepositoryConfigBean: ...
+
+    @t.overload
+    def get(
+        self,
+        repository_id: str,
+        content_type: t.Literal["text/turtle"],
+        location: str | None = None,
+    ) -> Graph: ...
+
+    @t.overload
+    def get(
+        self,
+        repository_id: str,
+        content_type: str,
+        location: str | None = None,
+    ) -> RepositoryConfigBean | Graph: ...
 
     def get(
         self,
@@ -261,7 +293,7 @@ class GraphDBClient(RDF4JClient):
         base_url: str,
         auth: tuple[str, str] | None = None,
         timeout: float = 30.0,
-        **kwargs: Any,
+        **kwargs: t.Any,
     ):
         super().__init__(base_url, auth, timeout, **kwargs)
         self._repos: RepositoryManagement | None = None
