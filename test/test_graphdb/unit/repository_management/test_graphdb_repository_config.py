@@ -25,7 +25,9 @@ if has_httpx:
     from rdflib.contrib.graphdb.client import (
         GraphDBClient,
     )
-    from rdflib.contrib.graphdb.models import RepositoryConfigBeanCreate
+    from rdflib.contrib.graphdb.models import (
+        RepositoryConfigBeanCreate,
+    )
 
 
 @pytest.mark.parametrize(
@@ -245,3 +247,97 @@ def test_repo_config_delete_errors(
 
     with pytest.raises(exception_class):
         client.repos.delete("test-repo")
+
+
+@pytest.mark.parametrize(
+    "location, expected_params",
+    [
+        (None, {}),
+        ("http://example.com/location", {"location": "http://example.com/location"}),
+    ],
+)
+def test_repo_list_parameters(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    location: str | None,
+    expected_params: dict,
+):
+    """Test that list passes the correct params to the GraphDB API."""
+    mock_response = Mock(
+        spec=httpx.Response, status_code=200, json=Mock(return_value=[])
+    )
+    mock_httpx_get = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
+
+    client.repos.list(location=location)
+
+    mock_httpx_get.assert_called_once_with(
+        "/rest/repositories",
+        params=expected_params,
+    )
+
+
+def test_repo_list_parses_response(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that list parses repository data into GraphDBRepository objects."""
+    mock_response = Mock(
+        spec=httpx.Response,
+        status_code=200,
+        json=Mock(
+            return_value=[
+                {
+                    "id": "repo1",
+                    "title": "Repo 1",
+                    "type": "graphdb:FreeSailRepository",
+                    "sesameType": "graphdb:FreeSailRepository",
+                    "location": "",
+                }
+            ]
+        ),
+    )
+    mock_httpx_get = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
+
+    repos = client.repos.list()
+
+    assert len(repos) == 1
+    assert repos[0].id == "repo1"
+
+
+def test_repo_list_parse_error_raises_response_format_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that list raises ResponseFormatError on JSON parse issues."""
+    mock_response = Mock(
+        spec=httpx.Response,
+        status_code=200,
+        json=Mock(side_effect=ValueError("bad json")),
+    )
+    mock_httpx_get = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
+
+    with pytest.raises(ResponseFormatError):
+        client.repos.list()
+
+
+def test_repo_list_internal_server_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that list propagates HTTPStatusError for server errors."""
+    mock_response = Mock(
+        spec=httpx.Response,
+        status_code=500,
+        text="server error",
+    )
+    mock_httpx_get = Mock(return_value=mock_response)
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "Request failed", request=Mock(), response=mock_response
+    )
+    monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
+
+    with pytest.raises(httpx.HTTPStatusError):
+        client.repos.list()

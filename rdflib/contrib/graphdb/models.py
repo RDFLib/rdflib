@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
+from enum import Enum
+from typing import Optional
 
 
 @dataclass(frozen=True)
@@ -74,3 +76,35 @@ class RepositoryConfigBeanCreate:
             True
         """
         return asdict(self)
+
+
+class RepositoryState(str, Enum):
+    """Enumeration for repository state values."""
+
+    INACTIVE = "INACTIVE"
+    STARTING = "STARTING"
+    RUNNING = "RUNNING"
+    RESTARTING = "RESTARTING"
+    STOPPING = "STOPPING"
+
+
+@dataclass
+class GraphDBRepository:
+    id: Optional[str] = None
+    title: Optional[str] = None
+    uri: Optional[str] = None
+    externalUrl: Optional[str] = None  # noqa: N815
+    local: Optional[bool] = None
+    type: Optional[str] = None
+    sesameType: Optional[str] = None  # noqa: N815
+    location: Optional[str] = None
+    readable: Optional[bool] = None
+    writable: Optional[bool] = None
+    unsupported: Optional[bool] = None
+    state: Optional[RepositoryState] = None
+
+    @classmethod
+    def from_dict(cls, data: dict) -> GraphDBRepository:
+        if "state" in data and data["state"] is not None:
+            data["state"] = RepositoryState(data["state"])
+        return cls(**data)

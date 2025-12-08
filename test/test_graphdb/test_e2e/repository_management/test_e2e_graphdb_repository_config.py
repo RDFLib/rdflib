@@ -76,3 +76,11 @@ def test_graphdb_repository_delete(client: GraphDBClient):
     client.repos.delete(repo_id)
     with pytest.raises(RepositoryNotFoundError):
         client.repos.get(repo_id)
+
+
+@pytest.mark.testcontainer
+def test_graphdb_repository_list(client: GraphDBClient):
+    """Test listing repository configurations."""
+    repos = client.repos.list()
+    identifiers = {repo.id for repo in repos}
+    assert "test-repo" in identifiers

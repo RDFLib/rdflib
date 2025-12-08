@@ -18,6 +18,7 @@ from rdflib.contrib.graphdb.exceptions import (
     UnauthorisedError,
 )
 from rdflib.contrib.graphdb.models import (
+    GraphDBRepository,
     RepositoryConfigBean,
     RepositoryConfigBeanCreate,
     RepositorySizeInfo,
@@ -98,6 +99,37 @@ class RepositoryManagement:
 
     def __init__(self, http_client: httpx.Client):
         self._http_client = http_client
+
+    def list(self, location: str | None = None) -> list[GraphDBRepository]:
+        """List all repositories.
+
+        Parameters:
+            location: The location of the repositories.
+
+        Returns:
+            list[GraphDBRepository]: List of GraphDB repositories.
+
+        Raises:
+            InternalServerError: If the server returns an internal error.
+            ResponseFormatError: If the response cannot be parsed.
+        """
+        params = {}
+        if location is not None:
+            params["location"] = location
+        response = self.http_client.get("/rest/repositories", params=params)
+        response.raise_for_status()
+        try:
+            return [GraphDBRepository.from_dict(repo) for repo in response.json()]
+        except (ValueError, TypeError) as err:
+            raise ResponseFormatError(
+                f"Failed to parse GraphDB response: {err}"
+            ) from err
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            raise
 
     @property
     def http_client(self):

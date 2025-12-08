@@ -9,7 +9,12 @@ pytestmark = pytest.mark.skipif(
 )
 
 if has_httpx:
-    from rdflib.contrib.graphdb.models import OWLimParameter, RepositoryConfigBeanCreate
+    from rdflib.contrib.graphdb.models import (
+        GraphDBRepository,
+        OWLimParameter,
+        RepositoryConfigBeanCreate,
+        RepositoryState,
+    )
 
 
 def test_repository_config_bean_create_to_dict_basic():
@@ -144,3 +149,44 @@ def test_repository_config_bean_create_to_dict_json_serializable():
     # Should be able to deserialize back
     deserialized = json.loads(json_str)
     assert deserialized == result
+
+
+def test_graphdb_repository_from_dict_basic():
+    """GraphDBRepository.from_dict should map basic fields."""
+    data = {
+        "id": "repo1",
+        "title": "Repo 1",
+        "type": "graphdb:FreeSailRepository",
+        "sesameType": "graphdb:FreeSailRepository",
+        "location": "/data",
+        "local": True,
+        "readable": True,
+        "writable": False,
+        "unsupported": False,
+    }
+
+    repo = GraphDBRepository.from_dict(data)
+
+    assert repo.id == "repo1"
+    assert repo.title == "Repo 1"
+    assert repo.type == "graphdb:FreeSailRepository"
+    assert repo.sesameType == "graphdb:FreeSailRepository"
+    assert repo.location == "/data"
+    assert repo.local is True
+    assert repo.readable is True
+    assert repo.writable is False
+    assert repo.unsupported is False
+    assert repo.state is None
+
+
+def test_graphdb_repository_from_dict_state_enum():
+    """State strings should be converted to RepositoryState enums."""
+    data = {
+        "id": "repo2",
+        "state": "RUNNING",
+    }
+
+    repo = GraphDBRepository.from_dict(data)
+
+    assert repo.id == "repo2"
+    assert repo.state == RepositoryState.RUNNING
