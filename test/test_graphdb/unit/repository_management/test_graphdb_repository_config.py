@@ -531,10 +531,70 @@ def test_repo_validate_headers_and_parameters(
 
     assert result == "report"
     mock_httpx_post.assert_called_once_with(
-        "/rest/repositories/test-repo/validate/text",
+        url="/rest/repositories/test-repo/validate/text",
         params=expected_params,
         headers={"Content-Type": "text/turtle", "Accept": "text/turtle"},
         content="@prefix sh: <http://www.w3.org/ns/shacl#> .",
+    )
+
+
+@pytest.mark.parametrize(
+    "location, expected_params",
+    [
+        (None, {}),
+        ("http://example.com/location", {"location": "http://example.com/location"}),
+    ],
+)
+def test_repo_validate_file_headers_and_parameters(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    location: str | None,
+    expected_params: dict,
+):
+    """Test that validate posts files with correct headers, params, and body."""
+    mock_response = Mock(spec=httpx.Response, status_code=200, text="report")
+    mock_response.raise_for_status = Mock()
+    mock_httpx_post = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    shapes_file = io.BytesIO(b"@prefix sh: <http://www.w3.org/ns/shacl#> .")
+    result = client.repos.validate(
+        "test-repo",
+        content=shapes_file,
+        location=location,
+    )
+
+    assert result == "report"
+    mock_httpx_post.assert_called_once_with(
+        url="/rest/repositories/test-repo/validate/file",
+        params=expected_params,
+        headers={"Accept": "text/turtle"},
+        files={"file": ("shapes.ttl", shapes_file, "text/turtle")},
+    )
+
+
+def test_repo_validate_file_custom_content_type(
+    client: GraphDBClient, monkeypatch: pytest.MonkeyPatch
+):
+    """Test that file-based validate allows overriding the file content type."""
+    mock_response = Mock(spec=httpx.Response, status_code=200, text="report")
+    mock_response.raise_for_status = Mock()
+    mock_httpx_post = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    shapes_file = io.BytesIO(b"@prefix sh: <http://www.w3.org/ns/shacl#> .")
+    result = client.repos.validate(
+        "test-repo",
+        content=shapes_file,
+        content_type="application/ld+json",
+    )
+
+    assert result == "report"
+    mock_httpx_post.assert_called_once_with(
+        url="/rest/repositories/test-repo/validate/file",
+        params={},
+        headers={"Accept": "text/turtle"},
+        files={"file": ("shapes.ttl", shapes_file, "application/ld+json")},
     )
 
 
@@ -570,7 +630,45 @@ def test_repo_validate_errors(
         )
 
 
+@pytest.mark.parametrize(
+    "status_code, exception_class",
+    [
+        [401, UnauthorisedError],
+        [403, ForbiddenError],
+        [500, InternalServerError],
+    ],
+)
+def test_repo_validate_file_errors(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    status_code: int,
+    exception_class: type[GraphDBError],
+):
+    """Test that file-based validate raises mapped exceptions for error responses."""
+    mock_response = Mock(
+        spec=httpx.Response,
+        status_code=status_code,
+        text="Error message",
+    )
+    mock_httpx_post = Mock(return_value=mock_response)
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "Request failed", request=Mock(), response=mock_response
+    )
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    with pytest.raises(exception_class):
+        client.repos.validate(
+            "test-repo",
+            content=io.BytesIO(b"@prefix sh: <http://www.w3.org/ns/shacl#> ."),
+        )
+
+
 def test_repo_validate_requires_content_type(client: GraphDBClient):
     """Validate requires a non-empty content_type."""
     with pytest.raises(ValueError):
         client.repos.validate("test-repo", content_type="", content="shapes")
+
+    with pytest.raises(ValueError):
+        client.repos.validate(
+            "test-repo", content="shapes"
+        )  # type: ignore[call-overload]

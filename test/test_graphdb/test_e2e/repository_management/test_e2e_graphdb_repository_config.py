@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import io
 import pathlib
 import uuid
 
@@ -183,6 +184,60 @@ def test_graphdb_repository_validate_reports(client: GraphDBClient):
     literal_report_text = client.repos.validate(
         "test-repo", content_type="text/turtle", content=literal_shape
     )
+    literal_report_graph = Graph().parse(data=literal_report_text, format="turtle")
+    literal_conforms: list[Literal | URIRef] = [
+        value
+        for value in literal_report_graph.objects(None, SH.conforms)
+        if isinstance(value, (Literal, URIRef))
+    ]
+    assert literal_conforms and any(val.toPython() is False for val in literal_conforms)
+
+
+@pytest.mark.testcontainer
+def test_graphdb_repository_validate_reports_from_file(client: GraphDBClient):
+    """Validate repository data using SHACL shapes provided as file-like object."""
+    repo = client.repositories.get("test-repo")
+    data_path = pathlib.Path(__file__).parent.parent.parent / "data" / "quads-1.nq"
+    with open(data_path, "rb") as file:
+        repo.overwrite(file)
+
+    iri_shape = b"""
+        PREFIX sh: <http://www.w3.org/ns/shacl#>
+        PREFIX ex: <http://example.org/>
+
+        ex:PObjectIriShape a sh:NodeShape ;
+        sh:targetSubjectsOf ex:p ;
+        sh:property [
+            sh:path ex:p ;
+            sh:nodeKind sh:IRI ;
+        ] .
+    """
+    with io.BytesIO(iri_shape) as shape_file:
+        iri_report_text = client.repos.validate("test-repo", content=shape_file)
+
+    iri_report_graph = Graph().parse(data=iri_report_text, format="turtle")
+    iri_conforms: list[Literal | URIRef] = [
+        value
+        for value in iri_report_graph.objects(None, SH.conforms)
+        if isinstance(value, (Literal, URIRef))
+    ]
+    assert iri_conforms and any(val.toPython() is True for val in iri_conforms)
+
+    literal_shape = b"""
+        PREFIX sh: <http://www.w3.org/ns/shacl#>
+        PREFIX ex: <http://example.org/>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+        ex:PObjectLiteralShape a sh:NodeShape ;
+        sh:targetSubjectsOf ex:p ;
+        sh:property [
+            sh:path ex:p ;
+            sh:datatype xsd:string ;
+        ] .
+    """
+    with io.BytesIO(literal_shape) as shape_file:
+        literal_report_text = client.repos.validate("test-repo", content=shape_file)
+
     literal_report_graph = Graph().parse(data=literal_report_text, format="turtle")
     literal_conforms: list[Literal | URIRef] = [
         value

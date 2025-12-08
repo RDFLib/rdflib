@@ -479,19 +479,41 @@ class RepositoryManagement:
         except (ValueError, TypeError) as err:
             raise ResponseFormatError("Failed to parse GraphDB response.") from err
 
+    @t.overload
     def validate(
         self,
         repository_id: str,
+        *,
         content_type: str,
         content: str,
+        location: str | None = None,
+    ) -> str: ...
+
+    @t.overload
+    def validate(
+        self,
+        repository_id: str,
+        *,
+        content: t.IO[bytes],
+        content_type: str | None = None,
+        location: str | None = None,
+    ) -> str: ...
+
+    def validate(
+        self,
+        repository_id: str,
+        *,
+        content_type: str | None = None,
+        content: str | t.IO[bytes] | None = None,
         location: str | None = None,
     ) -> str:
         """Validate repository data using SHACL shapes.
 
         Parameters:
             repository_id: The identifier of the repository.
-            content_type: Content type of the request body.
-            content: SHACL shapes payload.
+            content_type: Content type of the request body (required for text payloads).
+            content: SHACL shapes payload; string for text-based validation or file-like
+                (binary) object for multipart validation.
             location: Optional repository location.
 
         Returns:
@@ -502,33 +524,66 @@ class RepositoryManagement:
             ForbiddenError: If the request is forbidden.
             InternalServerError: If the server returns an internal error.
         """
-        if not content_type:
-            raise ValueError("content_type must be provided.")
-
         params = {}
         if location is not None:
             params["location"] = location
 
-        headers = {"Content-Type": content_type, "Accept": "text/turtle"}
-        try:
-            response = self.http_client.post(
-                f"/rest/repositories/{repository_id}/validate/text",
-                params=params,
-                headers=headers,
-                content=content,
+        if content is None:
+            raise ValueError("content must be provided.")
+
+        is_file_like = hasattr(content, "read") and not isinstance(content, str)
+
+        if is_file_like:
+            headers = {"Accept": "text/turtle"}
+            file_part = (
+                "shapes.ttl",
+                t.cast(t.IO[bytes], content),
+                content_type or "text/turtle",
             )
-            response.raise_for_status()
-            return response.text
-        except httpx.HTTPStatusError as err:
-            if err.response.status_code == 401:
-                raise UnauthorisedError("Request is unauthorised.") from err
-            if err.response.status_code == 403:
-                raise ForbiddenError("Request is forbidden.") from err
-            if err.response.status_code == 500:
-                raise InternalServerError(
-                    f"Internal server error: {err.response.text}"
-                ) from err
-            raise
+            files: FilesType = {"file": file_part}
+            try:
+                response = self.http_client.post(
+                    f"/rest/repositories/{repository_id}/validate/file",
+                    params=params,
+                    headers=headers,
+                    files=files,
+                )
+                response.raise_for_status()
+                return response.text
+            except httpx.HTTPStatusError as err:
+                if err.response.status_code == 401:
+                    raise UnauthorisedError("Request is unauthorised.") from err
+                if err.response.status_code == 403:
+                    raise ForbiddenError("Request is forbidden.") from err
+                if err.response.status_code == 500:
+                    raise InternalServerError(
+                        f"Internal server error: {err.response.text}"
+                    ) from err
+                raise
+        else:
+            if not content_type:
+                raise ValueError("content_type must be provided for text validation.")
+
+            headers = {"Content-Type": content_type, "Accept": "text/turtle"}
+            try:
+                response = self.http_client.post(
+                    f"/rest/repositories/{repository_id}/validate/text",
+                    params=params,
+                    headers=headers,
+                    content=content,
+                )
+                response.raise_for_status()
+                return response.text
+            except httpx.HTTPStatusError as err:
+                if err.response.status_code == 401:
+                    raise UnauthorisedError("Request is unauthorised.") from err
+                if err.response.status_code == 403:
+                    raise ForbiddenError("Request is forbidden.") from err
+                if err.response.status_code == 500:
+                    raise InternalServerError(
+                        f"Internal server error: {err.response.text}"
+                    ) from err
+                raise
 
 
 class TalkToYourGraph:
