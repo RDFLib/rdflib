@@ -479,6 +479,57 @@ class RepositoryManagement:
         except (ValueError, TypeError) as err:
             raise ResponseFormatError("Failed to parse GraphDB response.") from err
 
+    def validate(
+        self,
+        repository_id: str,
+        content_type: str,
+        content: str,
+        location: str | None = None,
+    ) -> str:
+        """Validate repository data using SHACL shapes.
+
+        Parameters:
+            repository_id: The identifier of the repository.
+            content_type: Content type of the request body.
+            content: SHACL shapes payload.
+            location: Optional repository location.
+
+        Returns:
+            str: Validation report as RDF Turtle.
+
+        Raises:
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            InternalServerError: If the server returns an internal error.
+        """
+        if not content_type:
+            raise ValueError("content_type must be provided.")
+
+        params = {}
+        if location is not None:
+            params["location"] = location
+
+        headers = {"Content-Type": content_type, "Accept": "text/turtle"}
+        try:
+            response = self.http_client.post(
+                f"/rest/repositories/{repository_id}/validate/text",
+                params=params,
+                headers=headers,
+                content=content,
+            )
+            response.raise_for_status()
+            return response.text
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 401:
+                raise UnauthorisedError("Request is unauthorised.") from err
+            if err.response.status_code == 403:
+                raise ForbiddenError("Request is forbidden.") from err
+            if err.response.status_code == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            raise
+
 
 class TalkToYourGraph:
     """GraphDB Talk to Your Graph client."""

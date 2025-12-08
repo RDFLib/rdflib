@@ -5,7 +5,7 @@ import uuid
 
 import pytest
 
-from rdflib import Graph, Literal, URIRef
+from rdflib import SH, Graph, Literal, URIRef
 from rdflib.contrib.rdf4j import has_httpx
 
 pytestmark = pytest.mark.skipif(
@@ -136,3 +136,57 @@ def test_graphdb_repository_list(client: GraphDBClient):
     repos = client.repos.list()
     identifiers = {repo.id for repo in repos}
     assert "test-repo" in identifiers
+
+
+@pytest.mark.testcontainer
+def test_graphdb_repository_validate_reports(client: GraphDBClient):
+    """Validate repository data with SHACL shapes and inspect conform/non-conform reports."""
+    repo = client.repositories.get("test-repo")
+    data_path = pathlib.Path(__file__).parent.parent.parent / "data" / "quads-1.nq"
+    with open(data_path, "rb") as file:
+        repo.overwrite(file)
+
+    iri_shape = """
+        PREFIX sh: <http://www.w3.org/ns/shacl#>
+        PREFIX ex: <http://example.org/>
+
+        ex:PObjectIriShape a sh:NodeShape ;
+        sh:targetSubjectsOf ex:p ;
+        sh:property [
+            sh:path ex:p ;
+            sh:nodeKind sh:IRI ;
+        ] .
+    """
+    iri_report_text = client.repos.validate(
+        "test-repo", content_type="text/turtle", content=iri_shape
+    )
+    iri_report_graph = Graph().parse(data=iri_report_text, format="turtle")
+    iri_conforms: list[Literal | URIRef] = [
+        value
+        for value in iri_report_graph.objects(None, SH.conforms)
+        if isinstance(value, (Literal, URIRef))
+    ]
+    assert iri_conforms and any(val.toPython() is True for val in iri_conforms)
+
+    literal_shape = """
+        PREFIX sh: <http://www.w3.org/ns/shacl#>
+        PREFIX ex: <http://example.org/>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+        ex:PObjectLiteralShape a sh:NodeShape ;
+        sh:targetSubjectsOf ex:p ;
+        sh:property [
+            sh:path ex:p ;
+            sh:datatype xsd:string ;
+        ] .
+    """
+    literal_report_text = client.repos.validate(
+        "test-repo", content_type="text/turtle", content=literal_shape
+    )
+    literal_report_graph = Graph().parse(data=literal_report_text, format="turtle")
+    literal_conforms: list[Literal | URIRef] = [
+        value
+        for value in literal_report_graph.objects(None, SH.conforms)
+        if isinstance(value, (Literal, URIRef))
+    ]
+    assert literal_conforms and any(val.toPython() is False for val in literal_conforms)
