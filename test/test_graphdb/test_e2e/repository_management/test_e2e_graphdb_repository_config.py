@@ -11,6 +11,7 @@ pytestmark = pytest.mark.skipif(
 
 if has_httpx:
     from rdflib.contrib.graphdb import GraphDBClient
+    from rdflib.contrib.graphdb.exceptions import RepositoryNotFoundError
     from rdflib.contrib.graphdb.models import (
         RepositoryConfigBean,
         RepositoryConfigBeanCreate,
@@ -66,3 +67,12 @@ def test_graphdb_repository_edit_config(client: GraphDBClient):
     assert modified_config.type == original_config.type
     assert modified_config.sesameType == original_config.sesameType
     assert modified_config.location == original_config.location
+
+
+@pytest.mark.testcontainer
+def test_graphdb_repository_delete(client: GraphDBClient):
+    """Test deleting a repository configuration."""
+    repo_id = "test-repo"
+    client.repos.delete(repo_id)
+    with pytest.raises(RepositoryNotFoundError):
+        client.repos.get(repo_id)

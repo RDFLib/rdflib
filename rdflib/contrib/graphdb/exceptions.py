@@ -21,6 +21,10 @@ class RepositoryNotFoundError(GraphDBError, rdf4j_exceptions.RepositoryNotFoundE
     """Raised when the repository is not found."""
 
 
+class BadRequestError(GraphDBError):
+    """Raised when the request is invalid."""
+
+
 class UnauthorisedError(GraphDBError):
     """Raised when the user is unauthorised."""
 

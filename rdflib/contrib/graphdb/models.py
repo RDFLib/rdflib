@@ -50,9 +50,9 @@ class RepositoryConfigBeanCreate:
     sesameType: str  # noqa: N815
     location: str
     params: dict[str, OWLimParameter] = field(default_factory=dict)
-    missingDefaults: dict[str, OWLimParameter] = field(
+    missingDefaults: dict[str, OWLimParameter] = field(  # noqa: N815
         default_factory=dict
-    )  # noqa: N815
+    )
 
     def to_dict(self) -> dict:
         """Serialize the dataclass to a Python dict.

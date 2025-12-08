@@ -9,6 +9,7 @@ import httpx
 import rdflib.contrib.rdf4j
 from rdflib import Graph
 from rdflib.contrib.graphdb.exceptions import (
+    BadRequestError,
     ForbiddenError,
     InternalServerError,
     RepositoryNotFoundError,
@@ -153,7 +154,7 @@ class RepositoryManagement:
             Graph: The repository configuration in RDF.
 
         Raises:
-            ValueError: If the content type is not supported.
+            BadRequest: If the content type is not supported.
             ResponseFormatError: If the response cannot be parsed.
             RepositoryNotFoundError: If the repository is not found.
             InternalServerError: If the server returns an internal error.
@@ -203,7 +204,7 @@ class RepositoryManagement:
             config: The repository configuration.
 
         Raises:
-            ValueError: If the repository configuration is invalid.
+            BadRequest: If the request is invalid.
             UnauthorisedError: If the request is unauthorised.
             ForbiddenError: If the request is forbidden.
             InternalServerError: If the server returns an internal error.
@@ -220,9 +221,45 @@ class RepositoryManagement:
             response.raise_for_status()
         except httpx.HTTPStatusError as err:
             if err.response.status_code == 400:
-                raise ValueError(
-                    f"Invalid repository configuration: {err.response.text}"
+                raise BadRequestError(f"Invalid request: {err.response.text}") from err
+            elif err.response.status_code == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
                 ) from err
+            elif err.response.status_code == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            elif err.response.status_code == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            raise
+
+    def delete(self, repository_id: str, location: str | None = None) -> None:
+        """Delete a repository.
+
+        Parameters:
+            repository_id: The identifier of the repository.
+            location: The location of the repository.
+
+        Raises:
+            BadRequest: If the request is invalid.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            InternalServerError: If the server returns an internal error.
+        """
+        params = {}
+        if location is not None:
+            params["location"] = location
+        try:
+            response = self.http_client.delete(
+                f"/rest/repositories/{repository_id}", params=params
+            )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 400:
+                raise BadRequestError(f"Invalid request: {err.response.text}") from err
             elif err.response.status_code == 401:
                 raise UnauthorisedError(
                     f"Request is unauthorised: {err.response.text}"

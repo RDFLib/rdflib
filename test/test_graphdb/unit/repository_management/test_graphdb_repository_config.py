@@ -5,6 +5,7 @@ from unittest.mock import Mock
 import pytest
 
 from rdflib.contrib.graphdb.exceptions import (
+    BadRequestError,
     ForbiddenError,
     GraphDBError,
     InternalServerError,
@@ -157,7 +158,7 @@ def test_repo_config_edit_headers_and_parameters(
 @pytest.mark.parametrize(
     "status_code, exception_class",
     [
-        [400, ValueError],
+        [400, BadRequestError],
         [401, UnauthorisedError],
         [403, ForbiddenError],
         [500, InternalServerError],
@@ -167,7 +168,7 @@ def test_repo_config_edit_errors(
     client: GraphDBClient,
     monkeypatch: pytest.MonkeyPatch,
     status_code: int,
-    exception_class: type[GraphDBError] | type[ValueError],
+    exception_class: type[GraphDBError],
 ):
     """Test that the edit method raises the correct exceptions for different status codes."""
     mock_response = Mock(
@@ -189,3 +190,58 @@ def test_repo_config_edit_errors(
 
     with pytest.raises(exception_class):
         client.repos.edit("test-repo", config)
+
+
+@pytest.mark.parametrize(
+    "location, expected_params",
+    [
+        (None, {}),
+        ("http://example.com/location", {"location": "http://example.com/location"}),
+    ],
+)
+def test_repo_config_delete_parameters(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    location: str | None,
+    expected_params: dict,
+):
+    """Test that delete passes the correct params to the GraphDB API."""
+    mock_response = Mock(spec=httpx.Response, status_code=204)
+    mock_httpx_delete = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
+
+    client.repos.delete("test-repo", location=location)
+
+    mock_httpx_delete.assert_called_once_with(
+        "/rest/repositories/test-repo",
+        params=expected_params,
+    )
+
+
+@pytest.mark.parametrize(
+    "status_code, exception_class",
+    [
+        [400, BadRequestError],
+        [401, UnauthorisedError],
+        [403, ForbiddenError],
+        [500, InternalServerError],
+    ],
+)
+def test_repo_config_delete_errors(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    status_code: int,
+    exception_class: type[GraphDBError],
+):
+    """Test that delete raises the correct exceptions for different status codes."""
+    mock_response = Mock(
+        spec=httpx.Response, status_code=status_code, text="Error message"
+    )
+    mock_httpx_delete = Mock(return_value=mock_response)
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "Request failed", request=Mock(), response=mock_response
+    )
+    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
+
+    with pytest.raises(exception_class):
+        client.repos.delete("test-repo")
