@@ -487,6 +487,7 @@ class RepositoryManagement:
         content_type: str,
         content: str,
         location: str | None = None,
+        shapes_repository_id: None = None,
     ) -> str: ...
 
     @t.overload
@@ -497,6 +498,16 @@ class RepositoryManagement:
         content: t.IO[bytes],
         content_type: str | None = None,
         location: str | None = None,
+        shapes_repository_id: None = None,
+    ) -> str: ...
+
+    @t.overload
+    def validate(
+        self,
+        repository_id: str,
+        *,
+        shapes_repository_id: str,
+        location: str | None = None,
     ) -> str: ...
 
     def validate(
@@ -506,6 +517,7 @@ class RepositoryManagement:
         content_type: str | None = None,
         content: str | t.IO[bytes] | None = None,
         location: str | None = None,
+        shapes_repository_id: str | None = None,
     ) -> str:
         """Validate repository data using SHACL shapes.
 
@@ -515,6 +527,9 @@ class RepositoryManagement:
             content: SHACL shapes payload; string for text-based validation or file-like
                 (binary) object for multipart validation.
             location: Optional repository location.
+            shapes_repository_id: ID of repository containing SHACL shapes; when
+                provided, no content is sent and shapes are fetched from that
+                repository.
 
         Returns:
             str: Validation report as RDF Turtle.
@@ -527,6 +542,35 @@ class RepositoryManagement:
         params = {}
         if location is not None:
             params["location"] = location
+
+        if shapes_repository_id is not None:
+            if content is not None:
+                raise ValueError(
+                    "content must not be provided when shapes_repository_id is set."
+                )
+            if content_type is not None:
+                raise ValueError(
+                    "content_type must not be provided when shapes_repository_id is set."
+                )
+            headers = {"Accept": "text/turtle"}
+            try:
+                response = self.http_client.post(
+                    url=f"/rest/repositories/{repository_id}/validate/repository/{shapes_repository_id}",
+                    params=params,
+                    headers=headers,
+                )
+                response.raise_for_status()
+                return response.text
+            except httpx.HTTPStatusError as err:
+                if err.response.status_code == 401:
+                    raise UnauthorisedError("Request is unauthorised.") from err
+                if err.response.status_code == 403:
+                    raise ForbiddenError("Request is forbidden.") from err
+                if err.response.status_code == 500:
+                    raise InternalServerError(
+                        f"Internal server error: {err.response.text}"
+                    ) from err
+                raise
 
         if content is None:
             raise ValueError("content must be provided.")
@@ -543,7 +587,7 @@ class RepositoryManagement:
             files: FilesType = {"file": file_part}
             try:
                 response = self.http_client.post(
-                    f"/rest/repositories/{repository_id}/validate/file",
+                    url=f"/rest/repositories/{repository_id}/validate/file",
                     params=params,
                     headers=headers,
                     files=files,
@@ -567,7 +611,7 @@ class RepositoryManagement:
             headers = {"Content-Type": content_type, "Accept": "text/turtle"}
             try:
                 response = self.http_client.post(
-                    f"/rest/repositories/{repository_id}/validate/text",
+                    url=f"/rest/repositories/{repository_id}/validate/text",
                     params=params,
                     headers=headers,
                     content=content,

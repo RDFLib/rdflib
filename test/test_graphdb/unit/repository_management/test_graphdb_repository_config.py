@@ -672,3 +672,83 @@ def test_repo_validate_requires_content_type(client: GraphDBClient):
         client.repos.validate(
             "test-repo", content="shapes"
         )  # type: ignore[call-overload]
+
+
+@pytest.mark.parametrize(
+    "location, expected_params",
+    [
+        (None, {}),
+        ("http://example.com/location", {"location": "http://example.com/location"}),
+    ],
+)
+def test_repo_validate_shapes_repository_headers_and_parameters(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    location: str | None,
+    expected_params: dict,
+):
+    """Validate using shapes stored in another repository."""
+    mock_response = Mock(spec=httpx.Response, status_code=200, text="report")
+    mock_response.raise_for_status = Mock()
+    mock_httpx_post = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    result = client.repos.validate(
+        "test-repo",
+        shapes_repository_id="shapes-repo",
+        location=location,
+    )
+
+    assert result == "report"
+    mock_httpx_post.assert_called_once_with(
+        url="/rest/repositories/test-repo/validate/repository/shapes-repo",
+        params=expected_params,
+        headers={"Accept": "text/turtle"},
+    )
+
+
+def test_repo_validate_shapes_repository_mutual_exclusion(client: GraphDBClient):
+    """Shapes repository mode must not accept content or content_type."""
+    with pytest.raises(ValueError):
+        client.repos.validate(  # type: ignore[call-overload]
+            "test-repo",
+            shapes_repository_id="shapes-repo",
+            content="shapes",
+        )
+
+    with pytest.raises(ValueError):
+        client.repos.validate(  # type: ignore[call-overload]
+            "test-repo",
+            shapes_repository_id="shapes-repo",
+            content_type="text/turtle",
+        )
+
+
+@pytest.mark.parametrize(
+    "status_code, exception_class",
+    [
+        [401, UnauthorisedError],
+        [403, ForbiddenError],
+        [500, InternalServerError],
+    ],
+)
+def test_repo_validate_shapes_repository_errors(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    status_code: int,
+    exception_class: type[GraphDBError],
+):
+    """Validate with shapes repository raises mapped exceptions for error responses."""
+    mock_response = Mock(
+        spec=httpx.Response,
+        status_code=status_code,
+        text="Error message",
+    )
+    mock_httpx_post = Mock(return_value=mock_response)
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "Request failed", request=Mock(), response=mock_response
+    )
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    with pytest.raises(exception_class):
+        client.repos.validate("test-repo", shapes_repository_id="shapes-repo")

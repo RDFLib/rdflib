@@ -245,3 +245,60 @@ def test_graphdb_repository_validate_reports_from_file(client: GraphDBClient):
         if isinstance(value, (Literal, URIRef))
     ]
     assert literal_conforms and any(val.toPython() is False for val in literal_conforms)
+
+
+@pytest.mark.testcontainer
+def test_graphdb_repository_validate_with_shapes_repository(client: GraphDBClient):
+    """Validate using shapes stored in a separate repository."""
+    data_repo = client.repositories.get("test-repo")
+    data_path = pathlib.Path(__file__).parent.parent.parent / "data" / "quads-1.nq"
+    with open(data_path, "rb") as file:
+        data_repo.overwrite(file)
+
+    shapes_repo_id = f"shapes-repo-{uuid.uuid4().hex[:8]}"
+    base_config = client.repos.get("test-repo")
+    shapes_config = RepositoryConfigBeanCreate(
+        id=shapes_repo_id,
+        title=f"Shapes {shapes_repo_id}",
+        type=base_config.type,
+        sesameType=base_config.sesameType,
+        location=base_config.location,
+        params=base_config.params,
+    )
+
+    try:
+        client.repos.create(shapes_config)
+        shapes_repo = client.repositories.get(shapes_repo_id)
+
+        shapes_turtle = b"""
+            PREFIX sh: <http://www.w3.org/ns/shacl#>
+            PREFIX ex: <http://example.org/>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+            ex:LiteralObjectShape a sh:NodeShape ;
+                sh:targetSubjectsOf ex:p ;
+                sh:property [
+                    sh:path ex:p ;
+                    sh:datatype xsd:string ;
+                ] .
+        """
+        with io.BytesIO(shapes_turtle) as shapes_file:
+            shapes_repo.overwrite(shapes_file, content_type="text/turtle")
+
+        report_text = client.repos.validate(
+            "test-repo", shapes_repository_id=shapes_repo_id
+        )
+        report_graph = Graph().parse(data=report_text, format="turtle")
+        conforms_values: list[Literal | URIRef] = [
+            value
+            for value in report_graph.objects(None, SH.conforms)
+            if isinstance(value, (Literal, URIRef))
+        ]
+        assert conforms_values and any(
+            val.toPython() is False for val in conforms_values
+        )
+    finally:
+        try:
+            client.repos.delete(shapes_repo_id)
+        except RepositoryNotFoundError:
+            pass
