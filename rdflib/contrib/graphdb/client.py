@@ -25,6 +25,19 @@ from rdflib.contrib.graphdb.models import (
 )
 from rdflib.contrib.rdf4j import RDF4JClient
 
+FileContent = t.Union[
+    bytes,
+    str,
+    t.IO[bytes],
+    t.Tuple[t.Optional[str], t.Union[bytes, str, t.IO[bytes]]],
+    t.Tuple[t.Optional[str], t.Union[bytes, str, t.IO[bytes]], t.Optional[str]],
+]
+
+FilesType = t.Union[
+    t.Mapping[str, FileContent],
+    t.Iterable[t.Tuple[str, FileContent]],
+]
+
 
 class Repository(rdflib.contrib.rdf4j.client.Repository):
     """GraphDB Repository client.
@@ -125,6 +138,102 @@ class RepositoryManagement:
                 f"Failed to parse GraphDB response: {err}"
             ) from err
         except httpx.HTTPStatusError as err:
+            if err.response.status_code == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            raise
+
+    def create(
+        self,
+        config: RepositoryConfigBeanCreate | str,
+        location: str | None = None,
+        files: FilesType | None = None,
+    ):
+        """Create a new repository.
+
+        Parameters:
+            config: Repository configuration. When a `RepositoryConfigBeanCreate` is
+                provided, the request is sent as JSON. When a string is provided, it
+                is treated as Turtle content and sent as multipart/form-data part
+                `config` (required by GraphDB) with the content type `text/turtle`.
+            location: Optional repository location (query param `location`).
+            files: Optional extra multipart parts for GraphDB-specific files (e.g.
+                `obdaFile`, `owlFile`, `propertiesFile`, `constraintFile`,
+                `dbMetadataFile`, `lensesFile`). Keys must be the form part names;
+                values may be file content or httpx-style file tuples. Ignored when
+                `config` is a dataclass (JSON payload).
+
+        Raises:
+            BadRequestError: If the request is invalid.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            InternalServerError: If the server returns an internal error.
+        """
+        params = {}
+        if location is not None:
+            params["location"] = location
+
+        def _normalize_file_content(field: str, value: FileContent) -> FileContent:
+            if isinstance(value, tuple):
+                # fill in the missing filename with the field name
+                if len(value) == 2:
+                    filename, content = value
+                    return (filename or field, content)
+                filename, content, content_type = value
+                return (filename or field, content, content_type)
+            return (field, value)
+
+        try:
+            if isinstance(config, str):
+                extra_parts: list[tuple[str, FileContent]] = []
+                if files is not None:
+                    if isinstance(files, t.Mapping):
+                        extra_parts = list(files.items())
+                    else:
+                        extra_parts = list(files)
+
+                    if any(field == "config" for field, _ in extra_parts):
+                        raise ValueError(
+                            "Do not pass a 'config' multipart part via files; use the config argument instead."
+                        )
+
+                multipart_files: list[tuple[str, FileContent]] = [
+                    ("config", ("config.ttl", config, "text/turtle"))
+                ]
+                for field, content in extra_parts:
+                    multipart_files.append(
+                        (field, _normalize_file_content(field, content))
+                    )
+
+                response = self.http_client.post(
+                    "/rest/repositories",
+                    params=params,
+                    files=multipart_files,
+                )
+            else:
+                if files is not None:
+                    raise ValueError(
+                        "Additional files can only be provided when config is a Turtle string."
+                    )
+                response = self.http_client.post(
+                    "/rest/repositories",
+                    headers={"Content-Type": "application/json"},
+                    json=config.to_dict(),
+                    params=params,
+                )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 400:
+                raise BadRequestError(f"Invalid request: {err.response.text}") from err
+            if err.response.status_code == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            if err.response.status_code == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
             if err.response.status_code == 500:
                 raise InternalServerError(
                     f"Internal server error: {err.response.text}"

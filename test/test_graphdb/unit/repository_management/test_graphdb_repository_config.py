@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import io
+import typing as t
 from unittest.mock import Mock
 
 import pytest
@@ -22,12 +24,9 @@ pytestmark = pytest.mark.skipif(
 if has_httpx:
     import httpx
 
-    from rdflib.contrib.graphdb.client import (
-        GraphDBClient,
-    )
-    from rdflib.contrib.graphdb.models import (
-        RepositoryConfigBeanCreate,
-    )
+    from rdflib.contrib.graphdb.client import GraphDBClient
+    from rdflib.contrib.graphdb.client import FileContent, FilesType
+    from rdflib.contrib.graphdb.models import RepositoryConfigBeanCreate
 
 
 @pytest.mark.parametrize(
@@ -192,6 +191,169 @@ def test_repo_config_edit_errors(
 
     with pytest.raises(exception_class):
         client.repos.edit("test-repo", config)
+
+
+def test_repo_config_create_json_payload(
+    client: GraphDBClient, monkeypatch: pytest.MonkeyPatch
+):
+    config = RepositoryConfigBeanCreate(
+        id="test-repo",
+        title="Test Repository",
+        type="graphdb:FreeSailRepository",
+        sesameType="graphdb:FreeSailRepository",
+        location="",
+    )
+
+    mock_response = Mock(spec=httpx.Response, status_code=201)
+    mock_response.content = b"{}"
+    mock_response.text = "{}"
+    mock_response.headers = {"Content-Type": "application/json"}
+    mock_response.json = Mock(return_value={})
+    mock_response.raise_for_status = Mock()
+    mock_httpx_post = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    result = client.repos.create(
+        config,
+        location="http://example.com/location",
+    )
+
+    mock_httpx_post.assert_called_once_with(
+        "/rest/repositories",
+        headers={"Content-Type": "application/json"},
+        json=config.to_dict(),
+        params={"location": "http://example.com/location"},
+    )
+    assert result is None
+
+
+def test_repo_config_create_multipart(
+    client: GraphDBClient, monkeypatch: pytest.MonkeyPatch
+):
+    mock_response = Mock(spec=httpx.Response, status_code=201)
+    mock_response.content = b""
+    mock_response.text = ""
+    mock_response.headers = {}
+    mock_response.raise_for_status = Mock()
+    mock_httpx_post = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    result = client.repos.create(
+        "@prefix ex: <http://example.com/> .",
+        files={"obdaFile": b"contents"},
+    )
+
+    expected_files = [
+        (
+            "config",
+            ("config.ttl", "@prefix ex: <http://example.com/> .", "text/turtle"),
+        ),
+        ("obdaFile", ("obdaFile", b"contents")),
+    ]
+    mock_httpx_post.assert_called_once_with(
+        "/rest/repositories",
+        params={},
+        files=expected_files,
+    )
+    assert result is None
+
+
+@pytest.mark.parametrize(
+    "file_input, expected_filename, expected_content, expected_content_type",
+    [
+        (b"contents", "obdaFile", b"contents", None),
+        ("text-contents", "obdaFile", "text-contents", None),
+        (io.BytesIO(b"io-bytes"), "obdaFile", b"io-bytes", None),
+        (("custom.obda", b"bin"), "custom.obda", b"bin", None),
+        (
+            ("custom.obda", b"bin", "application/octet-stream"),
+            "custom.obda",
+            b"bin",
+            "application/octet-stream",
+        ),
+    ],
+)
+def test_repo_config_create_multipart_variants(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    file_input: FileContent,
+    expected_filename: str,
+    expected_content: object,
+    expected_content_type: str | None,
+):
+    mock_response = Mock(spec=httpx.Response, status_code=201)
+    mock_response.content = b""
+    mock_response.text = ""
+    mock_response.headers = {}
+    mock_response.raise_for_status = Mock()
+    mock_httpx_post = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    files_arg: FilesType = {"obdaFile": file_input}
+    result = client.repos.create(
+        "@prefix ex: <http://example.com/> .",
+        files=files_arg,
+    )
+
+    assert result is None
+    mock_httpx_post.assert_called_once()
+    called_files = mock_httpx_post.call_args.kwargs["files"]
+
+    # config part remains unchanged
+    assert called_files[0][0] == "config"
+    assert called_files[0][1][0] == "config.ttl"
+    assert called_files[0][1][1] == "@prefix ex: <http://example.com/> ."
+    assert called_files[0][1][2] == "text/turtle"
+
+    field, payload = called_files[1]
+    assert field == "obdaFile"
+    if expected_content_type is None:
+        assert payload[0] == expected_filename
+        if hasattr(payload[1], "read") and not isinstance(payload[1], (bytes, str)):
+            assert payload[1].read() == expected_content
+        else:
+            assert payload[1] == expected_content
+        assert len(payload) == 2
+    else:
+        assert payload[0] == expected_filename
+        assert payload[1] == expected_content
+        assert payload[2] == expected_content_type
+
+
+@pytest.mark.parametrize(
+    "status_code, exception_class",
+    [
+        [400, BadRequestError],
+        [401, UnauthorisedError],
+        [403, ForbiddenError],
+        [500, InternalServerError],
+    ],
+)
+def test_repo_config_create_errors(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    status_code: int,
+    exception_class: type[GraphDBError],
+):
+    mock_response = Mock(
+        spec=httpx.Response, status_code=status_code, text="Error message"
+    )
+    mock_httpx_post = Mock(return_value=mock_response)
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "Request failed", request=Mock(), response=mock_response
+    )
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    config = RepositoryConfigBeanCreate(
+        id="test-repo",
+        title="Test Repository",
+        type="graphdb:FreeSailRepository",
+        sesameType="graphdb:FreeSailRepository",
+        location="",
+    )
+
+    with pytest.raises(exception_class):
+        client.repos.create(config)
 
 
 @pytest.mark.parametrize(

@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import pathlib
+import uuid
+
 import pytest
 
 from rdflib import Graph, Literal, URIRef
@@ -67,6 +70,55 @@ def test_graphdb_repository_edit_config(client: GraphDBClient):
     assert modified_config.type == original_config.type
     assert modified_config.sesameType == original_config.sesameType
     assert modified_config.location == original_config.location
+
+
+@pytest.mark.testcontainer
+def test_graphdb_repository_create_json(client: GraphDBClient):
+    """Create a repository via JSON config and verify it exists."""
+    base_config = client.repos.get("test-repo")
+    repo_id = f"test-repo-create-json-{uuid.uuid4().hex[:8]}"
+    new_config = RepositoryConfigBeanCreate(
+        id=repo_id,
+        title=f"Repo {repo_id}",
+        type=base_config.type,
+        sesameType=base_config.sesameType,
+        location=base_config.location,
+        params=base_config.params,
+    )
+
+    try:
+        client.repos.create(new_config)
+        created = client.repos.get(repo_id)
+        assert isinstance(created, RepositoryConfigBean)
+        assert created.id == repo_id
+    finally:
+        try:
+            client.repos.delete(repo_id)
+        except RepositoryNotFoundError:
+            pass
+
+
+@pytest.mark.testcontainer
+def test_graphdb_repository_create_multipart(client: GraphDBClient):
+    """Create a repository via multipart Turtle config (with an extra file) and verify it exists."""
+    repo_id = f"test-repo-create-ttl-{uuid.uuid4().hex[:8]}"
+    config_path = (
+        pathlib.Path(__file__).parent.parent
+        / "repo-configs"
+        / "test-graphdb-repo-config.ttl"
+    )
+    ttl_config = config_path.read_text().replace("test-repo", repo_id)
+
+    try:
+        client.repos.create(ttl_config, files={"obdaFile": b"obda-bytes"})
+        created = client.repos.get(repo_id)
+        assert isinstance(created, RepositoryConfigBean)
+        assert created.id == repo_id
+    finally:
+        try:
+            client.repos.delete(repo_id)
+        except RepositoryNotFoundError:
+            pass
 
 
 @pytest.mark.testcontainer
