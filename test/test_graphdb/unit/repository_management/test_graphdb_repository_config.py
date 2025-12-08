@@ -5,10 +5,12 @@ from unittest.mock import Mock
 import pytest
 
 from rdflib.contrib.graphdb.exceptions import (
+    ForbiddenError,
     GraphDBError,
     InternalServerError,
     RepositoryNotFoundError,
     ResponseFormatError,
+    UnauthorisedError,
 )
 from rdflib.contrib.rdf4j import has_httpx
 
@@ -22,6 +24,7 @@ if has_httpx:
     from rdflib.contrib.graphdb.client import (
         GraphDBClient,
     )
+    from rdflib.contrib.graphdb.models import RepositoryConfigBeanCreate
 
 
 @pytest.mark.parametrize(
@@ -123,3 +126,66 @@ def test_repo_config_response_text_exceptions(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
     with pytest.raises(exception_class, match=exception_text):
         client.repos.get("test-repo", content_type=content_type)
+
+
+def test_repo_config_edit_headers_and_parameters(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that the edit method correctly passes headers and json parameter."""
+    mock_response = Mock(spec=httpx.Response, status_code=200)
+    mock_httpx_put = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
+
+    config = RepositoryConfigBeanCreate(
+        id="test-repo",
+        title="Test Repository",
+        type="graphdb:FreeSailRepository",
+        sesameType="graphdb:FreeSailRepository",
+        location="",
+    )
+
+    client.repos.edit("test-repo", config)
+
+    mock_httpx_put.assert_called_once_with(
+        "/rest/repositories/test-repo",
+        headers={"Content-Type": "application/json"},
+        json=config.to_dict(),
+    )
+
+
+@pytest.mark.parametrize(
+    "status_code, exception_class",
+    [
+        [400, ValueError],
+        [401, UnauthorisedError],
+        [403, ForbiddenError],
+        [500, InternalServerError],
+    ],
+)
+def test_repo_config_edit_errors(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    status_code: int,
+    exception_class: type[GraphDBError] | type[ValueError],
+):
+    """Test that the edit method raises the correct exceptions for different status codes."""
+    mock_response = Mock(
+        spec=httpx.Response, status_code=status_code, text="Error message"
+    )
+    mock_httpx_put = Mock(return_value=mock_response)
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "Request failed", request=Mock(), response=mock_response
+    )
+    monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
+
+    config = RepositoryConfigBeanCreate(
+        id="test-repo",
+        title="Test Repository",
+        type="graphdb:FreeSailRepository",
+        sesameType="graphdb:FreeSailRepository",
+        location="",
+    )
+
+    with pytest.raises(exception_class):
+        client.repos.edit("test-repo", config)

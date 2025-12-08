@@ -16,7 +16,11 @@ from rdflib.contrib.graphdb.exceptions import (
     ResponseFormatError,
     UnauthorisedError,
 )
-from rdflib.contrib.graphdb.models import RepositoryConfigBean, RepositorySizeInfo
+from rdflib.contrib.graphdb.models import (
+    RepositoryConfigBean,
+    RepositoryConfigBeanCreate,
+    RepositorySizeInfo,
+)
 from rdflib.contrib.rdf4j import RDF4JClient
 
 
@@ -189,6 +193,48 @@ class RepositoryManagement:
                 ) from err
             elif err.response.status_code == 500:
                 raise InternalServerError("Internal server error.") from err
+            raise
+
+    def edit(self, repository_id: str, config: RepositoryConfigBeanCreate) -> None:
+        """Edit a repository's configuration.
+
+        Parameters:
+            repository_id: The identifier of the repository.
+            config: The repository configuration.
+
+        Raises:
+            ValueError: If the repository configuration is invalid.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            InternalServerError: If the server returns an internal error.
+        """
+        headers = {
+            "Content-Type": "application/json",
+        }
+        try:
+            response = self.http_client.put(
+                f"/rest/repositories/{repository_id}",
+                headers=headers,
+                json=config.to_dict(),
+            )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 400:
+                raise ValueError(
+                    f"Invalid repository configuration: {err.response.text}"
+                ) from err
+            elif err.response.status_code == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            elif err.response.status_code == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            elif err.response.status_code == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
             raise
 
     def restart(
