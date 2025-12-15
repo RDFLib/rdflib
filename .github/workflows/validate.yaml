@@ -106,12 +106,12 @@ jobs:
           TOX_PYTEST_EXTRA_ARGS: ${{ matrix.TOX_PYTEST_EXTRA_ARGS }}
           TOX_TEST_HARNESS: ${{ matrix.TOX_TEST_HARNESS }}
           TOX_EXTRA_COMMAND: ${{ matrix.TOX_EXTRA_COMMAND }}
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         if: ${{ (success() || failure()) }}
         with:
           name: ${{ matrix.python-version }}-${{ matrix.os }}${{matrix.suffix}}-mypy-junit-xml
           path: test_reports/${{ matrix.python-version }}-${{ matrix.os }}${{matrix.suffix}}-mypy-junit.xml
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         if: ${{ (success() || failure()) }}
         with:
           name: ${{ matrix.python-version }}-${{ matrix.os }}${{matrix.suffix}}-pytest-junit-xml
