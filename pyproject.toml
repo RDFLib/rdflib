@@ -47,7 +47,7 @@ rdfgraphisomorphism = 'rdflib.tools.graphisomorphism:main'
 
 [tool.poetry.group.dev.dependencies]
 black = "24.10.0"
-mypy = "^1.18.2"
+mypy = "^1.19.1"
 lxml-stubs = ">=0.4,<0.6"
 pip-tools = "^7.5.2"
 
