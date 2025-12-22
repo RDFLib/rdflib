@@ -7,7 +7,7 @@ import typing as t
 import httpx
 
 import rdflib.contrib.rdf4j
-from rdflib import Graph
+from rdflib import Graph, Literal, URIRef
 from rdflib.contrib.graphdb.exceptions import (
     BadRequestError,
     ForbiddenError,
@@ -18,10 +18,19 @@ from rdflib.contrib.graphdb.exceptions import (
     UnauthorisedError,
 )
 from rdflib.contrib.graphdb.models import (
+    AccessControlEntry,
+    ClearGraphAccessControlEntry,
     GraphDBRepository,
+    PluginAccessControlEntry,
     RepositoryConfigBean,
     RepositoryConfigBeanCreate,
     RepositorySizeInfo,
+    StatementAccessControlEntry,
+    SystemAccessControlEntry,
+    _parse_operation,
+    _parse_plugin,
+    _parse_policy,
+    _parse_role,
 )
 from rdflib.contrib.rdf4j import RDF4JClient
 
@@ -38,16 +47,170 @@ FilesType = t.Union[
     t.Iterable[t.Tuple[str, FileContent]],
 ]
 
+_ALLOWED_FGAC_SCOPES = {"statement", "clear_graph", "plugin", "system"}
+
+
+class FGACRulesManager:
+    """GraphDB Fine-Grained Access Control Rules Manager."""
+
+    def __init__(self, identifier: str, http_client: httpx.Client):
+        self._identifier = identifier
+        self._http_client = http_client
+
+    @property
+    def http_client(self):
+        return self._http_client
+
+    @property
+    def identifier(self):
+        """Repository identifier."""
+        return self._identifier
+
+    def list(
+        self,
+        scope: t.Literal["statement", "clear_graph", "plugin", "system"] | None = None,
+        operation: t.Literal["read", "write", "*"] | None = None,
+        subject: str | URIRef | None = None,
+        predicate: str | URIRef | None = None,
+        obj: str | URIRef | Literal | None = None,
+        graph: t.Literal["*", "named", "default"] | URIRef | Graph | None = None,
+        plugin: str | None = None,
+        role: str | None = None,
+        policy: t.Literal["allow", "deny", "abstain"] | None = None,
+    ) -> list[
+        SystemAccessControlEntry
+        | StatementAccessControlEntry
+        | PluginAccessControlEntry
+        | ClearGraphAccessControlEntry
+    ]:
+        """
+        List ACL rules for the repository.
+
+        Parameters:
+            scope: The scope of the FGAC rule (`statement`, `clear_graph`, `plugin`, `system`).
+            operation: The operation of the FGAC rule (`read`, `write`, `*`).
+            subject: The subject of the FGAC rule in Turtle format (for example, `<http://example.com/Mary>`).
+            predicate: The predicate of the FGAC rule in Turtle format (for example, `<http://www.w3.org/2000/01/rdf-schema#label>`).
+            obj: The object of the FGAC rule in Turtle format (for example, `"Mary"@en`).
+            graph: The graph of the FGAC rule in Turtle format (for example, `<http://example.org/graphs/graph1>`).
+            plugin: The plugin name for the FGAC rule with plugin scope (for example, `elasticsearch-connector`).
+            role: The role associated with the FGAC rule.
+            policy: The policy for the FGAC rule (`allow`, `deny`, `abstain`).
+
+        Returns:
+            list[AccessControlEntry]: List of FGAC rules.
+
+        Raises:
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            InternalServerError: If the server returns an internal error.
+            ResponseFormatError: If the response cannot be parsed.
+        """
+        params: dict[str, str] = {}
+        if scope is not None:
+            if scope not in _ALLOWED_FGAC_SCOPES:
+                raise ValueError(f"Invalid FGAC scope filter: {scope!r}")
+            params["scope"] = scope
+        if operation is not None:
+            params["operation"] = _parse_operation(operation)
+        if subject is not None:
+            if isinstance(subject, URIRef):
+                params["subject"] = subject.n3()
+            elif isinstance(subject, str):
+                params["subject"] = subject
+            else:
+                raise ValueError(f"Invalid FGAC subject filter: {subject!r}")
+        if predicate is not None:
+            if isinstance(predicate, URIRef):
+                params["predicate"] = predicate.n3()
+            elif isinstance(predicate, str):
+                params["predicate"] = predicate
+            else:
+                raise ValueError(f"Invalid FGAC predicate filter: {predicate!r}")
+        if obj is not None:
+            if isinstance(obj, (URIRef, Literal)):
+                params["object"] = obj.n3()
+            elif isinstance(obj, str):
+                params["object"] = obj
+            else:
+                raise ValueError(f"Invalid FGAC object filter: {obj!r}")
+        if graph is not None:
+            if isinstance(graph, URIRef):
+                params["graph"] = graph.n3()
+            elif isinstance(graph, Graph):
+                params["graph"] = graph.identifier.n3()
+            elif isinstance(graph, str):
+                params["graph"] = graph
+            else:
+                raise ValueError(f"Invalid FGAC graph filter: {graph!r}")
+        if plugin is not None:
+            params["plugin"] = _parse_plugin(plugin)
+        if role is not None:
+            params["role"] = _parse_role(role)
+        if policy is not None:
+            params["policy"] = _parse_policy(policy)
+
+        try:
+            response = self._http_client.get(
+                f"/rest/repositories/{self.identifier}/acl", params=params
+            )
+            response.raise_for_status()
+            try:
+                payload = response.json()
+            except (ValueError, TypeError) as err:
+                raise ResponseFormatError(
+                    f"Failed to parse GraphDB response: {err}"
+                ) from err
+
+            if not isinstance(payload, list):
+                raise ResponseFormatError(
+                    "Failed to parse GraphDB response: expected a list of ACL entries."
+                )
+
+            try:
+                return [AccessControlEntry.from_dict(acl) for acl in payload]
+            except (ValueError, TypeError) as err:
+                raise ResponseFormatError(
+                    f"Failed to parse GraphDB response: {err}"
+                ) from err
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            if err.response.status_code == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            if err.response.status_code == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            raise
+
 
 class Repository(rdflib.contrib.rdf4j.client.Repository):
     """GraphDB Repository client.
 
-    Overrides specific methods of the RDF4J Repository class.
+    Overrides specific methods of the RDF4J Repository class and also provides GraphDB-only functionality
+    (such as FGAC ACL management) made available through the GraphDB REST API.
 
     Parameters:
         identifier: The identifier of the repository.
         http_client: The httpx.Client instance.
     """
+
+    def __init__(self, identifier: str, http_client: httpx.Client):
+        super().__init__(identifier, http_client)
+        self._fgac_rules_manager: FGACRulesManager | None = None
+
+    @property
+    def acl_rules(self) -> FGACRulesManager:
+        if self._fgac_rules_manager is None:
+            self._fgac_rules_manager = FGACRulesManager(
+                self.identifier, self.http_client
+            )
+        return self._fgac_rules_manager
 
     def health(self, timeout: int = 5) -> bool:
         """Repository health check.
@@ -84,7 +247,7 @@ class Repository(rdflib.contrib.rdf4j.client.Repository):
 class RepositoryManager(rdflib.contrib.rdf4j.client.RepositoryManager):
     """GraphDB Repository Manager.
 
-    Overrides specific methods of the RDF4J RepositoryManager class.
+    This manager client overrides specific RDF4J RepositoryManager class methods to provide GraphDB-specific implementations.
     """
 
     def get(self, repository_id: str) -> Repository:
@@ -108,7 +271,11 @@ class RepositoryManager(rdflib.contrib.rdf4j.client.RepositoryManager):
 
 
 class RepositoryManagement:
-    """GraphDB Repository Management client."""
+    """GraphDB Repository Management client.
+
+    The functionality provided by this management client accepts an optional location parameter to operate on external
+    GraphDB locations.
+    """
 
     def __init__(self, http_client: httpx.Client):
         self._http_client = http_client
