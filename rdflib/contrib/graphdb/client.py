@@ -188,7 +188,7 @@ class FGACRulesManager:
                 ) from err
             raise
 
-    def set(self, acl_rules: t.List[AccessControlEntry]):
+    def set(self, acl_rules: t.Sequence[AccessControlEntry]):
         """
         Set ACL rules for the repository.
 
@@ -207,12 +207,11 @@ class FGACRulesManager:
             InternalServerError: If the server returns an internal error.
             ValueError: If the ACL rules are not provided as a list or are not AccessControlEntry instances.
         """
-        if not isinstance(acl_rules, list):
-            raise ValueError("ACL rules must be provided as a list.")
-        if any(not isinstance(rule, AccessControlEntry) for rule in acl_rules):
+        acl_rules_list = list(acl_rules)
+        if any(not isinstance(rule, AccessControlEntry) for rule in acl_rules_list):
             raise ValueError("All ACL rules must be AccessControlEntry instances.")
 
-        payload = [rule.as_dict() for rule in acl_rules]
+        payload = [rule.as_dict() for rule in acl_rules_list]
 
         headers = {"Content-Type": "application/json"}
         try:
@@ -239,7 +238,7 @@ class FGACRulesManager:
                 ) from err
             raise
 
-    def add(self, acl_rules: t.List[AccessControlEntry], position: int | None = None):
+    def add(self, acl_rules: t.Sequence[AccessControlEntry], position: int | None = None):
         """
         Add ACL rules to the repository.
 
@@ -259,12 +258,11 @@ class FGACRulesManager:
             ValueError: If the position is not an integer or is a negative integer.
             ValueError: If the ACL rules are not provided as a list or are not AccessControlEntry instances.
         """
-        if not isinstance(acl_rules, list):
-            raise ValueError("ACL rules must be provided as a list.")
-        if any(not isinstance(rule, AccessControlEntry) for rule in acl_rules):
+        acl_rules_list = list(acl_rules)
+        if any(not isinstance(rule, AccessControlEntry) for rule in acl_rules_list):
             raise ValueError("All ACL rules must be AccessControlEntry instances.")
 
-        payload = [rule.as_dict() for rule in acl_rules]
+        payload = [rule.as_dict() for rule in acl_rules_list]
 
         headers = {"Content-Type": "application/json"}
         params = {}
