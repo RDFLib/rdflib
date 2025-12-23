@@ -205,14 +205,13 @@ class FGACRulesManager:
             UnauthorisedError: If the request is unauthorised.
             ForbiddenError: If the request is forbidden.
             InternalServerError: If the server returns an internal error.
-            ValueError: If the ACL rules are not provided as a list or are not AccessControlEntry instances.
+            ValueError: If the ACL rules are not provided as a sequence or are not AccessControlEntry instances.
         """
         acl_rules_list = list(acl_rules)
         if any(not isinstance(rule, AccessControlEntry) for rule in acl_rules_list):
             raise ValueError("All ACL rules must be AccessControlEntry instances.")
 
         payload = [rule.as_dict() for rule in acl_rules_list]
-
         headers = {"Content-Type": "application/json"}
         try:
             response = self._http_client.put(
@@ -256,14 +255,13 @@ class FGACRulesManager:
             ForbiddenError: If the request is forbidden.
             InternalServerError: If the server returns an internal error.
             ValueError: If the position is not an integer or is a negative integer.
-            ValueError: If the ACL rules are not provided as a list or are not AccessControlEntry instances.
+            ValueError: If the ACL rules are not provided as a sequence or are not AccessControlEntry instances.
         """
         acl_rules_list = list(acl_rules)
         if any(not isinstance(rule, AccessControlEntry) for rule in acl_rules_list):
             raise ValueError("All ACL rules must be AccessControlEntry instances.")
 
         payload = [rule.as_dict() for rule in acl_rules_list]
-
         headers = {"Content-Type": "application/json"}
         params = {}
         if position is not None:
@@ -278,6 +276,52 @@ class FGACRulesManager:
                 headers=headers,
                 json=payload,
                 params=params,
+            )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 400:
+                raise BadRequestError(f"Invalid request: {err.response.text}") from err
+            if err.response.status_code == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            if err.response.status_code == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            if err.response.status_code == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            raise
+
+    def delete(self, acl_rules: t.Sequence[AccessControlEntry]):
+        """
+        Delete ACL rules from the repository.
+
+        The provided FGAC rules are removed from the list regardless of their position.
+
+        Parameters:
+            acl_rules: The list of ACL rules to delete.
+
+        Raises:
+            BadRequestError: If the request is invalid.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            InternalServerError: If the server returns an internal error.
+            ValueError: If the ACL rules are not provided as a sequence or are not AccessControlEntry instances.
+        """
+        acl_rules_list = list(acl_rules)
+        if any(not isinstance(rule, AccessControlEntry) for rule in acl_rules_list):
+            raise ValueError("All ACL rules must be AccessControlEntry instances.")
+
+        payload = [rule.as_dict() for rule in acl_rules_list]
+        headers = {"Content-Type": "application/json"}
+        try:
+            response = self._http_client.delete(
+                f"/rest/repositories/{self.identifier}/acl",
+                headers=headers,
+                json=payload,
             )
             response.raise_for_status()
         except httpx.HTTPStatusError as err:
