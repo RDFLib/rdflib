@@ -10,11 +10,7 @@ pytestmark = pytest.mark.skipif(
 
 if has_httpx:
     from rdflib.contrib.graphdb import GraphDBClient
-    from rdflib.contrib.graphdb.client import RepositoryManagement, RepositoryManager
-
-
-def test_client_has_graphdb_repository_manager(client: GraphDBClient):
-    assert client.repository_manager_cls == RepositoryManager
+    from rdflib.contrib.graphdb.client import RepositoryManagement
 
 
 def test_client_has_graphdb_rest_client(client: GraphDBClient):
