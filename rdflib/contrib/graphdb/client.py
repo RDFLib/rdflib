@@ -443,7 +443,7 @@ class RepositoryManagement:
                 response = self.http_client.post(
                     "/rest/repositories",
                     headers={"Content-Type": "application/json"},
-                    json=config.to_dict(),
+                    json=config.as_dict(),
                     params=params,
                 )
             response.raise_for_status()
@@ -581,7 +581,7 @@ class RepositoryManagement:
             response = self.http_client.put(
                 f"/rest/repositories/{repository_id}",
                 headers=headers,
-                json=config.to_dict(),
+                json=config.as_dict(),
             )
             response.raise_for_status()
         except httpx.HTTPStatusError as err:

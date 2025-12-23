@@ -59,7 +59,7 @@ class RepositoryConfigBeanCreate:
         default_factory=dict
     )
 
-    def to_dict(self) -> dict:
+    def as_dict(self) -> dict:
         """Serialize the dataclass to a Python dict.
 
         Returns:
@@ -74,7 +74,7 @@ class RepositoryConfigBeanCreate:
             ...     sesameType="graphdb:FreeSailRepository",
             ...     location="",
             ... )
-            >>> config_dict = config.to_dict()
+            >>> config_dict = config.as_dict()
             >>> isinstance(config_dict, dict)
             True
         """

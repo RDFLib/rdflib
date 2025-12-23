@@ -27,7 +27,7 @@ def test_repository_config_bean_create_to_dict_basic():
         location="",
     )
 
-    result = config.to_dict()
+    result = config.as_dict()
 
     assert isinstance(result, dict)
     assert result["id"] == "test-repo"
@@ -53,7 +53,7 @@ def test_repository_config_bean_create_to_dict_with_params():
         params={"param1": param1, "param2": param2},
     )
 
-    result = config.to_dict()
+    result = config.as_dict()
 
     assert isinstance(result, dict)
     assert "params" in result
@@ -84,7 +84,7 @@ def test_repository_config_bean_create_to_dict_with_missing_defaults():
         missingDefaults={"default1": default1},
     )
 
-    result = config.to_dict()
+    result = config.as_dict()
 
     assert isinstance(result, dict)
     assert "missingDefaults" in result
@@ -113,7 +113,7 @@ def test_repository_config_bean_create_to_dict_complete():
         missingDefaults={"default1": default1},
     )
 
-    result = config.to_dict()
+    result = config.as_dict()
 
     assert isinstance(result, dict)
     assert result["id"] == "test-repo"
@@ -140,7 +140,7 @@ def test_repository_config_bean_create_to_dict_json_serializable():
         params={"param1": param1},
     )
 
-    result = config.to_dict()
+    result = config.as_dict()
 
     # Should be able to serialize to JSON without errors
     json_str = json.dumps(result)

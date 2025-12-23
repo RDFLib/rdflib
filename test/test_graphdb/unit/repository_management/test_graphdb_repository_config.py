@@ -150,7 +150,7 @@ def test_repo_config_edit_headers_and_parameters(
     mock_httpx_put.assert_called_once_with(
         "/rest/repositories/test-repo",
         headers={"Content-Type": "application/json"},
-        json=config.to_dict(),
+        json=config.as_dict(),
     )
 
 
@@ -219,7 +219,7 @@ def test_repo_config_create_json_payload(
     mock_httpx_post.assert_called_once_with(
         "/rest/repositories",
         headers={"Content-Type": "application/json"},
-        json=config.to_dict(),
+        json=config.as_dict(),
         params={"location": "http://example.com/location"},
     )
     assert result is None
