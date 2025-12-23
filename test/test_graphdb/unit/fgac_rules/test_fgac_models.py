@@ -206,7 +206,7 @@ def test_parse_graph_invalid(invalid_graph: int | str):
                 "subject": "<http://example.com/s>",
                 "predicate": "<http://example.com/p>",
                 "object": '"o"',
-                "graph": "<http://example.com/g>",
+                "context": "<http://example.com/g>",
             },
         ),
         (
@@ -237,7 +237,7 @@ def test_parse_graph_invalid(invalid_graph: int | str):
                 "scope": "clear_graph",
                 "policy": "abstain",
                 "role": "maintainer",
-                "graph": "<http://example.com/g>",
+                "context": "<http://example.com/g>",
             },
         ),
     ],
@@ -257,7 +257,7 @@ def test_from_dict_statement_entry_full_validation():
         "subject": "<http://example.com/s>",
         "predicate": "<http://example.com/p>",
         "object": '"o"',
-        "graph": "<http://example.com/g>",
+        "context": "<http://example.com/g>",
     }
     result = AccessControlEntry.from_dict(data)
     assert isinstance(result, StatementAccessControlEntry)
@@ -280,7 +280,7 @@ def test_from_dict_statement_with_wildcards():
         "subject": "*",
         "predicate": "*",
         "object": "*",
-        "graph": "*",
+        "context": "*",
     }
     result = AccessControlEntry.from_dict(data)
     assert isinstance(result, StatementAccessControlEntry)
@@ -369,7 +369,7 @@ def test_from_dict_rejects_invalid_plugin():
                 "operation": "read",
                 "predicate": "*",
                 "object": "*",
-                "graph": "*",
+                "context": "*",
             },
             "Invalid FGAC subject",
         ),
@@ -381,7 +381,7 @@ def test_from_dict_rejects_invalid_plugin():
                 "operation": "read",
                 "subject": "*",
                 "object": "*",
-                "graph": "*",
+                "context": "*",
             },
             "Invalid FGAC predicate",
         ),
@@ -393,7 +393,7 @@ def test_from_dict_rejects_invalid_plugin():
                 "operation": "read",
                 "subject": "*",
                 "predicate": "*",
-                "graph": "*",
+                "context": "*",
             },
             "Invalid FGAC object",
         ),
@@ -430,7 +430,7 @@ def test_from_dict_rejects_missing_fields(data: dict, error_match: str):
         ("subject", 123, "Invalid FGAC subject"),
         ("predicate", 123, "Invalid FGAC predicate"),
         ("object", 123, "Invalid FGAC object"),
-        ("graph", 123, "Invalid FGAC graph"),
+        ("context", 123, "Invalid FGAC graph"),
     ],
 )
 def test_from_dict_rejects_invalid_statement_fields(
@@ -444,7 +444,7 @@ def test_from_dict_rejects_invalid_statement_fields(
         "subject": "*",
         "predicate": "*",
         "object": "*",
-        "graph": "*",
+        "context": "*",
     }
     data[field] = invalid_value
     with pytest.raises(ValueError, match=error_match):

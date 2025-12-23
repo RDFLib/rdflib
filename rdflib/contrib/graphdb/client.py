@@ -136,11 +136,11 @@ class FGACRulesManager:
                 raise ValueError(f"Invalid FGAC object filter: {obj!r}")
         if graph is not None:
             if isinstance(graph, URIRef):
-                params["graph"] = graph.n3()
+                params["context"] = graph.n3()
             elif isinstance(graph, Graph):
-                params["graph"] = graph.identifier.n3()
+                params["context"] = graph.identifier.n3()
             elif isinstance(graph, str):
-                params["graph"] = graph
+                params["context"] = graph
             else:
                 raise ValueError(f"Invalid FGAC graph filter: {graph!r}")
         if plugin is not None:

@@ -67,7 +67,7 @@ def test_fgac_set_sends_payload_and_handles_empty_response(
                 "subject": "<http://example.com/s>",
                 "predicate": "<http://example.com/p>",
                 "object": '"o"@en',
-                "graph": "<http://example.com/g>",
+                "context": "<http://example.com/g>",
             }
         ],
     )

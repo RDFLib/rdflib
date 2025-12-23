@@ -36,7 +36,7 @@ def test_fgac_list_builds_params_and_parses_entries(
             "subject": "<http://example.com/s>",
             "predicate": "<http://example.com/p>",
             "object": '"o"@en',
-            "graph": "<http://example.com/g>",
+            "context": "<http://example.com/g>",
         }
     ]
     mock_response = Mock(
@@ -73,7 +73,7 @@ def test_fgac_list_parses_statement_wildcards(
             "subject": "*",
             "predicate": "*",
             "object": "*",
-            "graph": "named",
+            "context": "named",
         }
     ]
     mock_response = Mock(
@@ -154,7 +154,7 @@ def test_fgac_list_formats_params(
             "subject": "<http://example.com/s>",
             "predicate": "<http://example.com/p>",
             "object": '"o"@en',
-            "graph": "<http://example.com/g>",
+            "context": "<http://example.com/g>",
             "plugin": "plugin",
             "role": "role",
             "policy": "deny",
@@ -265,7 +265,7 @@ def test_fgac_list_parses_clear_graph_entry(
             "scope": "clear_graph",
             "policy": "abstain",
             "role": "maintainer",
-            "graph": graph_uri.n3(),
+            "context": graph_uri.n3(),
         }
     ]
     mock_response = Mock(
@@ -305,7 +305,7 @@ def test_fgac_list_parses_clear_graph_entry(
                     "operation": "read",
                     "predicate": "*",
                     "object": "*",
-                    "graph": "*",
+                    "context": "*",
                 }
             ],
             "Invalid FGAC subject",
@@ -409,7 +409,7 @@ def test_fgac_list_parses_mixed_entry_types(
             "subject": "*",
             "predicate": "*",
             "object": "*",
-            "graph": "*",
+            "context": "*",
         },
         {
             "scope": "system",
@@ -428,7 +428,7 @@ def test_fgac_list_parses_mixed_entry_types(
             "scope": "clear_graph",
             "policy": "abstain",
             "role": "guest",
-            "graph": "default",
+            "context": "default",
         },
     ]
     mock_response = Mock(
@@ -553,7 +553,7 @@ def test_fgac_list_parses_literal_object_with_datatype(
             "subject": "*",
             "predicate": "*",
             "object": '"42"^^<http://www.w3.org/2001/XMLSchema#integer>',
-            "graph": "*",
+            "context": "*",
         }
     ]
     mock_response = Mock(
@@ -588,7 +588,7 @@ def test_fgac_list_parses_uriref_object(
             "subject": "*",
             "predicate": "*",
             "object": "<http://example.com/object>",
-            "graph": "*",
+            "context": "*",
         }
     ]
     mock_response = Mock(
@@ -623,7 +623,7 @@ def test_fgac_list_parses_default_graph(
             "subject": "*",
             "predicate": "*",
             "object": "*",
-            "graph": "default",
+            "context": "default",
         }
     ]
     mock_response = Mock(
