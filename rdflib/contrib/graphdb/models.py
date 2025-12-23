@@ -156,7 +156,7 @@ class AccessControlEntry:
             subject = _parse_subject(data.get("subject"))
             predicate = _parse_predicate(data.get("predicate"))
             obj = _parse_object(data.get("object"))
-            graph = _parse_graph(data.get("graph"))
+            graph = _parse_graph(data.get("context"))
             return StatementAccessControlEntry(
                 scope="statement",
                 policy=policy,
@@ -182,7 +182,7 @@ class AccessControlEntry:
         if scope == "clear_graph":
             policy = _parse_policy(data.get("policy"))
             role = _parse_role(data.get("role"))
-            graph = _parse_graph(data.get("graph"))
+            graph = _parse_graph(data.get("context"))
             return ClearGraphAccessControlEntry(
                 scope="clear_graph",
                 policy=policy,
@@ -243,7 +243,7 @@ class StatementAccessControlEntry(AccessControlEntry):
             "subject": _format_term(self.subject),
             "predicate": _format_term(self.predicate),
             "object": _format_term(self.object),
-            "graph": _format_term(self.graph),
+            "context": _format_term(self.graph),
         }
 
 
@@ -288,7 +288,7 @@ class ClearGraphAccessControlEntry(AccessControlEntry):
             "scope": self.scope,
             "policy": self.policy,
             "role": self.role,
-            "graph": _format_term(self.graph),
+            "context": _format_term(self.graph),
         }
 
 
