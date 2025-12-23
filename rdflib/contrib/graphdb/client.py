@@ -77,7 +77,7 @@ class FGACRulesManager:
         plugin: str | None = None,
         role: str | None = None,
         policy: t.Literal["allow", "deny", "abstain"] | None = None,
-    ) -> list[
+    ) -> t.List[
         SystemAccessControlEntry
         | StatementAccessControlEntry
         | PluginAccessControlEntry
@@ -98,7 +98,7 @@ class FGACRulesManager:
             policy: The policy for the FGAC rule (`allow`, `deny`, `abstain`).
 
         Returns:
-            list[AccessControlEntry]: List of FGAC rules.
+            A list of FGAC rules.
 
         Raises:
             UnauthorisedError: If the request is unauthorised.
@@ -187,6 +187,63 @@ class FGACRulesManager:
                     f"Internal server error: {err.response.text}"
                 ) from err
             raise
+
+    def set(self, acl_rules: t.List[AccessControlEntry]):
+        """
+        Set ACL rules for the repository.
+
+        !!! Note
+            This method overwrites existing ACL rules in the repository.
+            If you want to add new rules without overwriting existing ones,
+            use the [`add`][rdflib.contrib.graphdb.client.FGACRulesManager.add] method.
+
+        Parameters:
+            acl_rules: The list of ACL rules to set.
+
+        Raises:
+            BadRequestError: If the request is invalid.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            InternalServerError: If the server returns an internal error.
+            ResponseFormatError: If the response cannot be parsed.
+        """
+        if not isinstance(acl_rules, list):
+            raise ValueError("ACL rules must be provided as a list.")
+        if any(not isinstance(rule, AccessControlEntry) for rule in acl_rules):
+            raise ValueError("All ACL rules must be AccessControlEntry instances.")
+
+        payload = [rule.as_dict() for rule in acl_rules]
+
+        headers = {"Content-Type": "application/json"}
+        try:
+            response = self._http_client.put(
+                f"/rest/repositories/{self.identifier}/acl",
+                headers=headers,
+                json=payload,
+            )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 400:
+                raise BadRequestError(f"Invalid request: {err.response.text}") from err
+            if err.response.status_code == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            if err.response.status_code == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            if err.response.status_code == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            raise
+
+    def add(self, acl_rules: t.List[AccessControlEntry]):
+        """
+        Add ACL rules to the repository.
+
+        """
 
 
 class Repository(rdflib.contrib.rdf4j.client.Repository):
@@ -826,9 +883,6 @@ class TalkToYourGraph:
 class GraphDBClient(RDF4JClient):
     """GraphDB Client"""
 
-    # Use the GraphDB RepositoryManager class.
-    repository_manager_cls = RepositoryManager
-
     def __init__(
         self,
         base_url: str,
@@ -839,6 +893,13 @@ class GraphDBClient(RDF4JClient):
         super().__init__(base_url, auth, timeout, **kwargs)
         self._repos: RepositoryManagement | None = None
         self._ttyg: TalkToYourGraph | None = None
+
+    @property
+    def repositories(self) -> RepositoryManager:
+        """Server-level repository management operations (GraphDB-specific)."""
+        if self._repository_manager is None:
+            self._repository_manager = RepositoryManager(self.http_client)
+        return self._repository_manager
 
     @property
     def repos(self) -> RepositoryManagement:

@@ -177,7 +177,10 @@ def test_fgac_list_formats_params(
     ],
 )
 def test_fgac_list_rejects_invalid_filters(
-    client: GraphDBClient, monkeypatch: pytest.MonkeyPatch, kwargs: dict, error_match: str
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    kwargs: dict,
+    error_match: str,
 ):
     mock_httpx_get = Mock()
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
@@ -289,7 +292,10 @@ def test_fgac_list_parses_clear_graph_entry(
 @pytest.mark.parametrize(
     "payload, error_match",
     [
-        ([{"scope": "system", "policy": "allow", "role": "admin"}], "Invalid FGAC operation"),
+        (
+            [{"scope": "system", "policy": "allow", "role": "admin"}],
+            "Invalid FGAC operation",
+        ),
         (
             [
                 {
@@ -329,7 +335,10 @@ def test_fgac_list_parses_clear_graph_entry(
     ],
 )
 def test_fgac_list_rejects_entries_with_missing_fields(
-    client: GraphDBClient, monkeypatch: pytest.MonkeyPatch, payload: list, error_match: str
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    payload: list,
+    error_match: str,
 ):
     mock_response = Mock(
         spec=httpx.Response,

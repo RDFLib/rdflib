@@ -328,7 +328,9 @@ def test_from_dict_handles_missing_scope():
         ("role", 123, "Invalid FGAC role"),
     ],
 )
-def test_from_dict_rejects_invalid_system_fields(field: str, invalid_value, error_match: str):
+def test_from_dict_rejects_invalid_system_fields(
+    field: str, invalid_value, error_match: str
+):
     data = {
         "scope": "system",
         "policy": "allow",
@@ -431,7 +433,9 @@ def test_from_dict_rejects_missing_fields(data: dict, error_match: str):
         ("graph", 123, "Invalid FGAC graph"),
     ],
 )
-def test_from_dict_rejects_invalid_statement_fields(field: str, invalid_value, error_match: str):
+def test_from_dict_rejects_invalid_statement_fields(
+    field: str, invalid_value, error_match: str
+):
     data = {
         "scope": "statement",
         "policy": "allow",

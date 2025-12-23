@@ -119,6 +119,9 @@ class AccessControlEntry:
     policy: t.Literal["allow", "deny", "abstain"]
     role: str
 
+    def as_dict(self) -> dict[str, t.Any]:
+        raise NotImplementedError("Use a concrete AccessControlEntry subclass.")
+
     @classmethod
     def from_dict(
         cls, data: dict
@@ -128,43 +131,63 @@ class AccessControlEntry:
         | PluginAccessControlEntry
         | ClearGraphAccessControlEntry
     ):
-        """Create an AccessControlEntry subclass instance from raw GraphDB data."""
+        """Create an AccessControlEntry subclass instance from raw GraphDB data.
+
+        Note: we perform parse validation essentially twice (here and in the subclass's __post_init__) to ensure mypy is satisfied with the value's type.
+        """
         if not isinstance(data, dict):
             raise TypeError("ACL entry must be a mapping.")
 
         scope = data.get("scope")
         if scope == "system":
+            policy = _parse_policy(data.get("policy"))
+            role = _parse_role(data.get("role"))
+            operation = _parse_operation(data.get("operation"))
             return SystemAccessControlEntry(
                 scope="system",
-                policy=_parse_policy(data.get("policy")),
-                role=_parse_role(data.get("role")),
-                operation=_parse_operation(data.get("operation")),
+                policy=policy,
+                role=role,
+                operation=operation,
             )
         if scope == "statement":
+            policy = _parse_policy(data.get("policy"))
+            role = _parse_role(data.get("role"))
+            operation = _parse_operation(data.get("operation"))
+            subject = _parse_subject(data.get("subject"))
+            predicate = _parse_predicate(data.get("predicate"))
+            obj = _parse_object(data.get("object"))
+            graph = _parse_graph(data.get("graph"))
             return StatementAccessControlEntry(
                 scope="statement",
-                policy=_parse_policy(data.get("policy")),
-                role=_parse_role(data.get("role")),
-                operation=_parse_operation(data.get("operation")),
-                subject=_parse_subject(data.get("subject")),
-                predicate=_parse_predicate(data.get("predicate")),
-                object=_parse_object(data.get("object")),
-                graph=_parse_graph(data.get("graph")),
+                policy=policy,
+                role=role,
+                operation=operation,
+                subject=subject,
+                predicate=predicate,
+                object=obj,
+                graph=graph,
             )
         if scope == "plugin":
+            policy = _parse_policy(data.get("policy"))
+            role = _parse_role(data.get("role"))
+            operation = _parse_operation(data.get("operation"))
+            plugin = _parse_plugin(data.get("plugin"))
             return PluginAccessControlEntry(
                 scope="plugin",
-                policy=_parse_policy(data.get("policy")),
-                role=_parse_role(data.get("role")),
-                operation=_parse_operation(data.get("operation")),
-                plugin=_parse_plugin(data.get("plugin")),
+                policy=policy,
+                role=role,
+                operation=operation,
+                plugin=plugin,
             )
         if scope == "clear_graph":
+            policy = _parse_policy(data.get("policy"))
+            role = _parse_role(data.get("role"))
+            graph = _parse_graph(data.get("graph"))
             return ClearGraphAccessControlEntry(
                 scope="clear_graph",
-                policy=_parse_policy(data.get("policy")),
-                role=_parse_role(data.get("role")),
-                graph=_parse_graph(data.get("graph")),
+                policy=policy,
+                role=role,
+                graph=graph,
             )
 
         raise ValueError(f"Unsupported FGAC scope: {scope!r}")
@@ -176,6 +199,19 @@ class SystemAccessControlEntry(AccessControlEntry):
     policy: t.Literal["allow", "deny", "abstain"]
     role: str
     operation: t.Literal["read", "write", "*"]
+
+    def __post_init__(self) -> None:
+        self.policy = _parse_policy(self.policy)
+        self.role = _parse_role(self.role)
+        self.operation = _parse_operation(self.operation)
+
+    def as_dict(self) -> dict[str, t.Any]:
+        return {
+            "scope": self.scope,
+            "policy": self.policy,
+            "role": self.role,
+            "operation": self.operation,
+        }
 
 
 @dataclass
@@ -189,6 +225,27 @@ class StatementAccessControlEntry(AccessControlEntry):
     object: t.Literal["*"] | URIRef | Literal
     graph: t.Literal["*", "named", "default"] | URIRef
 
+    def __post_init__(self) -> None:
+        self.policy = _parse_policy(self.policy)
+        self.role = _parse_role(self.role)
+        self.operation = _parse_operation(self.operation)
+        self.subject = _parse_subject(self.subject)
+        self.predicate = _parse_predicate(self.predicate)
+        self.object = _parse_object(self.object)
+        self.graph = _parse_graph(self.graph)
+
+    def as_dict(self) -> dict[str, t.Any]:
+        return {
+            "scope": self.scope,
+            "policy": self.policy,
+            "role": self.role,
+            "operation": self.operation,
+            "subject": _format_term(self.subject),
+            "predicate": _format_term(self.predicate),
+            "object": _format_term(self.object),
+            "graph": _format_term(self.graph),
+        }
+
 
 @dataclass
 class PluginAccessControlEntry(AccessControlEntry):
@@ -198,6 +255,21 @@ class PluginAccessControlEntry(AccessControlEntry):
     operation: t.Literal["read", "write", "*"]
     plugin: str
 
+    def __post_init__(self) -> None:
+        self.policy = _parse_policy(self.policy)
+        self.role = _parse_role(self.role)
+        self.operation = _parse_operation(self.operation)
+        self.plugin = _parse_plugin(self.plugin)
+
+    def as_dict(self) -> dict[str, t.Any]:
+        return {
+            "scope": self.scope,
+            "policy": self.policy,
+            "role": self.role,
+            "operation": self.operation,
+            "plugin": self.plugin,
+        }
+
 
 @dataclass
 class ClearGraphAccessControlEntry(AccessControlEntry):
@@ -205,6 +277,19 @@ class ClearGraphAccessControlEntry(AccessControlEntry):
     policy: t.Literal["allow", "deny", "abstain"]
     role: str
     graph: t.Literal["*", "named", "default"] | URIRef
+
+    def __post_init__(self) -> None:
+        self.policy = _parse_policy(self.policy)
+        self.role = _parse_role(self.role)
+        self.graph = _parse_graph(self.graph)
+
+    def as_dict(self) -> dict[str, t.Any]:
+        return {
+            "scope": self.scope,
+            "policy": self.policy,
+            "role": self.role,
+            "graph": _format_term(self.graph),
+        }
 
 
 _ALLOWED_POLICIES = {"allow", "deny", "abstain"}
@@ -295,3 +380,9 @@ def _parse_with_n3(value: str) -> URIRef | Literal:
         return URIRef(value)
     except Exception as err:  # pragma: no cover - defensive
         raise ValueError(f"Unable to parse value {value!r} into an RDF term.") from err
+
+
+def _format_term(value: t.Any) -> str:
+    if isinstance(value, (URIRef, Literal)):
+        return value.n3()
+    return t.cast(str, value)
