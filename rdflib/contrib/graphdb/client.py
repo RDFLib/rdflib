@@ -318,8 +318,9 @@ class FGACRulesManager:
         payload = [rule.as_dict() for rule in acl_rules_list]
         headers = {"Content-Type": "application/json"}
         try:
-            response = self._http_client.delete(
-                f"/rest/repositories/{self.identifier}/acl",
+            response = self._http_client.request(
+                method="DELETE",
+                url=f"/rest/repositories/{self.identifier}/acl",
                 headers=headers,
                 json=payload,
             )

@@ -47,16 +47,17 @@ def test_fgac_delete_sends_payload_and_handles_empty_response(
     )
     mock_response.text = ""
     mock_response.raise_for_status = Mock()
-    mock_httpx_delete = Mock(return_value=mock_response)
-    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
+    mock_httpx_request = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "request", mock_httpx_request)
 
     repo = Repository("repo", client.http_client)
     result = repo.acl_rules.delete([rule])
 
     assert result is None
     mock_response.raise_for_status.assert_called_once_with()
-    mock_httpx_delete.assert_called_once_with(
-        "/rest/repositories/repo/acl",
+    mock_httpx_request.assert_called_once_with(
+        method="DELETE",
+        url="/rest/repositories/repo/acl",
         headers={"Content-Type": "application/json"},
         json=[
             {
@@ -82,13 +83,13 @@ def test_fgac_delete_rejects_non_list_payload(client: GraphDBClient):
 def test_fgac_delete_rejects_invalid_entries(
     client: GraphDBClient, monkeypatch: pytest.MonkeyPatch
 ):
-    mock_httpx_delete = Mock()
-    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
+    mock_httpx_request = Mock()
+    monkeypatch.setattr(httpx.Client, "request", mock_httpx_request)
 
     repo = Repository("repo", client.http_client)
     with pytest.raises(ValueError, match="All ACL rules must be AccessControlEntry instances."):
         repo.acl_rules.delete(["not an ACL entry"])  # type: ignore[list-item]
-    mock_httpx_delete.assert_not_called()
+    mock_httpx_request.assert_not_called()
 
 
 @pytest.mark.parametrize(
@@ -118,8 +119,8 @@ def test_fgac_delete_raises_http_errors(
         f"{status_code} Error", request=Mock(), response=mock_response
     )
     mock_response.raise_for_status = Mock(side_effect=mock_error)
-    mock_httpx_delete = Mock(return_value=mock_response)
-    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
+    mock_httpx_request = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "request", mock_httpx_request)
 
     repo = Repository("repo", client.http_client)
     with pytest.raises(error_type):
@@ -142,8 +143,8 @@ def test_fgac_delete_re_raises_other_http_errors(
         "404 Not Found", request=Mock(), response=mock_response
     )
     mock_response.raise_for_status = Mock(side_effect=mock_error)
-    mock_httpx_delete = Mock(return_value=mock_response)
-    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
+    mock_httpx_request = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "request", mock_httpx_request)
 
     repo = Repository("repo", client.http_client)
     with pytest.raises(httpx.HTTPStatusError):
