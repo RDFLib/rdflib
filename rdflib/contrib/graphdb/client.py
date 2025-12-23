@@ -205,7 +205,7 @@ class FGACRulesManager:
             UnauthorisedError: If the request is unauthorised.
             ForbiddenError: If the request is forbidden.
             InternalServerError: If the server returns an internal error.
-            ResponseFormatError: If the response cannot be parsed.
+            ValueError: If the ACL rules are not provided as a list or are not AccessControlEntry instances.
         """
         if not isinstance(acl_rules, list):
             raise ValueError("ACL rules must be provided as a list.")
@@ -239,11 +239,65 @@ class FGACRulesManager:
                 ) from err
             raise
 
-    def add(self, acl_rules: t.List[AccessControlEntry]):
+    def add(self, acl_rules: t.List[AccessControlEntry], position: int | None = None):
         """
         Add ACL rules to the repository.
 
+        You can also provide an optional URL request parameter position that specifies the position of the rules to be added.
+        The position is zero-based (0 is the first position). If the position parameter is not provided, the rules are added at
+        the end of the list.
+
+        Parameters:
+            acl_rules: The list of ACL rules to add.
+            position: The zero-based position to add the rules at.
+
+        Raises:
+            BadRequestError: If the request is invalid.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            InternalServerError: If the server returns an internal error.
+            ValueError: If the position is not an integer or is a negative integer.
+            ValueError: If the ACL rules are not provided as a list or are not AccessControlEntry instances.
         """
+        if not isinstance(acl_rules, list):
+            raise ValueError("ACL rules must be provided as a list.")
+        if any(not isinstance(rule, AccessControlEntry) for rule in acl_rules):
+            raise ValueError("All ACL rules must be AccessControlEntry instances.")
+
+        payload = [rule.as_dict() for rule in acl_rules]
+
+        headers = {"Content-Type": "application/json"}
+        params = {}
+        if position is not None:
+            if not isinstance(position, int):
+                raise ValueError("Position must be an integer.")
+            if position < 0:
+                raise ValueError("Position must be a positive integer.")
+            params["position"] = str(position)
+        try:
+            response = self._http_client.post(
+                f"/rest/repositories/{self.identifier}/acl",
+                headers=headers,
+                json=payload,
+                params=params,
+            )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 400:
+                raise BadRequestError(f"Invalid request: {err.response.text}") from err
+            if err.response.status_code == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            if err.response.status_code == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            if err.response.status_code == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            raise
 
 
 class Repository(rdflib.contrib.rdf4j.client.Repository):
