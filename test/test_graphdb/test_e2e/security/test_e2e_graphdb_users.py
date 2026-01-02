@@ -494,3 +494,59 @@ def test_update_user_with_user_update_model(client: GraphDBClient):
             client.users.delete(username)
         except Exception:
             pass
+
+
+@pytest.mark.testcontainer
+def test_custom_roles_returns_list(client: GraphDBClient):
+    """Test that custom_roles returns a list for an existing user."""
+    roles = client.users.custom_roles("admin")
+    assert isinstance(roles, list)
+
+
+@pytest.mark.testcontainer
+def test_custom_roles_returns_empty_list_for_user_without_custom_roles(
+    client: GraphDBClient,
+):
+    """Test that custom_roles returns an empty list for a user without custom roles."""
+    # The admin user typically doesn't have custom roles by default
+    roles = client.users.custom_roles("admin")
+    # By default, the admin user has no custom roles
+    assert roles == []
+
+
+@pytest.mark.testcontainer
+def test_custom_roles_raises_not_found_for_nonexistent_user(client: GraphDBClient):
+    """Test that custom_roles raises NotFoundError for a non-existent user."""
+    with pytest.raises(NotFoundError, match="User not found"):
+        client.users.custom_roles("nonexistent_user_12345")
+
+
+@pytest.mark.testcontainer
+def test_custom_roles_for_created_user(client: GraphDBClient):
+    """Test that custom_roles works for a newly created user."""
+    username = "test_custom_roles_12345"
+    user = User(
+        username=username,
+        password="password123",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+        appSettings={},
+        gptThreads=[],
+    )
+
+    try:
+        # Create the user
+        client.users.create(username, user)
+
+        # Get custom roles for the user
+        roles = client.users.custom_roles(username)
+
+        assert isinstance(roles, list)
+        # A newly created user without custom roles should have an empty list
+        assert roles == []
+    finally:
+        # Clean up
+        try:
+            client.users.delete(username)
+        except Exception:
+            pass

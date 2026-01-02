@@ -1340,6 +1340,40 @@ class UserManagement:
                 raise PreconditionFailedError("Precondition failed.") from err
             raise
 
+    def custom_roles(self, username: str) -> t.List[str]:
+        """
+        Retrieve custom roles associated with the user.
+
+        Parameters:
+            username: The username of the user.
+
+        Returns:
+            list[str]: The custom roles for the user.
+
+        Raises:
+            TypeError: if username is not a string.
+            ForbiddenError: If the request is forbidden.
+            NotFoundError: If the user is not found.
+            InternalServerError: If the request fails.
+        """
+        if not isinstance(username, str):
+            raise TypeError("Username must be a string.")
+
+        try:
+            response = self.http_client.get(
+                f"/rest/security/users/{username}/custom-roles"
+            )
+            response.raise_for_status()
+            return response.json()
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 403:
+                raise ForbiddenError("Request is forbidden.") from err
+            elif err.response.status_code == 404:
+                raise NotFoundError("User not found.") from err
+            elif err.response.status_code == 500:
+                raise InternalServerError("Internal server error.") from err
+            raise
+
 
 class GraphDBClient(RDF4JClient):
     """GraphDB Client"""

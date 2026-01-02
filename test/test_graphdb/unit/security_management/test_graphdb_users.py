@@ -1069,3 +1069,120 @@ def test_update_user_reraises_other_http_errors(
 
     with pytest.raises(httpx.HTTPStatusError):
         client.users.update("admin", user_dict)
+
+
+def test_custom_roles_returns_list(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that custom_roles returns a list of custom roles."""
+    roles_data = ["custom_role_1", "custom_role_2"]
+    mock_response = Mock(spec=httpx.Response, json=lambda: roles_data)
+    mock_httpx_get = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
+
+    result = client.users.custom_roles("admin")
+
+    assert result == ["custom_role_1", "custom_role_2"]
+    mock_httpx_get.assert_called_once_with("/rest/security/users/admin/custom-roles")
+    mock_response.raise_for_status.assert_called_once()
+
+
+def test_custom_roles_returns_empty_list(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that custom_roles returns an empty list when no custom roles exist."""
+    mock_response = Mock(spec=httpx.Response, json=lambda: [])
+    mock_httpx_get = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
+
+    result = client.users.custom_roles("testuser")
+
+    assert result == []
+
+
+def test_custom_roles_raises_type_error_for_non_string_username(
+    client: GraphDBClient,
+):
+    """Test that custom_roles raises TypeError when username is not a string."""
+    with pytest.raises(TypeError, match="Username must be a string"):
+        client.users.custom_roles(123)
+
+
+def test_custom_roles_raises_forbidden_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that custom_roles raises ForbiddenError for 403 responses."""
+    mock_response = Mock(spec=httpx.Response, status_code=403, text="Forbidden")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "HTTP 403",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_get = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
+
+    with pytest.raises(ForbiddenError, match="Request is forbidden"):
+        client.users.custom_roles("admin")
+
+
+def test_custom_roles_raises_not_found_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that custom_roles raises NotFoundError for 404 responses."""
+    mock_response = Mock(spec=httpx.Response, status_code=404, text="Not found")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "HTTP 404",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_get = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
+
+    with pytest.raises(NotFoundError, match="User not found"):
+        client.users.custom_roles("nonexistent")
+
+
+def test_custom_roles_raises_internal_server_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that custom_roles raises InternalServerError for 500 responses."""
+    error_text = "Internal server error"
+    mock_response = Mock(spec=httpx.Response, status_code=500, text=error_text)
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "HTTP 500",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_get = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
+
+    with pytest.raises(InternalServerError, match="Internal server error"):
+        client.users.custom_roles("admin")
+
+
+@pytest.mark.parametrize(
+    "status_code",
+    [400, 401, 409, 502, 503],
+)
+def test_custom_roles_reraises_other_http_errors(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    status_code: int,
+):
+    """Test that custom_roles re-raises HTTPStatusError for unhandled status codes."""
+    mock_response = Mock(spec=httpx.Response, status_code=status_code, text="Error")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        f"HTTP {status_code}",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_get = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
+
+    with pytest.raises(httpx.HTTPStatusError):
+        client.users.custom_roles("admin")
