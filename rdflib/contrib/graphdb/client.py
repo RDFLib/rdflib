@@ -29,6 +29,7 @@ from rdflib.contrib.graphdb.models import (
     RepositorySizeInfo,
     StatementAccessControlEntry,
     SystemAccessControlEntry,
+    User,
     _parse_operation,
     _parse_plugin,
     _parse_policy,
@@ -1112,6 +1113,54 @@ class SecurityManagement:
             raise
 
 
+class UserManagement:
+    """GraphDB User Management client."""
+
+    def __init__(self, http_client: httpx.Client):
+        self._http_client = http_client
+
+    @property
+    def http_client(self):
+        return self._http_client
+
+    def list(self) -> list[User]:
+        """
+        Get all users.
+
+        Returns:
+            A list of users.
+
+        Raises:
+            ResponseFormatError: If the response format is invalid.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            PreconditionFailedError: If the precondition is failed.
+            InternalServerError: If the server returns an internal error.
+        """
+        headers = {"Accept": "application/json"}
+        try:
+            response = self.http_client.get("/rest/users", headers=headers)
+            response.raise_for_status()
+            try:
+                return [User(**user) for user in response.json()]
+            except (ValueError, TypeError) as err:
+                raise ResponseFormatError(
+                    f"Failed to parse GraphDB response: {err}"
+                ) from err
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 401:
+                raise UnauthorisedError("Request is unauthorised.") from err
+            elif err.response.status_code == 403:
+                raise ForbiddenError("Request is forbidden.") from err
+            elif err.response.status_code == 412:
+                raise PreconditionFailedError("Precondition failed.") from err
+            elif err.response.status_code == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            raise
+
+
 class GraphDBClient(RDF4JClient):
     """GraphDB Client"""
 
@@ -1127,6 +1176,7 @@ class GraphDBClient(RDF4JClient):
         self._repos: RepositoryManagement | None = None
         self._security: SecurityManagement | None = None
         self._ttyg: TalkToYourGraph | None = None
+        self._users: UserManagement | None = None
 
     @property
     def repositories(self) -> RepositoryManager:
@@ -1152,3 +1202,9 @@ class GraphDBClient(RDF4JClient):
         if self._ttyg is None:
             self._ttyg = TalkToYourGraph(self.http_client)
         return self._ttyg
+
+    @property
+    def users(self):
+        if self._users is None:
+            self._users = UserManagement(self.http_client)
+        return self._users

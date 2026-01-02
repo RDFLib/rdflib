@@ -15,6 +15,7 @@ if has_httpx:
         OWLimParameter,
         RepositoryConfigBeanCreate,
         RepositoryState,
+        User,
     )
 
 
@@ -235,3 +236,209 @@ def test_free_access_settings_invalid_app_settings_type(app_settings):
 def test_free_access_settings_invalid_app_settings_key():
     with pytest.raises(ValueError):
         FreeAccessSettings(enabled=True, appSettings={1: "value"})
+
+
+def test_user_valid():
+    """Test creating a valid User."""
+    user = User(
+        username="testuser",
+        password="password123",
+        dateCreated="2024-01-01T00:00:00Z",
+        grantedAuthorities=["ROLE_USER", "ROLE_ADMIN"],
+        appSettings={"theme": "dark", "maxAge": 3600},
+        gptThreads=[{"id": 1, "name": "thread1"}],
+    )
+
+    assert user.username == "testuser"
+    assert user.password == "password123"
+    assert user.dateCreated == "2024-01-01T00:00:00Z"
+    assert user.grantedAuthorities == ["ROLE_USER", "ROLE_ADMIN"]
+    assert user.appSettings == {"theme": "dark", "maxAge": 3600}
+    assert user.gptThreads == [{"id": 1, "name": "thread1"}]
+
+
+def test_user_minimal():
+    """Test creating a User with only required fields."""
+    user = User(
+        username="testuser",
+        password="password123",
+        dateCreated="2024-01-01T00:00:00Z",
+    )
+
+    assert user.username == "testuser"
+    assert user.password == "password123"
+    assert user.dateCreated == "2024-01-01T00:00:00Z"
+    assert user.grantedAuthorities == []
+    assert user.appSettings == {}
+    assert user.gptThreads == []
+
+
+def test_user_normalize_none_app_settings():
+    """Test that None appSettings is normalized to empty dict."""
+    user = User(
+        username="testuser",
+        password="password123",
+        dateCreated="2024-01-01T00:00:00Z",
+        appSettings=None,
+    )
+
+    assert user.appSettings == {}
+
+
+def test_user_normalize_none_gpt_threads():
+    """Test that None gptThreads is normalized to empty list."""
+    user = User(
+        username="testuser",
+        password="password123",
+        dateCreated="2024-01-01T00:00:00Z",
+        gptThreads=None,
+    )
+
+    assert user.gptThreads == []
+
+
+def test_user_normalize_none_granted_authorities():
+    """Test that None grantedAuthorities is normalized to empty list."""
+    user = User(
+        username="testuser",
+        password="password123",
+        dateCreated="2024-01-01T00:00:00Z",
+        grantedAuthorities=None,
+    )
+
+    assert user.grantedAuthorities == []
+
+
+@pytest.mark.parametrize(
+    "username",
+    [123, None, [], {}],
+)
+def test_user_invalid_username(username):
+    """Test that invalid username types raise ValueError."""
+    with pytest.raises(ValueError):
+        User(
+            username=username,
+            password="password123",
+            dateCreated="2024-01-01T00:00:00Z",
+        )
+
+
+@pytest.mark.parametrize(
+    "password",
+    [123, None, [], {}],
+)
+def test_user_invalid_password(password):
+    """Test that invalid password types raise ValueError."""
+    with pytest.raises(ValueError):
+        User(
+            username="testuser",
+            password=password,
+            dateCreated="2024-01-01T00:00:00Z",
+        )
+
+
+@pytest.mark.parametrize(
+    "date_created",
+    [123, None, [], {}],
+)
+def test_user_invalid_date_created(date_created):
+    """Test that invalid dateCreated types raise ValueError."""
+    with pytest.raises(ValueError):
+        User(
+            username="testuser",
+            password="password123",
+            dateCreated=date_created,
+        )
+
+
+@pytest.mark.parametrize(
+    "granted_authorities",
+    ["ROLE_USER", {"ROLE_USER": True}, 123],
+)
+def test_user_invalid_granted_authorities_type(granted_authorities):
+    """Test that invalid grantedAuthorities types raise ValueError."""
+    with pytest.raises(ValueError):
+        User(
+            username="testuser",
+            password="password123",
+            dateCreated="2024-01-01T00:00:00Z",
+            grantedAuthorities=granted_authorities,
+        )
+
+
+@pytest.mark.parametrize(
+    "granted_authorities",
+    [["ROLE_USER", 123], [1, 2, 3], ["ROLE_USER", None]],
+)
+def test_user_invalid_granted_authorities_elements(granted_authorities):
+    """Test that non-string elements in grantedAuthorities raise ValueError."""
+    with pytest.raises(ValueError):
+        User(
+            username="testuser",
+            password="password123",
+            dateCreated="2024-01-01T00:00:00Z",
+            grantedAuthorities=granted_authorities,
+        )
+
+
+@pytest.mark.parametrize(
+    "app_settings",
+    ["settings", ["setting"], 123],
+)
+def test_user_invalid_app_settings_type(app_settings):
+    """Test that invalid appSettings types raise ValueError."""
+    with pytest.raises(ValueError):
+        User(
+            username="testuser",
+            password="password123",
+            dateCreated="2024-01-01T00:00:00Z",
+            appSettings=app_settings,
+        )
+
+
+def test_user_invalid_app_settings_key():
+    """Test that non-string keys in appSettings raise ValueError."""
+    with pytest.raises(ValueError):
+        User(
+            username="testuser",
+            password="password123",
+            dateCreated="2024-01-01T00:00:00Z",
+            appSettings={1: "value"},
+        )
+
+
+@pytest.mark.parametrize(
+    "gpt_threads",
+    ["thread", {"thread": 1}, 123],
+)
+def test_user_invalid_gpt_threads_type(gpt_threads):
+    """Test that invalid gptThreads types raise ValueError."""
+    with pytest.raises(ValueError):
+        User(
+            username="testuser",
+            password="password123",
+            dateCreated="2024-01-01T00:00:00Z",
+            gptThreads=gpt_threads,
+        )
+
+
+def test_user_as_dict():
+    """Test User.as_dict() serialization."""
+    user = User(
+        username="testuser",
+        password="password123",
+        dateCreated="2024-01-01T00:00:00Z",
+        grantedAuthorities=["ROLE_USER"],
+        appSettings={"theme": "dark"},
+        gptThreads=[{"id": 1}],
+    )
+
+    result = user.as_dict()
+
+    assert isinstance(result, dict)
+    assert result["username"] == "testuser"
+    assert result["password"] == "password123"
+    assert result["dateCreated"] == "2024-01-01T00:00:00Z"
+    assert result["grantedAuthorities"] == ["ROLE_USER"]
+    assert result["appSettings"] == {"theme": "dark"}
+    assert result["gptThreads"] == [{"id": 1}]
