@@ -31,6 +31,7 @@ from rdflib.contrib.graphdb.models import (
     StatementAccessControlEntry,
     SystemAccessControlEntry,
     User,
+    UserUpdate,
     _parse_operation,
     _parse_plugin,
     _parse_policy,
@@ -1297,6 +1298,46 @@ class UserManagement:
                 raise ForbiddenError("Request is forbidden.") from err
             elif err.response.status_code == 404:
                 raise NotFoundError("User not found.") from err
+            raise
+
+    def update(self, username: str, user: UserUpdate | dict[str, t.Any]) -> None:
+        """
+        Update a user.
+
+        !!! Note
+            Certain user fields are not updatable using PATCH. For example, at the
+            time of writing, `grantedAuthorities` are not updatable, but `appSettings` are.
+
+        Parameters:
+            username: The username of the user.
+            user: The user data to update, either as a UserUpdate instance or a dict.
+
+        Raises:
+            TypeError: if username is not a string or user is not an instance of UserUpdate or dict.
+            ForbiddenError: If the request is forbidden.
+            PreconditionFailedError: If the precondition is failed.
+        """
+        if not isinstance(username, str):
+            raise TypeError("Username must be a string.")
+        if not isinstance(user, (UserUpdate, dict)):
+            raise TypeError("User must be an instance of UserUpdate or dict.")
+
+        if isinstance(user, UserUpdate):
+            user_data = user.as_dict()
+        else:
+            user_data = user
+
+        try:
+            headers = {"Content-Type": "application/json"}
+            response = self.http_client.patch(
+                f"/rest/security/users/{username}", headers=headers, json=user_data
+            )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 403:
+                raise ForbiddenError("Request is forbidden.") from err
+            elif err.response.status_code == 412:
+                raise PreconditionFailedError("Precondition failed.") from err
             raise
 
 

@@ -14,7 +14,7 @@ from rdflib.contrib.graphdb.exceptions import (
     ResponseFormatError,
     UnauthorisedError,
 )
-from rdflib.contrib.graphdb.models import User
+from rdflib.contrib.graphdb.models import User, UserUpdate
 from rdflib.contrib.rdf4j import has_httpx
 
 pytestmark = pytest.mark.skipif(
@@ -939,3 +939,133 @@ def test_delete_user_reraises_other_http_errors(
 
     with pytest.raises(httpx.HTTPStatusError):
         client.users.delete("testuser")
+
+
+def test_update_user_success(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that update sends a PATCH request with correct headers and body."""
+    user_dict = {"appSettings": {"theme": "dark"}}
+    mock_response = Mock(spec=httpx.Response)
+    mock_httpx_patch = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "patch", mock_httpx_patch)
+
+    result = client.users.update("admin", user_dict)
+
+    assert result is None
+    mock_httpx_patch.assert_called_once_with(
+        "/rest/security/users/admin",
+        headers={"Content-Type": "application/json"},
+        json=user_dict,
+    )
+    mock_response.raise_for_status.assert_called_once()
+
+
+def test_update_user_success_with_user_update_model(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that update works with UserUpdate model and serializes it correctly."""
+    user_update = UserUpdate(
+        password="",
+        appSettings={"theme": "dark"},
+        gptThreads=[],
+    )
+    mock_response = Mock(spec=httpx.Response)
+    mock_httpx_patch = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "patch", mock_httpx_patch)
+
+    result = client.users.update("admin", user_update)
+
+    assert result is None
+    mock_httpx_patch.assert_called_once_with(
+        "/rest/security/users/admin",
+        headers={"Content-Type": "application/json"},
+        json=user_update.as_dict(),
+    )
+    mock_response.raise_for_status.assert_called_once()
+
+
+def test_update_user_raises_type_error_for_non_string_username(
+    client: GraphDBClient,
+):
+    """Test that update raises TypeError when username is not a string."""
+    user_dict = {"appSettings": {"theme": "dark"}}
+
+    with pytest.raises(TypeError, match="Username must be a string"):
+        client.users.update(123, user_dict)
+
+
+def test_update_user_raises_type_error_for_invalid_user(
+    client: GraphDBClient,
+):
+    """Test that update raises TypeError when user is not a UserUpdate or dict."""
+    with pytest.raises(
+        TypeError, match="User must be an instance of UserUpdate or dict"
+    ):
+        client.users.update("admin", "invalid")
+
+
+def test_update_user_raises_forbidden_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that update raises ForbiddenError for 403 responses."""
+    user_dict = {"appSettings": {"theme": "dark"}}
+    mock_response = Mock(spec=httpx.Response, status_code=403, text="Forbidden")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "HTTP 403",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_patch = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "patch", mock_httpx_patch)
+
+    with pytest.raises(ForbiddenError, match="Request is forbidden"):
+        client.users.update("admin", user_dict)
+
+
+def test_update_user_raises_precondition_failed_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that update raises PreconditionFailedError for 412 responses."""
+    user_dict = {"appSettings": {"theme": "dark"}}
+    mock_response = Mock(
+        spec=httpx.Response, status_code=412, text="Precondition failed"
+    )
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "HTTP 412",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_patch = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "patch", mock_httpx_patch)
+
+    with pytest.raises(PreconditionFailedError, match="Precondition failed"):
+        client.users.update("admin", user_dict)
+
+
+@pytest.mark.parametrize(
+    "status_code",
+    [400, 401, 404, 409, 500, 502, 503],
+)
+def test_update_user_reraises_other_http_errors(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    status_code: int,
+):
+    """Test that update re-raises HTTPStatusError for unhandled status codes."""
+    user_dict = {"appSettings": {"theme": "dark"}}
+    mock_response = Mock(spec=httpx.Response, status_code=status_code, text="Error")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        f"HTTP {status_code}",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_patch = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "patch", mock_httpx_patch)
+
+    with pytest.raises(httpx.HTTPStatusError):
+        client.users.update("admin", user_dict)

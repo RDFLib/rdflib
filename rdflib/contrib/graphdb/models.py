@@ -9,6 +9,16 @@ from rdflib.util import from_n3
 
 
 @dataclass(frozen=True)
+class UserUpdate:
+    password: str = field(default="")
+    appSettings: dict[str, t.Any] = field(default_factory=dict)  # noqa: N815
+    gptThreads: list[t.Any] = field(default_factory=list)  # noqa: N815
+
+    def as_dict(self) -> dict[str, t.Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
 class User:
     username: str
     password: str

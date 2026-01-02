@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 from rdflib.contrib.graphdb.exceptions import BadRequestError, NotFoundError
-from rdflib.contrib.graphdb.models import User
+from rdflib.contrib.graphdb.models import User, UserUpdate
 from rdflib.contrib.rdf4j import has_httpx
 
 pytestmark = pytest.mark.skipif(
@@ -363,3 +363,134 @@ def test_delete_user_raises_not_found_for_nonexistent_user(client: GraphDBClient
     """Test that delete raises NotFoundError for a non-existent user."""
     with pytest.raises(NotFoundError, match="User not found"):
         client.users.delete("nonexistent_user_12345")
+
+
+@pytest.mark.testcontainer
+def test_update_user_updates_app_settings(client: GraphDBClient):
+    """Test that update successfully updates a user's appSettings via PATCH."""
+    username = "test_update_user_12345"
+    user = User(
+        username=username,
+        password="password123",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+        appSettings={"initial_setting": "initial_value"},
+        gptThreads=[],
+    )
+
+    try:
+        # Create the user first
+        client.users.create(username, user)
+
+        # Update only the appSettings using PATCH with a dict
+        user_dict = {"appSettings": {"updated_setting": "updated_value"}}
+        result = client.users.update(username, user_dict)
+        assert result is None
+
+        # Verify the user was updated
+        fetched_user = client.users.get(username)
+        assert fetched_user.appSettings.get("updated_setting") == "updated_value"
+    finally:
+        # Clean up
+        try:
+            client.users.delete(username)
+        except Exception:
+            pass
+
+
+@pytest.mark.testcontainer
+def test_update_user_preserves_existing_fields(client: GraphDBClient):
+    """Test that update via PATCH preserves fields not included in the update."""
+    username = "test_update_preserve_12345"
+    user = User(
+        username=username,
+        password="password123",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER", "READ_REPO_test-repo"],
+        appSettings={"existing_setting": "existing_value"},
+        gptThreads=[],
+    )
+
+    try:
+        # Create the user first
+        client.users.create(username, user)
+
+        # Update only the appSettings using PATCH with a dict
+        # Note: PATCH only affects certain properties like appSettings
+        user_dict = {"appSettings": {"theme": "dark"}}
+        client.users.update(username, user_dict)
+
+        # Verify the role is preserved (authorities are not affected by PATCH)
+        fetched_user = client.users.get(username)
+        assert "ROLE_USER" in fetched_user.grantedAuthorities
+        assert "READ_REPO_test-repo" in fetched_user.grantedAuthorities
+    finally:
+        # Clean up
+        try:
+            client.users.delete(username)
+        except Exception:
+            pass
+
+
+@pytest.mark.testcontainer
+def test_update_user_returns_none(client: GraphDBClient):
+    """Test that update returns None on success."""
+    username = "test_update_none_12345"
+    user = User(
+        username=username,
+        password="password123",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+        appSettings={},
+        gptThreads=[],
+    )
+
+    try:
+        # Create the user first
+        client.users.create(username, user)
+
+        # Update the user with a dict
+        user_dict = {"appSettings": {"key": "value"}}
+        result = client.users.update(username, user_dict)
+
+        assert result is None
+    finally:
+        # Clean up
+        try:
+            client.users.delete(username)
+        except Exception:
+            pass
+
+
+@pytest.mark.testcontainer
+def test_update_user_with_user_update_model(client: GraphDBClient):
+    """Test that update works with UserUpdate model."""
+    username = "test_update_model_12345"
+    user = User(
+        username=username,
+        password="password123",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+        appSettings={},
+        gptThreads=[],
+    )
+
+    try:
+        # Create the user first
+        client.users.create(username, user)
+
+        # Update the user with a UserUpdate model
+        user_update = UserUpdate(appSettings={"model_setting": "model_value"})
+        result = client.users.update(username, user_update)
+
+        assert result is None
+
+        # Verify the user was updated
+        fetched_user = client.users.get(username)
+        assert fetched_user.appSettings.get("model_setting") == "model_value"
+    finally:
+        # Clean up
+        try:
+            client.users.delete(username)
+        except Exception:
+            pass
