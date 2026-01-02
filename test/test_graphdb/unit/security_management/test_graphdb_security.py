@@ -9,6 +9,7 @@ from rdflib.contrib.graphdb.exceptions import (
     GraphDBError,
     InternalServerError,
     PreconditionFailedError,
+    ResponseFormatError,
     UnauthorisedError,
 )
 from rdflib.contrib.rdf4j import has_httpx
@@ -67,6 +68,69 @@ def test_security_enabled_getter_raises_internal_server_error(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
     with pytest.raises(InternalServerError):
+        _ = client.security.enabled
+
+
+@pytest.mark.parametrize(
+    "response_value",
+    [
+        "true",
+        "false",
+        1,
+        0,
+        {"enabled": True},
+        ["enabled"],
+        None,
+    ],
+)
+def test_security_enabled_getter_raises_response_format_error_for_non_boolean(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    response_value,
+):
+    """Test that the enabled getter raises ResponseFormatError when response is not a boolean."""
+    mock_response = Mock(spec=httpx.Response, json=lambda: response_value)
+    mock_httpx_get = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
+
+    with pytest.raises(ResponseFormatError, match="Response is not a boolean"):
+        _ = client.security.enabled
+
+
+def test_security_enabled_getter_raises_response_format_error_on_json_parse_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that the enabled getter raises ResponseFormatError when JSON parsing fails."""
+    mock_response = Mock(spec=httpx.Response)
+    mock_response.json.side_effect = ValueError("Invalid JSON")
+    mock_httpx_get = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
+
+    with pytest.raises(ResponseFormatError, match="Failed to parse GraphDB response"):
+        _ = client.security.enabled
+
+
+@pytest.mark.parametrize(
+    "status_code",
+    [400, 401, 403, 404, 409],
+)
+def test_security_enabled_getter_reraises_other_http_errors(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    status_code: int,
+):
+    """Test that the enabled getter re-raises HTTPStatusError for non-500 status codes."""
+    mock_response = Mock(spec=httpx.Response, status_code=status_code, text="Error")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        f"HTTP {status_code}",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_get = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
+
+    with pytest.raises(httpx.HTTPStatusError):
         _ = client.security.enabled
 
 

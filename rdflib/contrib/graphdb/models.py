@@ -16,20 +16,21 @@ class FreeAccessSettings:
 
     def __post_init__(self) -> None:
         invalid: list[tuple[str, t.Any, type]] = []
-        if type(self.enabled) is not bool:
-            invalid.append(("enabled", self.enabled, type(self.enabled)))
-        if not isinstance(self.authorities, list):
-            invalid.append(("authorities", self.authorities, type(self.authorities)))
+        enabled = t.cast(t.Any, self.enabled)
+        authorities = t.cast(t.Any, self.authorities)
+        app_settings = t.cast(t.Any, self.appSettings)
+        if type(enabled) is not bool:
+            invalid.append(("enabled", enabled, type(enabled)))
+        if not isinstance(authorities, list):
+            invalid.append(("authorities", authorities, type(authorities)))
         else:
-            for index, value in enumerate(self.authorities):
+            for index, value in enumerate(authorities):
                 if not isinstance(value, str):
-                    invalid.append(
-                        (f"authorities[{index}]", value, type(value))
-                    )
-        if not isinstance(self.appSettings, dict):
-            invalid.append(("appSettings", self.appSettings, type(self.appSettings)))
+                    invalid.append((f"authorities[{index}]", value, type(value)))
+        if not isinstance(app_settings, dict):
+            invalid.append(("appSettings", app_settings, type(app_settings)))
         else:
-            for key in self.appSettings.keys():
+            for key in app_settings.keys():
                 if not isinstance(key, str):
                     invalid.append(("appSettings key", key, type(key)))
                     break

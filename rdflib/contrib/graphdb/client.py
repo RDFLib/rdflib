@@ -21,6 +21,7 @@ from rdflib.contrib.graphdb.exceptions import (
 from rdflib.contrib.graphdb.models import (
     AccessControlEntry,
     ClearGraphAccessControlEntry,
+    FreeAccessSettings,
     GraphDBRepository,
     PluginAccessControlEntry,
     RepositoryConfigBean,
@@ -998,13 +999,22 @@ class SecurityManagement:
             bool: True if security is enabled, False otherwise.
 
         Raises:
+            ResponseFormatError: If the response format is invalid.
             InternalServerError: If the server returns an internal error.
         """
         try:
             headers = {"Accept": "application/json"}
             response = self.http_client.get("/rest/security", headers=headers)
             response.raise_for_status()
-            return response.json()
+            try:
+                value = response.json()
+                if not isinstance(value, bool):
+                    raise ResponseFormatError("Response is not a boolean.")
+                return value
+            except (ValueError, TypeError) as err:
+                raise ResponseFormatError(
+                    f"Failed to parse GraphDB response: {err}"
+                ) from err
         except httpx.HTTPStatusError as err:
             if err.response.status_code == 500:
                 raise InternalServerError(
@@ -1031,6 +1041,65 @@ class SecurityManagement:
             headers = {"Content-Type": "application/json", "Accept": "application/json"}
             response = self.http_client.post(
                 "/rest/security", headers=headers, json=value
+            )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 401:
+                raise UnauthorisedError("Request is unauthorised.") from err
+            elif err.response.status_code == 403:
+                raise ForbiddenError("Request is forbidden.") from err
+            elif err.response.status_code == 412:
+                raise PreconditionFailedError("Precondition failed.") from err
+            raise
+
+    def get_free_access_details(self):
+        """
+        Check if free access is enabled.
+
+        Returns:
+            FreeAccessSettings: The free access settings.
+
+        Raises:
+            ResponseFormatError: If the response format is invalid.
+            InternalServerError: If the server returns an internal error.
+        """
+        try:
+            headers = {"Accept": "application/json"}
+            response = self.http_client.get(
+                "/rest/security/free-access", headers=headers
+            )
+            response.raise_for_status()
+            try:
+                return FreeAccessSettings(**response.json())
+            except (ValueError, TypeError) as err:
+                raise ResponseFormatError(
+                    f"Failed to parse GraphDB response: {err}"
+                ) from err
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            raise
+
+    def set_free_access_details(self, free_access_settings: FreeAccessSettings):
+        """
+        Enable or disable free access.
+
+        Parameters:
+            free_access_settings: The free access settings.
+
+        Raises:
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            PreconditionFailedError: If the precondition is failed.
+        """
+        try:
+            headers = {"Content-Type": "application/json", "Accept": "application/json"}
+            response = self.http_client.post(
+                "/rest/security/free-access",
+                headers=headers,
+                json=free_access_settings.as_dict(),
             )
             response.raise_for_status()
         except httpx.HTTPStatusError as err:
