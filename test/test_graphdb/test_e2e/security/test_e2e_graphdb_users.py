@@ -296,4 +296,70 @@ def test_create_user_raises_bad_request_for_duplicate_user(client: GraphDBClient
         with pytest.raises(BadRequestError):
             client.users.create(username, user)
     finally:
-        pass
+        # Clean up: delete the user
+        try:
+            client.users.delete(username)
+        except Exception:
+            pass
+
+
+@pytest.mark.testcontainer
+def test_delete_user_deletes_existing_user(client: GraphDBClient):
+    """Test that delete successfully deletes a user."""
+    username = "test_delete_user_12345"
+    user = User(
+        username=username,
+        password="password123",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+        appSettings={},
+        gptThreads=[],
+    )
+
+    # Create the user first
+    client.users.create(username, user)
+
+    # Delete the user
+    result = client.users.delete(username)
+    assert result is None
+
+    # Verify the user was deleted
+    with pytest.raises(NotFoundError, match="User not found"):
+        client.users.get(username)
+
+
+@pytest.mark.testcontainer
+def test_delete_user_removes_from_users_list(client: GraphDBClient):
+    """Test that a deleted user no longer appears in the users list."""
+    username = "test_delete_list_12345"
+    user = User(
+        username=username,
+        password="password123",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+        appSettings={},
+        gptThreads=[],
+    )
+
+    # Create the user first
+    client.users.create(username, user)
+
+    # Verify user exists in list
+    users = client.users.list()
+    usernames = [u.username for u in users]
+    assert username in usernames
+
+    # Delete the user
+    client.users.delete(username)
+
+    # Verify user no longer in list
+    users = client.users.list()
+    usernames = [u.username for u in users]
+    assert username not in usernames
+
+
+@pytest.mark.testcontainer
+def test_delete_user_raises_not_found_for_nonexistent_user(client: GraphDBClient):
+    """Test that delete raises NotFoundError for a non-existent user."""
+    with pytest.raises(NotFoundError, match="User not found"):
+        client.users.delete("nonexistent_user_12345")

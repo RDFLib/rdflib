@@ -800,3 +800,142 @@ def test_create_user_reraises_other_http_errors(
 
     with pytest.raises(httpx.HTTPStatusError):
         client.users.create("newuser", user)
+
+
+def test_delete_user_success(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that delete sends a DELETE request with the correct endpoint."""
+    mock_response = Mock(spec=httpx.Response)
+    mock_httpx_delete = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
+
+    result = client.users.delete("testuser")
+
+    assert result is None
+    mock_httpx_delete.assert_called_once_with("/rest/security/users/testuser")
+    mock_response.raise_for_status.assert_called_once()
+
+
+def test_delete_user_raises_type_error_for_non_string_username(
+    client: GraphDBClient,
+):
+    """Test that delete raises TypeError when username is not a string."""
+    with pytest.raises(TypeError, match="Username must be a string"):
+        client.users.delete(123)
+
+
+def test_delete_user_raises_bad_request_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that delete raises BadRequestError for 400 responses."""
+    error_text = "Bad request"
+    mock_response = Mock(spec=httpx.Response, status_code=400, text=error_text)
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "HTTP 400",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_delete = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
+
+    with pytest.raises(BadRequestError, match="Bad request"):
+        client.users.delete("testuser")
+
+
+def test_delete_user_bad_request_error_includes_response_text(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that BadRequestError includes the response text in the message."""
+    error_text = "Cannot delete last admin user"
+    mock_response = Mock(spec=httpx.Response, status_code=400, text=error_text)
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "HTTP 400",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_delete = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
+
+    with pytest.raises(BadRequestError, match=error_text):
+        client.users.delete("admin")
+
+
+def test_delete_user_raises_unauthorised_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that delete raises UnauthorisedError for 401 responses."""
+    mock_response = Mock(spec=httpx.Response, status_code=401, text="Unauthorized")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "HTTP 401",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_delete = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
+
+    with pytest.raises(UnauthorisedError, match="Request is unauthorised"):
+        client.users.delete("testuser")
+
+
+def test_delete_user_raises_forbidden_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that delete raises ForbiddenError for 403 responses."""
+    mock_response = Mock(spec=httpx.Response, status_code=403, text="Forbidden")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "HTTP 403",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_delete = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
+
+    with pytest.raises(ForbiddenError, match="Request is forbidden"):
+        client.users.delete("testuser")
+
+
+def test_delete_user_raises_not_found_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that delete raises NotFoundError for 404 responses."""
+    mock_response = Mock(spec=httpx.Response, status_code=404, text="Not found")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "HTTP 404",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_delete = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
+
+    with pytest.raises(NotFoundError, match="User not found"):
+        client.users.delete("nonexistent")
+
+
+@pytest.mark.parametrize(
+    "status_code",
+    [409, 500, 502, 503],
+)
+def test_delete_user_reraises_other_http_errors(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    status_code: int,
+):
+    """Test that delete re-raises HTTPStatusError for unhandled status codes."""
+    mock_response = Mock(spec=httpx.Response, status_code=status_code, text="Error")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        f"HTTP {status_code}",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_delete = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
+
+    with pytest.raises(httpx.HTTPStatusError):
+        client.users.delete("testuser")

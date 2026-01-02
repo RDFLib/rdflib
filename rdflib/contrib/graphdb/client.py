@@ -1268,6 +1268,37 @@ class UserManagement:
                 raise ForbiddenError("Request is forbidden.") from err
             raise
 
+    def delete(self, username: str) -> None:
+        """
+        Delete a user.
+
+        Parameters:
+            username: The username of the user.
+
+        Raises:
+            TypeError: if username is not a string.
+            BadRequestError: If the request is bad.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            NotFoundError: If the user is not found.
+        """
+        if not isinstance(username, str):
+            raise TypeError("Username must be a string.")
+
+        try:
+            response = self.http_client.delete(f"/rest/security/users/{username}")
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 400:
+                raise BadRequestError(f"Bad request. {err.response.text}") from err
+            elif err.response.status_code == 401:
+                raise UnauthorisedError("Request is unauthorised.") from err
+            elif err.response.status_code == 403:
+                raise ForbiddenError("Request is forbidden.") from err
+            elif err.response.status_code == 404:
+                raise NotFoundError("User not found.") from err
+            raise
+
 
 class GraphDBClient(RDF4JClient):
     """GraphDB Client"""
