@@ -77,30 +77,34 @@ def test_graphdb_fgac_rules_add(client: GraphDBClient):
     repo.acl_rules.add(acl_rules)
     assert repo.acl_rules.list() == acl_rules
 
-    acl_rule_2 = AccessControlEntry.from_dict({
-        "policy": "allow",
-        "role": "*",
-        "scope": "statement",
-        "operation": "*",
-        "subject": "*",
-        "predicate": "*",
-        "object": "*",
-        "context": "<urn:graph:test2>",
-    })
+    acl_rule_2 = AccessControlEntry.from_dict(
+        {
+            "policy": "allow",
+            "role": "*",
+            "scope": "statement",
+            "operation": "*",
+            "subject": "*",
+            "predicate": "*",
+            "object": "*",
+            "context": "<urn:graph:test2>",
+        }
+    )
     repo.acl_rules.add([acl_rule_2])
     # Rule is added to the end.
     assert repo.acl_rules.list() == acl_rules + [acl_rule_2]
 
-    acl_rule_3 = AccessControlEntry.from_dict({
-        "policy": "allow",
-        "role": "*",
-        "scope": "statement",
-        "operation": "*",
-        "subject": "*",
-        "predicate": "*",
-        "object": "*",
-        "context": "<urn:graph:test3>",
-    })
+    acl_rule_3 = AccessControlEntry.from_dict(
+        {
+            "policy": "allow",
+            "role": "*",
+            "scope": "statement",
+            "operation": "*",
+            "subject": "*",
+            "predicate": "*",
+            "object": "*",
+            "context": "<urn:graph:test3>",
+        }
+    )
     repo.acl_rules.add([acl_rule_3], position=1)
     # Rule is added to the specified position.
     assert repo.acl_rules.list() == [acl_rules[0], acl_rule_3, acl_rules[1], acl_rule_2]

@@ -76,7 +76,9 @@ def test_fgac_delete_sends_payload_and_handles_empty_response(
 
 def test_fgac_delete_rejects_non_list_payload(client: GraphDBClient):
     repo = Repository("repo", client.http_client)
-    with pytest.raises(ValueError, match="All ACL rules must be AccessControlEntry instances."):
+    with pytest.raises(
+        ValueError, match="All ACL rules must be AccessControlEntry instances."
+    ):
         repo.acl_rules.delete("not a list")  # type: ignore[arg-type]
 
 
@@ -87,7 +89,9 @@ def test_fgac_delete_rejects_invalid_entries(
     monkeypatch.setattr(httpx.Client, "request", mock_httpx_request)
 
     repo = Repository("repo", client.http_client)
-    with pytest.raises(ValueError, match="All ACL rules must be AccessControlEntry instances."):
+    with pytest.raises(
+        ValueError, match="All ACL rules must be AccessControlEntry instances."
+    ):
         repo.acl_rules.delete(["not an ACL entry"])  # type: ignore[list-item]
     mock_httpx_request.assert_not_called()
 
