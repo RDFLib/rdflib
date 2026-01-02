@@ -469,3 +469,155 @@ def test_get_user_reraises_other_http_errors(
 
     with pytest.raises(httpx.HTTPStatusError):
         client.users.get("admin")
+
+
+def test_overwrite_user_success(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that overwrite sends a PUT request with correct headers and body."""
+    user = User(
+        username="admin",
+        password="newpass",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_ADMIN"],
+        appSettings={},
+        gptThreads=[],
+    )
+    mock_response = Mock(spec=httpx.Response)
+    mock_httpx_put = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
+
+    result = client.users.overwrite("admin", user)
+
+    assert result is None
+    mock_httpx_put.assert_called_once_with(
+        "/rest/security/users/admin",
+        headers={"Content-Type": "application/json"},
+        json=user.as_dict(),
+    )
+    mock_response.raise_for_status.assert_called_once()
+
+
+def test_overwrite_user_raises_type_error_for_non_string_username(
+    client: GraphDBClient,
+):
+    """Test that overwrite raises TypeError when username is not a string."""
+    user = User(
+        username="admin",
+        password="",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_ADMIN"],
+    )
+
+    with pytest.raises(TypeError, match="Username must be a string"):
+        client.users.overwrite(123, user)  # type: ignore[arg-type]
+
+
+def test_overwrite_user_raises_type_error_for_non_user_object(
+    client: GraphDBClient,
+):
+    """Test that overwrite raises TypeError when user is not a User instance."""
+    with pytest.raises(TypeError, match="User must be an instance of User"):
+        client.users.overwrite("admin", {"username": "admin"})  # type: ignore[arg-type]
+
+
+def test_overwrite_user_raises_unauthorised_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that overwrite raises UnauthorisedError for 401 responses."""
+    user = User(
+        username="admin",
+        password="",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_ADMIN"],
+    )
+    mock_response = Mock(spec=httpx.Response, status_code=401, text="Unauthorized")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "HTTP 401",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_put = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
+
+    with pytest.raises(UnauthorisedError, match="Request is unauthorised"):
+        client.users.overwrite("admin", user)
+
+
+def test_overwrite_user_raises_forbidden_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that overwrite raises ForbiddenError for 403 responses."""
+    user = User(
+        username="admin",
+        password="",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_ADMIN"],
+    )
+    mock_response = Mock(spec=httpx.Response, status_code=403, text="Forbidden")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "HTTP 403",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_put = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
+
+    with pytest.raises(ForbiddenError, match="Request is forbidden"):
+        client.users.overwrite("admin", user)
+
+
+def test_overwrite_user_raises_not_found_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that overwrite raises NotFoundError for 404 responses."""
+    user = User(
+        username="nonexistent",
+        password="",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+    )
+    mock_response = Mock(spec=httpx.Response, status_code=404, text="Not found")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "HTTP 404",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_put = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
+
+    with pytest.raises(NotFoundError, match="User not found"):
+        client.users.overwrite("nonexistent", user)
+
+
+@pytest.mark.parametrize(
+    "status_code",
+    [400, 409, 500, 502, 503],
+)
+def test_overwrite_user_reraises_other_http_errors(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    status_code: int,
+):
+    """Test that overwrite re-raises HTTPStatusError for unhandled status codes."""
+    user = User(
+        username="admin",
+        password="",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_ADMIN"],
+    )
+    mock_response = Mock(spec=httpx.Response, status_code=status_code, text="Error")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        f"HTTP {status_code}",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_put = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
+
+    with pytest.raises(httpx.HTTPStatusError):
+        client.users.overwrite("admin", user)

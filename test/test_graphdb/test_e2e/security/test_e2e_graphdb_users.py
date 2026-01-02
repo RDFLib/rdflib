@@ -111,3 +111,80 @@ def test_get_user_raises_not_found_for_nonexistent_user(client: GraphDBClient):
     """Test that get raises NotFoundError for a non-existent user."""
     with pytest.raises(NotFoundError, match="User not found"):
         client.users.get("nonexistent_user_12345")
+
+
+@pytest.mark.testcontainer
+def test_overwrite_user_updates_admin_user(client: GraphDBClient):
+    """Test that overwrite successfully updates the admin user."""
+    # Get the current admin user
+    original_user = client.users.get("admin")
+
+    # Create an updated user with modified appSettings
+    # Note: We must explicitly set password to "admin" because the GET response
+    # returns an empty password field, and sending it back would reset the password
+    updated_user = User(
+        username=original_user.username,
+        password="admin",  # Must set explicitly to maintain auth
+        dateCreated=original_user.dateCreated,
+        grantedAuthorities=original_user.grantedAuthorities,
+        appSettings={"test_setting": "test_value"},
+        gptThreads=original_user.gptThreads,
+    )
+
+    # Overwrite the user
+    result = client.users.overwrite("admin", updated_user)
+    assert result is None
+
+    # Verify the user was updated
+    fetched_user = client.users.get("admin")
+    assert fetched_user.appSettings.get("test_setting") == "test_value"
+
+    # Restore original user to clean up (with explicit password)
+    restore_user = User(
+        username=original_user.username,
+        password="admin",  # Must set explicitly to maintain auth
+        dateCreated=original_user.dateCreated,
+        grantedAuthorities=original_user.grantedAuthorities,
+        appSettings=original_user.appSettings,
+        gptThreads=original_user.gptThreads,
+    )
+    client.users.overwrite("admin", restore_user)
+
+
+@pytest.mark.testcontainer
+def test_overwrite_user_preserves_admin_role(client: GraphDBClient):
+    """Test that overwrite preserves the admin role when specified."""
+    original_user = client.users.get("admin")
+
+    # Overwrite with same authorities
+    # Note: Must explicitly set password to "admin" to maintain authentication
+    updated_user = User(
+        username=original_user.username,
+        password="admin",  # Must set explicitly to maintain auth
+        dateCreated=original_user.dateCreated,
+        grantedAuthorities=original_user.grantedAuthorities,
+        appSettings=original_user.appSettings,
+        gptThreads=original_user.gptThreads,
+    )
+
+    client.users.overwrite("admin", updated_user)
+
+    # Verify admin role is preserved
+    fetched_user = client.users.get("admin")
+    assert "ROLE_ADMIN" in fetched_user.grantedAuthorities
+
+
+@pytest.mark.testcontainer
+def test_overwrite_user_raises_not_found_for_nonexistent_user(client: GraphDBClient):
+    """Test that overwrite raises NotFoundError for a non-existent user."""
+    user = User(
+        username="nonexistent_user_12345",
+        password="password",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+        appSettings={},
+        gptThreads=[],
+    )
+
+    with pytest.raises(NotFoundError, match="User not found"):
+        client.users.overwrite("nonexistent_user_12345", user)
