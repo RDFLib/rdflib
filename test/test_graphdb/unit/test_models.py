@@ -10,6 +10,7 @@ pytestmark = pytest.mark.skipif(
 
 if has_httpx:
     from rdflib.contrib.graphdb.models import (
+        FreeAccessSettings,
         GraphDBRepository,
         OWLimParameter,
         RepositoryConfigBeanCreate,
@@ -190,3 +191,47 @@ def test_graphdb_repository_from_dict_state_enum():
 
     assert repo.id == "repo2"
     assert repo.state == RepositoryState.RUNNING
+
+
+def test_free_access_settings_valid():
+    settings = FreeAccessSettings(
+        enabled=True,
+        authorities=["ROLE_USER"],
+        appSettings={"maxAge": 3600},
+    )
+
+    assert settings.enabled is True
+    assert settings.authorities == ["ROLE_USER"]
+    assert settings.appSettings == {"maxAge": 3600}
+
+
+@pytest.mark.parametrize(
+    "enabled",
+    [1, "true", None],
+)
+def test_free_access_settings_invalid_enabled(enabled):
+    with pytest.raises(ValueError):
+        FreeAccessSettings(enabled=enabled)
+
+
+@pytest.mark.parametrize(
+    "authorities",
+    ["ROLE_USER", ["ROLE_USER", 1], [1], {"ROLE_USER": True}],
+)
+def test_free_access_settings_invalid_authorities(authorities):
+    with pytest.raises(ValueError):
+        FreeAccessSettings(enabled=True, authorities=authorities)
+
+
+@pytest.mark.parametrize(
+    "app_settings",
+    ["value", ["setting"], 1],
+)
+def test_free_access_settings_invalid_app_settings_type(app_settings):
+    with pytest.raises(ValueError):
+        FreeAccessSettings(enabled=True, appSettings=app_settings)
+
+
+def test_free_access_settings_invalid_app_settings_key():
+    with pytest.raises(ValueError):
+        FreeAccessSettings(enabled=True, appSettings={1: "value"})

@@ -9,6 +9,39 @@ from rdflib.util import from_n3
 
 
 @dataclass(frozen=True)
+class FreeAccessSettings:
+    enabled: bool
+    authorities: list[str] = field(default_factory=list)
+    appSettings: dict[str, t.Any] = field(default_factory=dict)  # noqa: N815
+
+    def __post_init__(self) -> None:
+        invalid: list[tuple[str, t.Any, type]] = []
+        if type(self.enabled) is not bool:
+            invalid.append(("enabled", self.enabled, type(self.enabled)))
+        if not isinstance(self.authorities, list):
+            invalid.append(("authorities", self.authorities, type(self.authorities)))
+        else:
+            for index, value in enumerate(self.authorities):
+                if not isinstance(value, str):
+                    invalid.append(
+                        (f"authorities[{index}]", value, type(value))
+                    )
+        if not isinstance(self.appSettings, dict):
+            invalid.append(("appSettings", self.appSettings, type(self.appSettings)))
+        else:
+            for key in self.appSettings.keys():
+                if not isinstance(key, str):
+                    invalid.append(("appSettings key", key, type(key)))
+                    break
+
+        if invalid:
+            raise ValueError("Invalid FreeAccessSettings values: ", invalid)
+
+    def as_dict(self):
+        return asdict(self)
+
+
+@dataclass(frozen=True)
 class RepositorySizeInfo:
     inferred: int
     total: int
