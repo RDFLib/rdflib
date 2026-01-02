@@ -12,7 +12,7 @@ from rdflib.util import from_n3
 class User:
     username: str
     password: str
-    dateCreated: str  # noqa: N815
+    dateCreated: int  # noqa: N815
     grantedAuthorities: list[str] | None = field(default_factory=list)  # noqa: N815
     appSettings: dict[str, t.Any] | None = field(default_factory=dict)  # noqa: N815
     gptThreads: list[t.Any] | None = field(default_factory=list)  # noqa: N815
@@ -38,7 +38,7 @@ class User:
             invalid.append(("username", username, type(username)))
         if not isinstance(password, str):
             invalid.append(("password", password, type(password)))
-        if not isinstance(date_created, str):
+        if not isinstance(date_created, int):
             invalid.append(("dateCreated", date_created, type(date_created)))
 
         if not isinstance(granted_authorities, list):

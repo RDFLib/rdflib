@@ -33,6 +33,10 @@ class ForbiddenError(GraphDBError):
     """Raised when the user is forbidden."""
 
 
+class NotFoundError(GraphDBError):
+    """Raised when the resource is not found."""
+
+
 class PreconditionFailedError(GraphDBError):
     """Raised when the precondition is failed."""
 

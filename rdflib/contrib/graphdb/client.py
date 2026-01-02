@@ -12,6 +12,7 @@ from rdflib.contrib.graphdb.exceptions import (
     BadRequestError,
     ForbiddenError,
     InternalServerError,
+    NotFoundError,
     PreconditionFailedError,
     RepositoryNotFoundError,
     RepositoryNotHealthyError,
@@ -1139,7 +1140,7 @@ class UserManagement:
         """
         headers = {"Accept": "application/json"}
         try:
-            response = self.http_client.get("/rest/users", headers=headers)
+            response = self.http_client.get("/rest/security/users", headers=headers)
             response.raise_for_status()
             try:
                 return [User(**user) for user in response.json()]
@@ -1154,6 +1155,45 @@ class UserManagement:
                 raise ForbiddenError("Request is forbidden.") from err
             elif err.response.status_code == 412:
                 raise PreconditionFailedError("Precondition failed.") from err
+            elif err.response.status_code == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            raise
+
+    def get(self, username: str) -> User:
+        """
+        Get a user.
+
+        Parameters:
+            username: The username of the user.
+
+        Returns:
+            User: The user.
+
+        Raises:
+            ResponseFormatError: If the response format is invalid.
+            ForbiddenError: If the request is forbidden.
+            NotFoundError: If the user is not found.
+            InternalServerError: If the server returns an internal error.
+        """
+        try:
+            headers = {"Accept": "application/json"}
+            response = self.http_client.get(
+                f"/rest/security/users/{username}", headers=headers
+            )
+            response.raise_for_status()
+            try:
+                return User(**response.json())
+            except (ValueError, TypeError) as err:
+                raise ResponseFormatError(
+                    f"Failed to parse GraphDB response: {err}"
+                ) from err
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 403:
+                raise ForbiddenError("Request is forbidden.") from err
+            elif err.response.status_code == 404:
+                raise NotFoundError("User not found.") from err
             elif err.response.status_code == 500:
                 raise InternalServerError(
                     f"Internal server error: {err.response.text}"
