@@ -12,6 +12,7 @@ from rdflib.contrib.graphdb.exceptions import (
     BadRequestError,
     ForbiddenError,
     InternalServerError,
+    PreconditionFailedError,
     RepositoryNotFoundError,
     RepositoryNotHealthyError,
     ResponseFormatError,
@@ -237,7 +238,9 @@ class FGACRulesManager:
                 ) from err
             raise
 
-    def add(self, acl_rules: t.Sequence[AccessControlEntry], position: int | None = None):
+    def add(
+        self, acl_rules: t.Sequence[AccessControlEntry], position: int | None = None
+    ):
         """
         Add ACL rules to the repository.
 
@@ -977,6 +980,69 @@ class TalkToYourGraph:
         return response.text
 
 
+class SecurityManagement:
+    """GraphDB Security Management client."""
+
+    def __init__(self, http_client: httpx.Client):
+        self._http_client = http_client
+
+    @property
+    def http_client(self):
+        return self._http_client
+
+    @property
+    def enabled(self) -> bool:
+        """Check if security is enabled.
+
+        Returns:
+            bool: True if security is enabled, False otherwise.
+
+        Raises:
+            InternalServerError: If the server returns an internal error.
+        """
+        try:
+            headers = {"Accept": "application/json"}
+            response = self.http_client.get("/rest/security", headers=headers)
+            response.raise_for_status()
+            return response.json()
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            raise
+
+    @enabled.setter
+    def enabled(self, value: bool):
+        """Enable or disable security.
+
+        Parameters:
+            value: The value to set.
+
+        Raises:
+            TypeError: If the value is not a boolean.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            PreconditionFailedError: If the precondition is failed.
+        """
+        if not isinstance(value, bool):
+            raise TypeError("Value must be a boolean.")
+        try:
+            headers = {"Content-Type": "application/json", "Accept": "application/json"}
+            response = self.http_client.post(
+                "/rest/security", headers=headers, json=value
+            )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 401:
+                raise UnauthorisedError("Request is unauthorised.") from err
+            elif err.response.status_code == 403:
+                raise ForbiddenError("Request is forbidden.") from err
+            elif err.response.status_code == 412:
+                raise PreconditionFailedError("Precondition failed.") from err
+            raise
+
+
 class GraphDBClient(RDF4JClient):
     """GraphDB Client"""
 
@@ -988,21 +1054,29 @@ class GraphDBClient(RDF4JClient):
         **kwargs: t.Any,
     ):
         super().__init__(base_url, auth, timeout, **kwargs)
+        self._graphdb_repository_manager: RepositoryManager | None = None
         self._repos: RepositoryManagement | None = None
+        self._security: SecurityManagement | None = None
         self._ttyg: TalkToYourGraph | None = None
 
     @property
     def repositories(self) -> RepositoryManager:
         """Server-level repository management operations (GraphDB-specific)."""
-        if self._repository_manager is None:
-            self._repository_manager = RepositoryManager(self.http_client)
-        return self._repository_manager
+        if self._graphdb_repository_manager is None:
+            self._graphdb_repository_manager = RepositoryManager(self.http_client)
+        return self._graphdb_repository_manager
 
     @property
     def repos(self) -> RepositoryManagement:
         if self._repos is None:
             self._repos = RepositoryManagement(self.http_client)
         return self._repos
+
+    @property
+    def security(self) -> SecurityManagement:
+        if self._security is None:
+            self._security = SecurityManagement(self.http_client)
+        return self._security
 
     @property
     def ttyg(self):

@@ -33,5 +33,9 @@ class ForbiddenError(GraphDBError):
     """Raised when the user is forbidden."""
 
 
+class PreconditionFailedError(GraphDBError):
+    """Raised when the precondition is failed."""
+
+
 class InternalServerError(GraphDBError):
     """Raised when the server returns an internal server error."""
