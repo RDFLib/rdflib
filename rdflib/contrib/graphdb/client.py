@@ -1234,6 +1234,40 @@ class UserManagement:
                 raise NotFoundError("User not found.") from err
             raise
 
+    def create(self, username: str, user: User) -> None:
+        """
+        Create a user.
+
+        Parameters:
+            username: The username of the user.
+            user: The user to create.
+
+        Raises:
+            TypeError: if username is not a string or user is not an instance of User.
+            BadRequestError: If the request is bad.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+        """
+        if not isinstance(username, str):
+            raise TypeError("Username must be a string.")
+        if not isinstance(user, User):
+            raise TypeError("User must be an instance of User.")
+
+        try:
+            headers = {"Content-Type": "application/json"}
+            response = self.http_client.post(
+                f"/rest/security/users/{username}", headers=headers, json=user.as_dict()
+            )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 400:
+                raise BadRequestError(f"Bad request. {err.response.text}") from err
+            elif err.response.status_code == 401:
+                raise UnauthorisedError("Request is unauthorised.") from err
+            elif err.response.status_code == 403:
+                raise ForbiddenError("Request is forbidden.") from err
+            raise
+
 
 class GraphDBClient(RDF4JClient):
     """GraphDB Client"""

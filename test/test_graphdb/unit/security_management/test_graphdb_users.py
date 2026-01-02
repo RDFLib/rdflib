@@ -5,6 +5,7 @@ from unittest.mock import Mock
 import pytest
 
 from rdflib.contrib.graphdb.exceptions import (
+    BadRequestError,
     ForbiddenError,
     GraphDBError,
     InternalServerError,
@@ -511,7 +512,7 @@ def test_overwrite_user_raises_type_error_for_non_string_username(
     )
 
     with pytest.raises(TypeError, match="Username must be a string"):
-        client.users.overwrite(123, user)  # type: ignore[arg-type]
+        client.users.overwrite(123, user)
 
 
 def test_overwrite_user_raises_type_error_for_non_user_object(
@@ -519,7 +520,7 @@ def test_overwrite_user_raises_type_error_for_non_user_object(
 ):
     """Test that overwrite raises TypeError when user is not a User instance."""
     with pytest.raises(TypeError, match="User must be an instance of User"):
-        client.users.overwrite("admin", {"username": "admin"})  # type: ignore[arg-type]
+        client.users.overwrite("admin", {"username": "admin"})
 
 
 def test_overwrite_user_raises_unauthorised_error(
@@ -621,3 +622,181 @@ def test_overwrite_user_reraises_other_http_errors(
 
     with pytest.raises(httpx.HTTPStatusError):
         client.users.overwrite("admin", user)
+
+
+def test_create_user_success(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that create sends a POST request with correct headers and body."""
+    user = User(
+        username="newuser",
+        password="password123",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+        appSettings={},
+        gptThreads=[],
+    )
+    mock_response = Mock(spec=httpx.Response)
+    mock_httpx_post = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    result = client.users.create("newuser", user)
+
+    assert result is None
+    mock_httpx_post.assert_called_once_with(
+        "/rest/security/users/newuser",
+        headers={"Content-Type": "application/json"},
+        json=user.as_dict(),
+    )
+    mock_response.raise_for_status.assert_called_once()
+
+
+def test_create_user_raises_type_error_for_non_string_username(
+    client: GraphDBClient,
+):
+    """Test that create raises TypeError when username is not a string."""
+    user = User(
+        username="newuser",
+        password="password123",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+    )
+
+    with pytest.raises(TypeError, match="Username must be a string"):
+        client.users.create(123, user)
+
+
+def test_create_user_raises_type_error_for_non_user_object(
+    client: GraphDBClient,
+):
+    """Test that create raises TypeError when user is not a User instance."""
+    with pytest.raises(TypeError, match="User must be an instance of User"):
+        client.users.create("newuser", {"username": "newuser"})
+
+
+def test_create_user_raises_bad_request_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that create raises BadRequestError for 400 responses."""
+    user = User(
+        username="newuser",
+        password="password123",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+    )
+    error_text = "Invalid user data"
+    mock_response = Mock(spec=httpx.Response, status_code=400, text=error_text)
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "HTTP 400",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_post = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    with pytest.raises(BadRequestError, match="Bad request"):
+        client.users.create("newuser", user)
+
+
+def test_create_user_bad_request_error_includes_response_text(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that BadRequestError includes the response text in the message."""
+    user = User(
+        username="newuser",
+        password="password123",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+    )
+    error_text = "User already exists"
+    mock_response = Mock(spec=httpx.Response, status_code=400, text=error_text)
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "HTTP 400",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_post = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    with pytest.raises(BadRequestError, match=error_text):
+        client.users.create("newuser", user)
+
+
+def test_create_user_raises_unauthorised_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that create raises UnauthorisedError for 401 responses."""
+    user = User(
+        username="newuser",
+        password="password123",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+    )
+    mock_response = Mock(spec=httpx.Response, status_code=401, text="Unauthorized")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "HTTP 401",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_post = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    with pytest.raises(UnauthorisedError, match="Request is unauthorised"):
+        client.users.create("newuser", user)
+
+
+def test_create_user_raises_forbidden_error(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that create raises ForbiddenError for 403 responses."""
+    user = User(
+        username="newuser",
+        password="password123",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+    )
+    mock_response = Mock(spec=httpx.Response, status_code=403, text="Forbidden")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "HTTP 403",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_post = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    with pytest.raises(ForbiddenError, match="Request is forbidden"):
+        client.users.create("newuser", user)
+
+
+@pytest.mark.parametrize(
+    "status_code",
+    [404, 409, 500, 502, 503],
+)
+def test_create_user_reraises_other_http_errors(
+    client: GraphDBClient,
+    monkeypatch: pytest.MonkeyPatch,
+    status_code: int,
+):
+    """Test that create re-raises HTTPStatusError for unhandled status codes."""
+    user = User(
+        username="newuser",
+        password="password123",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+    )
+    mock_response = Mock(spec=httpx.Response, status_code=status_code, text="Error")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        f"HTTP {status_code}",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_post = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    with pytest.raises(httpx.HTTPStatusError):
+        client.users.create("newuser", user)

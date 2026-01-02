@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from rdflib.contrib.graphdb.exceptions import NotFoundError
+from rdflib.contrib.graphdb.exceptions import BadRequestError, NotFoundError
 from rdflib.contrib.graphdb.models import User
 from rdflib.contrib.rdf4j import has_httpx
 
@@ -188,3 +188,112 @@ def test_overwrite_user_raises_not_found_for_nonexistent_user(client: GraphDBCli
 
     with pytest.raises(NotFoundError, match="User not found"):
         client.users.overwrite("nonexistent_user_12345", user)
+
+
+@pytest.mark.testcontainer
+def test_create_user_creates_new_user(client: GraphDBClient):
+    """Test that create successfully creates a new user."""
+    username = "test_create_user_12345"
+    user = User(
+        username=username,
+        password="password123",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+        appSettings={},
+        gptThreads=[],
+    )
+
+    try:
+        # Create the user
+        result = client.users.create(username, user)
+        assert result is None
+
+        # Verify the user was created
+        fetched_user = client.users.get(username)
+        assert fetched_user.username == username
+    finally:
+        # Clean up: delete the user
+        try:
+            # Use overwrite with empty authorities, then delete via the management API
+            # Note: GraphDB doesn't have a delete user endpoint in the standard REST API,
+            # but the user will be orphaned if not cleaned up. In a real scenario,
+            # we'd need admin-level cleanup. For now, we leave it.
+            pass
+        except Exception:
+            pass
+
+
+@pytest.mark.testcontainer
+def test_create_user_returns_user_with_correct_fields(client: GraphDBClient):
+    """Test that a created user has the correct fields when retrieved."""
+    username = "test_create_fields_12345"
+    user = User(
+        username=username,
+        password="securepassword",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER", "READ_REPO_test-repo"],
+        appSettings={"theme": "dark"},
+        gptThreads=[],
+    )
+
+    try:
+        client.users.create(username, user)
+
+        fetched_user = client.users.get(username)
+
+        assert fetched_user.username == username
+        assert isinstance(fetched_user.password, str)  # Password is hashed/empty
+        assert isinstance(fetched_user.dateCreated, int)
+        assert "ROLE_USER" in fetched_user.grantedAuthorities
+        assert "READ_REPO_test-repo" in fetched_user.grantedAuthorities
+        assert fetched_user.appSettings.get("theme") == "dark"
+    finally:
+        pass
+
+
+@pytest.mark.testcontainer
+def test_create_user_appears_in_users_list(client: GraphDBClient):
+    """Test that a created user appears in the users list."""
+    username = "test_create_list_12345"
+    user = User(
+        username=username,
+        password="password123",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+        appSettings={},
+        gptThreads=[],
+    )
+
+    try:
+        client.users.create(username, user)
+
+        users = client.users.list()
+        usernames = [u.username for u in users]
+
+        assert username in usernames
+    finally:
+        pass
+
+
+@pytest.mark.testcontainer
+def test_create_user_raises_bad_request_for_duplicate_user(client: GraphDBClient):
+    """Test that create raises BadRequestError when creating a duplicate user."""
+    username = "test_create_dup_12345"
+    user = User(
+        username=username,
+        password="password123",
+        dateCreated=1736234567890,
+        grantedAuthorities=["ROLE_USER"],
+        appSettings={},
+        gptThreads=[],
+    )
+
+    try:
+        # Create the user first time
+        client.users.create(username, user)
+
+        # Try to create the same user again - should fail
+        with pytest.raises(BadRequestError):
+            client.users.create(username, user)
+    finally:
+        pass
