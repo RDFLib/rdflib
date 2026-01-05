@@ -24,6 +24,8 @@ from rdflib.contrib.graphdb.models import (
     ClearGraphAccessControlEntry,
     FreeAccessSettings,
     GraphDBRepository,
+    ImportSettings,
+    ParserSettings,
     PluginAccessControlEntry,
     RepositoryConfigBean,
     RepositoryConfigBeanCreate,
@@ -403,6 +405,54 @@ class Repository(rdflib.contrib.rdf4j.client.Repository):
             raise RepositoryNotHealthyError(
                 f"Repository {self._identifier} is not healthy. {err.response.status_code} - {err.response.text}"
             )
+
+    def get_server_import_files(self) -> list[ImportSettings]:
+        """Get server files available for import.
+
+        Returns:
+            A list of files available for import.
+
+        Raises:
+            ResponseFormatError: If the response format is invalid.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            InternalServerError: If the server returns an internal error.
+        """
+        try:
+            headers = {"Accept": "application/json"}
+            response = self.http_client.get(
+                f"/rest/repositories/{self.identifier}/import/server",
+                headers=headers,
+            )
+            response.raise_for_status()
+            try:
+                result = []
+                for item in response.json():
+                    # Convert nested parserSettings dict to ParserSettings instance
+                    if "parserSettings" in item and isinstance(
+                        item["parserSettings"], dict
+                    ):
+                        item["parserSettings"] = ParserSettings(
+                            **item["parserSettings"]
+                        )
+                    result.append(ImportSettings(**item))
+                return result
+            except (ValueError, TypeError) as err:
+                raise ResponseFormatError(f"Failed to parse response: {err}") from err
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            elif err.response.status_code == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            elif err.response.status_code == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            raise
 
 
 class RepositoryManager(rdflib.contrib.rdf4j.client.RepositoryManager):

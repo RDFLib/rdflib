@@ -27,6 +27,9 @@ if has_httpx and has_testcontainers:
         with DockerImage(str(pathlib.Path(__file__).parent / "docker")) as image:
             container = DockerContainer(str(image))
             container.with_exposed_ports(GRAPHDB_PORT)
+            # Mount test data directory to GraphDB import server import files location
+            test_data_dir = str(pathlib.Path(__file__).parent.parent / "data")
+            container.with_volume_mapping(test_data_dir, "/root/graphdb-import")
             container.start()
             wait_for_logs(container, "Started GraphDB")
             yield container

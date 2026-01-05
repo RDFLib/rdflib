@@ -9,6 +9,176 @@ from rdflib.util import from_n3
 
 
 @dataclass(frozen=True)
+class ParserSettings:
+    preserveBNodeIds: bool = False  # noqa: N815
+    failOnUnknownDataTypes: bool = False  # noqa: N815
+    verifyDataTypeValues: bool = False  # noqa: N815
+    normalizeDataTypeValues: bool = False  # noqa: N815
+    failOnUnknownLanguageTags: bool = False  # noqa: N815
+    verifyLanguageTags: bool = True  # noqa: N815
+    normalizeLanguageTags: bool = False  # noqa: N815
+    stopOnError: bool = True  # noqa: N815
+    contextLink: t.Any | None = None  # noqa: N815
+
+    def __post_init__(self) -> None:
+        invalid: list[tuple[str, t.Any, type]] = []
+        preserve_bnode_ids = t.cast(t.Any, self.preserveBNodeIds)
+        fail_on_unknown_data_types = t.cast(t.Any, self.failOnUnknownDataTypes)
+        verify_data_type_values = t.cast(t.Any, self.verifyDataTypeValues)
+        normalize_data_type_values = t.cast(t.Any, self.normalizeDataTypeValues)
+        fail_on_unknown_language_tags = t.cast(t.Any, self.failOnUnknownLanguageTags)
+        verify_language_tags = t.cast(t.Any, self.verifyLanguageTags)
+        normalize_language_tags = t.cast(t.Any, self.normalizeLanguageTags)
+        stop_on_error = t.cast(t.Any, self.stopOnError)
+
+        if type(preserve_bnode_ids) is not bool:
+            invalid.append(
+                ("preserveBNodeIds", preserve_bnode_ids, type(preserve_bnode_ids))
+            )
+        if type(fail_on_unknown_data_types) is not bool:
+            invalid.append(
+                (
+                    "failOnUnknownDataTypes",
+                    fail_on_unknown_data_types,
+                    type(fail_on_unknown_data_types),
+                )
+            )
+        if type(verify_data_type_values) is not bool:
+            invalid.append(
+                (
+                    "verifyDataTypeValues",
+                    verify_data_type_values,
+                    type(verify_data_type_values),
+                )
+            )
+        if type(normalize_data_type_values) is not bool:
+            invalid.append(
+                (
+                    "normalizeDataTypeValues",
+                    normalize_data_type_values,
+                    type(normalize_data_type_values),
+                )
+            )
+        if type(fail_on_unknown_language_tags) is not bool:
+            invalid.append(
+                (
+                    "failOnUnknownLanguageTags",
+                    fail_on_unknown_language_tags,
+                    type(fail_on_unknown_language_tags),
+                )
+            )
+        if type(verify_language_tags) is not bool:
+            invalid.append(
+                ("verifyLanguageTags", verify_language_tags, type(verify_language_tags))
+            )
+        if type(normalize_language_tags) is not bool:
+            invalid.append(
+                (
+                    "normalizeLanguageTags",
+                    normalize_language_tags,
+                    type(normalize_language_tags),
+                )
+            )
+        if type(stop_on_error) is not bool:
+            invalid.append(("stopOnError", stop_on_error, type(stop_on_error)))
+
+        # Note: don't check contextLink here since it's of type t.Any.
+
+        if invalid:
+            raise ValueError("Invalid ParserSettings values: ", invalid)
+
+    def as_dict(self) -> dict[str, t.Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class ImportSettings:
+    name: str
+    status: t.Literal["PENDING", "IMPORTING", "DONE", "ERROR", "NONE", "INTERRUPTING"]
+    size: str
+    lastModified: int  # noqa: N815
+    imported: int
+    addedStatements: int  # noqa: N815
+    removedStatements: int  # noqa: N815
+    numReplacedGraphs: int  # noqa: N815
+    message: str = ""
+    context: t.Any | None = None
+    replaceGraphs: t.List = field(default_factory=list)  # noqa: N815
+    baseURI: t.Any | None = None  # noqa: N815
+    forceSerial: bool = False  # noqa: N815
+    type: str = "file"
+    format: t.Any | None = None
+    data: t.Any | None = None
+    parserSettings: ParserSettings = field(default_factory=ParserSettings)  # noqa: N815
+
+    def __post_init__(self) -> None:
+        _allowed_status = {
+            "PENDING",
+            "IMPORTING",
+            "DONE",
+            "ERROR",
+            "NONE",
+            "INTERRUPTING",
+        }
+        invalid: list[tuple[str, t.Any, type]] = []
+
+        name = t.cast(t.Any, self.name)
+        status = t.cast(t.Any, self.status)
+        message = t.cast(t.Any, self.message)
+        replace_graphs = t.cast(t.Any, self.replaceGraphs)
+        force_serial = t.cast(t.Any, self.forceSerial)
+        type_ = t.cast(t.Any, self.type)
+        parser_settings = t.cast(t.Any, self.parserSettings)
+        size = t.cast(t.Any, self.size)
+        last_modified = t.cast(t.Any, self.lastModified)
+        imported = t.cast(t.Any, self.imported)
+        added_statements = t.cast(t.Any, self.addedStatements)
+        removed_statements = t.cast(t.Any, self.removedStatements)
+        num_replaced_graphs = t.cast(t.Any, self.numReplacedGraphs)
+
+        if not isinstance(name, str):
+            invalid.append(("name", name, type(name)))
+        if status not in _allowed_status:
+            invalid.append(("status", status, type(status)))
+        if not isinstance(message, str):
+            invalid.append(("message", message, type(message)))
+        if not isinstance(replace_graphs, list):
+            invalid.append(("replaceGraphs", replace_graphs, type(replace_graphs)))
+        if type(force_serial) is not bool:
+            invalid.append(("forceSerial", force_serial, type(force_serial)))
+        if not isinstance(type_, str):
+            invalid.append(("type", type_, type(type_)))
+        if not isinstance(parser_settings, ParserSettings):
+            invalid.append(("parserSettings", parser_settings, type(parser_settings)))
+        if not isinstance(size, str):
+            invalid.append(("size", size, type(size)))
+        if type(last_modified) is not int:
+            invalid.append(("lastModified", last_modified, type(last_modified)))
+        if type(imported) is not int:
+            invalid.append(("imported", imported, type(imported)))
+        if type(added_statements) is not int:
+            invalid.append(
+                ("addedStatements", added_statements, type(added_statements))
+            )
+        if type(removed_statements) is not int:
+            invalid.append(
+                ("removedStatements", removed_statements, type(removed_statements))
+            )
+        if type(num_replaced_graphs) is not int:
+            invalid.append(
+                ("numReplacedGraphs", num_replaced_graphs, type(num_replaced_graphs))
+            )
+
+        # Note: don't check context, baseURI, format, or data here since they are of type t.Any.
+
+        if invalid:
+            raise ValueError("Invalid ImportSettings values: ", invalid)
+
+    def as_dict(self) -> dict[str, t.Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
 class UserUpdate:
     password: str = field(default="")
     appSettings: dict[str, t.Any] = field(default_factory=dict)  # noqa: N815
