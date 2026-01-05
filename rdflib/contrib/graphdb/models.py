@@ -179,6 +179,37 @@ class ImportSettings:
 
 
 @dataclass(frozen=True)
+class ServerImportBody:
+    fileNames: list[str]  # noqa: N815
+    importSettings: ImportSettings | None = None  # noqa: N815
+
+    def __post_init__(self) -> None:
+        invalid: list[tuple[str, t.Any, type]] = []
+        import_settings = t.cast(t.Any, self.importSettings)
+        file_names = t.cast(t.Any, self.fileNames)
+
+        if import_settings is not None and not isinstance(
+            import_settings, ImportSettings
+        ):
+            invalid.append(("importSettings", import_settings, type(import_settings)))
+        if not isinstance(file_names, list):
+            invalid.append(("fileNames", file_names, type(file_names)))
+        else:
+            for index, value in enumerate(file_names):
+                if not isinstance(value, str):
+                    invalid.append((f"fileNames[{index}]", value, type(value)))
+
+        if invalid:
+            raise ValueError("Invalid ServerImportBody values: ", invalid)
+
+    def as_dict(self) -> dict[str, t.Any]:
+        result = asdict(self)
+        if self.importSettings is None:
+            result.pop("importSettings", None)
+        return result
+
+
+@dataclass(frozen=True)
 class UserUpdate:
     password: str = field(default="")
     appSettings: dict[str, t.Any] = field(default_factory=dict)  # noqa: N815

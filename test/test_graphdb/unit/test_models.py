@@ -17,6 +17,7 @@ if has_httpx:
         ParserSettings,
         RepositoryConfigBeanCreate,
         RepositoryState,
+        ServerImportBody,
         User,
     )
 
@@ -971,6 +972,225 @@ def test_import_settings_as_dict_json_serializable():
     )
 
     result = settings.as_dict()
+
+    # Should be able to serialize to JSON without errors
+    json_str = json.dumps(result)
+    assert isinstance(json_str, str)
+
+    # Should be able to deserialize back
+    deserialized = json.loads(json_str)
+    assert deserialized == result
+
+
+# ==================== ServerImportBody Tests ====================
+
+
+def test_server_import_body_valid():
+    """Test creating a valid ServerImportBody with all fields."""
+    import_settings = ImportSettings(
+        name="test-file.ttl",
+        status="PENDING",
+        size="1.5 MB",
+        lastModified=1704067200,
+        imported=1704067200,
+        addedStatements=100,
+        removedStatements=10,
+        numReplacedGraphs=2,
+    )
+    body = ServerImportBody(
+        importSettings=import_settings,
+        fileNames=["file1.ttl", "file2.ttl"],
+    )
+
+    assert body.importSettings == import_settings
+    assert body.fileNames == ["file1.ttl", "file2.ttl"]
+
+
+def test_server_import_body_import_settings_optional():
+    """Test creating a ServerImportBody without importSettings."""
+    body = ServerImportBody(fileNames=["file1.ttl", "file2.ttl"])
+
+    assert body.importSettings is None
+    assert body.fileNames == ["file1.ttl", "file2.ttl"]
+
+
+def test_server_import_body_empty_file_names():
+    """Test creating a ServerImportBody with an empty fileNames list."""
+    import_settings = ImportSettings(
+        name="test-file.ttl",
+        status="DONE",
+        size="1KB",
+        lastModified=1704067200,
+        imported=1704067200,
+        addedStatements=0,
+        removedStatements=0,
+        numReplacedGraphs=0,
+    )
+    body = ServerImportBody(
+        importSettings=import_settings,
+        fileNames=[],
+    )
+
+    assert body.importSettings == import_settings
+    assert body.fileNames == []
+
+
+def test_server_import_body_frozen():
+    """Test that ServerImportBody is immutable."""
+    import_settings = ImportSettings(
+        name="test-file.ttl",
+        status="PENDING",
+        size="1KB",
+        lastModified=1704067200,
+        imported=1704067200,
+        addedStatements=0,
+        removedStatements=0,
+        numReplacedGraphs=0,
+    )
+    body = ServerImportBody(
+        importSettings=import_settings,
+        fileNames=["file.ttl"],
+    )
+    with pytest.raises(AttributeError):
+        body.fileNames = ["other.ttl"]
+
+
+@pytest.mark.parametrize(
+    "import_settings",
+    [
+        {"name": "test.ttl", "status": "PENDING"},
+        "not-a-settings-object",
+        123,
+        [],
+    ],
+)
+def test_server_import_body_invalid_import_settings(import_settings):
+    """Test that invalid importSettings types raise ValueError."""
+    with pytest.raises(ValueError):
+        ServerImportBody(
+            importSettings=import_settings,
+            fileNames=["file.ttl"],
+        )
+
+
+@pytest.mark.parametrize(
+    "file_names",
+    [
+        "file.ttl",
+        {"file.ttl": True},
+        123,
+        None,
+    ],
+)
+def test_server_import_body_invalid_file_names_type(file_names):
+    """Test that invalid fileNames types raise ValueError."""
+    import_settings = ImportSettings(
+        name="test-file.ttl",
+        status="PENDING",
+        size="1KB",
+        lastModified=1704067200,
+        imported=1704067200,
+        addedStatements=0,
+        removedStatements=0,
+        numReplacedGraphs=0,
+    )
+    with pytest.raises(ValueError):
+        ServerImportBody(
+            importSettings=import_settings,
+            fileNames=file_names,
+        )
+
+
+@pytest.mark.parametrize(
+    "file_names",
+    [
+        ["file.ttl", 123],
+        [1, 2, 3],
+        ["file.ttl", None],
+        ["file.ttl", []],
+    ],
+)
+def test_server_import_body_invalid_file_names_elements(file_names):
+    """Test that non-string elements in fileNames raise ValueError."""
+    import_settings = ImportSettings(
+        name="test-file.ttl",
+        status="PENDING",
+        size="1KB",
+        lastModified=1704067200,
+        imported=1704067200,
+        addedStatements=0,
+        removedStatements=0,
+        numReplacedGraphs=0,
+    )
+    with pytest.raises(ValueError):
+        ServerImportBody(
+            importSettings=import_settings,
+            fileNames=file_names,
+        )
+
+
+def test_server_import_body_as_dict():
+    """Test ServerImportBody.as_dict() serialization."""
+    parser_settings = ParserSettings(preserveBNodeIds=True)
+    import_settings = ImportSettings(
+        name="test.ttl",
+        status="DONE",
+        message="Import complete",
+        size="2.5 MB",
+        lastModified=1704067200,
+        imported=1704067201,
+        addedStatements=500,
+        removedStatements=50,
+        numReplacedGraphs=1,
+        parserSettings=parser_settings,
+    )
+    body = ServerImportBody(
+        importSettings=import_settings,
+        fileNames=["file1.ttl", "file2.ttl"],
+    )
+
+    result = body.as_dict()
+
+    assert isinstance(result, dict)
+    assert "importSettings" in result
+    assert "fileNames" in result
+    assert isinstance(result["importSettings"], dict)
+    assert result["importSettings"]["name"] == "test.ttl"
+    assert result["importSettings"]["status"] == "DONE"
+    assert result["fileNames"] == ["file1.ttl", "file2.ttl"]
+
+
+def test_server_import_body_as_dict_omits_none_import_settings():
+    """Test that ServerImportBody.as_dict() omits importSettings when None."""
+    body = ServerImportBody(fileNames=["file1.ttl", "file2.ttl"])
+
+    result = body.as_dict()
+
+    assert isinstance(result, dict)
+    assert "importSettings" not in result
+    assert result["fileNames"] == ["file1.ttl", "file2.ttl"]
+
+
+def test_server_import_body_as_dict_json_serializable():
+    """Test that ServerImportBody.as_dict() result is JSON serializable."""
+    import json
+
+    import_settings = ImportSettings(
+        name="test.ttl",
+        status="DONE",
+        size="1KB",
+        lastModified=1704067200,
+        imported=1704067200,
+        addedStatements=100,
+        removedStatements=10,
+        numReplacedGraphs=0,
+    )
+    body = ServerImportBody(
+        importSettings=import_settings,
+        fileNames=["file.ttl"],
+    )
+
+    result = body.as_dict()
 
     # Should be able to serialize to JSON without errors
     json_str = json.dumps(result)

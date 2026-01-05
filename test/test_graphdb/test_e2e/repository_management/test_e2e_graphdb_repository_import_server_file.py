@@ -82,3 +82,21 @@ def test_get_server_import_files_returns_expected_file_names(
     expected_files = {"quads-1.nq", "quads-2.nq", "quads-3.nq"}
 
     assert file_names == expected_files
+
+
+@pytest.mark.testcontainer
+def test_import_server_import_file_success(client: GraphDBClient):
+    """Test that import_server_import_file successfully imports a server file."""
+    from rdflib.contrib.graphdb.models import ServerImportBody
+
+    repo = client.repositories.get("test-repo")
+
+    # Import one of the mounted test files
+    body = ServerImportBody(fileNames=["quads-1.nq"])
+    repo.import_server_import_file(body)
+
+    # Verify the file status changes (import is triggered)
+    import_files = repo.get_server_import_files()
+    quads_1_file = next(f for f in import_files if f.name == "quads-1.nq")
+    # Status should be DONE, IMPORTING, or PENDING after triggering import
+    assert quads_1_file.status in {"DONE", "IMPORTING", "PENDING"}

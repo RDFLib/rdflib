@@ -30,6 +30,7 @@ from rdflib.contrib.graphdb.models import (
     RepositoryConfigBean,
     RepositoryConfigBeanCreate,
     RepositorySizeInfo,
+    ServerImportBody,
     StatementAccessControlEntry,
     SystemAccessControlEntry,
     User,
@@ -451,6 +452,43 @@ class Repository(rdflib.contrib.rdf4j.client.Repository):
             elif err.response.status_code == 500:
                 raise InternalServerError(
                     f"Internal server error: {err.response.text}"
+                ) from err
+            raise
+
+    def import_server_import_file(self, server_import_body: ServerImportBody) -> None:
+        """Import a server file into the repository.
+
+        Parameters:
+            server_import_body: The server import body.
+
+        Raises:
+            BadRequestError: If the request is bad.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            NotFoundError: If the request is not found.
+        """
+        try:
+            headers = {"Content-Type": "application/json"}
+            response = self.http_client.post(
+                f"/rest/repositories/{self.identifier}/import/server",
+                headers=headers,
+                json=server_import_body.as_dict(),
+            )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 400:
+                raise BadRequestError(f"Bad request: {err.response.text}") from err
+            if err.response.status_code == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            if err.response.status_code == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            if err.response.status_code == 404:
+                raise NotFoundError(
+                    f"Request is not found: {err.response.text}"
                 ) from err
             raise
 

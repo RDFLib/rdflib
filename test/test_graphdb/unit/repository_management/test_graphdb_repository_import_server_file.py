@@ -6,8 +6,10 @@ from unittest.mock import Mock
 import pytest
 
 from rdflib.contrib.graphdb.exceptions import (
+    BadRequestError,
     ForbiddenError,
     InternalServerError,
+    NotFoundError,
     ResponseFormatError,
     UnauthorisedError,
 )
@@ -228,3 +230,105 @@ def test_get_server_import_files_parses_all_valid_statuses(
     result = repository.get_server_import_files()
 
     assert result[0].status == status
+
+
+# --- Tests for import_server_import_file ---
+
+
+def test_import_server_import_file_success(
+    repository: Repository,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that import_server_import_file successfully posts a server import request."""
+    from rdflib.contrib.graphdb.models import ServerImportBody
+
+    mock_response = Mock(spec=httpx.Response)
+    mock_httpx_post = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    body = ServerImportBody(fileNames=["test-file.ttl"])
+    repository.import_server_import_file(body)
+
+    mock_httpx_post.assert_called_once_with(
+        "/rest/repositories/test-repo/import/server",
+        headers={"Content-Type": "application/json"},
+        json={"fileNames": ["test-file.ttl"]},
+    )
+
+
+def test_import_server_import_file_with_import_settings(
+    repository: Repository,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that import_server_import_file correctly serializes importSettings."""
+    from rdflib.contrib.graphdb.models import ServerImportBody
+
+    mock_response = Mock(spec=httpx.Response)
+    mock_httpx_post = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    import_settings = _make_import_settings()
+    body = ServerImportBody(fileNames=["test-file.ttl"], importSettings=import_settings)
+    repository.import_server_import_file(body)
+
+    call_kwargs = mock_httpx_post.call_args.kwargs
+    assert "importSettings" in call_kwargs["json"]
+    assert call_kwargs["json"]["fileNames"] == ["test-file.ttl"]
+
+
+@pytest.mark.parametrize(
+    "status_code, exception_class",
+    [
+        (400, BadRequestError),
+        (401, UnauthorisedError),
+        (403, ForbiddenError),
+        (404, NotFoundError),
+    ],
+)
+def test_import_server_import_file_http_errors(
+    repository: Repository,
+    monkeypatch: pytest.MonkeyPatch,
+    status_code: int,
+    exception_class: type,
+):
+    """Test that import_server_import_file raises appropriate exceptions for HTTP errors."""
+    from rdflib.contrib.graphdb.models import ServerImportBody
+
+    mock_response = Mock(spec=httpx.Response, status_code=status_code, text="Error")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        f"HTTP {status_code}",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_post = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    body = ServerImportBody(fileNames=["test-file.ttl"])
+    with pytest.raises(exception_class):
+        repository.import_server_import_file(body)
+
+
+@pytest.mark.parametrize(
+    "status_code",
+    [500, 502, 503],
+)
+def test_import_server_import_file_reraises_other_http_errors(
+    repository: Repository,
+    monkeypatch: pytest.MonkeyPatch,
+    status_code: int,
+):
+    """Test that import_server_import_file re-raises HTTPStatusError for unhandled status codes."""
+    from rdflib.contrib.graphdb.models import ServerImportBody
+
+    mock_response = Mock(spec=httpx.Response, status_code=status_code, text="Error")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        f"HTTP {status_code}",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_post = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    body = ServerImportBody(fileNames=["test-file.ttl"])
+    with pytest.raises(httpx.HTTPStatusError):
+        repository.import_server_import_file(body)
