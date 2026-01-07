@@ -35,7 +35,7 @@ from rdflib.query import Result, ResultParser
 from rdflib.term import BNode, URIRef
 from rdflib.term import Literal as RDFLiteral
 
-ParserElement.setDefaultWhitespaceChars(" \n")
+ParserElement.set_default_whitespace_chars(" \n")
 
 
 String = STRING_LITERAL1 | STRING_LITERAL2
@@ -44,23 +44,23 @@ RDFLITERAL = Comp(
     "literal",
     Param("string", String)
     + Optional(
-        Param("lang", LANGTAG.leaveWhitespace())
-        | Literal("^^").leaveWhitespace() + Param("datatype", IRIREF).leaveWhitespace()
+        Param("lang", LANGTAG.leave_whitespace())
+        | Literal("^^").leave_whitespace() + Param("datatype", IRIREF).leave_whitespace()
     ),
 )
 
 NONE_VALUE = object()
 
 EMPTY = FollowedBy(LineEnd()) | FollowedBy("\t")
-EMPTY.setParseAction(lambda x: NONE_VALUE)
+EMPTY.set_parse_action(lambda x: NONE_VALUE)
 
 TERM = RDFLITERAL | IRIREF | BLANK_NODE_LABEL | NumericLiteral | BooleanLiteral
 
 ROW = (EMPTY | TERM) + ZeroOrMore(Suppress("\t") + (EMPTY | TERM))
-ROW.parseWithTabs()
+ROW.parse_with_tabs()
 
 HEADER = Var + ZeroOrMore(Suppress("\t") + Var)
-HEADER.parseWithTabs()
+HEADER.parse_with_tabs()
 
 
 class TSVResultParser(ResultParser):
@@ -77,7 +77,7 @@ class TSVResultParser(ResultParser):
 
         header = source.readline()
 
-        r.vars = list(HEADER.parseString(header.strip(), parseAll=True))
+        r.vars = list(HEADER.parse_string(header.strip(), parse_all=True))
         r.bindings = []
         while True:
             line = source.readline()
@@ -87,10 +87,16 @@ class TSVResultParser(ResultParser):
             if line == "":
                 continue
 
-            row = ROW.parseString(line, parseAll=True)
-            # type error: Generator has incompatible item type "object"; expected "Identifier"
-            r.bindings.append(dict(zip(r.vars, (self.convertTerm(x) for x in row))))  # type: ignore[misc]
-
+            row = ROW.parse_string(line, parse_all=True)
+            this_row_dict = {}
+            for var, val_read in zip(r.vars, row):
+                val = self.convertTerm(val_read)
+                if val is None:
+                    # Skip unbound vars
+                    continue
+                this_row_dict[var] = val
+            if len(this_row_dict) > 0:
+                r.bindings.append(this_row_dict)
         return r
 
     def convertTerm(
