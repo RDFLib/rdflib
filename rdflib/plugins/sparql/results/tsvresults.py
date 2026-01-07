@@ -45,7 +45,8 @@ RDFLITERAL = Comp(
     Param("string", String)
     + Optional(
         Param("lang", LANGTAG.leave_whitespace())
-        | Literal("^^").leave_whitespace() + Param("datatype", IRIREF).leave_whitespace()
+        | Literal("^^").leave_whitespace()
+        + Param("datatype", IRIREF).leave_whitespace()
     ),
 )
 

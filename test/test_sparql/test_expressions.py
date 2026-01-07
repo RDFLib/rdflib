@@ -33,7 +33,9 @@ def test_regex():
         False,
     )
 
-    assert _eval(_translate(p.Expression.parse_string('REGEX("bbbaaaaabbb","ba*b")')[0]))
+    assert _eval(
+        _translate(p.Expression.parse_string('REGEX("bbbaaaaabbb","ba*b")')[0])
+    )
 
 
 def test_arithmetic():
