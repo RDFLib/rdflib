@@ -43,3 +43,7 @@ class PreconditionFailedError(GraphDBError):
 
 class InternalServerError(GraphDBError):
     """Raised when the server returns an internal server error."""
+
+
+class ServiceUnavailableError(GraphDBError):
+    """Raised when the server is unavailable."""

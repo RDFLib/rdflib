@@ -9,6 +9,25 @@ from rdflib.util import from_n3
 
 
 @dataclass(frozen=True)
+class StructureStatistics:
+    cacheHit: int  # noqa: N815
+    cacheMiss: int  # noqa: N815
+
+    def __post_init__(self) -> None:
+        invalid: list[tuple[str, t.Any, type]] = []
+        cache_hit = t.cast(t.Any, self.cacheHit)
+        cache_miss = t.cast(t.Any, self.cacheMiss)
+
+        if type(cache_hit) is not int:
+            invalid.append(("cacheHit", cache_hit, type(cache_hit)))
+        if type(cache_miss) is not int:
+            invalid.append(("cacheMiss", cache_miss, type(cache_miss)))
+
+        if invalid:
+            raise ValueError("Invalid StructureStatistics values: ", invalid)
+
+
+@dataclass(frozen=True)
 class ParserSettings:
     preserveBNodeIds: bool = False  # noqa: N815
     failOnUnknownDataTypes: bool = False  # noqa: N815

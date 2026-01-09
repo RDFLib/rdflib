@@ -17,6 +17,7 @@ from rdflib.contrib.graphdb.exceptions import (
     RepositoryNotFoundError,
     RepositoryNotHealthyError,
     ResponseFormatError,
+    ServiceUnavailableError,
     UnauthorisedError,
 )
 from rdflib.contrib.graphdb.models import (
@@ -32,6 +33,7 @@ from rdflib.contrib.graphdb.models import (
     RepositorySizeInfo,
     ServerImportBody,
     StatementAccessControlEntry,
+    StructureStatistics,
     SystemAccessControlEntry,
     User,
     UserUpdate,
@@ -548,6 +550,60 @@ class RepositoryManager(rdflib.contrib.rdf4j.client.RepositoryManager):
         """
         _repo = super().get(repository_id)
         return Repository(_repo.identifier, _repo.http_client)
+
+
+class MonitoringManager:
+    """
+    Monitor different GraphDB processes.
+    """
+
+    def __init__(self, http_client: httpx.Client):
+        self._http_client = http_client
+
+    @property
+    def http_client(self):
+        return self._http_client
+
+    @property
+    def structures(self) -> StructureStatistics:
+        """Get structures statistics.
+
+        Returns:
+            The structures statistics.
+
+        Raises:
+            ResponseFormatError: If the response format is invalid.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            InternalServerError: If the server returns an internal error.
+            ServiceUnavailableError: If the server is unavailable.
+        """
+        try:
+            headers = {"Accept": "application/json"}
+            response = self.http_client.get("/rest/monitor/structures", headers=headers)
+            response.raise_for_status()
+            try:
+                return StructureStatistics(**response.json())
+            except (ValueError, TypeError) as err:
+                raise ResponseFormatError(f"Failed to parse response: {err}") from err
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            if err.response.status_code == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            if err.response.status_code == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            if err.response.status_code == 503:
+                raise ServiceUnavailableError(
+                    f"Service is unavailable: {err.response.text}"
+                ) from err
+            raise
 
 
 class RepositoryManagement:
@@ -1505,11 +1561,18 @@ class GraphDBClient(RDF4JClient):
         **kwargs: t.Any,
     ):
         super().__init__(base_url, auth, timeout, **kwargs)
+        self._monitoring: MonitoringManager | None = None
         self._graphdb_repository_manager: RepositoryManager | None = None
         self._repos: RepositoryManagement | None = None
         self._security: SecurityManagement | None = None
         self._ttyg: TalkToYourGraph | None = None
         self._users: UserManagement | None = None
+
+    @property
+    def monitoring(self) -> MonitoringManager:
+        if self._monitoring is None:
+            self._monitoring = MonitoringManager(self.http_client)
+        return self._monitoring
 
     @property
     def repositories(self) -> RepositoryManager:

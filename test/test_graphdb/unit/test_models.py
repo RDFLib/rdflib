@@ -18,8 +18,77 @@ if has_httpx:
         RepositoryConfigBeanCreate,
         RepositoryState,
         ServerImportBody,
+        StructureStatistics,
         User,
     )
+
+
+# ==================== StructureStatistics Tests ====================
+
+
+def test_structure_statistics_valid():
+    """Test creating a valid StructureStatistics."""
+    settings = StructureStatistics(cacheHit=100, cacheMiss=50)
+
+    assert settings.cacheHit == 100
+    assert settings.cacheMiss == 50
+
+
+def test_structure_statistics_zero_values():
+    """Test StructureStatistics with zero values."""
+    settings = StructureStatistics(cacheHit=0, cacheMiss=0)
+
+    assert settings.cacheHit == 0
+    assert settings.cacheMiss == 0
+
+
+def test_structure_statistics_negative_values():
+    """Test StructureStatistics with negative values (allowed as integers)."""
+    settings = StructureStatistics(cacheHit=-1, cacheMiss=-10)
+
+    assert settings.cacheHit == -1
+    assert settings.cacheMiss == -10
+
+
+def test_structure_statistics_frozen():
+    """Test that StructureStatistics is immutable."""
+    settings = StructureStatistics(cacheHit=100, cacheMiss=50)
+    with pytest.raises(AttributeError):
+        settings.cacheHit = 200
+
+
+@pytest.mark.parametrize(
+    "cache_hit",
+    ["100", 100.5, None, [], {}, True],
+)
+def test_structure_statistics_invalid_cache_hit(cache_hit):
+    """Test that invalid cacheHit types raise ValueError."""
+    with pytest.raises(ValueError):
+        StructureStatistics(cacheHit=cache_hit, cacheMiss=50)
+
+
+@pytest.mark.parametrize(
+    "cache_miss",
+    ["50", 50.5, None, [], {}, False],
+)
+def test_structure_statistics_invalid_cache_miss(cache_miss):
+    """Test that invalid cacheMiss types raise ValueError."""
+    with pytest.raises(ValueError):
+        StructureStatistics(cacheHit=100, cacheMiss=cache_miss)
+
+
+def test_structure_statistics_multiple_invalid_fields():
+    """Test that multiple invalid fields are collected in the error."""
+    with pytest.raises(ValueError) as exc_info:
+        StructureStatistics(cacheHit="invalid", cacheMiss="also_invalid")
+
+    error_tuple = exc_info.value.args
+    assert "Invalid StructureStatistics values" in error_tuple[0]
+    # The invalid list should contain both fields
+    invalid_list = error_tuple[1]
+    field_names = [item[0] for item in invalid_list]
+    assert "cacheHit" in field_names
+    assert "cacheMiss" in field_names
 
 
 def test_repository_config_bean_create_to_dict_basic():
