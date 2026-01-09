@@ -1,0 +1,4 @@
+@prefix : <#> .
+:foo_\%_bar :prop "test iri including escaped char %" .
+:foo_\&_bar :prop "test iri including escaped char &" .
+:foo_\/_bar :prop "test iri including escaped char /" .
