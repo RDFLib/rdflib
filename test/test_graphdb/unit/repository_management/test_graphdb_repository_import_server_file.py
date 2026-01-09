@@ -332,3 +332,89 @@ def test_import_server_import_file_reraises_other_http_errors(
     body = ServerImportBody(fileNames=["test-file.ttl"])
     with pytest.raises(httpx.HTTPStatusError):
         repository.import_server_import_file(body)
+
+
+# --- Tests for cancel_server_import_file ---
+
+
+def test_cancel_server_import_file_success(
+    repository: Repository,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that cancel_server_import_file successfully cancels an import."""
+    mock_response = Mock(spec=httpx.Response)
+    mock_httpx_delete = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
+
+    repository.cancel_server_import_file("test-file.ttl")
+
+    mock_httpx_delete.assert_called_once_with(
+        "/rest/repositories/test-repo/import/server",
+        params={"name": "test-file.ttl"},
+    )
+
+
+def test_cancel_server_import_file_passes_name_as_query_param(
+    repository: Repository,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that cancel_server_import_file passes name as a query parameter."""
+    mock_response = Mock(spec=httpx.Response)
+    mock_httpx_delete = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
+
+    repository.cancel_server_import_file("another-file.nq")
+
+    call_kwargs = mock_httpx_delete.call_args.kwargs
+    assert call_kwargs["params"] == {"name": "another-file.nq"}
+
+
+@pytest.mark.parametrize(
+    "status_code, exception_class",
+    [
+        (400, BadRequestError),
+        (401, UnauthorisedError),
+        (403, ForbiddenError),
+    ],
+)
+def test_cancel_server_import_file_http_errors(
+    repository: Repository,
+    monkeypatch: pytest.MonkeyPatch,
+    status_code: int,
+    exception_class: type,
+):
+    """Test that cancel_server_import_file raises appropriate exceptions for HTTP errors."""
+    mock_response = Mock(spec=httpx.Response, status_code=status_code, text="Error")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        f"HTTP {status_code}",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_delete = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
+
+    with pytest.raises(exception_class):
+        repository.cancel_server_import_file("test-file.ttl")
+
+
+@pytest.mark.parametrize(
+    "status_code",
+    [404, 500, 502, 503],
+)
+def test_cancel_server_import_file_reraises_other_http_errors(
+    repository: Repository,
+    monkeypatch: pytest.MonkeyPatch,
+    status_code: int,
+):
+    """Test that cancel_server_import_file re-raises HTTPStatusError for unhandled status codes."""
+    mock_response = Mock(spec=httpx.Response, status_code=status_code, text="Error")
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+        f"HTTP {status_code}",
+        request=Mock(),
+        response=mock_response,
+    )
+    mock_httpx_delete = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
+
+    with pytest.raises(httpx.HTTPStatusError):
+        repository.cancel_server_import_file("test-file.ttl")

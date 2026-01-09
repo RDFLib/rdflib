@@ -492,6 +492,37 @@ class Repository(rdflib.contrib.rdf4j.client.Repository):
                 ) from err
             raise
 
+    def cancel_server_import_file(self, name: str) -> None:
+        """Cancel server file import operation.
+
+        Parameters:
+            name: The name of the file import to interrupt.
+
+        Raises:
+            BadRequestError: If the request is bad.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+        """
+        try:
+            params = {"name": name}
+            response = self.http_client.delete(
+                f"/rest/repositories/{self.identifier}/import/server",
+                params=params,
+            )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 400:
+                raise BadRequestError(f"Bad request: {err.response.text}") from err
+            if err.response.status_code == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            if err.response.status_code == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            raise
+
 
 class RepositoryManager(rdflib.contrib.rdf4j.client.RepositoryManager):
     """GraphDB Repository Manager.

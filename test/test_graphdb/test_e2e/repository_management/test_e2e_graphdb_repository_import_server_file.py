@@ -100,3 +100,32 @@ def test_import_server_import_file_success(client: GraphDBClient):
     quads_1_file = next(f for f in import_files if f.name == "quads-1.nq")
     # Status should be DONE, IMPORTING, or PENDING after triggering import
     assert quads_1_file.status in {"DONE", "IMPORTING", "PENDING"}
+
+
+@pytest.mark.testcontainer
+def test_cancel_server_import_file_success(client: GraphDBClient):
+    """Test that cancel_server_import_file successfully cancels an import operation."""
+    from rdflib.contrib.graphdb.models import ServerImportBody
+
+    repo = client.repositories.get("test-repo")
+
+    # First, trigger an import so there's something to potentially cancel
+    body = ServerImportBody(fileNames=["quads-2.nq"])
+    repo.import_server_import_file(body)
+
+    # Attempt to cancel the import (even if it's already done, this shouldn't raise)
+    repo.cancel_server_import_file("quads-2.nq")
+
+
+@pytest.mark.testcontainer
+def test_cancel_server_import_file_raises_bad_request_when_no_running_task(
+    client: GraphDBClient,
+):
+    """Test that cancel_server_import_file raises BadRequestError when no task is running."""
+    from rdflib.contrib.graphdb.exceptions import BadRequestError
+
+    repo = client.repositories.get("test-repo")
+
+    # Attempting to cancel a file that isn't currently importing should raise BadRequestError
+    with pytest.raises(BadRequestError, match="No running task for quads-3.nq"):
+        repo.cancel_server_import_file("quads-3.nq")
