@@ -21,14 +21,14 @@ if has_httpx:
     import httpx
 
     from rdflib.contrib.graphdb.client import GraphDBClient
-    from rdflib.contrib.graphdb.models import StructureStatistics
+    from rdflib.contrib.graphdb.models import StructuresStatistics
 
 
 def test_structures_returns_structure_statistics(
     client: GraphDBClient,
     monkeypatch: pytest.MonkeyPatch,
 ):
-    """Test that structures property returns a StructureStatistics instance."""
+    """Test that structures property returns a StructuresStatistics instance."""
     mock_response = Mock(
         spec=httpx.Response,
         json=lambda: {"cacheHit": 100, "cacheMiss": 50},
@@ -38,7 +38,7 @@ def test_structures_returns_structure_statistics(
 
     result = client.monitoring.structures
 
-    assert isinstance(result, StructureStatistics)
+    assert isinstance(result, StructuresStatistics)
     assert result.cacheHit == 100
     assert result.cacheMiss == 50
     mock_httpx_get.assert_called_once_with(

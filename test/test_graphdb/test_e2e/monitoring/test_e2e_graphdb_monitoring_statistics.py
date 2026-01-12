@@ -10,15 +10,15 @@ pytestmark = pytest.mark.skipif(
 
 if has_httpx:
     from rdflib.contrib.graphdb import GraphDBClient
-    from rdflib.contrib.graphdb.models import StructureStatistics
+    from rdflib.contrib.graphdb.models import StructuresStatistics
 
 
 @pytest.mark.testcontainer
 def test_graphdb_monitoring_structures_returns_statistics(client: GraphDBClient):
-    """Test that the structures property returns a StructureStatistics instance."""
+    """Test that the structures property returns a StructuresStatistics instance."""
     result = client.monitoring.structures
 
-    assert isinstance(result, StructureStatistics)
+    assert isinstance(result, StructuresStatistics)
     assert isinstance(result.cacheHit, int)
     assert isinstance(result.cacheMiss, int)
 
@@ -35,7 +35,7 @@ def test_graphdb_monitoring_structures_values_are_non_negative(client: GraphDBCl
 
 @pytest.mark.testcontainer
 def test_graphdb_monitoring_structures_is_frozen(client: GraphDBClient):
-    """Test that the returned StructureStatistics instance is immutable."""
+    """Test that the returned StructuresStatistics instance is immutable."""
     result = client.monitoring.structures
 
     with pytest.raises(AttributeError):
@@ -48,9 +48,9 @@ def test_graphdb_monitoring_structures_multiple_calls(client: GraphDBClient):
     result1 = client.monitoring.structures
     result2 = client.monitoring.structures
 
-    # Both should be valid StructureStatistics instances
-    assert isinstance(result1, StructureStatistics)
-    assert isinstance(result2, StructureStatistics)
+    # Both should be valid StructuresStatistics instances
+    assert isinstance(result1, StructuresStatistics)
+    assert isinstance(result2, StructuresStatistics)
 
     # Values may change between calls, but both should have valid types
     assert isinstance(result1.cacheHit, int)

@@ -18,41 +18,41 @@ if has_httpx:
         RepositoryConfigBeanCreate,
         RepositoryState,
         ServerImportBody,
-        StructureStatistics,
+        StructuresStatistics,
         User,
     )
 
 
-# ==================== StructureStatistics Tests ====================
+# ==================== StructuresStatistics Tests ====================
 
 
 def test_structure_statistics_valid():
-    """Test creating a valid StructureStatistics."""
-    settings = StructureStatistics(cacheHit=100, cacheMiss=50)
+    """Test creating a valid StructuresStatistics."""
+    settings = StructuresStatistics(cacheHit=100, cacheMiss=50)
 
     assert settings.cacheHit == 100
     assert settings.cacheMiss == 50
 
 
 def test_structure_statistics_zero_values():
-    """Test StructureStatistics with zero values."""
-    settings = StructureStatistics(cacheHit=0, cacheMiss=0)
+    """Test StructuresStatistics with zero values."""
+    settings = StructuresStatistics(cacheHit=0, cacheMiss=0)
 
     assert settings.cacheHit == 0
     assert settings.cacheMiss == 0
 
 
 def test_structure_statistics_negative_values():
-    """Test StructureStatistics with negative values (allowed as integers)."""
-    settings = StructureStatistics(cacheHit=-1, cacheMiss=-10)
+    """Test StructuresStatistics with negative values (allowed as integers)."""
+    settings = StructuresStatistics(cacheHit=-1, cacheMiss=-10)
 
     assert settings.cacheHit == -1
     assert settings.cacheMiss == -10
 
 
 def test_structure_statistics_frozen():
-    """Test that StructureStatistics is immutable."""
-    settings = StructureStatistics(cacheHit=100, cacheMiss=50)
+    """Test that StructuresStatistics is immutable."""
+    settings = StructuresStatistics(cacheHit=100, cacheMiss=50)
     with pytest.raises(AttributeError):
         settings.cacheHit = 200
 
@@ -64,7 +64,7 @@ def test_structure_statistics_frozen():
 def test_structure_statistics_invalid_cache_hit(cache_hit):
     """Test that invalid cacheHit types raise ValueError."""
     with pytest.raises(ValueError):
-        StructureStatistics(cacheHit=cache_hit, cacheMiss=50)
+        StructuresStatistics(cacheHit=cache_hit, cacheMiss=50)
 
 
 @pytest.mark.parametrize(
@@ -74,16 +74,16 @@ def test_structure_statistics_invalid_cache_hit(cache_hit):
 def test_structure_statistics_invalid_cache_miss(cache_miss):
     """Test that invalid cacheMiss types raise ValueError."""
     with pytest.raises(ValueError):
-        StructureStatistics(cacheHit=100, cacheMiss=cache_miss)
+        StructuresStatistics(cacheHit=100, cacheMiss=cache_miss)
 
 
 def test_structure_statistics_multiple_invalid_fields():
     """Test that multiple invalid fields are collected in the error."""
     with pytest.raises(ValueError) as exc_info:
-        StructureStatistics(cacheHit="invalid", cacheMiss="also_invalid")
+        StructuresStatistics(cacheHit="invalid", cacheMiss="also_invalid")
 
     error_tuple = exc_info.value.args
-    assert "Invalid StructureStatistics values" in error_tuple[0]
+    assert "Invalid StructuresStatistics values" in error_tuple[0]
     # The invalid list should contain both fields
     invalid_list = error_tuple[1]
     field_names = [item[0] for item in invalid_list]

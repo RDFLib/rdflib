@@ -9,7 +9,7 @@ from rdflib.util import from_n3
 
 
 @dataclass(frozen=True)
-class StructureStatistics:
+class StructuresStatistics:
     cacheHit: int  # noqa: N815
     cacheMiss: int  # noqa: N815
 
@@ -24,7 +24,7 @@ class StructureStatistics:
             invalid.append(("cacheMiss", cache_miss, type(cache_miss)))
 
         if invalid:
-            raise ValueError("Invalid StructureStatistics values: ", invalid)
+            raise ValueError("Invalid StructuresStatistics values: ", invalid)
 
 
 @dataclass(frozen=True)

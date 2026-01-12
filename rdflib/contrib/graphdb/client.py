@@ -33,7 +33,7 @@ from rdflib.contrib.graphdb.models import (
     RepositorySizeInfo,
     ServerImportBody,
     StatementAccessControlEntry,
-    StructureStatistics,
+    StructuresStatistics,
     SystemAccessControlEntry,
     User,
     UserUpdate,
@@ -565,7 +565,7 @@ class MonitoringManager:
         return self._http_client
 
     @property
-    def structures(self) -> StructureStatistics:
+    def structures(self) -> StructuresStatistics:
         """Get structures statistics.
 
         Returns:
@@ -583,7 +583,7 @@ class MonitoringManager:
             response = self.http_client.get("/rest/monitor/structures", headers=headers)
             response.raise_for_status()
             try:
-                return StructureStatistics(**response.json())
+                return StructuresStatistics(**response.json())
             except (ValueError, TypeError) as err:
                 raise ResponseFormatError(f"Failed to parse response: {err}") from err
         except httpx.HTTPStatusError as err:
