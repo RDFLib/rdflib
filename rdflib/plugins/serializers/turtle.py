@@ -26,6 +26,7 @@ from rdflib.graph import Graph
 from rdflib.namespace import RDF, RDFS
 from rdflib.serializer import Serializer
 from rdflib.term import BNode, Literal, Node, URIRef
+import re
 
 _StrT = TypeVar("_StrT", bound=str)
 
@@ -328,7 +329,7 @@ class TurtleSerializer(RecursiveSerializer):
 
         prefix, namespace, local = parts
 
-        local = local.replace(r"(", r"\(").replace(r")", r"\)")
+        local = re.sub(r'[\'_~.\-!$&"\(\)*+,;=/\?#@%]', r'\\\0', local)
 
         # QName cannot end with .
         if local.endswith("."):
