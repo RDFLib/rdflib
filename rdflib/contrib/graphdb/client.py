@@ -186,15 +186,16 @@ class FGACRulesManager:
                     f"Failed to parse GraphDB response: {err}"
                 ) from err
         except httpx.HTTPStatusError as err:
-            if err.response.status_code == 401:
+            status = err.response.status_code
+            if status == 401:
                 raise UnauthorisedError(
                     f"Request is unauthorised: {err.response.text}"
                 ) from err
-            if err.response.status_code == 403:
+            elif status == 403:
                 raise ForbiddenError(
                     f"Request is forbidden: {err.response.text}"
                 ) from err
-            if err.response.status_code == 500:
+            elif status == 500:
                 raise InternalServerError(
                     f"Internal server error: {err.response.text}"
                 ) from err
@@ -233,17 +234,18 @@ class FGACRulesManager:
             )
             response.raise_for_status()
         except httpx.HTTPStatusError as err:
-            if err.response.status_code == 400:
+            status = err.response.status_code
+            if status == 400:
                 raise BadRequestError(f"Invalid request: {err.response.text}") from err
-            if err.response.status_code == 401:
+            elif status == 401:
                 raise UnauthorisedError(
                     f"Request is unauthorised: {err.response.text}"
                 ) from err
-            if err.response.status_code == 403:
+            elif status == 403:
                 raise ForbiddenError(
                     f"Request is forbidden: {err.response.text}"
                 ) from err
-            if err.response.status_code == 500:
+            elif status == 500:
                 raise InternalServerError(
                     f"Internal server error: {err.response.text}"
                 ) from err
@@ -293,17 +295,18 @@ class FGACRulesManager:
             )
             response.raise_for_status()
         except httpx.HTTPStatusError as err:
-            if err.response.status_code == 400:
+            status = err.response.status_code
+            if status == 400:
                 raise BadRequestError(f"Invalid request: {err.response.text}") from err
-            if err.response.status_code == 401:
+            elif status == 401:
                 raise UnauthorisedError(
                     f"Request is unauthorised: {err.response.text}"
                 ) from err
-            if err.response.status_code == 403:
+            elif status == 403:
                 raise ForbiddenError(
                     f"Request is forbidden: {err.response.text}"
                 ) from err
-            if err.response.status_code == 500:
+            elif status == 500:
                 raise InternalServerError(
                     f"Internal server error: {err.response.text}"
                 ) from err
@@ -340,17 +343,18 @@ class FGACRulesManager:
             )
             response.raise_for_status()
         except httpx.HTTPStatusError as err:
-            if err.response.status_code == 400:
+            status = err.response.status_code
+            if status == 400:
                 raise BadRequestError(f"Invalid request: {err.response.text}") from err
-            if err.response.status_code == 401:
+            elif status == 401:
                 raise UnauthorisedError(
                     f"Request is unauthorised: {err.response.text}"
                 ) from err
-            if err.response.status_code == 403:
+            elif status == 403:
                 raise ForbiddenError(
                     f"Request is forbidden: {err.response.text}"
                 ) from err
-            if err.response.status_code == 500:
+            elif status == 500:
                 raise InternalServerError(
                     f"Internal server error: {err.response.text}"
                 ) from err
@@ -480,17 +484,18 @@ class Repository(rdflib.contrib.rdf4j.client.Repository):
             )
             response.raise_for_status()
         except httpx.HTTPStatusError as err:
-            if err.response.status_code == 400:
+            status = err.response.status_code
+            if status == 400:
                 raise BadRequestError(f"Bad request: {err.response.text}") from err
-            if err.response.status_code == 401:
+            elif status == 401:
                 raise UnauthorisedError(
                     f"Request is unauthorised: {err.response.text}"
                 ) from err
-            if err.response.status_code == 403:
+            elif status == 403:
                 raise ForbiddenError(
                     f"Request is forbidden: {err.response.text}"
                 ) from err
-            if err.response.status_code == 404:
+            elif status == 404:
                 raise NotFoundError(
                     f"Request is not found: {err.response.text}"
                 ) from err
@@ -515,13 +520,14 @@ class Repository(rdflib.contrib.rdf4j.client.Repository):
             )
             response.raise_for_status()
         except httpx.HTTPStatusError as err:
-            if err.response.status_code == 400:
+            status = err.response.status_code
+            if status == 400:
                 raise BadRequestError(f"Bad request: {err.response.text}") from err
-            if err.response.status_code == 401:
+            elif status == 401:
                 raise UnauthorisedError(
                     f"Request is unauthorised: {err.response.text}"
                 ) from err
-            if err.response.status_code == 403:
+            elif status == 403:
                 raise ForbiddenError(
                     f"Request is forbidden: {err.response.text}"
                 ) from err
@@ -589,19 +595,20 @@ class MonitoringManager:
             except (ValueError, TypeError) as err:
                 raise ResponseFormatError(f"Failed to parse response: {err}") from err
         except httpx.HTTPStatusError as err:
-            if err.response.status_code == 401:
+            status = err.response.status_code
+            if status == 401:
                 raise UnauthorisedError(
                     f"Request is unauthorised: {err.response.text}"
                 ) from err
-            if err.response.status_code == 403:
+            elif status == 403:
                 raise ForbiddenError(
                     f"Request is forbidden: {err.response.text}"
                 ) from err
-            if err.response.status_code == 500:
+            elif status == 500:
                 raise InternalServerError(
                     f"Internal server error: {err.response.text}"
                 ) from err
-            if err.response.status_code == 503:
+            elif status == 503:
                 raise ServiceUnavailableError(
                     f"Service is unavailable: {err.response.text}"
                 ) from err
@@ -633,15 +640,16 @@ class MonitoringManager:
             except (ValueError, TypeError, KeyError) as err:
                 raise ResponseFormatError(f"Failed to parse response: {err}") from err
         except httpx.HTTPStatusError as err:
-            if err.response.status_code == 401:
+            status = err.response.status_code
+            if status == 401:
                 raise UnauthorisedError(
                     f"Request is unauthorised: {err.response.text}"
                 ) from err
-            if err.response.status_code == 403:
+            elif status == 403:
                 raise ForbiddenError(
                     f"Request is forbidden: {err.response.text}"
                 ) from err
-            if err.response.status_code == 500:
+            elif status == 500:
                 raise InternalServerError(
                     f"Internal server error: {err.response.text}"
                 ) from err
@@ -809,17 +817,18 @@ class RepositoryManagement:
                 )
             response.raise_for_status()
         except httpx.HTTPStatusError as err:
-            if err.response.status_code == 400:
+            status = err.response.status_code
+            if status == 400:
                 raise BadRequestError(f"Invalid request: {err.response.text}") from err
-            if err.response.status_code == 401:
+            elif status == 401:
                 raise UnauthorisedError(
                     f"Request is unauthorised: {err.response.text}"
                 ) from err
-            if err.response.status_code == 403:
+            elif status == 403:
                 raise ForbiddenError(
                     f"Request is forbidden: {err.response.text}"
                 ) from err
-            if err.response.status_code == 500:
+            elif status == 500:
                 raise InternalServerError(
                     f"Internal server error: {err.response.text}"
                 ) from err
@@ -1155,11 +1164,12 @@ class RepositoryManagement:
                 response.raise_for_status()
                 return response.text
             except httpx.HTTPStatusError as err:
-                if err.response.status_code == 401:
+                status = err.response.status_code
+                if status == 401:
                     raise UnauthorisedError("Request is unauthorised.") from err
-                if err.response.status_code == 403:
+                elif status == 403:
                     raise ForbiddenError("Request is forbidden.") from err
-                if err.response.status_code == 500:
+                elif status == 500:
                     raise InternalServerError(
                         f"Internal server error: {err.response.text}"
                     ) from err
@@ -1188,11 +1198,12 @@ class RepositoryManagement:
                 response.raise_for_status()
                 return response.text
             except httpx.HTTPStatusError as err:
-                if err.response.status_code == 401:
+                status = err.response.status_code
+                if status == 401:
                     raise UnauthorisedError("Request is unauthorised.") from err
-                if err.response.status_code == 403:
+                elif status == 403:
                     raise ForbiddenError("Request is forbidden.") from err
-                if err.response.status_code == 500:
+                elif status == 500:
                     raise InternalServerError(
                         f"Internal server error: {err.response.text}"
                     ) from err
@@ -1212,11 +1223,12 @@ class RepositoryManagement:
                 response.raise_for_status()
                 return response.text
             except httpx.HTTPStatusError as err:
-                if err.response.status_code == 401:
+                status = err.response.status_code
+                if status == 401:
                     raise UnauthorisedError("Request is unauthorised.") from err
-                if err.response.status_code == 403:
+                elif status == 403:
                     raise ForbiddenError("Request is forbidden.") from err
-                if err.response.status_code == 500:
+                elif status == 500:
                     raise InternalServerError(
                         f"Internal server error: {err.response.text}"
                     ) from err
