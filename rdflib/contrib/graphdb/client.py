@@ -31,6 +31,7 @@ from rdflib.contrib.graphdb.models import (
     RepositoryConfigBean,
     RepositoryConfigBeanCreate,
     RepositorySizeInfo,
+    RepositoryStatistics,
     ServerImportBody,
     StatementAccessControlEntry,
     StructuresStatistics,
@@ -602,6 +603,46 @@ class MonitoringManager:
             if err.response.status_code == 503:
                 raise ServiceUnavailableError(
                     f"Service is unavailable: {err.response.text}"
+                ) from err
+            raise
+
+    def get_repo_stats(self, repository_id: str):
+        """Get repository statistics.
+
+        Parameters:
+            repository_id: The identifier of the repository.
+
+        Returns:
+            RepositoryStatistics: The repository statistics.
+
+        Raises:
+            ResponseFormatError: If the response cannot be parsed.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            InternalServerError: If the server returns an internal error.
+        """
+        try:
+            headers = {"Accept": "application/json"}
+            response = self.http_client.get(
+                f"/rest/monitor/repository/{repository_id}", headers=headers
+            )
+            response.raise_for_status()
+            try:
+                return RepositoryStatistics.from_dict(response.json())
+            except (ValueError, TypeError, KeyError) as err:
+                raise ResponseFormatError(f"Failed to parse response: {err}") from err
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            if err.response.status_code == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            if err.response.status_code == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
                 ) from err
             raise
 

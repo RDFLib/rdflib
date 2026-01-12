@@ -28,6 +28,103 @@ class StructuresStatistics:
 
 
 @dataclass(frozen=True)
+class RepositoryStatisticsQueries:
+    slow: int
+    suboptimal: int
+
+    def __post_init__(self) -> None:
+        invalid: list[tuple[str, t.Any, type]] = []
+        slow = t.cast(t.Any, self.slow)
+        suboptimal = t.cast(t.Any, self.suboptimal)
+
+        if type(slow) is not int:
+            invalid.append(("slow", slow, type(slow)))
+        if type(suboptimal) is not int:
+            invalid.append(("suboptimal", suboptimal, type(suboptimal)))
+
+        if invalid:
+            raise ValueError("Invalid RepositoryStatisticsQueries values: ", invalid)
+
+
+@dataclass(frozen=True)
+class RepositoryStatisticsEntityPool:
+    epoolReads: int  # noqa: N815
+    epoolWrites: int  # noqa: N815
+    epoolSize: int  # noqa: N815
+
+    def __post_init__(self) -> None:
+        invalid: list[tuple[str, t.Any, type]] = []
+        epool_reads = t.cast(t.Any, self.epoolReads)
+        epool_writes = t.cast(t.Any, self.epoolWrites)
+        epool_size = t.cast(t.Any, self.epoolSize)
+
+        if type(epool_reads) is not int:
+            invalid.append(("epoolReads", epool_reads, type(epool_reads)))
+        if type(epool_writes) is not int:
+            invalid.append(("epoolWrites", epool_writes, type(epool_writes)))
+        if type(epool_size) is not int:
+            invalid.append(("epoolSize", epool_size, type(epool_size)))
+
+        if invalid:
+            raise ValueError("Invalid RepositoryStatisticsEntityPool values: ", invalid)
+
+
+@dataclass(frozen=True)
+class RepositoryStatistics:
+    queries: RepositoryStatisticsQueries
+    entityPool: RepositoryStatisticsEntityPool  # noqa: N815
+    activeTransactions: int  # noqa: N815
+    openConnections: int  # noqa: N815
+
+    def __post_init__(self) -> None:
+        invalid: list[tuple[str, t.Any, type]] = []
+        queries = t.cast(t.Any, self.queries)
+        entity_pool = t.cast(t.Any, self.entityPool)
+        active_transactions = t.cast(t.Any, self.activeTransactions)
+        open_connections = t.cast(t.Any, self.openConnections)
+
+        if not isinstance(queries, RepositoryStatisticsQueries):
+            invalid.append(("queries", queries, type(queries)))
+        if not isinstance(entity_pool, RepositoryStatisticsEntityPool):
+            invalid.append(("entityPool", entity_pool, type(entity_pool)))
+        if type(active_transactions) is not int:
+            invalid.append(
+                ("activeTransactions", active_transactions, type(active_transactions))
+            )
+        if type(open_connections) is not int:
+            invalid.append(
+                ("openConnections", open_connections, type(open_connections))
+            )
+
+        if invalid:
+            raise ValueError("Invalid RepositoryStatistics values: ", invalid)
+
+    @classmethod
+    def from_dict(cls, data: dict) -> RepositoryStatistics:
+        """Create a RepositoryStatistics instance from a dict.
+
+        This is useful for converting JSON response data into the dataclass structure.
+        The nested 'queries' and 'entityPool' dicts are automatically converted to
+        their respective dataclass instances.
+
+        Args:
+            data: A dict containing the repository statistics data, typically
+                parsed from a JSON response.
+
+        Returns:
+            A RepositoryStatistics instance with nested dataclass objects.
+        """
+        queries = RepositoryStatisticsQueries(**data["queries"])
+        entity_pool = RepositoryStatisticsEntityPool(**data["entityPool"])
+        return cls(
+            queries=queries,
+            entityPool=entity_pool,
+            activeTransactions=data["activeTransactions"],
+            openConnections=data["openConnections"],
+        )
+
+
+@dataclass(frozen=True)
 class ParserSettings:
     preserveBNodeIds: bool = False  # noqa: N815
     failOnUnknownDataTypes: bool = False  # noqa: N815
