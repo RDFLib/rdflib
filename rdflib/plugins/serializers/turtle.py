@@ -329,7 +329,7 @@ class TurtleSerializer(RecursiveSerializer):
 
         prefix, namespace, local = parts
 
-        local = re.sub(r'[\'_~.\-!$&"\(\)*+,;=/\?#@%]', r"\\\0", local)
+        local = re.sub(r"[\"'~!$&\(\)*+,;=/\?#@%]", r"\\\0", local)
 
         # QName cannot end with .
         if local.endswith("."):
