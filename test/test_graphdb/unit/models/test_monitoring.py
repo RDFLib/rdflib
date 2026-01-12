@@ -10,6 +10,9 @@ pytestmark = pytest.mark.skipif(
 
 if has_httpx:
     from rdflib.contrib.graphdb.models import (
+        InfrastructureMemoryUsage,
+        InfrastructureStatistics,
+        InfrastructureStorageMemory,
         RepositoryStatistics,
         RepositoryStatisticsEntityPool,
         RepositoryStatisticsQueries,
@@ -17,28 +20,16 @@ if has_httpx:
     )
 
 
-def test_structure_statistics_valid():
-    """Test creating a valid StructuresStatistics."""
-    settings = StructuresStatistics(cacheHit=100, cacheMiss=50)
+@pytest.mark.parametrize(
+    "cache_hit, cache_miss",
+    [(100, 50), (0, 0), (-1, -10)],
+)
+def test_structure_statistics_initialization(cache_hit, cache_miss):
+    """Test creating StructuresStatistics with various valid integer values."""
+    settings = StructuresStatistics(cacheHit=cache_hit, cacheMiss=cache_miss)
 
-    assert settings.cacheHit == 100
-    assert settings.cacheMiss == 50
-
-
-def test_structure_statistics_zero_values():
-    """Test StructuresStatistics with zero values."""
-    settings = StructuresStatistics(cacheHit=0, cacheMiss=0)
-
-    assert settings.cacheHit == 0
-    assert settings.cacheMiss == 0
-
-
-def test_structure_statistics_negative_values():
-    """Test StructuresStatistics with negative values (allowed as integers)."""
-    settings = StructuresStatistics(cacheHit=-1, cacheMiss=-10)
-
-    assert settings.cacheHit == -1
-    assert settings.cacheMiss == -10
+    assert settings.cacheHit == cache_hit
+    assert settings.cacheMiss == cache_miss
 
 
 def test_structure_statistics_frozen():
@@ -82,28 +73,16 @@ def test_structure_statistics_multiple_invalid_fields():
     assert "cacheMiss" in field_names
 
 
-def test_repository_statistics_queries_valid():
-    """Test creating a valid RepositoryStatisticsQueries."""
-    queries = RepositoryStatisticsQueries(slow=10, suboptimal=5)
+@pytest.mark.parametrize(
+    "slow, suboptimal",
+    [(10, 5), (0, 0), (-1, -10)],
+)
+def test_repository_statistics_queries_initialization(slow, suboptimal):
+    """Test creating RepositoryStatisticsQueries with various valid integer values."""
+    queries = RepositoryStatisticsQueries(slow=slow, suboptimal=suboptimal)
 
-    assert queries.slow == 10
-    assert queries.suboptimal == 5
-
-
-def test_repository_statistics_queries_zero_values():
-    """Test RepositoryStatisticsQueries with zero values."""
-    queries = RepositoryStatisticsQueries(slow=0, suboptimal=0)
-
-    assert queries.slow == 0
-    assert queries.suboptimal == 0
-
-
-def test_repository_statistics_queries_negative_values():
-    """Test RepositoryStatisticsQueries with negative values (allowed as integers)."""
-    queries = RepositoryStatisticsQueries(slow=-1, suboptimal=-10)
-
-    assert queries.slow == -1
-    assert queries.suboptimal == -10
+    assert queries.slow == slow
+    assert queries.suboptimal == suboptimal
 
 
 def test_repository_statistics_queries_frozen():
@@ -146,24 +125,19 @@ def test_repository_statistics_queries_multiple_invalid_fields():
     assert "suboptimal" in field_names
 
 
-def test_repository_statistics_entity_pool_valid():
-    """Test creating a valid RepositoryStatisticsEntityPool."""
+@pytest.mark.parametrize(
+    "reads, writes, size",
+    [(100, 50, 1000), (0, 0, 0)],
+)
+def test_repository_statistics_entity_pool_initialization(reads, writes, size):
+    """Test creating RepositoryStatisticsEntityPool with various valid integer values."""
     pool = RepositoryStatisticsEntityPool(
-        epoolReads=100, epoolWrites=50, epoolSize=1000
+        epoolReads=reads, epoolWrites=writes, epoolSize=size
     )
 
-    assert pool.epoolReads == 100
-    assert pool.epoolWrites == 50
-    assert pool.epoolSize == 1000
-
-
-def test_repository_statistics_entity_pool_zero_values():
-    """Test RepositoryStatisticsEntityPool with zero values."""
-    pool = RepositoryStatisticsEntityPool(epoolReads=0, epoolWrites=0, epoolSize=0)
-
-    assert pool.epoolReads == 0
-    assert pool.epoolWrites == 0
-    assert pool.epoolSize == 0
+    assert pool.epoolReads == reads
+    assert pool.epoolWrites == writes
+    assert pool.epoolSize == size
 
 
 def test_repository_statistics_entity_pool_frozen():
@@ -227,8 +201,12 @@ def test_repository_statistics_entity_pool_multiple_invalid_fields():
     assert "epoolSize" in field_names
 
 
-def test_repository_statistics_valid():
-    """Test creating a valid RepositoryStatistics."""
+@pytest.mark.parametrize(
+    "active_tx, open_conn",
+    [(3, 10), (0, 0)],
+)
+def test_repository_statistics_initialization(active_tx, open_conn):
+    """Test creating RepositoryStatistics with valid values."""
     queries = RepositoryStatisticsQueries(slow=10, suboptimal=5)
     entity_pool = RepositoryStatisticsEntityPool(
         epoolReads=100, epoolWrites=50, epoolSize=1000
@@ -236,31 +214,12 @@ def test_repository_statistics_valid():
     stats = RepositoryStatistics(
         queries=queries,
         entityPool=entity_pool,
-        activeTransactions=3,
-        openConnections=10,
+        activeTransactions=active_tx,
+        openConnections=open_conn,
     )
 
-    assert stats.queries == queries
-    assert stats.entityPool == entity_pool
-    assert stats.activeTransactions == 3
-    assert stats.openConnections == 10
-
-
-def test_repository_statistics_zero_values():
-    """Test RepositoryStatistics with zero transaction/connection values."""
-    queries = RepositoryStatisticsQueries(slow=0, suboptimal=0)
-    entity_pool = RepositoryStatisticsEntityPool(
-        epoolReads=0, epoolWrites=0, epoolSize=0
-    )
-    stats = RepositoryStatistics(
-        queries=queries,
-        entityPool=entity_pool,
-        activeTransactions=0,
-        openConnections=0,
-    )
-
-    assert stats.activeTransactions == 0
-    assert stats.openConnections == 0
+    assert stats.activeTransactions == active_tx
+    assert stats.openConnections == open_conn
 
 
 def test_repository_statistics_frozen():
@@ -378,47 +337,32 @@ def test_repository_statistics_multiple_invalid_fields():
     assert "openConnections" in field_names
 
 
-def test_repository_statistics_from_dict_valid():
+@pytest.mark.parametrize(
+    "values",
+    [
+        {
+            "queries": {"slow": 10, "suboptimal": 5},
+            "entityPool": {"epoolReads": 100, "epoolWrites": 50, "epoolSize": 1000},
+            "activeTransactions": 3,
+            "openConnections": 10,
+        },
+        {
+            "queries": {"slow": 0, "suboptimal": 0},
+            "entityPool": {"epoolReads": 0, "epoolWrites": 0, "epoolSize": 0},
+            "activeTransactions": 0,
+            "openConnections": 0,
+        },
+    ],
+)
+def test_repository_statistics_from_dict(values):
     """Test creating RepositoryStatistics from a valid dict."""
-    data = {
-        "queries": {"slow": 10, "suboptimal": 5},
-        "entityPool": {"epoolReads": 100, "epoolWrites": 50, "epoolSize": 1000},
-        "activeTransactions": 3,
-        "openConnections": 10,
-    }
-
-    stats = RepositoryStatistics.from_dict(data)
+    stats = RepositoryStatistics.from_dict(values)
 
     assert isinstance(stats, RepositoryStatistics)
     assert isinstance(stats.queries, RepositoryStatisticsQueries)
     assert isinstance(stats.entityPool, RepositoryStatisticsEntityPool)
-    assert stats.queries.slow == 10
-    assert stats.queries.suboptimal == 5
-    assert stats.entityPool.epoolReads == 100
-    assert stats.entityPool.epoolWrites == 50
-    assert stats.entityPool.epoolSize == 1000
-    assert stats.activeTransactions == 3
-    assert stats.openConnections == 10
-
-
-def test_repository_statistics_from_dict_zero_values():
-    """Test creating RepositoryStatistics from dict with zero values."""
-    data = {
-        "queries": {"slow": 0, "suboptimal": 0},
-        "entityPool": {"epoolReads": 0, "epoolWrites": 0, "epoolSize": 0},
-        "activeTransactions": 0,
-        "openConnections": 0,
-    }
-
-    stats = RepositoryStatistics.from_dict(data)
-
-    assert stats.queries.slow == 0
-    assert stats.queries.suboptimal == 0
-    assert stats.entityPool.epoolReads == 0
-    assert stats.entityPool.epoolWrites == 0
-    assert stats.entityPool.epoolSize == 0
-    assert stats.activeTransactions == 0
-    assert stats.openConnections == 0
+    assert stats.activeTransactions == values["activeTransactions"]
+    assert stats.openConnections == values["openConnections"]
 
 
 def test_repository_statistics_from_dict_missing_key():
@@ -443,3 +387,192 @@ def test_repository_statistics_from_dict_invalid_nested_data():
 
     with pytest.raises(ValueError):
         RepositoryStatistics.from_dict(data)
+
+
+@pytest.mark.parametrize(
+    "values",
+    [
+        {
+            "max": 16789798912,
+            "committed": 1874853888,
+            "init": 1073741824,
+            "used": 1189000104,
+        },
+        {"max": 0, "committed": 0, "init": 0, "used": 0},
+    ],
+)
+def test_infrastructure_memory_usage_initialization(values):
+    """Test creating InfrastructureMemoryUsage with valid or zero values."""
+    usage = InfrastructureMemoryUsage(**values)
+
+    assert usage.max == values["max"]
+    assert usage.committed == values["committed"]
+    assert usage.init == values["init"]
+    assert usage.used == values["used"]
+
+
+def test_infrastructure_memory_usage_frozen():
+    """Test that InfrastructureMemoryUsage is immutable."""
+    usage = InfrastructureMemoryUsage(
+        max=16789798912, committed=1874853888, init=1073741824, used=1189000104
+    )
+    with pytest.raises(AttributeError):
+        usage.max = 20000000000
+
+
+@pytest.mark.parametrize(
+    "field_name",
+    ["max", "committed", "init", "used"],
+)
+@pytest.mark.parametrize(
+    "invalid_value",
+    ["100", 100.5, None, [], {}, True],
+)
+def test_infrastructure_memory_usage_invalid_types(field_name, invalid_value):
+    """Test that invalid types for InfrastructureMemoryUsage fields raise ValueError."""
+    kwargs = {"max": 0, "committed": 0, "init": 0, "used": 0}
+    kwargs[field_name] = invalid_value
+    with pytest.raises(ValueError):
+        InfrastructureMemoryUsage(**kwargs)
+
+
+@pytest.mark.parametrize(
+    "values",
+    [
+        {
+            "dataDirUsed": 773518331904,
+            "workDirUsed": 773518331904,
+            "logsDirUsed": 773518331904,
+            "dataDirFree": 1193202618368,
+            "workDirFree": 1193202618368,
+            "logsDirFree": 1193202618368,
+        },
+        {
+            "dataDirUsed": 0,
+            "workDirUsed": 0,
+            "logsDirUsed": 0,
+            "dataDirFree": 0,
+            "workDirFree": 0,
+            "logsDirFree": 0,
+        },
+    ],
+)
+def test_infrastructure_storage_memory_initialization(values):
+    """Test creating InfrastructureStorageMemory with valid or zero values."""
+    storage = InfrastructureStorageMemory(**values)
+    assert storage.dataDirUsed == values["dataDirUsed"]
+    assert storage.dataDirFree == values["dataDirFree"]
+
+
+def test_infrastructure_storage_memory_frozen():
+    """Test that InfrastructureStorageMemory is immutable."""
+    storage = InfrastructureStorageMemory(
+        dataDirUsed=0,
+        workDirUsed=0,
+        logsDirUsed=0,
+        dataDirFree=0,
+        workDirFree=0,
+        logsDirFree=0,
+    )
+    with pytest.raises(AttributeError):
+        storage.dataDirUsed = 100
+
+
+@pytest.mark.parametrize(
+    "field_name",
+    [
+        "dataDirUsed",
+        "workDirUsed",
+        "logsDirUsed",
+        "dataDirFree",
+        "workDirFree",
+        "logsDirFree",
+    ],
+)
+@pytest.mark.parametrize(
+    "invalid_value",
+    ["100", 100.5, None, [], {}, True],
+)
+def test_infrastructure_storage_memory_invalid_types(field_name, invalid_value):
+    """Test that invalid types for InfrastructureStorageMemory fields raise ValueError."""
+    kwargs = {
+        "dataDirUsed": 0,
+        "workDirUsed": 0,
+        "logsDirUsed": 0,
+        "dataDirFree": 0,
+        "workDirFree": 0,
+        "logsDirFree": 0,
+    }
+    kwargs[field_name] = invalid_value
+    with pytest.raises(ValueError):
+        InfrastructureStorageMemory(**kwargs)
+
+
+def test_infrastructure_statistics_valid():
+    """Test creating a valid InfrastructureStatistics."""
+    memory = InfrastructureMemoryUsage(max=0, committed=0, init=0, used=0)
+    storage = InfrastructureStorageMemory(
+        dataDirUsed=0,
+        workDirUsed=0,
+        logsDirUsed=0,
+        dataDirFree=0,
+        workDirFree=0,
+        logsDirFree=0,
+    )
+    stats = InfrastructureStatistics(
+        heapMemoryUsage=memory,
+        nonHeapMemoryUsage=memory,
+        storageMemory=storage,
+        threadCount=35,
+        cpuLoad=6.25,
+        classCount=20240,
+        gcCount=15,
+        openFileDescriptors=696,
+        maxFileDescriptors=524288,
+    )
+
+    assert stats.heapMemoryUsage == memory
+    assert stats.threadCount == 35
+    assert stats.cpuLoad == 6.25
+
+
+@pytest.mark.parametrize("cpu_load", [6.25, 10])
+def test_infrastructure_statistics_from_dict(cpu_load):
+    """Test creating InfrastructureStatistics from a dict with float or int cpuLoad."""
+    data = {
+        "heapMemoryUsage": {
+            "max": 16789798912,
+            "committed": 1874853888,
+            "init": 1073741824,
+            "used": 1189000104,
+        },
+        "nonHeapMemoryUsage": {
+            "max": 137438953472,
+            "committed": 199446528,
+            "init": 7667712,
+            "used": 192552832,
+        },
+        "storageMemory": {
+            "dataDirUsed": 773518331904,
+            "workDirUsed": 773518331904,
+            "logsDirUsed": 773518331904,
+            "dataDirFree": 1193202618368,
+            "workDirFree": 1193202618368,
+            "logsDirFree": 1193202618368,
+        },
+        "threadCount": 35,
+        "cpuLoad": cpu_load,
+        "classCount": 20240,
+        "gcCount": 15,
+        "openFileDescriptors": 696,
+        "maxFileDescriptors": 524288,
+    }
+
+    stats = InfrastructureStatistics.from_dict(data)
+
+    assert isinstance(stats, InfrastructureStatistics)
+    assert isinstance(stats.heapMemoryUsage, InfrastructureMemoryUsage)
+    assert stats.heapMemoryUsage.max == 16789798912
+    assert stats.cpuLoad == float(cpu_load)
+    assert isinstance(stats.cpuLoad, float)
+    assert stats.threadCount == 35

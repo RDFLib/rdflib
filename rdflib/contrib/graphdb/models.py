@@ -125,6 +125,161 @@ class RepositoryStatistics:
 
 
 @dataclass(frozen=True)
+class InfrastructureMemoryUsage:
+    max: int
+    committed: int
+    init: int
+    used: int
+
+    def __post_init__(self) -> None:
+        invalid: list[tuple[str, t.Any, type]] = []
+        max_val = t.cast(t.Any, self.max)
+        committed = t.cast(t.Any, self.committed)
+        init = t.cast(t.Any, self.init)
+        used = t.cast(t.Any, self.used)
+
+        if type(max_val) is not int:
+            invalid.append(("max", max_val, type(max_val)))
+        if type(committed) is not int:
+            invalid.append(("committed", committed, type(committed)))
+        if type(init) is not int:
+            invalid.append(("init", init, type(init)))
+        if type(used) is not int:
+            invalid.append(("used", used, type(used)))
+
+        if invalid:
+            raise ValueError("Invalid InfrastructureMemoryUsage values: ", invalid)
+
+
+@dataclass(frozen=True)
+class InfrastructureStorageMemory:
+    dataDirUsed: int  # noqa: N815
+    workDirUsed: int  # noqa: N815
+    logsDirUsed: int  # noqa: N815
+    dataDirFree: int  # noqa: N815
+    workDirFree: int  # noqa: N815
+    logsDirFree: int  # noqa: N815
+
+    def __post_init__(self) -> None:
+        invalid: list[tuple[str, t.Any, type]] = []
+        data_dir_used = t.cast(t.Any, self.dataDirUsed)
+        work_dir_used = t.cast(t.Any, self.workDirUsed)
+        logs_dir_used = t.cast(t.Any, self.logsDirUsed)
+        data_dir_free = t.cast(t.Any, self.dataDirFree)
+        work_dir_free = t.cast(t.Any, self.workDirFree)
+        logs_dir_free = t.cast(t.Any, self.logsDirFree)
+
+        if type(data_dir_used) is not int:
+            invalid.append(("dataDirUsed", data_dir_used, type(data_dir_used)))
+        if type(work_dir_used) is not int:
+            invalid.append(("workDirUsed", work_dir_used, type(work_dir_used)))
+        if type(logs_dir_used) is not int:
+            invalid.append(("logsDirUsed", logs_dir_used, type(logs_dir_used)))
+        if type(data_dir_free) is not int:
+            invalid.append(("dataDirFree", data_dir_free, type(data_dir_free)))
+        if type(work_dir_free) is not int:
+            invalid.append(("workDirFree", work_dir_free, type(work_dir_free)))
+        if type(logs_dir_free) is not int:
+            invalid.append(("logsDirFree", logs_dir_free, type(logs_dir_free)))
+
+        if invalid:
+            raise ValueError("Invalid InfrastructureStorageMemory values: ", invalid)
+
+
+@dataclass(frozen=True)
+class InfrastructureStatistics:
+    heapMemoryUsage: InfrastructureMemoryUsage  # noqa: N815
+    nonHeapMemoryUsage: InfrastructureMemoryUsage  # noqa: N815
+    storageMemory: InfrastructureStorageMemory  # noqa: N815
+    threadCount: int  # noqa: N815
+    cpuLoad: float  # noqa: N815
+    classCount: int  # noqa: N815
+    gcCount: int  # noqa: N815
+    openFileDescriptors: int  # noqa: N815
+    maxFileDescriptors: int  # noqa: N815
+
+    def __post_init__(self) -> None:
+        invalid: list[tuple[str, t.Any, type]] = []
+        heap_memory_usage = t.cast(t.Any, self.heapMemoryUsage)
+        non_heap_memory_usage = t.cast(t.Any, self.nonHeapMemoryUsage)
+        storage_memory = t.cast(t.Any, self.storageMemory)
+        thread_count = t.cast(t.Any, self.threadCount)
+        cpu_load = t.cast(t.Any, self.cpuLoad)
+        class_count = t.cast(t.Any, self.classCount)
+        gc_count = t.cast(t.Any, self.gcCount)
+        open_file_descriptors = t.cast(t.Any, self.openFileDescriptors)
+        max_file_descriptors = t.cast(t.Any, self.maxFileDescriptors)
+
+        if not isinstance(heap_memory_usage, InfrastructureMemoryUsage):
+            invalid.append(
+                ("heapMemoryUsage", heap_memory_usage, type(heap_memory_usage))
+            )
+        if not isinstance(non_heap_memory_usage, InfrastructureMemoryUsage):
+            invalid.append(
+                (
+                    "nonHeapMemoryUsage",
+                    non_heap_memory_usage,
+                    type(non_heap_memory_usage),
+                )
+            )
+        if not isinstance(storage_memory, InfrastructureStorageMemory):
+            invalid.append(("storageMemory", storage_memory, type(storage_memory)))
+        if type(thread_count) is not int:
+            invalid.append(("threadCount", thread_count, type(thread_count)))
+        if type(cpu_load) is not float and type(cpu_load) is not int:
+            invalid.append(("cpuLoad", cpu_load, type(cpu_load)))
+        if type(class_count) is not int:
+            invalid.append(("classCount", class_count, type(class_count)))
+        if type(gc_count) is not int:
+            invalid.append(("gcCount", gc_count, type(gc_count)))
+        if type(open_file_descriptors) is not int:
+            invalid.append(
+                (
+                    "openFileDescriptors",
+                    open_file_descriptors,
+                    type(open_file_descriptors),
+                )
+            )
+        if type(max_file_descriptors) is not int:
+            invalid.append(
+                ("maxFileDescriptors", max_file_descriptors, type(max_file_descriptors))
+            )
+
+        if invalid:
+            raise ValueError("Invalid InfrastructureStatistics values: ", invalid)
+
+    @classmethod
+    def from_dict(cls, data: dict) -> InfrastructureStatistics:
+        """Create an InfrastructureStatistics instance from a dict.
+
+        This is useful for converting JSON response data into the dataclass structure.
+        The nested memory and storage dicts are automatically converted to their
+        respective dataclass instances.
+
+        Args:
+            data: A dict containing the infrastructure statistics data, typically
+                parsed from a JSON response.
+
+        Returns:
+            An InfrastructureStatistics instance with nested dataclass objects.
+        """
+        heap_memory_usage = InfrastructureMemoryUsage(**data["heapMemoryUsage"])
+        non_heap_memory_usage = InfrastructureMemoryUsage(**data["nonHeapMemoryUsage"])
+        storage_memory = InfrastructureStorageMemory(**data["storageMemory"])
+        return cls(
+            heapMemoryUsage=heap_memory_usage,
+            nonHeapMemoryUsage=non_heap_memory_usage,
+            storageMemory=storage_memory,
+            threadCount=data["threadCount"],
+            cpuLoad=float(data["cpuLoad"]),
+            classCount=data["classCount"],
+            gcCount=data["gcCount"],
+            openFileDescriptors=data["openFileDescriptors"],
+            maxFileDescriptors=data["maxFileDescriptors"],
+        )
+
+
+@dataclass(frozen=True)
 class ParserSettings:
     preserveBNodeIds: bool = False  # noqa: N815
     failOnUnknownDataTypes: bool = False  # noqa: N815
