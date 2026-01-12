@@ -487,7 +487,7 @@ def test_repo_list_internal_server_error(
     client: GraphDBClient,
     monkeypatch: pytest.MonkeyPatch,
 ):
-    """Test that list propagates HTTPStatusError for server errors."""
+    """Test that list propagates InternalServerError for server errors."""
     mock_response = Mock(
         spec=httpx.Response,
         status_code=500,
@@ -499,7 +499,7 @@ def test_repo_list_internal_server_error(
     )
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
-    with pytest.raises(httpx.HTTPStatusError):
+    with pytest.raises(InternalServerError):
         client.repos.list()
 
 
@@ -669,9 +669,7 @@ def test_repo_validate_requires_content_type(client: GraphDBClient):
         client.repos.validate("test-repo", content_type="", content="shapes")
 
     with pytest.raises(ValueError):
-        client.repos.validate(
-            "test-repo", content="shapes"
-        )  # type: ignore[call-overload]
+        client.repos.validate("test-repo", content="shapes")  # type: ignore[call-overload]
 
 
 @pytest.mark.parametrize(

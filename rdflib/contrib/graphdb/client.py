@@ -26,6 +26,7 @@ from rdflib.contrib.graphdb.models import (
     FreeAccessSettings,
     GraphDBRepository,
     ImportSettings,
+    InfrastructureStatistics,
     ParserSettings,
     PluginAccessControlEntry,
     RepositoryConfigBean,
@@ -646,6 +647,45 @@ class MonitoringManager:
                 ) from err
             raise
 
+    @property
+    def infrastructure(self) -> InfrastructureStatistics:
+        """Get all infrastructure statistics.
+
+        Returns:
+            InfrastructureStatistics: The infrastructure statistics.
+
+        Raises:
+            ResponseFormatError: If the response cannot be parsed.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            InternalServerError: If the server returns an internal error.
+        """
+        try:
+            headers = {"Accept": "application/json"}
+            response = self.http_client.get(
+                "/rest/monitor/infrastructure", headers=headers
+            )
+            response.raise_for_status()
+            try:
+                return InfrastructureStatistics.from_dict(response.json())
+            except (ValueError, TypeError, KeyError) as err:
+                raise ResponseFormatError(f"Failed to parse response: {err}") from err
+        except httpx.HTTPStatusError as err:
+            status = err.response.status_code
+            if status == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            elif status == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            elif status == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            raise
+
 
 class RepositoryManagement:
     """GraphDB Repository Management client.
@@ -673,14 +713,15 @@ class RepositoryManagement:
         params = {}
         if location is not None:
             params["location"] = location
-        response = self.http_client.get("/rest/repositories", params=params)
-        response.raise_for_status()
         try:
-            return [GraphDBRepository.from_dict(repo) for repo in response.json()]
-        except (ValueError, TypeError) as err:
-            raise ResponseFormatError(
-                f"Failed to parse GraphDB response: {err}"
-            ) from err
+            response = self.http_client.get("/rest/repositories", params=params)
+            response.raise_for_status()
+            try:
+                return [GraphDBRepository.from_dict(repo) for repo in response.json()]
+            except (ValueError, TypeError) as err:
+                raise ResponseFormatError(
+                    f"Failed to parse GraphDB response: {err}"
+                ) from err
         except httpx.HTTPStatusError as err:
             if err.response.status_code == 500:
                 raise InternalServerError(
@@ -1010,18 +1051,26 @@ class RepositoryManagement:
 
         Raises:
             ResponseFormatError: If the response cannot be parsed.
+            InternalServerError: If the server returns an internal error.
         """
         params = {}
         if location:
             params["location"] = location
-        response = self.http_client.get(
-            f"/rest/repositories/{repository_id}/size", params=params
-        )
-        response.raise_for_status()
         try:
-            return RepositorySizeInfo(**response.json())
-        except (ValueError, TypeError) as err:
-            raise ResponseFormatError("Failed to parse GraphDB response.") from err
+            response = self.http_client.get(
+                f"/rest/repositories/{repository_id}/size", params=params
+            )
+            response.raise_for_status()
+            try:
+                return RepositorySizeInfo(**response.json())
+            except (ValueError, TypeError) as err:
+                raise ResponseFormatError("Failed to parse GraphDB response.") from err
+        except httpx.HTTPStatusError as err:
+            if err.response.status_code == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            raise
 
     @t.overload
     def validate(
