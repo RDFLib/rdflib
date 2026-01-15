@@ -22,6 +22,7 @@ from rdflib.contrib.graphdb.exceptions import (
 )
 from rdflib.contrib.graphdb.models import (
     AccessControlEntry,
+    BackupOperationBean,
     ClearGraphAccessControlEntry,
     FreeAccessSettings,
     GraphDBRepository,
@@ -734,8 +735,49 @@ class MonitoringManager:
                 ) from err
             raise
 
-    def backup(self):
-        """Track backup operations."""
+    def backup(self) -> BackupOperationBean | None:
+        """Track backup operations.
+
+        Returns:
+            On-going backup operations or `None` if no backup is in progress.
+
+        Raises:
+            ResponseFormatError: If the response cannot be parsed.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            InternalServerError: If the server returns an internal error.
+            ServiceUnavailableError: If the server is unavailable.
+        """
+        try:
+            headers = {"Accept": "application/json"}
+            response = self.http_client.get("/rest/monitor/backup", headers=headers)
+            response.raise_for_status()
+            try:
+                data = response.json()
+                if not data:
+                    return None
+                return BackupOperationBean.from_dict(data)
+            except (ValueError, TypeError, KeyError) as err:
+                raise ResponseFormatError(f"Failed to parse response: {err}") from err
+        except httpx.HTTPStatusError as err:
+            status = err.response.status_code
+            if status == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            elif status == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            elif status == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            elif status == 503:
+                raise ServiceUnavailableError(
+                    f"Service is unavailable: {err.response.text}"
+                ) from err
+            raise
 
 
 class RepositoryManagement:
