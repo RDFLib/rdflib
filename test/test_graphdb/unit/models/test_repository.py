@@ -190,3 +190,25 @@ def test_graphdb_repository_from_dict_state_enum():
 
     assert repo.id == "repo2"
     assert repo.state == RepositoryState.RUNNING
+
+
+def test_graphdb_repository_from_dict_invalid_state():
+    """Test that from_dict raises ValueError for invalid state values."""
+    data = {
+        "id": "repo3",
+        "state": "INVALID_STATE",
+    }
+
+    with pytest.raises(ValueError):
+        GraphDBRepository.from_dict(data)
+
+
+def test_graphdb_repository_from_dict_unexpected_key():
+    """Test that from_dict raises TypeError for unexpected keys."""
+    data = {
+        "id": "repo4",
+        "unexpected_field": "some_value",
+    }
+
+    with pytest.raises(TypeError):
+        GraphDBRepository.from_dict(data)

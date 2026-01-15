@@ -128,6 +128,13 @@ class BackupOperationBean:
 
         Returns:
             A BackupOperationBean instance with nested dataclass objects.
+
+        Raises:
+            KeyError: If required keys are missing from the input dict.
+            TypeError: If nested 'snapshotOptions' cannot be unpacked into
+                SnapshotOptionsBean.
+            ValueError: If field validation fails in SnapshotOptionsBean or
+                BackupOperationBean (e.g., invalid types or operation values).
         """
         snapshot_options = SnapshotOptionsBean(**data["snapshotOptions"])
         return cls(
@@ -246,6 +253,14 @@ class RepositoryStatistics:
 
         Returns:
             A RepositoryStatistics instance with nested dataclass objects.
+
+        Raises:
+            KeyError: If required keys are missing from the input dict.
+            TypeError: If nested dicts cannot be unpacked into their respective
+                dataclass instances.
+            ValueError: If field validation fails in RepositoryStatisticsQueries,
+                RepositoryStatisticsEntityPool, or RepositoryStatistics
+                (e.g., invalid types).
         """
         queries = RepositoryStatisticsQueries(**data["queries"])
         entity_pool = RepositoryStatisticsEntityPool(**data["entityPool"])
@@ -395,6 +410,14 @@ class InfrastructureStatistics:
 
         Returns:
             An InfrastructureStatistics instance with nested dataclass objects.
+
+        Raises:
+            KeyError: If required keys are missing from the input dict.
+            TypeError: If nested dicts cannot be unpacked into their respective
+                dataclass instances.
+            ValueError: If field validation fails in InfrastructureMemoryUsage,
+                InfrastructureStorageMemory, or InfrastructureStatistics
+                (e.g., invalid types).
         """
         heap_memory_usage = InfrastructureMemoryUsage(**data["heapMemoryUsage"])
         non_heap_memory_usage = InfrastructureMemoryUsage(**data["nonHeapMemoryUsage"])
@@ -817,6 +840,20 @@ class GraphDBRepository:
 
     @classmethod
     def from_dict(cls, data: dict) -> GraphDBRepository:
+        """Create a GraphDBRepository instance from a dict.
+
+        Args:
+            data: A dict containing the repository data, typically
+                parsed from a JSON response.
+
+        Returns:
+            A GraphDBRepository instance.
+
+        Raises:
+            TypeError: If the dict contains keys that do not match
+                GraphDBRepository fields.
+            ValueError: If the 'state' value is not a valid RepositoryState.
+        """
         if "state" in data and data["state"] is not None:
             data["state"] = RepositoryState(data["state"])
         return cls(**data)
@@ -842,7 +879,24 @@ class AccessControlEntry:
     ):
         """Create an AccessControlEntry subclass instance from raw GraphDB data.
 
-        Note: we perform parse validation essentially twice (here and in the subclass's __post_init__) to ensure mypy is satisfied with the value's type.
+        Note: we perform parse validation essentially twice (here and in the
+        subclass's __post_init__) to ensure mypy is satisfied with the value's type.
+
+        Args:
+            data: A dict containing the access control entry data, typically
+                parsed from a JSON response.
+
+        Returns:
+            An AccessControlEntry subclass instance (SystemAccessControlEntry,
+            StatementAccessControlEntry, PluginAccessControlEntry, or
+            ClearGraphAccessControlEntry) depending on the 'scope' field.
+
+        Raises:
+            TypeError: If data is not a dict.
+            ValueError: If 'scope' is not a supported value ('system', 'statement',
+                'plugin', 'clear_graph'), or if any field fails validation
+                (e.g., invalid policy, operation, role, plugin, subject,
+                predicate, object, or graph values).
         """
         if not isinstance(data, dict):
             raise TypeError("ACL entry must be a mapping.")

@@ -580,6 +580,90 @@ def test_infrastructure_statistics_from_dict(cpu_load):
     assert stats.threadCount == 35
 
 
+def test_infrastructure_statistics_from_dict_missing_key():
+    """Test that from_dict raises KeyError for missing required keys."""
+    data = {
+        "heapMemoryUsage": {
+            "max": 16789798912,
+            "committed": 1874853888,
+            "init": 1073741824,
+            "used": 1189000104,
+        },
+        # Missing nonHeapMemoryUsage, storageMemory, and other required fields
+    }
+
+    with pytest.raises(KeyError):
+        InfrastructureStatistics.from_dict(data)
+
+
+def test_infrastructure_statistics_from_dict_invalid_nested_data():
+    """Test that from_dict raises ValueError for invalid nested data types."""
+    data = {
+        "heapMemoryUsage": {
+            "max": "invalid",  # Should be int
+            "committed": 1874853888,
+            "init": 1073741824,
+            "used": 1189000104,
+        },
+        "nonHeapMemoryUsage": {
+            "max": 137438953472,
+            "committed": 199446528,
+            "init": 7667712,
+            "used": 192552832,
+        },
+        "storageMemory": {
+            "dataDirUsed": 773518331904,
+            "workDirUsed": 773518331904,
+            "logsDirUsed": 773518331904,
+            "dataDirFree": 1193202618368,
+            "workDirFree": 1193202618368,
+            "logsDirFree": 1193202618368,
+        },
+        "threadCount": 35,
+        "cpuLoad": 6.25,
+        "classCount": 20240,
+        "gcCount": 15,
+        "openFileDescriptors": 696,
+        "maxFileDescriptors": 524288,
+    }
+
+    with pytest.raises(ValueError):
+        InfrastructureStatistics.from_dict(data)
+
+
+def test_infrastructure_statistics_from_dict_nested_missing_key():
+    """Test that from_dict raises TypeError for missing nested keys."""
+    data = {
+        "heapMemoryUsage": {
+            "max": 16789798912,
+            # Missing committed, init, used
+        },
+        "nonHeapMemoryUsage": {
+            "max": 137438953472,
+            "committed": 199446528,
+            "init": 7667712,
+            "used": 192552832,
+        },
+        "storageMemory": {
+            "dataDirUsed": 773518331904,
+            "workDirUsed": 773518331904,
+            "logsDirUsed": 773518331904,
+            "dataDirFree": 1193202618368,
+            "workDirFree": 1193202618368,
+            "logsDirFree": 1193202618368,
+        },
+        "threadCount": 35,
+        "cpuLoad": 6.25,
+        "classCount": 20240,
+        "gcCount": 15,
+        "openFileDescriptors": 696,
+        "maxFileDescriptors": 524288,
+    }
+
+    with pytest.raises(TypeError):
+        InfrastructureStatistics.from_dict(data)
+
+
 @pytest.mark.parametrize(
     "with_repo_data, with_sys_data, clean_data_dir, repositories",
     [

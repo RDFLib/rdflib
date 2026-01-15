@@ -9,8 +9,14 @@ pytestmark = pytest.mark.skipif(
 )
 
 if has_httpx:
+    from rdflib import URIRef
     from rdflib.contrib.graphdb.models import (
+        AccessControlEntry,
+        ClearGraphAccessControlEntry,
         FreeAccessSettings,
+        PluginAccessControlEntry,
+        StatementAccessControlEntry,
+        SystemAccessControlEntry,
         User,
     )
 
@@ -263,3 +269,195 @@ def test_user_as_dict():
     assert result["grantedAuthorities"] == ["ROLE_USER"]
     assert result["appSettings"] == {"theme": "dark"}
     assert result["gptThreads"] == [{"id": 1}]
+
+
+def test_access_control_entry_from_dict_system_scope():
+    """Test creating SystemAccessControlEntry from dict with 'system' scope."""
+    data = {
+        "scope": "system",
+        "policy": "allow",
+        "role": "admin",
+        "operation": "read",
+    }
+
+    result = AccessControlEntry.from_dict(data)
+
+    assert isinstance(result, SystemAccessControlEntry)
+    assert result.scope == "system"
+    assert result.policy == "allow"
+    assert result.role == "admin"
+    assert result.operation == "read"
+
+
+def test_access_control_entry_from_dict_statement_scope():
+    """Test creating StatementAccessControlEntry from dict with 'statement' scope."""
+    data = {
+        "scope": "statement",
+        "policy": "deny",
+        "role": "user",
+        "operation": "write",
+        "subject": "<http://example.org/subject>",
+        "predicate": "<http://example.org/predicate>",
+        "object": "<http://example.org/object>",
+        "context": "<http://example.org/graph>",
+    }
+
+    result = AccessControlEntry.from_dict(data)
+
+    assert isinstance(result, StatementAccessControlEntry)
+    assert result.scope == "statement"
+    assert result.policy == "deny"
+    assert result.role == "user"
+    assert result.operation == "write"
+    assert result.subject == URIRef("http://example.org/subject")
+    assert result.predicate == URIRef("http://example.org/predicate")
+    assert result.object == URIRef("http://example.org/object")
+    assert result.graph == URIRef("http://example.org/graph")
+
+
+def test_access_control_entry_from_dict_plugin_scope():
+    """Test creating PluginAccessControlEntry from dict with 'plugin' scope."""
+    data = {
+        "scope": "plugin",
+        "policy": "abstain",
+        "role": "editor",
+        "operation": "*",
+        "plugin": "elasticsearch-connector",
+    }
+
+    result = AccessControlEntry.from_dict(data)
+
+    assert isinstance(result, PluginAccessControlEntry)
+    assert result.scope == "plugin"
+    assert result.policy == "abstain"
+    assert result.role == "editor"
+    assert result.operation == "*"
+    assert result.plugin == "elasticsearch-connector"
+
+
+def test_access_control_entry_from_dict_clear_graph_scope():
+    """Test creating ClearGraphAccessControlEntry from dict with 'clear_graph' scope."""
+    data = {
+        "scope": "clear_graph",
+        "policy": "allow",
+        "role": "admin",
+        "context": "named",
+    }
+
+    result = AccessControlEntry.from_dict(data)
+
+    assert isinstance(result, ClearGraphAccessControlEntry)
+    assert result.scope == "clear_graph"
+    assert result.policy == "allow"
+    assert result.role == "admin"
+    assert result.graph == "named"
+
+
+def test_access_control_entry_from_dict_not_dict():
+    """Test that from_dict raises TypeError when input is not a dict."""
+    with pytest.raises(TypeError, match="ACL entry must be a mapping"):
+        AccessControlEntry.from_dict("not a dict")
+
+
+def test_access_control_entry_from_dict_list_input():
+    """Test that from_dict raises TypeError when input is a list."""
+    with pytest.raises(TypeError, match="ACL entry must be a mapping"):
+        AccessControlEntry.from_dict([{"scope": "system"}])
+
+
+@pytest.mark.parametrize(
+    "scope",
+    ["unknown", "invalid", "", None, 123, "Statement"],
+)
+def test_access_control_entry_from_dict_invalid_scope(scope):
+    """Test that from_dict raises ValueError for invalid or unsupported scope values."""
+    data = {
+        "scope": scope,
+        "policy": "allow",
+        "role": "admin",
+    }
+
+    with pytest.raises(ValueError):
+        AccessControlEntry.from_dict(data)
+
+
+@pytest.mark.parametrize(
+    "policy",
+    ["invalid", "ALLOW", "", None, 123],
+)
+def test_access_control_entry_from_dict_invalid_policy(policy):
+    """Test that from_dict raises ValueError for invalid policy values."""
+    data = {
+        "scope": "system",
+        "policy": policy,
+        "role": "admin",
+        "operation": "read",
+    }
+
+    with pytest.raises(ValueError):
+        AccessControlEntry.from_dict(data)
+
+
+@pytest.mark.parametrize(
+    "operation",
+    ["invalid", "READ", "", None, 123],
+)
+def test_access_control_entry_from_dict_invalid_operation(operation):
+    """Test that from_dict raises ValueError for invalid operation values."""
+    data = {
+        "scope": "system",
+        "policy": "allow",
+        "role": "admin",
+        "operation": operation,
+    }
+
+    with pytest.raises(ValueError):
+        AccessControlEntry.from_dict(data)
+
+
+@pytest.mark.parametrize(
+    "role",
+    [123, None, [], {}],
+)
+def test_access_control_entry_from_dict_invalid_role(role):
+    """Test that from_dict raises ValueError for invalid role values."""
+    data = {
+        "scope": "system",
+        "policy": "allow",
+        "role": role,
+        "operation": "read",
+    }
+
+    with pytest.raises(ValueError):
+        AccessControlEntry.from_dict(data)
+
+
+def test_access_control_entry_from_dict_invalid_plugin():
+    """Test that from_dict raises ValueError for invalid plugin values."""
+    data = {
+        "scope": "plugin",
+        "policy": "allow",
+        "role": "admin",
+        "operation": "read",
+        "plugin": 123,  # Should be string
+    }
+
+    with pytest.raises(ValueError):
+        AccessControlEntry.from_dict(data)
+
+
+def test_access_control_entry_from_dict_invalid_subject():
+    """Test that from_dict raises ValueError for invalid subject values."""
+    data = {
+        "scope": "statement",
+        "policy": "allow",
+        "role": "admin",
+        "operation": "read",
+        "subject": 123,  # Should be string or "*" or URIRef
+        "predicate": "*",
+        "object": "*",
+        "context": "*",
+    }
+
+    with pytest.raises(ValueError):
+        AccessControlEntry.from_dict(data)
