@@ -734,6 +734,9 @@ class MonitoringManager:
                 ) from err
             raise
 
+    def backup(self):
+        """Track backup operations."""
+
 
 class RepositoryManagement:
     """GraphDB Repository Management client.

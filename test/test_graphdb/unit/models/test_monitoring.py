@@ -10,12 +10,14 @@ pytestmark = pytest.mark.skipif(
 
 if has_httpx:
     from rdflib.contrib.graphdb.models import (
+        BackupOperationBean,
         InfrastructureMemoryUsage,
         InfrastructureStatistics,
         InfrastructureStorageMemory,
         RepositoryStatistics,
         RepositoryStatisticsEntityPool,
         RepositoryStatisticsQueries,
+        SnapshotOptionsBean,
         StructuresStatistics,
     )
 
@@ -576,3 +578,514 @@ def test_infrastructure_statistics_from_dict(cpu_load):
     assert stats.cpuLoad == float(cpu_load)
     assert isinstance(stats.cpuLoad, float)
     assert stats.threadCount == 35
+
+
+@pytest.mark.parametrize(
+    "with_repo_data, with_sys_data, clean_data_dir, repositories",
+    [
+        (True, True, True, None),
+        (False, False, False, None),
+        (True, False, True, ["repo1", "repo2"]),
+        (False, True, False, []),
+    ],
+)
+def test_snapshot_options_bean_initialization(
+    with_repo_data, with_sys_data, clean_data_dir, repositories
+):
+    """Test creating SnapshotOptionsBean with various valid values."""
+    options = SnapshotOptionsBean(
+        withRepositoryData=with_repo_data,
+        withSystemData=with_sys_data,
+        cleanDataDir=clean_data_dir,
+        repositories=repositories,
+    )
+
+    assert options.withRepositoryData == with_repo_data
+    assert options.withSystemData == with_sys_data
+    assert options.cleanDataDir == clean_data_dir
+    assert options.repositories == repositories
+
+
+def test_snapshot_options_bean_frozen():
+    """Test that SnapshotOptionsBean is immutable."""
+    options = SnapshotOptionsBean(
+        withRepositoryData=True,
+        withSystemData=True,
+        cleanDataDir=False,
+    )
+    with pytest.raises(AttributeError):
+        options.withRepositoryData = False
+
+
+@pytest.mark.parametrize(
+    "with_repository_data",
+    ["true", "True", 1, 0, None, [], {}, ""],
+)
+def test_snapshot_options_bean_invalid_with_repository_data(with_repository_data):
+    """Test that invalid withRepositoryData types raise ValueError."""
+    with pytest.raises(ValueError):
+        SnapshotOptionsBean(
+            withRepositoryData=with_repository_data,
+            withSystemData=True,
+            cleanDataDir=True,
+        )
+
+
+@pytest.mark.parametrize(
+    "with_system_data",
+    ["false", "False", 1, 0, None, [], {}, ""],
+)
+def test_snapshot_options_bean_invalid_with_system_data(with_system_data):
+    """Test that invalid withSystemData types raise ValueError."""
+    with pytest.raises(ValueError):
+        SnapshotOptionsBean(
+            withRepositoryData=True,
+            withSystemData=with_system_data,
+            cleanDataDir=True,
+        )
+
+
+@pytest.mark.parametrize(
+    "clean_data_dir",
+    ["true", 1, 0, None, [], {}, ""],
+)
+def test_snapshot_options_bean_invalid_clean_data_dir(clean_data_dir):
+    """Test that invalid cleanDataDir types raise ValueError."""
+    with pytest.raises(ValueError):
+        SnapshotOptionsBean(
+            withRepositoryData=True,
+            withSystemData=True,
+            cleanDataDir=clean_data_dir,
+        )
+
+
+@pytest.mark.parametrize(
+    "repositories",
+    ["repo1", 123, {"repo": "value"}, ("repo1", "repo2")],
+)
+def test_snapshot_options_bean_invalid_repositories_type(repositories):
+    """Test that invalid repositories types (non-list) raise ValueError."""
+    with pytest.raises(ValueError):
+        SnapshotOptionsBean(
+            withRepositoryData=True,
+            withSystemData=True,
+            cleanDataDir=True,
+            repositories=repositories,
+        )
+
+
+@pytest.mark.parametrize(
+    "repositories",
+    [
+        [123, "repo2"],
+        ["repo1", None],
+        ["repo1", ["nested"]],
+        [True, False],
+    ],
+)
+def test_snapshot_options_bean_invalid_repositories_elements(repositories):
+    """Test that invalid repository element types raise ValueError."""
+    with pytest.raises(ValueError):
+        SnapshotOptionsBean(
+            withRepositoryData=True,
+            withSystemData=True,
+            cleanDataDir=True,
+            repositories=repositories,
+        )
+
+
+def test_snapshot_options_bean_multiple_invalid_fields():
+    """Test that multiple invalid fields are collected in the error."""
+    with pytest.raises(ValueError) as exc_info:
+        SnapshotOptionsBean(
+            withRepositoryData="invalid",
+            withSystemData=123,
+            cleanDataDir=None,
+            repositories="not_a_list",
+        )
+
+    error_tuple = exc_info.value.args
+    assert "Invalid SnapshotOptionsBean values" in error_tuple[0]
+    invalid_list = error_tuple[1]
+    field_names = [item[0] for item in invalid_list]
+    assert "withRepositoryData" in field_names
+    assert "withSystemData" in field_names
+    assert "cleanDataDir" in field_names
+    assert "repositories" in field_names
+
+
+def _create_valid_snapshot_options():
+    """Helper to create a valid SnapshotOptionsBean for tests."""
+    return SnapshotOptionsBean(
+        withRepositoryData=True,
+        withSystemData=True,
+        cleanDataDir=False,
+    )
+
+
+@pytest.mark.parametrize(
+    "operation",
+    [
+        "CREATE_BACKUP_IN_PROGRESS",
+        "RESTORE_BACKUP_IN_PROGRESS",
+        "CREATE_CLOUD_BACKUP_IN_PROGRESS",
+        "RESTORE_CLOUD_BACKUP_IN_PROGRESS",
+    ],
+)
+def test_backup_operation_bean_initialization(operation):
+    """Test creating BackupOperationBean with various valid operation values."""
+    snapshot_options = _create_valid_snapshot_options()
+    bean = BackupOperationBean(
+        id="backup-123",
+        username="admin",
+        operation=operation,
+        affectedRepositories=["repo1", "repo2"],
+        msSinceCreated=5000,
+        snapshotOptions=snapshot_options,
+    )
+
+    assert bean.id == "backup-123"
+    assert bean.username == "admin"
+    assert bean.operation == operation
+    assert bean.affectedRepositories == ["repo1", "repo2"]
+    assert bean.msSinceCreated == 5000
+    assert bean.snapshotOptions == snapshot_options
+    assert bean.nodePerformingClusterBackup is None
+
+
+def test_backup_operation_bean_with_node_performing_cluster_backup():
+    """Test creating BackupOperationBean with optional nodePerformingClusterBackup."""
+    snapshot_options = _create_valid_snapshot_options()
+    bean = BackupOperationBean(
+        id="backup-456",
+        username="admin",
+        operation="CREATE_BACKUP_IN_PROGRESS",
+        affectedRepositories=["repo1"],
+        msSinceCreated=1000,
+        snapshotOptions=snapshot_options,
+        nodePerformingClusterBackup="node-1",
+    )
+
+    assert bean.nodePerformingClusterBackup == "node-1"
+
+
+def test_backup_operation_bean_frozen():
+    """Test that BackupOperationBean is immutable."""
+    snapshot_options = _create_valid_snapshot_options()
+    bean = BackupOperationBean(
+        id="backup-123",
+        username="admin",
+        operation="CREATE_BACKUP_IN_PROGRESS",
+        affectedRepositories=["repo1"],
+        msSinceCreated=5000,
+        snapshotOptions=snapshot_options,
+    )
+    with pytest.raises(AttributeError):
+        bean.id = "new-id"
+
+
+@pytest.mark.parametrize(
+    "id_value",
+    [123, None, [], {}, True, 1.5],
+)
+def test_backup_operation_bean_invalid_id(id_value):
+    """Test that invalid id types raise ValueError."""
+    snapshot_options = _create_valid_snapshot_options()
+    with pytest.raises(ValueError):
+        BackupOperationBean(
+            id=id_value,
+            username="admin",
+            operation="CREATE_BACKUP_IN_PROGRESS",
+            affectedRepositories=["repo1"],
+            msSinceCreated=5000,
+            snapshotOptions=snapshot_options,
+        )
+
+
+@pytest.mark.parametrize(
+    "username",
+    [123, None, [], {}, True, 1.5],
+)
+def test_backup_operation_bean_invalid_username(username):
+    """Test that invalid username types raise ValueError."""
+    snapshot_options = _create_valid_snapshot_options()
+    with pytest.raises(ValueError):
+        BackupOperationBean(
+            id="backup-123",
+            username=username,
+            operation="CREATE_BACKUP_IN_PROGRESS",
+            affectedRepositories=["repo1"],
+            msSinceCreated=5000,
+            snapshotOptions=snapshot_options,
+        )
+
+
+@pytest.mark.parametrize(
+    "operation",
+    [
+        "INVALID_OPERATION",
+        "CREATE_BACKUP",
+        "create_backup_in_progress",
+        "",
+        None,
+        123,
+        [],
+        {},
+    ],
+)
+def test_backup_operation_bean_invalid_operation(operation):
+    """Test that invalid operation values raise ValueError."""
+    snapshot_options = _create_valid_snapshot_options()
+    with pytest.raises(ValueError):
+        BackupOperationBean(
+            id="backup-123",
+            username="admin",
+            operation=operation,
+            affectedRepositories=["repo1"],
+            msSinceCreated=5000,
+            snapshotOptions=snapshot_options,
+        )
+
+
+@pytest.mark.parametrize(
+    "affected_repositories",
+    ["repo1", 123, {"repo": "value"}, ("repo1", "repo2"), None],
+)
+def test_backup_operation_bean_invalid_affected_repositories_type(
+    affected_repositories,
+):
+    """Test that invalid affectedRepositories types (non-list) raise ValueError."""
+    snapshot_options = _create_valid_snapshot_options()
+    with pytest.raises(ValueError):
+        BackupOperationBean(
+            id="backup-123",
+            username="admin",
+            operation="CREATE_BACKUP_IN_PROGRESS",
+            affectedRepositories=affected_repositories,
+            msSinceCreated=5000,
+            snapshotOptions=snapshot_options,
+        )
+
+
+@pytest.mark.parametrize(
+    "affected_repositories",
+    [
+        [123, "repo2"],
+        ["repo1", None],
+        ["repo1", ["nested"]],
+        [True, False],
+    ],
+)
+def test_backup_operation_bean_invalid_affected_repositories_elements(
+    affected_repositories,
+):
+    """Test that invalid affectedRepositories element types raise ValueError."""
+    snapshot_options = _create_valid_snapshot_options()
+    with pytest.raises(ValueError):
+        BackupOperationBean(
+            id="backup-123",
+            username="admin",
+            operation="CREATE_BACKUP_IN_PROGRESS",
+            affectedRepositories=affected_repositories,
+            msSinceCreated=5000,
+            snapshotOptions=snapshot_options,
+        )
+
+
+@pytest.mark.parametrize(
+    "ms_since_created",
+    ["5000", 5000.5, None, [], {}, True],
+)
+def test_backup_operation_bean_invalid_ms_since_created(ms_since_created):
+    """Test that invalid msSinceCreated types raise ValueError."""
+    snapshot_options = _create_valid_snapshot_options()
+    with pytest.raises(ValueError):
+        BackupOperationBean(
+            id="backup-123",
+            username="admin",
+            operation="CREATE_BACKUP_IN_PROGRESS",
+            affectedRepositories=["repo1"],
+            msSinceCreated=ms_since_created,
+            snapshotOptions=snapshot_options,
+        )
+
+
+@pytest.mark.parametrize(
+    "snapshot_options",
+    [
+        {"withRepositoryData": True, "withSystemData": True, "cleanDataDir": False},
+        "invalid",
+        123,
+        None,
+        [],
+        True,
+    ],
+)
+def test_backup_operation_bean_invalid_snapshot_options(snapshot_options):
+    """Test that invalid snapshotOptions types raise ValueError."""
+    with pytest.raises(ValueError):
+        BackupOperationBean(
+            id="backup-123",
+            username="admin",
+            operation="CREATE_BACKUP_IN_PROGRESS",
+            affectedRepositories=["repo1"],
+            msSinceCreated=5000,
+            snapshotOptions=snapshot_options,
+        )
+
+
+@pytest.mark.parametrize(
+    "node_performing_cluster_backup",
+    [123, [], {}, True, 1.5],
+)
+def test_backup_operation_bean_invalid_node_performing_cluster_backup(
+    node_performing_cluster_backup,
+):
+    """Test that invalid nodePerformingClusterBackup types raise ValueError."""
+    snapshot_options = _create_valid_snapshot_options()
+    with pytest.raises(ValueError):
+        BackupOperationBean(
+            id="backup-123",
+            username="admin",
+            operation="CREATE_BACKUP_IN_PROGRESS",
+            affectedRepositories=["repo1"],
+            msSinceCreated=5000,
+            snapshotOptions=snapshot_options,
+            nodePerformingClusterBackup=node_performing_cluster_backup,
+        )
+
+
+def test_backup_operation_bean_multiple_invalid_fields():
+    """Test that multiple invalid fields are collected in the error."""
+    with pytest.raises(ValueError) as exc_info:
+        BackupOperationBean(
+            id=123,
+            username=None,
+            operation="INVALID",
+            affectedRepositories="not_a_list",
+            msSinceCreated="5000",
+            snapshotOptions="invalid",
+            nodePerformingClusterBackup=123,
+        )
+
+    error_tuple = exc_info.value.args
+    assert "Invalid BackupOperationBean values" in error_tuple[0]
+    invalid_list = error_tuple[1]
+    field_names = [item[0] for item in invalid_list]
+    assert "id" in field_names
+    assert "username" in field_names
+    assert "operation" in field_names
+    assert "affectedRepositories" in field_names
+    assert "msSinceCreated" in field_names
+    assert "snapshotOptions" in field_names
+    assert "nodePerformingClusterBackup" in field_names
+
+
+def test_backup_operation_bean_empty_affected_repositories():
+    """Test that empty affectedRepositories list is valid."""
+    snapshot_options = _create_valid_snapshot_options()
+    bean = BackupOperationBean(
+        id="backup-123",
+        username="admin",
+        operation="CREATE_BACKUP_IN_PROGRESS",
+        affectedRepositories=[],
+        msSinceCreated=5000,
+        snapshotOptions=snapshot_options,
+    )
+
+    assert bean.affectedRepositories == []
+
+
+@pytest.mark.parametrize(
+    "operation",
+    [
+        "CREATE_BACKUP_IN_PROGRESS",
+        "RESTORE_BACKUP_IN_PROGRESS",
+        "CREATE_CLOUD_BACKUP_IN_PROGRESS",
+        "RESTORE_CLOUD_BACKUP_IN_PROGRESS",
+    ],
+)
+def test_backup_operation_bean_from_dict(operation):
+    """Test creating BackupOperationBean from a valid dict."""
+    data = {
+        "id": "backup-123",
+        "username": "admin",
+        "operation": operation,
+        "affectedRepositories": ["repo1", "repo2"],
+        "msSinceCreated": 5000,
+        "snapshotOptions": {
+            "withRepositoryData": True,
+            "withSystemData": True,
+            "cleanDataDir": False,
+            "repositories": None,
+        },
+    }
+
+    bean = BackupOperationBean.from_dict(data)
+
+    assert isinstance(bean, BackupOperationBean)
+    assert bean.id == "backup-123"
+    assert bean.username == "admin"
+    assert bean.operation == operation
+    assert bean.affectedRepositories == ["repo1", "repo2"]
+    assert bean.msSinceCreated == 5000
+    assert isinstance(bean.snapshotOptions, SnapshotOptionsBean)
+    assert bean.snapshotOptions.withRepositoryData is True
+    assert bean.snapshotOptions.withSystemData is True
+    assert bean.snapshotOptions.cleanDataDir is False
+    assert bean.nodePerformingClusterBackup is None
+
+
+def test_backup_operation_bean_from_dict_with_node_performing_cluster_backup():
+    """Test creating BackupOperationBean from dict with optional nodePerformingClusterBackup."""
+    data = {
+        "id": "backup-456",
+        "username": "admin",
+        "operation": "CREATE_BACKUP_IN_PROGRESS",
+        "affectedRepositories": ["repo1"],
+        "msSinceCreated": 1000,
+        "snapshotOptions": {
+            "withRepositoryData": True,
+            "withSystemData": False,
+            "cleanDataDir": True,
+            "repositories": ["repo1"],
+        },
+        "nodePerformingClusterBackup": "node-1",
+    }
+
+    bean = BackupOperationBean.from_dict(data)
+
+    assert bean.nodePerformingClusterBackup == "node-1"
+    assert bean.snapshotOptions.repositories == ["repo1"]
+
+
+def test_backup_operation_bean_from_dict_missing_key():
+    """Test that from_dict raises KeyError for missing required keys."""
+    data = {
+        "id": "backup-123",
+        "username": "admin",
+        # Missing operation, affectedRepositories, msSinceCreated, snapshotOptions
+    }
+
+    with pytest.raises(KeyError):
+        BackupOperationBean.from_dict(data)
+
+
+def test_backup_operation_bean_from_dict_invalid_nested_data():
+    """Test that from_dict raises ValueError for invalid nested data types."""
+    data = {
+        "id": "backup-123",
+        "username": "admin",
+        "operation": "CREATE_BACKUP_IN_PROGRESS",
+        "affectedRepositories": ["repo1"],
+        "msSinceCreated": 5000,
+        "snapshotOptions": {
+            "withRepositoryData": "invalid",  # Should be bool
+            "withSystemData": True,
+            "cleanDataDir": False,
+            "repositories": None,
+        },
+    }
+
+    with pytest.raises(ValueError):
+        BackupOperationBean.from_dict(data)

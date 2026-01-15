@@ -9,6 +9,139 @@ from rdflib.util import from_n3
 
 
 @dataclass(frozen=True)
+class SnapshotOptionsBean:
+    withRepositoryData: bool  # noqa: N815
+    withSystemData: bool  # noqa: N815
+    cleanDataDir: bool  # noqa: N815
+    repositories: list[str] | None = None
+
+    def __post_init__(self) -> None:
+        invalid: list[tuple[str, t.Any, type]] = []
+        with_repository_data = t.cast(t.Any, self.withRepositoryData)
+        with_system_data = t.cast(t.Any, self.withSystemData)
+        clean_data_dir = t.cast(t.Any, self.cleanDataDir)
+        repositories = t.cast(t.Any, self.repositories)
+
+        if type(with_repository_data) is not bool:
+            invalid.append(
+                ("withRepositoryData", with_repository_data, type(with_repository_data))
+            )
+        if type(with_system_data) is not bool:
+            invalid.append(("withSystemData", with_system_data, type(with_system_data)))
+        if type(clean_data_dir) is not bool:
+            invalid.append(("cleanDataDir", clean_data_dir, type(clean_data_dir)))
+
+        if repositories is not None:
+            if not isinstance(repositories, list):
+                invalid.append(("repositories", repositories, type(repositories)))
+            else:
+                for index, value in enumerate(repositories):
+                    if not isinstance(value, str):
+                        invalid.append((f"repositories[{index}]", value, type(value)))
+
+        if invalid:
+            raise ValueError("Invalid SnapshotOptionsBean values: ", invalid)
+
+
+@dataclass(frozen=True)
+class BackupOperationBean:
+    id: str
+    username: str
+    operation: t.Literal[
+        "CREATE_BACKUP_IN_PROGRESS",
+        "RESTORE_BACKUP_IN_PROGRESS",
+        "CREATE_CLOUD_BACKUP_IN_PROGRESS",
+        "RESTORE_CLOUD_BACKUP_IN_PROGRESS",
+    ]
+    affectedRepositories: list[str]  # noqa: N815
+    msSinceCreated: int  # noqa: N815
+    snapshotOptions: SnapshotOptionsBean  # noqa: N815
+    nodePerformingClusterBackup: str | None = None  # noqa: N815
+
+    def __post_init__(self) -> None:
+        _allowed_operations = {
+            "CREATE_BACKUP_IN_PROGRESS",
+            "RESTORE_BACKUP_IN_PROGRESS",
+            "CREATE_CLOUD_BACKUP_IN_PROGRESS",
+            "RESTORE_CLOUD_BACKUP_IN_PROGRESS",
+        }
+        invalid: list[tuple[str, t.Any, type]] = []
+        id_ = t.cast(t.Any, self.id)
+        username = t.cast(t.Any, self.username)
+        operation = t.cast(t.Any, self.operation)
+        affected_repositories = t.cast(t.Any, self.affectedRepositories)
+        ms_since_created = t.cast(t.Any, self.msSinceCreated)
+        snapshot_options = t.cast(t.Any, self.snapshotOptions)
+        node_performing_cluster_backup = t.cast(t.Any, self.nodePerformingClusterBackup)
+
+        if not isinstance(id_, str):
+            invalid.append(("id", id_, type(id_)))
+        if not isinstance(username, str):
+            invalid.append(("username", username, type(username)))
+        if not isinstance(operation, str) or operation not in _allowed_operations:
+            invalid.append(("operation", operation, type(operation)))
+        if not isinstance(affected_repositories, list):
+            invalid.append(
+                (
+                    "affectedRepositories",
+                    affected_repositories,
+                    type(affected_repositories),
+                )
+            )
+        else:
+            for index, value in enumerate(affected_repositories):
+                if not isinstance(value, str):
+                    invalid.append(
+                        (f"affectedRepositories[{index}]", value, type(value))
+                    )
+        if type(ms_since_created) is not int:
+            invalid.append(("msSinceCreated", ms_since_created, type(ms_since_created)))
+        if not isinstance(snapshot_options, SnapshotOptionsBean):
+            invalid.append(
+                ("snapshotOptions", snapshot_options, type(snapshot_options))
+            )
+        if node_performing_cluster_backup is not None and not isinstance(
+            node_performing_cluster_backup, str
+        ):
+            invalid.append(
+                (
+                    "nodePerformingClusterBackup",
+                    node_performing_cluster_backup,
+                    type(node_performing_cluster_backup),
+                )
+            )
+
+        if invalid:
+            raise ValueError("Invalid BackupOperationBean values: ", invalid)
+
+    @classmethod
+    def from_dict(cls, data: dict) -> BackupOperationBean:
+        """Create a BackupOperationBean instance from a dict.
+
+        This is useful for converting JSON response data into the dataclass structure.
+        The nested 'snapshotOptions' dict is automatically converted to
+        a SnapshotOptionsBean instance.
+
+        Args:
+            data: A dict containing the backup operation data, typically
+                parsed from a JSON response.
+
+        Returns:
+            A BackupOperationBean instance with nested dataclass objects.
+        """
+        snapshot_options = SnapshotOptionsBean(**data["snapshotOptions"])
+        return cls(
+            id=data["id"],
+            username=data["username"],
+            operation=data["operation"],
+            affectedRepositories=data["affectedRepositories"],
+            msSinceCreated=data["msSinceCreated"],
+            snapshotOptions=snapshot_options,
+            nodePerformingClusterBackup=data.get("nodePerformingClusterBackup"),
+        )
+
+
+@dataclass(frozen=True)
 class StructuresStatistics:
     cacheHit: int  # noqa: N815
     cacheMiss: int  # noqa: N815
