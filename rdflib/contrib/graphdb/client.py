@@ -114,6 +114,7 @@ class FGACRulesManager:
             A list of FGAC rules.
 
         Raises:
+            ValueError: If the parameters are invalid.
             UnauthorisedError: If the request is unauthorised.
             ForbiddenError: If the request is forbidden.
             InternalServerError: If the server returns an internal error.
@@ -974,7 +975,7 @@ class RepositoryManagement:
             Graph: The repository configuration in RDF.
 
         Raises:
-            BadRequest: If the content type is not supported.
+            BadRequestError: If the content type is not supported.
             ResponseFormatError: If the response cannot be parsed.
             RepositoryNotFoundError: If the repository is not found.
             InternalServerError: If the server returns an internal error.
@@ -1024,7 +1025,7 @@ class RepositoryManagement:
             config: The repository configuration.
 
         Raises:
-            BadRequest: If the request is invalid.
+            BadRequestError: If the request is invalid.
             UnauthorisedError: If the request is unauthorised.
             ForbiddenError: If the request is forbidden.
             InternalServerError: If the server returns an internal error.
@@ -1064,7 +1065,7 @@ class RepositoryManagement:
             location: The location of the repository.
 
         Raises:
-            BadRequest: If the request is invalid.
+            BadRequestError: If the request is invalid.
             UnauthorisedError: If the request is unauthorised.
             ForbiddenError: If the request is forbidden.
             InternalServerError: If the server returns an internal error.
