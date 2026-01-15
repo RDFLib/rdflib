@@ -694,6 +694,46 @@ class MonitoringManager:
                 ) from err
             raise
 
+    def cluster(self) -> str:
+        """Get cluster statistics.
+
+        !!! Note
+            This endpoint is only available in GraphDB EE.
+
+        Returns:
+            Prometheus-style metrics.
+
+        Raises:
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            InternalServerError: If the server returns an internal error.
+            ServiceUnavailableError: If the server is unavailable.
+        """
+        try:
+            headers = {"Accept": "text/plain"}
+            response = self.http_client.get("/rest/monitor/cluster", headers=headers)
+            response.raise_for_status()
+            return response.text
+        except httpx.HTTPStatusError as err:
+            status = err.response.status_code
+            if status == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            elif status == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            elif status == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            elif status == 503:
+                raise ServiceUnavailableError(
+                    f"Service is unavailable: {err.response.text}"
+                ) from err
+            raise
+
 
 class RepositoryManagement:
     """GraphDB Repository Management client.
