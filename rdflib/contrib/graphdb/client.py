@@ -753,6 +753,52 @@ class ClusterGroupManagement:
                 ) from err
             raise
 
+    def delete_tag(self, tag: str) -> None:
+        """Remove primary cluster tag.
+
+        Parameters:
+            tag: The identifier tag to remove from the primary cluster.
+
+        Raises:
+            TypeError: If tag is not a string.
+            ValueError: If tag is an empty string.
+            BadRequestError: If the request is invalid.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            PreconditionFailedError: If the cluster is not in a state to delete a tag.
+        """
+        if not isinstance(tag, str):
+            raise TypeError("tag must be a string")
+        if not tag:
+            raise ValueError("tag must be a non-empty string")
+
+        headers = {"Content-Type": "application/json"}
+        try:
+            response = self.http_client.request(
+                method="DELETE",
+                url="/rest/cluster/config/tag",
+                headers=headers,
+                json={"tag": tag},
+            )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            status = err.response.status_code
+            if status == 400:
+                raise BadRequestError(f"Invalid request: {err.response.text}") from err
+            elif status == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            elif status == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            elif status == 412:
+                raise PreconditionFailedError(
+                    f"Precondition failed: {err.response.text}"
+                ) from err
+            raise
+
 
 class Repository(rdflib.contrib.rdf4j.client.Repository):
     """GraphDB Repository client.
