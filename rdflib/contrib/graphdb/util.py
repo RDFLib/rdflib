@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import typing as t
 import urllib.parse
 
 
@@ -49,3 +50,13 @@ def extract_filename_from_content_disposition(header: str) -> str | None:
             filename_plain = sanitize_filename(value)
 
     return filename_star or filename_plain
+
+
+def infer_filename_from_fileobj(file_obj: t.Any, fallback: str) -> str:
+    """Infer a safe filename from a file-like object's ``.name`` attribute."""
+    name = getattr(file_obj, "name", None)
+    if isinstance(name, str) and name:
+        inferred = sanitize_filename(name)
+        if inferred:
+            return inferred
+    return fallback

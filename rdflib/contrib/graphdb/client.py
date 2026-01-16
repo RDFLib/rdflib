@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 import pathlib
 import typing as t
@@ -47,7 +48,10 @@ from rdflib.contrib.graphdb.models import (
     _parse_policy,
     _parse_role,
 )
-from rdflib.contrib.graphdb.util import extract_filename_from_content_disposition
+from rdflib.contrib.graphdb.util import (
+    extract_filename_from_content_disposition,
+    infer_filename_from_fileobj,
+)
 from rdflib.contrib.rdf4j import RDF4JClient
 
 FileContent = t.Union[
@@ -795,6 +799,107 @@ class RecoveryManagement:
     @property
     def http_client(self):
         return self._http_client
+
+    def restore(
+        self,
+        backup: bytes | bytearray | memoryview | t.IO[bytes] | str | os.PathLike[str],
+        repositories: list[str] | None = None,
+        restore_system_data: bool | None = None,
+        remove_stale_repositories: bool | None = None,
+    ) -> None:
+        """Restore GraphDB instance from a backup archive.
+
+        Parameters:
+            backup: Backup archive content as bytes/bytes-like, a binary file-like
+                object, or a filesystem path to a `.tar` produced by
+                [`backup`][rdflib.contrib.graphdb.client.RecoveryManagement.backup].
+            repositories: List of repositories to restore. If `None` (default), the
+                parameter is omitted and all repositories found in the backup are
+                restored. If an empty list (`[]`) is provided, no repositories from
+                the backup are restored.
+            restore_system_data: Whether to restore system data (users, saved queries,
+                visual graphs, etc.). If omitted, GraphDB defaults to `false`. If
+                `true` and no system data exists in the backup, GraphDB returns an
+                error.
+            remove_stale_repositories: Whether to remove repositories on the target
+                instance that are not restored from the backup. If omitted, GraphDB
+                defaults to `false`.
+
+        Raises:
+            ValueError: If parameters are invalid, or if backup is not a supported type.
+            BadRequestError: If the request is bad.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+        """
+        if repositories is not None:
+            if not isinstance(repositories, list):
+                raise ValueError("repositories must be a list or None")
+            if not all(isinstance(r, str) for r in repositories):
+                raise ValueError("repositories must be a list of strings")
+        if not isinstance(restore_system_data, bool) and restore_system_data is not None:
+            raise ValueError("restore_system_data must be a bool or None")
+        if (
+            not isinstance(remove_stale_repositories, bool)
+            and remove_stale_repositories is not None
+        ):
+            raise ValueError("remove_stale_repositories must be a bool or None")
+
+        payload: dict[str, t.Any] = {}
+        if repositories is not None:
+            payload["repositories"] = repositories
+        if restore_system_data is not None:
+            payload["restoreSystemData"] = restore_system_data
+        if remove_stale_repositories is not None:
+            payload["removeStaleRepositories"] = remove_stale_repositories
+
+        params_part: FileContent = (None, json.dumps(payload), "application/json")
+
+        def _post(file_part: FileContent) -> None:
+            try:
+                response = self.http_client.post(
+                    "/rest/recovery/restore",
+                    files=[("params", params_part), ("file", file_part)],
+                )
+                response.raise_for_status()
+            except httpx.HTTPStatusError as err:
+                status = err.response.status_code
+                if status == 400:
+                    raise BadRequestError(
+                        f"Bad request: {err.response.text}"
+                    ) from err
+                elif status == 401:
+                    raise UnauthorisedError(
+                        f"Request is unauthorised: {err.response.text}"
+                    ) from err
+                elif status == 403:
+                    raise ForbiddenError(
+                        f"Request is forbidden: {err.response.text}"
+                    ) from err
+                raise err
+
+        if isinstance(backup, (bytes, bytearray, memoryview)):
+            content = bytes(backup)
+            _post(("graphdb-backup.tar", content, "application/x-tar"))
+            return
+
+        if hasattr(backup, "read") and not isinstance(backup, (str, os.PathLike)):
+            file_obj = t.cast(t.IO[bytes], backup)
+            filename = infer_filename_from_fileobj(file_obj, "graphdb-backup.tar")
+            _post((filename, file_obj, "application/x-tar"))
+            return
+
+        if isinstance(backup, (str, os.PathLike)):
+            backup_path = pathlib.Path(backup).expanduser()
+            with open(backup_path, "rb") as f:
+                filename = backup_path.name or infer_filename_from_fileobj(
+                    f, "graphdb-backup.tar"
+                )
+                _post((filename, f, "application/x-tar"))
+            return
+
+        raise ValueError(
+            "backup must be bytes/bytes-like, a binary file-like object, or a filesystem path"
+        )
 
     @t.overload
     def backup(

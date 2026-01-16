@@ -4,6 +4,7 @@ import pytest
 
 from rdflib.contrib.graphdb.util import (
     extract_filename_from_content_disposition,
+    infer_filename_from_fileobj,
     sanitize_filename,
 )
 from rdflib.contrib.rdf4j import has_httpx
@@ -59,3 +60,28 @@ def test_sanitize_filename(raw: str, expected: str | None):
 )
 def test_extract_filename_from_content_disposition(header: str, expected: str | None):
     assert extract_filename_from_content_disposition(header) == expected
+
+
+class _FileLike:
+    def __init__(self, name):
+        self.name = name
+
+
+@pytest.mark.parametrize(
+    "file_obj, fallback, expected",
+    [
+        (_FileLike("/path/to/backup.tar"), "fallback.tar", "backup.tar"),
+        (_FileLike("path\\to\\backup.tar"), "fallback.tar", "backup.tar"),
+        (_FileLike("'backup.tar'"), "fallback.tar", "backup.tar"),
+        (_FileLike("  backup.tar  "), "fallback.tar", "backup.tar"),
+        (_FileLike("../../evil.tar"), "fallback.tar", "evil.tar"),
+        (_FileLike(""), "fallback.tar", "fallback.tar"),
+        (_FileLike("."), "fallback.tar", "fallback.tar"),
+        (_FileLike(".."), "fallback.tar", "fallback.tar"),
+        (_FileLike(None), "fallback.tar", "fallback.tar"),
+        (_FileLike(123), "fallback.tar", "fallback.tar"),
+        (object(), "fallback.tar", "fallback.tar"),
+    ],
+)
+def test_infer_filename_from_fileobj(file_obj, fallback: str, expected: str):
+    assert infer_filename_from_fileobj(file_obj, fallback) == expected
