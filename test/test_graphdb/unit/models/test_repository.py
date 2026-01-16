@@ -192,6 +192,20 @@ def test_graphdb_repository_from_dict_state_enum():
     assert repo.state == RepositoryState.RUNNING
 
 
+def test_graphdb_repository_from_dict_does_not_mutate_input():
+    """from_dict should not mutate the input mapping."""
+    data = {
+        "id": "repo2",
+        "state": "RUNNING",
+    }
+    expected = dict(data)
+
+    repo = GraphDBRepository.from_dict(data)
+
+    assert repo.state == RepositoryState.RUNNING
+    assert data == expected
+
+
 def test_graphdb_repository_from_dict_invalid_state():
     """Test that from_dict raises ValueError for invalid state values."""
     data = {

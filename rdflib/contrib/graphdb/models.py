@@ -854,9 +854,10 @@ class GraphDBRepository:
                 GraphDBRepository fields.
             ValueError: If the 'state' value is not a valid RepositoryState.
         """
-        if "state" in data and data["state"] is not None:
-            data["state"] = RepositoryState(data["state"])
-        return cls(**data)
+        data_copy = dict(data)
+        if "state" in data_copy and data_copy["state"] is not None:
+            data_copy["state"] = RepositoryState(data_copy["state"])
+        return cls(**data_copy)
 
 
 @dataclass
