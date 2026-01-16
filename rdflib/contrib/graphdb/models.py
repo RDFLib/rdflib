@@ -9,6 +9,114 @@ from rdflib.util import from_n3
 
 
 @dataclass(frozen=True)
+class ClusterRequest:
+    electionMinTimeout: int  # noqa: N815
+    electionRangeTimeout: int  # noqa: N815
+    heartbeatInterval: int  # noqa: N815
+    messageSizeKB: int  # noqa: N815
+    verificationTimeout: int  # noqa: N815
+    transactionLogMaximumSizeGB: int  # noqa: N815
+    batchUpdateInterval: int  # noqa: N815
+    nodes: list[str]
+
+    def __post_init__(self) -> None:
+        invalid: list[tuple[str, t.Any, type]] = []
+        election_min_timeout = t.cast(t.Any, self.electionMinTimeout)
+        election_range_timeout = t.cast(t.Any, self.electionRangeTimeout)
+        heartbeat_interval = t.cast(t.Any, self.heartbeatInterval)
+        message_size_kb = t.cast(t.Any, self.messageSizeKB)
+        verification_timeout = t.cast(t.Any, self.verificationTimeout)
+        transaction_log_maximum_size_gb = t.cast(
+            t.Any, self.transactionLogMaximumSizeGB
+        )
+        batch_update_interval = t.cast(t.Any, self.batchUpdateInterval)
+        nodes = t.cast(t.Any, self.nodes)
+
+        if type(election_min_timeout) is not int:
+            invalid.append(
+                ("electionMinTimeout", election_min_timeout, type(election_min_timeout))
+            )
+        if type(election_range_timeout) is not int:
+            invalid.append(
+                (
+                    "electionRangeTimeout",
+                    election_range_timeout,
+                    type(election_range_timeout),
+                )
+            )
+        if type(heartbeat_interval) is not int:
+            invalid.append(
+                ("heartbeatInterval", heartbeat_interval, type(heartbeat_interval))
+            )
+        if type(message_size_kb) is not int:
+            invalid.append(("messageSizeKB", message_size_kb, type(message_size_kb)))
+        if type(verification_timeout) is not int:
+            invalid.append(
+                (
+                    "verificationTimeout",
+                    verification_timeout,
+                    type(verification_timeout),
+                )
+            )
+        if type(transaction_log_maximum_size_gb) is not int:
+            invalid.append(
+                (
+                    "transactionLogMaximumSizeGB",
+                    transaction_log_maximum_size_gb,
+                    type(transaction_log_maximum_size_gb),
+                )
+            )
+        if type(batch_update_interval) is not int:
+            invalid.append(
+                (
+                    "batchUpdateInterval",
+                    batch_update_interval,
+                    type(batch_update_interval),
+                )
+            )
+
+        if not isinstance(nodes, list):
+            invalid.append(("nodes", nodes, type(nodes)))
+        else:
+            for index, value in enumerate(nodes):
+                if not isinstance(value, str):
+                    invalid.append((f"nodes[{index}]", value, type(value)))
+
+        if invalid:
+            raise ValueError("Invalid ClusterRequest values: ", invalid)
+
+    @classmethod
+    def from_dict(cls, data: dict) -> ClusterRequest:
+        """Create a ClusterRequest instance from a dict.
+
+        This is useful for converting JSON response data into the dataclass structure.
+
+        Parameters:
+            data: A dict containing the cluster request data, typically
+                parsed from a JSON response.
+
+        Returns:
+            A ClusterRequest instance.
+
+        Raises:
+            KeyError: If required keys are missing from the input dict.
+            TypeError: If the dict cannot be unpacked into ClusterRequest.
+            ValueError: If field validation fails in ClusterRequest
+                (e.g., invalid types for integer fields or nodes).
+        """
+        return cls(
+            electionMinTimeout=data["electionMinTimeout"],
+            electionRangeTimeout=data["electionRangeTimeout"],
+            heartbeatInterval=data["heartbeatInterval"],
+            messageSizeKB=data["messageSizeKB"],
+            verificationTimeout=data["verificationTimeout"],
+            transactionLogMaximumSizeGB=data["transactionLogMaximumSizeGB"],
+            batchUpdateInterval=data["batchUpdateInterval"],
+            nodes=data["nodes"],
+        )
+
+
+@dataclass(frozen=True)
 class SnapshotOptionsBean:
     withRepositoryData: bool  # noqa: N815
     withSystemData: bool  # noqa: N815
@@ -122,7 +230,7 @@ class BackupOperationBean:
         The nested 'snapshotOptions' dict is automatically converted to
         a SnapshotOptionsBean instance.
 
-        Args:
+        Parameters:
             data: A dict containing the backup operation data, typically
                 parsed from a JSON response.
 
@@ -247,7 +355,7 @@ class RepositoryStatistics:
         The nested 'queries' and 'entityPool' dicts are automatically converted to
         their respective dataclass instances.
 
-        Args:
+        Parameters:
             data: A dict containing the repository statistics data, typically
                 parsed from a JSON response.
 
@@ -404,7 +512,7 @@ class InfrastructureStatistics:
         The nested memory and storage dicts are automatically converted to their
         respective dataclass instances.
 
-        Args:
+        Parameters:
             data: A dict containing the infrastructure statistics data, typically
                 parsed from a JSON response.
 
@@ -842,7 +950,7 @@ class GraphDBRepository:
     def from_dict(cls, data: dict) -> GraphDBRepository:
         """Create a GraphDBRepository instance from a dict.
 
-        Args:
+        Parameters:
             data: A dict containing the repository data, typically
                 parsed from a JSON response.
 
@@ -883,7 +991,7 @@ class AccessControlEntry:
         Note: we perform parse validation essentially twice (here and in the
         subclass's __post_init__) to ensure mypy is satisfied with the value's type.
 
-        Args:
+        Parameters:
             data: A dict containing the access control entry data, typically
                 parsed from a JSON response.
 
