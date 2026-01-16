@@ -63,7 +63,7 @@ def test_update_config_patches_payload_and_returns_cluster_request(
     assert result.nodes == ["http://node1:7200", "http://node2:7200"]
     mock_httpx_patch.assert_called_once_with(
         "/rest/cluster/config",
-        headers={"Content-Type": "application/json", "Accept": "application/json"},
+        headers={"Accept": "application/json"},
         json={
             "electionMinTimeout": 8000,
             "electionRangeTimeout": 4000,
@@ -99,7 +99,7 @@ def test_update_config_omits_optional_fields_when_none(
     assert isinstance(result, ClusterRequest)
     mock_httpx_patch.assert_called_once_with(
         "/rest/cluster/config",
-        headers={"Content-Type": "application/json", "Accept": "application/json"},
+        headers={"Accept": "application/json"},
         json={},
     )
 
