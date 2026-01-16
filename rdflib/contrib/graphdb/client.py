@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+import pathlib
 import typing as t
 
 import httpx
@@ -45,6 +47,7 @@ from rdflib.contrib.graphdb.models import (
     _parse_policy,
     _parse_role,
 )
+from rdflib.contrib.graphdb.util import extract_filename_from_content_disposition
 from rdflib.contrib.rdf4j import RDF4JClient
 
 FileContent = t.Union[
@@ -779,6 +782,143 @@ class MonitoringManager:
                     f"Service is unavailable: {err.response.text}"
                 ) from err
             raise
+
+
+class RecoveryManagement:
+    """
+    GraphDB Recovery Management client.
+    """
+
+    def __init__(self, http_client: httpx.Client):
+        self._http_client = http_client
+
+    @property
+    def http_client(self):
+        return self._http_client
+
+    @t.overload
+    def backup(
+        self,
+        repositories: list[str] | None = None,
+        backup_system_data: bool | None = None,
+        *,
+        dest: None = None,
+    ) -> bytes: ...
+
+    @t.overload
+    def backup(
+        self,
+        repositories: list[str] | None = None,
+        backup_system_data: bool | None = None,
+        *,
+        dest: str | os.PathLike[str],
+    ) -> pathlib.Path: ...
+
+    def backup(
+        self,
+        repositories: list[str] | None = None,
+        backup_system_data: bool | None = None,
+        *,
+        dest: str | os.PathLike[str] | None = None,
+    ) -> bytes | pathlib.Path:
+        """Create a new backup of GraphDB instance.
+
+        The backup is returned as a tar archive containing repository data and
+        optionally system data (user accounts, saved queries, visual graphs, etc.).
+
+        Parameters:
+            repositories: List of repositories to be backed up, specified by their repository identifiers.
+                If `None`, all repositories will be included in the backup.
+            backup_system_data: Determines whether user account data such as user accounts, saved queries,
+                or visual graphs, among others, should be included in the backup.
+            dest: Destination path to save the backup archive. If `None`, the backup
+                content is returned as bytes (suitable for small backups). If a directory
+                path is provided, the filename from the response Content-Disposition header
+                is used (e.g., backup-2026-01-16-10-30-00.tar). If a file path is provided,
+                that exact path is used. The response is streamed directly to disk
+                (recommended for large backups).
+
+        Returns:
+            bytes: If `dest` is `None`, returns the backup archive as bytes.
+            Path: If `dest` is provided, returns the resolved `pathlib.Path` where the backup was saved.
+
+        Raises:
+            ValueError: If repositories is not a list or None, or if backup_system_data is not a bool or None.
+            BadRequestError: If the request is bad.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            OSError: If the destination path cannot be written to.
+        """
+        if repositories is not None:
+            if not isinstance(repositories, list):
+                raise ValueError("repositories must be a list or None")
+            if not all(isinstance(r, str) for r in repositories):
+                raise ValueError("repositories must be a list of strings")
+        if not isinstance(backup_system_data, bool) and backup_system_data is not None:
+            raise ValueError("backup_system_data must be a bool")
+
+        payload: dict[str, t.Any] = {}
+        if repositories is not None:
+            payload["repositories"] = repositories
+        if backup_system_data is not None:
+            payload["backupSystemData"] = backup_system_data
+
+        def _handle_http_error(err: httpx.HTTPStatusError) -> t.NoReturn:
+            status = err.response.status_code
+            if status == 400:
+                raise BadRequestError(f"Bad request: {err.response.text}") from err
+            elif status == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            elif status == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            raise err
+
+        if dest is None:
+            # Return bytes directly (suitable for small backups)
+            try:
+                response = self.http_client.post("/rest/recovery/backup", json=payload)
+                response.raise_for_status()
+                return response.content
+            except httpx.HTTPStatusError as err:
+                _handle_http_error(err)
+        else:
+            # Stream to disk (recommended for large backups)
+            dest_path = pathlib.Path(dest).expanduser().resolve()
+
+            try:
+                with self.http_client.stream(
+                    "POST", "/rest/recovery/backup", json=payload
+                ) as response:
+                    response.raise_for_status()
+
+                    # If dest is a directory, extract filename from Content-Disposition
+                    if dest_path.is_dir():
+                        content_disposition = response.headers.get(
+                            "Content-Disposition", ""
+                        )
+                        filename = extract_filename_from_content_disposition(
+                            content_disposition
+                        )
+                        if filename:
+                            dest_path = dest_path / filename
+                        else:
+                            # Fallback to a default name if header parsing fails
+                            dest_path = dest_path / "graphdb-backup.tar"
+
+                    # Use a temporary file during download, then rename atomically
+                    tmp_path = dest_path.with_suffix(dest_path.suffix + ".partial")
+
+                    with open(tmp_path, "wb") as f:
+                        for chunk in response.iter_bytes():
+                            f.write(chunk)
+                    tmp_path.replace(dest_path)
+                return dest_path
+            except httpx.HTTPStatusError as err:
+                _handle_http_error(err)
 
 
 class RepositoryManagement:
@@ -1750,6 +1890,7 @@ class GraphDBClient(RDF4JClient):
     ):
         super().__init__(base_url, auth, timeout, **kwargs)
         self._monitoring: MonitoringManager | None = None
+        self._recovery: RecoveryManagement | None = None
         self._graphdb_repository_manager: RepositoryManager | None = None
         self._repos: RepositoryManagement | None = None
         self._security: SecurityManagement | None = None
@@ -1761,6 +1902,12 @@ class GraphDBClient(RDF4JClient):
         if self._monitoring is None:
             self._monitoring = MonitoringManager(self.http_client)
         return self._monitoring
+
+    @property
+    def recovery(self) -> RecoveryManagement:
+        if self._recovery is None:
+            self._recovery = RecoveryManagement(self.http_client)
+        return self._recovery
 
     @property
     def repositories(self) -> RepositoryManager:
