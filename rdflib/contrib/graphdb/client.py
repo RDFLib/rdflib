@@ -370,6 +370,45 @@ class AccessControlListManagement:
             raise
 
 
+class ClusterGroupManagement:
+    """Manage and monitor GraphDB cluster configurations."""
+
+    def __init__(self, http_client: httpx.Client):
+        self._http_client = http_client
+
+    @property
+    def http_client(self):
+        return self._http_client
+
+    def truncate_log(self) -> None:
+        """Truncate the GraphDB cluster log.
+
+        The truncate log operation is used to free up storage space on all cluster nodes by clearing the
+        current transaction log and removing cached recovery snapshots.
+
+        Raises:
+            BadRequestError: If the request is invalid.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+        """
+        try:
+            response = self.http_client.post("/rest/cluster/truncate-log")
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            status = err.response.status_code
+            if status == 400:
+                raise BadRequestError(f"Invalid request: {err.response.text}") from err
+            elif status == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            elif status == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            raise
+
+
 class Repository(rdflib.contrib.rdf4j.client.Repository):
     """GraphDB Repository client.
 
@@ -2217,6 +2256,7 @@ class GraphDBClient(RDF4JClient):
         **kwargs: t.Any,
     ):
         super().__init__(base_url, auth, timeout, **kwargs)
+        self._cluster_group: ClusterGroupManagement | None = None
         self._monitoring: MonitoringManagement | None = None
         self._recovery: RecoveryManagement | None = None
         self._graphdb_repository_manager: RepositoryManager | None = None
@@ -2224,6 +2264,12 @@ class GraphDBClient(RDF4JClient):
         self._security: SecurityManagement | None = None
         self._ttyg: TalkToYourGraph | None = None
         self._users: UserManagement | None = None
+
+    @property
+    def cluster(self) -> ClusterGroupManagement:
+        if self._cluster_group is None:
+            self._cluster_group = ClusterGroupManagement(self.http_client)
+        return self._cluster_group
 
     @property
     def monitoring(self) -> MonitoringManagement:
