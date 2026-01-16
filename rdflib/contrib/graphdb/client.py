@@ -565,7 +565,7 @@ class RepositoryManager(rdflib.contrib.rdf4j.client.RepositoryManager):
         return Repository(_repo.identifier, _repo.http_client)
 
 
-class MonitoringManager:
+class MonitoringManagement:
     """
     Monitor different GraphDB processes.
     """
@@ -1889,7 +1889,7 @@ class GraphDBClient(RDF4JClient):
         **kwargs: t.Any,
     ):
         super().__init__(base_url, auth, timeout, **kwargs)
-        self._monitoring: MonitoringManager | None = None
+        self._monitoring: MonitoringManagement | None = None
         self._recovery: RecoveryManagement | None = None
         self._graphdb_repository_manager: RepositoryManager | None = None
         self._repos: RepositoryManagement | None = None
@@ -1898,9 +1898,9 @@ class GraphDBClient(RDF4JClient):
         self._users: UserManagement | None = None
 
     @property
-    def monitoring(self) -> MonitoringManager:
+    def monitoring(self) -> MonitoringManagement:
         if self._monitoring is None:
-            self._monitoring = MonitoringManager(self.http_client)
+            self._monitoring = MonitoringManagement(self.http_client)
         return self._monitoring
 
     @property
