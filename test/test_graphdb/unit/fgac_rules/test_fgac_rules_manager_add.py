@@ -51,7 +51,7 @@ def test_fgac_add_sends_payload_and_handles_empty_response(
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
     repo = Repository("repo", client.http_client)
-    result = repo.acl_rules.add([rule])
+    result = repo.acl.add([rule])
 
     assert result is None
     mock_response.raise_for_status.assert_called_once_with()
@@ -94,7 +94,7 @@ def test_fgac_add_sends_position_param(
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
     repo = Repository("repo", client.http_client)
-    result = repo.acl_rules.add([rule], position=2)
+    result = repo.acl.add([rule], position=2)
 
     assert result is None
     mock_response.raise_for_status.assert_called_once_with()
@@ -118,7 +118,7 @@ def test_fgac_add_rejects_non_list_payload(client: GraphDBClient):
     with pytest.raises(
         ValueError, match="All ACL rules must be AccessControlEntry instances."
     ):
-        repo.acl_rules.add("not a list")  # type: ignore[arg-type]
+        repo.acl.add("not a list")  # type: ignore[arg-type]
 
 
 def test_fgac_add_rejects_invalid_entries(
@@ -131,7 +131,7 @@ def test_fgac_add_rejects_invalid_entries(
     with pytest.raises(
         ValueError, match="All ACL rules must be AccessControlEntry instances."
     ):
-        repo.acl_rules.add(["not an ACL entry"])  # type: ignore[list-item]
+        repo.acl.add(["not an ACL entry"])  # type: ignore[list-item]
     mock_httpx_post.assert_not_called()
 
 
@@ -160,7 +160,7 @@ def test_fgac_add_rejects_invalid_position(
 
     repo = Repository("repo", client.http_client)
     with pytest.raises(ValueError, match=error_match):
-        repo.acl_rules.add([rule], position=position)  # type: ignore[arg-type]
+        repo.acl.add([rule], position=position)  # type: ignore[arg-type]
     mock_httpx_post.assert_not_called()
 
 
@@ -196,7 +196,7 @@ def test_fgac_add_raises_http_errors(
 
     repo = Repository("repo", client.http_client)
     with pytest.raises(error_type):
-        repo.acl_rules.add([rule])
+        repo.acl.add([rule])
     mock_response.raise_for_status.assert_called_once_with()
 
 
@@ -220,5 +220,5 @@ def test_fgac_add_re_raises_other_http_errors(
 
     repo = Repository("repo", client.http_client)
     with pytest.raises(httpx.HTTPStatusError):
-        repo.acl_rules.add([rule])
+        repo.acl.add([rule])
     mock_response.raise_for_status.assert_called_once_with()

@@ -51,7 +51,7 @@ def test_fgac_set_sends_payload_and_handles_empty_response(
     monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
 
     repo = Repository("repo", client.http_client)
-    result = repo.acl_rules.set([rule])
+    result = repo.acl.set([rule])
 
     assert result is None
     mock_response.raise_for_status.assert_called_once_with()
@@ -78,7 +78,7 @@ def test_fgac_set_rejects_non_list_payload(client: GraphDBClient):
     with pytest.raises(
         ValueError, match="All ACL rules must be AccessControlEntry instances."
     ):
-        repo.acl_rules.set("not a list")  # type: ignore[arg-type]
+        repo.acl.set("not a list")  # type: ignore[arg-type]
 
 
 def test_fgac_set_rejects_invalid_entries(
@@ -91,7 +91,7 @@ def test_fgac_set_rejects_invalid_entries(
     with pytest.raises(
         ValueError, match="All ACL rules must be AccessControlEntry instances."
     ):
-        repo.acl_rules.set(["not an ACL entry"])  # type: ignore[list-item]
+        repo.acl.set(["not an ACL entry"])  # type: ignore[list-item]
     mock_httpx_put.assert_not_called()
 
 
@@ -127,7 +127,7 @@ def test_fgac_set_raises_http_errors(
 
     repo = Repository("repo", client.http_client)
     with pytest.raises(error_type):
-        repo.acl_rules.set([rule])
+        repo.acl.set([rule])
     mock_response.raise_for_status.assert_called_once_with()
 
 
@@ -151,5 +151,5 @@ def test_fgac_set_re_raises_other_http_errors(
 
     repo = Repository("repo", client.http_client)
     with pytest.raises(httpx.HTTPStatusError):
-        repo.acl_rules.set([rule])
+        repo.acl.set([rule])
     mock_response.raise_for_status.assert_called_once_with()

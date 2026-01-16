@@ -70,8 +70,8 @@ FilesType = t.Union[
 _ALLOWED_FGAC_SCOPES = {"statement", "clear_graph", "plugin", "system"}
 
 
-class FGACRulesManager:
-    """GraphDB Fine-Grained Access Control Rules Manager."""
+class AccessControlListManagement:
+    """Manage fine-grained access control lists for GraphDB repositories."""
 
     def __init__(self, identifier: str, http_client: httpx.Client):
         self._identifier = identifier
@@ -217,7 +217,7 @@ class FGACRulesManager:
         !!! Note
             This method overwrites existing ACL rules in the repository.
             If you want to add new rules without overwriting existing ones,
-            use the [`add`][rdflib.contrib.graphdb.client.FGACRulesManager.add] method.
+            use the [`add`][rdflib.contrib.graphdb.client.AccessControlListManagement.add] method.
 
         Parameters:
             acl_rules: The list of ACL rules to set.
@@ -383,15 +383,15 @@ class Repository(rdflib.contrib.rdf4j.client.Repository):
 
     def __init__(self, identifier: str, http_client: httpx.Client):
         super().__init__(identifier, http_client)
-        self._fgac_rules_manager: FGACRulesManager | None = None
+        self._access_control_list_management: AccessControlListManagement | None = None
 
     @property
-    def acl_rules(self) -> FGACRulesManager:
-        if self._fgac_rules_manager is None:
-            self._fgac_rules_manager = FGACRulesManager(
+    def acl(self) -> AccessControlListManagement:
+        if self._access_control_list_management is None:
+            self._access_control_list_management = AccessControlListManagement(
                 self.identifier, self.http_client
             )
-        return self._fgac_rules_manager
+        return self._access_control_list_management
 
     def health(self, timeout: int = 5) -> bool:
         """Repository health check.

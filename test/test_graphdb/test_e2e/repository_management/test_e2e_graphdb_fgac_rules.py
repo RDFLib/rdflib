@@ -16,7 +16,7 @@ if has_httpx:
 @pytest.mark.testcontainer
 def test_graphdb_fgac_rules_set(client: GraphDBClient):
     repo = client.repositories.get("test-repo")
-    assert repo.acl_rules.list() == []
+    assert repo.acl.list() == []
     acl_rules_raw = [
         {
             "policy": "allow",
@@ -40,17 +40,17 @@ def test_graphdb_fgac_rules_set(client: GraphDBClient):
         },
     ]
     acl_rules = [AccessControlEntry.from_dict(x) for x in acl_rules_raw]
-    repo.acl_rules.set(acl_rules)
-    assert repo.acl_rules.list() == acl_rules
+    repo.acl.set(acl_rules)
+    assert repo.acl.list() == acl_rules
     # Overwrite with an empty list of rules.
-    repo.acl_rules.set([])
-    assert repo.acl_rules.list() == []
+    repo.acl.set([])
+    assert repo.acl.list() == []
 
 
 @pytest.mark.testcontainer
 def test_graphdb_fgac_rules_add(client: GraphDBClient):
     repo = client.repositories.get("test-repo")
-    assert repo.acl_rules.list() == []
+    assert repo.acl.list() == []
     acl_rules_raw = [
         {
             "policy": "allow",
@@ -74,8 +74,8 @@ def test_graphdb_fgac_rules_add(client: GraphDBClient):
         },
     ]
     acl_rules = [AccessControlEntry.from_dict(x) for x in acl_rules_raw]
-    repo.acl_rules.add(acl_rules)
-    assert repo.acl_rules.list() == acl_rules
+    repo.acl.add(acl_rules)
+    assert repo.acl.list() == acl_rules
 
     acl_rule_2 = AccessControlEntry.from_dict(
         {
@@ -89,9 +89,9 @@ def test_graphdb_fgac_rules_add(client: GraphDBClient):
             "context": "<urn:graph:test2>",
         }
     )
-    repo.acl_rules.add([acl_rule_2])
+    repo.acl.add([acl_rule_2])
     # Rule is added to the end.
-    assert repo.acl_rules.list() == acl_rules + [acl_rule_2]
+    assert repo.acl.list() == acl_rules + [acl_rule_2]
 
     acl_rule_3 = AccessControlEntry.from_dict(
         {
@@ -105,15 +105,15 @@ def test_graphdb_fgac_rules_add(client: GraphDBClient):
             "context": "<urn:graph:test3>",
         }
     )
-    repo.acl_rules.add([acl_rule_3], position=1)
+    repo.acl.add([acl_rule_3], position=1)
     # Rule is added to the specified position.
-    assert repo.acl_rules.list() == [acl_rules[0], acl_rule_3, acl_rules[1], acl_rule_2]
+    assert repo.acl.list() == [acl_rules[0], acl_rule_3, acl_rules[1], acl_rule_2]
 
 
 @pytest.mark.testcontainer
 def test_graphdb_fgac_rules_delete(client: GraphDBClient):
     repo = client.repositories.get("test-repo")
-    assert repo.acl_rules.list() == []
+    assert repo.acl.list() == []
     acl_rules_raw = [
         {
             "policy": "allow",
@@ -137,8 +137,8 @@ def test_graphdb_fgac_rules_delete(client: GraphDBClient):
         },
     ]
     acl_rules = [AccessControlEntry.from_dict(x) for x in acl_rules_raw]
-    repo.acl_rules.set(acl_rules)
-    assert repo.acl_rules.list() == acl_rules
+    repo.acl.set(acl_rules)
+    assert repo.acl.list() == acl_rules
     # Delete the first rule.
-    repo.acl_rules.delete([acl_rules[0]])
-    assert repo.acl_rules.list() == acl_rules[1:]
+    repo.acl.delete([acl_rules[0]])
+    assert repo.acl.list() == acl_rules[1:]

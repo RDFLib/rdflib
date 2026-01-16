@@ -50,7 +50,7 @@ def test_fgac_list_builds_params_and_parses_entries(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
     repo = Repository("repo", client.http_client)
-    result = repo.acl_rules.list()
+    result = repo.acl.list()
     mock_httpx_get.assert_called_once_with("/rest/repositories/repo/acl", params={})
 
     assert len(result) == 1
@@ -87,7 +87,7 @@ def test_fgac_list_parses_statement_wildcards(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
     repo = Repository("repo", client.http_client)
-    result = repo.acl_rules.list()
+    result = repo.acl.list()
 
     assert len(result) == 1
     entry = result[0]
@@ -116,7 +116,7 @@ def test_fgac_list_rejects_non_list_payload(
 
     repo = Repository("repo", client.http_client)
     with pytest.raises(ResponseFormatError):
-        repo.acl_rules.list()
+        repo.acl.list()
     mock_httpx_get.assert_called_once_with("/rest/repositories/repo/acl", params={})
 
 
@@ -134,7 +134,7 @@ def test_fgac_list_formats_params(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
     repo = Repository("repo", client.http_client)
-    repo.acl_rules.list(
+    repo.acl.list(
         scope="statement",
         operation="write",
         subject=URIRef("http://example.com/s"),
@@ -187,7 +187,7 @@ def test_fgac_list_rejects_invalid_filters(
 
     repo = Repository("repo", client.http_client)
     with pytest.raises(ValueError, match=error_match):
-        repo.acl_rules.list(**kwargs)
+        repo.acl.list(**kwargs)
     mock_httpx_get.assert_not_called()
 
 
@@ -213,7 +213,7 @@ def test_fgac_list_parses_system_entry(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
     repo = Repository("repo", client.http_client)
-    result = repo.acl_rules.list()
+    result = repo.acl.list()
 
     assert len(result) == 1
     entry = result[0]
@@ -246,7 +246,7 @@ def test_fgac_list_parses_plugin_entry(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
     repo = Repository("repo", client.http_client)
-    result = repo.acl_rules.list()
+    result = repo.acl.list()
 
     assert len(result) == 1
     entry = result[0]
@@ -279,7 +279,7 @@ def test_fgac_list_parses_clear_graph_entry(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
     repo = Repository("repo", client.http_client)
-    result = repo.acl_rules.list()
+    result = repo.acl.list()
 
     assert len(result) == 1
     entry = result[0]
@@ -352,7 +352,7 @@ def test_fgac_list_rejects_entries_with_missing_fields(
 
     repo = Repository("repo", client.http_client)
     with pytest.raises(ResponseFormatError, match=error_match):
-        repo.acl_rules.list()
+        repo.acl.list()
 
 
 def test_fgac_list_rejects_invalid_scope(
@@ -370,7 +370,7 @@ def test_fgac_list_rejects_invalid_scope(
 
     repo = Repository("repo", client.http_client)
     with pytest.raises(ResponseFormatError):
-        repo.acl_rules.list()
+        repo.acl.list()
     mock_httpx_get.assert_called_once_with(
         "/rest/repositories/repo/acl",
         params={},
@@ -391,7 +391,7 @@ def test_fgac_list_handles_empty_list(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
     repo = Repository("repo", client.http_client)
-    result = repo.acl_rules.list()
+    result = repo.acl.list()
 
     assert result == []
     mock_httpx_get.assert_called_once_with("/rest/repositories/repo/acl", params={})
@@ -442,7 +442,7 @@ def test_fgac_list_parses_mixed_entry_types(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
     repo = Repository("repo", client.http_client)
-    result = repo.acl_rules.list()
+    result = repo.acl.list()
 
     assert len(result) == 4
     assert isinstance(result[0], StatementAccessControlEntry)
@@ -466,7 +466,7 @@ def test_fgac_list_raises_unauthorised_error_on_401(
     from rdflib.contrib.graphdb.exceptions import UnauthorisedError
 
     with pytest.raises(UnauthorisedError):
-        repo.acl_rules.list()
+        repo.acl.list()
 
 
 def test_fgac_list_raises_forbidden_error_on_403(
@@ -484,7 +484,7 @@ def test_fgac_list_raises_forbidden_error_on_403(
     from rdflib.contrib.graphdb.exceptions import ForbiddenError
 
     with pytest.raises(ForbiddenError):
-        repo.acl_rules.list()
+        repo.acl.list()
 
 
 def test_fgac_list_raises_internal_server_error_on_500(
@@ -502,7 +502,7 @@ def test_fgac_list_raises_internal_server_error_on_500(
     from rdflib.contrib.graphdb.exceptions import InternalServerError
 
     with pytest.raises(InternalServerError):
-        repo.acl_rules.list()
+        repo.acl.list()
 
 
 def test_fgac_list_re_raises_other_http_errors(
@@ -519,7 +519,7 @@ def test_fgac_list_re_raises_other_http_errors(
     repo = Repository("repo", client.http_client)
 
     with pytest.raises(httpx.HTTPStatusError):
-        repo.acl_rules.list()
+        repo.acl.list()
 
 
 def test_fgac_list_raises_format_error_on_invalid_json(
@@ -538,7 +538,7 @@ def test_fgac_list_raises_format_error_on_invalid_json(
     repo = Repository("repo", client.http_client)
 
     with pytest.raises(ResponseFormatError):
-        repo.acl_rules.list()
+        repo.acl.list()
 
 
 def test_fgac_list_parses_literal_object_with_datatype(
@@ -567,7 +567,7 @@ def test_fgac_list_parses_literal_object_with_datatype(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
     repo = Repository("repo", client.http_client)
-    result = repo.acl_rules.list()
+    result = repo.acl.list()
 
     assert len(result) == 1
     entry = result[0]
@@ -602,7 +602,7 @@ def test_fgac_list_parses_uriref_object(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
     repo = Repository("repo", client.http_client)
-    result = repo.acl_rules.list()
+    result = repo.acl.list()
 
     assert len(result) == 1
     entry = result[0]
@@ -637,7 +637,7 @@ def test_fgac_list_parses_default_graph(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
     repo = Repository("repo", client.http_client)
-    result = repo.acl_rules.list()
+    result = repo.acl.list()
 
     assert len(result) == 1
     entry = result[0]
