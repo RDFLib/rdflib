@@ -37,6 +37,10 @@ class NotFoundError(GraphDBError):
     """Raised when the resource is not found."""
 
 
+class ConflictError(GraphDBError):
+    """Raised when the request conflicts with the current state of the server."""
+
+
 class PreconditionFailedError(GraphDBError):
     """Raised when the precondition is failed."""
 
