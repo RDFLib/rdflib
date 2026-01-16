@@ -544,6 +544,74 @@ class ClusterGroupManagement:
                     f"Precondition failed: {err.response.text}"
                 ) from err
             raise
+    
+    def delete_config(self, force: bool | None = None) -> dict[str, str]:
+        """Delete the GraphDB cluster.
+
+        By default, the cluster group cannot be deleted if one or more nodes are unreachable.
+        Reachable here means that the nodes are not in status `NO_CONNECTION`, therefore there is an
+        RPC connection to them.
+
+        Parameter:
+            force: When set to `True`, the cluster configuration will be deleted only on the reachable nodes and
+                the response will always succeed.
+        
+        Returns:
+            A dictionary where the node address is the key and the deletion status message is the value.
+        
+        Raises:
+            ResponseFormatError: If the response is not in the expected format.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            PreconditionFailedError: If one or more nodes in the group are not reachable and force is not set to `True`.
+        """
+        params: dict[str, str] | None = None
+        if force is not None:
+            params = {"force": str(force).lower()}
+        try:
+            headers = {"Accept": "application/json"}
+            if params is None:
+                response = self.http_client.delete(
+                    "/rest/cluster/config", headers=headers
+                )
+            else:
+                response = self.http_client.delete(
+                    "/rest/cluster/config", headers=headers, params=params
+                )
+            response.raise_for_status()
+            try:
+                payload = response.json()
+            except (ValueError, TypeError) as err:
+                raise ResponseFormatError(
+                    f"Failed to parse cluster deletion response: {err}"
+                ) from err
+            if not isinstance(payload, dict):
+                raise ResponseFormatError(
+                    "Failed to parse cluster deletion response: expected a JSON object."
+                )
+            if not all(
+                isinstance(key, str) and isinstance(value, str)
+                for key, value in payload.items()
+            ):
+                raise ResponseFormatError(
+                    "Failed to parse cluster deletion response: expected string keys and values."
+                )
+            return t.cast(dict[str, str], payload)
+        except httpx.HTTPStatusError as err:
+            status = err.response.status_code
+            if status == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            elif status == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            elif status == 412:
+                raise PreconditionFailedError(
+                    f"Precondition failed: {err.response.text}"
+                ) from err
+            raise
 
 
 class Repository(rdflib.contrib.rdf4j.client.Repository):
