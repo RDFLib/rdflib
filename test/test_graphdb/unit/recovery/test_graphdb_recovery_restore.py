@@ -5,6 +5,7 @@ from __future__ import annotations
 import io
 import json
 import pathlib
+import typing as t
 from unittest.mock import ANY, Mock
 
 import pytest
@@ -24,6 +25,12 @@ if has_httpx:
     import httpx
 
     from rdflib.contrib.graphdb.client import GraphDBClient
+
+
+class _RestoreKwargs(t.TypedDict, total=False):
+    repositories: list[str]
+    restore_system_data: bool
+    remove_stale_repositories: bool
 
 
 def test_restore_uploads_bytes_backup(
@@ -121,7 +128,7 @@ def test_restore_uploads_path_backup(
 def test_restore_sends_params_combinations_as_json(
     client: GraphDBClient,
     monkeypatch: pytest.MonkeyPatch,
-    kwargs: dict[str, object],
+    kwargs: _RestoreKwargs,
     expected_payload: dict[str, object],
 ):
     mock_response = Mock(spec=httpx.Response)
@@ -221,8 +228,8 @@ def test_restore_validates_remove_stale_repositories_type(
     with pytest.raises(
         ValueError, match="remove_stale_repositories must be a bool or None"
     ):
-        client.recovery.restore(  # type: ignore[arg-type]
-            b"tar", remove_stale_repositories="nope"
+        client.recovery.restore(
+            b"tar", remove_stale_repositories="nope"  # type: ignore[arg-type]
         )
 
 

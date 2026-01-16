@@ -18,9 +18,8 @@ pytestmark = pytest.mark.skipif(
 )
 
 if has_httpx:
-    from rdflib.contrib.rdf4j.exceptions import RepositoryNotFoundError
-
     from rdflib.contrib.graphdb import GraphDBClient
+    from rdflib.contrib.rdf4j.exceptions import RepositoryNotFoundError
 
 
 def _wait_for(
@@ -36,11 +35,13 @@ def _wait_for(
         try:
             if check():
                 return
-        except Exception as exc:  # noqa: BLE001 - used to make e2e polling robust
+        except Exception as exc:
             last_exc = exc
         time.sleep(interval_s)
     if last_exc is not None:
-        raise AssertionError(f"Timed out waiting for {description}: {last_exc}") from last_exc
+        raise AssertionError(
+            f"Timed out waiting for {description}: {last_exc}"
+        ) from last_exc
     raise AssertionError(f"Timed out waiting for {description}")
 
 
@@ -64,7 +65,10 @@ def test_restore_bytes_roundtrips_repository_data(client: GraphDBClient):
 
     def _restored() -> bool:
         restored_repo = client.repositories.get(repo_id)
-        return restored_repo.size() >= 1 and restored_repo.query(ask_query).askAnswer is True
+        return (
+            restored_repo.size() >= 1
+            and restored_repo.query(ask_query).askAnswer is True
+        )
 
     _wait_for(_restored, description="repository data to be restored")
 
@@ -134,4 +138,3 @@ def test_restore_remove_stale_repositories_removes_unrestored_repo(
             client.repositories.delete(extra_repo_id)
         except (RepositoryNotFoundError, RuntimeError):
             pass
-

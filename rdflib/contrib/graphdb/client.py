@@ -836,7 +836,10 @@ class RecoveryManagement:
                 raise ValueError("repositories must be a list or None")
             if not all(isinstance(r, str) for r in repositories):
                 raise ValueError("repositories must be a list of strings")
-        if not isinstance(restore_system_data, bool) and restore_system_data is not None:
+        if (
+            not isinstance(restore_system_data, bool)
+            and restore_system_data is not None
+        ):
             raise ValueError("restore_system_data must be a bool or None")
         if (
             not isinstance(remove_stale_repositories, bool)
@@ -864,9 +867,7 @@ class RecoveryManagement:
             except httpx.HTTPStatusError as err:
                 status = err.response.status_code
                 if status == 400:
-                    raise BadRequestError(
-                        f"Bad request: {err.response.text}"
-                    ) from err
+                    raise BadRequestError(f"Bad request: {err.response.text}") from err
                 elif status == 401:
                     raise UnauthorisedError(
                         f"Request is unauthorised: {err.response.text}"
@@ -1024,6 +1025,110 @@ class RecoveryManagement:
                 return dest_path
             except httpx.HTTPStatusError as err:
                 _handle_http_error(err)
+
+    def cloud_backup(
+        self,
+        bucket_uri: str,
+        repositories: list[str] | None = None,
+        backup_system_data: bool | None = None,
+        authentication_file: (
+            bytes | bytearray | memoryview | t.IO[bytes] | str | os.PathLike[str] | None
+        ) = None,
+    ) -> None:
+        """Create a new backup of GraphDB instance uploaded to a cloud bucket.
+
+        GraphDB uploads the resulting `.tar` archive directly to the configured
+        cloud bucket. This uses the GraphDB endpoint `/rest/recovery/cloud-backup`.
+
+        Parameters:
+            bucket_uri: Cloud bucket URI including provider-specific parameters (required).
+            repositories: Optional list of repositories to be backed up.
+            backup_system_data: Optional flag to include system data (users, saved queries, etc.).
+            authentication_file: Optional credential file content as bytes/bytes-like, a
+                binary file-like object, or a filesystem path. Some providers (e.g. GCP)
+                require this.
+
+        Raises:
+            ValueError: If parameters are invalid, or authentication_file is not a supported type.
+            BadRequestError: If the request is bad.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+        """
+        if not isinstance(bucket_uri, str) or not bucket_uri:
+            raise ValueError("bucket_uri must be a non-empty string")
+
+        if repositories is not None:
+            if not isinstance(repositories, list):
+                raise ValueError("repositories must be a list or None")
+            if not all(isinstance(r, str) for r in repositories):
+                raise ValueError("repositories must be a list of strings")
+
+        if not isinstance(backup_system_data, bool) and backup_system_data is not None:
+            raise ValueError("backup_system_data must be a bool")
+
+        payload: dict[str, t.Any] = {}
+        if repositories is not None:
+            payload["repositories"] = repositories
+        if backup_system_data is not None:
+            payload["backupSystemData"] = backup_system_data
+        payload["bucketUri"] = bucket_uri
+
+        params_part: FileContent = (None, json.dumps(payload), "application/json")
+
+        def _post(authentication_part: FileContent | None) -> None:
+            files: list[tuple[str, FileContent]] = [("params", params_part)]
+            if authentication_part is not None:
+                files.append(("authenticationFile", authentication_part))
+            try:
+                response = self.http_client.post(
+                    "/rest/recovery/cloud-backup",
+                    headers={"Accept": "application/json"},
+                    files=files,
+                )
+                response.raise_for_status()
+            except httpx.HTTPStatusError as err:
+                status = err.response.status_code
+                if status == 400:
+                    raise BadRequestError(f"Bad request: {err.response.text}") from err
+                elif status == 401:
+                    raise UnauthorisedError(
+                        f"Request is unauthorised: {err.response.text}"
+                    ) from err
+                elif status == 403:
+                    raise ForbiddenError(
+                        f"Request is forbidden: {err.response.text}"
+                    ) from err
+                raise err
+
+        if authentication_file is None:
+            _post(None)
+            return
+
+        if isinstance(authentication_file, (bytes, bytearray, memoryview)):
+            content = bytes(authentication_file)
+            _post(("authentication-file", content, "application/octet-stream"))
+            return
+
+        if hasattr(authentication_file, "read") and not isinstance(
+            authentication_file, (str, os.PathLike)
+        ):
+            file_obj = t.cast(t.IO[bytes], authentication_file)
+            filename = infer_filename_from_fileobj(file_obj, "authentication-file")
+            _post((filename, file_obj, "application/octet-stream"))
+            return
+
+        if isinstance(authentication_file, (str, os.PathLike)):
+            auth_path = pathlib.Path(authentication_file).expanduser()
+            with open(auth_path, "rb") as f:
+                filename = auth_path.name or infer_filename_from_fileobj(
+                    f, "authentication-file"
+                )
+                _post((filename, f, "application/octet-stream"))
+            return
+
+        raise ValueError(
+            "authentication_file must be bytes/bytes-like, a binary file-like object, or a filesystem path"
+        )
 
 
 class RepositoryManagement:
