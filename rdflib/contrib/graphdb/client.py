@@ -612,6 +612,104 @@ class ClusterGroupManagement:
                     f"Precondition failed: {err.response.text}"
                 ) from err
             raise
+    
+    def update_config(
+        self,
+        election_min_timeout: int | None = None,
+        election_range_timeout: int | None = None,
+        heartbeat_interval: int | None = None,
+        message_size_kb: int | None = None,
+        verification_timeout: int | None = None,
+        transaction_log_maximum_size_gb: int | None = None,
+        batch_update_interval: int | None = None,
+    ) -> ClusterRequest:
+        """Update the GraphDB cluster configuration.
+
+        If one of the cluster nodes is down or was not able to accept the new configuration,
+        the operation will not be successful. A total consensus between the nodes is required.
+        In case one or more of them cannot append the new configuration, it will be rejected
+        by all of the nodes.
+
+        Parameters:
+            election_min_timeout: The minimum wait time in milliseconds for a heartbeat from a leader.
+            election_range_timeout: The variable portion of each waiting period in milliseconds for a heartbeat.
+            heartbeat_interval: The interval in milliseconds between each heartbeat that is sent to follower nodes by the leader.
+            message_size_kb: The size of the data blocks, in kilobytes, transferred during data replication streaming through the RPC protocol.
+            verification_timeout: The amount of time in milliseconds that a follower node would wait before attempting to verify the last committed
+                entry when the first verification is unsuccessful.
+            transaction_log_maximum_size_gb: Maximum size of the transaction log in GBs. The transaction log will be automatically truncated if it
+                becomes bigger than this value. The minimum transaction log size is 1 GB. Setting it to a negative value will disable automatic transaction
+                log truncation.
+            batch_update_interval: The interval in milliseconds between requesting updates from the primary cluster. Used only when the cluster is in
+                secondary mode.
+        
+        Returns:
+            The updated cluster configuration.
+        
+        Raises:
+            BadRequestError: If the request is invalid.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            PreconditionFailedError: If one or more nodes in the group are not reachable.
+        """
+        _int_fields: list[tuple[str, int | None]] = [
+            ("election_min_timeout", election_min_timeout),
+            ("election_range_timeout", election_range_timeout),
+            ("heartbeat_interval", heartbeat_interval),
+            ("message_size_kb", message_size_kb),
+            ("verification_timeout", verification_timeout),
+            ("transaction_log_maximum_size_gb", transaction_log_maximum_size_gb),
+            ("batch_update_interval", batch_update_interval),
+        ]
+        for field_name, value in _int_fields:
+            if value is not None and type(value) is not int:
+                raise TypeError(f"{field_name} must be an int if provided.")
+
+        payload: dict[str, t.Any] = {}
+        if election_min_timeout is not None:
+            payload["electionMinTimeout"] = election_min_timeout
+        if election_range_timeout is not None:
+            payload["electionRangeTimeout"] = election_range_timeout
+        if heartbeat_interval is not None:
+            payload["heartbeatInterval"] = heartbeat_interval
+        if message_size_kb is not None:
+            payload["messageSizeKB"] = message_size_kb
+        if verification_timeout is not None:
+            payload["verificationTimeout"] = verification_timeout
+        if transaction_log_maximum_size_gb is not None:
+            payload["transactionLogMaximumSizeGB"] = transaction_log_maximum_size_gb
+        if batch_update_interval is not None:
+            payload["batchUpdateInterval"] = batch_update_interval
+
+        headers = {"Accept": "application/json"}
+        try:
+            response = self.http_client.patch(
+                "/rest/cluster/config", headers=headers, json=payload
+            )
+            response.raise_for_status()
+            try:
+                return ClusterRequest.from_dict(response.json())
+            except (KeyError, TypeError, ValueError) as err:
+                raise ResponseFormatError(
+                    f"Failed to parse updated cluster configuration: {err}"
+                ) from err
+        except httpx.HTTPStatusError as err:
+            status = err.response.status_code
+            if status == 400:
+                raise BadRequestError(f"Invalid request: {err.response.text}") from err
+            elif status == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            elif status == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            elif status == 412:
+                raise PreconditionFailedError(
+                    f"Precondition failed: {err.response.text}"
+                ) from err
+            raise
 
 
 class Repository(rdflib.contrib.rdf4j.client.Repository):
