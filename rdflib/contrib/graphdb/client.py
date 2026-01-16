@@ -13,6 +13,7 @@ import rdflib.contrib.rdf4j
 from rdflib import Graph, Literal, URIRef
 from rdflib.contrib.graphdb.exceptions import (
     BadRequestError,
+    ConflictError,
     ForbiddenError,
     InternalServerError,
     NotFoundError,
@@ -20,7 +21,6 @@ from rdflib.contrib.graphdb.exceptions import (
     RepositoryNotFoundError,
     RepositoryNotHealthyError,
     ResponseFormatError,
-    ConflictError,
     ServiceUnavailableError,
     UnauthorisedError,
 )
@@ -544,7 +544,7 @@ class ClusterGroupManagement:
                     f"Precondition failed: {err.response.text}"
                 ) from err
             raise
-    
+
     def delete_config(self, force: bool | None = None) -> dict[str, str]:
         """Delete the GraphDB cluster.
 
@@ -555,10 +555,10 @@ class ClusterGroupManagement:
         Parameter:
             force: When set to `True`, the cluster configuration will be deleted only on the reachable nodes and
                 the response will always succeed.
-        
+
         Returns:
             A dictionary where the node address is the key and the deletion status message is the value.
-        
+
         Raises:
             ResponseFormatError: If the response is not in the expected format.
             UnauthorisedError: If the request is unauthorised.
@@ -612,7 +612,7 @@ class ClusterGroupManagement:
                     f"Precondition failed: {err.response.text}"
                 ) from err
             raise
-    
+
     def update_config(
         self,
         election_min_timeout: int | None = None,
@@ -642,10 +642,10 @@ class ClusterGroupManagement:
                 log truncation.
             batch_update_interval: The interval in milliseconds between requesting updates from the primary cluster. Used only when the cluster is in
                 secondary mode.
-        
+
         Returns:
             The updated cluster configuration.
-        
+
         Raises:
             BadRequestError: If the request is invalid.
             UnauthorisedError: If the request is unauthorised.

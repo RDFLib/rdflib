@@ -31,7 +31,7 @@ def test_create_config_posts_payload_and_returns_none(
     mock_httpx_post = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
-    result = client.cluster.create_config(
+    client.cluster.create_config(
         nodes=["http://node1:7200", "http://node2:7200"],
         election_min_timeout=8000,
         election_range_timeout=4000,
@@ -42,7 +42,6 @@ def test_create_config_posts_payload_and_returns_none(
         batch_update_interval=10,
     )
 
-    assert result is None
     mock_httpx_post.assert_called_once_with(
         "/rest/cluster/config",
         headers={"Content-Type": "application/json"},
@@ -68,9 +67,8 @@ def test_create_config_omits_optional_fields_when_none(
     mock_httpx_post = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
-    result = client.cluster.create_config(nodes=["http://node1:7200"])
+    client.cluster.create_config(nodes=["http://node1:7200"])
 
-    assert result is None
     mock_httpx_post.assert_called_once_with(
         "/rest/cluster/config",
         headers={"Content-Type": "application/json"},
@@ -142,7 +140,7 @@ def test_create_config_validates_nodes_type(
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
     with pytest.raises(TypeError, match="nodes must be a list\\[str\\]"):
-        client.cluster.create_config(nodes=nodes)  # type: ignore[arg-type]
+        client.cluster.create_config(nodes=nodes)
 
     mock_httpx_post.assert_not_called()
 

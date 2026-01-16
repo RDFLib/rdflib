@@ -169,4 +169,3 @@ def test_delete_config_raises_response_format_error_on_json_parse_error(
         ResponseFormatError, match="Failed to parse cluster deletion response"
     ):
         client.cluster.delete_config()
-

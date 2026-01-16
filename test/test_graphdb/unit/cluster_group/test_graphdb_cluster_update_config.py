@@ -233,4 +233,3 @@ def test_update_config_raises_response_format_error_on_json_parse_error(
         ResponseFormatError, match="Failed to parse updated cluster configuration"
     ):
         client.cluster.update_config(election_min_timeout=8000)
-
