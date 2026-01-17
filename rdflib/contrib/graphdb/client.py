@@ -981,6 +981,51 @@ class ClusterGroupManagement:
                 ) from err
             raise
 
+    def replace_nodes(self, add_nodes: list[str], remove_nodes: list[str]) -> None:
+        """Replace nodes in the GraphDB cluster.
+
+        Parameters:
+            add_nodes: List of node addresses to add to the cluster.
+            remove_nodes: List of node addresses to remove from the cluster.
+
+        Raises:
+            TypeError: If add_nodes or remove_nodes is not a list of strings.
+            BadRequestError: If the request is invalid.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            PreconditionFailedError: If one or more nodes in the group are not reachable.
+        """
+        if not isinstance(add_nodes, list) or any(
+            not isinstance(node, str) for node in add_nodes
+        ):
+            raise TypeError("add_nodes must be a list[str].")
+        if not isinstance(remove_nodes, list) or any(
+            not isinstance(node, str) for node in remove_nodes
+        ):
+            raise TypeError("remove_nodes must be a list[str].")
+
+        payload = {"removeNodes": remove_nodes, "addNodes": add_nodes}
+        try:
+            response = self.http_client.patch("/rest/cluster/config/node", json=payload)
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            status = err.response.status_code
+            if status == 400:
+                raise BadRequestError(f"Invalid request: {err.response.text}") from err
+            elif status == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            elif status == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            elif status == 412:
+                raise PreconditionFailedError(
+                    f"Precondition failed: {err.response.text}"
+                ) from err
+            raise
+
 
 class Repository(rdflib.contrib.rdf4j.client.Repository):
     """GraphDB Repository client.
