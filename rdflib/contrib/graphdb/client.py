@@ -33,6 +33,7 @@ from rdflib.contrib.graphdb.models import (
     GraphDBRepository,
     ImportSettings,
     InfrastructureStatistics,
+    NodeStatus,
     ParserSettings,
     PluginAccessControlEntry,
     RepositoryConfigBean,
@@ -1023,6 +1024,44 @@ class ClusterGroupManagement:
             elif status == 412:
                 raise PreconditionFailedError(
                     f"Precondition failed: {err.response.text}"
+                ) from err
+            raise
+
+    def node_status(self) -> NodeStatus:
+        """Get the status of this GraphDB cluster node.
+
+        Returns:
+            NodeStatus: The status of this GraphDB cluster node.
+
+        Raises:
+            ResponseFormatError: If the response cannot be parsed.
+            BadRequestError: If the request is invalid.
+            NotFoundError: If the node status is not found.
+            InternalServerError: If the internal server error.
+        """
+        try:
+            headers = {"Accept": "application/json"}
+            response = self.http_client.get(
+                "/rest/cluster/node/status", headers=headers
+            )
+            response.raise_for_status()
+            try:
+                return NodeStatus.from_dict(response.json())
+            except (KeyError, TypeError, ValueError) as err:
+                raise ResponseFormatError(
+                    f"Failed to parse node status: {err}"
+                ) from err
+        except httpx.HTTPStatusError as err:
+            status = err.response.status_code
+            if status == 400:
+                raise BadRequestError(f"Invalid request: {err.response.text}") from err
+            elif status == 404:
+                raise NotFoundError(
+                    f"Node status not found: {err.response.text}"
+                ) from err
+            elif status == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
                 ) from err
             raise
 

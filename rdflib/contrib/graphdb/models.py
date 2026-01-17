@@ -9,6 +9,220 @@ from rdflib.util import from_n3
 
 
 @dataclass(frozen=True)
+class TopologyStatus:
+    state: str
+    primaryTags: dict[str, t.Any]  # noqa: N815
+
+    def __post_init__(self) -> None:
+        invalid: list[tuple[str, t.Any, type]] = []
+        state = t.cast(t.Any, self.state)
+        primary_tags = t.cast(t.Any, self.primaryTags)
+
+        if not isinstance(state, str):
+            invalid.append(("state", state, type(state)))
+        if not isinstance(primary_tags, dict):
+            invalid.append(("primaryTags", primary_tags, type(primary_tags)))
+        else:
+            for key, value in primary_tags.items():
+                if not isinstance(key, str):
+                    invalid.append((f"primaryTags key '{key}'", key, type(key)))
+
+        if invalid:
+            raise ValueError("Invalid TopologyStatus values: ", invalid)
+
+
+@dataclass(frozen=True)
+class RecoveryOperation:
+    name: str
+    message: str
+
+    def __post_init__(self) -> None:
+        invalid: list[tuple[str, t.Any, type]] = []
+        name = t.cast(t.Any, self.name)
+        message = t.cast(t.Any, self.message)
+
+        if not isinstance(name, str):
+            invalid.append(("name", name, type(name)))
+        if not isinstance(message, str):
+            invalid.append(("message", message, type(message)))
+
+        if invalid:
+            raise ValueError("Invalid RecoveryOperation values: ", invalid)
+
+
+@dataclass(frozen=True)
+class RecoveryStatus:
+    state: RecoveryOperation | None = None
+    message: str | None = None
+    affectedNodes: list[str] = field(default_factory=list)  # noqa: N815
+
+    def __post_init__(self) -> None:
+        invalid: list[tuple[str, t.Any, type]] = []
+        state = t.cast(t.Any, self.state)
+        message = t.cast(t.Any, self.message)
+        affected_nodes = t.cast(t.Any, self.affectedNodes)
+
+        if state is not None and not isinstance(state, RecoveryOperation):
+            invalid.append(("state", state, type(state)))
+        if message is not None and not isinstance(message, str):
+            invalid.append(("message", message, type(message)))
+        if not isinstance(affected_nodes, list):
+            invalid.append(("affectedNodes", affected_nodes, type(affected_nodes)))
+        else:
+            for index, value in enumerate(affected_nodes):
+                if not isinstance(value, str):
+                    invalid.append((f"affectedNodes[{index}]", value, type(value)))
+
+        if invalid:
+            raise ValueError("Invalid RecoveryStatus values: ", invalid)
+
+    @classmethod
+    def from_dict(cls, data: dict) -> RecoveryStatus:
+        """Create a RecoveryStatus instance from a dict.
+
+        This is useful for converting JSON response data into the dataclass structure.
+        Handles empty dict {} by returning a RecoveryStatus with all None/default values.
+        The nested 'state' dict (if present) is automatically converted to
+        a RecoveryOperation instance.
+
+        Parameters:
+            data: A dict containing the recovery status data, typically
+                parsed from a JSON response. Can be an empty dict.
+
+        Returns:
+            A RecoveryStatus instance with nested dataclass objects.
+
+        Raises:
+            KeyError: If required keys are missing from the input dict.
+            TypeError: If nested 'state' cannot be unpacked into RecoveryOperation.
+            ValueError: If field validation fails in RecoveryOperation or
+                RecoveryStatus (e.g., invalid types).
+        """
+        # Handle empty dict case
+        if not data:
+            return cls()
+
+        state = None
+        if "state" in data and data["state"] is not None:
+            state = RecoveryOperation(**data["state"])
+
+        return cls(
+            state=state,
+            message=data.get("message"),
+            affectedNodes=data.get("affectedNodes", []),
+        )
+
+
+@dataclass(frozen=True)
+class NodeStatus:
+    address: str
+    nodeState: str  # noqa: N815
+    term: int
+    syncStatus: dict[str, str]  # noqa: N815
+    lastLogTerm: int  # noqa: N815
+    lastLogIndex: int  # noqa: N815
+    endpoint: str
+    recoveryStatus: RecoveryStatus | None  # noqa: N815
+    topologyStatus: TopologyStatus | None  # noqa: N815
+    clusterEnabled: bool | None  # noqa: N815
+
+    def __post_init__(self) -> None:
+        invalid: list[tuple[str, t.Any, type]] = []
+        address = t.cast(t.Any, self.address)
+        node_state = t.cast(t.Any, self.nodeState)
+        term = t.cast(t.Any, self.term)
+        sync_status = t.cast(t.Any, self.syncStatus)
+        last_log_term = t.cast(t.Any, self.lastLogTerm)
+        last_log_index = t.cast(t.Any, self.lastLogIndex)
+        endpoint = t.cast(t.Any, self.endpoint)
+        recovery_status = t.cast(t.Any, self.recoveryStatus)
+        topology_status = t.cast(t.Any, self.topologyStatus)
+        cluster_enabled = t.cast(t.Any, self.clusterEnabled)
+
+        if not isinstance(address, str):
+            invalid.append(("address", address, type(address)))
+        if not isinstance(node_state, str):
+            invalid.append(("nodeState", node_state, type(node_state)))
+        if type(term) is not int:
+            invalid.append(("term", term, type(term)))
+        if not isinstance(sync_status, dict):
+            invalid.append(("syncStatus", sync_status, type(sync_status)))
+        else:
+            for key, value in sync_status.items():
+                if not isinstance(key, str):
+                    invalid.append((f"syncStatus key '{key}'", key, type(key)))
+                if not isinstance(value, str):
+                    invalid.append((f"syncStatus['{key}']", value, type(value)))
+        if type(last_log_term) is not int:
+            invalid.append(("lastLogTerm", last_log_term, type(last_log_term)))
+        if type(last_log_index) is not int:
+            invalid.append(("lastLogIndex", last_log_index, type(last_log_index)))
+        if not isinstance(endpoint, str):
+            invalid.append(("endpoint", endpoint, type(endpoint)))
+        if recovery_status is not None and not isinstance(
+            recovery_status, RecoveryStatus
+        ):
+            invalid.append(("recoveryStatus", recovery_status, type(recovery_status)))
+        if topology_status is not None and not isinstance(
+            topology_status, TopologyStatus
+        ):
+            invalid.append(("topologyStatus", topology_status, type(topology_status)))
+        if cluster_enabled is not None and type(cluster_enabled) is not bool:
+            invalid.append(("clusterEnabled", cluster_enabled, type(cluster_enabled)))
+
+        if invalid:
+            raise ValueError("Invalid NodeStatus values: ", invalid)
+
+    @classmethod
+    def from_dict(cls, data: dict) -> NodeStatus:
+        """Create a NodeStatus instance from a dict.
+
+        This is useful for converting JSON response data into the dataclass structure.
+        The nested 'recoveryStatus' and 'topologyStatus' dicts are automatically
+        converted to their respective dataclass instances.
+
+        Parameters:
+            data: A dict containing the node status data, typically
+                parsed from a JSON response.
+
+        Returns:
+            A NodeStatus instance with nested dataclass objects.
+
+        Raises:
+            KeyError: If required keys are missing from the input dict.
+            TypeError: If nested dicts cannot be unpacked into their respective
+                dataclass instances.
+            ValueError: If field validation fails in TopologyStatus, RecoveryOperation,
+                RecoveryStatus, or NodeStatus (e.g., invalid types).
+        """
+        # Handle recoveryStatus - can be empty dict or actual data
+        recovery_status = None
+        if "recoveryStatus" in data and data["recoveryStatus"]:
+            recovery_status = RecoveryStatus.from_dict(data["recoveryStatus"])
+        elif "recoveryStatus" in data:
+            # Empty dict case
+            recovery_status = RecoveryStatus.from_dict({})
+
+        # Handle topologyStatus - optional field
+        topology_status = None
+        if "topologyStatus" in data and data["topologyStatus"]:
+            topology_status = TopologyStatus(**data["topologyStatus"])
+
+        return cls(
+            address=data["address"],
+            nodeState=data["nodeState"],
+            term=data["term"],
+            syncStatus=data["syncStatus"],
+            lastLogTerm=data["lastLogTerm"],
+            lastLogIndex=data["lastLogIndex"],
+            endpoint=data["endpoint"],
+            recoveryStatus=recovery_status,
+            topologyStatus=topology_status,
+            clusterEnabled=data.get("clusterEnabled"),
+        )
+
+
+@dataclass(frozen=True)
 class ClusterRequest:
     electionMinTimeout: int  # noqa: N815
     electionRangeTimeout: int  # noqa: N815
