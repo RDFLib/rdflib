@@ -937,6 +937,50 @@ class ClusterGroupManagement:
                 ) from err
             raise
 
+    def remove_nodes(self, nodes: list[str]) -> None:
+        """Remove nodes from the GraphDB cluster.
+
+        Parameters:
+            nodes: List of node addresses to remove from the cluster.
+
+        Raises:
+            TypeError: If nodes is not a list of strings.
+            BadRequestError: If the request is invalid.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            PreconditionFailedError: If one or more nodes in the group are not reachable.
+        """
+        if not isinstance(nodes, list) or any(
+            not isinstance(node, str) for node in nodes
+        ):
+            raise TypeError("nodes must be a list[str].")
+
+        payload = {"nodes": nodes}
+        try:
+            response = self.http_client.request(
+                method="DELETE",
+                url="/rest/cluster/config/node",
+                json=payload,
+            )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            status = err.response.status_code
+            if status == 400:
+                raise BadRequestError(f"Invalid request: {err.response.text}") from err
+            elif status == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            elif status == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            elif status == 412:
+                raise PreconditionFailedError(
+                    f"Precondition failed: {err.response.text}"
+                ) from err
+            raise
+
 
 class Repository(rdflib.contrib.rdf4j.client.Repository):
     """GraphDB Repository client.
