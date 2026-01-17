@@ -798,7 +798,7 @@ class ClusterGroupManagement:
                     f"Precondition failed: {err.response.text}"
                 ) from err
             raise
-    
+
     def enable_secondary_mode(self, primary_node: str, tag: str) -> None:
         """Enable cluster secondary mode.
 
@@ -811,15 +811,15 @@ class ClusterGroupManagement:
             You can enable the secondary cluster mode from any of the nodes of a cluster, not just the
             leader node. You can also use any of the healthy nodes of the primary cluster to connect to
             that cluster.
-        
+
         !!! Warning
             Enabling the secondary mode will delete all data on the secondary cluster and replicate
             the state of the primary cluster.
-        
+
         Parameters:
             primary_node: The RPC address of one of the healthy nodes of the primary cluster.
             tag: The identifier tag of the primary cluster.
-        
+
         Raises:
             TypeError: If primary_node or tag is not a string.
             ValueError: If primary_node or tag is an empty string.
@@ -841,6 +841,82 @@ class ClusterGroupManagement:
         try:
             response = self.http_client.post(
                 "/rest/cluster/config/secondary-mode", json=payload
+            )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            status = err.response.status_code
+            if status == 400:
+                raise BadRequestError(f"Invalid request: {err.response.text}") from err
+            elif status == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            elif status == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            elif status == 412:
+                raise PreconditionFailedError(
+                    f"Precondition failed: {err.response.text}"
+                ) from err
+            raise
+
+    def disable_secondary_mode(self) -> None:
+        """Disable cluster secondary mode.
+
+        Once in secondary mode, you can disable secondary mode and then you will no longer be in
+        that mode. Doing this will stop the pulling of updates from the primary cluster.
+
+        Raises:
+            BadRequestError: If the request is invalid.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            PreconditionFailedError: If the cluster is not in a state to disable secondary mode.
+        """
+        try:
+            response = self.http_client.delete("/rest/cluster/config/secondary-mode")
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            status = err.response.status_code
+            if status == 400:
+                raise BadRequestError(f"Invalid request: {err.response.text}") from err
+            elif status == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            elif status == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            elif status == 412:
+                raise PreconditionFailedError(
+                    f"Precondition failed: {err.response.text}"
+                ) from err
+            raise
+
+    def add_nodes(self, nodes: list[str]) -> None:
+        """Add nodes to the GraphDB cluster.
+
+        Parameters:
+            nodes: List of node addresses to add to the cluster.
+
+        Raises:
+            TypeError: If nodes is not a list of strings.
+            BadRequestError: If the request is invalid.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            PreconditionFailedError: If one or more nodes in the group are not reachable.
+        """
+        if not isinstance(nodes, list) or any(
+            not isinstance(node, str) for node in nodes
+        ):
+            raise TypeError("nodes must be a list[str].")
+
+        payload = {"nodes": nodes}
+        headers = {"Content-Type": "application/json"}
+        try:
+            response = self.http_client.post(
+                "/rest/cluster/config/node", headers=headers, json=payload
             )
             response.raise_for_status()
         except httpx.HTTPStatusError as err:

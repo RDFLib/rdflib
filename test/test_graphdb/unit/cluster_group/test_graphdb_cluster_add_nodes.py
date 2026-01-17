@@ -22,7 +22,7 @@ if has_httpx:
     from rdflib.contrib.graphdb.client import GraphDBClient
 
 
-def test_enable_secondary_mode_posts_payload_and_returns_none(
+def test_add_nodes_posts_payload_and_returns_none(
     client: GraphDBClient,
     monkeypatch: pytest.MonkeyPatch,
 ):
@@ -30,11 +30,12 @@ def test_enable_secondary_mode_posts_payload_and_returns_none(
     mock_httpx_post = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
-    client.cluster.enable_secondary_mode(primary_node="rpc://primary:7300", tag="tag-1")
+    client.cluster.add_nodes(["http://node1:7200", "http://node2:7200"])
 
     mock_httpx_post.assert_called_once_with(
-        "/rest/cluster/config/secondary-mode",
-        json={"primaryNode": "rpc://primary:7300", "tag": "tag-1"},
+        "/rest/cluster/config/node",
+        headers={"Content-Type": "application/json"},
+        json={"nodes": ["http://node1:7200", "http://node2:7200"]},
     )
     mock_response.raise_for_status.assert_called_once()
 
@@ -48,7 +49,7 @@ def test_enable_secondary_mode_posts_payload_and_returns_none(
         (412, PreconditionFailedError),
     ],
 )
-def test_enable_secondary_mode_raises_expected_http_errors(
+def test_add_nodes_raises_expected_http_errors(
     client: GraphDBClient,
     monkeypatch: pytest.MonkeyPatch,
     status_code: int,
@@ -66,11 +67,11 @@ def test_enable_secondary_mode_raises_expected_http_errors(
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
     with pytest.raises(exception_class):
-        client.cluster.enable_secondary_mode(primary_node="rpc://primary:7300", tag="t")
+        client.cluster.add_nodes(["http://node1:7200"])
 
 
 @pytest.mark.parametrize("status_code", [404, 409, 500, 503])
-def test_enable_secondary_mode_reraises_unexpected_http_errors(
+def test_add_nodes_reraises_unexpected_http_errors(
     client: GraphDBClient,
     monkeypatch: pytest.MonkeyPatch,
     status_code: int,
@@ -85,60 +86,22 @@ def test_enable_secondary_mode_reraises_unexpected_http_errors(
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
     with pytest.raises(httpx.HTTPStatusError):
-        client.cluster.enable_secondary_mode(primary_node="rpc://primary:7300", tag="t")
+        client.cluster.add_nodes(["http://node1:7200"])
 
 
-@pytest.mark.parametrize("primary_node", [123, None, ["rpc://primary:7300"]])
-def test_enable_secondary_mode_validates_primary_node_type(
+@pytest.mark.parametrize(
+    "nodes",
+    ["http://node1:7200", [1, 2, 3]],
+)
+def test_add_nodes_validates_nodes_type(
     client: GraphDBClient,
     monkeypatch: pytest.MonkeyPatch,
-    primary_node,
+    nodes,
 ):
     mock_httpx_post = Mock()
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
-    with pytest.raises(TypeError, match="primary_node must be a string"):
-        client.cluster.enable_secondary_mode(primary_node=primary_node, tag="t")
-
-    mock_httpx_post.assert_not_called()
-
-
-def test_enable_secondary_mode_rejects_empty_primary_node(
-    client: GraphDBClient,
-    monkeypatch: pytest.MonkeyPatch,
-):
-    mock_httpx_post = Mock()
-    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
-
-    with pytest.raises(ValueError, match="primary_node must be a non-empty string"):
-        client.cluster.enable_secondary_mode(primary_node="", tag="t")
-
-    mock_httpx_post.assert_not_called()
-
-
-@pytest.mark.parametrize("tag", [123, None, ["some-tag"]])
-def test_enable_secondary_mode_validates_tag_type(
-    client: GraphDBClient,
-    monkeypatch: pytest.MonkeyPatch,
-    tag,
-):
-    mock_httpx_post = Mock()
-    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
-
-    with pytest.raises(TypeError, match="tag must be a string"):
-        client.cluster.enable_secondary_mode(primary_node="rpc://primary:7300", tag=tag)
-
-    mock_httpx_post.assert_not_called()
-
-
-def test_enable_secondary_mode_rejects_empty_tag(
-    client: GraphDBClient,
-    monkeypatch: pytest.MonkeyPatch,
-):
-    mock_httpx_post = Mock()
-    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
-
-    with pytest.raises(ValueError, match="tag must be a non-empty string"):
-        client.cluster.enable_secondary_mode(primary_node="rpc://primary:7300", tag="")
+    with pytest.raises(TypeError, match="nodes must be a list\\[str\\]"):
+        client.cluster.add_nodes(nodes=nodes)
 
     mock_httpx_post.assert_not_called()

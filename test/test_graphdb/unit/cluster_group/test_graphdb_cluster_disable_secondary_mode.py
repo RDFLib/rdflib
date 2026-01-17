@@ -22,22 +22,17 @@ if has_httpx:
     from rdflib.contrib.graphdb.client import GraphDBClient
 
 
-def test_delete_tag_sends_payload_and_returns_none(
+def test_disable_secondary_mode_sends_delete_and_returns_none(
     client: GraphDBClient,
     monkeypatch: pytest.MonkeyPatch,
 ):
     mock_response = Mock(spec=httpx.Response, status_code=200)
-    mock_httpx_request = Mock(return_value=mock_response)
-    monkeypatch.setattr(httpx.Client, "request", mock_httpx_request)
+    mock_httpx_delete = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
 
-    client.cluster.delete_tag("some-tag")
+    client.cluster.disable_secondary_mode()
 
-    mock_httpx_request.assert_called_once_with(
-        method="DELETE",
-        url="/rest/cluster/config/tag",
-        headers={"Content-Type": "application/json"},
-        json={"tag": "some-tag"},
-    )
+    mock_httpx_delete.assert_called_once_with("/rest/cluster/config/secondary-mode")
     mock_response.raise_for_status.assert_called_once()
 
 
@@ -50,7 +45,7 @@ def test_delete_tag_sends_payload_and_returns_none(
         (412, PreconditionFailedError),
     ],
 )
-def test_delete_tag_raises_expected_http_errors(
+def test_disable_secondary_mode_raises_expected_http_errors(
     client: GraphDBClient,
     monkeypatch: pytest.MonkeyPatch,
     status_code: int,
@@ -64,15 +59,15 @@ def test_delete_tag_raises_expected_http_errors(
         request=Mock(),
         response=mock_response,
     )
-    mock_httpx_request = Mock(return_value=mock_response)
-    monkeypatch.setattr(httpx.Client, "request", mock_httpx_request)
+    mock_httpx_delete = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
 
     with pytest.raises(exception_class):
-        client.cluster.delete_tag("some-tag")
+        client.cluster.disable_secondary_mode()
 
 
 @pytest.mark.parametrize("status_code", [404, 409, 500, 503])
-def test_delete_tag_reraises_unexpected_http_errors(
+def test_disable_secondary_mode_reraises_unexpected_http_errors(
     client: GraphDBClient,
     monkeypatch: pytest.MonkeyPatch,
     status_code: int,
@@ -83,36 +78,8 @@ def test_delete_tag_reraises_unexpected_http_errors(
         request=Mock(),
         response=mock_response,
     )
-    mock_httpx_request = Mock(return_value=mock_response)
-    monkeypatch.setattr(httpx.Client, "request", mock_httpx_request)
+    mock_httpx_delete = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
 
     with pytest.raises(httpx.HTTPStatusError):
-        client.cluster.delete_tag("some-tag")
-
-
-@pytest.mark.parametrize("tag", [123, None, ["some-tag"]])
-def test_delete_tag_validates_tag_type(
-    client: GraphDBClient,
-    monkeypatch: pytest.MonkeyPatch,
-    tag,
-):
-    mock_httpx_request = Mock()
-    monkeypatch.setattr(httpx.Client, "request", mock_httpx_request)
-
-    with pytest.raises(TypeError, match="tag must be a string"):
-        client.cluster.delete_tag(tag)
-
-    mock_httpx_request.assert_not_called()
-
-
-def test_delete_tag_rejects_empty_tag(
-    client: GraphDBClient,
-    monkeypatch: pytest.MonkeyPatch,
-):
-    mock_httpx_request = Mock()
-    monkeypatch.setattr(httpx.Client, "request", mock_httpx_request)
-
-    with pytest.raises(ValueError, match="tag must be a non-empty string"):
-        client.cluster.delete_tag("")
-
-    mock_httpx_request.assert_not_called()
+        client.cluster.disable_secondary_mode()
