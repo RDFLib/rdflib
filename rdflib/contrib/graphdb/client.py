@@ -798,6 +798,68 @@ class ClusterGroupManagement:
                     f"Precondition failed: {err.response.text}"
                 ) from err
             raise
+    
+    def enable_secondary_mode(self, primary_node: str, tag: str) -> None:
+        """Enable cluster secondary mode.
+
+        You can switch any healthy primary cluster to secondary mode by providing the RPC address
+        of the primary cluster node that it will replicate and then declaring the tag used to identify
+        it. Once you have switched a cluster to secondary mode, all of its current repositories and
+        data will be removed and replaced with the data and state of the primary cluster.
+
+        !!! Note
+            You can enable the secondary cluster mode from any of the nodes of a cluster, not just the
+            leader node. You can also use any of the healthy nodes of the primary cluster to connect to
+            that cluster.
+        
+        !!! Warning
+            Enabling the secondary mode will delete all data on the secondary cluster and replicate
+            the state of the primary cluster.
+        
+        Parameters:
+            primary_node: The RPC address of one of the healthy nodes of the primary cluster.
+            tag: The identifier tag of the primary cluster.
+        
+        Raises:
+            TypeError: If primary_node or tag is not a string.
+            ValueError: If primary_node or tag is an empty string.
+            BadRequestError: If the request is invalid.
+            UnauthorisedError: If the request is unauthorised.
+            ForbiddenError: If the request is forbidden.
+            PreconditionFailedError: If the cluster is not in a state to enable secondary mode.
+        """
+        if not isinstance(primary_node, str):
+            raise TypeError("primary_node must be a string")
+        if not primary_node:
+            raise ValueError("primary_node must be a non-empty string")
+        if not isinstance(tag, str):
+            raise TypeError("tag must be a string")
+        if not tag:
+            raise ValueError("tag must be a non-empty string")
+
+        payload = {"primaryNode": primary_node, "tag": tag}
+        try:
+            response = self.http_client.post(
+                "/rest/cluster/config/secondary-mode", json=payload
+            )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            status = err.response.status_code
+            if status == 400:
+                raise BadRequestError(f"Invalid request: {err.response.text}") from err
+            elif status == 401:
+                raise UnauthorisedError(
+                    f"Request is unauthorised: {err.response.text}"
+                ) from err
+            elif status == 403:
+                raise ForbiddenError(
+                    f"Request is forbidden: {err.response.text}"
+                ) from err
+            elif status == 412:
+                raise PreconditionFailedError(
+                    f"Precondition failed: {err.response.text}"
+                ) from err
+            raise
 
 
 class Repository(rdflib.contrib.rdf4j.client.Repository):
