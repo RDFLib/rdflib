@@ -1065,6 +1065,45 @@ class ClusterGroupManagement:
                 ) from err
             raise
 
+    def group_status(self) -> list[NodeStatus]:
+        """Get the status of the GraphDB cluster.
+
+        Returns:
+            A list of node statuses for the cluster group.
+
+        Raises:
+            ResponseFormatError: If the response cannot be parsed.
+            BadRequestError: If the request is invalid.
+            NotFoundError: If the group status is not found.
+            InternalServerError: If the internal server error.
+        """
+        try:
+            headers = {"Accept": "application/json"}
+            response = self.http_client.get(
+                "/rest/cluster/group/status", headers=headers
+            )
+            response.raise_for_status()
+            try:
+                data = response.json()
+                return [NodeStatus.from_dict(item) for item in data]
+            except (KeyError, TypeError, ValueError) as err:
+                raise ResponseFormatError(
+                    f"Failed to parse group status: {err}"
+                ) from err
+        except httpx.HTTPStatusError as err:
+            status = err.response.status_code
+            if status == 400:
+                raise BadRequestError(f"Invalid request: {err.response.text}") from err
+            elif status == 404:
+                raise NotFoundError(
+                    f"Group status not found: {err.response.text}"
+                ) from err
+            elif status == 500:
+                raise InternalServerError(
+                    f"Internal server error: {err.response.text}"
+                ) from err
+            raise
+
 
 class Repository(rdflib.contrib.rdf4j.client.Repository):
     """GraphDB Repository client.
