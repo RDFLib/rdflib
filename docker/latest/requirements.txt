@@ -8,5 +8,5 @@ html5rdf==1.2.1
     # via -r docker/latest/requirements.in
 pyparsing==3.0.9
     # via rdflib
-rdflib==7.4.0
+rdflib==7.5.0
     # via -r docker/latest/requirements.in

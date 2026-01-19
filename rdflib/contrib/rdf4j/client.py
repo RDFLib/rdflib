@@ -1004,9 +1004,11 @@ class Transaction:
         """Delete statements from the repository.
 
         !!! Note
-            This function operates differently to [`Repository.delete`][] as it does
-            not use filter parameters. Instead, it expects a data payload.
-            See the notes from [graphdb.js#Deleting](https://github.com/Ontotext-AD/graphdb.js?tab=readme-ov-file#deleting-1)
+            This function operates differently to
+            [`Repository.delete`][rdflib.contrib.rdf4j.client.Repository.delete]
+            as it does not use filter parameters. Instead, it expects a data payload.
+            See the notes from
+            [graphdb.js#Deleting](https://github.com/Ontotext-AD/graphdb.js?tab=readme-ov-file#deleting-1)
             for more information.
 
         Parameters:
