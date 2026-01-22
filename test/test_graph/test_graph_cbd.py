@@ -130,7 +130,7 @@ def testCbdReified(get_graph):  # noqa: N802
         format="turtle",
     )
 
-    assert len(g.cbd(EX.R6)) == (4 + 5 + 5 + 0), "cbd() for R6 should return 12 triples"
+    assert len(g.cbd(EX.R6)) == (4 + 5 + 5 + 0), "cbd() for R6 should return 14 triples"
     assert len(g.cbd(EX.R6, include_reifications=False)) == (
         4 + 0 + 0 + 0
     ), "cbd() for R6 with no reifications should return 4 triples"
