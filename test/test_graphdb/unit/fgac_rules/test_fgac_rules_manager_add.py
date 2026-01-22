@@ -7,24 +7,22 @@ import pytest
 from rdflib import Literal, URIRef
 from rdflib.contrib.rdf4j import has_httpx
 
-pytestmark = pytest.mark.skipif(
-    not has_httpx, reason="skipping graphdb tests, httpx not available"
+if not has_httpx:
+    pytest.skip("skipping graphdb tests, httpx not available", allow_module_level=True)
+
+import httpx
+
+from rdflib.contrib.graphdb.client import GraphDBClient, Repository
+from rdflib.contrib.graphdb.exceptions import (
+    BadRequestError,
+    ForbiddenError,
+    InternalServerError,
+    UnauthorisedError,
 )
-
-if has_httpx:
-    import httpx
-
-    from rdflib.contrib.graphdb.client import GraphDBClient, Repository
-    from rdflib.contrib.graphdb.exceptions import (
-        BadRequestError,
-        ForbiddenError,
-        InternalServerError,
-        UnauthorisedError,
-    )
-    from rdflib.contrib.graphdb.models import (
-        StatementAccessControlEntry,
-        SystemAccessControlEntry,
-    )
+from rdflib.contrib.graphdb.models import (
+    StatementAccessControlEntry,
+    SystemAccessControlEntry,
+)
 
 
 def test_fgac_add_sends_payload_and_handles_empty_response(
