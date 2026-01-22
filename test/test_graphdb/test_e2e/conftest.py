@@ -24,7 +24,9 @@ if has_httpx and has_testcontainers:
 
     @pytest.fixture(scope="package")
     def graphdb_container():
-        with DockerImage(str(pathlib.Path(__file__).parent / "docker")) as image:
+        with DockerImage(
+            str(pathlib.Path(__file__).parent / "docker"), clean_up=False
+        ) as image:
             container = DockerContainer(str(image))
             container.with_exposed_ports(GRAPHDB_PORT)
             # Mount test data directory to GraphDB import server import files location
