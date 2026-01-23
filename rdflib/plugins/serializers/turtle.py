@@ -199,12 +199,15 @@ OBJECT = 2
 _GEN_QNAME_FOR_DT = False
 _SPACIOUS_OUTPUT = False
 
+
 class TurtleSerializer(RecursiveSerializer):
     """Turtle RDF graph serializer."""
 
     short_name = "turtle"
     indentString = "    "
-    LOCALNAME_PECRENT_CHARACTER_REQUIRING_ESCAPE_REGEX = re.compile(r"%(?![0-9A-Fa-f]{2})")
+    LOCALNAME_PECRENT_CHARACTER_REQUIRING_ESCAPE_REGEX = re.compile(
+        r"%(?![0-9A-Fa-f]{2})"
+    )
 
     def __init__(self, store: Graph):
         self._ns_rewrite: Dict[str, str] = {}
@@ -333,7 +336,9 @@ class TurtleSerializer(RecursiveSerializer):
         # https://www.w3.org/TR/turtle/#grammar-production-PLX
         # Only % NOT followed by two hex chars requires manual backslash escaping
         local = local.replace(r"(", r"\(").replace(r")", r"\)")
-        local = self.LOCALNAME_PECRENT_CHARACTER_REQUIRING_ESCAPE_REGEX.sub("\\%", local)
+        local = self.LOCALNAME_PECRENT_CHARACTER_REQUIRING_ESCAPE_REGEX.sub(
+            "\\%", local
+        )
 
         # QName cannot end with .
         if local.endswith("."):

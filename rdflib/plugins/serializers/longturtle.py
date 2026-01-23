@@ -195,7 +195,9 @@ class LongTurtleSerializer(RecursiveSerializer):
         # https://www.w3.org/TR/turtle/#grammar-production-PLX
         # Only % NOT followed by two hex chars requires manual backslash escaping
         local = local.replace(r"(", r"\(").replace(r")", r"\)")
-        local = self.LOCALNAME_PECRENT_CHARACTER_REQUIRING_ESCAPE_REGEX.sub("\\%", local)
+        local = self.LOCALNAME_PECRENT_CHARACTER_REQUIRING_ESCAPE_REGEX.sub(
+            "\\%", local
+        )
 
         # PName cannot end with .
         if local.endswith("."):
