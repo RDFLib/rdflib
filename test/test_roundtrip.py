@@ -526,7 +526,7 @@ EXTRA_FILES = [
     (TEST_DATA_DIR / "variants" / "diverse_quads.nq", "nquads"),
     (TEST_DATA_DIR / "variants" / "diverse_quads.trig", "trig"),
     (TEST_DATA_DIR / "roundtrip" / "bnode_refs.trig", "trig"),
-    (TEST_DATA_DIR / "roundtrip" / "iri_with_escaped_char.ttl", "ttl"),
+    (TEST_DATA_DIR / "roundtrip" / "iri_with_escaped_percent.ttl", "ttl"),
     (TEST_DATA_DIR / "example-lots_of_graphs.n3", "n3"),
     (TEST_DATA_DIR / "issue156.n3", "n3"),
 ]

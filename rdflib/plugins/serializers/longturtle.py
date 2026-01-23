@@ -166,14 +166,14 @@ class LongTurtleSerializer(RecursiveSerializer):
                     # predicate corresponds to base namespace
                     continue
             # Don't use generated prefixes for subjects and objects
-            self.getQName(node, gen_prefix=(i == VERB))
+            self.get_pname(node, gen_prefix=(i == VERB))
             if isinstance(node, Literal) and node.datatype:
-                self.getQName(node.datatype, gen_prefix=_GEN_QNAME_FOR_DT)
+                self.get_pname(node.datatype, gen_prefix=_GEN_QNAME_FOR_DT)
         p = triple[1]
         if isinstance(p, BNode):  # hmm - when is P ever a bnode?
             self._references[p] += 1
 
-    def getQName(self, uri, gen_prefix=True):
+    def get_pname(self, uri, gen_prefix=True):
         if not isinstance(uri, URIRef):
             return None
 
@@ -191,9 +191,13 @@ class LongTurtleSerializer(RecursiveSerializer):
 
         prefix, namespace, local = parts
 
+        # To understand treatment of % character refer to Productions for terminal PLX at
+        # https://www.w3.org/TR/turtle/#grammar-production-PLX
+        # Only % NOT followed by two hex chars requires manual backslash escaping
         local = local.replace(r"(", r"\(").replace(r")", r"\)")
+        local = self.LOCALNAME_PECRENT_CHARACTER_REQUIRING_ESCAPE_REGEX.sub("\\%", local)
 
-        # QName cannot end with .
+        # PName cannot end with .
         if local.endswith("."):
             return None
 
@@ -256,12 +260,12 @@ class LongTurtleSerializer(RecursiveSerializer):
         if isinstance(node, Literal):
             return node._literal_n3(
                 use_plain=True,
-                qname_callback=lambda dt: self.getQName(dt, _GEN_QNAME_FOR_DT),
+                qname_callback=lambda dt: self.get_pname(dt, _GEN_QNAME_FOR_DT),
             )
         else:
             node = self.relativize(node)
 
-            return self.getQName(node, position == VERB) or node.n3()
+            return self.get_pname(node, position == VERB) or node.n3()
 
     def p_squared(
         self,
