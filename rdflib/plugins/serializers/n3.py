@@ -47,7 +47,7 @@ class N3Serializer(TurtleSerializer):
             for t in triple[2]:
                 self.preprocessTriple(t)
 
-    def get_pname(self, uri, gen_prefix=True):  # noqa: N802
+    def get_pname(self, uri, gen_prefix=True):
         qname = None
         if self.parent is not None:
             qname = self.parent.get_pname(uri, gen_prefix)
