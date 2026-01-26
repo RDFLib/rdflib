@@ -57,7 +57,7 @@ pytest-cov = ">=4,<8"
 coverage = {version = "^7.10.7", extras = ["toml"]}
 types-setuptools = ">=68.0.0.3,<72.0.0.0"
 setuptools = ">=68,<72"
-wheel = ">=0.42,<0.46"
+wheel = ">=0.42,<0.47"
 
 [tool.poetry.group.docs.dependencies]
 typing-extensions = "^4.15.0"
