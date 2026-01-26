@@ -414,9 +414,9 @@ NumericLiteral = (
 )
 
 # [134] BooleanLiteral ::= 'true' | 'false'
-BooleanLiteral = Keyword("true").set_parse_action(lambda: rdflib.Literal(True)) | Keyword(
-    "false"
-).set_parse_action(lambda: rdflib.Literal(False))
+BooleanLiteral = Keyword("true").set_parse_action(
+    lambda: rdflib.Literal(True)
+) | Keyword("false").set_parse_action(lambda: rdflib.Literal(False))
 
 # [138] BlankNode ::= BLANK_NODE_LABEL | ANON
 BlankNode = BLANK_NODE_LABEL | ANON
