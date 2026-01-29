@@ -5,26 +5,25 @@ import pytest
 from rdflib import Literal, URIRef
 from rdflib.contrib.rdf4j import has_httpx
 
-pytestmark = pytest.mark.skipif(
-    not has_httpx, reason="skipping graphdb tests, httpx not available"
-)
+if not has_httpx:
+    pytest.skip("skipping graphdb tests, httpx not available", allow_module_level=True)
 
-if has_httpx:
-    from rdflib.contrib.graphdb.models import (
-        AccessControlEntry,
-        ClearGraphAccessControlEntry,
-        PluginAccessControlEntry,
-        StatementAccessControlEntry,
-        SystemAccessControlEntry,
-        _parse_graph,
-        _parse_object,
-        _parse_operation,
-        _parse_plugin,
-        _parse_policy,
-        _parse_predicate,
-        _parse_role,
-        _parse_subject,
-    )
+
+from rdflib.contrib.graphdb.models import (
+    AccessControlEntry,
+    ClearGraphAccessControlEntry,
+    PluginAccessControlEntry,
+    StatementAccessControlEntry,
+    SystemAccessControlEntry,
+    _parse_graph,
+    _parse_object,
+    _parse_operation,
+    _parse_plugin,
+    _parse_policy,
+    _parse_predicate,
+    _parse_role,
+    _parse_subject,
+)
 
 
 @pytest.mark.parametrize("policy", ["allow", "deny", "abstain"])
