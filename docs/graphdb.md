@@ -55,6 +55,26 @@ finally:
     client.close()
 ```
 
+With the GraphDB Client, you can also make authenticated requests by obtaining a GDB token.
+
+```python
+from rdflib.contrib.graphdb.client import GraphDBClient
+
+auth = ("admin", "root")
+with GraphDBClient("http://localhost:7200/", auth=auth) as client:
+    authenticated_user = client.authenticate("admin", "root")
+    token = authenticated_user.token
+
+    # Use the token with another client instance.
+    with GraphDBClient("http://localhost:7200/", auth=token) as token_client:
+        # Perform your operations here.
+        ...
+```
+
+### HTTP client configuration
+
+The GraphDB Client extends the RDF4J Client. Please see RDF4J Client's HTTP client configuration section for details on configuring the underlying HTTP client.
+
 ### Repository Management
 
 GraphDB provides two ways to manage repositories:

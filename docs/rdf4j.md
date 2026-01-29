@@ -97,7 +97,6 @@ The `RDF4JClient` class is the main entry point for interacting with the RDF4J R
 
 The preferred way to create a client instance is to use Python's context manager syntax (`with` statement). When using this syntax, the client will automatically close when the block is exited.
 
-
 ```python
 from rdflib.contrib.rdf4j.client import RDF4JClient
 
@@ -119,16 +118,20 @@ finally:
     client.close()
 ```
 
+!!! Note
+
+    You can pass a token string directly to the `auth` parameter instead of a (username, password) tuple. This will set the Authorization header to use Bearer token authentication for all requests.
+
 ### HTTP client configuration
 
-The RDF4J Client uses the [httpx](https://www.python-httpx.org/) library for making HTTP requests. When creating an RDF4J client instance, any additional keyword arguments to [`RDF4JClient`][rdflib.contrib.rdf4j.client.RDF4JClient] will be passed on to the underlying [`httpx.Client`](https://www.python-httpx.org/api/#client) instance.
+The RDF4J Client uses the [httpx](https://www.python-httpx.org/) library for making HTTP requests. When creating an RDF4J Client instance, any additional keyword arguments to [`RDF4JClient`][rdflib.contrib.rdf4j.client.RDF4JClient] will be passed on to the underlying [`httpx.Client`](https://www.python-httpx.org/api/#client) instance.
 
 For example, setting additional headers (such as an Authorization header) for all requests can be done as follows:
 
 ```python
 token = "secret"
 headers = {
-    "Authorization": f"Bearer {token}" 
+    "Authorization": f"Bearer {token}"
 }
 with RDF4JClient("http://localhost:7200/", headers=headers) as client:
     # Perform your operations here.
@@ -160,7 +163,7 @@ See the RDF4J documentation for more information on [Repository and SAIL Configu
 ```python
 configuration = """
     PREFIX config: <tag:rdf4j.org,2023:config/>
-    
+
     []    a config:Repository ;
         config:rep.id "my-repository" ;
         config:rep.impl
@@ -391,7 +394,7 @@ import dataclasses
 
 namespace_prefixes = repo.namespaces.list()
 for prefix, namespace in [dataclasses.astuple(np) for np in namespace_prefixes]:
-    print(prefix, namespace) 
+    print(prefix, namespace)
 ```
 
 To clear all namespace prefixes, use the [`clear`][rdflib.contrib.rdf4j.client.RDF4JNamespaceManager.clear] method.
