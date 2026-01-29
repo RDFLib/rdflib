@@ -26,6 +26,7 @@ from rdflib.contrib.graphdb.exceptions import (
 )
 from rdflib.contrib.graphdb.models import (
     AccessControlEntry,
+    AuthenticatedUser,
     BackupOperationBean,
     ClearGraphAccessControlEntry,
     ClusterRequest,
@@ -2942,12 +2943,21 @@ class UserManagement:
 
 
 class GraphDBClient(RDF4JClient):
-    """GraphDB Client"""
+    """GraphDB Client
+
+    Parameters:
+        base_url: The base URL of the GraphDB server.
+        auth: Authentication credentials. Can be a tuple (username, password) for
+            basic auth, or a string for token-based auth (e.g., "GDB <token>")
+            which is added as the Authorization header.
+        timeout: Request timeout in seconds (default: 30.0).
+        kwargs: Additional keyword arguments to pass to the httpx.Client.
+    """
 
     def __init__(
         self,
         base_url: str,
-        auth: tuple[str, str] | None = None,
+        auth: tuple[str, str] | str | None = None,
         timeout: float = 30.0,
         **kwargs: t.Any,
     ):
@@ -3009,3 +3019,55 @@ class GraphDBClient(RDF4JClient):
         if self._users is None:
             self._users = UserManagement(self.http_client)
         return self._users
+
+    def login(self, username: str, password: str) -> AuthenticatedUser:
+        """Authenticate with GraphDB and obtain a GDB token.
+
+        Parameters:
+            username: The username to authenticate with.
+            password: The password to authenticate with.
+
+        Returns:
+            An AuthenticatedUser instance containing user details and the GDB token.
+
+        Raises:
+            UnauthorisedError: If the credentials are invalid.
+            BadRequestError: If the request body is invalid.
+            ResponseFormatError: If the response cannot be parsed.
+        """
+        try:
+            response = self.http_client.post(
+                "/rest/login",
+                json={"username": username, "password": password},
+            )
+            response.raise_for_status()
+
+            auth_header = response.headers.get("Authorization", "")
+            if not auth_header.startswith("GDB "):
+                raise ResponseFormatError(
+                    "Authorization header missing or invalid format"
+                )
+
+            try:
+                data = response.json()
+            except (ValueError, TypeError) as err:
+                raise ResponseFormatError(
+                    f"Failed to parse login response: {err}"
+                ) from err
+
+            try:
+                return AuthenticatedUser.from_response(data, auth_header)
+            except (ValueError, TypeError) as err:
+                raise ResponseFormatError(
+                    f"Failed to parse authenticated user: {err}"
+                ) from err
+
+        except httpx.HTTPStatusError as err:
+            status = err.response.status_code
+            if status == 400:
+                raise BadRequestError(f"Invalid request: {err.response.text}") from err
+            elif status == 401:
+                raise UnauthorisedError(
+                    f"Invalid credentials: {err.response.text}"
+                ) from err
+            raise
