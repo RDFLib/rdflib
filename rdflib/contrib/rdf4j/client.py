@@ -1156,7 +1156,9 @@ class RDF4JClient:
 
     Parameters:
         base_url: The base URL of the RDF4J server.
-        auth: Authentication tuple (username, password).
+        auth: Authentication credentials. Can be a tuple (username, password) for
+            basic auth, or a string for token-based auth (e.g., "GDB <token>")
+            which is added as the Authorization header.
         timeout: Request timeout in seconds (default: 30.0).
         kwargs: Additional keyword arguments to pass to the httpx.Client.
     """
@@ -1164,14 +1166,23 @@ class RDF4JClient:
     def __init__(
         self,
         base_url: str,
-        auth: tuple[str, str] | None = None,
+        auth: tuple[str, str] | str | None = None,
         timeout: float = 30.0,
         **kwargs: Any,
     ):
         if not base_url.endswith("/"):
             base_url += "/"
+
+        httpx_auth: tuple[str, str] | None = None
+        if isinstance(auth, tuple):
+            httpx_auth = auth
+        elif isinstance(auth, str):
+            headers = kwargs.get("headers", {})
+            headers["Authorization"] = auth
+            kwargs["headers"] = headers
+
         self._http_client = httpx.Client(
-            base_url=base_url, auth=auth, timeout=timeout, **kwargs
+            base_url=base_url, auth=httpx_auth, timeout=timeout, **kwargs
         )
         self._repository_manager: RepositoryManager | None = None
         try:

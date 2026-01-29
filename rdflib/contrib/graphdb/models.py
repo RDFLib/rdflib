@@ -1029,6 +1029,92 @@ class User:
 
 
 @dataclass(frozen=True)
+class AuthenticatedUser:
+    """Represents an authenticated user returned from POST /rest/login.
+
+    Attributes:
+        username: The username of the authenticated user.
+        authorities: List of granted authorities/roles (e.g., ["ROLE_USER", "ROLE_ADMIN"]).
+        appSettings: Application settings for the user.
+        external: Whether the user is external (e.g., from LDAP/OAuth).
+        token: The full Authorization header value (e.g., "GDB <token>").
+            Can be passed directly to GraphDBClient's auth parameter.
+    """
+
+    username: str
+    authorities: list[str] | None = field(default_factory=list)
+    appSettings: dict[str, t.Any] | None = field(default_factory=dict)  # noqa: N815
+    external: bool = False
+    token: str = ""
+
+    def __post_init__(self) -> None:
+        if self.authorities is None:
+            object.__setattr__(self, "authorities", [])
+        if self.appSettings is None:
+            object.__setattr__(self, "appSettings", {})
+
+        invalid: list[tuple[str, t.Any, type]] = []
+        username = t.cast(t.Any, self.username)
+        authorities = t.cast(t.Any, self.authorities)
+        app_settings = t.cast(t.Any, self.appSettings)
+        external = t.cast(t.Any, self.external)
+        token = t.cast(t.Any, self.token)
+
+        if not isinstance(username, str):
+            invalid.append(("username", username, type(username)))
+        if not isinstance(authorities, list):
+            invalid.append(("authorities", authorities, type(authorities)))
+        else:
+            for index, value in enumerate(authorities):
+                if not isinstance(value, str):
+                    invalid.append((f"authorities[{index}]", value, type(value)))
+        if not isinstance(app_settings, dict):
+            invalid.append(("appSettings", app_settings, type(app_settings)))
+        else:
+            for key in app_settings.keys():
+                if not isinstance(key, str):
+                    invalid.append(("appSettings key", key, type(key)))
+                    break
+        if type(external) is not bool:
+            invalid.append(("external", external, type(external)))
+        if not isinstance(token, str):
+            invalid.append(("token", token, type(token)))
+
+        if invalid:
+            raise ValueError("Invalid AuthenticatedUser values: ", invalid)
+
+    @classmethod
+    def from_response(
+        cls, data: dict[str, t.Any], token: str
+    ) -> "AuthenticatedUser":
+        """Create an AuthenticatedUser from API response data and token.
+
+        Parameters:
+            data: The JSON response body from POST /rest/login.
+            token: The GDB token extracted from the Authorization header.
+
+        Returns:
+            An AuthenticatedUser instance.
+
+        Raises:
+            ValueError: If required fields are missing or invalid.
+            TypeError: If data is not a dict.
+        """
+        if not isinstance(data, dict):
+            raise TypeError("Response data must be a dict")
+        if "username" not in data:
+            raise ValueError("Response data must contain 'username'")
+
+        return cls(
+            username=data["username"],
+            authorities=data.get("authorities", []),
+            appSettings=data.get("appSettings", {}),
+            external=data.get("external", False),
+            token=token,
+        )
+
+
+@dataclass(frozen=True)
 class FreeAccessSettings:
     enabled: bool
     authorities: list[str] = field(default_factory=list)
