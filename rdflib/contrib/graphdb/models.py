@@ -1084,9 +1084,7 @@ class AuthenticatedUser:
             raise ValueError("Invalid AuthenticatedUser values: ", invalid)
 
     @classmethod
-    def from_response(
-        cls, data: dict[str, t.Any], token: str
-    ) -> "AuthenticatedUser":
+    def from_response(cls, data: dict[str, t.Any], token: str) -> AuthenticatedUser:
         """Create an AuthenticatedUser from API response data and token.
 
         Parameters:

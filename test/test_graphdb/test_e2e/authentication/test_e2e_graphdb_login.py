@@ -22,6 +22,7 @@ def test_login_returns_authenticated_user(client: GraphDBClient):
 
     assert isinstance(result, AuthenticatedUser)
     assert result.username == "admin"
+    assert result.authorities is not None
     assert "ROLE_ADMIN" in result.authorities
     assert result.token.startswith("GDB ")
     assert "." in result.token  # Token has format: GDB base64.signature
