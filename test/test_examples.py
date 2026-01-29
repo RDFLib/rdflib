@@ -39,11 +39,7 @@ def test_example(example_file: Path) -> None:
 
     try:
         result.check_returncode()
-    except subprocess.CalledProcessError:
-        if (
-            example_file.stem == "sparqlstore_example"
-            and "http.client.RemoteDisconnected: Remote end closed connection without response"
-            in result.stderr.decode("utf-8")
-        ):
-            pytest.skip("this test uses dbpedia which is down sometimes")
+    except subprocess.CalledProcessError as process_error:
+        if process_error.returncode == 126:
+            pytest.skip("This test returned 126 indikating to skip it.")
         raise

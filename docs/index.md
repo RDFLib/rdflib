@@ -56,6 +56,7 @@ If you are familiar with RDF and are looking for details on how RDFLib handles i
 * [Upgrade 6 to 7](upgrade6to7.md)
 * [Upgrade 5 to 6](upgrade5to6.md)
 * [Upgrade 4 to 5](upgrade4to5.md)
+* [Security Considerations](security_considerations.md)
 
 ## Versioning
 
@@ -73,6 +74,8 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
     * [Developers guide](developers.md)
     * [Documentation guide](docs.md)
 * [Code of Conduct](CODE_OF_CONDUCT.md)
+* [Persisting N3 Terms](persisting_n3_terms.md)
+* [Type Hints](type_hints.md)
 * [Decisions](decisions.md)
 
 ## Source Code

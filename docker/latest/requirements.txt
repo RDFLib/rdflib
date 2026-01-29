@@ -8,5 +8,5 @@ html5rdf==1.2.1
     # via -r requirements.in
 pyparsing==3.2.0
     # via rdflib
-rdflib==7.1.4
+rdflib==7.4.0
     # via -r requirements.in
