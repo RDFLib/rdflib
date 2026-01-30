@@ -374,9 +374,13 @@ print(f"Username: {user.username}")
 To create a new user:
 
 ```python
-from rdflib.contrib.graphdb.models import User
+from rdflib.contrib.graphdb.models import UserCreate
 
-new_user = User(username="newuser", password="password123")
+new_user = UserCreate(
+    username="newuser",
+    password="password123",
+    grantedAuthorities=["ROLE_USER"],
+)
 client.users.create("newuser", new_user)
 ```
 
@@ -391,10 +395,18 @@ update = UserUpdate(password="new_password")
 client.users.update("newuser", update)
 ```
 
-To fully replace a user's configuration:
+To fully replace a user's configuration (requires fetching the existing user first to get `dateCreated`):
 
 ```python
-updated_user = User(username="newuser", password="newpass123")
+from rdflib.contrib.graphdb.models import User
+
+existing_user = client.users.get("newuser")
+updated_user = User(
+    username="newuser",
+    password="newpass123",
+    dateCreated=existing_user.dateCreated,
+    grantedAuthorities=["ROLE_USER"],
+)
 client.users.overwrite("newuser", updated_user)
 ```
 
