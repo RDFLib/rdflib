@@ -30,7 +30,7 @@ pip install rdflib[graphdb]
 
 ### Creating a client instance
 
-The `GraphDBClient` class is the main entry point for interacting with the GraphDB REST API. To create an instance, pass the base URL of the GraphDB server to the constructor and optionally a username and password tuple for basic authentication.
+The [`GraphDBClient`][rdflib.contrib.graphdb.client.GraphDBClient] class is the main entry point for interacting with the GraphDB REST API. To create an instance, pass the base URL of the GraphDB server to the constructor and optionally a username and password tuple for basic authentication.
 
 The preferred way to create a client instance is to use Python's context manager syntax (`with` statement).
 
@@ -55,14 +55,14 @@ finally:
     client.close()
 ```
 
-With the GraphDB Client, you can also make authenticated requests by obtaining a GDB token.
+With the GraphDB Client, you can also make authenticated requests by obtaining a GDB token. The following code is an example of how to retrieve a token using your username and password, and then use the token to authenticate subsequent requests.
 
 ```python
 from rdflib.contrib.graphdb.client import GraphDBClient
 
 auth = ("admin", "root")
 with GraphDBClient("http://localhost:7200/", auth=auth) as client:
-    authenticated_user = client.authenticate("admin", "root")
+    authenticated_user = client.login("admin", "root")
     token = authenticated_user.token
 
     # Use the token with another client instance.
@@ -79,12 +79,12 @@ The GraphDB Client extends the RDF4J Client. See [RDF4J Client's HTTP client con
 
 GraphDB provides two ways to manage repositories:
 
-1.  **RDF4J Repository Manager** (`client.repositories`): Implements the standard RDF4J protocol. Use this for basic operations like retrieving a repository instance for querying. For more information, see [Working with a Repository](rdf4j.md#working-with-a-repository).
-2.  **GraphDB Repository Management** (`client.repos`): Implements the GraphDB REST API. Use this for administrative tasks like listing, creating, editing, and validating repositories.
+1.  **RDF4J Repository Manager** ([`GraphDBClient.repositories`][rdflib.contrib.graphdb.client.GraphDBClient.repositories]): Implements the standard RDF4J protocol. Use this for basic operations like retrieving a repository instance for querying. For more information, see [Working with a Repository](rdf4j.md#working-with-a-repository).
+2.  **GraphDB Repository Management** ([`GraphDBClient.repos`][rdflib.contrib.graphdb.client.GraphDBClient.repos]): Implements the GraphDB REST API. Use this for administrative tasks such as listing, creating, editing, and validating repositories.
 
 #### Listing repositories
 
-To list all repositories with their configuration and status, use the `client.repos` property.
+To list all repositories with their configuration and status:
 
 ```python
 repos = client.repos.list()
@@ -92,33 +92,114 @@ for repo in repos:
     print(f"{repo.id} ({repo.type}) - {repo.state}")
 ```
 
+#### Getting repository configuration
+
+To retrieve a repository's configuration:
+
+```python
+# Get configuration as JSON (default)
+config = client.repos.get("my-repo")
+print(f"Repository ID: {config.id}")
+
+# Get configuration as RDF Graph
+graph = client.repos.get("my-repo", content_type="text/turtle")
+```
+
 #### Creating a repository
 
-To create a repository, you can provide the configuration as a Turtle string or a JSON object.
+To create a repository, provide the configuration as a Turtle string:
 
 ```python
 config = """
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rep: <http://www.openrdf.org/config/repository#> .
-@prefix sr: <http://www.openrdf.org/config/repository/sail#> .
-@prefix sail: <http://www.openrdf.org/config/sail#> .
-@prefix graphdb: <http://www.ontotext.com/config/graphdb#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rep: <http://www.openrdf.org/config/repository#>.
+@prefix sr: <http://www.openrdf.org/config/repository/sail#>.
+@prefix sail: <http://www.openrdf.org/config/sail#>.
+@prefix graphdb: <http://www.ontotext.com/config/graphdb#>.
 
 [] a rep:Repository ;
     rep:repositoryID "my-repo" ;
+    rdfs:label "" ;
     rep:repositoryImpl [
         rep:repositoryType "graphdb:SailRepository" ;
         sr:sailImpl [
             sail:sailType "graphdb:Sail" ;
+
+            graphdb:read-only "false" ;
+
+            # Inference and Validation
+            graphdb:ruleset "empty" ;
+            graphdb:disable-sameAs "true" ;
+            graphdb:check-for-inconsistencies "false" ;
+
+            # Indexing
+            graphdb:entity-id-size "32" ;
+            graphdb:enable-context-index "false" ;
+            graphdb:enablePredicateList "true" ;
+            graphdb:enable-fts-index "false" ;
+            graphdb:fts-indexes ("default" "iri") ;
+            graphdb:fts-string-literals-index "default" ;
+            graphdb:fts-iris-index "none" ;
+
+            # Queries and Updates
+            graphdb:query-timeout "0" ;
+            graphdb:throw-QueryEvaluationException-on-timeout "false" ;
+            graphdb:query-limit-results "0" ;
+
+            # Settable in the file but otherwise hidden in the UI and in the RDF4J console
+            graphdb:base-URL "http://example.org/owlim#" ;
+            graphdb:defaultNS "" ;
+            graphdb:imports "" ;
+            graphdb:repository-type "file-repository" ;
+            graphdb:storage-folder "storage" ;
+            graphdb:entity-index-size "10000000" ;
+            graphdb:in-memory-literal-properties "true" ;
+            graphdb:enable-literal-index "true" ;
         ]
-    ] .
+    ].
+
 """
 client.repos.create(config)
 ```
 
+#### Editing a repository
+
+To edit an existing repository's configuration:
+
+```python
+from rdflib.contrib.graphdb.models import RepositoryConfigBeanCreate
+
+updated_config = RepositoryConfigBeanCreate(
+    id="my-repo",
+    title="Updated Repository",
+    # ... other configuration options
+)
+client.repos.edit("my-repo", updated_config)
+```
+
+#### Restarting a repository
+
+To restart a repository:
+
+```python
+client.repos.restart("my-repo")
+
+# With sync option
+client.repos.restart("my-repo", sync=True)
+```
+
+#### Getting repository size
+
+To get information about a repository's size:
+
+```python
+size_info = client.repos.size("my-repo")
+print(f"Size: {size_info.size}")
+```
+
 #### Deleting a repository
 
-To delete a repository, use the `delete` method on `client.repos`.
+To delete a repository:
 
 ```python
 client.repos.delete("my-repo")
@@ -126,23 +207,39 @@ client.repos.delete("my-repo")
 
 ### Working with a Repository
 
-To interact with a specific repository (e.g., to run queries or manage data), retrieve a `Repository` instance using `client.repositories.get()`. This returns a GraphDB-specific `Repository` object that extends the [standard RDF4J Repository](rdf4j.md#working-with-a-repository).
+To interact with a specific repository (e.g., to run queries or manage data), retrieve a [`Repository`][rdflib.contrib.graphdb.client.Repository] instance. This returns a GraphDB-specific `Repository` object that extends the [standard RDF4J Repository](rdf4j.md#working-with-a-repository) with additional methods for health checks, data file imports, and fine-grained access control.
 
 ```python
 repo = client.repositories.get("my-repo")
+```
+
+#### Repository health check
+
+To check if a repository is healthy and accessible:
+
+```python
+is_healthy = repo.health()
+print(f"Repository is healthy: {is_healthy}")
+
+# With custom timeout (in seconds)
+is_healthy = repo.health(timeout=10)
 ```
 
 #### Server-side Import
 
 GraphDB allows you to import files that are already present on the server (in the `imports` directory).
 
-To list available server files:
+##### Listing available files
+
+To list files available for import:
 
 ```python
 files = repo.get_server_import_files()
 for f in files:
     print(f.name)
 ```
+
+##### Importing files
 
 To import a file:
 
@@ -153,23 +250,32 @@ import_body = ServerImportBody(fileNames=["data.ttl"])
 repo.import_server_import_file(import_body)
 ```
 
-To cancel an ongoing import:
+##### Cancelling an import
+
+To cancel an ongoing import operation:
 
 ```python
 repo.cancel_server_import_file("data.ttl")
 ```
 
-#### Fine-Grained Access Control (ACL)
+#### Fine-Grained Access Control
 
 GraphDB supports Fine-Grained Access Control (FGAC) to restrict access to specific data. You can manage ACLs using the `repo.acl` property.
+
+##### Listing ACL rules
 
 To list existing ACL rules:
 
 ```python
 rules = repo.acl.list()
 for rule in rules:
-    print(rule.policy, rule.subject, rule.operation)
+    print(f"{rule.policy}: {rule.role} can {rule.operation}")
+
+# Filter by scope, operation, or role
+statement_rules = repo.acl.list(scope="statement", operation="read")
 ```
+
+##### Adding ACL rules
 
 To add a new ACL rule:
 
@@ -185,28 +291,85 @@ rule = StatementAccessControlEntry(
 repo.acl.add([rule])
 ```
 
-### Security Management
+##### Setting ACL rules
 
-You can manage GraphDB security (users, roles, and access settings) via the `client.security` and `client.users` properties.
+To replace all existing ACL rules:
 
-#### Managing Security Status
+!!! warning
 
-Check if security is enabled and toggle it:
+    This operation replaces all existing ACL rules with the provided ones.
 
 ```python
+repo.acl.set([rule])
+```
+
+##### Deleting ACL rules
+
+To delete specific ACL rules:
+
+!!! warning
+
+    This operation cannot be undone.
+
+```python
+rules = repo.acl.list()
+repo.acl.delete(rules[:1])
+```
+
+### Security Management
+
+GraphDB provides security features including user authentication, role-based access control, and free access mode. You can manage security settings via `client.security` and users via `client.users`.
+
+#### Managing security status
+
+##### Checking and enabling security
+
+To check if security is enabled and toggle it:
+
+```python
+# Check if security is enabled
 if not client.security.enabled:
     client.security.enabled = True
 ```
 
+##### Managing free access mode
+
+Free access mode allows unauthenticated users to access repositories with specific permissions:
+
+```python
+from rdflib.contrib.graphdb.models import FreeAccessSettings
+
+# Check free access settings
+free_access = client.security.get_free_access_details()
+print(f"Free access enabled: {free_access.enabled}")
+
+# Configure free access
+settings = FreeAccessSettings(enabled=True)
+client.security.set_free_access_details(settings)
+```
+
 #### User Management
 
-To list users:
+##### Listing users
+
+To list all users:
 
 ```python
 users = client.users.list()
 for user in users:
     print(user.username)
 ```
+
+##### Getting a user
+
+To get a specific user:
+
+```python
+user = client.users.get("admin")
+print(f"Username: {user.username}")
+```
+
+##### Creating a user
 
 To create a new user:
 
@@ -217,7 +380,40 @@ new_user = User(username="newuser", password="password123")
 client.users.create("newuser", new_user)
 ```
 
+##### Updating a user
+
+To update user properties:
+
+```python
+from rdflib.contrib.graphdb.models import UserUpdate
+
+update = UserUpdate(password="new_password")
+client.users.update("newuser", update)
+```
+
+To fully replace a user's configuration:
+
+```python
+updated_user = User(username="newuser", password="newpass123")
+client.users.overwrite("newuser", updated_user)
+```
+
+##### Getting user roles
+
+To retrieve custom roles assigned to a user:
+
+```python
+roles = client.users.custom_roles("someuser")
+print(roles)
+```
+
+##### Deleting a user
+
 To delete a user:
+
+!!! warning
+
+    This operation cannot be undone.
 
 ```python
 client.users.delete("newuser")
@@ -225,58 +421,269 @@ client.users.delete("newuser")
 
 ### Monitoring and Administration
 
+GraphDB provides monitoring endpoints for system health, performance metrics, and backup/restore operations. Access these via `client.monitoring` and `client.recovery`.
+
 #### Monitoring
 
-Access system monitoring information via `client.monitoring`.
+##### Infrastructure statistics
+
+To get system-level statistics such as CPU load, memory usage, and thread count:
 
 ```python
-# Get infrastructure statistics
 stats = client.monitoring.infrastructure
 print(f"CPU Load: {stats.cpu_load}")
 print(f"Memory Usage: {stats.memory_usage}")
+```
 
-# Get repository statistics
+##### Structures statistics
+
+To get cache hit/miss statistics for internal data structures:
+
+```python
+structures = client.monitoring.structures
+print(f"Cache hit: {structures.cache_hit}")
+print(f"Cache miss: {structures.cache_miss}")
+```
+
+##### Repository statistics
+
+To get statistics for a specific repository:
+
+```python
 repo_stats = client.monitoring.get_repo_stats("my-repo")
+print(f"Number of slow queries: {repo_stats.queries.slow_queries}")
 ```
 
-#### Recovery (Backup and Restore)
+##### Cluster monitoring
 
-Manage backups and restores via `client.recovery`.
-
-To create a backup:
+To get cluster-level metrics (GraphDB Enterprise only):
 
 ```python
-# Backup to a local file
-backup_path = client.recovery.backup(repositories=["my-repo"], dest="./backup.tar")
+cluster_metrics = client.monitoring.cluster()
+print(cluster_metrics)
 ```
 
-To restore from a backup:
+##### Backup monitoring
+
+To track ongoing backup operations:
 
 ```python
+backup_status = client.monitoring.backup()
+if backup_status:
+    print(f"Backup in progress: {backup_status.status}")
+else:
+    print("No backup in progress")
+```
+
+#### Recovery Management
+
+GraphDB supports backup and restore operations for both local and cloud storage.
+
+##### Local backup
+
+To create a local backup:
+
+```python
+# Stream to file (recommended for large backups)
+backup_path = client.recovery.backup(
+    repositories=["my-repo"],
+    dest="./backup.tar"
+)
+print(f"Backup created at: {backup_path}")
+
+# Include system data (users, saved queries, etc.)
+backup_path = client.recovery.backup(
+    repositories=["my-repo"],
+    backup_system_data=True,
+    dest="./backup/"
+)
+
+# Return as bytes (for small backups or testing)
+backup_bytes = client.recovery.backup(repositories=["my-repo"])
+```
+
+##### Local restore
+
+To restore from a local backup:
+
+```python
+# From file path
 client.recovery.restore(backup="./backup.tar")
+
+# Restore specific repositories
+client.recovery.restore(
+    backup="./backup.tar",
+    repositories=["my-repo"],
+    restore_system_data=True
+)
+
+# Remove repositories not in backup
+client.recovery.restore(
+    backup="./backup.tar",
+    remove_stale_repositories=True
+)
+```
+
+##### Cloud backup
+
+To back up directly to cloud storage:
+
+```python
+client.recovery.cloud_backup(bucket_uri="s3://my-bucket/graphdb-backups/")
+
+# With authentication file for cloud provider
+client.recovery.cloud_backup(
+    bucket_uri="s3://my-bucket/graphdb-backups/",
+    authentication_file="./aws-credentials.json"
+)
+```
+
+##### Cloud restore
+
+To restore from a cloud backup:
+
+```python
+client.recovery.cloud_restore(
+    bucket_uri="s3://my-bucket/graphdb-backups/backup-2026-01-16-10-30-00.tar"
+)
 ```
 
 #### Cluster Management
 
-For GraphDB Enterprise, you can manage the cluster via `client.cluster`.
+!!! note
+
+    Cluster management is only available in GraphDB Enterprise.
+
+GraphDB Enterprise supports high-availability clustering. You can manage cluster configuration, nodes, and secondary mode via [`GraphDBClient.cluster`][rdflib.contrib.graphdb.client.ClusterGroupManagement].
+
+##### Getting cluster configuration
+
+To retrieve the current cluster configuration, use the [`get_config`][rdflib.contrib.graphdb.client.ClusterGroupManagement.get_config] method:
 
 ```python
-# Get cluster configuration
 config = client.cluster.get_config()
+print(f"Nodes: {config.nodes}")
+print(f"Heartbeat interval: {config.heartbeat_interval}")
+```
 
-# Get cluster group status
-status = client.cluster.group_status()
+##### Creating a cluster
+
+To create a new cluster, provide a list of node addresses:
+
+```python
+client.cluster.create_config(
+    nodes=["node1:7300", "node2:7300", "node3:7300"],
+    election_min_timeout=3000,
+    heartbeat_interval=1000
+)
+```
+
+##### Updating cluster configuration
+
+To update an existing cluster's configuration:
+
+```python
+updated_config = client.cluster.update_config(
+    heartbeat_interval=2000,
+    transaction_log_maximum_size_gb=10
+)
+```
+
+##### Managing cluster nodes
+
+You can add, remove, or replace nodes in an existing cluster:
+
+```python
+# Add new nodes
+client.cluster.add_nodes(["node4:7300"])
+
+# Remove nodes
+client.cluster.remove_nodes(["node1:7300"])
+
+# Replace nodes in one operation
+client.cluster.replace_nodes(
+    add_nodes=["node5:7300"],
+    remove_nodes=["node2:7300"]
+)
+```
+
+##### Checking cluster and node status
+
+To get the status of the current node or the entire cluster group:
+
+```python
+# Get status of the current node
+node_status = client.cluster.node_status()
+print(f"Node state: {node_status.node_state}")
+
+# Get status of all nodes in the cluster
+group_status = client.cluster.group_status()
+for node in group_status:
+    print(f"{node.address}: {node.node_state}")
+```
+
+##### Managing secondary mode
+
+You can configure a cluster to operate in secondary mode, replicating data from a primary cluster:
+
+!!! warning
+
+    Enabling secondary mode will delete all data on the secondary cluster and replicate the state of the primary cluster.
+
+```python
+# Add a tag to identify the primary cluster
+client.cluster.add_tag("production-cluster")
+
+# Enable secondary mode on another cluster
+client.cluster.enable_secondary_mode(
+    primary_node="primary-node1:7300",
+    tag="production-cluster"
+)
+
+# Disable secondary mode
+client.cluster.disable_secondary_mode()
+
+# Remove the tag from the primary cluster
+client.cluster.delete_tag("production-cluster")
+```
+
+##### Deleting a cluster
+
+To delete the cluster configuration:
+
+```python
+# Delete cluster (requires all nodes to be reachable)
+result = client.cluster.delete_config()
+
+# Force delete (only deletes on reachable nodes)
+result = client.cluster.delete_config(force=True)
+```
+
+##### Truncating the transaction log
+
+To free up storage space by clearing the transaction log:
+
+```python
+client.cluster.truncate_log()
 ```
 
 #### Talk to Your Graph
 
-You can interact with the Talk to Your Graph (TTYG) agent service.
+!!! note
+
+    Talk to Your Graph (TTYG) requires GraphDB with the TTYG feature enabled and configured agents.
+
+GraphDB provides a natural language interface to interact with your graph data through the Talk to Your Graph (TTYG) feature. You can query configured agents via [`GraphDBClient.ttyg`][rdflib.contrib.graphdb.client.TalkToYourGraph].
+
+##### Querying an agent
+
+To send a natural language query to an agent:
 
 ```python
 response = client.ttyg.query(
     agent_id="my-agent",
-    tool_type="retrieval",
-    query="Tell me about the data."
+    tool_type="example-tool",
+    query="What are the main concepts in this dataset?"
 )
 print(response)
 ```
