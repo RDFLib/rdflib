@@ -73,13 +73,13 @@ with GraphDBClient("http://localhost:7200/", auth=auth) as client:
 
 ### HTTP client configuration
 
-The GraphDB Client extends the RDF4J Client. Please see RDF4J Client's HTTP client configuration section for details on configuring the underlying HTTP client.
+The GraphDB Client extends the RDF4J Client. See [RDF4J Client's HTTP client configuration](rdf4j.md#http-client-configuration) section for details on configuring the underlying HTTP client.
 
 ### Repository Management
 
 GraphDB provides two ways to manage repositories:
 
-1.  **RDF4J Repository Manager** (`client.repositories`): Implements the standard RDF4J protocol. Use this for basic operations like retrieving a repository instance for querying.
+1.  **RDF4J Repository Manager** (`client.repositories`): Implements the standard RDF4J protocol. Use this for basic operations like retrieving a repository instance for querying. For more information, see [Working with a Repository](rdf4j.md#working-with-a-repository).
 2.  **GraphDB Repository Management** (`client.repos`): Implements the GraphDB REST API. Use this for administrative tasks like listing, creating, editing, and validating repositories.
 
 #### Listing repositories
