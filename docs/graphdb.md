@@ -698,15 +698,15 @@ client.cluster.truncate_log()
 
 GraphDB provides a Large Language Model (LLM) interface to interact with your graph data through the Talk to Your Graph (TTYG) feature. You can query configured agents via [`GraphDBClient.ttyg`][rdflib.contrib.graphdb.client.TalkToYourGraph].
 
-##### Querying an agent
+##### Call agent
 
-To send a query to an agent:
+Call agent query method/assistant tool:
 
 ```python
 response = client.ttyg.query(
     agent_id="my-agent",
     tool_type="sparql_query",
-    query="Your query..."
+    query="ask { ?s ?p ?o }"
 )
 print(response)
 ```
