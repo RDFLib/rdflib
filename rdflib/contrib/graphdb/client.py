@@ -46,6 +46,7 @@ from rdflib.contrib.graphdb.models import (
     StructuresStatistics,
     SystemAccessControlEntry,
     User,
+    UserCreate,
     UserUpdate,
     _parse_operation,
     _parse_plugin,
@@ -2802,7 +2803,7 @@ class UserManagement:
                 raise NotFoundError("User not found.") from err
             raise
 
-    def create(self, username: str, user: User) -> None:
+    def create(self, username: str, user: UserCreate) -> None:
         """
         Create a user.
 
@@ -2811,15 +2812,15 @@ class UserManagement:
             user: The user to create.
 
         Raises:
-            TypeError: if username is not a string or user is not an instance of User.
+            TypeError: if username is not a string or user is not an instance of UserCreate.
             BadRequestError: If the request is bad.
             UnauthorisedError: If the request is unauthorised.
             ForbiddenError: If the request is forbidden.
         """
         if not isinstance(username, str):
             raise TypeError("Username must be a string.")
-        if not isinstance(user, User):
-            raise TypeError("User must be an instance of User.")
+        if not isinstance(user, UserCreate):
+            raise TypeError("User must be an instance of UserCreate.")
 
         try:
             headers = {"Content-Type": "application/json"}
@@ -2945,12 +2946,19 @@ class UserManagement:
 class GraphDBClient(RDF4JClient):
     """GraphDB Client
 
+    This client and its inner management objects perform HTTP requests via
+    httpx and may raise httpx-specific exceptions. Errors documented by GraphDB
+    in its OpenAPI specification are mapped to specific exceptions in this
+    library where applicable. Error mappings are documented on each management
+    method. The underlying httpx client is reused across
+    requests, and connection pooling is handled automatically by httpx.
+
     Parameters:
         base_url: The base URL of the GraphDB server.
         auth: Authentication credentials. Can be a tuple (username, password) for
             basic auth, or a string for token-based auth (e.g., "GDB <token>")
             which is added as the Authorization header.
-        timeout: Request timeout in seconds (default: 30.0).
+        timeout: Request timeout in seconds or an httpx.Timeout for fine-grained control (default: 30.0).
         kwargs: Additional keyword arguments to pass to the httpx.Client.
     """
 
@@ -2958,7 +2966,7 @@ class GraphDBClient(RDF4JClient):
         self,
         base_url: str,
         auth: tuple[str, str] | str | None = None,
-        timeout: float = 30.0,
+        timeout: float | httpx.Timeout = 30.0,
         **kwargs: t.Any,
     ):
         super().__init__(base_url, auth, timeout, **kwargs)

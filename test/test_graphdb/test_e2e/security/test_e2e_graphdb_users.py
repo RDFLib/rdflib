@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 from rdflib.contrib.graphdb.exceptions import BadRequestError, NotFoundError
-from rdflib.contrib.graphdb.models import User, UserUpdate
+from rdflib.contrib.graphdb.models import User, UserCreate, UserUpdate
 from rdflib.contrib.rdf4j import has_httpx
 
 pytestmark = pytest.mark.skipif(
@@ -194,10 +194,9 @@ def test_overwrite_user_raises_not_found_for_nonexistent_user(client: GraphDBCli
 def test_create_user_creates_new_user(client: GraphDBClient):
     """Test that create successfully creates a new user."""
     username = "test_create_user_12345"
-    user = User(
+    user = UserCreate(
         username=username,
         password="password123",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER"],
         appSettings={},
         gptThreads=[],
@@ -227,10 +226,9 @@ def test_create_user_creates_new_user(client: GraphDBClient):
 def test_create_user_returns_user_with_correct_fields(client: GraphDBClient):
     """Test that a created user has the correct fields when retrieved."""
     username = "test_create_fields_12345"
-    user = User(
+    user = UserCreate(
         username=username,
         password="securepassword",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER", "READ_REPO_test-repo"],
         appSettings={"theme": "dark"},
         gptThreads=[],
@@ -255,10 +253,9 @@ def test_create_user_returns_user_with_correct_fields(client: GraphDBClient):
 def test_create_user_appears_in_users_list(client: GraphDBClient):
     """Test that a created user appears in the users list."""
     username = "test_create_list_12345"
-    user = User(
+    user = UserCreate(
         username=username,
         password="password123",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER"],
         appSettings={},
         gptThreads=[],
@@ -279,10 +276,9 @@ def test_create_user_appears_in_users_list(client: GraphDBClient):
 def test_create_user_raises_bad_request_for_duplicate_user(client: GraphDBClient):
     """Test that create raises BadRequestError when creating a duplicate user."""
     username = "test_create_dup_12345"
-    user = User(
+    user = UserCreate(
         username=username,
         password="password123",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER"],
         appSettings={},
         gptThreads=[],
@@ -307,10 +303,9 @@ def test_create_user_raises_bad_request_for_duplicate_user(client: GraphDBClient
 def test_delete_user_deletes_existing_user(client: GraphDBClient):
     """Test that delete successfully deletes a user."""
     username = "test_delete_user_12345"
-    user = User(
+    user = UserCreate(
         username=username,
         password="password123",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER"],
         appSettings={},
         gptThreads=[],
@@ -332,10 +327,9 @@ def test_delete_user_deletes_existing_user(client: GraphDBClient):
 def test_delete_user_removes_from_users_list(client: GraphDBClient):
     """Test that a deleted user no longer appears in the users list."""
     username = "test_delete_list_12345"
-    user = User(
+    user = UserCreate(
         username=username,
         password="password123",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER"],
         appSettings={},
         gptThreads=[],
@@ -369,10 +363,9 @@ def test_delete_user_raises_not_found_for_nonexistent_user(client: GraphDBClient
 def test_update_user_updates_app_settings(client: GraphDBClient):
     """Test that update successfully updates a user's appSettings via PATCH."""
     username = "test_update_user_12345"
-    user = User(
+    user = UserCreate(
         username=username,
         password="password123",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER"],
         appSettings={"initial_setting": "initial_value"},
         gptThreads=[],
@@ -402,10 +395,9 @@ def test_update_user_updates_app_settings(client: GraphDBClient):
 def test_update_user_preserves_existing_fields(client: GraphDBClient):
     """Test that update via PATCH preserves fields not included in the update."""
     username = "test_update_preserve_12345"
-    user = User(
+    user = UserCreate(
         username=username,
         password="password123",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER", "READ_REPO_test-repo"],
         appSettings={"existing_setting": "existing_value"},
         gptThreads=[],
@@ -436,10 +428,9 @@ def test_update_user_preserves_existing_fields(client: GraphDBClient):
 def test_update_user_returns_none(client: GraphDBClient):
     """Test that update returns None on success."""
     username = "test_update_none_12345"
-    user = User(
+    user = UserCreate(
         username=username,
         password="password123",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER"],
         appSettings={},
         gptThreads=[],
@@ -466,10 +457,9 @@ def test_update_user_returns_none(client: GraphDBClient):
 def test_update_user_with_user_update_model(client: GraphDBClient):
     """Test that update works with UserUpdate model."""
     username = "test_update_model_12345"
-    user = User(
+    user = UserCreate(
         username=username,
         password="password123",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER"],
         appSettings={},
         gptThreads=[],
@@ -525,10 +515,9 @@ def test_custom_roles_raises_not_found_for_nonexistent_user(client: GraphDBClien
 def test_custom_roles_for_created_user(client: GraphDBClient):
     """Test that custom_roles works for a newly created user."""
     username = "test_custom_roles_12345"
-    user = User(
+    user = UserCreate(
         username=username,
         password="password123",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER"],
         appSettings={},
         gptThreads=[],
@@ -550,3 +539,6 @@ def test_custom_roles_for_created_user(client: GraphDBClient):
             client.users.delete(username)
         except Exception:
             pass
+
+
+

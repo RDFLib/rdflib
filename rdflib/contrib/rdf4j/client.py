@@ -1154,12 +1154,19 @@ class RepositoryManager:
 class RDF4JClient:
     """RDF4J client.
 
+    This client and its inner management objects perform HTTP requests via
+    httpx and may raise httpx-specific exceptions. Errors documented by RDF4J
+    in its protocol specification are mapped to specific exceptions in this
+    library where applicable. Error mappings are documented on each management
+    method. The underlying httpx client is reused across requests, and
+    connection pooling is handled automatically by httpx.
+
     Parameters:
         base_url: The base URL of the RDF4J server.
         auth: Authentication credentials. Can be a tuple (username, password) for
             basic auth, or a string for token-based auth (e.g., "GDB <token>")
             which is added as the Authorization header.
-        timeout: Request timeout in seconds (default: 30.0).
+        timeout: Request timeout in seconds or an httpx.Timeout for fine-grained control (default: 30.0).
         kwargs: Additional keyword arguments to pass to the httpx.Client.
     """
 
@@ -1167,7 +1174,7 @@ class RDF4JClient:
         self,
         base_url: str,
         auth: tuple[str, str] | str | None = None,
-        timeout: float = 30.0,
+        timeout: float | httpx.Timeout = 30.0,
         **kwargs: Any,
     ):
         if not base_url.endswith("/"):

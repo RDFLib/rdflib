@@ -14,7 +14,7 @@ from rdflib.contrib.graphdb.exceptions import (
     ResponseFormatError,
     UnauthorisedError,
 )
-from rdflib.contrib.graphdb.models import User, UserUpdate
+from rdflib.contrib.graphdb.models import User, UserCreate, UserUpdate
 from rdflib.contrib.rdf4j import has_httpx
 
 pytestmark = pytest.mark.skipif(
@@ -629,10 +629,9 @@ def test_create_user_success(
     monkeypatch: pytest.MonkeyPatch,
 ):
     """Test that create sends a POST request with correct headers and body."""
-    user = User(
+    user = UserCreate(
         username="newuser",
         password="password123",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER"],
         appSettings={},
         gptThreads=[],
@@ -656,10 +655,9 @@ def test_create_user_raises_type_error_for_non_string_username(
     client: GraphDBClient,
 ):
     """Test that create raises TypeError when username is not a string."""
-    user = User(
+    user = UserCreate(
         username="newuser",
         password="password123",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER"],
     )
 
@@ -670,8 +668,8 @@ def test_create_user_raises_type_error_for_non_string_username(
 def test_create_user_raises_type_error_for_non_user_object(
     client: GraphDBClient,
 ):
-    """Test that create raises TypeError when user is not a User instance."""
-    with pytest.raises(TypeError, match="User must be an instance of User"):
+    """Test that create raises TypeError when user is not a UserCreate instance."""
+    with pytest.raises(TypeError, match="User must be an instance of UserCreate"):
         client.users.create("newuser", {"username": "newuser"})
 
 
@@ -680,10 +678,9 @@ def test_create_user_raises_bad_request_error(
     monkeypatch: pytest.MonkeyPatch,
 ):
     """Test that create raises BadRequestError for 400 responses."""
-    user = User(
+    user = UserCreate(
         username="newuser",
         password="password123",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER"],
     )
     error_text = "Invalid user data"
@@ -705,10 +702,9 @@ def test_create_user_bad_request_error_includes_response_text(
     monkeypatch: pytest.MonkeyPatch,
 ):
     """Test that BadRequestError includes the response text in the message."""
-    user = User(
+    user = UserCreate(
         username="newuser",
         password="password123",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER"],
     )
     error_text = "User already exists"
@@ -730,10 +726,9 @@ def test_create_user_raises_unauthorised_error(
     monkeypatch: pytest.MonkeyPatch,
 ):
     """Test that create raises UnauthorisedError for 401 responses."""
-    user = User(
+    user = UserCreate(
         username="newuser",
         password="password123",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER"],
     )
     mock_response = Mock(spec=httpx.Response, status_code=401, text="Unauthorized")
@@ -754,10 +749,9 @@ def test_create_user_raises_forbidden_error(
     monkeypatch: pytest.MonkeyPatch,
 ):
     """Test that create raises ForbiddenError for 403 responses."""
-    user = User(
+    user = UserCreate(
         username="newuser",
         password="password123",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER"],
     )
     mock_response = Mock(spec=httpx.Response, status_code=403, text="Forbidden")
@@ -783,10 +777,9 @@ def test_create_user_reraises_other_http_errors(
     status_code: int,
 ):
     """Test that create re-raises HTTPStatusError for unhandled status codes."""
-    user = User(
+    user = UserCreate(
         username="newuser",
         password="password123",
-        dateCreated=1736234567890,
         grantedAuthorities=["ROLE_USER"],
     )
     mock_response = Mock(spec=httpx.Response, status_code=status_code, text="Error")
