@@ -62,13 +62,13 @@ from rdflib.contrib.graphdb.client import GraphDBClient
 
 auth = ("admin", "root")
 with GraphDBClient("http://localhost:7200/", auth=auth) as client:
-    authenticated_user = client.login("admin", "root")
+    authenticated_user = client.login("service-account", "password")
     token = authenticated_user.token
 
     # Use the token with another client instance.
     with GraphDBClient("http://localhost:7200/", auth=token) as token_client:
         # Perform your operations here.
-        ...
+            ...
 ```
 
 ### HTTP client configuration
