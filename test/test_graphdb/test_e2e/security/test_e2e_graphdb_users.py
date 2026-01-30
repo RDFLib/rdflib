@@ -539,6 +539,3 @@ def test_custom_roles_for_created_user(client: GraphDBClient):
             client.users.delete(username)
         except Exception:
             pass
-
-
-
