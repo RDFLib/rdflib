@@ -2945,12 +2945,19 @@ class UserManagement:
 class GraphDBClient(RDF4JClient):
     """GraphDB Client
 
+    This client and its inner management objects perform HTTP requests via
+    httpx and may raise httpx-specific exceptions. Errors documented by GraphDB
+    in its OpenAPI specification are mapped to specific exceptions in this
+    library where applicable. Error mappings are documented on each management
+    method. The underlying httpx client is reused across
+    requests, and connection pooling is handled automatically by httpx.
+
     Parameters:
         base_url: The base URL of the GraphDB server.
         auth: Authentication credentials. Can be a tuple (username, password) for
             basic auth, or a string for token-based auth (e.g., "GDB <token>")
             which is added as the Authorization header.
-        timeout: Request timeout in seconds (default: 30.0).
+        timeout: Request timeout in seconds or an httpx.Timeout for fine-grained control (default: 30.0).
         kwargs: Additional keyword arguments to pass to the httpx.Client.
     """
 
@@ -2958,7 +2965,7 @@ class GraphDBClient(RDF4JClient):
         self,
         base_url: str,
         auth: tuple[str, str] | str | None = None,
-        timeout: float = 30.0,
+        timeout: float | httpx.Timeout = 30.0,
         **kwargs: t.Any,
     ):
         super().__init__(base_url, auth, timeout, **kwargs)
