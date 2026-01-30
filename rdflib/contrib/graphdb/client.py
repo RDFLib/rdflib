@@ -46,6 +46,7 @@ from rdflib.contrib.graphdb.models import (
     StructuresStatistics,
     SystemAccessControlEntry,
     User,
+    UserCreate,
     UserUpdate,
     _parse_operation,
     _parse_plugin,
@@ -2802,7 +2803,7 @@ class UserManagement:
                 raise NotFoundError("User not found.") from err
             raise
 
-    def create(self, username: str, user: User) -> None:
+    def create(self, username: str, user: UserCreate) -> None:
         """
         Create a user.
 
@@ -2811,15 +2812,15 @@ class UserManagement:
             user: The user to create.
 
         Raises:
-            TypeError: if username is not a string or user is not an instance of User.
+            TypeError: if username is not a string or user is not an instance of UserCreate.
             BadRequestError: If the request is bad.
             UnauthorisedError: If the request is unauthorised.
             ForbiddenError: If the request is forbidden.
         """
         if not isinstance(username, str):
             raise TypeError("Username must be a string.")
-        if not isinstance(user, User):
-            raise TypeError("User must be an instance of User.")
+        if not isinstance(user, UserCreate):
+            raise TypeError("User must be an instance of UserCreate.")
 
         try:
             headers = {"Content-Type": "application/json"}

@@ -969,6 +969,60 @@ class UserUpdate:
 
 
 @dataclass(frozen=True)
+class UserCreate:
+    """Dataclass for creating a new user in GraphDB.
+
+    Unlike `User`, this class does not include `dateCreated` since
+    GraphDB automatically assigns this value when the user is created.
+    """
+
+    username: str
+    password: str
+    grantedAuthorities: list[str] = field(default_factory=list)  # noqa: N815
+    appSettings: dict[str, t.Any] = field(default_factory=dict)  # noqa: N815
+    gptThreads: list[t.Any] = field(default_factory=list)  # noqa: N815
+
+    def __post_init__(self) -> None:
+        invalid: list[tuple[str, t.Any, type]] = []
+        username = t.cast(t.Any, self.username)
+        password = t.cast(t.Any, self.password)
+        granted_authorities = t.cast(t.Any, self.grantedAuthorities)
+        app_settings = t.cast(t.Any, self.appSettings)
+        gpt_threads = t.cast(t.Any, self.gptThreads)
+
+        if not isinstance(username, str):
+            invalid.append(("username", username, type(username)))
+        if not isinstance(password, str):
+            invalid.append(("password", password, type(password)))
+
+        if not isinstance(granted_authorities, list):
+            invalid.append(
+                ("grantedAuthorities", granted_authorities, type(granted_authorities))
+            )
+        else:
+            for index, value in enumerate(granted_authorities):
+                if not isinstance(value, str):
+                    invalid.append((f"grantedAuthorities[{index}]", value, type(value)))
+
+        if not isinstance(app_settings, dict):
+            invalid.append(("appSettings", app_settings, type(app_settings)))
+        else:
+            for key in app_settings.keys():
+                if not isinstance(key, str):
+                    invalid.append(("appSettings key", key, type(key)))
+                    break
+
+        if not isinstance(gpt_threads, list):
+            invalid.append(("gptThreads", gpt_threads, type(gpt_threads)))
+
+        if invalid:
+            raise ValueError("Invalid UserCreate values: ", invalid)
+
+    def as_dict(self) -> dict[str, t.Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
 class User:
     username: str
     password: str
