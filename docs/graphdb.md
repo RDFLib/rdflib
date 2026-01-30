@@ -169,10 +169,14 @@ To edit an existing repository's configuration:
 ```python
 from rdflib.contrib.graphdb.models import RepositoryConfigBeanCreate
 
+existing = client.repos.get("my-repo")
 updated_config = RepositoryConfigBeanCreate(
-    id="my-repo",
+    id=existing.id,
     title="Updated Repository",
-    # ... other configuration options
+    type=existing.type,
+    sesameType=existing.sesameType,
+    location=existing.location,
+    params=existing.params,
 )
 client.repos.edit("my-repo", updated_config)
 ```
@@ -194,7 +198,9 @@ To get information about a repository's size:
 
 ```python
 size_info = client.repos.size("my-repo")
-print(f"Size: {size_info.size}")
+print(f"Total statements: {size_info.total}")
+print(f"Explicit statements: {size_info.explicit}")
+print(f"Inferred statements: {size_info.inferred}")
 ```
 
 #### Deleting a repository
@@ -267,7 +273,7 @@ GraphDB supports Fine-Grained Access Control (FGAC) to restrict access to specif
 To list existing ACL rules:
 
 ```python
-rules = repo.acl.list()
+rules = repo.acl.list(scope="statement")
 for rule in rules:
     print(f"{rule.policy}: {rule.role} can {rule.operation}")
 
@@ -283,10 +289,14 @@ To add a new ACL rule:
 from rdflib.contrib.graphdb.models import StatementAccessControlEntry
 
 rule = StatementAccessControlEntry(
+    scope="statement",
     policy="allow",
-    subject="<http://example.com/public>",
+    role="user",
     operation="read",
-    role="user"
+    subject="<http://example.com/public>",
+    predicate="*",
+    object="*",
+    graph="*",
 )
 repo.acl.add([rule])
 ```
@@ -443,8 +453,9 @@ To get system-level statistics such as CPU load, memory usage, and thread count:
 
 ```python
 stats = client.monitoring.infrastructure
-print(f"CPU Load: {stats.cpu_load}")
-print(f"Memory Usage: {stats.memory_usage}")
+print(f"CPU Load: {stats.cpuLoad}")
+print(f"Thread Count: {stats.threadCount}")
+print(f"Heap Used: {stats.heapMemoryUsage.used}")
 ```
 
 ##### Structures statistics
@@ -453,8 +464,8 @@ To get cache hit/miss statistics for internal data structures:
 
 ```python
 structures = client.monitoring.structures
-print(f"Cache hit: {structures.cache_hit}")
-print(f"Cache miss: {structures.cache_miss}")
+print(f"Cache hit: {structures.cacheHit}")
+print(f"Cache miss: {structures.cacheMiss}")
 ```
 
 ##### Repository statistics
@@ -463,7 +474,7 @@ To get statistics for a specific repository:
 
 ```python
 repo_stats = client.monitoring.get_repo_stats("my-repo")
-print(f"Number of slow queries: {repo_stats.queries.slow_queries}")
+print(f"Number of slow queries: {repo_stats.queries.slow}")
 ```
 
 ##### Cluster monitoring
@@ -482,7 +493,7 @@ To track ongoing backup operations:
 ```python
 backup_status = client.monitoring.backup()
 if backup_status:
-    print(f"Backup in progress: {backup_status.status}")
+    print(f"Backup in progress: {backup_status.operation}")
 else:
     print("No backup in progress")
 ```
@@ -575,7 +586,7 @@ To retrieve the current cluster configuration, use the [`get_config`][rdflib.con
 ```python
 config = client.cluster.get_config()
 print(f"Nodes: {config.nodes}")
-print(f"Heartbeat interval: {config.heartbeat_interval}")
+print(f"Heartbeat interval: {config.heartbeatInterval}")
 ```
 
 ##### Creating a cluster
@@ -626,12 +637,12 @@ To get the status of the current node or the entire cluster group:
 ```python
 # Get status of the current node
 node_status = client.cluster.node_status()
-print(f"Node state: {node_status.node_state}")
+print(f"Node state: {node_status.nodeState}")
 
 # Get status of all nodes in the cluster
 group_status = client.cluster.group_status()
 for node in group_status:
-    print(f"{node.address}: {node.node_state}")
+    print(f"{node.address}: {node.nodeState}")
 ```
 
 ##### Managing secondary mode
