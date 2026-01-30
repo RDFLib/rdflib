@@ -144,6 +144,8 @@ The [`httpx.Client`](https://www.python-httpx.org/api/#client) instance is avail
 client.http_client
 ```
 
+All requests reuse the same underlying HTTP client session, providing connection pooling and performance benefits.
+
 ### The repository manager
 
 The RDF4J Client provides a [`RepositoryManager`][rdflib.contrib.rdf4j.client.RepositoryManager] class that allows you to manage RDF4J repositories. It does not represent a repository itself; instead, it is responsible for creating, deleting, listing, and retrieving [`Repository`][rdflib.contrib.rdf4j.client.Repository] instances.
