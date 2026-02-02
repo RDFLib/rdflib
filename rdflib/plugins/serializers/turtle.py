@@ -44,6 +44,9 @@ class RecursiveSerializer(Serializer):
     maxDepth = 10
     indentString = "  "
     roundtrip_prefixes: Tuple[Any, ...] = ()
+    LOCALNAME_PECRENT_CHARACTER_REQUIRING_ESCAPE_REGEX = re.compile(
+        r"%(?![0-9A-Fa-f]{2})"
+    )
 
     def __init__(self, store: Graph):
         super(RecursiveSerializer, self).__init__(store)
