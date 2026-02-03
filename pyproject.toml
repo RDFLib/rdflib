@@ -65,7 +65,7 @@ mkdocs = ">=1.6.1"
 mkdocs-material = ">=9.6.12"
 mkdocstrings = {version = ">=0.29.1", extras = ["python"]}
 mkdocs-gen-files = "^0.6.0"
-mkdocs-include-markdown-plugin = "^7.2.0"
+mkdocs-include-markdown-plugin = "^7.2.1"
 
 [tool.poetry.group.lint.dependencies]
 ruff = "0.14.3"
