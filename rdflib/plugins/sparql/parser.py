@@ -24,7 +24,7 @@ from pyparsing import (
     Regex,
     Suppress,
     ZeroOrMore,
-    delimitedList,
+    DelimitedList,
     restOfLine,
 )
 
@@ -170,7 +170,7 @@ IRIREF = Combine(
     + Regex(r'[^<>"{}|^`\\%s]*' % "".join("\\x%02X" % i for i in range(33)))
     + Suppress(">")
 )
-IRIREF.setParseAction(lambda x: rdflib.URIRef(x[0]))
+IRIREF.set_parse_action(lambda x: rdflib.URIRef(x[0]))
 
 # [164] P_CHARS_BASE ::= [A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
 
@@ -209,13 +209,13 @@ PN_PREFIX = Regex(
 )
 
 # [140] PNAME_NS ::= PN_PREFIX? ':'
-PNAME_NS = Optional(Param("prefix", PN_PREFIX)) + Suppress(":").leaveWhitespace()
+PNAME_NS = Optional(Param("prefix", PN_PREFIX)) + Suppress(":").leave_whitespace()
 
 # [173] PN_LOCAL_ESC ::= '\' ( '_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%' )
 
 PN_LOCAL_ESC_re = "\\\\[_~\\.\\-!$&\"'()*+,;=/?#@%]"
 # PN_LOCAL_ESC = Regex(PN_LOCAL_ESC_re) # regex'd
-# PN_LOCAL_ESC.setParseAction(lambda x: x[0][1:])
+# PN_LOCAL_ESC.set_parse_action(lambda x: x[0][1:])
 
 # [172] HEX ::= [0-9] | [A-F] | [a-f]
 # HEX = Regex('[0-9A-Fa-f]') # not needed
@@ -223,7 +223,7 @@ PN_LOCAL_ESC_re = "\\\\[_~\\.\\-!$&\"'()*+,;=/?#@%]"
 # [171] PERCENT ::= '%' HEX HEX
 PERCENT_re = "%[0-9a-fA-F]{2}"
 # PERCENT = Regex(PERCENT_re) # regex'd
-# PERCENT.setParseAction(lambda x: chr(int(x[0][1:], 16)))
+# PERCENT.set_parse_action(lambda x: chr(int(x[0][1:], 16)))
 
 # [170] PLX ::= PERCENT | PN_LOCAL_ESC
 PLX_re = "(%s|%s)" % (PN_LOCAL_ESC_re, PERCENT_re)
@@ -242,14 +242,14 @@ PN_LOCAL = Regex(
 
 
 # [141] PNAME_LN ::= PNAME_NS PN_LOCAL
-PNAME_LN = PNAME_NS + Param("localname", PN_LOCAL.leaveWhitespace())
+PNAME_LN = PNAME_NS + Param("localname", PN_LOCAL.leave_whitespace())
 
 # [142] BLANK_NODE_LABEL ::= '_:' ( PN_CHARS_U | [0-9] ) ((PN_CHARS|'.')* PN_CHARS)?
 BLANK_NODE_LABEL = Regex(
     "_:[0-9%s](?:[\\.%s]*[%s])?" % (PN_CHARS_U_re, PN_CHARS_re, PN_CHARS_re),
     flags=re.U,
 )
-BLANK_NODE_LABEL.setParseAction(lambda x: rdflib.BNode(x[0][2:]))
+BLANK_NODE_LABEL.set_parse_action(lambda x: rdflib.BNode(x[0][2:]))
 
 
 # [166] VARNAME ::= ( PN_CHARS_U | [0-9] ) ( PN_CHARS_U | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040] )*
@@ -270,7 +270,7 @@ LANGTAG = Combine(Suppress("@") + Regex("[a-zA-Z]+(?:-[a-zA-Z0-9]+)*"))
 # [146] INTEGER ::= [0-9]+
 INTEGER = Regex(r"[0-9]+")
 # INTEGER.setResultsName('integer')
-INTEGER.setParseAction(lambda x: rdflib.Literal(x[0], datatype=rdflib.XSD.integer))
+INTEGER.set_parse_action(lambda x: rdflib.Literal(x[0], datatype=rdflib.XSD.integer))
 
 # [155] EXPONENT ::= [eE] [+-]? [0-9]+
 EXPONENT_re = "[eE][+-]?[0-9]+"
@@ -278,37 +278,37 @@ EXPONENT_re = "[eE][+-]?[0-9]+"
 # [147] DECIMAL ::= [0-9]* '.' [0-9]+
 DECIMAL = Regex(r"[0-9]*\.[0-9]+")  # (?![eE])
 # DECIMAL.setResultsName('decimal')
-DECIMAL.setParseAction(lambda x: rdflib.Literal(x[0], datatype=rdflib.XSD.decimal))
+DECIMAL.set_parse_action(lambda x: rdflib.Literal(x[0], datatype=rdflib.XSD.decimal))
 
 # [148] DOUBLE ::= [0-9]+ '.' [0-9]* EXPONENT | '.' ([0-9])+ EXPONENT | ([0-9])+ EXPONENT
 DOUBLE = Regex(r"[0-9]+\.[0-9]*%(e)s|\.([0-9])+%(e)s|[0-9]+%(e)s" % {"e": EXPONENT_re})
 # DOUBLE.setResultsName('double')
-DOUBLE.setParseAction(lambda x: rdflib.Literal(x[0], datatype=rdflib.XSD.double))
+DOUBLE.set_parse_action(lambda x: rdflib.Literal(x[0], datatype=rdflib.XSD.double))
 
 
 # [149] INTEGER_POSITIVE ::= '+' INTEGER
-INTEGER_POSITIVE = Suppress("+") + INTEGER.copy().leaveWhitespace()
-INTEGER_POSITIVE.setParseAction(
+INTEGER_POSITIVE = Suppress("+") + INTEGER.copy().leave_whitespace()
+INTEGER_POSITIVE.set_parse_action(
     lambda x: rdflib.Literal("+" + x[0], datatype=rdflib.XSD.integer)
 )
 
 # [150] DECIMAL_POSITIVE ::= '+' DECIMAL
-DECIMAL_POSITIVE = Suppress("+") + DECIMAL.copy().leaveWhitespace()
+DECIMAL_POSITIVE = Suppress("+") + DECIMAL.copy().leave_whitespace()
 
 # [151] DOUBLE_POSITIVE ::= '+' DOUBLE
-DOUBLE_POSITIVE = Suppress("+") + DOUBLE.copy().leaveWhitespace()
+DOUBLE_POSITIVE = Suppress("+") + DOUBLE.copy().leave_whitespace()
 
 # [152] INTEGER_NEGATIVE ::= '-' INTEGER
-INTEGER_NEGATIVE = Suppress("-") + INTEGER.copy().leaveWhitespace()
-INTEGER_NEGATIVE.setParseAction(lambda x: neg(x[0]))
+INTEGER_NEGATIVE = Suppress("-") + INTEGER.copy().leave_whitespace()
+INTEGER_NEGATIVE.set_parse_action(lambda x: neg(x[0]))
 
 # [153] DECIMAL_NEGATIVE ::= '-' DECIMAL
-DECIMAL_NEGATIVE = Suppress("-") + DECIMAL.copy().leaveWhitespace()
-DECIMAL_NEGATIVE.setParseAction(lambda x: neg(x[0]))
+DECIMAL_NEGATIVE = Suppress("-") + DECIMAL.copy().leave_whitespace()
+DECIMAL_NEGATIVE.set_parse_action(lambda x: neg(x[0]))
 
 # [154] DOUBLE_NEGATIVE ::= '-' DOUBLE
-DOUBLE_NEGATIVE = Suppress("-") + DOUBLE.copy().leaveWhitespace()
-DOUBLE_NEGATIVE.setParseAction(lambda x: neg(x[0]))
+DOUBLE_NEGATIVE = Suppress("-") + DOUBLE.copy().leave_whitespace()
+DOUBLE_NEGATIVE.set_parse_action(lambda x: neg(x[0]))
 
 # [160] ECHAR ::= '\' [tbnrf\"']
 # ECHAR = Regex('\\\\[tbnrf"\']')
@@ -318,7 +318,7 @@ DOUBLE_NEGATIVE.setParseAction(lambda x: neg(x[0]))
 # STRING_LITERAL_LONG1 = Literal("'''") + ( Optional( Literal("'") | "''"
 # ) + ZeroOrMore( ~ Literal("'\\") | ECHAR ) ) + "'''"
 STRING_LITERAL_LONG1 = Regex("'''((?:'|'')?(?:[^'\\\\]|\\\\['ntbrf\\\\]))*'''")
-STRING_LITERAL_LONG1.setParseAction(
+STRING_LITERAL_LONG1.set_parse_action(
     lambda x: rdflib.Literal(decodeUnicodeEscape(x[0][3:-3]))
 )
 
@@ -326,7 +326,7 @@ STRING_LITERAL_LONG1.setParseAction(
 # STRING_LITERAL_LONG2 = Literal('"""') + ( Optional( Literal('"') | '""'
 # ) + ZeroOrMore( ~ Literal('"\\') | ECHAR ) ) +  '"""'
 STRING_LITERAL_LONG2 = Regex('"""(?:(?:"|"")?(?:[^"\\\\]|\\\\["ntbrf\\\\]))*"""')
-STRING_LITERAL_LONG2.setParseAction(
+STRING_LITERAL_LONG2.set_parse_action(
     lambda x: rdflib.Literal(decodeUnicodeEscape(x[0][3:-3]))
 )
 
@@ -335,7 +335,7 @@ STRING_LITERAL_LONG2.setParseAction(
 # Regex(u'[^\u0027\u005C\u000A\u000D]',flags=re.U) | ECHAR ) + "'"
 
 STRING_LITERAL1 = Regex("'(?:[^'\\n\\r\\\\]|\\\\['ntbrf\\\\])*'(?!')", flags=re.U)
-STRING_LITERAL1.setParseAction(
+STRING_LITERAL1.set_parse_action(
     lambda x: rdflib.Literal(decodeUnicodeEscape(x[0][1:-1]))
 )
 
@@ -344,24 +344,24 @@ STRING_LITERAL1.setParseAction(
 # Regex(u'[^\u0022\u005C\u000A\u000D]',flags=re.U) | ECHAR ) + '"'
 
 STRING_LITERAL2 = Regex('"(?:[^"\\n\\r\\\\]|\\\\["ntbrf\\\\])*"(?!")', flags=re.U)
-STRING_LITERAL2.setParseAction(
+STRING_LITERAL2.set_parse_action(
     lambda x: rdflib.Literal(decodeUnicodeEscape(x[0][1:-1]))
 )
 
 # [161] NIL ::= '(' WS* ')'
 NIL = Literal("(") + ")"
-NIL.setParseAction(lambda x: rdflib.RDF.nil)
+NIL.set_parse_action(lambda x: rdflib.RDF.nil)
 
 # [162] WS ::= #x20 | #x9 | #xD | #xA
 # Not needed?
 # WS = #x20 | #x9 | #xD | #xA
 # [163] ANON ::= '[' WS* ']'
 ANON = Literal("[") + "]"
-ANON.setParseAction(lambda x: rdflib.BNode())
+ANON.set_parse_action(lambda x: rdflib.BNode())
 
 # A = CaseSensitiveKeyword('a')
 A = Literal("a")
-A.setParseAction(lambda x: rdflib.RDF.type)
+A.set_parse_action(lambda x: rdflib.RDF.type)
 
 
 # ------ NON-TERMINALS --------------
@@ -377,7 +377,7 @@ Prologue = Group(ZeroOrMore(BaseDecl | PrefixDecl))
 
 # [108] Var ::= VAR1 | VAR2
 Var = VAR1 | VAR2
-Var.setParseAction(lambda x: rdflib.term.Variable(x[0]))
+Var.set_parse_action(lambda x: rdflib.term.Variable(x[0]))
 
 # [137] PrefixedName ::= PNAME_LN | PNAME_NS
 PrefixedName = Comp("pname", PNAME_LN | PNAME_NS)
@@ -394,8 +394,8 @@ RDFLiteral = Comp(
     "literal",
     Param("string", String)
     + Optional(
-        Param("lang", LANGTAG.leaveWhitespace())
-        | Literal("^^").leaveWhitespace() + Param("datatype", iri).leaveWhitespace()
+        Param("lang", LANGTAG.leave_whitespace())
+        | Literal("^^").leave_whitespace() + Param("datatype", iri).leave_whitespace()
     ),
 )
 
@@ -414,9 +414,9 @@ NumericLiteral = (
 )
 
 # [134] BooleanLiteral ::= 'true' | 'false'
-BooleanLiteral = Keyword("true").setParseAction(lambda: rdflib.Literal(True)) | Keyword(
-    "false"
-).setParseAction(lambda: rdflib.Literal(False))
+BooleanLiteral = Keyword("true").set_parse_action(
+    lambda: rdflib.Literal(True)
+) | Keyword("false").set_parse_action(lambda: rdflib.Literal(False))
 
 # [138] BlankNode ::= BLANK_NODE_LABEL | ANON
 BlankNode = BLANK_NODE_LABEL | ANON
@@ -502,7 +502,7 @@ PathPrimary = (
 # [91] PathElt ::= PathPrimary Optional(PathMod)
 PathElt = Comp(
     "PathElt",
-    Param("part", PathPrimary) + Optional(Param("mod", PathMod.leaveWhitespace())),
+    Param("part", PathPrimary) + Optional(Param("mod", PathMod.leave_whitespace())),
 )
 
 # [92] PathEltOrInverse ::= PathElt | '^' PathElt
@@ -542,11 +542,11 @@ GroupGraphPattern = Forward()
 
 # [102] Collection ::= '(' OneOrMore(GraphNode) ')'
 Collection = Suppress("(") + OneOrMore(GraphNode) + Suppress(")")
-Collection.setParseAction(expandCollection)
+Collection.set_parse_action(expandCollection)
 
 # [103] CollectionPath ::= '(' OneOrMore(GraphNodePath) ')'
 CollectionPath = Suppress("(") + OneOrMore(GraphNodePath) + Suppress(")")
-CollectionPath.setParseAction(expandCollection)
+CollectionPath.set_parse_action(expandCollection)
 
 # [80] Object ::= GraphNode
 Object = GraphNode
@@ -573,13 +573,13 @@ PropertyList = Optional(PropertyListNotEmpty)
 
 # [99] BlankNodePropertyList ::= '[' PropertyListNotEmpty ']'
 BlankNodePropertyList = Group(Suppress("[") + PropertyListNotEmpty + Suppress("]"))
-BlankNodePropertyList.setParseAction(expandBNodeTriples)
+BlankNodePropertyList.set_parse_action(expandBNodeTriples)
 
 # [101] BlankNodePropertyListPath ::= '[' PropertyListPathNotEmpty ']'
 BlankNodePropertyListPath = Group(
     Suppress("[") + PropertyListPathNotEmpty + Suppress("]")
 )
-BlankNodePropertyListPath.setParseAction(expandBNodeTriples)
+BlankNodePropertyListPath.set_parse_action(expandBNodeTriples)
 
 # [98] TriplesNode ::= Collection | BlankNodePropertyList
 TriplesNode <<= Collection | BlankNodePropertyList
@@ -589,7 +589,7 @@ TriplesNodePath <<= CollectionPath | BlankNodePropertyListPath
 
 # [75] TriplesSameSubject ::= VarOrTerm PropertyListNotEmpty | TriplesNode PropertyList
 TriplesSameSubject = VarOrTerm + PropertyListNotEmpty | TriplesNode + PropertyList
-TriplesSameSubject.setParseAction(expandTriples)
+TriplesSameSubject.set_parse_action(expandTriples)
 
 # [52] TriplesTemplate ::= TriplesSameSubject ( '.' TriplesTemplate? )?
 # NOTE: pyparsing.py handling of recursive rules is limited by python's recursion
@@ -629,7 +629,7 @@ QuadData = "{" + Param("quads", Quads) + "}"
 TriplesSameSubjectPath = (
     VarOrTerm + PropertyListPathNotEmpty | TriplesNodePath + PropertyListPath
 )
-TriplesSameSubjectPath.setParseAction(expandTriples)
+TriplesSameSubjectPath.set_parse_action(expandTriples)
 
 # [55] TriplesBlock ::= TriplesSameSubjectPath ( '.' Optional(TriplesBlock) )?
 TriplesBlock = Forward()
@@ -654,7 +654,7 @@ GroupOrUnionGraphPattern = Comp(
 Expression = Forward()
 
 # [72] ExpressionList ::= NIL | '(' Expression ( ',' Expression )* ')'
-ExpressionList = NIL | Group(Suppress("(") + delimitedList(Expression) + Suppress(")"))
+ExpressionList = NIL | Group(Suppress("(") + DelimitedList(Expression) + Suppress(")"))
 
 # [122] RegexExpression ::= 'REGEX' '(' Expression ',' Expression ( ',' Expression )? ')'
 RegexExpression = Comp(
@@ -1015,7 +1015,7 @@ ArgList = (
     NIL
     | "("
     + Param("distinct", _Distinct)
-    + delimitedList(ParamList("expr", Expression))
+    + DelimitedList(ParamList("expr", Expression))
     + ")"
 )
 
@@ -1550,7 +1550,7 @@ def parseQuery(q: Union[str, bytes, TextIO, BinaryIO]) -> ParseResults:
         q = q.decode("utf-8")
 
     q = expandUnicodeEscapes(q)
-    return Query.parseString(q, parseAll=True)
+    return Query.parse_string(q, parse_all=True)
 
 
 def parseUpdate(q: Union[str, bytes, TextIO, BinaryIO]) -> CompValue:
@@ -1561,4 +1561,4 @@ def parseUpdate(q: Union[str, bytes, TextIO, BinaryIO]) -> CompValue:
         q = q.decode("utf-8")
 
     q = expandUnicodeEscapes(q)
-    return UpdateUnit.parseString(q, parseAll=True)[0]
+    return UpdateUnit.parse_string(q, parse_all=True)[0]
