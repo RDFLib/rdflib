@@ -19,7 +19,6 @@ from rdflib.contrib.rdf4j.exceptions import (
     RepositoryNotFoundError,
     RepositoryNotHealthyError,
     RepositoryResponseFormatError,
-    RepositoryTransactionError,
     TransactionClosedError,
     TransactionCommitError,
     TransactionPingError,
@@ -725,15 +724,16 @@ class Repository:
     @contextlib.contextmanager
     def transaction(self):
         """Create a new transaction for the repository."""
-        with Transaction(self) as txn:
+        with Transaction.create(self) as txn:
             yield txn
 
 
 class Transaction:
     """An RDF4J transaction.
 
-    !!! warning "Thread Safety"
-        Transaction instances are **not thread-safe**. Do not share a single
+    !!! warning
+
+        Transaction instances are not thread-safe. Do not share a single
         Transaction instance across multiple threads. Each thread should create
         its own transaction, or use appropriate synchronization if sharing is
         required.
@@ -742,12 +742,12 @@ class Transaction:
         repo: The repository instance.
     """
 
-    def __init__(self, repo: Repository):
+    def __init__(self, repo: Repository, url: str):
         self._repo = repo
-        self._url: str | None = None
+        self._url: str = url
+        self._closed: bool = False
 
     def __enter__(self):
-        self._url = self._start_transaction()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -776,33 +776,28 @@ class Transaction:
     @property
     def is_closed(self) -> bool:
         """Whether the transaction is closed."""
-        return self._url is None
+        return self._closed
 
     def _raise_for_closed(self):
         if self.is_closed:
             raise TransactionClosedError("The transaction has been closed.")
 
-    def _start_transaction(self) -> str:
-        response = self.repo.http_client.post(
-            f"/repositories/{self.repo.identifier}/transactions"
+    @classmethod
+    def create(cls, repo: Repository) -> Transaction:
+        """Create a new transaction for the repository.
+
+        Parameters:
+            repo: The repository instance.
+
+        Returns:
+            A new Transaction instance.
+        """
+        response = repo.http_client.post(
+            f"/repositories/{repo.identifier}/transactions"
         )
         response.raise_for_status()
-        return response.headers["Location"]
-
-    def _close_transaction(self):
-        self._url = None
-
-    def open(self):
-        """Opens a transaction.
-
-        Raises:
-            RepositoryTransactionError: If the transaction is already open.
-        """
-        if not self.is_closed:
-            raise RepositoryTransactionError(
-                "Transaction is already open. Close it first or use a new instance."
-            )
-        self._url = self._start_transaction()
+        url = response.headers["Location"]
+        return cls(repo, url)
 
     def commit(self):
         """Commit the transaction.
@@ -818,7 +813,7 @@ class Transaction:
             raise TransactionCommitError(
                 f"Transaction commit failed: {response.status_code} - {response.text}"
             )
-        self._close_transaction()
+        self._closed = True
 
     def rollback(self):
         """Roll back the transaction.
@@ -833,7 +828,7 @@ class Transaction:
             raise TransactionRollbackError(
                 f"Transaction rollback failed: {response.status_code} - {response.text}"
             )
-        self._close_transaction()
+        self._closed = True
 
     def ping(self):
         """Ping the transaction.
