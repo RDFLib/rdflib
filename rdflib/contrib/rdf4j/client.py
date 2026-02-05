@@ -19,6 +19,7 @@ from rdflib.contrib.rdf4j.exceptions import (
     RepositoryNotFoundError,
     RepositoryNotHealthyError,
     RepositoryResponseFormatError,
+    RepositoryTransactionError,
     TransactionClosedError,
     TransactionCommitError,
     TransactionPingError,
@@ -731,6 +732,12 @@ class Repository:
 class Transaction:
     """An RDF4J transaction.
 
+    !!! warning "Thread Safety"
+        Transaction instances are **not thread-safe**. Do not share a single
+        Transaction instance across multiple threads. Each thread should create
+        its own transaction, or use appropriate synchronization if sharing is
+        required.
+
     Parameters:
         repo: The repository instance.
     """
@@ -786,7 +793,15 @@ class Transaction:
         self._url = None
 
     def open(self):
-        """Opens a transaction."""
+        """Opens a transaction.
+
+        Raises:
+            RepositoryTransactionError: If the transaction is already open.
+        """
+        if not self.is_closed:
+            raise RepositoryTransactionError(
+                "Transaction is already open. Close it first or use a new instance."
+            )
         self._url = self._start_transaction()
 
     def commit(self):
@@ -806,7 +821,13 @@ class Transaction:
         self._close_transaction()
 
     def rollback(self):
-        """Roll back the transaction."""
+        """Roll back the transaction.
+
+        Raises:
+            TransactionRollbackError: If the transaction rollback fails.
+            TransactionClosedError: If the transaction is closed.
+        """
+        self._raise_for_closed()
         response = self.repo.http_client.delete(self.url)
         if response.status_code != 204:
             raise TransactionRollbackError(
@@ -864,6 +885,7 @@ class Transaction:
                 [RDF4J REST API - Execute SPARQL query](https://rdf4j.org/documentation/reference/rest-api/#tag/SPARQL/paths/~1repositories~1%7BrepositoryID%7D/get)
                 for the list of supported query parameters.
         """
+        self._raise_for_closed()
         headers: dict[str, str] = {}
         build_sparql_query_accept_header(query, headers)
         params = {"action": "QUERY", "query": query}
@@ -890,6 +912,7 @@ class Transaction:
                 See [RDF4J REST API - Execute a transaction action](https://rdf4j.org/documentation/reference/rest-api/#tag/Transactions/paths/~1repositories~1%7BrepositoryID%7D~1transactions~1%7BtransactionID%7D/put)
                 for the list of supported query parameters.
         """
+        self._raise_for_closed()
         params = {"action": "UPDATE", "update": query}
         response = self.repo.http_client.put(
             self.url,
@@ -911,6 +934,7 @@ class Transaction:
             content_type: The content type of the data. Defaults to
                 `application/n-quads` when the value is `None`.
         """
+        self._raise_for_closed()
         stream, should_close = rdf_payload_to_stream(data)
         headers = {"Content-Type": content_type or "application/n-quads"}
         params = {"action": "ADD"}
@@ -964,6 +988,7 @@ class Transaction:
             A [`Graph`][rdflib.graph.Graph] or [`Dataset`][rdflib.graph.Dataset] object
                 with the repository namespace prefixes bound to it.
         """
+        self._raise_for_closed()
         validate_no_bnodes(subj, pred, obj, graph_name)
         if content_type is None:
             content_type = "application/n-quads"
@@ -1017,6 +1042,7 @@ class Transaction:
             content_type: The content type of the data. Defaults to
                 `application/n-quads` when the value is `None`.
         """
+        self._raise_for_closed()
         params: dict[str, str] = {"action": "DELETE"}
         stream, should_close = rdf_payload_to_stream(data)
         headers = {"Content-Type": content_type or "application/n-quads"}
