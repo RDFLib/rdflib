@@ -1191,7 +1191,7 @@ class RDF4JClient:
         self._http_client = httpx.Client(
             base_url=base_url, auth=httpx_auth, timeout=timeout, **kwargs
         )
-        self._repository_manager: RepositoryManager | None = None
+        self._repository_manager = RepositoryManager(self.http_client)
         try:
             protocol_version = self.protocol
         except httpx.RequestError as err:
@@ -1218,8 +1218,6 @@ class RDF4JClient:
     @property
     def repositories(self) -> RepositoryManager:
         """Server-level repository management operations."""
-        if self._repository_manager is None:
-            self._repository_manager = RepositoryManager(self.http_client)
         return self._repository_manager
 
     @property
