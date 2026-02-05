@@ -60,15 +60,23 @@ With the GraphDB Client, you can also make authenticated requests by obtaining a
 ```python
 from rdflib.contrib.graphdb.client import GraphDBClient
 
-auth = ("admin", "root")
-with GraphDBClient("http://localhost:7200/", auth=auth) as client:
-    authenticated_user = client.login("service-account", "password")
-    token = authenticated_user.token
+# Create a client instance (basic authentication is optional for login)
+with GraphDBClient("http://localhost:7200/") as client:
+    # Authenticate and obtain a GDB token
+    user = client.login("admin", "root")
 
-    # Use the token with another client instance.
-    with GraphDBClient("http://localhost:7200/", auth=token) as token_client:
-        # Perform your operations here.
-            ...
+    # The AuthenticatedUser object contains user details
+    print(f"Logged in as: {user.username}")
+    print(f"Authorities: {user.authorities}")
+
+    # The user.token is a string (e.g., "GDB abc123...") that can be used
+    # to authenticate another client instance without using credentials.
+    token = user.token
+
+# Use the token with another client instance
+with GraphDBClient("http://localhost:7200/", auth=token) as token_client:
+    # Perform your operations here.
+    repos = token_client.repos.list()
 ```
 
 ### HTTP client configuration
