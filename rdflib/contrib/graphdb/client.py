@@ -1120,14 +1120,12 @@ class Repository(rdflib.contrib.rdf4j.client.Repository):
 
     def __init__(self, identifier: str, http_client: httpx.Client):
         super().__init__(identifier, http_client)
-        self._access_control_list_management: AccessControlListManagement | None = None
+        self._access_control_list_management = AccessControlListManagement(
+            self.identifier, self.http_client
+        )
 
     @property
     def acl(self) -> AccessControlListManagement:
-        if self._access_control_list_management is None:
-            self._access_control_list_management = AccessControlListManagement(
-                self.identifier, self.http_client
-            )
         return self._access_control_list_management
 
     def health(self, timeout: int = 5) -> bool:
@@ -2944,55 +2942,41 @@ class GraphDBClient(RDF4JClient):
         **kwargs: t.Any,
     ):
         super().__init__(base_url, auth, timeout, **kwargs)
-        self._cluster_group: ClusterGroupManagement | None = None
-        self._monitoring: MonitoringManagement | None = None
-        self._recovery: RecoveryManagement | None = None
-        self._graphdb_repository_manager: RepositoryManager | None = None
-        self._graphdb_repositories: RepositoryManagement | None = None
-        self._security: SecurityManagement | None = None
-        self._users: UserManagement | None = None
+        self._cluster_group = ClusterGroupManagement(self.http_client)
+        self._monitoring = MonitoringManagement(self.http_client)
+        self._recovery = RecoveryManagement(self.http_client)
+        self._graphdb_repository_manager = RepositoryManager(self.http_client)
+        self._graphdb_repositories = RepositoryManagement(self.http_client)
+        self._security = SecurityManagement(self.http_client)
+        self._users = UserManagement(self.http_client)
 
     @property
     def cluster(self) -> ClusterGroupManagement:
-        if self._cluster_group is None:
-            self._cluster_group = ClusterGroupManagement(self.http_client)
         return self._cluster_group
 
     @property
     def monitoring(self) -> MonitoringManagement:
-        if self._monitoring is None:
-            self._monitoring = MonitoringManagement(self.http_client)
         return self._monitoring
 
     @property
     def recovery(self) -> RecoveryManagement:
-        if self._recovery is None:
-            self._recovery = RecoveryManagement(self.http_client)
         return self._recovery
 
     @property
     def repositories(self) -> RepositoryManager:
         """Server-level repository management operations (GraphDB-specific)."""
-        if self._graphdb_repository_manager is None:
-            self._graphdb_repository_manager = RepositoryManager(self.http_client)
         return self._graphdb_repository_manager
 
     @property
     def graphdb_repositories(self) -> RepositoryManagement:
-        if self._graphdb_repositories is None:
-            self._graphdb_repositories = RepositoryManagement(self.http_client)
         return self._graphdb_repositories
 
     @property
     def security(self) -> SecurityManagement:
-        if self._security is None:
-            self._security = SecurityManagement(self.http_client)
         return self._security
 
     @property
-    def users(self):
-        if self._users is None:
-            self._users = UserManagement(self.http_client)
+    def users(self) -> UserManagement:
         return self._users
 
     def login(self, username: str, password: str) -> AuthenticatedUser:
