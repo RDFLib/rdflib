@@ -30,7 +30,7 @@ def test_size_with_location_parameter(
     )
     mock_httpx_get = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
-    client.repos.size("test-repo", location="http://example.com/location")
+    client.graphdb_repositories.size("test-repo", location="http://example.com/location")
     mock_httpx_get.assert_called_once_with(
         "/rest/repositories/test-repo/size",
         params={"location": "http://example.com/location"},
@@ -61,11 +61,11 @@ def test_size_values(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
     if isinstance(expected_parsed_value, RepositorySizeInfo):
-        size = client.repos.size("test-repo")
+        size = client.graphdb_repositories.size("test-repo")
         assert size == expected_parsed_value
     else:
         with pytest.raises(expected_parsed_value):
-            client.repos.size("test-repo")
+            client.graphdb_repositories.size("test-repo")
 
     mock_httpx_get.assert_called_once_with(
         "/rest/repositories/test-repo/size",

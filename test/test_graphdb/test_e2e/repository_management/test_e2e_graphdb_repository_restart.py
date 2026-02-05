@@ -14,5 +14,5 @@ if has_httpx:
 
 @pytest.mark.testcontainer
 def test_graphdb_repository_restart(client: GraphDBClient):
-    result = client.repos.restart("test-repo")
+    result = client.graphdb_repositories.restart("test-repo")
     assert result == ""

@@ -117,7 +117,7 @@ def test_restore_remove_stale_repositories_removes_unrestored_repo(
 
     try:
         client.repositories.create(extra_repo_id, ttl_config)
-        assert extra_repo_id in {r.id for r in client.repos.list()}
+        assert extra_repo_id in {r.id for r in client.graphdb_repositories.list()}
 
         backup_bytes = client.recovery.backup(repositories=[repo_id])
         client.recovery.restore(
@@ -127,12 +127,12 @@ def test_restore_remove_stale_repositories_removes_unrestored_repo(
         )
 
         _wait_for(
-            lambda: extra_repo_id not in {r.id for r in client.repos.list()},
+            lambda: extra_repo_id not in {r.id for r in client.graphdb_repositories.list()},
             description="stale repository to be removed",
         )
 
         with pytest.raises(RepositoryNotFoundError):
-            client.repos.get(extra_repo_id)
+            client.graphdb_repositories.get(extra_repo_id)
     finally:
         try:
             client.repositories.delete(extra_repo_id)

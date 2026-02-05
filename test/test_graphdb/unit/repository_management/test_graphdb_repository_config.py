@@ -48,7 +48,7 @@ def test_repo_config_headers_and_parameters(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
     if expected_exception is None:
-        client.repos.get(
+        client.graphdb_repositories.get(
             "test-repo",
             content_type=content_type,
             location="http://example.com/location",
@@ -68,7 +68,7 @@ def test_repo_config_headers_and_parameters(
             )
     else:
         with pytest.raises(expected_exception):
-            client.repos.get(
+            client.graphdb_repositories.get(
                 "test-repo",
                 content_type=content_type,
                 location="http://example.com/location",
@@ -93,7 +93,7 @@ def test_repo_config_errors(
     mock_response.raise_for_status.side_effect = exception_class("Mocked exception")
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
     with pytest.raises(exception_class):
-        client.repos.get("test-repo")
+        client.graphdb_repositories.get("test-repo")
 
 
 @pytest.mark.parametrize(
@@ -125,7 +125,7 @@ def test_repo_config_response_text_exceptions(
     mock_httpx_get = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
     with pytest.raises(exception_class, match=exception_text):
-        client.repos.get("test-repo", content_type=content_type)
+        client.graphdb_repositories.get("test-repo", content_type=content_type)
 
 
 def test_repo_config_edit_headers_and_parameters(
@@ -145,7 +145,7 @@ def test_repo_config_edit_headers_and_parameters(
         location="",
     )
 
-    client.repos.edit("test-repo", config)
+    client.graphdb_repositories.edit("test-repo", config)
 
     mock_httpx_put.assert_called_once_with(
         "/rest/repositories/test-repo",
@@ -188,7 +188,7 @@ def test_repo_config_edit_errors(
     )
 
     with pytest.raises(exception_class):
-        client.repos.edit("test-repo", config)
+        client.graphdb_repositories.edit("test-repo", config)
 
 
 def test_repo_config_create_json_payload(
@@ -211,7 +211,7 @@ def test_repo_config_create_json_payload(
     mock_httpx_post = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
-    result = client.repos.create(
+    result = client.graphdb_repositories.create(
         config,
         location="http://example.com/location",
     )
@@ -236,7 +236,7 @@ def test_repo_config_create_multipart(
     mock_httpx_post = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
-    result = client.repos.create(
+    result = client.graphdb_repositories.create(
         "@prefix ex: <http://example.com/> .",
         files={"obdaFile": b"contents"},
     )
@@ -288,7 +288,7 @@ def test_repo_config_create_multipart_variants(
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
     files_arg: FilesType = {"obdaFile": file_input}
-    result = client.repos.create(
+    result = client.graphdb_repositories.create(
         "@prefix ex: <http://example.com/> .",
         files=files_arg,
     )
@@ -351,7 +351,7 @@ def test_repo_config_create_errors(
     )
 
     with pytest.raises(exception_class):
-        client.repos.create(config)
+        client.graphdb_repositories.create(config)
 
 
 @pytest.mark.parametrize(
@@ -372,7 +372,7 @@ def test_repo_config_delete_parameters(
     mock_httpx_delete = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
 
-    client.repos.delete("test-repo", location=location)
+    client.graphdb_repositories.delete("test-repo", location=location)
 
     mock_httpx_delete.assert_called_once_with(
         "/rest/repositories/test-repo",
@@ -406,7 +406,7 @@ def test_repo_config_delete_errors(
     monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
 
     with pytest.raises(exception_class):
-        client.repos.delete("test-repo")
+        client.graphdb_repositories.delete("test-repo")
 
 
 @pytest.mark.parametrize(
@@ -429,7 +429,7 @@ def test_repo_list_parameters(
     mock_httpx_get = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
-    client.repos.list(location=location)
+    client.graphdb_repositories.list(location=location)
 
     mock_httpx_get.assert_called_once_with(
         "/rest/repositories",
@@ -460,7 +460,7 @@ def test_repo_list_parses_response(
     mock_httpx_get = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
-    repos = client.repos.list()
+    repos = client.graphdb_repositories.list()
 
     assert len(repos) == 1
     assert repos[0].id == "repo1"
@@ -480,7 +480,7 @@ def test_repo_list_parse_error_raises_response_format_error(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
     with pytest.raises(ResponseFormatError):
-        client.repos.list()
+        client.graphdb_repositories.list()
 
 
 def test_repo_list_internal_server_error(
@@ -500,7 +500,7 @@ def test_repo_list_internal_server_error(
     monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
 
     with pytest.raises(InternalServerError):
-        client.repos.list()
+        client.graphdb_repositories.list()
 
 
 @pytest.mark.parametrize(
@@ -522,7 +522,7 @@ def test_repo_validate_headers_and_parameters(
     mock_httpx_post = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
-    result = client.repos.validate(
+    result = client.graphdb_repositories.validate(
         "test-repo",
         content_type="text/turtle",
         content="@prefix sh: <http://www.w3.org/ns/shacl#> .",
@@ -558,7 +558,7 @@ def test_repo_validate_file_headers_and_parameters(
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
     shapes_file = io.BytesIO(b"@prefix sh: <http://www.w3.org/ns/shacl#> .")
-    result = client.repos.validate(
+    result = client.graphdb_repositories.validate(
         "test-repo",
         content=shapes_file,
         location=location,
@@ -583,7 +583,7 @@ def test_repo_validate_file_custom_content_type(
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
     shapes_file = io.BytesIO(b"@prefix sh: <http://www.w3.org/ns/shacl#> .")
-    result = client.repos.validate(
+    result = client.graphdb_repositories.validate(
         "test-repo",
         content=shapes_file,
         content_type="application/ld+json",
@@ -625,7 +625,7 @@ def test_repo_validate_errors(
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
     with pytest.raises(exception_class):
-        client.repos.validate(
+        client.graphdb_repositories.validate(
             "test-repo", content_type="text/turtle", content="@prefix sh: <...> ."
         )
 
@@ -657,7 +657,7 @@ def test_repo_validate_file_errors(
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
     with pytest.raises(exception_class):
-        client.repos.validate(
+        client.graphdb_repositories.validate(
             "test-repo",
             content=io.BytesIO(b"@prefix sh: <http://www.w3.org/ns/shacl#> ."),
         )
@@ -666,10 +666,10 @@ def test_repo_validate_file_errors(
 def test_repo_validate_requires_content_type(client: GraphDBClient):
     """Validate requires a non-empty content_type."""
     with pytest.raises(ValueError):
-        client.repos.validate("test-repo", content_type="", content="shapes")
+        client.graphdb_repositories.validate("test-repo", content_type="", content="shapes")
 
     with pytest.raises(ValueError):
-        client.repos.validate("test-repo", content="shapes")  # type: ignore[call-overload]
+        client.graphdb_repositories.validate("test-repo", content="shapes")  # type: ignore[call-overload]
 
 
 @pytest.mark.parametrize(
@@ -691,7 +691,7 @@ def test_repo_validate_shapes_repository_headers_and_parameters(
     mock_httpx_post = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
-    result = client.repos.validate(
+    result = client.graphdb_repositories.validate(
         "test-repo",
         shapes_repository_id="shapes-repo",
         location=location,
@@ -708,14 +708,14 @@ def test_repo_validate_shapes_repository_headers_and_parameters(
 def test_repo_validate_shapes_repository_mutual_exclusion(client: GraphDBClient):
     """Shapes repository mode must not accept content or content_type."""
     with pytest.raises(ValueError):
-        client.repos.validate(  # type: ignore[call-overload]
+        client.graphdb_repositories.validate(  # type: ignore[call-overload]
             "test-repo",
             shapes_repository_id="shapes-repo",
             content="shapes",
         )
 
     with pytest.raises(ValueError):
-        client.repos.validate(  # type: ignore[call-overload]
+        client.graphdb_repositories.validate(  # type: ignore[call-overload]
             "test-repo",
             shapes_repository_id="shapes-repo",
             content_type="text/turtle",
@@ -749,4 +749,4 @@ def test_repo_validate_shapes_repository_errors(
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
     with pytest.raises(exception_class):
-        client.repos.validate("test-repo", shapes_repository_id="shapes-repo")
+        client.graphdb_repositories.validate("test-repo", shapes_repository_id="shapes-repo")

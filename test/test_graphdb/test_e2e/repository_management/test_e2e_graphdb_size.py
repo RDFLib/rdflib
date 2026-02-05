@@ -16,7 +16,7 @@ if has_httpx:
 
 @pytest.mark.testcontainer
 def test_graphdb_size(client: GraphDBClient):
-    size = client.repos.size("test-repo")
+    size = client.graphdb_repositories.size("test-repo")
     assert size.inferred == 0 and size.total == 0 and size.explicit == 0
 
     repo = client.repositories.get("test-repo")
@@ -24,5 +24,5 @@ def test_graphdb_size(client: GraphDBClient):
         pathlib.Path(__file__).parent.parent.parent / "data/quads-1.nq", "rb"
     ) as file:
         repo.overwrite(file)
-    size = client.repos.size("test-repo")
+    size = client.graphdb_repositories.size("test-repo")
     assert size.inferred == 0 and size.total == 2 and size.explicit == 2

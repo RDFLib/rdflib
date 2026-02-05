@@ -2948,7 +2948,7 @@ class GraphDBClient(RDF4JClient):
         self._monitoring: MonitoringManagement | None = None
         self._recovery: RecoveryManagement | None = None
         self._graphdb_repository_manager: RepositoryManager | None = None
-        self._repos: RepositoryManagement | None = None
+        self._graphdb_repositories: RepositoryManagement | None = None
         self._security: SecurityManagement | None = None
         self._users: UserManagement | None = None
 
@@ -2978,10 +2978,10 @@ class GraphDBClient(RDF4JClient):
         return self._graphdb_repository_manager
 
     @property
-    def repos(self) -> RepositoryManagement:
-        if self._repos is None:
-            self._repos = RepositoryManagement(self.http_client)
-        return self._repos
+    def graphdb_repositories(self) -> RepositoryManagement:
+        if self._graphdb_repositories is None:
+            self._graphdb_repositories = RepositoryManagement(self.http_client)
+        return self._graphdb_repositories
 
     @property
     def security(self) -> SecurityManagement:
