@@ -1032,6 +1032,14 @@ class User:
     gptThreads: list[t.Any] = field(default_factory=list)  # noqa: N815
 
     def __post_init__(self) -> None:
+        # Normalize None values from API responses to empty collections
+        if self.grantedAuthorities is None:
+            object.__setattr__(self, "grantedAuthorities", [])  # type: ignore[unreachable]
+        if self.appSettings is None:
+            object.__setattr__(self, "appSettings", {})  # type: ignore[unreachable]
+        if self.gptThreads is None:
+            object.__setattr__(self, "gptThreads", [])  # type: ignore[unreachable]
+
         invalid: list[tuple[str, t.Any, type]] = []
         username = t.cast(t.Any, self.username)
         password = t.cast(t.Any, self.password)
@@ -1094,6 +1102,12 @@ class AuthenticatedUser:
     token: str = ""
 
     def __post_init__(self) -> None:
+        # Normalize None values from API responses to empty collections
+        if self.authorities is None:
+            object.__setattr__(self, "authorities", [])  # type: ignore[unreachable]
+        if self.appSettings is None:
+            object.__setattr__(self, "appSettings", {})  # type: ignore[unreachable]
+
         invalid: list[tuple[str, t.Any, type]] = []
         username = t.cast(t.Any, self.username)
         authorities = t.cast(t.Any, self.authorities)
