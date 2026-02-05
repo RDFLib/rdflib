@@ -2526,32 +2526,6 @@ class RepositoryManagement:
                 raise
 
 
-class TalkToYourGraph:
-    """GraphDB Talk to Your Graph client."""
-
-    def __init__(self, http_client: httpx.Client):
-        self._http_client = http_client
-
-    @property
-    def http_client(self):
-        return self._http_client
-
-    def query(self, agent_id: str, tool_type: str, query: str) -> str:
-        """Call agent query method/assistant tool.
-
-        Parameters:
-            agent_id: The agent identifier.
-            tool_type: The tool type.
-            query: The query for the tool.
-        """
-        headers = {"Content-Type": "text/plain", "Accept": "text/plain"}
-        response = self.http_client.post(
-            f"/rest/ttyg/agents/{agent_id}/{tool_type}", headers=headers, content=query
-        )
-        response.raise_for_status()
-        return response.text
-
-
 class SecurityManagement:
     """GraphDB Security Management client."""
 
@@ -2976,7 +2950,6 @@ class GraphDBClient(RDF4JClient):
         self._graphdb_repository_manager: RepositoryManager | None = None
         self._repos: RepositoryManagement | None = None
         self._security: SecurityManagement | None = None
-        self._ttyg: TalkToYourGraph | None = None
         self._users: UserManagement | None = None
 
     @property
@@ -3015,12 +2988,6 @@ class GraphDBClient(RDF4JClient):
         if self._security is None:
             self._security = SecurityManagement(self.http_client)
         return self._security
-
-    @property
-    def ttyg(self):
-        if self._ttyg is None:
-            self._ttyg = TalkToYourGraph(self.http_client)
-        return self._ttyg
 
     @property
     def users(self):
