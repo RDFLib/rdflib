@@ -689,24 +689,3 @@ To free up storage space by clearing the transaction log:
 ```python
 client.cluster.truncate_log()
 ```
-
-#### Talk to Your Graph
-
-!!! note
-
-    Talk to Your Graph (TTYG) requires GraphDB with the TTYG feature enabled and configured agents.
-
-GraphDB provides a Large Language Model (LLM) interface to interact with your graph data through the Talk to Your Graph (TTYG) feature. You can query configured agents via [`GraphDBClient.ttyg`][rdflib.contrib.graphdb.client.TalkToYourGraph].
-
-##### Call agent
-
-Call agent query method/assistant tool:
-
-```python
-response = client.ttyg.query(
-    agent_id="my-agent",
-    tool_type="sparql_query",
-    query="ask { ?s ?p ?o }"
-)
-print(response)
-```
