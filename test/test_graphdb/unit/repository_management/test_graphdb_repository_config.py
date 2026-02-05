@@ -666,7 +666,9 @@ def test_repo_validate_file_errors(
 def test_repo_validate_requires_content_type(client: GraphDBClient):
     """Validate requires a non-empty content_type."""
     with pytest.raises(ValueError):
-        client.graphdb_repositories.validate("test-repo", content_type="", content="shapes")
+        client.graphdb_repositories.validate(
+            "test-repo", content_type="", content="shapes"
+        )
 
     with pytest.raises(ValueError):
         client.graphdb_repositories.validate("test-repo", content="shapes")  # type: ignore[call-overload]
@@ -749,4 +751,6 @@ def test_repo_validate_shapes_repository_errors(
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
     with pytest.raises(exception_class):
-        client.graphdb_repositories.validate("test-repo", shapes_repository_id="shapes-repo")
+        client.graphdb_repositories.validate(
+            "test-repo", shapes_repository_id="shapes-repo"
+        )

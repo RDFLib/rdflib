@@ -32,7 +32,9 @@ def test_restart_sync_with_location_parameter(
     mock_response = Mock(spec=httpx.Response, text="")
     mock_httpx_post = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
-    client.graphdb_repositories.restart("test-repo", sync=True, location="http://example.com/location")
+    client.graphdb_repositories.restart(
+        "test-repo", sync=True, location="http://example.com/location"
+    )
     mock_httpx_post.assert_called_once_with(
         "/rest/repositories/test-repo/restart",
         params={"sync": "true", "location": "http://example.com/location"},

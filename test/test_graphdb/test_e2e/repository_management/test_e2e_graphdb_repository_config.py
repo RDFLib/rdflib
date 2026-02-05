@@ -31,7 +31,9 @@ def test_graphdb_repository_get_config(client: GraphDBClient):
 
 @pytest.mark.testcontainer
 def test_graph_repository_get_config_graph(client: GraphDBClient):
-    config_graph = client.graphdb_repositories.get("test-repo", content_type="text/turtle")
+    config_graph = client.graphdb_repositories.get(
+        "test-repo", content_type="text/turtle"
+    )
     assert isinstance(config_graph, Graph)
     assert len(config_graph)
     predicate_object_values = set(config_graph.predicate_objects(unique=True))
@@ -111,7 +113,9 @@ def test_graphdb_repository_create_multipart(client: GraphDBClient):
     ttl_config = config_path.read_text().replace("test-repo", repo_id)
 
     try:
-        client.graphdb_repositories.create(ttl_config, files={"obdaFile": b"obda-bytes"})
+        client.graphdb_repositories.create(
+            ttl_config, files={"obdaFile": b"obda-bytes"}
+        )
         created = client.graphdb_repositories.get(repo_id)
         assert isinstance(created, RepositoryConfigBean)
         assert created.id == repo_id
@@ -213,7 +217,9 @@ def test_graphdb_repository_validate_reports_from_file(client: GraphDBClient):
         ] .
     """
     with io.BytesIO(iri_shape) as shape_file:
-        iri_report_text = client.graphdb_repositories.validate("test-repo", content=shape_file)
+        iri_report_text = client.graphdb_repositories.validate(
+            "test-repo", content=shape_file
+        )
 
     iri_report_graph = Graph().parse(data=iri_report_text, format="turtle")
     iri_conforms: list[Literal | URIRef] = [
@@ -236,7 +242,9 @@ def test_graphdb_repository_validate_reports_from_file(client: GraphDBClient):
         ] .
     """
     with io.BytesIO(literal_shape) as shape_file:
-        literal_report_text = client.graphdb_repositories.validate("test-repo", content=shape_file)
+        literal_report_text = client.graphdb_repositories.validate(
+            "test-repo", content=shape_file
+        )
 
     literal_report_graph = Graph().parse(data=literal_report_text, format="turtle")
     literal_conforms: list[Literal | URIRef] = [

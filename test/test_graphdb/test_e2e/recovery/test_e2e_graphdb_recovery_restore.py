@@ -127,7 +127,8 @@ def test_restore_remove_stale_repositories_removes_unrestored_repo(
         )
 
         _wait_for(
-            lambda: extra_repo_id not in {r.id for r in client.graphdb_repositories.list()},
+            lambda: extra_repo_id
+            not in {r.id for r in client.graphdb_repositories.list()},
             description="stale repository to be removed",
         )
 
