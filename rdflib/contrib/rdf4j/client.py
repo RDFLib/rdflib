@@ -723,7 +723,15 @@ class Repository:
 
     @contextlib.contextmanager
     def transaction(self):
-        """Create a new transaction for the repository."""
+        """Create a new transaction for the repository.
+
+        !!! warning
+
+        Transaction instances are not thread-safe. Do not share a single
+        Transaction instance across multiple threads. Each thread should create
+        its own transaction, or use appropriate synchronization if sharing is
+        required.
+        """
         with Transaction.create(self) as txn:
             yield txn
 
