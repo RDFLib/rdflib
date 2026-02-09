@@ -76,7 +76,7 @@ with GraphDBClient("http://localhost:7200/") as client:
 # Use the token with another client instance
 with GraphDBClient("http://localhost:7200/", auth=token) as token_client:
     # Perform your operations here.
-    repos = token_client.repos.list()
+    repos = token_client.graphdb_repositories.list()
 ```
 
 ### HTTP client configuration
@@ -88,14 +88,14 @@ The GraphDB Client extends the RDF4J Client. See [RDF4J Client's HTTP client con
 GraphDB provides two ways to manage repositories:
 
 1.  **RDF4J Repository Manager** ([`GraphDBClient.repositories`][rdflib.contrib.graphdb.client.GraphDBClient.repositories]): Implements the standard RDF4J protocol. Use this for basic operations like retrieving a repository instance for querying. For more information, see [Working with a Repository](rdf4j.md#working-with-a-repository).
-2.  **GraphDB Repository Management** ([`GraphDBClient.repos`][rdflib.contrib.graphdb.client.GraphDBClient.repos]): Implements the GraphDB REST API. Use this for administrative tasks such as listing, creating, editing, and validating repositories.
+2.  **GraphDB Repository Management** ([`GraphDBClient.graphdb_repositories`][rdflib.contrib.graphdb.client.GraphDBClient.graphdb_repositories]): Implements the GraphDB REST API. Use this for administrative tasks such as listing, creating, editing, and validating repositories.
 
 #### Listing repositories
 
 To list all repositories with their configuration and status:
 
 ```python
-repos = client.repos.list()
+repos = client.graphdb_repositories.list()
 for repo in repos:
     print(f"{repo.id} ({repo.type}) - {repo.state}")
 ```
@@ -106,11 +106,11 @@ To retrieve a repository's configuration:
 
 ```python
 # Get configuration as JSON (default)
-config = client.repos.get("my-repo")
+config = client.graphdb_repositories.get("my-repo")
 print(f"Repository ID: {config.id}")
 
 # Get configuration as RDF Graph
-graph = client.repos.get("my-repo", content_type="text/turtle")
+graph = client.graphdb_repositories.get("my-repo", content_type="text/turtle")
 ```
 
 #### Creating a repository
@@ -167,7 +167,7 @@ config = """
     ].
 
 """
-client.repos.create(config)
+client.graphdb_repositories.create(config)
 ```
 
 #### Editing a repository
@@ -177,7 +177,7 @@ To edit an existing repository's configuration:
 ```python
 from rdflib.contrib.graphdb.models import RepositoryConfigBeanCreate
 
-existing = client.repos.get("my-repo")
+existing = client.graphdb_repositories.get("my-repo")
 updated_config = RepositoryConfigBeanCreate(
     id=existing.id,
     title="Updated Repository",
@@ -186,7 +186,7 @@ updated_config = RepositoryConfigBeanCreate(
     location=existing.location,
     params=existing.params,
 )
-client.repos.edit("my-repo", updated_config)
+client.graphdb_repositories.edit("my-repo", updated_config)
 ```
 
 #### Restarting a repository
@@ -194,10 +194,10 @@ client.repos.edit("my-repo", updated_config)
 To restart a repository:
 
 ```python
-client.repos.restart("my-repo")
+client.graphdb_repositories.restart("my-repo")
 
 # With sync option
-client.repos.restart("my-repo", sync=True)
+client.graphdb_repositories.restart("my-repo", sync=True)
 ```
 
 #### Getting repository size
@@ -205,7 +205,7 @@ client.repos.restart("my-repo", sync=True)
 To get information about a repository's size:
 
 ```python
-size_info = client.repos.size("my-repo")
+size_info = client.graphdb_repositories.size("my-repo")
 print(f"Total statements: {size_info.total}")
 print(f"Explicit statements: {size_info.explicit}")
 print(f"Inferred statements: {size_info.inferred}")
@@ -216,7 +216,7 @@ print(f"Inferred statements: {size_info.inferred}")
 To delete a repository:
 
 ```python
-client.repos.delete("my-repo")
+client.graphdb_repositories.delete("my-repo")
 ```
 
 ### Working with a Repository
