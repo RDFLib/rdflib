@@ -347,6 +347,10 @@ repo.graphs.overwrite(graph_name="my-graph", data=data)
 
 RDF4J supports transactions, which allow you to group multiple operations into a single atomic unit. To perform operations in a transaction, use the [`transaction`][rdflib.contrib.rdf4j.client.Repository.transaction] method as a context manager.
 
+!!! warning
+
+    Transaction instances are not thread-safe. Do not share a single Transaction instance across multiple threads. Each thread should create its own transaction, or use appropriate synchronization if sharing is required.
+
 The following example demonstrates how to perform operations in a transaction. The transaction will be automatically committed when the block is exited. If an error occurs during the transaction, the transaction will be rolled back and the error will be raised.
 
 ```python
