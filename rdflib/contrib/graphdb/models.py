@@ -1027,18 +1027,18 @@ class User:
     username: str
     password: str
     dateCreated: int  # noqa: N815
-    grantedAuthorities: list[str] | None = field(default_factory=list)  # noqa: N815
-    appSettings: dict[str, t.Any] | None = field(default_factory=dict)  # noqa: N815
-    gptThreads: list[t.Any] | None = field(default_factory=list)  # noqa: N815
+    grantedAuthorities: list[str] = field(default_factory=list)  # noqa: N815
+    appSettings: dict[str, t.Any] = field(default_factory=dict)  # noqa: N815
+    gptThreads: list[t.Any] = field(default_factory=list)  # noqa: N815
 
     def __post_init__(self) -> None:
-        # Normalize None values to empty collections
-        if self.appSettings is None:
-            object.__setattr__(self, "appSettings", {})
-        if self.gptThreads is None:
-            object.__setattr__(self, "gptThreads", [])
+        # Normalize None values from API responses to empty collections
         if self.grantedAuthorities is None:
-            object.__setattr__(self, "grantedAuthorities", [])
+            object.__setattr__(self, "grantedAuthorities", [])  # type: ignore[unreachable]
+        if self.appSettings is None:
+            object.__setattr__(self, "appSettings", {})  # type: ignore[unreachable]
+        if self.gptThreads is None:
+            object.__setattr__(self, "gptThreads", [])  # type: ignore[unreachable]
 
         invalid: list[tuple[str, t.Any, type]] = []
         username = t.cast(t.Any, self.username)
@@ -1096,16 +1096,17 @@ class AuthenticatedUser:
     """
 
     username: str
-    authorities: list[str] | None = field(default_factory=list)
-    appSettings: dict[str, t.Any] | None = field(default_factory=dict)  # noqa: N815
+    authorities: list[str] = field(default_factory=list)
+    appSettings: dict[str, t.Any] = field(default_factory=dict)  # noqa: N815
     external: bool = False
     token: str = ""
 
     def __post_init__(self) -> None:
+        # Normalize None values from API responses to empty collections
         if self.authorities is None:
-            object.__setattr__(self, "authorities", [])
+            object.__setattr__(self, "authorities", [])  # type: ignore[unreachable]
         if self.appSettings is None:
-            object.__setattr__(self, "appSettings", {})
+            object.__setattr__(self, "appSettings", {})  # type: ignore[unreachable]
 
         invalid: list[tuple[str, t.Any, type]] = []
         username = t.cast(t.Any, self.username)

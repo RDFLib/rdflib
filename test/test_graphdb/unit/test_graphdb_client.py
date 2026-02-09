@@ -16,7 +16,7 @@ if has_httpx:
 
 
 def test_client_has_graphdb_rest_client(client: GraphDBClient):
-    assert isinstance(client.repos, RepositoryManagement)
+    assert isinstance(client.graphdb_repositories, RepositoryManagement)
 
 
 def test_client_accepts_httpx_timeout(monkeypatch: pytest.MonkeyPatch):

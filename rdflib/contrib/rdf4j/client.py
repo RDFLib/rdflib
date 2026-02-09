@@ -723,24 +723,39 @@ class Repository:
 
     @contextlib.contextmanager
     def transaction(self):
-        """Create a new transaction for the repository."""
-        with Transaction(self) as txn:
+        """Create a new transaction for the repository.
+
+        !!! warning
+
+        Transaction instances are not thread-safe. Do not share a single
+        Transaction instance across multiple threads. Each thread should create
+        its own transaction, or use appropriate synchronization if sharing is
+        required.
+        """
+        with Transaction.create(self) as txn:
             yield txn
 
 
 class Transaction:
     """An RDF4J transaction.
 
+    !!! warning
+
+        Transaction instances are not thread-safe. Do not share a single
+        Transaction instance across multiple threads. Each thread should create
+        its own transaction, or use appropriate synchronization if sharing is
+        required.
+
     Parameters:
         repo: The repository instance.
     """
 
-    def __init__(self, repo: Repository):
+    def __init__(self, repo: Repository, url: str):
         self._repo = repo
-        self._url: str | None = None
+        self._url: str = url
+        self._closed: bool = False
 
     def __enter__(self):
-        self._url = self._start_transaction()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -769,25 +784,28 @@ class Transaction:
     @property
     def is_closed(self) -> bool:
         """Whether the transaction is closed."""
-        return self._url is None
+        return self._closed
 
     def _raise_for_closed(self):
         if self.is_closed:
             raise TransactionClosedError("The transaction has been closed.")
 
-    def _start_transaction(self) -> str:
-        response = self.repo.http_client.post(
-            f"/repositories/{self.repo.identifier}/transactions"
+    @classmethod
+    def create(cls, repo: Repository) -> Transaction:
+        """Create a new transaction for the repository.
+
+        Parameters:
+            repo: The repository instance.
+
+        Returns:
+            A new Transaction instance.
+        """
+        response = repo.http_client.post(
+            f"/repositories/{repo.identifier}/transactions"
         )
         response.raise_for_status()
-        return response.headers["Location"]
-
-    def _close_transaction(self):
-        self._url = None
-
-    def open(self):
-        """Opens a transaction."""
-        self._url = self._start_transaction()
+        url = response.headers["Location"]
+        return cls(repo, url)
 
     def commit(self):
         """Commit the transaction.
@@ -803,16 +821,22 @@ class Transaction:
             raise TransactionCommitError(
                 f"Transaction commit failed: {response.status_code} - {response.text}"
             )
-        self._close_transaction()
+        self._closed = True
 
     def rollback(self):
-        """Roll back the transaction."""
+        """Roll back the transaction.
+
+        Raises:
+            TransactionRollbackError: If the transaction rollback fails.
+            TransactionClosedError: If the transaction is closed.
+        """
+        self._raise_for_closed()
         response = self.repo.http_client.delete(self.url)
         if response.status_code != 204:
             raise TransactionRollbackError(
                 f"Transaction rollback failed: {response.status_code} - {response.text}"
             )
-        self._close_transaction()
+        self._closed = True
 
     def ping(self):
         """Ping the transaction.
@@ -864,6 +888,7 @@ class Transaction:
                 [RDF4J REST API - Execute SPARQL query](https://rdf4j.org/documentation/reference/rest-api/#tag/SPARQL/paths/~1repositories~1%7BrepositoryID%7D/get)
                 for the list of supported query parameters.
         """
+        self._raise_for_closed()
         headers: dict[str, str] = {}
         build_sparql_query_accept_header(query, headers)
         params = {"action": "QUERY", "query": query}
@@ -890,6 +915,7 @@ class Transaction:
                 See [RDF4J REST API - Execute a transaction action](https://rdf4j.org/documentation/reference/rest-api/#tag/Transactions/paths/~1repositories~1%7BrepositoryID%7D~1transactions~1%7BtransactionID%7D/put)
                 for the list of supported query parameters.
         """
+        self._raise_for_closed()
         params = {"action": "UPDATE", "update": query}
         response = self.repo.http_client.put(
             self.url,
@@ -911,6 +937,7 @@ class Transaction:
             content_type: The content type of the data. Defaults to
                 `application/n-quads` when the value is `None`.
         """
+        self._raise_for_closed()
         stream, should_close = rdf_payload_to_stream(data)
         headers = {"Content-Type": content_type or "application/n-quads"}
         params = {"action": "ADD"}
@@ -964,6 +991,7 @@ class Transaction:
             A [`Graph`][rdflib.graph.Graph] or [`Dataset`][rdflib.graph.Dataset] object
                 with the repository namespace prefixes bound to it.
         """
+        self._raise_for_closed()
         validate_no_bnodes(subj, pred, obj, graph_name)
         if content_type is None:
             content_type = "application/n-quads"
@@ -1017,6 +1045,7 @@ class Transaction:
             content_type: The content type of the data. Defaults to
                 `application/n-quads` when the value is `None`.
         """
+        self._raise_for_closed()
         params: dict[str, str] = {"action": "DELETE"}
         stream, should_close = rdf_payload_to_stream(data)
         headers = {"Content-Type": content_type or "application/n-quads"}
@@ -1191,7 +1220,7 @@ class RDF4JClient:
         self._http_client = httpx.Client(
             base_url=base_url, auth=httpx_auth, timeout=timeout, **kwargs
         )
-        self._repository_manager: RepositoryManager | None = None
+        self._repository_manager = RepositoryManager(self.http_client)
         try:
             protocol_version = self.protocol
         except httpx.RequestError as err:
@@ -1218,8 +1247,6 @@ class RDF4JClient:
     @property
     def repositories(self) -> RepositoryManager:
         """Server-level repository management operations."""
-        if self._repository_manager is None:
-            self._repository_manager = RepositoryManager(self.http_client)
         return self._repository_manager
 
     @property

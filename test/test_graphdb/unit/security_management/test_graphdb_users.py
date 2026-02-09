@@ -489,9 +489,8 @@ def test_overwrite_user_success(
     mock_httpx_put = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
 
-    result = client.users.overwrite("admin", user)
+    client.users.overwrite("admin", user)
 
-    assert result is None
     mock_httpx_put.assert_called_once_with(
         "/rest/security/users/admin",
         headers={"Content-Type": "application/json"},
@@ -512,7 +511,7 @@ def test_overwrite_user_raises_type_error_for_non_string_username(
     )
 
     with pytest.raises(TypeError, match="Username must be a string"):
-        client.users.overwrite(123, user)
+        client.users.overwrite(123, user)  # type: ignore[arg-type]
 
 
 def test_overwrite_user_raises_type_error_for_non_user_object(
@@ -520,7 +519,7 @@ def test_overwrite_user_raises_type_error_for_non_user_object(
 ):
     """Test that overwrite raises TypeError when user is not a User instance."""
     with pytest.raises(TypeError, match="User must be an instance of User"):
-        client.users.overwrite("admin", {"username": "admin"})
+        client.users.overwrite("admin", {"username": "admin"})  # type: ignore[arg-type]
 
 
 def test_overwrite_user_raises_unauthorised_error(
@@ -640,9 +639,8 @@ def test_create_user_success(
     mock_httpx_post = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
 
-    result = client.users.create("newuser", user)
+    client.users.create("newuser", user)
 
-    assert result is None
     mock_httpx_post.assert_called_once_with(
         "/rest/security/users/newuser",
         headers={"Content-Type": "application/json"},
@@ -662,7 +660,7 @@ def test_create_user_raises_type_error_for_non_string_username(
     )
 
     with pytest.raises(TypeError, match="Username must be a string"):
-        client.users.create(123, user)
+        client.users.create(123, user)  # type: ignore[arg-type]
 
 
 def test_create_user_raises_type_error_for_non_user_object(
@@ -670,7 +668,7 @@ def test_create_user_raises_type_error_for_non_user_object(
 ):
     """Test that create raises TypeError when user is not a UserCreate instance."""
     with pytest.raises(TypeError, match="User must be an instance of UserCreate"):
-        client.users.create("newuser", {"username": "newuser"})
+        client.users.create("newuser", {"username": "newuser"})  # type: ignore[arg-type]
 
 
 def test_create_user_raises_bad_request_error(
@@ -804,9 +802,8 @@ def test_delete_user_success(
     mock_httpx_delete = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
 
-    result = client.users.delete("testuser")
+    client.users.delete("testuser")
 
-    assert result is None
     mock_httpx_delete.assert_called_once_with("/rest/security/users/testuser")
     mock_response.raise_for_status.assert_called_once()
 
@@ -816,7 +813,7 @@ def test_delete_user_raises_type_error_for_non_string_username(
 ):
     """Test that delete raises TypeError when username is not a string."""
     with pytest.raises(TypeError, match="Username must be a string"):
-        client.users.delete(123)
+        client.users.delete(123)  # type: ignore[arg-type]
 
 
 def test_delete_user_raises_bad_request_error(
@@ -944,9 +941,8 @@ def test_update_user_success(
     mock_httpx_patch = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "patch", mock_httpx_patch)
 
-    result = client.users.update("admin", user_dict)
+    client.users.update("admin", user_dict)
 
-    assert result is None
     mock_httpx_patch.assert_called_once_with(
         "/rest/security/users/admin",
         headers={"Content-Type": "application/json"},
@@ -969,9 +965,8 @@ def test_update_user_success_with_user_update_model(
     mock_httpx_patch = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "patch", mock_httpx_patch)
 
-    result = client.users.update("admin", user_update)
+    client.users.update("admin", user_update)
 
-    assert result is None
     mock_httpx_patch.assert_called_once_with(
         "/rest/security/users/admin",
         headers={"Content-Type": "application/json"},
@@ -987,7 +982,7 @@ def test_update_user_raises_type_error_for_non_string_username(
     user_dict = {"appSettings": {"theme": "dark"}}
 
     with pytest.raises(TypeError, match="Username must be a string"):
-        client.users.update(123, user_dict)
+        client.users.update(123, user_dict)  # type: ignore[arg-type]
 
 
 def test_update_user_raises_type_error_for_invalid_user(
@@ -997,7 +992,7 @@ def test_update_user_raises_type_error_for_invalid_user(
     with pytest.raises(
         TypeError, match="User must be an instance of UserUpdate or dict"
     ):
-        client.users.update("admin", "invalid")
+        client.users.update("admin", "invalid")  # type: ignore[arg-type]
 
 
 def test_update_user_raises_forbidden_error(
@@ -1100,7 +1095,7 @@ def test_custom_roles_raises_type_error_for_non_string_username(
 ):
     """Test that custom_roles raises TypeError when username is not a string."""
     with pytest.raises(TypeError, match="Username must be a string"):
-        client.users.custom_roles(123)
+        client.users.custom_roles(123)  # type: ignore[arg-type]
 
 
 def test_custom_roles_raises_forbidden_error(

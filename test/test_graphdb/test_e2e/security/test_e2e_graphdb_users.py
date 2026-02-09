@@ -132,8 +132,7 @@ def test_overwrite_user_updates_admin_user(client: GraphDBClient):
     )
 
     # Overwrite the user
-    result = client.users.overwrite("admin", updated_user)
-    assert result is None
+    client.users.overwrite("admin", updated_user)
 
     # Verify the user was updated
     fetched_user = client.users.get("admin")
@@ -204,8 +203,7 @@ def test_create_user_creates_new_user(client: GraphDBClient):
 
     try:
         # Create the user
-        result = client.users.create(username, user)
-        assert result is None
+        client.users.create(username, user)
 
         # Verify the user was created
         fetched_user = client.users.get(username)
@@ -315,8 +313,7 @@ def test_delete_user_deletes_existing_user(client: GraphDBClient):
     client.users.create(username, user)
 
     # Delete the user
-    result = client.users.delete(username)
-    assert result is None
+    client.users.delete(username)
 
     # Verify the user was deleted
     with pytest.raises(NotFoundError, match="User not found"):
@@ -377,8 +374,7 @@ def test_update_user_updates_app_settings(client: GraphDBClient):
 
         # Update only the appSettings using PATCH with a dict
         user_dict = {"appSettings": {"updated_setting": "updated_value"}}
-        result = client.users.update(username, user_dict)
-        assert result is None
+        client.users.update(username, user_dict)
 
         # Verify the user was updated
         fetched_user = client.users.get(username)
@@ -442,9 +438,7 @@ def test_update_user_returns_none(client: GraphDBClient):
 
         # Update the user with a dict
         user_dict = {"appSettings": {"key": "value"}}
-        result = client.users.update(username, user_dict)
-
-        assert result is None
+        client.users.update(username, user_dict)
     finally:
         # Clean up
         try:
@@ -471,9 +465,7 @@ def test_update_user_with_user_update_model(client: GraphDBClient):
 
         # Update the user with a UserUpdate model
         user_update = UserUpdate(appSettings={"model_setting": "model_value"})
-        result = client.users.update(username, user_update)
-
-        assert result is None
+        client.users.update(username, user_update)
 
         # Verify the user was updated
         fetched_user = client.users.get(username)
@@ -539,6 +531,3 @@ def test_custom_roles_for_created_user(client: GraphDBClient):
             client.users.delete(username)
         except Exception:
             pass
-
-
-

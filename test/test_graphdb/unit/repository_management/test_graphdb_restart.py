@@ -32,7 +32,9 @@ def test_restart_sync_with_location_parameter(
     mock_response = Mock(spec=httpx.Response, text="")
     mock_httpx_post = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
-    client.repos.restart("test-repo", sync=True, location="http://example.com/location")
+    client.graphdb_repositories.restart(
+        "test-repo", sync=True, location="http://example.com/location"
+    )
     mock_httpx_post.assert_called_once_with(
         "/rest/repositories/test-repo/restart",
         params={"sync": "true", "location": "http://example.com/location"},
@@ -61,7 +63,7 @@ def test_restart_exceptions(
     if exception_class is not None:
         mock_response.raise_for_status.side_effect = exception_class("Mocked exception")
         with pytest.raises(exception_class):
-            client.repos.restart("test-repo")
+            client.graphdb_repositories.restart("test-repo")
 
 
 def test_restart_response_text(
@@ -71,5 +73,5 @@ def test_restart_response_text(
     mock_response = Mock(spec=httpx.Response, text="some-result")
     mock_httpx_post = Mock(return_value=mock_response)
     monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
-    result = client.repos.restart("test-repo")
+    result = client.graphdb_repositories.restart("test-repo")
     assert result == "some-result"

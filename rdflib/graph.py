@@ -2023,7 +2023,11 @@ class Graph(Node):
         return retval
 
     def cbd(
-        self, resource: _SubjectType, *, target_graph: Optional[Graph] = None
+        self,
+        resource: _SubjectType,
+        *,
+        target_graph: Graph | None = None,
+        include_reifications: bool = True,
     ) -> Graph:
         """Retrieves the Concise Bounded Description of a Resource from a Graph.
 
@@ -2031,6 +2035,7 @@ class Graph(Node):
             resource: A URIRef object, the Resource to query for.
             target_graph: Optionally, a graph to add the CBD to; otherwise,
                 a new graph is created for the CBD.
+            include_reifications: If False, skip Rule 3 to exclude reified statements (default: True)
 
         Returns:
             A Graph, subgraph of self if no graph was provided otherwise the provided graph.
@@ -2057,31 +2062,49 @@ class Graph(Node):
             This results in a subgraph where the object nodes are either URI references, literals,
             or blank nodes not serving as the subject of any statement in the graph.
 
-            See: <https://www.w3.org/Submission/CBD/>
+            If include_reifications is set to False, Rule 3 above will be skipped, meaning reified statements
+            will not be included in the CBD. This can improve performance when reified statements are not present
+            or can be used to deliberately exclude them from the result.
         """
+        # If no target graph is provided, create a new Graph to hold the CBD.
         if target_graph is None:
             subgraph = Graph()
         else:
             subgraph = target_graph
 
         def add_to_cbd(uri: _SubjectType) -> None:
+            # Rule 3 Preparation:
+            # If reifications are to be included, build an index mapping triples with
+            # this subject to the set of reification nodes (rdf:Statement nodes) that reify them.
+            if include_reifications:
+                reif_index: dict[_TripleType, set[_SubjectType]] = {}
+                for stmt in self.subjects(RDF.subject, uri):
+                    p: _PredicateType = self.value(stmt, RDF.predicate)  # type: ignore[assignment]
+                    o = self.value(stmt, RDF.object)
+                    if p is not None and o is not None:
+                        triple = (uri, p, o)
+                        if triple not in reif_index:
+                            reif_index[triple] = {stmt}
+                        else:
+                            reif_index[triple].add(stmt)
+
+            # For all triples where the subject is the current subject (Rule 1)
             for s, p, o in self.triples((uri, None, None)):
+                # Add the triple to the CBD subgraph
                 subgraph.add((s, p, o))
-                # recurse 'down' through ll Blank Nodes
+                # If the object is a blank node, recursively add its CBD (Rule 2)
                 if type(o) is BNode and (o, None, None) not in subgraph:
                     add_to_cbd(o)
 
-            # for Rule 3 (reification)
-            # for any rdf:Statement in the graph with the given URI as the object of rdf:subject,
-            # get all triples with that rdf:Statement instance as subject
+                # If including reifications (Rule 3):
+                if include_reifications:
+                    # For each reification node of this triple, recursively add its CBD
+                    stmts = reif_index.get((s, p, o), set())
+                    for stmt in stmts:
+                        if (stmt, None, None) not in subgraph:
+                            add_to_cbd(stmt)
 
-            # find any subject s where the predicate is rdf:subject and this uri is the object
-            # (these subjects are of type rdf:Statement, given the domain of rdf:subject)
-            for s, p, o in self.triples((None, RDF.subject, uri)):
-                # find all triples with s as the subject and add these to the subgraph
-                for s2, p2, o2 in self.triples((s, None, None)):
-                    subgraph.add((s2, p2, o2))
-
+        # Start the CBD construction from the given resource
         add_to_cbd(resource)
 
         return subgraph

@@ -24,14 +24,16 @@ if has_httpx:
 
 @pytest.mark.testcontainer
 def test_graphdb_repository_get_config(client: GraphDBClient):
-    config = client.repos.get("test-repo")
+    config = client.graphdb_repositories.get("test-repo")
     assert isinstance(config, RepositoryConfigBean)
     assert config.id == "test-repo"
 
 
 @pytest.mark.testcontainer
 def test_graph_repository_get_config_graph(client: GraphDBClient):
-    config_graph = client.repos.get("test-repo", content_type="text/turtle")
+    config_graph = client.graphdb_repositories.get(
+        "test-repo", content_type="text/turtle"
+    )
     assert isinstance(config_graph, Graph)
     assert len(config_graph)
     predicate_object_values = set(config_graph.predicate_objects(unique=True))
@@ -45,7 +47,7 @@ def test_graph_repository_get_config_graph(client: GraphDBClient):
 def test_graphdb_repository_edit_config(client: GraphDBClient):
     """Test editing a repository configuration."""
     # Get the current config
-    original_config = client.repos.get("test-repo")
+    original_config = client.graphdb_repositories.get("test-repo")
     assert isinstance(original_config, RepositoryConfigBean)
     assert original_config.id == "test-repo"
 
@@ -61,10 +63,10 @@ def test_graphdb_repository_edit_config(client: GraphDBClient):
     )
 
     # Edit the repository configuration
-    client.repos.edit("test-repo", updated_config)
+    client.graphdb_repositories.edit("test-repo", updated_config)
 
     # Verify the change was applied
-    modified_config = client.repos.get("test-repo")
+    modified_config = client.graphdb_repositories.get("test-repo")
     assert isinstance(modified_config, RepositoryConfigBean)
     assert modified_config.id == "test-repo"
     assert modified_config.title == new_title
@@ -76,7 +78,7 @@ def test_graphdb_repository_edit_config(client: GraphDBClient):
 @pytest.mark.testcontainer
 def test_graphdb_repository_create_json(client: GraphDBClient):
     """Create a repository via JSON config and verify it exists."""
-    base_config = client.repos.get("test-repo")
+    base_config = client.graphdb_repositories.get("test-repo")
     repo_id = f"test-repo-create-json-{uuid.uuid4().hex[:8]}"
     new_config = RepositoryConfigBeanCreate(
         id=repo_id,
@@ -88,13 +90,13 @@ def test_graphdb_repository_create_json(client: GraphDBClient):
     )
 
     try:
-        client.repos.create(new_config)
-        created = client.repos.get(repo_id)
+        client.graphdb_repositories.create(new_config)
+        created = client.graphdb_repositories.get(repo_id)
         assert isinstance(created, RepositoryConfigBean)
         assert created.id == repo_id
     finally:
         try:
-            client.repos.delete(repo_id)
+            client.graphdb_repositories.delete(repo_id)
         except RepositoryNotFoundError:
             pass
 
@@ -111,13 +113,15 @@ def test_graphdb_repository_create_multipart(client: GraphDBClient):
     ttl_config = config_path.read_text().replace("test-repo", repo_id)
 
     try:
-        client.repos.create(ttl_config, files={"obdaFile": b"obda-bytes"})
-        created = client.repos.get(repo_id)
+        client.graphdb_repositories.create(
+            ttl_config, files={"obdaFile": b"obda-bytes"}
+        )
+        created = client.graphdb_repositories.get(repo_id)
         assert isinstance(created, RepositoryConfigBean)
         assert created.id == repo_id
     finally:
         try:
-            client.repos.delete(repo_id)
+            client.graphdb_repositories.delete(repo_id)
         except RepositoryNotFoundError:
             pass
 
@@ -126,15 +130,15 @@ def test_graphdb_repository_create_multipart(client: GraphDBClient):
 def test_graphdb_repository_delete(client: GraphDBClient):
     """Test deleting a repository configuration."""
     repo_id = "test-repo"
-    client.repos.delete(repo_id)
+    client.graphdb_repositories.delete(repo_id)
     with pytest.raises(RepositoryNotFoundError):
-        client.repos.get(repo_id)
+        client.graphdb_repositories.get(repo_id)
 
 
 @pytest.mark.testcontainer
 def test_graphdb_repository_list(client: GraphDBClient):
     """Test listing repository configurations."""
-    repos = client.repos.list()
+    repos = client.graphdb_repositories.list()
     identifiers = {repo.id for repo in repos}
     assert "test-repo" in identifiers
 
@@ -158,7 +162,7 @@ def test_graphdb_repository_validate_reports(client: GraphDBClient):
             sh:nodeKind sh:IRI ;
         ] .
     """
-    iri_report_text = client.repos.validate(
+    iri_report_text = client.graphdb_repositories.validate(
         "test-repo", content_type="text/turtle", content=iri_shape
     )
     iri_report_graph = Graph().parse(data=iri_report_text, format="turtle")
@@ -181,7 +185,7 @@ def test_graphdb_repository_validate_reports(client: GraphDBClient):
             sh:datatype xsd:string ;
         ] .
     """
-    literal_report_text = client.repos.validate(
+    literal_report_text = client.graphdb_repositories.validate(
         "test-repo", content_type="text/turtle", content=literal_shape
     )
     literal_report_graph = Graph().parse(data=literal_report_text, format="turtle")
@@ -213,7 +217,9 @@ def test_graphdb_repository_validate_reports_from_file(client: GraphDBClient):
         ] .
     """
     with io.BytesIO(iri_shape) as shape_file:
-        iri_report_text = client.repos.validate("test-repo", content=shape_file)
+        iri_report_text = client.graphdb_repositories.validate(
+            "test-repo", content=shape_file
+        )
 
     iri_report_graph = Graph().parse(data=iri_report_text, format="turtle")
     iri_conforms: list[Literal | URIRef] = [
@@ -236,7 +242,9 @@ def test_graphdb_repository_validate_reports_from_file(client: GraphDBClient):
         ] .
     """
     with io.BytesIO(literal_shape) as shape_file:
-        literal_report_text = client.repos.validate("test-repo", content=shape_file)
+        literal_report_text = client.graphdb_repositories.validate(
+            "test-repo", content=shape_file
+        )
 
     literal_report_graph = Graph().parse(data=literal_report_text, format="turtle")
     literal_conforms: list[Literal | URIRef] = [
@@ -256,7 +264,7 @@ def test_graphdb_repository_validate_with_shapes_repository(client: GraphDBClien
         data_repo.overwrite(file)
 
     shapes_repo_id = f"shapes-repo-{uuid.uuid4().hex[:8]}"
-    base_config = client.repos.get("test-repo")
+    base_config = client.graphdb_repositories.get("test-repo")
     shapes_config = RepositoryConfigBeanCreate(
         id=shapes_repo_id,
         title=f"Shapes {shapes_repo_id}",
@@ -267,7 +275,7 @@ def test_graphdb_repository_validate_with_shapes_repository(client: GraphDBClien
     )
 
     try:
-        client.repos.create(shapes_config)
+        client.graphdb_repositories.create(shapes_config)
         shapes_repo = client.repositories.get(shapes_repo_id)
 
         shapes_turtle = b"""
@@ -285,7 +293,7 @@ def test_graphdb_repository_validate_with_shapes_repository(client: GraphDBClien
         with io.BytesIO(shapes_turtle) as shapes_file:
             shapes_repo.overwrite(shapes_file, content_type="text/turtle")
 
-        report_text = client.repos.validate(
+        report_text = client.graphdb_repositories.validate(
             "test-repo", shapes_repository_id=shapes_repo_id
         )
         report_graph = Graph().parse(data=report_text, format="turtle")
@@ -299,6 +307,6 @@ def test_graphdb_repository_validate_with_shapes_repository(client: GraphDBClien
         )
     finally:
         try:
-            client.repos.delete(shapes_repo_id)
+            client.graphdb_repositories.delete(shapes_repo_id)
         except RepositoryNotFoundError:
             pass

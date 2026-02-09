@@ -7,6 +7,7 @@ import pytest
 
 from rdflib import Dataset, Graph, URIRef
 from rdflib.contrib.rdf4j import has_httpx
+from rdflib.contrib.rdf4j.exceptions import TransactionClosedError
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 
 pytestmark = pytest.mark.skipif(
@@ -20,6 +21,7 @@ if has_httpx:
         ObjectType,
         PredicateType,
         RDF4JNamespaceManager,
+        Repository,
         SubjectType,
         Transaction,
     )
@@ -221,3 +223,25 @@ def test_repo_transaction_get_spo(
         headers=headers,
         params=expected_params,
     )
+
+
+def test_repo_transaction_get_closed(
+    repo: Repository,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Test that get() raises TransactionClosedError on a closed transaction."""
+    transaction_url = "http://example.com/transaction/1"
+    mock_transaction_create_response = Mock(
+        spec=httpx.Response, headers={"Location": transaction_url}
+    )
+    mock_httpx_post = Mock(return_value=mock_transaction_create_response)
+    monkeypatch.setattr(httpx.Client, "post", mock_httpx_post)
+
+    mock_commit_response = Mock(spec=httpx.Response, status_code=200)
+    mock_httpx_put = Mock(return_value=mock_commit_response)
+    monkeypatch.setattr(httpx.Client, "put", mock_httpx_put)
+
+    with repo.transaction() as txn:
+        txn.commit()
+        with pytest.raises(TransactionClosedError):
+            txn.get()
