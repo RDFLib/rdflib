@@ -1,0 +1,3 @@
+PREFIX : <http://example.com/ns#>
+
+:G {:a :b :c {| :s :p :o |} .}

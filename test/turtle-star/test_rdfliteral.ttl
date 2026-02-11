@@ -1,0 +1,5 @@
+@prefix :       <http://example/> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+:s :source [:graph <http://host1/> ; :date "2020-01-20"^^xsd:date] .
+:s :source [:graph <http://host2/> ; :date "2020-12-31"^^xsd:date] .
