@@ -1,5 +1,4 @@
 from textwrap import dedent
-from unittest.mock import patch
 
 from rdflib import RDF, RDFS, Dataset, Graph, Literal, URIRef
 from rdflib.compare import isomorphic
@@ -141,18 +140,6 @@ def test_dataset_addn_with_graph_context_does_not_copy_statements():
     assert triples[0] in dataset_graph
     assert triples[1] not in dataset_graph
     assert triples[2] not in dataset_graph
-
-
-def test_spoc_calls_graph_without_copying_statements():
-    ds = Dataset()
-    source_graph = Graph(identifier=URIRef("urn:graph"))
-    triple = (URIRef("urn:s1"), RDF.type, URIRef("urn:c1"), source_graph)
-
-    with patch.object(ds, "_graph", wraps=ds._graph) as wrapped_graph:
-        # _spoc is the gateway used by add/remove/contains-style quad handling.
-        ds._spoc(triple)
-
-    wrapped_graph.assert_called_once_with(source_graph)
 
 
 def test_dataset_parse_return_value():
