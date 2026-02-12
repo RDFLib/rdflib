@@ -127,3 +127,52 @@ def test_query_construct_format(
     logging.debug("request = %s", request)
     logging.debug("request.headers = %s", request.headers.as_string())
     assert request.path_query["query"][0] == query
+
+
+def test_query_construct_accept_header(
+    function_httpmock: ServedBaseHTTPServerMock,
+) -> None:
+    """
+    Test that no SPARQL result media types are used for construct queries
+    """
+    graph = Graph(
+        "SPARQLStore",
+        identifier="http://example.com",
+        bind_namespaces="none",
+    )
+    url = f"{function_httpmock.url}/query"
+    graph.open(url)
+
+    function_httpmock.responses[MethodName.GET].extend(
+        [
+            MockHTTPResponse(
+                200,
+                "OK",
+                b"<> a <#test> .",
+                {"Content-Type": ["text/turtle"]},
+            )
+        ]
+        * 2  # two identical responses
+    )
+
+    # case 1: construct query
+
+    query_construct = "CONSTRUCT WHERE { ?s ?p ?o }"
+    graph.query(query_construct)
+
+    request_construct = function_httpmock.requests[MethodName.GET].pop()
+    accept_header_construct = request_construct.headers.get("Accept", "").lower()
+    # 'Accept' header must not include types for XML or JSON sparql results
+    assert "application/sparql-results" not in accept_header_construct
+    # 'Accept' header should be at least the default RDF/XML
+    assert "application/rdf+xml" in accept_header_construct
+
+    # case 2: select query
+
+    query_select = "SELECT * WHERE { ?s ?p ?o }"
+    graph.query(query_select)
+
+    request_select = function_httpmock.requests[MethodName.GET].pop()
+    accept_header_select = request_select.headers.get("Accept", "").lower()
+    # 'Accept' header should include types for XML or JSON sparql results
+    assert "application/sparql-results" in accept_header_select
