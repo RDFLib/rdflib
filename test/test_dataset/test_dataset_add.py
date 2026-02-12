@@ -1,5 +1,5 @@
-from unittest.mock import patch
 from textwrap import dedent
+from unittest.mock import patch
 
 from rdflib import RDF, RDFS, Dataset, Graph, Literal, URIRef
 from rdflib.compare import isomorphic
