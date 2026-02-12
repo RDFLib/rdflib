@@ -1,3 +1,4 @@
+from unittest.mock import patch
 from textwrap import dedent
 
 from rdflib import RDF, RDFS, Dataset, Graph, Literal, URIRef
@@ -91,6 +92,67 @@ def test_adding_appends_to_dataset_graph():
     graph = ds.add_graph(another_graph)
     assert len(graph) == 3
     assert len(ds) == 3
+
+
+def test_dataset_add_with_graph_context_does_not_copy_statements():
+    ds = Dataset()
+    graph_name = URIRef("urn:graph")
+    source_graph = Graph(identifier=graph_name)
+
+    triples = [
+        (URIRef("urn:s1"), RDF.type, URIRef("urn:c1")),
+        (URIRef("urn:s2"), RDF.type, URIRef("urn:c1")),
+        (URIRef("urn:s3"), RDF.type, URIRef("urn:c1")),
+    ]
+    for triple in triples:
+        source_graph.add(triple)
+
+    # Adding with a graph context should add only the supplied triple.
+    ds.add((*triples[0], source_graph))
+    dataset_graph = ds.get_graph(graph_name)
+    assert len(dataset_graph) == 1
+    assert triples[0] in dataset_graph
+    assert triples[1] not in dataset_graph
+    assert triples[2] not in dataset_graph
+
+    ds.add((*triples[1], source_graph))
+    assert len(dataset_graph) == 2
+    assert triples[1] in dataset_graph
+    assert triples[2] not in dataset_graph
+
+
+def test_dataset_addn_with_graph_context_does_not_copy_statements():
+    ds = Dataset()
+    graph_name = URIRef("urn:graph")
+    source_graph = Graph(identifier=graph_name)
+
+    triples = [
+        (URIRef("urn:s1"), RDF.type, URIRef("urn:c1")),
+        (URIRef("urn:s2"), RDF.type, URIRef("urn:c1")),
+        (URIRef("urn:s3"), RDF.type, URIRef("urn:c1")),
+    ]
+    for triple in triples:
+        source_graph.add(triple)
+
+    # addN should keep the same non-copy semantics as add for graph contexts.
+    ds.addN([(*triples[0], source_graph)])
+    dataset_graph = ds.get_graph(graph_name)
+    assert len(dataset_graph) == 1
+    assert triples[0] in dataset_graph
+    assert triples[1] not in dataset_graph
+    assert triples[2] not in dataset_graph
+
+
+def test_spoc_calls_graph_without_copying_statements():
+    ds = Dataset()
+    source_graph = Graph(identifier=URIRef("urn:graph"))
+    triple = (URIRef("urn:s1"), RDF.type, URIRef("urn:c1"), source_graph)
+
+    with patch.object(ds, "_graph", wraps=ds._graph) as wrapped_graph:
+        # _spoc is the gateway used by add/remove/contains-style quad handling.
+        ds._spoc(triple)
+
+    wrapped_graph.assert_called_once_with(source_graph)
 
 
 def test_dataset_parse_return_value():
