@@ -93,6 +93,55 @@ def test_adding_appends_to_dataset_graph():
     assert len(ds) == 3
 
 
+def test_dataset_add_with_graph_context_does_not_copy_statements():
+    ds = Dataset()
+    graph_name = URIRef("urn:graph")
+    source_graph = Graph(identifier=graph_name)
+
+    triples = [
+        (URIRef("urn:s1"), RDF.type, URIRef("urn:c1")),
+        (URIRef("urn:s2"), RDF.type, URIRef("urn:c1")),
+        (URIRef("urn:s3"), RDF.type, URIRef("urn:c1")),
+    ]
+    for triple in triples:
+        source_graph.add(triple)
+
+    # Adding with a graph context should add only the supplied triple.
+    ds.add((*triples[0], source_graph))
+    dataset_graph = ds.get_graph(graph_name)
+    assert len(dataset_graph) == 1
+    assert triples[0] in dataset_graph
+    assert triples[1] not in dataset_graph
+    assert triples[2] not in dataset_graph
+
+    ds.add((*triples[1], source_graph))
+    assert len(dataset_graph) == 2
+    assert triples[1] in dataset_graph
+    assert triples[2] not in dataset_graph
+
+
+def test_dataset_addn_with_graph_context_does_not_copy_statements():
+    ds = Dataset()
+    graph_name = URIRef("urn:graph")
+    source_graph = Graph(identifier=graph_name)
+
+    triples = [
+        (URIRef("urn:s1"), RDF.type, URIRef("urn:c1")),
+        (URIRef("urn:s2"), RDF.type, URIRef("urn:c1")),
+        (URIRef("urn:s3"), RDF.type, URIRef("urn:c1")),
+    ]
+    for triple in triples:
+        source_graph.add(triple)
+
+    # addN should keep the same non-copy semantics as add for graph contexts.
+    ds.addN([(*triples[0], source_graph)])
+    dataset_graph = ds.get_graph(graph_name)
+    assert len(dataset_graph) == 1
+    assert triples[0] in dataset_graph
+    assert triples[1] not in dataset_graph
+    assert triples[2] not in dataset_graph
+
+
 def test_dataset_parse_return_value():
     """
     Test that the return value of ds.parse has the same reference as ds.

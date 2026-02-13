@@ -89,6 +89,7 @@ html = ["html5rdf"]
 lxml = ["lxml"]
 orjson = ["orjson"]
 rdf4j = ["httpx"]
+graphdb = ["httpx"]
 
 [build-system]
 requires = ["poetry-core>=1.4.0"]
