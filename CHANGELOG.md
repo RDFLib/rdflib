@@ -2,7 +2,9 @@
 
 This release introduces a new major feature: GraphDB integration via the Python GraphDB Client. Users can now manage GraphDB instances and perform administrative tasks directly from Python. As GraphDB also supports the RDF4J REST API, users may utilize the recently released RDF4J Client and Store with GraphDB instances. For more details, see the new RDFLib GraphDB documentation under the extras section of the [RDFLib documentation](https://rdflib.readthedocs.io/en/stable/).
 
-This release also includes a number of fixes to `Graph.cbd()` and Turtle-related serializers. Thanks to @mgberg and @lisat-dstg, the code affected is now more standards-compliant.
+This release also includes a number of fixes to `Graph.cbd()` and Turtle-related serializers. Thanks to @mgberg and @lisat-dstg, the affected code is now more standards-compliant.
+
+At the request of users, the recently introduced CLI tool `sq` has been renamed to `sparqlquery` to avoid conflicts with existing well-known packages.
 
 Other maintenance tasks include updating all CI actions to the latest versions and adding a compatibility layer for pyparsing v3 to remove deprecation warnings.
 
