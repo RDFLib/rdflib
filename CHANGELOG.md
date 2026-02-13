@@ -1,3 +1,23 @@
+## 2026-02-13 RELEASE 7.6.0
+
+This release introduces a new major feature: GraphDB integration via the Python GraphDB Client. Users can now manage GraphDB instances and perform administrative tasks directly from Python. As GraphDB also supports the RDF4J REST API, users may utilize the recently released RDF4J Client and Store with GraphDB instances. For more details, see the new RDFLib GraphDB documentation under the extras section of the [RDFLib documentation](https://rdflib.readthedocs.io/en/stable/).
+
+This release also includes a number of fixes to `Graph.cbd()` and Turtle-related serializers. Thanks to @mgberg and @lisat-dstg, the code affected is now more standards-compliant.
+
+Other maintenance tasks include updating all CI actions to the latest versions and adding a compatibility layer for pyparsing v3 to remove deprecation warnings.
+
+Pull requests merged:
+
+- ci: update actions to the latest versions + bump ruff by @edmondchuc in [#3395](https://github.com/RDFLib/rdflib/pull/3395)
+- fix: Dataset.add() perf issues by @edmondchuc in [#3394](https://github.com/RDFLib/rdflib/pull/3394)
+- docs: improve docs generation for the file in the `examples` to show … by @nicholascar in [#3393](https://github.com/RDFLib/rdflib/pull/3393)
+- docs: GraphDB Client by @edmondchuc in [#3383](https://github.com/RDFLib/rdflib/pull/3383)
+- feat: GraphDB Client by @edmondchuc in [#3372](https://github.com/RDFLib/rdflib/pull/3372)
+- Improve Graph.cbd by @mgberg in [#3367](https://github.com/RDFLib/rdflib/pull/3367)
+- fix serialiser makes invalid turtle curis by @lisat-dstg in [#3364](https://github.com/RDFLib/rdflib/pull/3364)
+- Use non-deprecated pyparsing methods by @rafguns in [#3362](https://github.com/RDFLib/rdflib/pull/3362)
+- chore: post 7.5.0 tasks by @edmondchuc in [#3336](https://github.com/RDFLib/rdflib/pull/3336)
+
 ## 2025-11-28 RELEASE 7.5.0
 
 This release introduces a new major feature to RDFLib: RDF4J Store integration and RDF4J Client. Users can use this to connect to RDF4J database servers through RDFLib's Graph and Dataset classes, as well as manage repositories and transactions using the RDF4J Client. A comprehensive user guide for the new RDF4J features is available under the extras section of the [RDFLib documentation](https://rdflib.readthedocs.io/en/stable/).
