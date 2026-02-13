@@ -32,7 +32,7 @@ from rdflib.plugins.sparql.parser import (
 )
 from rdflib.plugins.sparql.parserutils import Comp, CompValue, Param
 from rdflib.query import Result, ResultParser
-from rdflib.term import BNode, URIRef
+from rdflib.term import BNode, Identifier, URIRef
 from rdflib.term import Literal as RDFLiteral
 
 ParserElement.set_default_whitespace_chars(" \n")
@@ -102,7 +102,7 @@ class TSVResultParser(ResultParser):
 
     def convertTerm(
         self, t: Union[object, RDFLiteral, BNode, CompValue, URIRef]
-    ) -> typing.Optional[Union[object, BNode, URIRef, RDFLiteral]]:
+    ) -> typing.Optional[Identifier]:
         if t is NONE_VALUE:
             return None
         if isinstance(t, CompValue):
@@ -110,5 +110,7 @@ class TSVResultParser(ResultParser):
                 return RDFLiteral(t.string, lang=t.lang, datatype=t.datatype)
             else:
                 raise Exception("I dont know how to handle this: %s" % (t,))
-        else:
+        elif isinstance(t, (RDFLiteral, BNode, URIRef)):
             return t
+        else:
+            raise ValueError(f"Unexpected type {type(t)} found in TSV result")
