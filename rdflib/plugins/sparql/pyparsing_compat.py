@@ -4,7 +4,7 @@ Compatibility helpers for supporting pyparsing v2 and v3 APIs.
 
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Callable, Dict, Type, cast
 
 import pyparsing
 
@@ -20,58 +20,78 @@ except (TypeError, ValueError):
 
 PYPARSING_V3 = PYPARSING_MAJOR_VERSION >= 3
 
+_ParserFactory = Callable[..., ParserElement]
+_ParserTransform = Callable[..., ParserElement]
+
+DelimitedList: _ParserFactory
+original_text_for: _ParserTransform
+rest_of_line: ParserElement
+
 if PYPARSING_V3:
     DelimitedList = pyparsing.DelimitedList
     original_text_for = pyparsing.original_text_for
     rest_of_line = pyparsing.rest_of_line
 else:
-    DelimitedList = pyparsing.delimitedList  # type: ignore[misc]
+    DelimitedList = pyparsing.delimitedList
     original_text_for = pyparsing.originalTextFor
     rest_of_line = pyparsing.restOfLine
 
 
-if not hasattr(ParserElement, "set_parse_action"):
-    ParserElement.set_parse_action = ParserElement.setParseAction  # type: ignore[method-assign]
+def _alias_instance_method(klass: Type[object], new_name: str, old_name: str) -> None:
+    if hasattr(klass, new_name) or not hasattr(klass, old_name):
+        return
 
-if not hasattr(ParserElement, "add_parse_action"):
-    ParserElement.add_parse_action = ParserElement.addParseAction  # type: ignore[method-assign]
+    def _method(self: object, *args: object, **kwargs: object) -> object:
+        # Resolve old_name on self so subclass overrides are preserved.
+        method = cast(Callable[..., object], getattr(self, old_name))
+        return method(*args, **kwargs)
 
-if not hasattr(ParserElement, "leave_whitespace"):
-    ParserElement.leave_whitespace = ParserElement.leaveWhitespace  # type: ignore[method-assign]
+    setattr(klass, new_name, _method)
 
-if not hasattr(ParserElement, "set_name"):
-    ParserElement.set_name = ParserElement.setName  # type: ignore[method-assign]
 
-if not hasattr(ParserElement, "set_results_name"):
-    ParserElement.set_results_name = ParserElement.setResultsName  # type: ignore[method-assign]
+def _alias_static_method(klass: Type[object], new_name: str, old_name: str) -> None:
+    if hasattr(klass, new_name) or not hasattr(klass, old_name):
+        return
 
-if not hasattr(ParserElement, "parse_with_tabs"):
-    ParserElement.parse_with_tabs = ParserElement.parseWithTabs  # type: ignore[method-assign]
+    old_method = cast(Callable[..., object], getattr(klass, old_name))
 
-if not hasattr(ParserElement, "search_string"):
-    ParserElement.search_string = ParserElement.searchString  # type: ignore[method-assign]
+    def _method(*args: object, **kwargs: object) -> object:
+        return old_method(*args, **kwargs)
 
-if not hasattr(ParserElement, "set_default_whitespace_chars"):
-    ParserElement.set_default_whitespace_chars = ParserElement.setDefaultWhitespaceChars  # type: ignore[method-assign]
+    setattr(klass, new_name, staticmethod(_method))
+
+
+_alias_instance_method(ParserElement, "set_parse_action", "setParseAction")
+_alias_instance_method(ParserElement, "add_parse_action", "addParseAction")
+_alias_instance_method(ParserElement, "leave_whitespace", "leaveWhitespace")
+_alias_instance_method(ParserElement, "set_name", "setName")
+_alias_instance_method(ParserElement, "set_results_name", "setResultsName")
+_alias_instance_method(ParserElement, "parse_with_tabs", "parseWithTabs")
+_alias_instance_method(ParserElement, "search_string", "searchString")
+_alias_static_method(
+    ParserElement,
+    "set_default_whitespace_chars",
+    "setDefaultWhitespaceChars",
+)
 
 if not hasattr(ParserElement, "parse_string"):
 
     def _parse_string(
         self: ParserElement,
-        instring: Any,
+        instring: str,
         parse_all: bool = False,
         *,
         parseAll: bool = False,
     ) -> ParseResults:
         if parseAll:
             parse_all = parseAll
-        return self.parseString(instring, parseAll=parse_all)
+        parser = cast(Callable[..., ParseResults], getattr(self, "parseString"))
+        return parser(instring, parseAll=parse_all)
 
-    ParserElement.parse_string = _parse_string  # type: ignore[method-assign]
+    setattr(ParserElement, "parse_string", _parse_string)
 
 
-if not hasattr(ParseResults, "as_list"):
-    ParseResults.as_list = ParseResults.asList  # type: ignore[method-assign]
+_alias_instance_method(ParseResults, "as_list", "asList")
 
 
 def combine_join_kwargs(value: str) -> Dict[str, str]:
