@@ -73,7 +73,7 @@ def test_graph_qname_syntax():
 
 def test_graph_uri_syntax():
     g = rdflib.Dataset()
-    # getQName will not abbreviate this, so it should serialize as
+    # get_pname will not abbreviate this, so it should serialize as
     # a '<...>' term.
     g.add(TRIPLE + (rdflib.URIRef("http://example.com/foo."),))
     out = g.serialize(format="trig", encoding="latin-1")

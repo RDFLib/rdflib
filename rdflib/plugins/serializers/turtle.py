@@ -5,6 +5,8 @@ See <http://www.w3.org/TeamSubmission/turtle/> for syntax specification.
 
 from __future__ import annotations
 
+import re
+import warnings
 from collections import defaultdict
 from typing import (
     IO,
@@ -43,6 +45,9 @@ class RecursiveSerializer(Serializer):
     maxDepth = 10
     indentString = "  "
     roundtrip_prefixes: Tuple[Any, ...] = ()
+    LOCALNAME_PECRENT_CHARACTER_REQUIRING_ESCAPE_REGEX = re.compile(
+        r"%(?![0-9A-Fa-f]{2})"
+    )
 
     def __init__(self, store: Graph):
         super(RecursiveSerializer, self).__init__(store)
@@ -204,6 +209,9 @@ class TurtleSerializer(RecursiveSerializer):
 
     short_name = "turtle"
     indentString = "    "
+    LOCALNAME_PECRENT_CHARACTER_REQUIRING_ESCAPE_REGEX = re.compile(
+        r"%(?![0-9A-Fa-f]{2})"
+    )
 
     def __init__(self, store: Graph):
         self._ns_rewrite: Dict[str, str] = {}
@@ -300,15 +308,15 @@ class TurtleSerializer(RecursiveSerializer):
                     # predicate corresponds to base namespace
                     continue
             # Don't use generated prefixes for subjects and objects
-            self.getQName(node, gen_prefix=(i == VERB))
+            self.get_pname(node, gen_prefix=(i == VERB))
             if isinstance(node, Literal) and node.datatype:
-                self.getQName(node.datatype, gen_prefix=_GEN_QNAME_FOR_DT)
+                self.get_pname(node.datatype, gen_prefix=_GEN_QNAME_FOR_DT)
         p = triple[1]
         if isinstance(p, BNode):  # hmm - when is P ever a bnode?
             self._references[p] += 1
 
-    # TODO: Rename to get_pname
-    def getQName(self, uri: Node, gen_prefix: bool = True) -> Optional[str]:
+    # Refer to Productions for terminals PNAME_NS and PNAME_LN https://www.w3.org/TR/turtle/#sec-grammar-grammar
+    def get_pname(self, uri: Node, gen_prefix: bool = True) -> Optional[str]:
         if not isinstance(uri, URIRef):
             return None
 
@@ -328,15 +336,29 @@ class TurtleSerializer(RecursiveSerializer):
 
         prefix, namespace, local = parts
 
+        # To understand treatment of % character refer to Productions for terminal PLX at
+        # https://www.w3.org/TR/turtle/#grammar-production-PLX
+        # Only % NOT followed by two hex chars requires manual backslash escaping
         local = local.replace(r"(", r"\(").replace(r")", r"\)")
+        local = self.LOCALNAME_PECRENT_CHARACTER_REQUIRING_ESCAPE_REGEX.sub(
+            "\\%", local
+        )
 
-        # QName cannot end with .
+        # PName cannot end with .
         if local.endswith("."):
             return None
 
         prefix = self.addNamespace(prefix, namespace)
 
         return "%s:%s" % (prefix, local)
+
+    def getQName(self, uri: Node, gen_prefix: bool = True) -> Optional[str]:
+        warnings.warn(
+            "TurtleSerializer.getQName is deprecated, use TurtleSerializer.get_pname instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.get_pname(uri, gen_prefix)
 
     def startDocument(self) -> None:
         self._started = True
@@ -393,12 +415,12 @@ class TurtleSerializer(RecursiveSerializer):
         if isinstance(node, Literal):
             return node._literal_n3(
                 use_plain=True,
-                qname_callback=lambda dt: self.getQName(dt, _GEN_QNAME_FOR_DT),
+                qname_callback=lambda dt: self.get_pname(dt, _GEN_QNAME_FOR_DT),
             )
         else:
             node = self.relativize(node)  # type: ignore[type-var]
 
-            return self.getQName(node, position == VERB) or node.n3()
+            return self.get_pname(node, position == VERB) or node.n3()
 
     def p_squared(self, node: Node, position: int, newline: bool = False) -> bool:
         if (
