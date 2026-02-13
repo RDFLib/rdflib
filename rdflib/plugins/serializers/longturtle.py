@@ -18,6 +18,7 @@ to turtle - the original turtle serializer. It:
 
 from __future__ import annotations
 
+import warnings
 from typing import IO, Any, Optional
 
 from rdflib.compare import to_canonical_graph
@@ -206,6 +207,14 @@ class LongTurtleSerializer(RecursiveSerializer):
         prefix = self.addNamespace(prefix, namespace)
 
         return "%s:%s" % (prefix, local)
+
+    def getQName(self, uri, gen_prefix=True):
+        warnings.warn(
+            "LongTurtleSerializer.getQName is deprecated, use LongTurtleSerializer.get_pname instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.get_pname(uri, gen_prefix)
 
     def startDocument(self):
         self._started = True

@@ -6,6 +6,7 @@ See <http://www.w3.org/TeamSubmission/turtle/> for syntax specification.
 from __future__ import annotations
 
 import re
+import warnings
 from collections import defaultdict
 from typing import (
     IO,
@@ -343,13 +344,21 @@ class TurtleSerializer(RecursiveSerializer):
             "\\%", local
         )
 
-        # QName cannot end with .
+        # PName cannot end with .
         if local.endswith("."):
             return None
 
         prefix = self.addNamespace(prefix, namespace)
 
         return "%s:%s" % (prefix, local)
+
+    def getQName(self, uri: Node, gen_prefix: bool = True) -> Optional[str]:
+        warnings.warn(
+            "TurtleSerializer.getQName is deprecated, use TurtleSerializer.get_pname instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.get_pname(uri, gen_prefix)
 
     def startDocument(self) -> None:
         self._started = True
