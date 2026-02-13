@@ -47,6 +47,7 @@ nav:
     - Collection: apidocs/rdflib.collection.md
     - Paths: apidocs/rdflib.paths.md
     - RDF4J: apidocs/rdflib.contrib.rdf4j.md
+    - GraphDB: apidocs/rdflib.contrib.graphdb.md
     - Util: apidocs/rdflib.util.md
     - Plugins:
       - Parsers: apidocs/rdflib.plugins.parsers.md

@@ -15,13 +15,14 @@ pytestmark = pytest.mark.skipif(
 if has_httpx:
     import httpx
 
+    from rdflib.contrib.graphdb import GraphDBClient
     from rdflib.contrib.rdf4j import RDF4JClient
     from rdflib.contrib.rdf4j.client import Repository
     from rdflib.contrib.rdf4j.exceptions import (
         RepositoryAlreadyExistsError,
-        RepositoryFormatError,
         RepositoryNotFoundError,
         RepositoryNotHealthyError,
+        RepositoryResponseFormatError,
     )
 
 
@@ -47,7 +48,7 @@ def test_list_repo_format_error(client: RDF4JClient, monkeypatch):
             pass
 
     monkeypatch.setattr(httpx.Client, "get", lambda *args, **kwargs: MockResponse())
-    with pytest.raises(RepositoryFormatError):
+    with pytest.raises(RepositoryResponseFormatError):
         client.repositories.list()
 
 
@@ -56,9 +57,20 @@ def test_repo_manager_crud(client: RDF4JClient):
     # Empty state
     assert client.repositories.list() == []
 
-    config_path = pathlib.Path(__file__).parent / "repo-configs/test-repo-config.ttl"
-    with open(config_path) as file:
-        config = file.read()
+    if isinstance(client, GraphDBClient):
+        # Use a GraphDB repository config as non-GraphDB repositories/sails cannot call
+        # the GraphDB specific health endpoint.
+        config_path = (
+            pathlib.Path(__file__).parent / "repo-configs/test-graphdb-repo-config.ttl"
+        )
+        with open(config_path) as file:
+            config = file.read()
+    else:
+        config_path = (
+            pathlib.Path(__file__).parent / "repo-configs/test-repo-config.ttl"
+        )
+        with open(config_path) as file:
+            config = file.read()
 
     repo = client.repositories.create("test-repo", config)
     assert repo.identifier == "test-repo"
