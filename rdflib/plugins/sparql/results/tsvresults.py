@@ -32,10 +32,10 @@ from rdflib.plugins.sparql.parser import (
 )
 from rdflib.plugins.sparql.parserutils import Comp, CompValue, Param
 from rdflib.query import Result, ResultParser
-from rdflib.term import BNode, URIRef
+from rdflib.term import BNode, Identifier, URIRef
 from rdflib.term import Literal as RDFLiteral
 
-ParserElement.setDefaultWhitespaceChars(" \n")
+ParserElement.set_default_whitespace_chars(" \n")
 
 
 String = STRING_LITERAL1 | STRING_LITERAL2
@@ -44,23 +44,24 @@ RDFLITERAL = Comp(
     "literal",
     Param("string", String)
     + Optional(
-        Param("lang", LANGTAG.leaveWhitespace())
-        | Literal("^^").leaveWhitespace() + Param("datatype", IRIREF).leaveWhitespace()
+        Param("lang", LANGTAG.leave_whitespace())
+        | Literal("^^").leave_whitespace()
+        + Param("datatype", IRIREF).leave_whitespace()
     ),
 )
 
 NONE_VALUE = object()
 
 EMPTY = FollowedBy(LineEnd()) | FollowedBy("\t")
-EMPTY.setParseAction(lambda x: NONE_VALUE)
+EMPTY.set_parse_action(lambda x: NONE_VALUE)
 
 TERM = RDFLITERAL | IRIREF | BLANK_NODE_LABEL | NumericLiteral | BooleanLiteral
 
 ROW = (EMPTY | TERM) + ZeroOrMore(Suppress("\t") + (EMPTY | TERM))
-ROW.parseWithTabs()
+ROW.parse_with_tabs()
 
 HEADER = Var + ZeroOrMore(Suppress("\t") + Var)
-HEADER.parseWithTabs()
+HEADER.parse_with_tabs()
 
 
 class TSVResultParser(ResultParser):
@@ -77,7 +78,7 @@ class TSVResultParser(ResultParser):
 
         header = source.readline()
 
-        r.vars = list(HEADER.parseString(header.strip(), parseAll=True))
+        r.vars = list(HEADER.parse_string(header.strip(), parse_all=True))
         r.bindings = []
         while True:
             line = source.readline()
@@ -87,15 +88,21 @@ class TSVResultParser(ResultParser):
             if line == "":
                 continue
 
-            row = ROW.parseString(line, parseAll=True)
-            # type error: Generator has incompatible item type "object"; expected "Identifier"
-            r.bindings.append(dict(zip(r.vars, (self.convertTerm(x) for x in row))))  # type: ignore[misc]
-
+            row = ROW.parse_string(line, parse_all=True)
+            this_row_dict = {}
+            for var, val_read in zip(r.vars, row):
+                val = self.convertTerm(val_read)
+                if val is None:
+                    # Skip unbound vars
+                    continue
+                this_row_dict[var] = val
+            # Preserve solution row cardinality, including fully-unbound rows.
+            r.bindings.append(this_row_dict)
         return r
 
     def convertTerm(
         self, t: Union[object, RDFLiteral, BNode, CompValue, URIRef]
-    ) -> typing.Optional[Union[object, BNode, URIRef, RDFLiteral]]:
+    ) -> typing.Optional[Identifier]:
         if t is NONE_VALUE:
             return None
         if isinstance(t, CompValue):
@@ -103,5 +110,7 @@ class TSVResultParser(ResultParser):
                 return RDFLiteral(t.string, lang=t.lang, datatype=t.datatype)
             else:
                 raise Exception("I dont know how to handle this: %s" % (t,))
-        else:
+        elif isinstance(t, (RDFLiteral, BNode, URIRef)):
             return t
+        else:
+            raise ValueError(f"Unexpected type {type(t)} found in TSV result")
