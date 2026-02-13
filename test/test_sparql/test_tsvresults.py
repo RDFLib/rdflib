@@ -1,6 +1,7 @@
 from io import BytesIO, StringIO
 
 import pytest
+
 from rdflib.plugins.sparql.parserutils import CompValue
 from rdflib.plugins.sparql.results.tsvresults import TSVResultParser
 from rdflib.query import ResultRow
@@ -42,7 +43,9 @@ def test_dbpedia_style_optional_unbound_var() -> None:
     assert result.bindings[0][death_date] == Literal(
         "1955-04-18", datatype=URIRef("http://www.w3.org/2001/XMLSchema#date")
     )
-    assert result.bindings[1][person] == URIRef("http://dbpedia.org/resource/Barack_Obama")
+    assert result.bindings[1][person] == URIRef(
+        "http://dbpedia.org/resource/Barack_Obama"
+    )
     assert death_date not in result.bindings[1]
 
 
