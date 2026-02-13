@@ -10,6 +10,7 @@ Other maintenance tasks include updating all CI actions to the latest versions a
 
 Pull requests merged:
 
+- chore: rename sq to sparqlquery by @edmondchuc in [#3396](https://github.com/RDFLib/rdflib/pull/3396)
 - ci: update actions to the latest versions + bump ruff by @edmondchuc in [#3395](https://github.com/RDFLib/rdflib/pull/3395)
 - fix: Dataset.add() perf issues by @edmondchuc in [#3394](https://github.com/RDFLib/rdflib/pull/3394)
 - docs: improve docs generation for the file in the `examples` to show … by @nicholascar in [#3393](https://github.com/RDFLib/rdflib/pull/3393)
