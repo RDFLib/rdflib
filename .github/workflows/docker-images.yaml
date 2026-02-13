@@ -37,13 +37,11 @@ jobs:
       packages: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 1
       - name: Install Task
-        uses: arduino/setup-task@v2
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+        uses: go-task/setup-task@v1
       - name: Install poetry
         run: |
           pip install -r devtools/requirements-poetry.in
@@ -66,9 +64,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Install Task
-        uses: arduino/setup-task@v2
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+        uses: go-task/setup-task@v1
       - name: Install poetry
         run: |
           pip install -r devtools/requirements-poetry.in
