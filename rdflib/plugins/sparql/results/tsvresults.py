@@ -96,8 +96,8 @@ class TSVResultParser(ResultParser):
                     # Skip unbound vars
                     continue
                 this_row_dict[var] = val
-            if len(this_row_dict) > 0:
-                r.bindings.append(this_row_dict)
+            # Preserve solution row cardinality, including fully-unbound rows.
+            r.bindings.append(this_row_dict)
         return r
 
     def convertTerm(
