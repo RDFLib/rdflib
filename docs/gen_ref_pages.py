@@ -22,11 +22,49 @@ def generate_module_docs(module_path, output_path, nav, indent=0):
         if not module_path == "rdflib":
             with mkdocs_gen_files.open(doc_path, "w") as fd:
                 fd.write(f"::: {module_path}\n\n")
-                # namespace module page gets too big, so we disable source code display
                 if module_path.startswith("rdflib.namespace"):
+                    # namespace module page gets too big, so we disable source code display
                     fd.write("    options:\n")
                     fd.write("        show_source: false\n")
                     fd.write("        show_if_no_docstring: false\n\n")
+                if module_path.startswith("examples."):
+                    # Special handling for examples: show top docstring and rest of source code
+                    file_path = module.__file__
+                    if file_path:
+                        with open(file_path, "r", encoding="utf-8") as f:
+                            content = f.read()
+                        docstring = module.__doc__ or ""
+                        # Remove the docstring from the code content
+                        code = content
+                        if docstring:
+                            for quote in ['"""', "'''"]:
+                                doc_quoted = quote + docstring + quote
+                                start = code.find(doc_quoted)
+                                if start != -1:
+                                    end = start + len(doc_quoted)
+                                    code = code[:start] + code[end:]
+                                    break
+                        # Mkdocstrings options: https://mkdocstrings.github.io/python/reference/api/#mkdocstrings_handlers.python.PythonInputOptions
+                        with mkdocs_gen_files.open(doc_path, "w") as fd:
+                            fd.write("    options:\n")
+                            fd.write("        show_source: false\n")
+                            fd.write("        show_docstring_attributes: false\n")
+                            fd.write("        show_docstring_functions: false\n")
+                            fd.write("        show_docstring_modules: false\n")
+                            fd.write("        show_docstring_classes: false\n")
+                            fd.write("        show_signature: false\n")
+                            fd.write("        show_signature_annotations: false\n")
+                            fd.write("        show_signature_type_parameters: false\n")
+                            fd.write("        show_docstring_other_parameters: false\n")
+                            fd.write("        show_docstring_parameters: false\n")
+                            fd.write("        show_docstring_raises: false\n")
+                            fd.write("        show_docstring_receives: false\n")
+                            fd.write("        show_docstring_returns: false\n")
+                            fd.write("        summary: false\n")
+                            fd.write("        show_if_no_docstring: false\n\n")
+                            fd.write("```python\n")
+                            fd.write(code)
+                            fd.write("\n```\n")
 
             mkdocs_gen_files.set_edit_path(
                 doc_path, Path(f"../{module_path.replace('.', '/')}.py")
