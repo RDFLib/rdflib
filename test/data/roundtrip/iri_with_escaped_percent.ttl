@@ -1,0 +1,4 @@
+@prefix : <#> .
+:zzz_\%_zzz :prop "test iri including backslash-escaped percent char \\%" .
+:zzz%20zzz :prop "test iri including percent-encoded space char %20" .
+:zzz\%azzz :prop "test iri including backslash-escpaed percent char followed by single hex character" .
