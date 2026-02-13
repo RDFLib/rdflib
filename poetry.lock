@@ -2031,6 +2031,7 @@ type = ["pytest-mypy"]
 
 [extras]
 berkeleydb = ["berkeleydb"]
+graphdb = ["httpx"]
 html = ["html5rdf"]
 lxml = ["lxml"]
 networkx = ["networkx"]
@@ -2040,4 +2041,4 @@ rdf4j = ["httpx"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1"
-content-hash = "a9f7643c46c8fa5f969aa0554e147cc9d1ebc19284aabf9ed19991fa96f105c7"
+content-hash = "cbb5bd038541822ce2554dfa25d11cc77ba4fe725ddd9435e4dd95d4abd75dd4"
