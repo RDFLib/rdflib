@@ -24,14 +24,13 @@ from pyparsing import (
     Regex,
     Suppress,
     ZeroOrMore,
-    DelimitedList,
-    rest_of_line,
 )
 
 import rdflib
 from rdflib.compat import decodeUnicodeEscape
 
 from . import operators as op
+from .pyparsing_compat import DelimitedList, combine_join_kwargs, rest_of_line
 from .parserutils import Comp, CompValue, Param, ParamList
 
 # from pyparsing import Keyword as CaseSensitiveKeyword
@@ -1101,7 +1100,11 @@ RelationalExpression = Comp(
         | Param("op", Keyword("IN")) + Param("other", ExpressionList)
         | Param(
             "op",
-            Combine(Keyword("NOT") + Keyword("IN"), adjacent=False, join_string=" "),
+            Combine(
+                Keyword("NOT") + Keyword("IN"),
+                adjacent=False,
+                **combine_join_kwargs(" "),
+            ),
         )
         + Param("other", ExpressionList)
     ),

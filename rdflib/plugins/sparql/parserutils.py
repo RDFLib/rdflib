@@ -39,9 +39,11 @@ from typing import (
     Union,
 )
 
-from pyparsing import ParserElement, ParseResults, TokenConverter, original_text_for
+from pyparsing import ParserElement, ParseResults, TokenConverter
 
 from rdflib.term import BNode, Identifier, Variable
+
+from .pyparsing_compat import original_text_for
 
 if TYPE_CHECKING:
     from rdflib.plugins.sparql.sparql import FrozenBindings
