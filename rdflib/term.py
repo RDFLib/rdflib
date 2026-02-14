@@ -253,6 +253,15 @@ class IdentifiedNode(Identifier):
 
     __slots__ = ()
 
+    def __hash__(self) -> int:
+        return super().__hash__()
+
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, IdentifiedNode):
+            # Compare the N3 notation and not the string representation.
+            return self.n3() == other.n3()
+        return super().__eq__(other)
+
     def __getnewargs__(self) -> Tuple[str]:
         return (str(self),)
 
