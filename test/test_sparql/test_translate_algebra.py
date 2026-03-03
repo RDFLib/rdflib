@@ -10,6 +10,7 @@ from typing import Union, cast
 
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
+from pyparsing import ParseException
 
 import rdflib.plugins.sparql.algebra as algebra
 import rdflib.plugins.sparql.parser as parser
@@ -251,7 +252,7 @@ unused_files = {
 
 
 if os.name != "nt":
-    # On Windows this test causes a stackoverflow or memory error, so don't run
+    # On Windows this test was causing a stackoverflow or memory error, so don't run
     # it on Windows. The test fails anyway on linux and should be fixed. Once
     # the cause of this failure is fixed the condition to not run it on windows
     # should be removed and it should be added to the normal tests.
@@ -261,8 +262,8 @@ if os.name != "nt":
             "Test if a nested service pattern is properly translated"
             "into the query text.",
             pytest.mark.xfail(
-                raises=(RecursionError, TypeError),
-                reason="Fails with RecursionError inside parser.parseQuery",
+                raises=ParseException,
+                reason="translateAlgebra produces invalid SPARQL for nested OPTIONAL/SERVICE patterns",
             ),
         )
     )
