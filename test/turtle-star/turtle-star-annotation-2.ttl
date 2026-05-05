@@ -1,0 +1,10 @@
+PREFIX :       <http://example/>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+
+:s :p :o {| :source [ :graph <http://host1/> ;
+                      :date "2020-01-20"^^xsd:date
+                    ] ;
+            :source [ :graph <http://host2/> ;
+                      :date "2020-12-31"^^xsd:date
+                    ]
+          |} .
