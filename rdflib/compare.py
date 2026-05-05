@@ -429,19 +429,10 @@ class _TripleCanonicalizer:
             stats["prunings"] = 0
         depth[0] += 1
         candidates = self._get_candidates(coloring)
-        best: list[list[Color]] = []
+        best_coloring = None
         best_score = None
-        best_experimental_score = None
-        last_coloring = None
-        generator: dict[Node, set[Node]] = defaultdict(set)
-        visited: set[Node] = set()
+
         for candidate, color in candidates:
-            if candidate in generator:
-                v = generator[candidate] & visited
-                if len(v) > 0:
-                    visited.add(candidate)
-                    continue
-            visited.add(candidate)
             coloring_copy: list[Color] = []
             color_copy = None
             for c in coloring:
@@ -452,42 +443,19 @@ class _TripleCanonicalizer:
             new_color = self._individuate(color_copy, candidate)
             coloring_copy.append(new_color)
             refined_coloring = self._refine(coloring_copy, [new_color])
-            color_score = tuple([c.key() for c in refined_coloring])
-            experimental = self._experimental_path(coloring_copy)
-            experimental_score = set([c.key() for c in experimental])
-            if last_coloring:
-                generator = self._create_generator(
-                    [last_coloring, experimental], generator
-                )
-            last_coloring = experimental
+            color_score = tuple(c.key() for c in refined_coloring)
+
             if best_score is None or best_score < color_score:
-                best = [refined_coloring]
+                best_coloring = refined_coloring
                 best_score = color_score
-                best_experimental_score = experimental_score
-            elif best_score > color_score:
-                # prune this branch.
-                if stats is not None and isinstance(stats["prunings"], int):
-                    stats["prunings"] += 1
-            elif experimental_score != best_experimental_score:
-                best.append(refined_coloring)
-            else:
-                # prune this branch.
-                if stats is not None and isinstance(stats["prunings"], int):
-                    stats["prunings"] += 1
-        discrete: list[list[Color]] = [x for x in best if self._discrete(x)]
-        if len(discrete) == 0:
-            best_score = None
-            best_depth = None
-            for coloring in best:
-                d = [depth[0]]
-                new_color = self._traces(coloring, stats=stats, depth=d)
-                color_score = tuple([c.key() for c in refined_coloring])
-                if best_score is None or color_score > best_score:
-                    discrete = [new_color]
-                    best_score = color_score
-                    best_depth = d[0]
-            depth[0] = best_depth  # type: ignore[assignment]
-        return discrete[0]
+
+        if best_coloring is None:
+            return coloring
+
+        if not self._discrete(best_coloring):
+            return self._traces(best_coloring, stats=stats, depth=depth)
+
+        return best_coloring
 
     def canonical_triples(self, stats: Stats | None = None):
         if stats is not None:
