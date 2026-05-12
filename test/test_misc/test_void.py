@@ -1,6 +1,5 @@
-from rdflib.void import generateVoID
 from rdflib import Graph, URIRef
-
+from rdflib.void import generateVoID
 
 data = (
     "@prefix void: <http://rdfs.org/ns/void#> .\n"
