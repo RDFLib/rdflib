@@ -10,6 +10,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 from rdflib.plugin import plugins
+from rdflib.plugins.sparql import prepareQuery
 from rdflib.query import Result, ResultParser
 from rdflib.term import BNode
 from rdflib.util import FORMAT_MIMETYPE_MAP, RESPONSE_TABLE_FORMAT_MIMETYPE_MAP
@@ -91,6 +92,11 @@ class SPARQLConnector:
             params["default-graph-uri"] = default_graph
 
         headers = {"Accept": self.response_mime_types()}
+
+        # change Accept header to an RDF mime type in case of a construct query
+        qtype = self.__get_query_type__(query)
+        if qtype in ("ConstructQuery", "DescribeQuery"):
+            headers.update({"Accept": self.response_mime_types_rdf()})
 
         args = copy.deepcopy(self.kwargs)
 
@@ -204,6 +210,31 @@ class SPARQLConnector:
             else:
                 supported_formats.add(plugin.name)
         return ", ".join(supported_formats)
+
+    def response_mime_types_rdf(self) -> str:
+        """Construct a HTTP-Header Accept field to reflect the supported mime types for SPARQL construct/describe queries that return a graph.
+
+        If the return_format parameter is set, the mime types are restricted to these accordingly.
+        """
+        rdf_mimetype_map = [
+            mime for mlist in FORMAT_MIMETYPE_MAP.values() for mime in mlist
+        ]
+
+        # use the matched returnType if it matches one of the rdf mime types
+        if self.returnFormat in FORMAT_MIMETYPE_MAP:
+            return FORMAT_MIMETYPE_MAP[self.returnFormat][0]
+        else:
+            return ", ".join(rdf_mimetype_map)
+
+    def __get_query_type__(self, query: str) -> str | None:
+        try:
+            q = prepareQuery(query)
+            algebra = getattr(q, "algebra", None)
+            name = getattr(algebra, "name", None)
+            return name  # e.g. 'SelectQuery', 'ConstructQuery', 'DescribeQuery', 'AskQuery'
+        except Exception:
+            log.debug(f"cannot parse query: {query}")
+        return None
 
 
 __all__ = ["SPARQLConnector", "SPARQLConnectorException"]
