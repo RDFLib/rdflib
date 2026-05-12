@@ -158,17 +158,25 @@ class Context:
                 rtype = [rtype] if rtype else []
 
             typeterm = None
-            for rt in rtype:
+            typeterm_context = {}
+            # iterate in reverse direction so that the first types have higher priority
+            for rt in reversed(rtype):
                 try:
                     typeterm = self.terms.get(rt)
                 except TypeError:
                     # extra lenience, triggers if type is set to a literal
                     pass
-                if typeterm is not None:
-                    break
 
-            if typeterm and typeterm.context:
-                subcontext = self.subcontext(typeterm.context, propagate=False)
+                if typeterm and typeterm.context:
+                    # contexts can either be dictionaries or lists
+                    if isinstance(typeterm.context, dict):
+                        typeterm_context |= typeterm.context
+                    else:
+                        for context in typeterm.context:
+                            typeterm_context |= context
+
+            if typeterm_context:
+                subcontext = self.subcontext(typeterm_context, propagate=False)
                 if subcontext:
                     return subcontext
 
