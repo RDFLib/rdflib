@@ -1,4 +1,3 @@
-import pytest
 from rdflib.void import generateVoID
 from rdflib import Graph, URIRef
 
