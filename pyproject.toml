@@ -204,7 +204,6 @@ addopts = [
     "--ignore=devtools",
     "--ignore=rdflib/extras/external_graph_libs.py",
     "--ignore-glob=docs/*.py",
-    "--ignore-glob=*_pyzo.py",
     "--ignore-glob=site/*",
     "--strict-markers",
 ]
