@@ -36,28 +36,28 @@ res = Graph(identifier=URIRef("urn:example:voidresults"))
 g = Graph().parse(data=data, format="n3")
 
 
-def test_generateVoID_distinct():
+def test_generatevoid_distinct():
 
     _res, _ds = generateVoID(g, dataset, res)
 
     assert isinstance(_res, Graph)
 
 
-def test_generateVoID_indistinct():
+def test_generatevoid_indistinct():
 
     _res, _ds = generateVoID(g, dataset, res, distinctForPartitions=False)
 
     assert isinstance(_res, Graph)
 
 
-def test_generateVoID_nodataset():
+def test_generatevoid_nodataset():
 
     _res, _ds = generateVoID(g, res)
 
     assert isinstance(_res, Graph)
 
 
-def test_generateVoID_nores():
+def test_generatevoid_nores():
 
     _res, _ds = generateVoID(g)
 
