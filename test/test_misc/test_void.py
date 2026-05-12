@@ -38,7 +38,7 @@ g = Graph().parse(data=data, format="n3")
 
 def test_generateVoID_distinct():
 
-    _res, _ds = generateVoID(g,dataset, res)
+    _res, _ds = generateVoID(g, dataset, res)
 
     assert isinstance(_res, Graph)
 
