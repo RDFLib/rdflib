@@ -1,0 +1,15 @@
+# This fails in rdflib query if a variable is bound in some rows but not others,
+# and a DISTINCT is used in GROUP_CONCAT aggregation in the project clause
+# So currently the name works (no distinct) but the age fails (distinct used)
+# Expected failure with rdflib 7.2.1 is "rdflib.plugins.sparql.sparql.NotBoundError: Variable age is not bound"
+# Query succeeds with `arq --data=test_unbound_values-data.ttl --query=test_unbound_values-failing.rq`
+PREFIX ex: <http://example.org/>
+
+SELECT ?person (GROUP_CONCAT(DISTINCT ?age) AS ?ages)
+WHERE {
+    ?person a ex:Person .
+
+    OPTIONAL { ?person ex:age ?age . }
+
+}
+GROUP BY ?person
