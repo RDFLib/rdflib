@@ -5,6 +5,7 @@ import warnings
 from typing import IO, TYPE_CHECKING, Any
 
 from rdflib.graph import Graph
+from rdflib.namespace import XSD
 from rdflib.serializer import Serializer
 from rdflib.term import Literal
 
@@ -71,7 +72,7 @@ def _quoteLiteral(l_: Literal) -> str:  # noqa: N802
         if l_.datatype:
             raise Exception("Literal has datatype AND language!")
         return "%s@%s" % (encoded, l_.language)
-    elif l_.datatype:
+    elif l_.datatype and l_.datatype != XSD.string:
         return "%s^^<%s>" % (encoded, l_.datatype)
     else:
         return "%s" % encoded
