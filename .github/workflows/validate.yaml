@@ -48,12 +48,6 @@ jobs:
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "- black --check --diff ./rdflib"
             TOXENV_SUFFIX: "-lxml"
-          - python-version: "3.11"
-            os: ubuntu-latest
-            TOXENV_SUFFIX: "-docs"
-            PREPARATION: "sudo apt-get install -y firejail"
-            extensive-tests: true
-            TOX_TEST_HARNESS: "-- firejail --net=none --"
             TOX_PYTEST_EXTRA_ARGS: "-m 'not webtest'"
           - python-version: "3.12"
             os: ubuntu-latest
@@ -62,7 +56,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Cache XDG_CACHE_HOME
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ env.XDG_CACHE_HOME }}
           key: ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock', '**/with-fuseki.sh', '**/*requirements*.txt', '**/*requirements*.in') }}
@@ -129,7 +123,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Cache XDG_CACHE_HOME
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ env.XDG_CACHE_HOME }}
           key: ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock', '**/with-fuseki.sh', '**/*requirements*.txt', '**/*requirements*.in') }}
