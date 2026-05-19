@@ -47,7 +47,10 @@ jobs:
           - python-version: "3.11"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "- black --check --diff ./rdflib"
-            TOXENV_SUFFIX: "-lxml -docs"
+            TOXENV_SUFFIX: "-lxml"
+          - python-version: "3.11"
+            os: ubuntu-latest
+            TOXENV_SUFFIX: "-docs"
             TOX_PYTEST_EXTRA_ARGS: "-m 'not webtest'"
           - python-version: "3.12"
             os: ubuntu-latest
