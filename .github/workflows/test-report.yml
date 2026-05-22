@@ -11,7 +11,7 @@ jobs:
       checks: write
       statuses: write
     steps:
-      - uses: dorny/test-reporter@v2
+      - uses: dorny/test-reporter@v3
         with:
           artifact: /(.*)-mypy-junit-xml$/
           name: mypy report
