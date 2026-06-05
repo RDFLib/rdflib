@@ -44,15 +44,16 @@ RDFLITERAL = Comp(
     "literal",
     Param("string", String)
     + Optional(
-        Param("lang", LANGTAG.leaveWhitespace())
-        | Literal("^^").leaveWhitespace() + Param("datatype", IRIREF).leaveWhitespace()
+        Param("lang", LANGTAG.leave_whitespace())
+        | Literal("^^").leave_whitespace()
+        + Param("datatype", IRIREF).leave_whitespace()
     ),
 )
 
 NONE_VALUE = object()
 
 EMPTY = FollowedBy(LineEnd()) | FollowedBy("\t")
-EMPTY.setParseAction(lambda x: NONE_VALUE)
+EMPTY.set_parse_action(lambda x: NONE_VALUE)
 
 TERM = RDFLITERAL | IRIREF | BLANK_NODE_LABEL | NumericLiteral | BooleanLiteral
 
@@ -77,7 +78,7 @@ class TSVResultParser(ResultParser):
 
         header = source.readline()
 
-        r.vars = list(HEADER.parseString(header.strip(), parseAll=True))
+        r.vars = list(HEADER.parse_string(header.strip(), parse_all=True))
         r.bindings = []
         while True:
             line = source.readline()
@@ -87,7 +88,7 @@ class TSVResultParser(ResultParser):
             if line == "":
                 continue
 
-            row = ROW.parseString(line, parseAll=True)
+            row = ROW.parse_string(line, parse_all=True)
             this_row_dict: dict[Variable, IdentifiedNode | RDFLiteral] = {}
             for var, val_read in zip(r.vars, row):
                 val = self.convertTerm(val_read)

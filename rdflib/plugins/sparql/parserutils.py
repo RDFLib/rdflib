@@ -122,7 +122,7 @@ class Param(TokenConverter):
     def __init__(self, name: str, expr, isList: bool = False):
         self.isList = isList
         TokenConverter.__init__(self, expr)
-        self.setName(name)
+        self.set_name(name)
         self.addParseAction(self.postParse2)
 
     def postParse2(self, tokenList: Union[list[Any], ParseResults]) -> ParamValue:
@@ -232,7 +232,7 @@ class Comp(TokenConverter):
     def __init__(self, name: str, expr: ParserElement):
         self.expr = expr
         TokenConverter.__init__(self, expr)
-        self.setName(name)
+        self.set_name(name)
         self.evalfn: Callable[[Any, Any], Any] | None = None
 
     def postParse(
