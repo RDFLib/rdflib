@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, NoReturn
 from urllib.parse import urldefrag, urljoin
-from xml.sax import handler, make_parser, xmlreader
+from xml.sax import SAXNotSupportedException, handler, make_parser, xmlreader
 from xml.sax.handler import ErrorHandler
 from xml.sax.saxutils import escape, quoteattr
 
@@ -619,8 +619,49 @@ class RDFXMLHandler(handler.ContentHandler):
         self.parent.object += self.current.object + end
 
 
+def _forbid_entity_decl(
+    name: Any,
+    is_parameter_entity: Any,
+    value: Any,
+    base: Any,
+    sysid: Any,
+    pubid: Any,
+    notation_name: Any,
+) -> NoReturn:
+    """Reject DTD entity declarations to defeat billion-laughs / XXE attacks."""
+    raise SAXNotSupportedException(
+        "Entity declarations are not allowed in untrusted XML input "
+        "(rejected entity '%s')" % name
+    )
+
+
+def _harden_parser(parser: xmlreader.XMLReader) -> None:
+    """Disable external entities and forbid DTD entity declarations.
+
+    rdflib parses untrusted RDF/XML from the network. Without these guards a
+    sub-kilobyte "billion laughs" payload exhausts CPU and memory during parse.
+    Internal entity expansion (the only legitimate DTD entity use in RDF/XML)
+    is rejected outright; well-formed RDF/XML does not need it.
+    """
+    parser.setFeature(handler.feature_external_ges, False)
+    parser.setFeature(handler.feature_external_pes, False)
+    # xml.sax.expatreader recreates self._parser inside reset() (which is
+    # called by parse()), so we have to wire the EntityDeclHandler each time.
+    if hasattr(parser, "reset"):
+        original_reset = parser.reset
+
+        def reset_and_harden() -> None:
+            original_reset()
+            inner = getattr(parser, "_parser", None)
+            if inner is not None:
+                inner.EntityDeclHandler = _forbid_entity_decl
+
+        parser.reset = reset_and_harden  # type: ignore[method-assign]
+
+
 def create_parser(target: InputSource, store: Graph) -> xmlreader.XMLReader:
     parser = make_parser()
+    _harden_parser(parser)
     try:
         # Workaround for bug in expatreader.py. Needed when
         # expatreader is trying to guess a prefix.
