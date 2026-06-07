@@ -65,12 +65,12 @@ TRIX_PAYLOAD = (
 _SUPPORTS_ALARM = hasattr(signal, "SIGALRM") and platform.system() != "Windows"
 
 
-class _Timeout(Exception):
+class _TimeoutError(Exception):
     pass
 
 
 def _on_alarm(signum, frame):  # pragma: no cover - signal handler
-    raise _Timeout("billion-laughs payload took too long to parse")
+    raise _TimeoutError("billion-laughs payload took too long to parse")
 
 
 @pytest.mark.skipif(not _SUPPORTS_ALARM, reason="requires POSIX signal.SIGALRM")
