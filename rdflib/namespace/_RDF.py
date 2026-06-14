@@ -6,7 +6,8 @@ class RDF(DefinedNamespace):
     """
     The RDF Concepts Vocabulary (RDF)
 
-    This is the RDF Schema for the RDF vocabulary terms in the RDF Namespace, defined in RDF 1.1 Concepts.
+    This is the RDF Schema for the RDF vocabulary terms in the RDF Namespace, defined in
+    RDF 1.1 Concepts and extended with RDF 1.2 vocabulary terms.
 
     Generated from: http://www.w3.org/1999/02/22-rdf-syntax-ns#
     Date: 2020-05-26 14:20:05.642859
@@ -27,6 +28,7 @@ class RDF(DefinedNamespace):
     language: URIRef  # The language component of a CompoundLiteral.
     object: URIRef  # The object of the subject RDF statement.
     predicate: URIRef  # The predicate of the subject RDF statement.
+    reifies: URIRef  # The predicate of a reifying triple relating a reifier to a triple term.
     rest: URIRef  # The rest of the subject RDF list after the first item.
     subject: URIRef  # The subject of the subject RDF statement.
     type: URIRef  # The subject is an instance of a class.
@@ -46,6 +48,7 @@ class RDF(DefinedNamespace):
     JSON: URIRef  # The datatype of RDF literals storing JSON content.
     PlainLiteral: URIRef  # The class of plain (i.e. untyped) literal values, as used in RIF and OWL 2
     XMLLiteral: URIRef  # The datatype of XML literal values.
+    dirLangString: URIRef  # The datatype of directional language-tagged string values
     langString: URIRef  # The datatype of language-tagged string values
 
     _NS = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")

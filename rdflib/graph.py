@@ -319,6 +319,7 @@ from rdflib.term import (
     Literal,
     Node,
     RDFLibGenid,
+    TripleTerm,
     URIRef,
 )
 
@@ -1304,6 +1305,8 @@ class Graph(Node):
             return
         remember[subject] = 1
         yield subject
+        # subject may include TripleTerm via _ObjectType; the store returns
+        # no results when a TripleTerm is used as subject (it can't match).
         for object in self.objects(subject, predicate):
             for o in self.transitive_objects(object, predicate, remember):
                 yield o
@@ -1869,6 +1872,8 @@ class Graph(Node):
             x = visiting.pop()
             if x not in discovered:
                 discovered.append(x)
+            # x may be a TripleTerm (from _ObjectType) which can't be a subject;
+            # the store will simply return no results in that case.
             for new_x in self.objects(subject=x):
                 if new_x not in discovered and new_x not in visiting:
                     visiting.append(new_x)
@@ -1949,6 +1954,19 @@ class Graph(Node):
         authority: Optional[str] = None,
         basepath: Optional[str] = None,
     ) -> Graph:
+        def _skolemize_triple_term(tt: TripleTerm) -> TripleTerm:
+            """Recursively skolemize blank nodes inside a TripleTerm."""
+            s = tt.subject
+            p = tt.predicate
+            o = tt.object
+            if isinstance(s, BNode):
+                s = s.skolemize(authority=authority, basepath=basepath)
+            if isinstance(o, BNode):
+                o = o.skolemize(authority=authority, basepath=basepath)
+            elif isinstance(o, TripleTerm):
+                o = _skolemize_triple_term(o)
+            return TripleTerm(s, p, o)
+
         def do_skolemize(bnode: BNode, t: _TripleType) -> _TripleType:
             (s, p, o) = t
             if s == bnode:
@@ -1959,6 +1977,8 @@ class Graph(Node):
                 if TYPE_CHECKING:
                     assert isinstance(o, BNode)
                 o = o.skolemize(authority=authority, basepath=basepath)
+            elif isinstance(o, TripleTerm):
+                o = _skolemize_triple_term(o)
             return s, p, o
 
         def do_skolemize2(t: _TripleType) -> _TripleType:
@@ -1967,6 +1987,8 @@ class Graph(Node):
                 s = s.skolemize(authority=authority, basepath=basepath)
             if isinstance(o, BNode):
                 o = o.skolemize(authority=authority, basepath=basepath)
+            elif isinstance(o, TripleTerm):
+                o = _skolemize_triple_term(o)
             return s, p, o
 
         retval = Graph() if new_graph is None else new_graph
@@ -1994,6 +2016,25 @@ class Graph(Node):
                 o = o.de_skolemize()
             return s, p, o
 
+        def _de_skolemize_triple_term(tt: TripleTerm) -> TripleTerm:
+            """Recursively de-skolemize URIs inside a TripleTerm."""
+            s = tt.subject
+            p = tt.predicate
+            o = tt.object
+            if isinstance(s, URIRef):
+                if RDFLibGenid._is_rdflib_skolem(s):
+                    s = RDFLibGenid(s).de_skolemize()
+                elif Genid._is_external_skolem(s):
+                    s = Genid(s).de_skolemize()
+            if isinstance(o, URIRef):
+                if RDFLibGenid._is_rdflib_skolem(o):
+                    o = RDFLibGenid(o).de_skolemize()
+                elif Genid._is_external_skolem(o):
+                    o = Genid(o).de_skolemize()
+            elif isinstance(o, TripleTerm):
+                o = _de_skolemize_triple_term(o)
+            return TripleTerm(s, p, o)
+
         def do_de_skolemize2(t: _TripleType) -> _TripleType:
             (s, p, o) = t
 
@@ -2009,6 +2050,8 @@ class Graph(Node):
                     o = RDFLibGenid(o).de_skolemize()
                 elif Genid._is_external_skolem(o):
                     o = Genid(o).de_skolemize()
+            elif isinstance(o, TripleTerm):
+                o = _de_skolemize_triple_term(o)
 
             return s, p, o
 
@@ -2022,11 +2065,45 @@ class Graph(Node):
 
         return retval
 
+    def reify(
+        self: _GraphT,
+        subject: Union[URIRef, BNode],
+        predicate: URIRef,
+        object: Union[URIRef, BNode, Literal, TripleTerm],
+        reifier: Optional[IdentifiedNode] = None,
+        asserted: bool = False,
+    ) -> IdentifiedNode:
+        """Create a reifying triple for the given triple components.
+
+        This creates an RDF 1.2 reification by adding a triple of the form:
+        ``(reifier, rdf:reifies, <<( subject predicate object )>>)``
+
+        Args:
+            subject: The subject of the triple to reify (an IRI or blank node).
+            predicate: The predicate of the triple to reify (an IRI).
+            object: The object of the triple to reify (an IRI, blank node,
+                literal, or triple term).
+            reifier: The node to use as the reifier. If None, a new BNode is
+                created.
+            asserted: If True, also assert the triple (subject, predicate, object)
+                in the graph. Defaults to False.
+
+        Returns:
+            The reifier node (an IRI or blank node).
+        """
+        if reifier is None:
+            reifier = BNode()
+        triple_term = TripleTerm(subject, predicate, object)
+        self.add((reifier, RDF.reifies, triple_term))
+        if asserted:
+            self.add((subject, predicate, object))
+        return reifier
+
     def cbd(
         self,
         resource: _SubjectType,
         *,
-        target_graph: Graph | None = None,
+        target_graph: Optional[Graph] = None,
         include_reifications: bool = True,
     ) -> Graph:
         """Retrieves the Concise Bounded Description of a Resource from a Graph.
@@ -2053,11 +2130,14 @@ class Graph(Node):
             2. Recursively, for all statements identified in the subgraph thus far having a blank
                 node object, include in the subgraph all statements in the source graph where the
                 subject of the statement is the blank node in question and which are not already
-                included in the subgraph.
+                included in the subgraph. (In RDF 1.2, this also applies to blank nodes appearing
+                as the subject or object within triple term objects, including nested triple terms.)
 
             3. Recursively, for all statements included in the subgraph thus far, for all
                 reifications of each statement in the source graph, include the concise bounded
-                description beginning from the rdf:Statement node of each reification.
+                description beginning from the rdf:Statement node of each reification. (In
+                RDF 1.2, this also applies to reifiers linked via ``rdf:reifies`` to a triple
+                term matching a statement in the subgraph.)
 
             This results in a subgraph where the object nodes are either URI references, literals,
             or blank nodes not serving as the subject of any statement in the graph.
@@ -2072,12 +2152,23 @@ class Graph(Node):
         else:
             subgraph = target_graph
 
+        def _follow_bnodes_in_triple_term(tt: TripleTerm) -> None:
+            """Follow blank nodes inside triple terms for CBD."""
+            if isinstance(tt.subject, BNode):
+                if (tt.subject, None, None) not in subgraph:
+                    add_to_cbd(tt.subject)
+            if isinstance(tt.object, BNode):
+                if (tt.object, None, None) not in subgraph:
+                    add_to_cbd(tt.object)
+            elif isinstance(tt.object, TripleTerm):
+                _follow_bnodes_in_triple_term(tt.object)
+
         def add_to_cbd(uri: _SubjectType) -> None:
-            # Rule 3 Preparation:
-            # If reifications are to be included, build an index mapping triples with
-            # this subject to the set of reification nodes (rdf:Statement nodes) that reify them.
+            # Rule 3 Preparation (RDF 1.1 style):
+            # If reifications are to be included, build an index mapping triples
+            # with this subject to the set of rdf:Statement nodes that reify them.
             if include_reifications:
-                reif_index: dict[_TripleType, set[_SubjectType]] = {}
+                reif_index: Dict[_TripleType, Set[_SubjectType]] = {}
                 for stmt in self.subjects(RDF.subject, uri):
                     p: _PredicateType = self.value(stmt, RDF.predicate)  # type: ignore[assignment]
                     o = self.value(stmt, RDF.object)
@@ -2088,21 +2179,36 @@ class Graph(Node):
                         else:
                             reif_index[triple].add(stmt)
 
-            # For all triples where the subject is the current subject (Rule 1)
-            for s, p, o in self.triples((uri, None, None)):
-                # Add the triple to the CBD subgraph
+            # Rule 1: Include all triples where the subject is the current node.
+            uri_triples = list(self.triples((uri, None, None)))
+            for s, p, o in uri_triples:
                 subgraph.add((s, p, o))
-                # If the object is a blank node, recursively add its CBD (Rule 2)
+
+                # Rule 2: Recursively follow blank node objects.
                 if type(o) is BNode and (o, None, None) not in subgraph:
                     add_to_cbd(o)
+                elif isinstance(o, TripleTerm):
+                    # RDF 1.2 Rule 2 extension: follow BNodes inside triple terms
+                    _follow_bnodes_in_triple_term(o)
 
-                # If including reifications (Rule 3):
+                # Rule 3: Follow reifications of this triple.
                 if include_reifications:
-                    # For each reification node of this triple, recursively add its CBD
-                    stmts = reif_index.get((s, p, o), set())
-                    for stmt in stmts:
+                    # RDF 1.1: follow rdf:Statement nodes that reify (s, p, o)
+                    for stmt in reif_index.get((s, p, o), set()):
                         if (stmt, None, None) not in subgraph:
                             add_to_cbd(stmt)
+
+                    # RDF 1.2: follow reifiers linked via rdf:reifies to a
+                    # triple term matching (s, p, o)
+                    if (
+                        isinstance(s, (URIRef, BNode))
+                        and isinstance(p, URIRef)
+                        and isinstance(o, (URIRef, BNode, Literal, TripleTerm))
+                    ):
+                        tt = TripleTerm(s, p, o)
+                        for reifier, _, _ in self.triples((None, RDF.reifies, tt)):
+                            if (reifier, None, None) not in subgraph:
+                                add_to_cbd(reifier)
 
         # Start the CBD construction from the given resource
         add_to_cbd(resource)

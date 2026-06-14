@@ -62,6 +62,7 @@ __all__ = [
     "IdentifiedNode",
     "Literal",
     "Node",
+    "TripleTerm",
     "Variable",
     "Namespace",
     "Dataset",
@@ -200,7 +201,15 @@ from rdflib.namespace import (
     XSD,
     Namespace,
 )
-from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef, Variable
+from rdflib.term import (
+    BNode,
+    IdentifiedNode,
+    Literal,
+    Node,
+    TripleTerm,
+    URIRef,
+    Variable,
+)
 
 from rdflib import plugin, query, util  # isort:skip
 from rdflib.container import *  # isort:skip # noqa: F403

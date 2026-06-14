@@ -36,6 +36,7 @@ __all__ = [
     "BNode",
     "Literal",
     "Variable",
+    "TripleTerm",
 ]
 import logging
 import math
@@ -525,17 +526,19 @@ class BNode(IdentifiedNode):
 class Literal(Identifier):
     """
 
-    RDF 1.1's Literals Section: http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
+    RDF Literals: https://www.w3.org/TR/rdf12-concepts/#section-Graph-Literal
 
     Literals are used for values such as strings, numbers, and dates.
 
-    A literal in an RDF graph consists of two or three elements:
+    A literal in an RDF graph consists of two, three, or four elements:
 
     * a lexical form, being a Unicode string, which SHOULD be in Normal Form C
-    * a datatype IRI, being an IRI identifying a datatype that determines how the lexical form maps to a literal value, and
-    * if and only if the datatype IRI is `http://www.w3.org/1999/02/22-rdf-syntax-ns#langString`, a non-empty language tag. The language tag MUST be well-formed according to section 2.2.9 of `Tags for identifying languages <http://tools.ietf.org/html/bcp47>`_.
+    * a datatype IRI, being an IRI identifying a datatype that determines how the lexical form maps to a literal value
+    * if and only if the datatype IRI is ``rdf:langString`` or ``rdf:dirLangString``, a non-empty language tag as defined by `BCP47 <http://tools.ietf.org/html/bcp47>`_
+    * if and only if the datatype IRI is ``rdf:dirLangString``, a base direction (``"ltr"`` or ``"rtl"``) indicating the initial text direction for display
 
-    A literal is a language-tagged string if the third element is present. Lexical representations of language tags MAY be converted to lower case. The value space of language tags is always in lower case.
+    A literal is a *language-tagged string* if it has a language tag but no base direction.
+    A literal is a *directional language-tagged string* if it has both a language tag and a base direction.
 
     ---
 
@@ -636,7 +639,8 @@ class Literal(Identifier):
     # NOTE: _datatype should maybe be of type URIRef, and not optional.
     _datatype: Optional[URIRef]
     _ill_typed: Optional[bool]
-    __slots__ = ("_language", "_datatype", "_value", "_ill_typed")
+    _direction: Optional[str]
+    __slots__ = ("_language", "_datatype", "_value", "_ill_typed", "_direction")
 
     def __new__(
         cls,
@@ -644,18 +648,48 @@ class Literal(Identifier):
         lang: Optional[str] = None,
         datatype: Optional[str] = None,
         normalize: Optional[bool] = None,
+        direction: Optional[str] = None,
     ):
-        """Create a new Literal instance."""
+        """Create a new Literal instance.
+
+        Args:
+            lexical_or_value: The lexical form or a Python value to be
+                converted to a literal.
+            lang: An optional BCP47 language tag (e.g., ``"en"``).
+            datatype: An optional datatype IRI. Auto-detected from Python
+                types if not provided.
+            normalize: Whether to normalize the lexical form for known
+                XSD datatypes. Defaults to ``rdflib.NORMALIZE_LITERALS``.
+            direction: An optional base direction for directional
+                language-tagged strings. Must be ``"ltr"`` or ``"rtl"``.
+                Requires ``lang`` to also be set. When provided, the
+                datatype is automatically set to ``rdf:dirLangString``.
+        """
         if lang == "":
             lang = None  # no empty lang-tags in RDF
 
         normalize = normalize if normalize is not None else rdflib.NORMALIZE_LITERALS
 
+        if direction is not None:
+            if lang is None:
+                raise ValueError(
+                    "A Literal with a direction must also have a language tag."
+                )
+            if direction not in ("ltr", "rtl"):
+                raise ValueError(f"direction must be 'ltr' or 'rtl', got '{direction}'")
+
         if lang is not None and datatype is not None:
-            raise TypeError(
-                "A Literal can only have one of lang or datatype, "
-                "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal"
-            )
+            # Per RDF 1.2, rdf:langString and rdf:dirLangString are the datatypes
+            # for language-tagged and directional language-tagged strings respectively.
+            # These datatypes are allowed (and expected) to coexist with a language tag.
+            if str(datatype) not in (
+                _RDF_PFX + "langString",
+                _RDF_PFX + "dirLangString",
+            ):
+                raise TypeError(
+                    "A Literal can only have one of lang or datatype, "
+                    "per https://www.w3.org/TR/rdf12-concepts/#section-Graph-Literal"
+                )
 
         if lang is not None and not _is_valid_langtag(lang):
             raise ValueError(f"'{str(lang)}' is not a valid language tag!")
@@ -669,6 +703,8 @@ class Literal(Identifier):
             # create from another Literal instance
 
             lang = lang or lexical_or_value.language
+            if direction is None:
+                direction = lexical_or_value.direction
             if datatype is not None:
                 # override datatype
                 value = _castLexicalToPython(lexical_or_value, datatype)
@@ -723,6 +759,12 @@ class Literal(Identifier):
         inst._datatype = datatype
         inst._value = value
         inst._ill_typed = ill_typed
+        inst._direction = direction
+
+        # Auto-set datatype to rdf:dirLangString when direction is provided
+        # and no explicit datatype was given
+        if direction is not None and inst._datatype is None:
+            inst._datatype = _RDF_DIRLANGSTRING
 
         return inst
 
@@ -777,21 +819,39 @@ class Literal(Identifier):
     def datatype(self) -> Optional[URIRef]:
         return self._datatype
 
+    @property
+    def direction(self) -> Optional[str]:
+        """The base direction of this literal, or None.
+
+        For directional language-tagged strings (datatype rdf:dirLangString),
+        this is either ``"ltr"`` (left-to-right) or ``"rtl"`` (right-to-left).
+        For all other literals, this is None.
+        """
+        return self._direction
+
     def __reduce__(
         self,
-    ) -> Tuple[Type[Literal], Tuple[str, Union[str, None], Union[str, None]]]:
-        return (
-            Literal,
-            (str(self), self.language, self.datatype),
-        )
+    ) -> Tuple[
+        Type[Literal],
+        Tuple[str, Union[str, None], Union[str, None], None, Union[str, None]],
+    ]:
+        return Literal, (str(self), self.language, self.datatype, None, self._direction)
 
     def __getstate__(self) -> Tuple[None, Dict[str, Union[str, None]]]:
-        return (None, dict(language=self.language, datatype=self.datatype))
+        return (
+            None,
+            dict(
+                language=self.language,
+                datatype=self.datatype,
+                direction=self._direction,
+            ),
+        )
 
     def __setstate__(self, arg: Tuple[Any, Dict[str, Any]]) -> None:
         _, d = arg
         self._language = d["language"]
         self._datatype = d["datatype"]
+        self._direction = d.get("direction")
 
     def __add__(self, val: Any) -> Literal:
         """
@@ -1347,6 +1407,8 @@ class Literal(Identifier):
             res ^= hash(self._language.lower())
         if self._datatype is not None:
             res ^= hash(self._datatype)
+        if self._direction is not None:
+            res ^= hash(self._direction)
         return res
 
     def __eq__(self, other: Any) -> bool:
@@ -1402,6 +1464,7 @@ class Literal(Identifier):
                 self._datatype == other._datatype
                 and (self._language.lower() if self._language else None)
                 == (other._language.lower() if other._language else None)
+                and self._direction == other._direction
                 and str.__eq__(self, other)
             )
 
@@ -1716,6 +1779,8 @@ class Literal(Identifier):
 
         language = self.language
         if language:
+            if self._direction:
+                return f"{encoded}@{language}--{self._direction}"
             return f"{encoded}@{language}"
         elif datatype:
             return f"{encoded}^^{quoted_dt}"
@@ -1755,6 +1820,8 @@ class Literal(Identifier):
             args.append("lang=" + repr(self.language))
         if self.datatype is not None:
             args.append("datatype=" + repr(self.datatype))
+        if self.direction is not None:
+            args.append("direction=" + repr(self.direction))
         if self.__class__ == Literal:
             clsName = "rdflib.term.Literal"  # noqa: N806
         else:
@@ -1825,7 +1892,7 @@ def _writeXML(  # noqa: N802
 ) -> bytes:
     if isinstance(xmlnode, xml.dom.minidom.DocumentFragment):
         d = xml.dom.minidom.Document()
-        d.childNodes += xmlnode.childNodes
+        d.childNodes += list(xmlnode.childNodes)
         xmlnode = d
     s = xmlnode.toxml("utf-8")
     # for clean round-tripping, remove headers -- I have great and
@@ -1968,6 +2035,7 @@ _RDF_PFX = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 
 _RDF_XMLLITERAL = URIRef(_RDF_PFX + "XMLLiteral")
 _RDF_HTMLLITERAL = URIRef(_RDF_PFX + "HTML")
+_RDF_DIRLANGSTRING = URIRef(_RDF_PFX + "dirLangString")
 
 _XSD_STRING = URIRef(_XSD_PFX + "string")
 _XSD_NORMALISED_STRING = URIRef(_XSD_PFX + "normalizedString")
@@ -2367,12 +2435,160 @@ class Variable(Identifier):
         return (Variable, (str(self),))
 
 
+class TripleTerm(Node):
+    """RDF 1.2 Triple Term.
+
+    A TripleTerm is an RDF triple used as an RDF term in the object position
+    of another triple. It consists of a subject (IRI or blank node), a
+    predicate (IRI), and an object (IRI, blank node, literal, or another
+    triple term).
+
+    Per the RDF 1.2 spec, triple terms can only appear in the **object**
+    position of a triple — never as subject or predicate.
+
+    A triple term denotes a proposition (the relationship described by its
+    components) without asserting it. To assert the proposition, the triple
+    must also appear as an asserted triple in the graph.
+
+    Example:
+        ```python
+        >>> from rdflib import URIRef, Literal, Namespace
+        >>> from rdflib.term import TripleTerm
+        >>> EX = Namespace("http://example.org/")
+        >>> tt = TripleTerm(EX.Alice, EX.name, Literal("Alice"))
+        >>> tt.n3()
+        '<<( <http://example.org/Alice> <http://example.org/name> "Alice" )>>'
+
+        ```
+
+    See: https://www.w3.org/TR/rdf12-concepts/#section-triple-terms
+    """
+
+    __slots__ = ("_subject", "_predicate", "_object")
+
+    def __init__(
+        self,
+        subject: Union[URIRef, BNode],
+        predicate: URIRef,
+        object: Union[URIRef, BNode, Literal, TripleTerm],
+    ) -> None:
+        if not isinstance(subject, (URIRef, BNode)):
+            raise TypeError(
+                f"subject must be a URIRef or BNode, got {type(subject).__name__}"
+            )
+        if not isinstance(predicate, URIRef):
+            raise TypeError(
+                f"predicate must be a URIRef, got {type(predicate).__name__}"
+            )
+        if not isinstance(object, (URIRef, BNode, Literal, TripleTerm)):
+            raise TypeError(
+                f"object must be a URIRef, BNode, Literal, or TripleTerm, "
+                f"got {type(object).__name__}"
+            )
+        self._subject = subject
+        self._predicate = predicate
+        self._object = object
+
+    @property
+    def subject(self) -> Union[URIRef, BNode]:
+        """The subject of this triple term (an IRI or blank node)."""
+        return self._subject
+
+    @property
+    def predicate(self) -> URIRef:
+        """The predicate of this triple term (an IRI)."""
+        return self._predicate
+
+    @property
+    def object(self) -> Union[URIRef, BNode, Literal, TripleTerm]:
+        """The object of this triple term."""
+        return self._object
+
+    def __eq__(self, other: Any) -> bool:
+        if not isinstance(other, TripleTerm):
+            return False
+        return (
+            self._subject == other._subject
+            and self._predicate == other._predicate
+            and self._object == other._object
+        )
+
+    def __hash__(self) -> int:
+        return hash((self._subject, self._predicate, self._object))
+
+    def __lt__(self, other: Any) -> bool:
+        # Note: SPARQL 1.2 defines no ordering between two triple terms.
+        # This implementation provides a component-wise (subject, predicate, object)
+        # ordering as a practical extension for sorting in Python.
+        if other is None:
+            return False
+        if isinstance(other, TripleTerm):
+            return (self._subject, self._predicate, self._object) < (
+                other._subject,
+                other._predicate,
+                other._object,
+            )
+        elif isinstance(other, Node):
+            return _ORDERING[type(self)] < _ORDERING[type(other)]
+        return NotImplemented
+
+    def __gt__(self, other: Any) -> bool:
+        if other is None:
+            return True
+        if isinstance(other, TripleTerm):
+            return (self._subject, self._predicate, self._object) > (
+                other._subject,
+                other._predicate,
+                other._object,
+            )
+        elif isinstance(other, Node):
+            return _ORDERING[type(self)] > _ORDERING[type(other)]
+        return NotImplemented
+
+    def __le__(self, other: Any) -> bool:
+        r = self.__lt__(other)
+        if r:
+            return True
+        return self == other
+
+    def __ge__(self, other: Any) -> bool:
+        r = self.__gt__(other)
+        if r:
+            return True
+        return self == other
+
+    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+        """Return the N3/Turtle 1.2 representation of this triple term.
+
+        The format is ``<<( subject predicate object )>>`` as defined
+        by the RDF 1.2 Turtle specification for triple terms.
+
+        Args:
+            namespace_manager: Optional namespace manager for abbreviating IRIs.
+
+        Returns:
+            A string in Turtle 1.2 triple term syntax.
+        """
+        s = self._subject.n3(namespace_manager)
+        p = self._predicate.n3(namespace_manager)
+        o = self._object.n3(namespace_manager)
+        return f"<<( {s} {p} {o} )>>"
+
+    def __getnewargs__(
+        self,
+    ) -> Tuple[Union[URIRef, BNode], URIRef, Union[URIRef, BNode, Literal, TripleTerm]]:
+        return (self._subject, self._predicate, self._object)
+
+    def __repr__(self) -> str:
+        return f"TripleTerm({self._subject!r}, {self._predicate!r}, {self._object!r})"
+
+
 # Nodes are ordered like this
-# See http://www.w3.org/TR/sparql11-query/#modOrderBy
+# See https://www.w3.org/TR/sparql12-query/#modOrderBy
 # we leave "space" for more subclasses of Node elsewhere
 # default-dict to grazefully fail for new subclasses
 _ORDERING: Dict[Type[Node], int] = defaultdict(int)
-_ORDERING.update({BNode: 10, Variable: 20, URIRef: 30, Literal: 40})
+_ORDERING.update({BNode: 10, Variable: 20, URIRef: 30, Literal: 40, TripleTerm: 50})
 
 
 def _isEqualXMLNode(  # noqa: N802
