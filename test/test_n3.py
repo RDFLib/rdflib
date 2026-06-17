@@ -5,6 +5,7 @@ from urllib.error import URLError
 import pytest
 
 from rdflib.graph import Dataset, Graph
+from rdflib.namespace import RDF
 from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax
 from rdflib.term import Literal, URIRef
 from test import TEST_DIR
@@ -113,6 +114,22 @@ class TestN3Case:
         print(list(g))
         assert (URIRef("http://blah.com/foo"), None, Literal("Foo")) in g
         assert (URIRef("http://example.com/doc/bar"), None, None) in g
+
+    def test_base_with_scheme_only_iri(self):
+        """
+        Test that scheme-only base IRIs resolve relative references.
+
+        This is issue #1216.
+        """
+
+        input = """
+@base <local:> .
+<Category> a <Entity> .
+"""
+        g = Graph()
+        g.parse(data=input, format="n3")
+
+        assert (URIRef("local:Category"), RDF.type, URIRef("local:Entity")) in g
 
     def test_base_serialize(self):
         g = Graph()

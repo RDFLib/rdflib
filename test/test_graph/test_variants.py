@@ -205,14 +205,6 @@ GRAPH_VARIANTS_DICT = {
 }
 
 EXPECTED_FAILURES: dict[tuple[str, str | None], MarkDecorator] = {
-    ("variants/schema_only_base", ".ttl"): pytest.mark.xfail(
-        reason="Some issue with handling base URI that does not end with a slash",
-        raises=ValueError,
-    ),
-    ("variants/schema_only_base", ".n3"): pytest.mark.xfail(
-        reason="Some issue with handling base URI that does not end with a slash",
-        raises=ValueError,
-    ),
     ("variants/rdf11trig_eg2", ".hext"): pytest.mark.xfail(
         reason="""
     This fails randomly, passing less than 10% of the time, and always failing

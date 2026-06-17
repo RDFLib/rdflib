@@ -145,6 +145,9 @@ def join(here: str, there: str) -> str:
     >>> join('mid:foo@example', '#foo')
     'mid:foo@example#foo'
 
+    >>> join('local:', 'Category')
+    'local:Category'
+
     ```
 
     We grok IRIs
@@ -178,14 +181,19 @@ def join(here: str, there: str) -> str:
     if not path:
         return here + frag
 
-    # join('mid:foo@example', '../foo') bzzt
     if here[bcolonl + 1 : bcolonl + 2] != "/":
-        raise ValueError(
-            "Base <%s> has no slash after "
-            "colon - with relative '%s'." % (here, there)
-        )
-
-    if here[bcolonl + 1 : bcolonl + 3] == "//":
+        if there[:2] == "//":
+            return here[: bcolonl + 1] + there
+        if there[:1] == "/":
+            return here[: bcolonl + 1] + there
+        if here[bcolonl + 1 :]:
+            # join('mid:foo@example', '../foo') bzzt
+            raise ValueError(
+                "Base <%s> has no slash after "
+                "colon - with relative '%s'." % (here, there)
+            )
+        bpath = bcolonl + 1
+    elif here[bcolonl + 1 : bcolonl + 3] == "//":
         bpath = here.find("/", bcolonl + 3)
     else:
         bpath = bcolonl + 1
@@ -204,6 +212,8 @@ def join(here: str, there: str) -> str:
         return here[:bpath] + there
 
     slashr = here.rfind("/")
+    if slashr < bpath:
+        slashr = bpath - 1
 
     while 1:
         if path[:2] == "./":
