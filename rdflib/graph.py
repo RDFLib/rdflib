@@ -434,6 +434,27 @@ __all__ = [
 _TCArgT = TypeVar("_TCArgT")
 
 
+def _eval_path_fallback(
+    store: Store,
+    path: Path,
+    subj: Optional[_SubjectType],
+    obj: Optional[_ObjectType],
+    context: _ContextType,
+) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
+    """Try store-level path evaluation, falling back to Path.eval().
+
+    Attempts to delegate path evaluation to the store via
+    store.eval_path(). If the store raises NotImplementedError
+    (indicating it does not support path evaluation, or does not
+    support the specific path type), falls back to RDFLib's built-in
+    path evaluation via path.eval().
+    """
+    try:
+        yield from store.eval_path(path, subj, obj, context=context)
+    except NotImplementedError:
+        yield from path.eval(context, subj, obj)
+
+
 # Graph is a node because technically a formula-aware graph
 # take a Graph as subject or object, but we usually use QuotedGraph for that.
 class Graph(Node):
@@ -687,7 +708,7 @@ class Graph(Node):
         """
         s, p, o = triple
         if isinstance(p, Path):
-            for _s, _o in p.eval(self, s, o):
+            for _s, _o in _eval_path_fallback(self.__store, p, s, o, self):
                 yield _s, p, _o
         else:
             for (_s, _p, _o), cg in self.__store.triples((s, p, o), context=self):
@@ -2347,7 +2368,7 @@ class ConjunctiveGraph(Graph):
             if context is None:
                 context = self
 
-            for s, o in p.eval(context, s, o):
+            for s, o in _eval_path_fallback(self.store, p, s, o, context):
                 yield s, p, o
         else:
             for (s, p, o), cg in self.store.triples((s, p, o), context=context):

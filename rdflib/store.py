@@ -40,11 +40,14 @@ if TYPE_CHECKING:
     from rdflib.graph import (
         Graph,
         _ContextType,
+        _ObjectType,
         _QuadType,
+        _SubjectType,
         _TripleChoiceType,
         _TriplePatternType,
         _TripleType,
     )
+    from rdflib.paths import Path
     from rdflib.plugins.sparql.sparql import Query, Update
     from rdflib.query import Result
     from rdflib.term import Identifier, Node, URIRef
@@ -429,6 +432,37 @@ class Store:
         context-aware stores.)
         """
 
+        raise NotImplementedError
+
+    # Optional path evaluation
+
+    def eval_path(
+        self,
+        path: Path,
+        subj: Optional[_SubjectType] = None,
+        obj: Optional[_ObjectType] = None,
+        context: Optional[_ContextType] = None,
+    ) -> Iterator[Tuple[_SubjectType, _ObjectType]]:
+        """Evaluate a property path, yielding (subject, object) pairs.
+
+        Stores that support native path evaluation should override this
+        method. The default implementation raises NotImplementedError,
+        causing the caller to fall back to RDFLib's built-in path
+        evaluation via Path.eval().
+
+        Args:
+            path: The property path to evaluate.
+            subj: The subject to match, or None for unbound.
+            obj: The object to match, or None for unbound.
+            context: The graph context for graph-aware stores.
+
+        Returns:
+            An iterator of (subject, object) tuples connected by the path.
+
+        Raises:
+            NotImplementedError: If the store does not support path evaluation
+                (or does not support the specific path type given).
+        """
         raise NotImplementedError
 
     # Optional Namespace methods
