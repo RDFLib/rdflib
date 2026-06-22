@@ -3,6 +3,7 @@ from importlib.util import find_spec
 import pytest
 
 from rdflib.contrib.rdf4j import has_httpx
+from rdflib.contrib.rdf4j.exceptions import RepositoryNotFoundError
 
 has_testcontainers = find_spec("testcontainers") is not None
 
@@ -23,3 +24,7 @@ if has_httpx and has_testcontainers:
             f"http://localhost:{port}/", auth=("admin", "admin")
         ) as client:
             yield client
+            try:
+                client.repositories.delete("test-repo")
+            except (RepositoryNotFoundError, RuntimeError):
+                pass

@@ -5,7 +5,7 @@ from unittest.mock import Mock
 import pytest
 
 from rdflib.contrib.rdf4j import has_httpx
-from rdflib.contrib.rdf4j.exceptions import RepositoryFormatError
+from rdflib.contrib.rdf4j.exceptions import RepositoryResponseFormatError
 from rdflib.term import BNode, IdentifiedNode, URIRef
 
 pytestmark = pytest.mark.skipif(
@@ -79,7 +79,7 @@ def test_repo_graphs(
 @pytest.mark.parametrize(
     "response_dict, expected_error",
     [
-        [{}, RepositoryFormatError],
+        [{}, RepositoryResponseFormatError],
         [
             {
                 "results": {
@@ -88,7 +88,7 @@ def test_repo_graphs(
                     ]
                 }
             },
-            RepositoryFormatError,
+            RepositoryResponseFormatError,
         ],
     ],
 )

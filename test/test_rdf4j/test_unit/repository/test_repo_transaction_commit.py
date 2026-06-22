@@ -47,7 +47,7 @@ def test_repo_transaction_commit(
             params={"action": "COMMIT"},
         )
         # Ensure it is closed.
-        assert txn.url is None
+        assert txn.is_closed
         with pytest.raises(TransactionClosedError):
             txn.ping()
 

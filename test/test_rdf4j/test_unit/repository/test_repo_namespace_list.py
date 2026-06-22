@@ -15,7 +15,7 @@ if has_httpx:
     import httpx
 
     from rdflib.contrib.rdf4j.client import NamespaceListingResult, Repository
-    from rdflib.contrib.rdf4j.exceptions import RepositoryFormatError
+    from rdflib.contrib.rdf4j.exceptions import RepositoryResponseFormatError
 
     @pytest.mark.parametrize(
         "response_dict, expected_result",
@@ -71,7 +71,7 @@ if has_httpx:
         mock_response = Mock(spec=httpx.Response, json=lambda: response_dict)
         mock_httpx_get = Mock(return_value=mock_response)
         monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
-        with pytest.raises(RepositoryFormatError):
+        with pytest.raises(RepositoryResponseFormatError):
             repo.namespaces.list()
         mock_httpx_get.assert_called_once_with(
             "/repositories/test-repo/namespaces",

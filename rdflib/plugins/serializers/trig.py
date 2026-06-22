@@ -45,7 +45,7 @@ class TrigSerializer(TurtleSerializer):
                 continue
             self.store = context
             # Don't generate a new prefix for a graph URI if one already exists
-            self.getQName(context.identifier, False)
+            self.get_pname(context.identifier, False)
             self._subjects = {}
 
             for triple in context:
@@ -103,7 +103,7 @@ class TrigSerializer(TurtleSerializer):
                     iri = store.identifier.n3()
                 else:
                     # Show the full graph URI if a prefix for it doesn't already exist
-                    iri = self.getQName(store.identifier, False)
+                    iri = self.get_pname(store.identifier, False)
                     if iri is None:
                         iri = store.identifier.n3()
                 self.write(self.indent() + "\n%s {" % iri)

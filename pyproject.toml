@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rdflib"
-version = "7.6.0-a0"
+version = "7.7.0a0"
 description = """RDFLib is a Python library for working with RDF, \
 a simple yet powerful language for representing information."""
 authors = ["Daniel 'eikeon' Krech <eikeon@eikeon.com>"]
@@ -39,7 +39,7 @@ csv2rdf = 'rdflib.tools.csv2rdf:main'
 rdf2dot = 'rdflib.tools.rdf2dot:main'
 rdfs2dot = 'rdflib.tools.rdfs2dot:main'
 rdfgraphisomorphism = 'rdflib.tools.graphisomorphism:main'
-sq = 'rdflib.tools.sparqlquery:main'
+sparqlquery = 'rdflib.tools.sparqlquery:main'
 
 [tool.poetry.dependencies]
 python = ">=3.8.1"
@@ -78,7 +78,7 @@ mkdocs-gen-files = "^0.5.0"
 mkdocs-include-markdown-plugin = {version = "^7.2.0", python = ">=3.11"}
 
 [tool.poetry.group.lint.dependencies]
-ruff = "0.14.2"
+ruff = "0.15.0"
 
 [tool.poetry.extras]
 berkeleydb = ["berkeleydb"]
@@ -89,6 +89,7 @@ html = ["html5rdf"]
 lxml = ["lxml"]
 orjson = ["orjson"]
 rdf4j = ["httpx"]
+graphdb = ["httpx"]
 
 [build-system]
 requires = ["poetry-core>=1.4.0"]

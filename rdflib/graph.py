@@ -2265,26 +2265,18 @@ class ConjunctiveGraph(Graph):
     def _graph(self, c: None) -> None: ...
 
     def _graph(
-        self, c: Optional[Union[Graph, _ContextIdentifierType, str]]
+        self,
+        c: Optional[Union[Graph, _ContextIdentifierType, str]],
     ) -> Optional[Graph]:
         if c is None:
             return None
-        if not isinstance(c, Graph):
-            return self.get_context(c)
-        else:
-            if isinstance(c, (Dataset, ConjunctiveGraph)):
-                # Preserve the old behaviour for datasets.
-                return c
-            else:
-                # Copy the graph triples so they're added to the store.
-                try:
-                    _graph = self.get_graph(c.identifier)
-                    assert _graph is not None
-                except IndexError:
-                    _graph = self.get_context(c.identifier)
-                _graph.__iadd__(c)
-                # Return the graph with the same backing store.
-                return _graph
+        if isinstance(c, (Dataset, ConjunctiveGraph)):
+            # Preserve the old behaviour for datasets.
+            return c
+        if isinstance(c, Graph):
+            # Resolve to a graph backed by this dataset store.
+            return self.get_context(c.identifier)
+        return self.get_context(c)
 
     def addN(  # noqa: N802
         self: _ConjunctiveGraphT, quads: Iterable[_QuadType]
@@ -2773,7 +2765,17 @@ class Dataset(ConjunctiveGraph):
             )
             identifier = BNode().skolemize()
 
+        graph_to_copy: Optional[Graph] = None
+        if isinstance(identifier, Graph) and not isinstance(
+            identifier, (Dataset, ConjunctiveGraph)
+        ):
+            # Preserve #3259 semantics: importing an external graph through
+            # Dataset.graph()/add_graph() should copy its statements.
+            graph_to_copy = identifier
+
         g = self._graph(identifier)
+        if graph_to_copy is not None:
+            g.__iadd__(graph_to_copy)
         g.base = base
 
         self.store.add_graph(g)

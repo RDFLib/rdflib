@@ -6,7 +6,7 @@ from unittest.mock import Mock
 import pytest
 
 from rdflib.contrib.rdf4j import has_httpx
-from rdflib.contrib.rdf4j.exceptions import RepositoryFormatError
+from rdflib.contrib.rdf4j.exceptions import RepositoryResponseFormatError
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 from rdflib.term import URIRef
 
@@ -61,15 +61,15 @@ def test_repo_size_graph_name(
     [
         ["0", 0],
         ["123", 123],
-        ["-100", RepositoryFormatError],
-        ["foo", RepositoryFormatError],
+        ["-100", RepositoryResponseFormatError],
+        ["foo", RepositoryResponseFormatError],
     ],
 )
 def test_repo_size_values(
     repo: Repository,
     monkeypatch: pytest.MonkeyPatch,
     response_value: str,
-    expected_parsed_value: int | type[RepositoryFormatError],
+    expected_parsed_value: int | type[RepositoryResponseFormatError],
 ):
     """Test that the return value of the response is correctly parsed."""
     mock_response = Mock(spec=httpx.Response, text=response_value)
