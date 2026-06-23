@@ -44,7 +44,8 @@ Help with maintenance of all of the RDFLib family of packages is always welcome 
 
 ## Versions & Releases
 
-* `main` branch in this repository is the current unstable release - version 8 alpha
+* `main` branch in this repository is the current major release development branch for backwards-compatible fixes and features
+* `next` branch in this repository is the next major release development branch
 * `7.6.0` GraphDB Client, and many improvements and fixes. See changelog for details
 * `7.5.0` RDF4J Store integration, RDF4J Client, and other improvements. See changelog for details
 * `7.4.0` a few small fixes, add test matrix for active python versions, and move v7 documentation to MkDocs
@@ -79,7 +80,7 @@ Some features of RDFLib require optional dependencies which may be installed usi
 Alternatively manually download the package from the Python Package
 Index (PyPI) at https://pypi.python.org/pypi/rdflib
 
-### Installation of the current main branch (for developers)
+### Installation from the current development branch (for developers)
 
 With *pip* you can also install rdflib from the git repository with one of the following options:
 

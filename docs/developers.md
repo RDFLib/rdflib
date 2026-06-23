@@ -14,6 +14,23 @@ developing RDFLib code.
 
 If you add a new cool feature, consider also adding an example in `./examples`.
 
+## Branch targets
+
+RDFLib keeps separate branches for the active release series and the next major
+release. Most pull requests should target `main`, the current major release
+branch, so they can be released in a patch or minor release.
+
+Target `main` for backwards-compatible bug fixes, documentation updates,
+dependency updates, and new features. These changes can be merged forward into
+`next` by maintainers.
+
+Target `next` for breaking changes and other work intended for the next major
+release. Breaking changes should be discussed in an issue before implementation
+so maintainers can confirm that the change belongs on `next`.
+
+If you are unsure which branch to use, open the pull request against `main` and
+ask for maintainer guidance.
+
 ## Pull Requests Guidelines
 
 Contributions to RDFLib are made through pull requests (PRs).
@@ -43,7 +60,7 @@ In general, maintainers will only merge PRs if the following conditions are met:
 
 In addition to these conditions, PRs that are easier to review and approve will be processed quicker. The primary factors that determine this are the scope and size of a PR. If there are few changes and the scope is limited, then there is less that a reviewer has to understand and less that they can disagree with. It is thus important to try to split up your changes into multiple independent PRs if possible. No PR is too small.
 
-For PRs that introduce breaking changes, it is even more critical that they are limited in size and scope, as they will likely have to be kept up to date with the `main` branch of this project for some time before they are merged.
+For PRs that introduce breaking changes, it is even more critical that they are limited in size and scope, as they will likely have to be kept up to date with the `main` branch for some time before they are merged.
 
 It is also critical that your PR is understandable both in what it does and why it does it, and how the change will impact the users of this project, for this reason, it is essential that your PR's description explains the nature of the PR, what the PR intends to do, why this is desirable, and how this will affect the users of this project.
 
@@ -55,11 +72,11 @@ This section contains guidelines for maintaining RDFLib. RDFLib maintainers shou
 
 ### Breaking changes
 
-Breaking changes to RDFLib's public API should be made incrementally, with small pull requests to the main branch that change as few things as possible.
+Breaking changes to RDFLib's public API should be made incrementally, with small pull requests to the `next` branch that change as few things as possible.
 
 Breaking changes should be discussed first in an issue before work is started, as it is possible that the change is not necessary or that there is a better way to achieve the same goal, in which case the work on the PR would have been wasted. This will however not be strictly enforced, and no PR will be rejected solely on the basis that it was not discussed upfront.
 
-RDFLib follows [semantic versioning](https://semver.org/spec/v2.0.0.html) and [trunk-based development](https://trunkbaseddevelopment.com/), so if any breaking changes were introduced into the main branch since the last release, then the next release will be a major release with an incremented major version.
+RDFLib follows [semantic versioning](https://semver.org/spec/v2.0.0.html). If any breaking changes were introduced into the `next` branch since the last release, then the next release from that branch will be a major release with an incremented major version.
 
 Releases of RDFLib will not as a rule be conditioned on specific features, so there may be new major releases that contain very few breaking changes, and there could be no minor or patch releases between two major releases.
 
@@ -382,3 +399,4 @@ Once this is all done, create another post-release pull request with the followi
 
 * Set the just released version in `docker/latest/requirements.in` and run `task docker:prepare` to update the `docker/latest/requirements.txt` file.
 * Set the version in the `pyproject.toml` file to the next minor release with a `a0` suffix to indicate alpha 0.
+* Ensure the released changes from `main` are merged forward into `next`.
