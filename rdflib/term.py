@@ -105,6 +105,9 @@ def _is_valid_uri(uri: str) -> bool:
     for c in _invalid_uri_chars:
         if c in uri:
             return False
+    for c in uri:
+        if ord(c) < 0x20 or ord(c) == 0x7F:
+            return False
     return True
 
 
