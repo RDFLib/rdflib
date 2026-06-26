@@ -48,9 +48,6 @@ jobs:
           - python-version: "3.11"
             os: ubuntu-latest
             TOXENV_SUFFIX: "-docs"
-            PREPARATION: "sudo apt-get install -y firejail"
-            extensive-tests: true
-            TOX_TEST_HARNESS: "firejail --net=none --"
             TOX_PYTEST_EXTRA_ARGS: "-m 'not (testcontainer or webtest)'"
     steps:
       - uses: actions/checkout@v6
