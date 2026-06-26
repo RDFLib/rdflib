@@ -21,8 +21,10 @@ release. Most pull requests should target `main`, the current major release
 branch, so they can be released in a patch or minor release.
 
 Target `main` for backwards-compatible bug fixes, documentation updates,
-dependency updates, and new features. These changes can be merged forward into
-`next` by maintainers.
+dependency updates, and new features. Maintainers periodically merge `main`
+forward into `next`, so backwards-compatible changes accepted on `main` are
+carried into next-major development without contributors needing to target
+`next` directly.
 
 Target `next` for breaking changes and other work intended for the next major
 release. Breaking changes should be discussed in an issue before implementation
