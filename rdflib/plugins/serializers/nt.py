@@ -57,13 +57,9 @@ class NT11Serializer(NTSerializer):
 
 def _nt_row(triple: _TripleType) -> str:
     if isinstance(triple[2], Literal):
-        return "%s %s %s .\n" % (
-            triple[0].n3(),
-            triple[1].n3(),
-            _quoteLiteral(triple[2]),
-        )
+        return f"{triple[0].n3()} {triple[1].n3()} {_quoteLiteral(triple[2])} .\n"
     else:
-        return "%s %s %s .\n" % (triple[0].n3(), triple[1].n3(), triple[2].n3())
+        return f"{triple[0].n3()} {triple[1].n3()} {triple[2].n3()} .\n"
 
 
 def _quoteLiteral(l_: Literal) -> str:  # noqa: N802
