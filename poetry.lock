@@ -999,15 +999,15 @@ pyyaml = ">=5.1"
 
 [[package]]
 name = "mkdocs-include-markdown-plugin"
-version = "7.3.0"
+version = "7.2.0"
 description = "Mkdocs Markdown includer plugin."
 optional = false
 python-versions = ">=3.9"
 groups = ["docs"]
 markers = "python_version >= \"3.11\""
 files = [
-    {file = "mkdocs_include_markdown_plugin-7.3.0-py3-none-any.whl", hash = "sha256:5b5c99b5d3c9b9ce0114a9e60353bbafb6be53a26c2d3b74ec6b767a7a8e55ca"},
-    {file = "mkdocs_include_markdown_plugin-7.3.0.tar.gz", hash = "sha256:2800126746452e31c2e321bbd43c8190b356e0de353e20cbc16a34a3c3d6796c"},
+    {file = "mkdocs_include_markdown_plugin-7.2.0-py3-none-any.whl", hash = "sha256:d56cdaeb2d113fb66ed0fe4fb7af1da889926b0b9872032be24e19bbb09c9f5b"},
+    {file = "mkdocs_include_markdown_plugin-7.2.0.tar.gz", hash = "sha256:4a67a91ade680dc0e15f608e5b6343bec03372ffa112c40a4254c1bfb10f42f3"},
 ]
 
 [package.dependencies]
