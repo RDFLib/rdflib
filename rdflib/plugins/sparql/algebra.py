@@ -383,7 +383,11 @@ def translateGroupGraphPattern(graphPattern: CompValue) -> CompValue:
                 "Unknown part in GroupGraphPattern: %s - %s" % (type(p), p.name)
             )
 
-    if filters:
+    # ``filters`` is None when there were no FILTERs, otherwise it is the
+    # (possibly constant) filter expression. Test for presence explicitly: a
+    # constant expression whose value is Python-falsy (e.g. ``FILTER(false)``)
+    # must still produce a Filter node rather than being silently dropped.
+    if filters is not None:
         G = Filter(expr=filters, p=G)
 
     # Mark this graph pattern as translated
