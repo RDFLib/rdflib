@@ -261,7 +261,7 @@ class BerkeleyDB(Store):
 
         self.__needs_sync = False
         t = Thread(target=self.__sync_run)
-        t.setDaemon(True)
+        t.daemon = True
         t.start()
         self.__sync_thread = t
         return VALID_STORE
