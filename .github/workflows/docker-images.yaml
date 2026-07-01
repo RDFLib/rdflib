@@ -41,7 +41,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Install Task
-        uses: go-task/setup-task@v1
+        uses: go-task/setup-task@v2
       - name: Install poetry
         run: |
           pip install -r devtools/requirements-poetry.in
@@ -64,7 +64,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Install Task
-        uses: go-task/setup-task@v1
+        uses: go-task/setup-task@v2
       - name: Install poetry
         run: |
           pip install -r devtools/requirements-poetry.in
