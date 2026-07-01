@@ -50,7 +50,7 @@ jobs:
             TOXENV_SUFFIX: "-docs"
             TOX_PYTEST_EXTRA_ARGS: "-m 'not (testcontainer or webtest)'"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Cache XDG_CACHE_HOME
         uses: actions/cache@v6
         with:
@@ -124,7 +124,7 @@ jobs:
           - task: "gha:lint"
             python-version: 3.8
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Cache XDG_CACHE_HOME
         uses: actions/cache@v6
         with:
