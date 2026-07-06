@@ -236,20 +236,9 @@ def test_select_result_serialize_parse(
 
 
 def serialize_select(select_result: Result, format: str, encoding: str) -> bytes:
-    if format == "tsv":
-        # This is hardcoded as it is particularly diffficult to generate. If the result changes this will have to be adjusted by hand.
-        return '''\
-?subject	?predicate	?object
-<http://www.w3.org/2000/01/rdf-schema#Resource>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.w3.org/2000/01/rdf-schema#Class>
-<http://www.w3.org/2000/01/rdf-schema#Resource>	<http://www.w3.org/2000/01/rdf-schema#comment>	"The class resource, everything."
-<http://www.w3.org/2000/01/rdf-schema#Resource>	<http://www.w3.org/2000/01/rdf-schema#isDefinedBy>	<http://www.w3.org/2000/01/rdf-schema#>
-<http://www.w3.org/2000/01/rdf-schema#Resource>	<http://www.w3.org/2000/01/rdf-schema#label>	"Resource"'''.encode(
-            encoding
-        )
-    else:
-        result = select_result.serialize(format=format, encoding=encoding)
-        assert result is not None
-        return result
+    result = select_result.serialize(format=format, encoding=encoding)
+    assert result is not None
+    return result
 
 
 def make_select_result_parse_serialized_tests() -> Iterator[ParameterSet]:
