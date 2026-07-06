@@ -183,5 +183,6 @@ Plugins for reading and writing of (SPARQL) [`Result`][rdflib.query.Result] - pa
 | ---- | ----- |
 | csv  | [`CSVResultSerializer`][rdflib.plugins.sparql.results.csvresults.CSVResultSerializer] |
 | json | [`JSONResultSerializer`][rdflib.plugins.sparql.results.jsonresults.JSONResultSerializer] |
+| tsv  | [`TSVResultSerializer`][rdflib.plugins.sparql.results.tsvresults.TSVResultSerializer] |
 | txt  | [`TXTResultSerializer`][rdflib.plugins.sparql.results.txtresults.TXTResultSerializer] |
 | xml  | [`XMLResultSerializer`][rdflib.plugins.sparql.results.xmlresults.XMLResultSerializer] |

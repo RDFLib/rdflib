@@ -296,6 +296,7 @@ class Result:
                 Some example formats are
                 [csv][rdflib.plugins.sparql.results.csvresults.CSVResultSerializer],
                 [json][rdflib.plugins.sparql.results.jsonresults.JSONResultSerializer],
+                [tsv][rdflib.plugins.sparql.results.tsvresults.TSVResultSerializer],
                 [txt][rdflib.plugins.sparql.results.txtresults.TXTResultSerializer]
                 or
                 [xml][rdflib.plugins.sparql.results.xmlresults.XMLResultSerializer]
