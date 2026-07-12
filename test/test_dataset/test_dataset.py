@@ -191,6 +191,42 @@ def test_default_graph(get_dataset):
     assert set(dataset.graphs()) == set([dataset.default_context])
 
 
+def test_dataset_default_context_public_access_warns() -> None:
+    dataset = Dataset()
+
+    with pytest.warns(
+        DeprecationWarning,
+        match="Dataset.default_context is deprecated, use Dataset.default_graph instead.",
+    ):
+        assert dataset.default_context is dataset.default_graph
+
+
+def test_dataset_internal_default_graph_operations_do_not_warn() -> None:
+    dataset = Dataset()
+    triple = (
+        URIRef("urn:s"),
+        URIRef("urn:p"),
+        URIRef("urn:o"),
+    )
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "error",
+            message="Dataset.default_context is deprecated, use Dataset.default_graph instead.",
+            category=DeprecationWarning,
+        )
+
+        dataset.add(triple)
+        assert list(dataset.triples((None, None, None))) == [triple]
+        assert list(dataset.quads((None, None, None, None))) == [
+            (*triple, DATASET_DEFAULT_GRAPH_ID)
+        ]
+        assert list(dataset.triples_choices(([triple[0]], triple[1], triple[2]))) == [
+            triple
+        ]
+        assert bool(dataset.query("ASK WHERE { <urn:s> <urn:p> <urn:o> }"))
+
+
 def test_not_union(get_dataset):
     store, dataset = get_dataset
     # Union depends on the SPARQL endpoint configuration
