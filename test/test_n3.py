@@ -12,9 +12,12 @@ from test import TEST_DIR
 
 def test_bad_syntax_exposes_error_message() -> None:
     with pytest.raises(BadSyntax) as raised:
-        Graph().parse(data="<urn:subject> missing:predicate <urn:object> .", format="turtle")
+        Graph().parse(
+            data="<urn:subject> missing:predicate <urn:object> .", format="turtle"
+        )
 
     assert raised.value.msg == 'Prefix "missing:" not bound'
+
 
 test_data = """
 #  Definitions of terms describing the n3 model
