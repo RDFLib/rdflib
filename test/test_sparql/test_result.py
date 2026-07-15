@@ -31,7 +31,7 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 from pyparsing import ParseException
 
 from rdflib.graph import Graph
-from rdflib.namespace import Namespace
+from rdflib.namespace import XSD, Namespace
 from rdflib.query import Result, ResultRow
 from rdflib.term import BNode, Identifier, Literal, Node, Variable
 from test.utils.destination import DestinationType, DestParmType
@@ -120,6 +120,19 @@ def test_xsv_serialize(
         assert expected_result == result_lines[1]
     else:
         assert expected_result.match(result_lines[1])
+
+
+def test_xml_serialize_false_literal_value() -> None:
+    price = Variable("price")
+    result = Result("SELECT")
+    result.vars = [price]
+    result.bindings = [{price: Literal("0.0", datatype=XSD.decimal)}]
+
+    serialized = result.serialize(format="xml")
+
+    assert serialized is not None
+    assert b">0.0</literal>" in serialized
+    assert result == Result.parse(BytesIO(serialized), format="xml")
 
 
 @pytest.fixture(scope="module")
