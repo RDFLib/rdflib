@@ -1288,7 +1288,6 @@ ValuesClause = Optional(
     Param("valuesClause", Comp("ValuesClause", Keyword("VALUES") + DataBlock))
 )
 
-
 # [74] ConstructTriples ::= TriplesSameSubject ( '.' Optional(ConstructTriples) )?
 ConstructTriples = Forward()
 ConstructTriples <<= ParamList("template", TriplesSameSubject) + Optional(

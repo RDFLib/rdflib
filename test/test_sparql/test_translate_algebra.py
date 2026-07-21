@@ -10,7 +10,6 @@ from typing import Union, cast
 
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
-from pyparsing import ParseException
 
 import rdflib.plugins.sparql.algebra as algebra
 import rdflib.plugins.sparql.parser as parser
@@ -259,12 +258,7 @@ if os.name != "nt":
     algebra_tests.append(
         AlgebraTest(
             "test_other__service1",
-            "Test if a nested service pattern is properly translated"
-            "into the query text.",
-            pytest.mark.xfail(
-                raises=ParseException,
-                reason="translateAlgebra produces invalid SPARQL for nested OPTIONAL/SERVICE patterns",
-            ),
+            "Test if a nested service pattern is properly translated",
         )
     )
 else:
