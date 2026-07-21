@@ -1026,13 +1026,6 @@ class _AlgebraTranslator:
                     for triple in node.triples
                 )
                 self._replace("{BGP}", triples)
-                # The dummy -*-SELECT-*- is placed during a SelectQuery or Multiset pattern in order to be able
-                # to match extended variables in a specific Select-clause (see "Extend" below)
-                self._replace("-*-SELECT-*-", "SELECT", count=-1)
-                # If there is no "Group By" clause the placeholder will simply be deleted. Otherwise there will be
-                # no matching {GroupBy} placeholder because it has already been replaced by "group by variables"
-                self._replace("{GroupBy}", "", count=-1)
-                self._replace("{Having}", "", count=-1)
             elif node.name == "Join":
                 self._replace(
                     "{Join}", "{" + node.p1.name + "}{" + node.p2.name + "}"
@@ -1151,6 +1144,24 @@ class _AlgebraTranslator:
                     "GroupGraphPatternSub",
                     " ".join([self.convert_node_arg(pattern) for pattern in node.part]),
                 )
+            elif node.name == "OptionalGraphPattern":
+                # Raw parse node (not yet translated to algebra LeftJoin)
+                # Appears inside SERVICE graph patterns where inner content is
+                # kept in raw parse form
+                self._replace(
+                    "{OptionalGraphPattern}",
+                    "OPTIONAL {" + node.graph.name + "}",
+                )
+                traverse(node.graph, visitPre=self.sparql_query_text)
+                return node.graph
+            elif node.name == "MinusGraphPattern":
+                # Raw parse node (not yet translated to algebra Minus)
+                self._replace(
+                    "{MinusGraphPattern}",
+                    "MINUS {" + node.graph.name + "}",
+                )
+                traverse(node.graph, visitPre=self.sparql_query_text)
+                return node.graph
             elif node.name == "TriplesBlock":
                 self._replace(
                     "{TriplesBlock}",
@@ -1630,6 +1641,14 @@ class _AlgebraTranslator:
 
     def translateAlgebra(self) -> str:
         traverse(self.query_algebra.algebra, visitPre=self.sparql_query_text)
+        # The dummy -*-SELECT-*- marker is used during traversal so that Extend can
+        # locate the right SELECT clause for nested subqueries (see Extend handler)
+        # Replace all remaining occurrences with SELECT now that traversal is done
+        self._alg_translation = self._alg_translation.replace("-*-SELECT-*-", "SELECT")
+        # {GroupBy} and {Having} are filled by the Group handler, if there is no GROUP BY
+        # clause the placeholders remain and must be removed.
+        self._alg_translation = self._alg_translation.replace("{GroupBy}", "")
+        self._alg_translation = self._alg_translation.replace("{Having}", "")
         return self._alg_translation
 
 

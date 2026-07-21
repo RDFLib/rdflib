@@ -182,6 +182,7 @@ exclude = '''
     | \.pytest_cache
     | \.tox
     | \.venv
+    | \.poetry
     | \.var
     | \.github
     | site

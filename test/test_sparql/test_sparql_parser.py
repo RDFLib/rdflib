@@ -3,8 +3,10 @@ from __future__ import annotations
 import math
 import sys
 
-from rdflib import Graph, Literal, Variable
+from rdflib import Graph, Literal, URIRef, Variable
 from rdflib.namespace import Namespace
+from rdflib.plugins.sparql.algebra import translateQuery
+from rdflib.plugins.sparql.parser import parseQuery
 from rdflib.plugins.sparql.processor import processUpdate
 from rdflib.term import IdentifiedNode, Node
 
@@ -43,3 +45,30 @@ class TestSPARQLParser:
         processUpdate(g1, f"INSERT DATA {{ {g0ntriples!s} }}")
 
         assert triple_set(g0) == triple_set(g1)
+
+    def test_nested_service(self) -> None:
+        query = """
+        PREFIX wikibase: <http://wikiba.se/ontology#>
+        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+        PREFIX bd: <http://www.bigdata.com/rdf#>
+        PREFIX wd: <http://www.wikidata.org/entity/>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+        SELECT ?item ?pic
+        WHERE
+        {
+            SERVICE <https://query.wikidata.org/sparql> {
+                ?item wdt:P31 wd:Q146 .
+                ?item wdt:P18 ?pic
+                SERVICE wikibase:label {
+                    bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en".
+                }
+            }
+        }"""
+        parsed_query = translateQuery(parseQuery(query))
+        outer_service = parsed_query.algebra.p.p
+        assert outer_service.name == "ServiceGraphPattern"
+        assert outer_service.term == URIRef("https://query.wikidata.org/sparql")
+        inner_parts = outer_service.graph.part
+        inner_services = [p for p in inner_parts if p.name == "ServiceGraphPattern"]
+        assert len(inner_services) == 1
+        assert inner_services[0].term == URIRef("http://wikiba.se/ontology#label")

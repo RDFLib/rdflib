@@ -251,19 +251,14 @@ unused_files = {
 
 
 if os.name != "nt":
-    # On Windows this test causes a stackoverflow or memory error, so don't run
+    # On Windows this test was causing a stackoverflow or memory error, so don't run
     # it on Windows. The test fails anyway on linux and should be fixed. Once
     # the cause of this failure is fixed the condition to not run it on windows
     # should be removed and it should be added to the normal tests.
     algebra_tests.append(
         AlgebraTest(
             "test_other__service1",
-            "Test if a nested service pattern is properly translated"
-            "into the query text.",
-            pytest.mark.xfail(
-                raises=(RecursionError, TypeError),
-                reason="Fails with RecursionError inside parser.parseQuery",
-            ),
+            "Test if a nested service pattern is properly translated",
         )
     )
 else:
