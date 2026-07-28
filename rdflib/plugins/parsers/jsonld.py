@@ -82,7 +82,9 @@ class _ContextAwareGraph(Graph):
 
     def __init__(self, sink: Graph):
         super().__init__(store=sink.store, identifier=sink.identifier)
-        assert self.store.context_aware, "JSON-LD named graphs require a context-aware store."
+        assert (
+            self.store.context_aware
+        ), "JSON-LD named graphs require a context-aware store."
         self.context_aware = True
         self.default_union = True
         self._default_context = Graph(

@@ -34,9 +34,7 @@ NAMED_GRAPH_JSONLD = """
 """
 
 
-def parse_without_internal_conjunctive_graph_warning(
-    graph: Graph, data: str
-) -> None:
+def parse_without_internal_conjunctive_graph_warning(graph: Graph, data: str) -> None:
     """Fail if JSON-LD parsing constructs the deprecated internal adapter."""
     with warnings.catch_warnings():
         warnings.filterwarnings(
