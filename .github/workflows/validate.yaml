@@ -110,7 +110,7 @@ jobs:
           path: .coverage.*
           include-hidden-files: true
           if-no-files-found: error
-          retention-days: 1
+          retention-days: 7
       - uses: actions/upload-artifact@v7
         if: ${{ (success() || failure()) }}
         with:
@@ -179,10 +179,10 @@ jobs:
           path: .coverage-artifacts
       - name: Combine and validate coverage data
         run: |
-          poetry run coverage combine --keep --debug=pathmap .coverage-artifacts/*
+          poetry run coverage combine --keep .coverage-artifacts/*
           poetry run coverage report
       - name: Upload coverage to Coveralls
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COVERALLS_SERVICE_NAME: github
