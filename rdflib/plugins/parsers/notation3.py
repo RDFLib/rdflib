@@ -1431,6 +1431,15 @@ class SinkParser:
                 allowedChars = _notQNameChars
 
             i += 1
+            if i < len_argstr and argstr[i] == "-":
+                # local names cannot begin with "-"
+                raise BadSyntax(
+                    self._thisDoc,
+                    self.lines,
+                    argstr,
+                    i,
+                    "local name must not begin with '-'",
+                )
             lastslash = False
             start = i
             ln = ""
