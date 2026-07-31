@@ -116,6 +116,8 @@ def test_aggregate2():
     assert (
         len(list(g.quads((None, None, None, URIRef("http://example.com/graph2"))))) == 4
     )
+    # graph4 holds the same 3 triples as graph1; only graph4's own quads are
+    # reported for it.
     assert (
         len(
             list(
@@ -124,5 +126,5 @@ def test_aggregate2():
                 )
             )
         )
-        == 6
+        == 3
     )
