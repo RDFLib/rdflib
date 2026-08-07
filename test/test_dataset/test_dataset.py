@@ -2,10 +2,11 @@ import os
 import shutil
 import tempfile
 import warnings
+from typing import Tuple
 
 import pytest
 
-from rdflib import BNode, Namespace, URIRef, plugin
+from rdflib import BNode, Namespace, Node, URIRef, plugin
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
 from rdflib.store import Store
 from test.data import CONTEXT1, LIKES, PIZZA, TAREK
@@ -203,7 +204,7 @@ def test_dataset_default_context_public_access_warns() -> None:
 
 def test_dataset_internal_default_graph_operations_do_not_warn() -> None:
     dataset = Dataset()
-    triple = (
+    triple: Tuple[Node, Node, Node] = (
         URIRef("urn:s"),
         URIRef("urn:p"),
         URIRef("urn:o"),
