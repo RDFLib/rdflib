@@ -57,7 +57,7 @@ class Container:
         uri: Optional[IdentifiedNode],
         seq: Optional[Iterable[Node]] = None,
         rtype: str = "Bag",
-    ):
+    ) -> None:
         """Creates a Container
 
         Args:
@@ -72,7 +72,7 @@ class Container:
         self._len = 0
         self._rtype = rtype  # rdf:Bag or rdf:Seq or rdf:Alt
 
-        self.append_multiple(seq)
+        self.append_multiple(seq or ())
 
         # adding triple corresponding to container type
         self.graph.add((self.uri, RDF.type, RDF[self._rtype]))
@@ -117,7 +117,7 @@ class Container:
 
         i = None
         for p in pred:
-            i = int(p.replace(li_index, ""))
+            i = int(str(p).replace(str(li_index), ""))
         return i
 
     def __getitem__(self, key):
@@ -161,6 +161,8 @@ class Container:
         for j in range(key + 1, len(self) + 1):
             elem_uri = str(RDF) + "_" + str(j)
             v = graph.value(container, URIRef(elem_uri))
+            if v is None:
+                raise KeyError(j)
             graph.remove((container, URIRef(elem_uri), v))
             elem_uri = str(RDF) + "_" + str(j - 1)
             graph.add((container, URIRef(elem_uri), v))
