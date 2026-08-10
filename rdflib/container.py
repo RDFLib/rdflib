@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 import warnings
 from random import randint
 from typing import Iterable, Optional
-from rdflib.namespace import RDF
+
 from rdflib.graph import Graph
+from rdflib.namespace import RDF
 from rdflib.term import BNode, IdentifiedNode, Node, URIRef
-from __future__ import annotations
 
 __all__ = ["Container", "Bag", "Seq", "Alt", "NoElementException"]
 
