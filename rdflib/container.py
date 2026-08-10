@@ -1,8 +1,9 @@
 import warnings
 from random import randint
-
+from typing import Iterable, Optional
 from rdflib.namespace import RDF
-from rdflib.term import BNode, URIRef
+from rdflib.graph import Graph
+from rdflib.term import BNode, IdentifiedNode, Node, URIRef
 
 __all__ = ["Container", "Bag", "Seq", "Alt", "NoElementException"]
 
@@ -47,7 +48,13 @@ class Container:
     ```
     """
 
-    def __init__(self, graph, uri, seq=[], rtype="Bag"):
+    def __init__(
+        self,
+        graph: Graph,
+        uri: Optional[IdentifiedNode],
+        seq: Optional[Iterable[Node]] = None,
+        rtype: str = "Bag",
+    ):
         """Creates a Container
 
         Args:

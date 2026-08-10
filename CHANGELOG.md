@@ -25,7 +25,7 @@ Pull requests merged:
 
 This release introduces a new major feature to RDFLib: RDF4J Store integration and RDF4J Client. Users can use this to connect to RDF4J database servers through RDFLib's Graph and Dataset classes, as well as manage repositories and transactions using the RDF4J Client. A comprehensive user guide for the new RDF4J features is available under the extras section of the [RDFLib documentation](https://rdflib.readthedocs.io/en/stable/).
 
-We've also added a new CLI tool, `sq` (the script is [rdflib/tools/sparqlquery.py](rdflib/tools/sparqlquery.py)), for executing SPARQL queries against local files or remote SPARQL endpoints with custom serialization. This provides a convenient way to query RDF data straight from the command line.
+We've also added a new CLI tool, `sq` (the script is [rdflib/tools/sparqlquery.py](https://github.com/RDFLib/rdflib/blob/main/rdflib/tools/sparqlquery.py)), for executing SPARQL queries against local files or remote SPARQL endpoints with custom serialization. This provides a convenient way to query RDF data straight from the command line.
 
 Other enhancements include documentation improvements that fix crosslinking issues between modules, and new documentation content for RDFLib plugins, parsers, and serializers.
 
