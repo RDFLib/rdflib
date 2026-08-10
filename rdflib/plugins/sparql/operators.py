@@ -484,7 +484,7 @@ def Builtin_TIMEZONE(e: Expr, ctx) -> Literal:
         The timezone part of arg as an xsd:dayTimeDuration.
 
     Raises:
-        An error if there is no timezone.
+        SPARQLError: if there is no timezone.
     """
     dt = datetime(e.arg)
     if not dt.tzinfo:

@@ -144,7 +144,7 @@ The class provides a mechanism to both convert Python literals (and their built-
 | rdf:HTML | DocumentFragment (xml.dom.minidom.DocumentFragment) |
 
 [^1]: plain literals map directly to value space
-[^2]: Date, time and datetime literals are mapped to Python instances using the RDFlib xsd_datetime module, that is based on the [isodate](http://pypi.python.org/pypi/isodate/) package).
+[^2]: Date, time and datetime literals are mapped to Python instances using the RDFLib xsd_datetime module, that is based on the [isodate](http://pypi.python.org/pypi/isodate/) package).
 [^3]: this is a bit dirty - by accident the `html5lib` parser produces `DocumentFragments`, and the xml parser `Documents`, letting us use this to decide what datatype when round-tripping.
 
 An appropriate data-type and lexical representation can be found using `_castPythonToLiteral`, and the other direction with `_castLexicalToPython`.

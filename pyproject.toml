@@ -67,6 +67,9 @@ setuptools = ">=68,<72"
 wheel = ">=0.42,<0.46"
 testcontainers = {version = "^4.13.2", python = ">=3.9.2"}
 
+[tool.poetry.group.coverage.dependencies]
+coveralls = {version = "4.1.0", python = ">=3.10,<4.0"}
+
 [tool.poetry.group.docs.dependencies]
 typing-extensions = "^4.11.0"
 mkdocs = ">=1.6.1"
@@ -281,6 +284,7 @@ check_untyped_defs = true
 branch = true
 source = ["rdflib"]
 omit = ["*/_type_checking.py"]
+relative_files = true
 
 [tool.coverage.report]
 exclude_lines = [

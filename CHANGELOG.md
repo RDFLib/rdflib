@@ -25,7 +25,7 @@ Pull requests merged:
 
 This release introduces a new major feature to RDFLib: RDF4J Store integration and RDF4J Client. Users can use this to connect to RDF4J database servers through RDFLib's Graph and Dataset classes, as well as manage repositories and transactions using the RDF4J Client. A comprehensive user guide for the new RDF4J features is available under the extras section of the [RDFLib documentation](https://rdflib.readthedocs.io/en/stable/).
 
-We've also added a new CLI tool, `sq` (the script is [rdflib/tools/sparqlquery.py](rdflib/tools/sparqlquery.py)), for executing SPARQL queries against local files or remote SPARQL endpoints with custom serialization. This provides a convenient way to query RDF data straight from the command line.
+We've also added a new CLI tool, `sq` (the script is [rdflib/tools/sparqlquery.py](https://github.com/RDFLib/rdflib/blob/main/rdflib/tools/sparqlquery.py)), for executing SPARQL queries against local files or remote SPARQL endpoints with custom serialization. This provides a convenient way to query RDF data straight from the command line.
 
 Other enhancements include documentation improvements that fix crosslinking issues between modules, and new documentation content for RDFLib plugins, parsers, and serializers.
 
@@ -3628,7 +3628,7 @@ This release includes several major changes:
   * SPARQL paths are exposed as operators on ```URIRefs```, these can
     then be be used with graph.triples and friends:
 
-    ```python
+    ```
     from rdflib import Graph, URIRef
     from rdflib.namespace import FOAF, RDFS
     
@@ -3666,7 +3666,7 @@ This release includes several major changes:
   these allow access to variable bindings as attributes or as a
   dict. I.e.
 
-  ```py
+  ```
   for row in g.query('select ... ') :
      print row.age, row["name"]
   ```
@@ -3674,10 +3674,7 @@ This release includes several major changes:
 * "Slicing" of Graphs and Resources as syntactic sugar:
   ([#271](https://github.com/RDFLib/rdflib/issues/271))
 
-  ```py
-  graph[bob : FOAF.knows/FOAF.name]
-            -> generator over the names of Bobs friends
-  ```
+  `graph[bob : FOAF.knows/FOAF.name]` -> generator over the names of Bobs friends
 
 * The ```SPARQLStore``` and ```SPARQLUpdateStore``` are now included
   in the RDFLib core
@@ -3689,10 +3686,7 @@ This release includes several major changes:
 ### Minor Changes:
 
 * String operations on URIRefs return new URIRefs: ([#258](https://github.com/RDFLib/rdflib/issues/258))
-  ```py
-  >>> URIRef('http://example.org/')+'test
-  rdflib.term.URIRef('http://example.org/test')
-  ```
+  `URIRef('http://example.org/')+'test'` -> `URIRef('http://example.org/test')`
 
 * Parser/Serializer plugins are also found by mime-type, not just
   by plugin name:  ([#277](https://github.com/RDFLib/rdflib/issues/277))
