@@ -149,7 +149,7 @@ poetry run pytest
 
 ### Writing tests
 
-New tests should be written for [pytest](https://docs.pytest.org/en/latest/) instead of for python's built-in `unittest` module as pytest provides advanced features such as parameterization and more flexibility in writing expected failure tests than `unittest`.
+New tests should be written for [pytest](https://docs.pytest.org/en/latest/) instead of for python's built-in `unittest` module as pytest provides advanced features such as parameterisation and more flexibility in writing expected failure tests than `unittest`.
 
 A primer on how to write tests for pytest can be found [here](https://docs.pytest.org/en/latest/getting-started.html#create-your-first-test).
 
@@ -360,7 +360,7 @@ Once the PR is merged, switch to the main branch, build the release and upload i
 # Clean up any previous builds
 rm -vf dist/*
 
-# Build artifacts
+# Build artefacts
 poetry build
 
 # Verify package metadata
@@ -387,7 +387,7 @@ poetry publish
 ## poetry publish -u __token__ -p pypi-<REDACTED>
 ```
 
-Once this is done, create a release tag from [GitHub releases](https://github.com/RDFLib/rdflib/releases/new). For a release of version 6.3.1 the tag should be `6.3.1` (without a "v" prefix), and the release title should be "RDFLib 6.3.1". The release notes for the latest version be added to the release description. The artifacts built with `poetry build` should be uploaded to the release as release artifacts.
+Once this is done, create a release tag from [GitHub releases](https://github.com/RDFLib/rdflib/releases/new). For a release of version 6.3.1 the tag should be `6.3.1` (without a "v" prefix), and the release title should be "RDFLib 6.3.1". The release notes for the latest version be added to the release description. The artefacts built with `poetry build` should be uploaded to the release as release artefacts.
 
 The resulting release will be available at https://github.com/RDFLib/rdflib/releases/tag/6.3.1
 
