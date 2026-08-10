@@ -154,7 +154,7 @@ for s, p, o in g.triples((None, FOAF['member_name'], None)):
 ```
 
 !!! info "Foaf member name"
-    Since rdflib 5.0.0, using `foaf:member_name` is somewhat prevented in RDFlib since FOAF is declared as a [`ClosedNamespace`][rdflib.namespace.ClosedNamespace] class instance that has a closed set of members and `foaf:member_name` isn't one of them! If LiveJournal had used RDFlib 5.0.0, an error would have been raised for `foaf:member_name` when the triple was created.
+    Since rdflib 5.0.0, using `foaf:member_name` is somewhat prevented in RDFLib since FOAF is declared as a [`ClosedNamespace`][rdflib.namespace.ClosedNamespace] class instance that has a closed set of members and `foaf:member_name` isn't one of them! If LiveJournal had used RDFLib 5.0.0, an error would have been raised for `foaf:member_name` when the triple was created.
 
 
 ## Creating Containers & Collections

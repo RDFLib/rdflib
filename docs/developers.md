@@ -115,7 +115,7 @@ RDFLib uses semantic versioning and provides type hints, and these are the prima
 
 Any new functionality being added to RDFLib *must* have unit tests and should have doc tests supplied.
 
-Typically, you should add your functionality and new tests to a branch of RDFlib and run all tests locally and see them pass. There are currently close to 4,000 tests, with a some expected failures and skipped tests. We won't merge pull requests unless the test suite completes successfully.
+Typically, you should add your functionality and new tests to a branch of RDFLib and run all tests locally and see them pass. There are currently close to 4,000 tests, with a some expected failures and skipped tests. We won't merge pull requests unless the test suite completes successfully.
 
 Tests that you add should show how your new feature or bug fix is doing what you say it is doing: if you remove your enhancement, your new tests should fail!
 
@@ -336,9 +336,9 @@ Please do *not* commit tests you know will fail, even if you're just pointing ou
 
 ## Compatibility
 
-RDFlib 7.0.0 release and later only support Python 3.8.1 and newer.
+RDFLib 7.0.0 release and later only support Python 3.8.1 and newer.
 
-RDFlib 6.0.0 release and later only support Python 3.7 and newer.
+RDFLib 6.0.0 release and later only support Python 3.7 and newer.
 
 RDFLib 5.0.0 maintained compatibility with Python versions 2.7, 3.4, 3.5, 3.6, 3.7.
 
