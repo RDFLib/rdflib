@@ -78,7 +78,7 @@ mkdocstrings = {version = ">=1.0.6", extras = ["python"], python = ">=3.11"}
 httpx = "^0.28.1"
 
 [tool.poetry.group.lint.dependencies]
-ruff = "0.15.0"
+ruff = "0.16.2"
 
 [tool.poetry.extras]
 berkeleydb = ["berkeleydb"]
