@@ -176,7 +176,8 @@ tasks:
     desc: Build documentation
     cmds:
       - echo "PYTHONPATH=${PYTHONPATH}"
-      - "{{.VENV_PYTHON}} -m mkdocs build {{.CLI_ARGS}}"
+      - "{{.VENV_PYTHON}} docs/gen_ref_pages.py"
+      - "{{.VENV_PYTHON}} -m zensical build {{.CLI_ARGS}}"
 
   docs:live-server:
     desc: Run a live server on generated docs
@@ -350,7 +351,8 @@ tasks:
         cd var/test-sdist/rdflib-*
         poetry install
         poetry run mypy --show-error-context --show-error-codes -p rdflib
-        poetry run mkdocs build
+        poetry run python docs/gen_ref_pages.py
+        poetry run zensical build
         poetry run pytest
 
   test:no_internet:

@@ -1,15 +1,7 @@
 ---
 # https://docs.readthedocs.io/en/stable/config-file/v2.html
 version: 2
-# NOTE: not building epub because epub does not know how to handle .ico files
-# which results in a warning which causes the build to fail due to
-# `sphinx.fail_on_warning`
-# https://github.com/sphinx-doc/sphinx/issues/10350
-formats:
-  - htmlzip
-  - pdf
-
-# https://docs.readthedocs.com/platform/stable/intro/mkdocs.html
+# https://docs.readthedocs.com/platform/stable/intro/zensical.html
 build:
   os: "ubuntu-24.04"
   tools:
@@ -24,6 +16,10 @@ build:
     - poetry export --only=main --only=docs --extras=rdf4j --without-hashes -o requirements.txt
     - pip install --no-cache-dir -r requirements.txt
     - pip install .
-
-mkdocs:
-  configuration: mkdocs.yml
+    build:
+      html:
+      - python docs/gen_ref_pages.py
+      - zensical build
+    post_build:
+    - mkdir -p $READTHEDOCS_OUTPUT/html/
+    - cp --recursive site/* $READTHEDOCS_OUTPUT/html/

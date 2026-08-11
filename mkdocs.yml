@@ -7,7 +7,7 @@ repo_url: https://github.com/RDFLib/rdflib
 edit_uri: "edit/main/docs/"
 copyright: Copyright &copy; 2002 - 2026, RDFLib Team.
 
-# poetry run mkdocs serve -a localhost:8000
+# poetry run zensical serve -a localhost:8000
 
 nav:
   - Usage:
@@ -112,10 +112,6 @@ theme:
 plugins:
 - search
 - autorefs
-- include-markdown
-- gen-files:
-    scripts:
-      - docs/gen_ref_pages.py
 - mkdocstrings:
     default_handler: python
     handlers:
