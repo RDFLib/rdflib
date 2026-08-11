@@ -7,7 +7,7 @@ Terms are the kinds of objects that can appear in a RDFLib's graph's triples. Th
 
 ## Class hierarchy
 
-All terms in RDFLib are sub-classes of the [`Identifier`][rdflib.term.Identifier] class. A class diagram of the various terms is:
+All terms in RDFLib are subclasses of the [`Identifier`][rdflib.term.Identifier] class. A class diagram of the various terms is:
 
 ![Term Class Hierarchy](_static/term_class_hierarchy.svg)
 
@@ -79,6 +79,7 @@ GEO = Namespace("http://www.opengis.net/ont/geosparql#")
 geojson_geometry = Literal(
     '''{"type": "Point", "coordinates": [-83.38,33.95]}''',
     datatype=GEO.geoJSONLiteral
+)
 ```
 
 See the [`Literal`][rdflib.term.Literal] class' documentation, followed by notes on Literal from the [RDF 1.1 specification 'Literals' section](https://www.w3.org/TR/rdf11-concepts/#section-Graph-Literal).
@@ -107,45 +108,46 @@ Remember, you don't *have* to use XSD datatypes and can always make up your own,
 
 #### Python conversions
 
-RDFLib Literals essentially behave like unicode characters with an XML Schema datatype or language attribute.
+RDFLib Literals essentially behave like Unicode characters with an XML Schema datatype or language attribute.
 
 The class provides a mechanism to both convert Python literals (and their built-ins such as time/date/datetime) into equivalent RDF Literals and (conversely) convert Literals to their Python equivalent. This mapping to and from Python literals is done as follows:
 
-| XML Datatype | Python type |
-|--------------|-------------|
-| None | None [^1] |
-| xsd:time | time [^2] |
-| xsd:date | date |
-| xsd:dateTime | datetime |
-| xsd:string | None |
-| xsd:normalizedString | None |
-| xsd:token | None |
-| xsd:language | None |
-| xsd:boolean | boolean |
-| xsd:decimal | Decimal |
-| xsd:integer | long |
-| xsd:nonPositiveInteger | int |
-| xsd:long | long |
-| xsd:nonNegativeInteger | int |
-| xsd:negativeInteger | int |
-| xsd:int | long |
-| xsd:unsignedLong | long |
-| xsd:positiveInteger | int |
-| xsd:short | int |
-| xsd:unsignedInt | long |
-| xsd:byte | int |
-| xsd:unsignedShort | int |
-| xsd:unsignedByte | int |
-| xsd:float | float |
-| xsd:double | float |
-| xsd:base64Binary | base64 |
-| xsd:anyURI | None |
-| rdf:XMLLiteral | Document (xml.dom.minidom.Document [^3] |
-| rdf:HTML | DocumentFragment (xml.dom.minidom.DocumentFragment) |
+| XML Datatype           | Python type                                         |
+|------------------------|-----------------------------------------------------|
+| None                   | None [^1]                                           |
+| xsd:time               | time [^2]                                           |
+| xsd:date               | date                                                |
+| xsd:dateTime           | datetime or rdflib.xsd_datetime.XSDDate [^3]        |
+| xsd:string             | None                                                |
+| xsd:normalizedString   | None                                                |
+| xsd:token              | None                                                |
+| xsd:language           | None                                                |
+| xsd:boolean            | boolean                                             |
+| xsd:decimal            | Decimal                                             |
+| xsd:integer            | long                                                |
+| xsd:nonPositiveInteger | int                                                 |
+| xsd:long               | long                                                |
+| xsd:nonNegativeInteger | int                                                 |
+| xsd:negativeInteger    | int                                                 |
+| xsd:int                | long                                                |
+| xsd:unsignedLong       | long                                                |
+| xsd:positiveInteger    | int                                                 |
+| xsd:short              | int                                                 |
+| xsd:unsignedInt        | long                                                |
+| xsd:byte               | int                                                 |
+| xsd:unsignedShort      | int                                                 |
+| xsd:unsignedByte       | int                                                 |
+| xsd:float              | float                                               |
+| xsd:double             | float                                               |
+| xsd:base64Binary       | base64                                              |
+| xsd:anyURI             | None                                                |
+| rdf:XMLLiteral         | Document (xml.dom.minidom.Document [^4]             |
+| rdf:HTML               | DocumentFragment (xml.dom.minidom.DocumentFragment) |
 
 [^1]: plain literals map directly to value space
-[^2]: Date, time and datetime literals are mapped to Python instances using the RDFlib xsd_datetime module, that is based on the [isodate](http://pypi.python.org/pypi/isodate/) package).
-[^3]: this is a bit dirty - by accident the `html5lib` parser produces `DocumentFragments`, and the xml parser `Documents`, letting us use this to decide what datatype when round-tripping.
+[^2]: Date, time and datetime literals are mapped to Python instances using the RDFLib xsd_datetime module, that is based on the [isodate](http://pypi.python.org/pypi/isodate/) package.
+[^3]: negative years (Before Common Era) are not handled by Python's datetime, so we provide a class for that
+[^4]: this is a bit dirty - by accident the `html5lib` parser produces `DocumentFragments`, and the XML parser `Documents`, letting us use this to decide what datatype when round-tripping.
 
 An appropriate data-type and lexical representation can be found using `_castPythonToLiteral`, and the other direction with `_castLexicalToPython`.
 
