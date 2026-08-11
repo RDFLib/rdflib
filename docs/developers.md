@@ -6,7 +6,7 @@ This document describes the process and conventions to follow when
 developing RDFLib code.
 
 * Please be as Pythonic as possible ([PEP 8](https://www.python.org/dev/peps/pep-0008/)).
-* Code should be formatted using [black](https://github.com/psf/black) and we use Black v23.1.0, with the black config in `pyproject.toml`.
+* Code should be formatted using [black](https://github.com/psf/black), and we use Black v23.1.0, with the black config in `pyproject.toml`.
 * Code should also pass [flake8](https://flake8.pycqa.org/en/latest/) linting
   and [mypy](http://mypy-lang.org/) type checking.
 * You must supply tests for new code.
@@ -115,7 +115,7 @@ RDFLib uses semantic versioning and provides type hints, and these are the prima
 
 Any new functionality being added to RDFLib *must* have unit tests and should have doc tests supplied.
 
-Typically, you should add your functionality and new tests to a branch of RDFlib and run all tests locally and see them pass. There are currently close to 4,000 tests, with a some expected failures and skipped tests. We won't merge pull requests unless the test suite completes successfully.
+Typically, you should add your functionality and new tests to a branch of RDFLib and run all tests locally and see them pass. There are currently close to 4,000 tests, with a some expected failures and skipped tests. We won't merge pull requests unless the test suite completes successfully.
 
 Tests that you add should show how your new feature or bug fix is doing what you say it is doing: if you remove your enhancement, your new tests should fail!
 
@@ -149,7 +149,7 @@ poetry run pytest
 
 ### Writing tests
 
-New tests should be written for [pytest](https://docs.pytest.org/en/latest/) instead of for python's built-in `unittest` module as pytest provides advanced features such as parameterization and more flexibility in writing expected failure tests than `unittest`.
+New tests should be written for [pytest](https://docs.pytest.org/en/latest/) instead of for python's built-in `unittest` module as pytest provides advanced features such as parameterisation and more flexibility in writing expected failure tests than `unittest`.
 
 A primer on how to write tests for pytest can be found [here](https://docs.pytest.org/en/latest/getting-started.html#create-your-first-test).
 
@@ -336,9 +336,9 @@ Please do *not* commit tests you know will fail, even if you're just pointing ou
 
 ## Compatibility
 
-RDFlib 7.0.0 release and later only support Python 3.8.1 and newer.
+RDFLib 7.0.0 release and later only support Python 3.8.1 and newer.
 
-RDFlib 6.0.0 release and later only support Python 3.7 and newer.
+RDFLib 6.0.0 release and later only support Python 3.7 and newer.
 
 RDFLib 5.0.0 maintained compatibility with Python versions 2.7, 3.4, 3.5, 3.6, 3.7.
 
@@ -346,13 +346,13 @@ RDFLib 5.0.0 maintained compatibility with Python versions 2.7, 3.4, 3.5, 3.6, 3
 
 Create a release-preparation pull request with the following changes:
 
-* Updated version and date in [`CITATION.cff`](../CITATION.cff).
-* Updated copyright year in the [`LICENSE`](../LICENSE) file.
-* Updated copyright year in the [`mkdocs.yml`](../mkdocs.yml) file.
-* Updated main branch version and current version in the [`README.md`](../README.md) file.
-* Updated version in the [`pyproject.toml`](../pyproject.toml) file.
-* Updated `__date__` in the [`rdflib/__init__.py`](../rdflib/__init__.py) file.
-* Updated [`CHANGELOG.md`](../CHANGELOG.md) entry for the release with admin tools as described in [`admin/README.md`](../admin/README.md).
+* Updated version and date in [`CITATION.cff`](https://github.com/RDFLib/rdflib/blob/main/CITATION.cff).
+* Updated copyright year in the [`LICENSE`](https://github.com/RDFLib/rdflib/blob/main/LICENSE) file.
+* Updated copyright year in the [`mkdocs.yml`](https://github.com/RDFLib/rdflib/blob/main/mkdocs.yml) file.
+* Updated main branch version and current version in the [`README.md`](https://github.com/RDFLib/rdflib/blob/main/README.md) file.
+* Updated version in the [`pyproject.toml`](https://github.com/RDFLib/rdflib/blob/main/pyproject.toml) file.
+* Updated `__date__` in the [`rdflib/__init__.py`](https://github.com/RDFLib/rdflib/blob/main/rdflib/__init__.py) file.
+* Updated [`CHANGELOG.md`](https://github.com/RDFLib/rdflib/blob/main/CHANGELOG.md) entry for the release with admin tools as described in [`admin/README.md`](https://github.com/RDFLib/rdflib/blob/main/admin/README.md).
 
 Once the PR is merged, switch to the main branch, build the release and upload it to PyPI:
 
@@ -360,7 +360,7 @@ Once the PR is merged, switch to the main branch, build the release and upload i
 # Clean up any previous builds
 rm -vf dist/*
 
-# Build artifacts
+# Build artefacts
 poetry build
 
 # Verify package metadata
@@ -387,7 +387,7 @@ poetry publish
 ## poetry publish -u __token__ -p pypi-<REDACTED>
 ```
 
-Once this is done, create a release tag from [GitHub releases](https://github.com/RDFLib/rdflib/releases/new). For a release of version 6.3.1 the tag should be `6.3.1` (without a "v" prefix), and the release title should be "RDFLib 6.3.1". The release notes for the latest version be added to the release description. The artifacts built with `poetry build` should be uploaded to the release as release artifacts.
+Once this is done, create a release tag from [GitHub releases](https://github.com/RDFLib/rdflib/releases/new). For a release of version 6.3.1 the tag should be `6.3.1` (without a "v" prefix), and the release title should be "RDFLib 6.3.1". The release notes for the latest version be added to the release description. The artefacts built with `poetry build` should be uploaded to the release as release artefacts.
 
 The resulting release will be available at https://github.com/RDFLib/rdflib/releases/tag/6.3.1
 
