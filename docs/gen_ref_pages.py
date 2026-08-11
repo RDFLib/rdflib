@@ -4,7 +4,14 @@ import importlib
 import pkgutil
 from pathlib import Path
 
-import mkdocs_gen_files
+DOCS_DIR = Path(__file__).parent
+
+
+def open_generated(path: Path):
+    """Open a generated documentation page for writing."""
+    destination = DOCS_DIR / path
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    return destination.open("w", encoding="utf-8")
 
 
 def generate_module_docs(module_path, output_path, nav, indent=0):
@@ -20,7 +27,7 @@ def generate_module_docs(module_path, output_path, nav, indent=0):
 
         # Create a .md file for the current module
         if not module_path == "rdflib":
-            with mkdocs_gen_files.open(doc_path, "w") as fd:
+            with open_generated(doc_path) as fd:
                 fd.write(f"::: {module_path}\n\n")
                 if module_path.startswith("rdflib.namespace"):
                     # namespace module page gets too big, so we disable source code display
@@ -45,7 +52,7 @@ def generate_module_docs(module_path, output_path, nav, indent=0):
                                     code = code[:start] + code[end:]
                                     break
                         # Mkdocstrings options: https://mkdocstrings.github.io/python/reference/api/#mkdocstrings_handlers.python.PythonInputOptions
-                        with mkdocs_gen_files.open(doc_path, "w") as fd:
+                        with open_generated(doc_path) as fd:
                             fd.write("    options:\n")
                             fd.write("        show_source: false\n")
                             fd.write("        show_docstring_attributes: false\n")
@@ -66,9 +73,6 @@ def generate_module_docs(module_path, output_path, nav, indent=0):
                             fd.write(code)
                             fd.write("\n```\n")
 
-            mkdocs_gen_files.set_edit_path(
-                doc_path, Path(f"../{module_path.replace('.', '/')}.py")
-            )
             # Add to navigation - convert path to tuple of parts for nav
             # parts = tuple(doc_path.with_suffix("").parts)
             # nav[parts] = doc_path.as_posix()
@@ -87,14 +91,8 @@ def generate_module_docs(module_path, output_path, nav, indent=0):
         print(f"Error processing {module_path}: {e}")
 
 
-# Creating navigation structure requires mkdocs-literate-nav
-# nav = mkdocs_gen_files.Nav()
 nav = None
 
 # Generate all docs
 generate_module_docs("rdflib", Path("apidocs/_index.md"), nav)
 generate_module_docs("examples", Path("apidocs/examples.md"), nav)
-
-# # Write the navigation file for the literate-nav plugin
-# with mkdocs_gen_files.open("SUMMARY.md", "w") as nav_file:
-#     nav_file.writelines(nav.build_literate_nav())

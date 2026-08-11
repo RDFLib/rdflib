@@ -39,7 +39,7 @@ import re
 import sys
 from datetime import date, datetime, time, timedelta
 from decimal import ROUND_FLOOR, Decimal
-from typing import List, Tuple, Union, cast
+from typing import List, Optional, Tuple, Union, cast
 
 if sys.version_info[:3] < (3, 11, 0):
     from isodate import parse_date, parse_datetime, parse_time
@@ -81,6 +81,52 @@ def max_days_in_month(year: int, month: int) -> int:
     if ((year % 400) == 0) or ((year % 100) != 0) and ((year % 4) == 0):
         return 29
     return 28
+
+
+class XSDDate:
+    """
+    XSD date value for years that Python's ``datetime.date`` cannot represent.
+
+    Python date objects require years in ``1..9999``. XSD 1.1 permits year zero
+    and negative years, so RDFLib keeps those well-formed literals represented
+    without introducing another date dependency.
+    """
+
+    __slots__ = ("year", "month", "day")
+
+    def __init__(self, year: int, month: int, day: int):
+        if month < 1 or month > 12:
+            raise ValueError("Month must be in 1..12")
+        if day < 1 or day > max_days_in_month(year, month):
+            raise ValueError("Day is out of range for month")
+        self.year = year
+        self.month = month
+        self.day = day
+
+    def isoformat(self) -> str:
+        if self.year < 0:
+            year = f"-{abs(self.year):04d}"
+        else:
+            year = f"{self.year:04d}"
+        return f"{year}-{self.month:02d}-{self.day:02d}"
+
+    def __str__(self) -> str:
+        return self.isoformat()
+
+    def __repr__(self) -> str:
+        return f"XSDDate({self.year}, {self.month}, {self.day})"
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, XSDDate):
+            return NotImplemented
+        return (
+            self.year == other.year
+            and self.month == other.month
+            and self.day == other.day
+        )
+
+    def __hash__(self) -> int:
+        return hash((self.year, self.month, self.day))
 
 
 class Duration:
@@ -584,7 +630,24 @@ def parse_xsd_date(date_string: str):
                 date_string = split_parts[0]
     if "-" not in date_string:
         raise ValueError("XSD Date string must contain at least two dashes")
-    return parse_date(date_string if not minus else ("-" + date_string))
+    date_string = date_string if not minus else ("-" + date_string)
+    non_python_date = _parse_non_python_xsd_date(date_string)
+    if non_python_date is not None:
+        return non_python_date
+    return parse_date(date_string)
+
+
+def _parse_non_python_xsd_date(date_string: str) -> Optional[XSDDate]:
+    match = re.fullmatch(
+        r"(?P<year>-?\d{4,})-(?P<month>\d{2})-(?P<day>\d{2})", date_string
+    )
+    if match is None:
+        return None
+
+    year = int(match.group("year"))
+    if year > 0:
+        return None
+    return XSDDate(year, int(match.group("month")), int(match.group("day")))
 
 
 # Parse XSD Datetime is the same as ISO8601 Datetime
