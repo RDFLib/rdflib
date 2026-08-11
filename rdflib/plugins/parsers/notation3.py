@@ -1586,6 +1586,14 @@ class SinkParser:
                 if argstr[j : j + 2] == "^^":
                     res2: typing.List[Any] = []
                     j = self.uri_ref2(argstr, j + 2, res2)  # Read datatype URI
+                    if not res2:
+                        raise BadSyntax(
+                            self._thisDoc,
+                            startline,
+                            argstr,
+                            j,
+                            "Missing or invalid datatype IRI after '^^'",
+                        )
                     dt = res2[0]
                 res.append(self._store.newLiteral(s, dt, lang))
                 return j

@@ -44,7 +44,7 @@ This list has been assembled from Pull Request and commit information.
   [ISSUE #786](https://github.com/RDFLib/rdflib/issues/786)
 * ntriples spec allows for upper-cased lang tag, fixes #782
   [PR #784](https://github.com/RDFLib/rdflib/pull/784)
-* Error parsing N-Triple file using RDFlib
+* Error parsing N-Triple file using RDFLib
   [ISSUE #782](https://github.com/RDFLib/rdflib/issues/782)
 * Adds escaped single quote to literal parser
   [PR #736](https://github.com/RDFLib/rdflib/pull/736)
