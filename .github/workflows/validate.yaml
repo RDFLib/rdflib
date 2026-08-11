@@ -50,7 +50,7 @@ jobs:
             TOXENV_SUFFIX: "-docs"
             TOX_PYTEST_EXTRA_ARGS: "-m 'not (testcontainer or webtest)'"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Cache XDG_CACHE_HOME
         uses: actions/cache@v6
         with:
@@ -72,7 +72,7 @@ jobs:
           distribution: "temurin"
           java-version: "17"
       - name: Install Task
-        uses: go-task/setup-task@v2.1.0
+        uses: go-task/setup-task@v2
         with:
           version: 3.x
       - name: Run preparation
@@ -103,6 +103,14 @@ jobs:
           TOX_PYTEST_EXTRA_ARGS: ${{ matrix.TOX_PYTEST_EXTRA_ARGS || env.TOX_PYTEST_EXTRA_ARGS }}
           TOX_TEST_HARNESS: ${{ matrix.TOX_TEST_HARNESS }}
           TOX_EXTRA_COMMAND: ${{ matrix.TOX_EXTRA_COMMAND }}
+      - name: Upload coverage data
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-${{ matrix.python-version }}-${{ matrix.os }}${{ matrix.suffix }}
+          path: .coverage.*
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
       - uses: actions/upload-artifact@v7
         if: ${{ (success() || failure()) }}
         with:
@@ -124,7 +132,7 @@ jobs:
           - task: "gha:lint"
             python-version: 3.8
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Cache XDG_CACHE_HOME
         uses: actions/cache@v6
         with:
@@ -141,21 +149,46 @@ jobs:
         run: |
           pip install -r devtools/requirements-poetry.in
       - name: Install Task
-        uses: go-task/setup-task@v2.1.0
+        uses: go-task/setup-task@v2
         with:
           version: 3.x
       - name: Run task
         shell: bash
         run: |
           task ${{ matrix.task }}
-  finish:
+  coverage:
     permissions:
       contents: read
     needs: validate
     runs-on: ubuntu-latest
     steps:
-      - name: Coveralls Finished
-        uses: coverallsapp/github-action@master
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          parallel-finished: true
+          python-version: "3.13"
+      - name: Install poetry
+        run: |
+          pip install -r devtools/requirements-poetry.in
+      - name: Install coverage tools
+        run: |
+          poetry install --no-root --only=coverage
+      - name: Download coverage data
+        uses: actions/download-artifact@v8
+        with:
+          pattern: coverage-*
+          path: .coverage-artifacts
+      - name: Combine and validate coverage data
+        run: |
+          poetry run coverage combine --keep .coverage-artifacts/*
+          poetry run coverage report
+      - name: Upload coverage to Coveralls
+        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_SERVICE_NAME: github
+        with:
+          timeout_minutes: 2
+          max_attempts: 4
+          retry_wait_seconds: 15
+          retry_on: error
+          command: poetry run coveralls

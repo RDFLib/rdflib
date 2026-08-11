@@ -1,8 +1,9 @@
+import logging
 from datetime import datetime, timezone
 
 from rdflib.namespace import XSD
 from rdflib.term import Literal, URIRef
-from rdflib.xsd_datetime import xsd_datetime_isoformat
+from rdflib.xsd_datetime import XSDDate, xsd_datetime_isoformat
 
 
 class TestRelativeBase:
@@ -70,3 +71,17 @@ class TestRelativeBase:
 
         assert isinstance(l.toPython(), datetime)
         assert l.toPython().isoformat() == dt
+
+    def test_bce_xsd_date(self, caplog):
+        caplog.set_level(logging.WARNING, logger="rdflib.term")
+
+        lit = Literal("-0002-04-12", datatype=XSD.date)
+
+        assert str(lit) == "-0002-04-12"
+        assert lit.ill_typed is False
+        assert lit.value == XSDDate(-2, 4, 12)
+        assert lit.toPython() == XSDDate(-2, 4, 12)
+        assert not any(
+            "Failed to convert Literal lexical form" in r.message
+            for r in caplog.records
+        )

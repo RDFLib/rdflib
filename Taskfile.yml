@@ -176,7 +176,8 @@ tasks:
     desc: Build documentation
     cmds:
       - echo "PYTHONPATH=${PYTHONPATH}"
-      - "{{.VENV_PYTHON}} -m mkdocs build {{.CLI_ARGS}}"
+      - "{{.VENV_PYTHON}} docs/gen_ref_pages.py"
+      - "{{.VENV_PYTHON}} -m zensical build {{.CLI_ARGS}}"
 
   docs:live-server:
     desc: Run a live server on generated docs
@@ -242,20 +243,14 @@ tasks:
 
   gha:validate:
     desc: GitHub Actions Validation Workflow
-    env:
-      COVERALLS_PARALLEL: true
-      COVERALLS_FLAG_NAME: "{{.OS}}-{{.TOX_PYTHON_VERSION}}{{.MATRIX_SUFFIX}}"
-      COVERALLS_SERVICE_NAME: '{{.COVERALLS_SERVICE_NAME | default (env "COVERALLS_SERVICE_NAME") | default "github"}}'
     cmds:
       - task: install:system-deps
       - task: install:tox
         vars:
           WITH_GITHUB_ACTIONS: "true"
-      - cmd: "{{.PYTHON}} -m pip install coveralls"
       - task: tox
         vars:
-          COVERAGE_FILE: ".coverage"
-      - cmd: coveralls
+          COVERAGE_FILE: ".coverage.{{.OS}}-{{.TOX_PYTHON_VERSION}}{{.MATRIX_SUFFIX}}"
 
   gha:lint:
     desc: GitHub Actions lint workflow
@@ -356,7 +351,8 @@ tasks:
         cd var/test-sdist/rdflib-*
         poetry install
         poetry run mypy --show-error-context --show-error-codes -p rdflib
-        poetry run mkdocs build
+        poetry run python docs/gen_ref_pages.py
+        poetry run zensical build
         poetry run pytest
 
   test:no_internet:

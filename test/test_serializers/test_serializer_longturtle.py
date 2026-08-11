@@ -2,8 +2,10 @@ import difflib
 from pathlib import Path
 from textwrap import dedent
 
-from rdflib import Graph, Namespace
+from rdflib import RDF, BNode, Graph, Literal, Namespace
+from rdflib.compare import isomorphic
 from rdflib.namespace import GEO, SDO
+from rdflib.plugins.serializers.longturtle import LongTurtleSerializer
 
 
 def test_longturtle():
@@ -210,3 +212,38 @@ def test_longturtle_undeclared_prefix_when_using_base():
     """
     )
     assert output.strip() == expected.strip()
+
+
+def test_longturtle_shared_list_tail_round_trips():
+    """
+    A list cell that is pointed to from more than one place (here, the tail of
+    one list is also referenced directly by another subject) cannot be safely
+    written with ``( … )`` collection syntax: the inline form only defines the
+    cell once, at whichever reference happens to consume it, leaving the other
+    reference dangling in the output.
+
+    Same regression as the turtle serializer's
+    ``test_turtle_shared_list_tail_round_trips``; ``longturtle`` duplicates
+    ``TurtleSerializer.isValidList`` rather than inheriting it, so it needs
+    the same fix.
+    """
+    ns = Namespace("http://example.org/ns/")
+    g = Graph()
+    tail = BNode()
+    head = BNode()
+    g.add((tail, RDF.first, Literal("b")))
+    g.add((tail, RDF.rest, RDF.nil))
+    g.add((head, RDF.first, Literal("a")))
+    g.add((head, RDF.rest, tail))
+    g.add((ns.s1, ns.p, head))
+    g.add((ns.s2, ns.p, tail))
+
+    serializer = LongTurtleSerializer(g)
+    assert serializer.isValidList(head) is False
+    assert serializer.isValidList(tail) is False
+
+    ttl_dump = g.serialize(format="longturtle")
+    g2 = Graph()
+    g2.parse(data=ttl_dump, format="turtle")
+    assert len(g2) == len(g)
+    assert isomorphic(g, g2)

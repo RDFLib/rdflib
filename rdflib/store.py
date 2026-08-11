@@ -481,6 +481,6 @@ class Store:
         triples in the graph
 
         Args:
-            graphid: a Graph instance
+            graph: a Graph instance
         """
         raise Exception("Graph method called on non-graph_aware store")
