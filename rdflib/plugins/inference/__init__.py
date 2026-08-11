@@ -1,12 +1,43 @@
-# -*- coding: utf-8 -*-
 #
 """
 This module was originally a stand-alone Package on GitHub and PyPI - OWL-RL (https://github.com/RDFLib/OWL-RL/ &
 https://pypi.org/project/owlrl). It has been subsumed into RDFLib in 2026 as it has been stable for a long time and
 including it will make accessing its funtionality easier.
 
-To use this module, you can use the Graph() object's new `exand()` function and specify either "RDFS" or "OWLRL" as
-the `expansion_logic` parameter.
+To use this module, you can call `query()` or `update()` on a `Graph` specify either "RDFS" or "OWLRL" as
+the `processor` parameter, for example:
+
+```
+# expand Graph g into new graph r
+r = g.query("", processor="owlrl")
+# combined g with r for total result
+g += r.graph
+```
+
+You can also use `update()` to directly insert results:
+
+```
+# equivalent to above
+g.update("", processor="owlrl")
+```
+
+You can add your own rules, e.g. that `hasGrandchild` is equivalent to a path of `hasChild`/`hasChild`:
+
+```
+rules = '''
+PREFIX : <http://example.org/relatives#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+:hasGrandchild
+    a owl:ObjectProperty ;
+    owl:propertyChainAxiom (
+        :hasChild
+        :hasChild
+    ) ;
+.
+'''
+g.update(rules, processor="owlrl")
+```
 
 Original documentation:
 
@@ -164,6 +195,8 @@ which will result in a proper graph expansion except for the datatype specific c
 """
 
 # Examples: LangString is disjoint from String
+from __future__ import annotations
+
 from rdflib import __version__
 
 __author__ = "Ivan Herman"
@@ -174,12 +207,17 @@ from typing import Union
 
 # noinspection PyPackageRequirements,PyPackageRequirements,PyPackageRequirements
 from rdflib import Graph, Literal
-from rdflib.inference import closure, datatypehandling
-from rdflib.inference.combinedclosure import RDFS_OWLRL_Semantics
-from rdflib.inference.owlrl import OWLRL_Semantics
-from rdflib.inference.owlrlextras import OWLRL_Extension, OWLRL_Extension_Trimming
-from rdflib.inference.rdfsclosure import RDFS_Semantics
 from rdflib.namespace import OWL
+from rdflib.plugins.inference import closure, datatypehandling
+from rdflib.plugins.inference.combinedclosure import RDFS_OWLRL_Semantics
+from rdflib.plugins.inference.owlrl import OWLRL_Semantics
+from rdflib.plugins.inference.owlrlextras import (
+    OWLRL_Extension,
+    OWLRL_Extension_Trimming,
+)
+from rdflib.plugins.inference.rdfsclosure import RDFS_Semantics
+
+# ruff: noqa: F401 N803 N806
 
 RDFXML = "xml"
 TURTLE = "turtle"
@@ -533,7 +571,7 @@ def convert_graph(options, closureClass=None):
     iformat = "auto"
     try:
         iformat = options.iformat
-    except:
+    except Exception:
         # exception can be raised if that attribute is not used at all, true for older versions
         pass
 
@@ -541,7 +579,7 @@ def convert_graph(options, closureClass=None):
     try:
         if options.source is not None:
             options.sources.append(options.source)
-    except:
+    except Exception:
         # exception can be raised if that attribute is not used at all, true for newer versions
         pass
 
@@ -563,7 +601,7 @@ def convert_graph(options, closureClass=None):
     owlExtras = __check_yes_or_true(options.owlExtras)
     try:
         trimming = __check_yes_or_true(options.trimming)
-    except:
+    except Exception:
         trimming = False
     axioms = __check_yes_or_true(options.axioms)
     daxioms = __check_yes_or_true(options.daxioms)

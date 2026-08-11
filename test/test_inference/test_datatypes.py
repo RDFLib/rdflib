@@ -12,8 +12,9 @@ NOTE: The following axioms are skipped on purpose
 """
 
 from rdflib import RDF, RDFS, XSD, Graph, Literal
-from rdflib.inference import DeductiveClosure, OWLRL_Semantics
-from rdflib.inference.namespaces import ERRNS, T
+from rdflib.plugins.inference import DeductiveClosure
+from rdflib.plugins.inference.namespaces import ERRNS, T
+from rdflib.plugins.inference.owlrl import OWLRL_Semantics
 
 
 def test_dt_type1():

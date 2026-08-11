@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 """
 Lists of XSD datatypes and their mutual relationships

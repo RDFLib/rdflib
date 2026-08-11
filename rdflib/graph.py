@@ -2110,11 +2110,11 @@ class Graph(Node):
 
         return subgraph
 
-    def expand(
+    def expand(  # type: ignore[return]
         self,
         expansion_logic: TypingLiteral["RDFS", "OWLRL", "SPARQLRULES"] = "RDFS",
-        in_place:bool = True
-    ) -> None|Graph:
+        in_place: bool = True,
+    ) -> None | Graph:
         """Expands a graph using RDFS semantics, OWL's 'RL' profile or a given rule set - not yet supported
 
         If used against a readl-only graph, in_place will be understood to be False.
@@ -2122,7 +2122,11 @@ class Graph(Node):
 
         def is_read_only(g: Graph) -> bool:
             """Checks to see if the Graph is read-only"""
-            test_triple = (URIRef("urn:test:s"), URIRef("urn:test:p"), URIRef("urn:test:o"))
+            test_triple = (
+                URIRef("urn:test:s"),
+                URIRef("urn:test:p"),
+                URIRef("urn:test:o"),
+            )
 
             try:
                 g.add(test_triple)
@@ -2131,13 +2135,19 @@ class Graph(Node):
             except Exception:
                 return True
 
-        ExpansionLogic = ["RDFS", "OWLRL", "SPARQLRULES"]
-        from rdflib.inference import DeductiveClosure, RDFS_Semantics, OWLRL_Semantics
+        expansionlogicschemes = ["RDFS", "OWLRL", "SPARQLRULES"]
+        from rdflib.plugins.inference import DeductiveClosure
+        from rdflib.plugins.inference.owlrl import OWLRL_Semantics
+        from rdflib.plugins.inference.rdfsclosure import RDFS_Semantics
 
-        if expansion_logic not in ExpansionLogic:
-            raise ValueError(f"Expansion logic {expansion_logic} not supported. Must be one of {', '.join(ExpansionLogic)}.")
+        if expansion_logic not in expansionlogicschemes:
+            raise ValueError(
+                f"Expansion logic {expansion_logic} not supported. Must be one of {', '.join(expansionlogicschemes)}."
+            )
         if expansion_logic == "SPARQLRULES":
-            raise NotImplementedError("Sorry, SPARQLRULES are not yet implemented as an expansion logic")
+            raise NotImplementedError(
+                "Sorry, SPARQLRULES are not yet implemented as an expansion logic"
+            )
 
         if not isinstance(in_place, bool):
             raise ValueError("'in_place' must be a boolean True or False value")

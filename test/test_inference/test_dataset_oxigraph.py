@@ -6,8 +6,9 @@ pytest.importorskip("pyoxigraph")
 from pyoxigraph import DefaultGraph, NamedNode, RdfFormat, Store
 
 from rdflib import Namespace, URIRef
-from rdflib.inference import DeductiveClosure, OWLRL_Semantics
 from rdflib.namespace import RDF
+from rdflib.plugins.inference import DeductiveClosure
+from rdflib.plugins.inference.owlrl import OWLRL_Semantics
 
 RELS = Namespace("http://example.org/relatives#")
 

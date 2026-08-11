@@ -25,23 +25,25 @@ consequent triples are all right, generalized triples might have had a role in t
 .. _Ivan Herman: http://www.w3.org/People/Ivan/
 
 """
+from __future__ import annotations
 
 __author__ = "Ivan Herman"
 __contact__ = "Ivan Herman, ivan@w3.org"
 __license__ = "W3C® SOFTWARE NOTICE AND LICENSE, http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231"
+
 
 from collections import defaultdict
 from typing import Union
 
 import rdflib
 from rdflib import BNode, Graph
-from rdflib.inference.axiomatictriples import (
+from rdflib.namespace import OWL, RDF, RDFS
+from rdflib.plugins.inference.axiomatictriples import (
     OWLRL_Axiomatic_Triples,
     OWLRL_D_Axiomatic_Triples,
     OWLRL_Datatypes_Disjointness,
 )
-from rdflib.inference.closure import Core
-from rdflib.namespace import OWL, RDF, RDFS
+from rdflib.plugins.inference.closure import Core
 
 OWLRL_Annotation_properties = [
     RDFS.label,
@@ -55,11 +57,15 @@ OWLRL_Annotation_properties = [
     OWL.incompatibleWith,
 ]
 
-from rdflib.inference.datatypehandling import AltXSDToPYTHON  # noqa: E402
-from rdflib.inference.xsddatatypes import (
+from rdflib.plugins.inference.datatypehandling import AltXSDToPYTHON  # noqa: E402
+from rdflib.plugins.inference.xsddatatypes import (  # noqa: E402
     OWL_Datatype_Subsumptions,
     OWL_RL_Datatypes,
-)  # noqa: E402
+)
+
+# ruff: noqa: E731 E741 N801 N806
+
+# mypy: disable_error_code = "arg-type, attr-defined, operator, var-annotated, valid-type, union-attr"
 
 identity = lambda v: v
 

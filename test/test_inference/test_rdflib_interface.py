@@ -41,13 +41,13 @@ class ImmutableWrapper:
     def __len__(self) -> int:
         return self._frozen_obj.__len__()
 
-    def add(
+    def add(  # type: ignore[misc]
         self: _ConjunctiveGraphT,
         triple_or_quad: _TripleOrOptionalQuadType,
     ):
         raise ValueError("This object is immutable: you cannot add to it.")
 
-    @property
+    @property  # type: ignore[misc]
     def __class__(self):
         # Override the __class__ attribute to return TargetClass
         return Graph

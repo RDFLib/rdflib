@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 """
 The combined closure: performing *both* the OWL 2 RL and RDFS closures.
@@ -24,6 +23,7 @@ OWL 2 RL implementation becomes a full extension of RDFS.
 .. _Ivan Herman: http://www.w3.org/People/Ivan/
 
 """
+from __future__ import annotations
 
 __author__ = "Ivan Herman"
 __contact__ = "Ivan Herman, ivan@w3.org"
@@ -32,11 +32,13 @@ __license__ = "W3C® SOFTWARE NOTICE AND LICENSE, http://www.w3.org/Consortium/L
 from typing import Union
 
 from rdflib import Graph
-from rdflib.inference.owlrl import OWLRL_Semantics
-from rdflib.inference.rdfsclosure import RDFS_Semantics
 from rdflib.namespace import OWL, RDFS
+from rdflib.plugins.inference.owlrl import OWLRL_Semantics
+from rdflib.plugins.inference.rdfsclosure import RDFS_Semantics
 
 ######################################################################################################
+
+# ruff: noqa: N801
 
 
 # noinspection PyPep8Naming

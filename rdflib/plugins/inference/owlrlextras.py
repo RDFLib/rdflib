@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 """
 
@@ -34,26 +33,32 @@ In more details, the rules that are added:
 .. _Ivan Herman: http://www.w3.org/People/Ivan/
 
 """
+from __future__ import annotations
 
 __author__ = "Ivan Herman"
 __contact__ = "Ivan Herman, ivan@w3.org"
 __license__ = "W3C® SOFTWARE NOTICE AND LICENSE, http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231"
-
 from fractions import Fraction as Rational
 from typing import Union
 
 from rdflib import Graph
+from rdflib.namespace import OWL, RDF, RDFS, XSD
 
 # noinspection PyPep8Naming
-from rdflib.inference.combinedclosure import RDFS_OWLRL_Semantics
-from rdflib.inference.datatypehandling import AltXSDToPYTHON
-from rdflib.inference.owlrl import OWLRL_Annotation_properties
-from rdflib.inference.restricteddatatype import extract_faceted_datatypes
-from rdflib.inference.xsddatatypes import OWL_Datatype_Subsumptions, OWL_RL_Datatypes
-from rdflib.namespace import OWL, RDF, RDFS, XSD
+from rdflib.plugins.inference.combinedclosure import RDFS_OWLRL_Semantics
+from rdflib.plugins.inference.datatypehandling import AltXSDToPYTHON
+from rdflib.plugins.inference.owlrl import OWLRL_Annotation_properties
+from rdflib.plugins.inference.restricteddatatype import extract_faceted_datatypes
+from rdflib.plugins.inference.xsddatatypes import (
+    OWL_Datatype_Subsumptions,
+    OWL_RL_Datatypes,
+)
 
 #######################################################################################################################
 # Rational datatype
+
+# ruff: noqa: N801 N802
+# mypy: disable_error_code = "operator, attr-defined, union-attr"
 
 
 # noinspection PyPep8Naming
@@ -83,7 +88,7 @@ def _strToRational(v):
                 AltXSDToPYTHON[XSD.integer](n_str),
                 AltXSDToPYTHON[XSD.positiveInteger](d_str),
             )
-    except:
+    except Exception:
         raise ValueError("Invalid Rational literal value %s" % v)
 
 
@@ -180,7 +185,7 @@ class OWLRL_Extension(RDFS_OWLRL_Semantics):
                         if rt.checkValue(lt.toPython()):
                             # yep, this is also of type 'rt'
                             self.store_triple((lt, RDF.type, rt.datatype))
-                    except:
+                    except Exception:
                         continue
 
     def restriction_typing_check(self, v, t):
@@ -212,7 +217,7 @@ class OWLRL_Extension(RDFS_OWLRL_Semantics):
                         return True
             # if we got here, no restriction applies
             return True
-        except:
+        except Exception:
             return True
 
     def one_time_rules(self):

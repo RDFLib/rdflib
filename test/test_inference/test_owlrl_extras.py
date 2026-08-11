@@ -3,8 +3,9 @@ Unit tests for OWL RL extras closure.
 """
 
 from rdflib import RDF, XSD, Graph, Literal
-from rdflib.inference import DeductiveClosure, OWLRL_Extension
-from rdflib.inference.namespaces import T
+from rdflib.plugins.inference import DeductiveClosure
+from rdflib.plugins.inference.namespaces import T
+from rdflib.plugins.inference.owlrlextras import OWLRL_Extension
 
 
 def test_one_time_rules():

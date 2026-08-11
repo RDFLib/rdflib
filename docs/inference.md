@@ -96,7 +96,8 @@ As per the stand-alon OWL-RL, RDFLib's incorporated version can be used like thi
 # as per test/test_inference/test_basic_inference.py::test_basic_inference
 
 from rdflib import Graph
-from rdflib.inference import DeductiveClosure, OWLRL_Semantics
+from rdflib.plugins.inference import DeductiveClosure
+from rdflib.plugins.inference.owlrl import OWLRL_Semantics
 
 # create an RDF graph, load a simple OWL ontology and data
 g = Graph().parse("relatives.ttl")

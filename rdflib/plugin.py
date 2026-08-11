@@ -499,6 +499,37 @@ register(
     "rdflib.plugins.parsers.patch",
     "RDFPatchParser",
 )
+# Register RDFS/OWLRL closure processors
+register(
+    "rdfs",
+    Processor,
+    "rdflib.plugins.inference.infer",
+    "RDFSProcessor",
+)
+register(
+    "owlrl",
+    Processor,
+    "rdflib.plugins.inference.infer",
+    "OWLRLProcessor",
+)
+register(
+    "rdfs",
+    UpdateProcessor,
+    "rdflib.plugins.inference.infer",
+    "RDFSUpdateProcessor",
+)
+register(
+    "owlrl",
+    UpdateProcessor,
+    "rdflib.plugins.inference.infer",
+    "OWLRLUpdateProcessor",
+)
+register(
+    "rule",
+    Result,
+    "rdflib.plugins.inference.infer",
+    "RuleResult",
+)
 
 # Register SPARQL Processors
 register(

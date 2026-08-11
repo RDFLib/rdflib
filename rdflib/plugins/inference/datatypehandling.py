@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 """
 Most of the XSD datatypes are handled directly by RDFLib. However, in some cases, that is not good enough. There are two
@@ -41,6 +40,10 @@ from decimal import Decimal
 # from owlrl.RDFS import RDFNS as ns_rdf
 from rdflib.namespace import RDF, XSD
 from rdflib.term import Literal, XSDToPython, _toPythonMapping
+
+# ruff: noqa: N801 N802 N803 N816
+
+# mypy: disable_error_code = "arg-type, type-arg, valid-type, operator"
 
 
 # noinspection PyMissingConstructor,PyPep8Naming
@@ -191,7 +194,7 @@ def _strToBase64Binary(v):
     if v.replace("=", "x").replace("+", "y").replace("/", "z").isalnum():
         try:
             return base64.standard_b64decode(v)
-        except:
+        except Exception:
             raise ValueError("Invalid Base64Binary %s" % v)
     else:
         raise ValueError("Invalid Base64Binary %s" % v)
@@ -260,7 +263,7 @@ def _strToBoundNumeral(v, interval, conversion):
             interval[1] is None or i < interval[1]
         ):
             return i
-    except:
+    except Exception:
         pass
     raise ValueError("Invalid numerical value %s" % v)
 
@@ -286,7 +289,7 @@ def _strToDouble(v):
             return value
         else:
             raise ValueError("Invalid double %s" % v)
-    except:
+    except Exception:
         # there was a problem in creating a decimal...
         raise ValueError("Invalid double %s" % v)
 
@@ -309,7 +312,7 @@ def _strToFloat(v):
             return value
         else:
             raise ValueError("Invalid float %s" % v)
-    except:
+    except Exception:
         # there was a problem in creating a decimal...
         raise ValueError("Invalid float %s" % v)
 
@@ -357,7 +360,7 @@ def _strToDateTimeAndStamp(incoming_v, timezone_required=False):
         try:
             final_v = match.groups()[0]
             milliseconds = int(match.groups()[2])
-        except:
+        except Exception:
             raise ValueError("Invalid datetime %s" % incoming_v)
     #
     # By now, the pattern should be clear
@@ -385,7 +388,7 @@ def _strToDateTimeAndStamp(incoming_v, timezone_required=False):
                 tstr.tm_sec,
                 milliseconds,
             )
-    except:
+    except Exception:
         raise ValueError("Invalid datetime %s" % incoming_v)
 
 
@@ -411,7 +414,7 @@ def _strToTime(incoming_v):
         try:
             final_v = match.groups()[0]
             milliseconds = int(match.groups()[2])
-        except:
+        except Exception:
             raise ValueError("Invalid datetime %s" % incoming_v)
     #
     # By now, the pattern should be clear
@@ -424,7 +427,7 @@ def _strToTime(incoming_v):
             )
         else:
             return datetime.time(tstr.tm_hour, tstr.tm_min, tstr.tm_sec, milliseconds)
-    except:
+    except Exception:
         raise ValueError("Invalid time %s" % incoming_v)
 
 
@@ -444,7 +447,7 @@ def _strToDate(incoming_v):
     try:
         tstr = time.strptime(final_v, "%Y-%m-%d")
         return datetime.date(tstr.tm_year, tstr.tm_mon, tstr.tm_mday)
-    except:
+    except Exception:
         raise ValueError("Invalid date %s" % incoming_v)
 
 
@@ -462,7 +465,7 @@ def _strTogYearMonth(v):
     try:
         time.strptime(v + "-01", "%Y-%m-%d")
         return v
-    except:
+    except Exception:
         raise ValueError("Invalid gYearMonth %s" % v)
 
 
@@ -476,7 +479,7 @@ def _strTogYear(v):
     try:
         time.strptime(v + "-01-01", "%Y-%m-%d")
         return v
-    except:
+    except Exception:
         raise ValueError("Invalid gYear %s" % v)
 
 
@@ -490,7 +493,7 @@ def _strTogMonthDay(v):
     try:
         time.strptime("2008-" + v, "%Y-%m-%d")
         return v
-    except:
+    except Exception:
         raise ValueError("Invalid gMonthDay %s" % v)
 
 
@@ -504,7 +507,7 @@ def _strTogDay(v):
     try:
         time.strptime("2001-01-" + v, "%Y-%m-%d")
         return v
-    except:
+    except Exception:
         raise ValueError("Invalid gDay %s" % v)
 
 
@@ -518,7 +521,7 @@ def _strTogMonth(v):
     try:
         time.strptime("2001-" + v + "-01", "%Y-%m-%d")
         return v
-    except:
+    except Exception:
         raise ValueError("Invalid gMonth %s" % v)
 
 
@@ -535,7 +538,7 @@ def _strToXMLLiteral(v):
     try:
         dom = xml.dom.minidom.parseString(v)
         return dom.toxml()
-    except:
+    except Exception:
         raise ValueError("Invalid XML Literal %s" % v)
 
 
@@ -629,7 +632,7 @@ def _strToPlainLiteral(v):
             try:
                 lang = _strToVal_Regexp(lang, _re_language)
                 return Literal(lit, lang=lang.lower())
-            except:
+            except Exception:
                 raise ValueError("Invalid plain literal %s" % v)
 
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 """
 This module is brute force implementation of the RDFS semantics on the top of RDFLib (with some caveats, see in the
@@ -22,6 +21,7 @@ introductory text).
 .. _Ivan Herman: http://www.w3.org/People/Ivan/
 
 """
+from __future__ import annotations
 
 __author__ = "Ivan Herman"
 __contact__ = "Ivan Herman, ivan@w3.org"
@@ -31,14 +31,18 @@ from itertools import product
 from typing import Union
 
 from rdflib import Graph, Literal
-from rdflib.inference.axiomatictriples import (
+from rdflib.namespace import RDF, RDFS
+from rdflib.plugins.inference.axiomatictriples import (
     RDFS_Axiomatic_Triples,
     RDFS_D_Axiomatic_Triples,
 )
-from rdflib.inference.closure import Core
-from rdflib.namespace import RDF, RDFS
+from rdflib.plugins.inference.closure import Core
 
 ######################################################################################################
+
+# ruff: noqa: N801 N806
+
+# mypy: disable_error_code = "valid-type, union-attr"
 
 
 # RDFS Semantics class

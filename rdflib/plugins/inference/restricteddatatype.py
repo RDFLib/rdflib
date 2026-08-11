@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 """
 Module to datatype restrictions, i.e., data ranges.
@@ -50,6 +49,8 @@ The implementation is **not** 100% complete. Some things that an ideal implement
 .. _Ivan Herman: http://www.w3.org/People/Ivan/
 
 """
+from __future__ import annotations
+
 __author__ = "Ivan Herman"
 __contact__ = "Ivan Herman, ivan@w3.org"
 __license__ = "W3C® SOFTWARE NOTICE AND LICENSE, http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231"
@@ -59,8 +60,11 @@ from functools import reduce
 
 from rdflib import Graph
 from rdflib import Literal as rdflibLiteral
-from rdflib.inference.datatypehandling import AltXSDToPYTHON
 from rdflib.namespace import OWL, RDF, RDFS, XSD
+from rdflib.plugins.inference.datatypehandling import AltXSDToPYTHON
+
+# ruff: noqa: E741 F841 N802 N806
+# mypy: disable_error_code = "operator, var-annotated, unreachable"
 
 # Constant for datatypes using min, max (inclusive and exclusive):
 MIN_MAX = 0

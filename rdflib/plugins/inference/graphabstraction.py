@@ -1,22 +1,12 @@
+from __future__ import annotations
+
 try:
-    from pyoxigraph import (
-        BlankNode as ox_BlankNode,
-    )
-    from pyoxigraph import (
-        DefaultGraph as ox_DefaultGraph,
-    )
-    from pyoxigraph import (
-        Literal as ox_Literal,
-    )
-    from pyoxigraph import (
-        NamedNode as ox_NamedNode,
-    )
-    from pyoxigraph import (
-        Quad as ox_Quad,
-    )
-    from pyoxigraph import (
-        Store as ox_Store,
-    )
+    from pyoxigraph import BlankNode as ox_BlankNode
+    from pyoxigraph import DefaultGraph as ox_DefaultGraph
+    from pyoxigraph import Literal as ox_Literal
+    from pyoxigraph import NamedNode as ox_NamedNode
+    from pyoxigraph import Quad as ox_Quad
+    from pyoxigraph import Store as ox_Store
 
     has_oxigraph = True
 except ImportError:
@@ -35,20 +25,16 @@ from typing import Any, Tuple, Union
 from rdflib import Dataset as rdf_Dataset
 from rdflib import Graph as rdf_Graph
 from rdflib.namespace import RDF
-from rdflib.term import (
-    BNode as rdf_BNode,
-)
-from rdflib.term import (
-    IdentifiedNode as rdf_IdentifiedNode,
-)
-from rdflib.term import (
-    Literal as rdf_Literal,
-)
-from rdflib.term import (
-    URIRef as rdf_URIRef,
-)
+from rdflib.term import BNode as rdf_BNode
+from rdflib.term import IdentifiedNode as rdf_IdentifiedNode
+from rdflib.term import Literal as rdf_Literal
+from rdflib.term import URIRef as rdf_URIRef
 
 ALLOWED_GRAPH_TYPES = Union[rdf_Graph, rdf_Dataset, ox_Store]
+
+# ruff: noqa: N806 N816
+
+# mypy: disable_error_code = "attr-defined, assignment, no-redef, misc"
 
 
 class DataGraph:
@@ -93,7 +79,7 @@ class DataGraph:
             if isinstance(locked_context, rdf_Graph):
                 self.locked_context = locked_context
             elif isinstance(locked_context, str):
-                self.locked_context = self.impl.get_context(rdf_URIRef(locked_context))
+                self.locked_context = self.impl.get_context(rdf_URIRef(locked_context))  # type: ignore[union-attr]
             else:
                 self.locked_context = None
         return self
@@ -193,20 +179,20 @@ class DataGraph:
             # Technically a subject can never be a Literal
             # in Oxigraph, but this is here for completeness
             if s.language is not None:
-                out_s = rdf_Literal(s.value, lang=s.language)
+                out_s = rdf_Literal(s.value, lang=s.language)  # type: ignore[assignment]
             else:
                 data_type = s.datatype
                 if data_type is not None:
                     data_type = rdf_URIRef(data_type.value)
-                out_s = rdf_Literal(s.value, datatype=data_type)
+                out_s = rdf_Literal(s.value, datatype=data_type)  # type: ignore[assignment]
         else:
-            out_s = rdf_URIRef(s.value)
+            out_s = rdf_URIRef(s.value)  # type: ignore[assignment]
         if p is None:
             out_p = None
         elif isinstance(p, ox_BlankNode):
             out_p = rdf_BNode(p.value)
         else:
-            out_p = rdf_URIRef(p.value)
+            out_p = rdf_URIRef(p.value)  # type: ignore[assignment]
         if o is None:
             out_o = None
         elif isinstance(o, ox_Literal):
@@ -218,9 +204,9 @@ class DataGraph:
                     data_type = rdf_URIRef(data_type.value)
                 out_o = rdf_Literal(o.value, datatype=data_type)
         elif isinstance(o, ox_BlankNode):
-            out_o = rdf_BNode(o.value)
+            out_o = rdf_BNode(o.value)  # type: ignore[assignment]
         else:
-            out_o = rdf_URIRef(o.value)
+            out_o = rdf_URIRef(o.value)  # type: ignore[assignment]
         if g is None:
             out_g = None
         elif isinstance(g, ox_DefaultGraph):
@@ -256,18 +242,18 @@ class DataGraph:
             Union[rdf_Literal, rdf_IdentifiedNode],
         ],
     ):
+        if isinstance(triple[0], rdf_Literal):
+            # Oxigraph does not support Literal in the subject position
+            # So this cannot be added to the store.
+            warnings.warn(
+                "OWL-RL inferencer tried to add a triple with a Literal in the subject position",
+            )
+            return
         if isinstance(triple[1], rdf_BNode) or isinstance(triple[1], rdf_Literal):
             # Oxigraph does not support BNode or Literal in the predicate position
             # Cannot add the triple
             warnings.warn(
                 "OWL-RL inferencer tried to add a triple with a BNode or Literal in the predicate position",
-            )
-            return
-        if isinstance(triple[0], rdf_Literal):
-            # Oxigraph does not support Literal in the subject position
-            # Cannot add the triple
-            warnings.warn(
-                "OWL-RL inferencer tried to add a triple with a Literal in the subject position",
             )
             return
         ox_s, ox_p, ox_o = self.convert_triple_to_oxigraph(triple)
@@ -285,6 +271,10 @@ class DataGraph:
             Union[rdf_Literal, rdf_IdentifiedNode],
         ],
     ):
+        if triple[0] is not None and isinstance(triple[0], rdf_Literal):
+            # Oxigraph does not support Literal in the subject position
+            # So this can never match any triples in the Store.
+            return
         ox_triples = self.convert_triple_to_oxigraph(triple)
         if isinstance(ox_triples[1], ox_BlankNode) or isinstance(
             ox_triples[1], ox_Literal
@@ -329,6 +319,10 @@ class DataGraph:
         None,
         None,
     ]:
+        if triple[0] is not None and isinstance(triple[0], rdf_Literal):
+            # Oxigraph does not support Literal in the subject position
+            # So this can never match any triples in the Store.
+            return
         ox_triples = self.convert_triple_to_oxigraph(triple)
         if isinstance(ox_triples[1], ox_BlankNode) or isinstance(
             ox_triples[1], ox_Literal
@@ -409,6 +403,10 @@ class DataGraph:
     ) -> Generator[
         Tuple[rdf_IdentifiedNode, Union[rdf_IdentifiedNode, rdf_Literal]], None, None
     ]:
+        if subject is not None and isinstance(subject, rdf_Literal):
+            # Oxigraph does not support literal subjects
+            # So no predicate-object pairs can be returned
+            return
         _s = self.to_ox(subject)
         if self.locked_context is not None:
             for q in self.impl.quads_for_pattern(_s, None, None, self.locked_context):
@@ -446,9 +444,13 @@ class DataGraph:
 
     def objects_in_oxigraph(
         self,
-        subject: Union[rdf_IdentifiedNode, rdf_Literal],
+        subject: Union[rdf_IdentifiedNode, rdf_Literal, None],
         predicate: Union[rdf_IdentifiedNode, None],
     ) -> Generator[Union[rdf_IdentifiedNode, rdf_Literal], None, None]:
+        if subject is not None and isinstance(subject, rdf_Literal):
+            # Oxigraph does not support literal subjects
+            # So no objects can be returned
+            return
         _s = self.to_ox(subject)
         _p = self.to_ox(predicate)
         if self.locked_context is not None:
@@ -572,7 +574,7 @@ class DataGraph:
             for t in self.impl.objects(subject, predicate):
                 yield t
 
-    def get_context(self, identifier: Union[rdf_URIRef, str]) -> "DataGraph":
+    def get_context(self, identifier: Union[rdf_URIRef, str]) -> DataGraph:
         if self.is_oxigraph:
             return DataGraph(self.impl, str(identifier))
         else:
@@ -587,6 +589,10 @@ class DataGraph:
         ],
     ) -> bool:
         if self.is_oxigraph:
+            if triple[0] is not None and isinstance(triple[0], rdf_Literal):
+                # an Oxigraph store cannot have a Literal in the subject position
+                # so this triple cannot exist in the store
+                return False
             triple_ = self.convert_triple_to_oxigraph(triple)
             if self.locked_context is not None:
                 quad = ox_Quad(triple_[0], triple_[1], triple_[2], self.locked_context)
@@ -620,7 +626,7 @@ class DataGraph:
             next_list = ox_BlankNode(str(list_))
         else:
             raise ValueError("List must be a URIRef, or BNode")
-        chain = set[ox_NamedNode]([next_list])
+        chain: set[Any] = {next_list}
         FIRST = ox_NamedNode(RDF.first)
         REST = ox_NamedNode(RDF.rest)
         while next_list:

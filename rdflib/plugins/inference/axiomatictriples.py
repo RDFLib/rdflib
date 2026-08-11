@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 """
 Axiomatic triples to be (possibly) added to the final graph.

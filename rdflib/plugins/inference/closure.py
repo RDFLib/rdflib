@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 """
 The generic superclasses for various rule based semantics and the possible extensions.
@@ -20,6 +19,7 @@ The generic superclasses for various rule based semantics and the possible exten
 .. _Ivan Herman: http://www.w3.org/People/Ivan/
 
 """
+from __future__ import annotations
 
 __author__ = "Ivan Herman"
 __contact__ = "Ivan Herman, ivan@w3.org"
@@ -29,14 +29,18 @@ from typing import Any, Union
 
 import rdflib
 from rdflib import BNode, Dataset, Graph, Literal
-from rdflib.inference.graphabstraction import DataGraph
-from rdflib.inference.namespaces import ERRNS
 from rdflib.namespace import RDF
+from rdflib.plugins.inference.graphabstraction import DataGraph
+from rdflib.plugins.inference.namespaces import ERRNS
 
 try:
     from rdflib.graph import ConjunctiveGraph
 except ImportError:
     ConjunctiveGraph = Dataset
+
+# ruff: noqa: N816
+
+# mypy: disable_error_code = "assignment, misc, var-annotated, valid-type, union-attr"
 
 debugGlobal = False
 offlineGeneration = False
