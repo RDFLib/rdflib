@@ -38,7 +38,7 @@ import warnings
 from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Union
 
 import rdflib.parser
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import Dataset, Graph
 from rdflib.namespace import RDF, XSD
 from rdflib.parser import InputSource, URLInputSource
 from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef
@@ -75,6 +75,39 @@ __all__ = ["JsonLDParser", "to_rdf"]
 TYPE_TERM = Term(str(RDF.type), TYPE, VOCAB)  # type: ignore[call-arg]
 
 ALLOW_LISTS_OF_LISTS = True  # NOTE: Not allowed in JSON-LD 1.0
+
+
+class _ContextAwareGraph(Graph):
+    """Context-aware graph view used while parsing JSON-LD into a Graph sink."""
+
+    def __init__(self, sink: Graph):
+        super().__init__(store=sink.store, identifier=sink.identifier)
+        assert (
+            self.store.context_aware
+        ), "JSON-LD named graphs require a context-aware store."
+        self.context_aware = True
+        self.default_union = True
+        self._default_context = Graph(
+            store=self.store,
+            identifier=sink.identifier,
+        )
+
+    @property
+    def default_context(self) -> Graph:
+        return self._default_context
+
+    def get_context(
+        self,
+        identifier: Optional[Union[IdentifiedNode, str]],
+        quoted: bool = False,
+        base: Optional[str] = None,
+    ) -> Graph:
+        return Graph(
+            store=self.store,
+            identifier=identifier,
+            namespace_manager=self.namespace_manager,
+            base=base,
+        )
 
 
 class JsonLDParser(rdflib.parser.Parser):
@@ -151,18 +184,19 @@ class JsonLDParser(rdflib.parser.Parser):
         if html_base is not None:
             base = URIRef(html_base, base=base)
 
-        # NOTE: A ConjunctiveGraph parses into a Graph sink, so no sink will be
-        # context_aware. Keeping this check in case RDFLib is changed, or
-        # someone passes something context_aware to this parser directly.
-        conj_sink: Graph
+        # Graph.parse passes a non-context-aware Graph sink to parsers. JSON-LD
+        # needs a context-aware view to preserve named graphs, but Dataset would
+        # additionally require a graph-aware store. Use a minimal internal view
+        # that preserves the existing context-aware store contract.
+        context_sink: Graph
         if not sink.context_aware:
-            conj_sink = ConjunctiveGraph(store=sink.store, identifier=sink.identifier)
+            context_sink = _ContextAwareGraph(sink)
         else:
-            conj_sink = sink
+            context_sink = sink
 
         to_rdf(
             data,
-            conj_sink,
+            context_sink,
             base,
             context_data,
             version,
@@ -236,8 +270,13 @@ class Parser:
             if term.id and term.id.endswith(VOCAB_DELIMS):
                 dataset.bind(name, term.id)
 
-        # type error: "Graph" has no attribute "default_context"
-        graph = dataset.default_context if dataset.context_aware else dataset  # type: ignore[attr-defined]
+        if isinstance(dataset, Dataset):
+            graph = dataset.default_graph
+        elif dataset.context_aware:
+            # type error: "Graph" has no attribute "default_context"
+            graph = dataset.default_context  # type: ignore[attr-defined]
+        else:
+            graph = dataset
 
         for node in resources:
             self._add_to_graph(dataset, graph, context, node, topcontext)
@@ -360,10 +399,8 @@ class Parser:
 
         if GRAPH in (key, term_id):
             if dataset.context_aware and not no_id:
-                if TYPE_CHECKING:
-                    assert isinstance(dataset, ConjunctiveGraph)
-                # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Node"; expected "Union[IdentifiedNode, str, None]"
-                subgraph = dataset.get_context(subj)  # type: ignore[arg-type]
+                # type error: "Graph" has no attribute "get_context"
+                subgraph = dataset.get_context(subj)  # type: ignore[attr-defined]
             else:
                 subgraph = graph
             for onode in obj_nodes:

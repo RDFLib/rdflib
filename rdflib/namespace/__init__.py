@@ -903,7 +903,12 @@ def split_uri(
     uri: str, split_start: List[str] = SPLIT_START_CATEGORIES
 ) -> Tuple[str, str]:
     if uri.startswith(XMLNS):
-        return (XMLNS, uri.split(XMLNS)[1])
+        # The XML namespace has no trailing delimiter, so only split on it when
+        # the remainder is a usable local name; otherwise fall through to the
+        # generic splitting below (e.g. ".../namespace/" must not become "/").
+        ln = uri[len(XMLNS) :]
+        if ln == "" or is_ncname(ln):
+            return (XMLNS, ln)
     length = len(uri)
     for i in range(0, length):
         c = uri[-i - 1]
