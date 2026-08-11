@@ -241,6 +241,14 @@ foo-bar:Ex foo-bar:name "Test" . """
             for _, _, o, c in g:
                 assert o == Literal("o")
 
+    def test_missing_datatype_iri_raises_badsyntax(self):
+        # A literal with a "^^" datatype marker but no datatype IRI must raise
+        # BadSyntax, not IndexError from reading the (empty) datatype result.
+        for fmt in ("n3", "turtle", "trig"):
+            g = Dataset()
+            with pytest.raises(BadSyntax):
+                g.parse(data='<a> <b> "x"^^ .', format=fmt)
+
     def test_empty_prefix(self):
         # this is issue https://github.com/RDFLib/rdflib/issues/312
         g1 = Graph()
