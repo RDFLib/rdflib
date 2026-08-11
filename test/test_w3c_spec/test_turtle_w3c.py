@@ -151,9 +151,6 @@ MARK_DICT = {
     f"{REMOTE_BASE_IRI}#turtle-eval-bad-04": pytest.mark.xfail(
         reason="accepts invalid IRI"
     ),
-    f"{REMOTE_BASE_IRI}#turtle-syntax-bad-ln-dash-start": pytest.mark.xfail(
-        reason="accepts dash at the start of local name production"
-    ),
 }
 
 
