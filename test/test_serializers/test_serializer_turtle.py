@@ -2,6 +2,7 @@ from textwrap import dedent
 
 from rdflib import RDF, RDFS, BNode, Graph, Literal, Namespace, URIRef
 from rdflib.collection import Collection
+from rdflib.compare import isomorphic
 from rdflib.plugins.serializers.turtle import TurtleSerializer
 
 
@@ -74,6 +75,61 @@ def test_turtle_valid_list():
 
     for o in g.objects(ns.s, ns.p):
         assert turtle_serializer.isValidList(o)
+
+
+def test_turtle_shared_list_tail_round_trips():
+    """
+    A list cell that is pointed to from more than one place (here, the tail of
+    one list is also referenced directly by another subject) cannot be safely
+    written with ``( … )`` collection syntax: the inline form only defines the
+    cell once, at whichever reference happens to consume it, leaving the other
+    reference dangling in the output.
+
+    https://github.com/RDFLib/rdflib/issues/282 and related discussions cover
+    the general "isValidList" heuristic; this specifically covers sharing of
+    interior cells (not just of the list head).
+    """
+    ns = Namespace("http://example.org/ns/")
+    g = Graph()
+    tail = BNode()
+    head = BNode()
+    g.add((tail, RDF.first, Literal("b")))
+    g.add((tail, RDF.rest, RDF.nil))
+    g.add((head, RDF.first, Literal("a")))
+    g.add((head, RDF.rest, tail))
+    g.add((ns.s1, ns.p, head))
+    g.add((ns.s2, ns.p, tail))
+
+    turtle_serializer = TurtleSerializer(g)
+    # The shared tail must not be considered part of a safely-inlineable list.
+    assert turtle_serializer.isValidList(head) is False
+    assert turtle_serializer.isValidList(tail) is False
+
+    ttl_dump = g.serialize(format="turtle")
+    g2 = Graph()
+    g2.parse(data=ttl_dump, format="turtle")
+    assert len(g2) == len(g)
+    assert isomorphic(g, g2)
+
+
+def test_turtle_private_list_still_uses_collection_syntax():
+    """A list that nothing else points into should still serialize compactly."""
+    ns = Namespace("http://example.org/ns/")
+    g = Graph()
+    g.parse(
+        data="""
+            @prefix : <{0}> .
+            :s :p ("a" "b" "c") .
+            """.format(
+            ns
+        ),
+        format="turtle",
+    )
+    output = g.serialize(format="turtle")
+    assert "(" in output
+    g2 = Graph()
+    g2.parse(data=output, format="turtle")
+    assert isomorphic(g, g2)
 
 
 def test_turtle_namespace():
