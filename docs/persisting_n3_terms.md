@@ -76,7 +76,7 @@ This function would return all the Blank Node identifiers assigned to formulae o
 
 How much would such an interface reduce the need to model formulae terms as first class objects (perhaps to be returned by the [`triples()`][rdflib.Graph.triples] function)? Would it be more useful for the [`Graph`][rdflib.Graph] (or the store itself) to return a Context object in place of a formula term (using the formulae interface to make this determination)?
 
-Conversely, would these interfaces (variables and formulae) be considered optimizations only since you have the distinction by the kinds of terms triples returns (which would be expanded to include variables and formulae)?
+Conversely, would these interfaces (variables and formulae) be considered optimisations only since you have the distinction by the kinds of terms triples returns (which would be expanded to include variables and formulae)?
 
 ## Persisting Formula Identifiers
 
