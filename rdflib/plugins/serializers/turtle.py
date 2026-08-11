@@ -457,7 +457,15 @@ class TurtleSerializer(RecursiveSerializer):
 
     def isValidList(self, l_: Node) -> bool:
         """
-        Checks if l is a valid RDF list, i.e. no nodes have other properties.
+        Checks if l is a valid RDF list, i.e. no nodes have other properties,
+        and no node in the list (including the head) is the object of more
+        than one statement.
+
+        The second condition matters because ``( … )`` collection syntax
+        inlines the whole chain at a single reference: if some other
+        statement also points at one of the list's cells, that statement
+        would be left referring to a node that the inline form never writes
+        out on its own, and the serialization would not round-trip.
         """
         try:
             if self.store.value(l_, RDF.first) is None:
@@ -465,8 +473,11 @@ class TurtleSerializer(RecursiveSerializer):
         except Exception:
             return False
         while l_:
-            if l_ != RDF.nil and len(list(self.store.predicate_objects(l_))) != 2:
-                return False
+            if l_ != RDF.nil:
+                if len(list(self.store.predicate_objects(l_))) != 2:
+                    return False
+                if len(list(self.store.subject_predicates(l_))) != 1:
+                    return False
             # type error: Incompatible types in assignment (expression has type "Optional[Node]", variable has type "Node")
             l_ = self.store.value(l_, RDF.rest)  # type: ignore[assignment]
         return True
