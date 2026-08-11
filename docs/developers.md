@@ -324,7 +324,7 @@ devcontainer open .
 
 ## Writing documentation
 
-We use mkdocs for generating HTML docs, see [docs](docs.md).
+We use Zensical for generating HTML docs, see [docs](docs.md).
 
 ## Continuous Integration
 

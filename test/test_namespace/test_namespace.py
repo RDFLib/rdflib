@@ -153,6 +153,23 @@ class TestNamespacePrefix:
             "name_with_(parenthesis)",
         )
 
+    def test_xml_namespace_with_trailing_slash_roundtrips(self):
+        """A URI extending the XML namespace must not be split into an invalid qname.
+
+        The built-in ``xml`` namespace has no trailing delimiter, so
+        ``http://www.w3.org/XML/1998/namespace/`` used to be split into the local
+        name ``/`` and serialized as ``xml:/``, which cannot be parsed back.
+        """
+        uri = URIRef("http://www.w3.org/XML/1998/namespace/")
+        graph = Graph()
+        graph.add((URIRef("https://example.org"), OWL.imports, uri))
+
+        serialized = graph.serialize(format="turtle")
+        assert "xml:/" not in serialized
+
+        reparsed = Graph().parse(data=serialized, format="turtle")
+        assert set(reparsed) == set(graph)
+
     def test_reset(self):
         data = (
             "@prefix a: <http://example.org/a> .\n"
