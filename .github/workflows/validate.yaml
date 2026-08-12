@@ -33,7 +33,6 @@ jobs:
             os: ubuntu-latest
             extensive-tests: true
             suffix: "-extensive"
-            TOXENV_SUFFIX: "-extensive"
           - python-version: "3.10"
             os: ubuntu-latest
             extensive-tests: true
