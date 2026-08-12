@@ -10,14 +10,14 @@ build:
     post_create_environment:
     - pip install uv
     post_install:
-    # rdf4j is needed to document rdflib.contrib.rdf4j
-    - uv export --frozen --no-dev --group docs --extra rdf4j --no-emit-project -o requirements.txt
-    - uv pip install --system --no-cache -r requirements.txt
-    - uv pip install --system --no-deps .
+    # RDF4J is needed to document rdflib.contrib.rdf4j
+      - uv export --frozen --no-dev --group docs --extra rdf4j --no-emit-project -o requirements.txt
+      - uv pip install --system --no-cache -r requirements.txt
+      - uv pip install --system --no-deps .
     build:
       html:
-      - python docs/gen_ref_pages.py
-      - zensical build
+        - python -m docs.gen_ref_pages
+        - python -m zensical build
     post_build:
     - mkdir -p $READTHEDOCS_OUTPUT/html/
     - cp --recursive site/* $READTHEDOCS_OUTPUT/html/
