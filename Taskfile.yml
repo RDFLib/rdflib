@@ -6,9 +6,9 @@ version: "3"
 vars:
   TASKFILE_DIR:
     sh: pwd
-  POETRY: poetry
+  UV: uv
   # The prefix to use when running dev commands
-  RUN_PREFIX: "{{.POETRY}} run"
+  RUN_PREFIX: "{{.UV}} run --frozen"
   # The python to use for running in the venv
   VENV_PYTHON: "{{.RUN_PREFIX}} python"
     # The python interpreter to use.
@@ -60,12 +60,10 @@ tasks:
     cmds:
       - "{{.PYTHON}} -m pip install tox {{if (mustFromJson .WITH_GITHUB_ACTIONS)}}tox-gh-actions{{end}}"
 
-  poetry:configure:
-    desc: Configure the environment for development with poetry
+  uv:configure:
+    desc: Configure the environment for development with uv
     cmds:
-      - |
-        {{if .POETRY_PYTHON}} {{.POETRY}} env use {{.POETRY_PYTHON}} {{end}}
-        {{.POETRY}} install {{if (or (mustFromJson .INSTALL_EXTRAS) (mustFromJson .EXTENSIVE))}} --all-extras{{end}} {{.CLI_ARGS}}
+      - '{{.UV}} sync --all-groups {{if .UV_PYTHON}}--python {{.UV_PYTHON}}{{end}} {{if (or (mustFromJson .INSTALL_EXTRAS) (mustFromJson .EXTENSIVE))}}--all-extras{{end}} {{.CLI_ARGS}}'
 
   configure:
     desc: Configure the environment for development
@@ -75,12 +73,13 @@ tasks:
   venv:install:
     desc: Create and install a venv
     cmds:
-      - task: poetry:configure
+      - task: uv:configure
 
   venv:clean:
     desc: Clean the virtual environment
     cmds:
-      - "{{.POETRY}} env remove --all {{.CLI_ARGS}}"
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: ".venv" }
 
   venv:run:
     desc: Run a command inside the venv
@@ -255,9 +254,9 @@ tasks:
   gha:lint:
     desc: GitHub Actions lint workflow
     cmds:
-      - task: poetry:configure
+      - task: uv:configure
         vars:
-          CLI_ARGS: --no-root --only=lint
+          CLI_ARGS: --only-group lint --no-install-project
       - task: ruff
 
   cmd:rdfpipe:
@@ -282,8 +281,8 @@ tasks:
 
           set -eo pipefail
           mkdir -vp var
-          {{.POETRY}} export -o var/requirements.txt
-          pipx run --spec=build build --wheel
+          {{.UV}} export --frozen --no-dev --no-emit-project -o var/requirements.txt
+          {{.UV}} build --wheel
           {{.DOCKER}} buildx build \
             --cache-to=type=inline \
             --cache-from=type=registry,ref={{.OCI_REFERENCE}}:unstable \
@@ -345,15 +344,15 @@ tasks:
         vars: { RIMRAF_TARGET: "dist" }
       - task: _rimraf
         vars: { RIMRAF_TARGET: "var/test-sdist" }
-      - poetry build
+      - uv build
       - python -c 'import tarfile, glob; tarfile.open(glob.glob("dist/*.tar.gz")[0]).extractall("var/test-sdist")'
       - |
         cd var/test-sdist/rdflib-*
-        poetry install
-        poetry run mypy --show-error-context --show-error-codes -p rdflib
-        poetry run python docs/gen_ref_pages.py
-        poetry run zensical build
-        poetry run pytest
+        uv sync --all-groups
+        uv run mypy --show-error-context --show-error-codes -p rdflib
+        uv run python docs/gen_ref_pages.py
+        uv run zensical build
+        uv run pytest
 
   test:no_internet:
     desc: Run tests without internet access

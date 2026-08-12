@@ -41,13 +41,11 @@ RUN \
 
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 
-COPY devtools/requirements-poetry.in /var/tmp/
-
 RUN \
     python -m pip install --upgrade \
+        uv \
         tox \
         pre-commit \
-        -r /var/tmp/requirements-poetry.in \
         && \
     true
 

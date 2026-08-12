@@ -10,7 +10,7 @@ developing RDFLib code.
 * Code should also pass [flake8](https://flake8.pycqa.org/en/latest/) linting
   and [mypy](http://mypy-lang.org/) type checking.
 * You must supply tests for new code.
-* RDFLib uses [Poetry](https://python-poetry.org/docs/master/) for dependency management and packaging.
+* RDFLib uses [uv](https://docs.astral.sh/uv/) for dependency management and packaging.
 
 If you add a new cool feature, consider also adding an example in `./examples`.
 
@@ -130,21 +130,21 @@ RDFLib uses the [pytest](https://docs.pytest.org/en/latest/) testing framework.
 To run RDFLib's test suite with [pytest](https://docs.pytest.org/en/latest/):
 
 ```bash
-poetry install
-poetry run pytest
+uv sync --group tests
+uv run pytest
 ```
 
 Specific tests can be run by file name. For example:
 
 ```bash
-poetry run pytest test/test_graph/test_graph.py
+uv run pytest test/test_graph/test_graph.py
 ```
 
 For more extensive tests, including tests for the [berkleydb](https://www.oracle.com/database/technologies/related/berkeleydb.html) backend, install extra requirements before executing the tests.
 
 ```bash
-poetry install --all-extras
-poetry run pytest
+uv sync --group tests --all-extras
+uv run pytest
 ```
 
 ### Writing tests
@@ -163,25 +163,25 @@ Check formatting with [black](https://github.com/psf/black), making sure you use
 our black.toml config file:
 
 ```bash
-poetry run black .
+uv run black .
 ```
 
 Check style and conventions with [ruff](https://docs.astral.sh/ruff/linter/):
 
 ```bash
-poetry run ruff check
+uv run ruff check
 ```
 
 Any issues that are found can potentially be fixed automatically using:
 
 ```bash
-poetry run ruff check --fix
+uv run ruff check --fix
 ```
 
 Check types with [mypy](http://mypy-lang.org/):
 
 ```bash
-poetry run mypy --show-error-context --show-error-codes
+uv run mypy --show-error-context --show-error-codes
 ```
 
 ## pre-commit and pre-commit ci
@@ -361,7 +361,7 @@ Once the PR is merged, switch to the main branch, build the release and upload i
 rm -vf dist/*
 
 # Build artefacts
-poetry build
+uv build
 
 # Verify package metadata
 bsdtar -xvf dist/rdflib-*.whl -O '*/METADATA' | view -
@@ -375,19 +375,18 @@ pipx run --no-cache --spec "$(readlink -f dist/rdflib*.tar.gz)" rdfpipe --versio
 pipx run --no-cache --spec "$(readlink -f dist/rdflib*.tar.gz)" rdfpipe https://github.com/RDFLib/rdflib/raw/main/test/data/defined_namespaces/rdfs.ttl
 
 # Dry run publishing
-poetry publish --repository=testpypi --dry-run
-poetry publish --dry-run
+uv publish --publish-url https://test.pypi.org/legacy/ --dry-run
+uv publish --dry-run
 
 # Publish to TestPyPI
-## ensure you are authed as per https://pypi.org/help/#apitoken and https://github.com/python-poetry/poetry/issues/6320
-poetry publish --repository=testpypi
+## Set UV_PUBLISH_TOKEN to a TestPyPI API token first.
+uv publish --publish-url https://test.pypi.org/legacy/
 
 # Publish to PyPI
-poetry publish
-## poetry publish -u __token__ -p pypi-<REDACTED>
+uv publish
 ```
 
-Once this is done, create a release tag from [GitHub releases](https://github.com/RDFLib/rdflib/releases/new). For a release of version 6.3.1 the tag should be `6.3.1` (without a "v" prefix), and the release title should be "RDFLib 6.3.1". The release notes for the latest version be added to the release description. The artefacts built with `poetry build` should be uploaded to the release as release artefacts.
+Once this is done, create a release tag from [GitHub releases](https://github.com/RDFLib/rdflib/releases/new). For a release of version 6.3.1 the tag should be `6.3.1` (without a "v" prefix), and the release title should be "RDFLib 6.3.1". The release notes for the latest version be added to the release description. The artefacts built with `uv build` should be uploaded to the release as release artefacts.
 
 The resulting release will be available at https://github.com/RDFLib/rdflib/releases/tag/6.3.1
 

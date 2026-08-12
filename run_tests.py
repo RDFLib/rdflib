@@ -6,7 +6,7 @@ spec of pytest, but with some options pre-set. To begin with, make sure you have
 pytest installed, e.g.:
 
 ```bash
-poetry add pytest
+uv sync --group tests
 ```
 
 To run the tests, use:

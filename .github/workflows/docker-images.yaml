@@ -42,9 +42,7 @@ jobs:
           fetch-depth: 1
       - name: Install Task
         uses: go-task/setup-task@v2
-      - name: Install poetry
-        run: |
-          pip install -r devtools/requirements-poetry.in
+      - uses: astral-sh/setup-uv@v7
       - name: Build images
         shell: bash
         run: |
@@ -65,9 +63,7 @@ jobs:
           fetch-depth: 1
       - name: Install Task
         uses: go-task/setup-task@v2
-      - name: Install poetry
-        run: |
-          pip install -r devtools/requirements-poetry.in
+      - uses: astral-sh/setup-uv@v7
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v4
         with:
