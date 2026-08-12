@@ -251,7 +251,7 @@ skip = [
 
 [tool.mypy]
 files = ['rdflib', 'test', 'devtools', 'examples']
-python_version = "3.8"
+python_version = "3.10"
 warn_unused_configs = true
 ignore_missing_imports = true
 disallow_subclassing_any = false

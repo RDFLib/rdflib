@@ -162,10 +162,27 @@ main() {
 
     1>&2 echo "INFO: starting fuseki: tdb"
     mkdir -vp "${fuseki_base_tdb}/database"
+    local fuseki_config_tdb="${fuseki_base_tdb}/config.ttl"
+    printf '%s\n' \
+        'PREFIX fuseki: <http://jena.apache.org/fuseki#>' \
+        'PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>' \
+        'PREFIX tdb2:   <http://jena.apache.org/2016/tdb#>' \
+        '' \
+        '<#service> rdf:type fuseki:Service ;' \
+        '    fuseki:name "db" ;' \
+        '    fuseki:serviceQuery "query" ;' \
+        '    fuseki:serviceQuery "sparql" ;' \
+        '    fuseki:serviceUpdate "update" ;' \
+        '    fuseki:serviceReadWriteGraphStore "data" ;' \
+        '    fuseki:dataset <#dataset> .' \
+        '' \
+        '<#dataset> rdf:type tdb2:DatasetTDB2 ;' \
+        "    tdb2:location \"${fuseki_base_tdb}/database\" ;" \
+        '    tdb2:unionDefaultGraph true .' \
+        > "${fuseki_config_tdb}"
     FUSEKI_BASE="${fuseki_base_tdb}" bash "${FUSEKI_HOME}/fuseki-server" \
         --port "${fuseki_port_tdb}" --debug \
-        --update --tdb2 --loc "${fuseki_base_tdb}/database" \
-        --set tdb:unionDefaultGraph=true /db &>"${fuseki_log_tdb}" &
+        --conf "${fuseki_config_tdb}" &>"${fuseki_log_tdb}" &
     fuseki_pid_tdb="${!}"
     echo "${fuseki_pid_tdb}" > "${fuseki_pidfile_tdb}"
 
