@@ -361,7 +361,7 @@ tasks:
         {{.TEST_HARNESS}}{{.RUN_PREFIX}} firejail --net=none -- pytest -m "not webtest" {{.CLI_ARGS}}
   _rimraf:
     # This task is a utility task for recursively removing directories, it is
-    # similar to rm -rf but not identical and it should work wherever there is
+    # similar to rm -rf but not identical, and it should work wherever there is
     # a python interpreter. The name is inspired by
     # <https://www.npmjs.com/package/rimraf>.
     - cmd: |
