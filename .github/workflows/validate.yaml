@@ -39,7 +39,7 @@ jobs:
             extensive-tests: true
             PREPARATION: "sudo apt-get install -y libxml2-dev libxslt-dev"
             suffix: "-extensive-min"
-            TOXENV_SUFFIX: "-extensive-min"
+            TOXENV_SUFFIX: "-min"
           - python-version: "3.10"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "- black --check --diff ./rdflib"
