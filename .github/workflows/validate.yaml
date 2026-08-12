@@ -29,10 +29,10 @@ jobs:
         # version and OS.
         suffix: [""]
         include:
-          - python-version: "3.8"
+          - python-version: "3.10"
             os: ubuntu-latest
             extensive-tests: true
-          - python-version: "3.8"
+          - python-version: "3.10"
             os: ubuntu-latest
             extensive-tests: true
             PREPARATION: "sudo apt-get install -y libxml2-dev libxslt-dev"
@@ -67,7 +67,7 @@ jobs:
         if: ${{ matrix.extensive-tests }}
         with:
           distribution: "temurin"
-          java-version: "17"
+          java-version: "21"
       - name: Install Task
         uses: go-task/setup-task@v2
         with:

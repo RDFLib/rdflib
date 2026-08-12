@@ -110,8 +110,8 @@ main() {
     # : ${FUSEKI_PORT:=3030}
     : "${XDG_CACHE_HOME:=${HOME}/.cache}"
 
-    local jena_uri="https://archive.apache.org/dist/jena/binaries/apache-jena-fuseki-3.17.0.tar.gz"
-    local jena_sha512="2b92f3304743da335f648c1be7b5d7c3a94725ed0a9b5123362c89a50986690114dcef0813e328126b14240f321f740b608cc353417e485c9235476f059bd380"
+    local jena_uri="https://archive.apache.org/dist/jena/binaries/apache-jena-fuseki-6.1.0.tar.gz"
+    local jena_sha512="75457f45d14397876a41ed51abe7ae5d2f1e708dfe1315765f858158bc5c6813bc036ec1539ddc4dffd26201f5cc31fadec299ca5c3dc2548b723513ed31d326"
     local jena_archive_basename
     jena_archive_basename="$(basename "${jena_uri}")"
     local jena_archive="${XDG_CACHE_HOME}/${jena_archive_basename}"
@@ -161,9 +161,11 @@ main() {
     echo "${fuseki_pid_normal}" > "${fuseki_pidfile_normal}"
 
     1>&2 echo "INFO: starting fuseki: tdb"
+    mkdir -vp "${fuseki_base_tdb}/database"
     FUSEKI_BASE="${fuseki_base_tdb}" bash "${FUSEKI_HOME}/fuseki-server" \
         --port "${fuseki_port_tdb}" --debug \
-        --update --memTDB --set tdb:unionDefaultGraph=true /db &>"${fuseki_log_tdb}" &
+        --update --tdb2 --loc "${fuseki_base_tdb}/database" \
+        --set tdb:unionDefaultGraph=true /db &>"${fuseki_log_tdb}" &
     fuseki_pid_tdb="${!}"
     echo "${fuseki_pid_tdb}" > "${fuseki_pidfile_tdb}"
 
