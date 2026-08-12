@@ -239,15 +239,18 @@ def path_source_data():
     ),
 )
 def test_parse_shacl_path(
-    path_source_data: Graph, resource: URIRef, expected: Union[URIRef, Path]
+    path_source_data: Graph,
+    resource: URIRef,
+    expected: Union[URIRef, Path, type[Exception]],
 ):
     path_root = path_source_data.value(resource, SH.path)
+    assert path_root is not None
 
-    if isinstance(expected, type):
-        with pytest.raises(expected):  # type: ignore[arg-type]
-            parse_shacl_path(path_source_data, path_root)  # type: ignore[arg-type]
+    if isinstance(expected, type) and issubclass(expected, Exception):
+        with pytest.raises(expected):
+            parse_shacl_path(path_source_data, path_root)
     else:
-        assert parse_shacl_path(path_source_data, path_root) == expected  # type: ignore[arg-type]
+        assert parse_shacl_path(path_source_data, path_root) == expected
 
 
 @pytest.mark.parametrize(
