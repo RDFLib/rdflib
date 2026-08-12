@@ -9,8 +9,6 @@ license = { text = "BSD-3-Clause" }
 classifiers=[
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -22,7 +20,7 @@ classifiers=[
     "Natural Language :: English"
 ]
 readme = "README.md"
-requires-python = ">=3.8.1"
+requires-python = ">=3.10"
 dependencies = [
     "isodate>=0.7.2,<1.0.0; python_version < '3.11'",
     "pyparsing>=2.1.0,<4",
@@ -63,7 +61,7 @@ tests = [
     "types-setuptools>=68.0.0.3,<72.0.0.0",
     "setuptools>=68,<72",
     "wheel>=0.42,<0.46",
-    "testcontainers>=4.13.2,<5.0.0; python_full_version >= '3.9.2'",
+    "testcontainers>=4.13.2,<5.0.0",
 ]
 coverage = ["coveralls==4.1.0; python_version >= '3.10'"]
 docs = [
@@ -84,7 +82,7 @@ include = ["rdflib*"]
 
 [tool.ruff]
 # https://beta.ruff.rs/docs/configuration/
-target-version = "py38"
+target-version = "py310"
 # Same as Black.
 line-length = 88
 
@@ -116,7 +114,6 @@ select = [
     "UP026", # mock is deprecated, use unittest.mock
     "UP029", # Unnecessary builtin import
     "UP034", # Avoid extraneous parentheses
-    "UP035", # Import from {target} instead:
     "UP036", # Version block is outdated for minimum Python version
     "UP037", # Remove quotes from type annotation
     "UP039", # Unnecessary parentheses after class definition
@@ -165,7 +162,7 @@ ignore = [
 
 [tool.black]
 line-length = 88
-target-version = ['py38']
+target-version = ['py310']
 required-version = "24.8.0"
 include = '\.pyi?$'
 exclude = '''

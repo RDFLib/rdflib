@@ -237,13 +237,13 @@ tox
 tox -a
 
 # Run a specific environment.
-tox -e py39 # default environment with py39
+tox -e py310 # default environment with py310
 tox -e py311-extra # extra tests with py311
 
 # Override the test command.
 # the below command will run `pytest test/test_translate_algebra.py`
 # instead of the default pytest command.
-tox -e py39,py311 -- pytest test/test_translate_algebra.py
+tox -e py310,py311 -- pytest test/test_translate_algebra.py
 ```
 
 ## `go-task` and `Taskfile.yml`
