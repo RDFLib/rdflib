@@ -54,7 +54,10 @@ def _session_function_httpmocks() -> Generator[_ServedBaseHTTPServerMocks, None,
     This fixture is session scoped, but it is reset for each function in
     :func:`function_httpmock`. This should not be used directly.
     """
-    with ServedBaseHTTPServerMock() as httpmock_a, ServedBaseHTTPServerMock() as httpmock_b:
+    with (
+        ServedBaseHTTPServerMock() as httpmock_a,
+        ServedBaseHTTPServerMock() as httpmock_b,
+    ):
         yield httpmock_a, httpmock_b
 
 
