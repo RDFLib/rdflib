@@ -23,7 +23,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "isodate>=0.7.2,<1.0.0; python_version < '3.11'",
-    "pyparsing>=3.0.0,<4",
+    "pyparsing>=3.1.0,<4",
 ]
 
 [project.urls]
@@ -40,7 +40,7 @@ sparqlquery = 'rdflib.tools.sparqlquery:main'
 
 [project.optional-dependencies]
 berkeleydb = ["berkeleydb>=18.1.0,<19.0.0"]
-networkx = ["networkx>=2,<4"]
+networkx = ["networkx>=2.8.8,<4"]
 html = ["html5rdf>=1.2,<2"]
 lxml = ["lxml>=4.6.5,<6.0"]
 orjson = ["orjson>=3.9.14,<4"]

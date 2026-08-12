@@ -1281,9 +1281,9 @@ requires-dist = [
     { name = "httpx", marker = "extra == 'rdf4j'", specifier = ">=0.28.1,<0.29.0" },
     { name = "isodate", marker = "python_full_version < '3.11'", specifier = ">=0.7.2,<1.0.0" },
     { name = "lxml", marker = "extra == 'lxml'", specifier = ">=4.6.5,<6.0" },
-    { name = "networkx", marker = "extra == 'networkx'", specifier = ">=2,<4" },
+    { name = "networkx", marker = "extra == 'networkx'", specifier = ">=2.8.8,<4" },
     { name = "orjson", marker = "extra == 'orjson'", specifier = ">=3.9.14,<4" },
-    { name = "pyparsing", specifier = ">=3.0.0,<4" },
+    { name = "pyparsing", specifier = ">=3.1.0,<4" },
 ]
 provides-extras = ["berkeleydb", "networkx", "html", "lxml", "orjson", "rdf4j", "graphdb"]
 
