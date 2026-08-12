@@ -390,6 +390,54 @@ Once this is done, create a release tag from [GitHub releases](https://github.co
 
 The resulting release will be available at https://github.com/RDFLib/rdflib/releases/tag/6.3.1
 
+### Archiving a major release in Zenodo
+
+Every major RDFLib release must be archived in Zenodo through the
+[Zenodo GitHub integration](https://help.zenodo.org/docs/github/). Before
+publishing the GitHub release, confirm that the version and release date in
+`CITATION.cff` are correct and that the release-preparation pull request
+containing those values has been merged. Zenodo uses `CITATION.cff` to describe
+software releases from GitHub. If a `.zenodo.json` file is added in the future,
+be aware that [Zenodo will use it instead of
+`CITATION.cff`](https://help.zenodo.org/docs/github/describe-software/).
+
+The repository connection is normally a one-time setup, but verify it before
+each major release:
+
+1. Sign in to [Zenodo](https://zenodo.org/) using an account with access to the
+   RDFLib GitHub repository.
+2. Ensure that the GitHub account is connected under **Linked accounts**.
+3. Open **GitHub** from the Zenodo profile menu and click **Sync now**.
+4. Find `RDFLib/rdflib` and confirm that its repository toggle is enabled. See
+   Zenodo's [repository enablement
+   instructions](https://help.zenodo.org/docs/github/enable-repository/) if it
+   is not enabled. Once enabled, new GitHub releases are automatically ingested
+   and archived by Zenodo.
+
+After publishing the GitHub release described above:
+
+1. Open **GitHub** from the Zenodo profile menu and select `RDFLib/rdflib`.
+2. Wait for the new release to finish processing. Processing may take some time.
+3. Open the release's record using the DOI displayed by Zenodo.
+4. Confirm that the record has the correct RDFLib version, release date,
+   creators, description, license, files, and GitHub release link. Zenodo
+   assigns the published record a persistent DOI.
+5. On the record page, check **External resources** > **Archived in** to verify
+   its archival status. Zenodo notes that external archival may complete after
+   the record itself has been created.
+6. Confirm that the repository's [DOI
+   link](https://doi.org/10.5281/zenodo.6845245) resolves and that the new
+   release appears among the record's versions.
+
+If processing fails, select the failed release on the repository page in
+Zenodo, expand it, and inspect **Errors**. Correct any reported release metadata
+problems before retrying. See Zenodo's complete [GitHub release archiving and
+failure-diagnosis
+guide](https://help.zenodo.org/docs/github/archive-software/github-upload/).
+Zenodo creates a distinct, persistently identified record for each software
+version and links it to the other versions, as described in its [versioning
+documentation](https://help.zenodo.org/docs/deposit/manage-versions/).
+
 Once this is done, announce the release at the following locations:
 
 * Twitter: Just make a tweet from your own account linking to the latest release.

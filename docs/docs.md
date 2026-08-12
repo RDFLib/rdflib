@@ -19,7 +19,7 @@ uv run python docs/gen_ref_pages.py
 uv run zensical build
 ```
 
-Built HTML docs will be generated in `site/` and API documentation, generated as markdown from doc-strings, will be placed in `docs/apidocs/`.
+Built HTML docs will be generated in `site/` and API documentation, generated as Markdown from doc-strings, will be placed in `docs/apidocs/`.
 
 API Docs are automatically generated with `mkdocstring`
 
