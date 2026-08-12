@@ -254,10 +254,8 @@ tasks:
   gha:lint:
     desc: GitHub Actions lint workflow
     cmds:
-      - task: uv:configure
-        vars:
-          CLI_ARGS: --only-group lint --no-install-project
-      - task: ruff
+    - "{{.UV}} sync --frozen --only-group lint --no-install-project"
+    - task: ruff
 
   cmd:rdfpipe:
     desc: Run rdfpipe
