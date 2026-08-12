@@ -32,15 +32,18 @@ jobs:
           - python-version: "3.10"
             os: ubuntu-latest
             extensive-tests: true
+            suffix: "-extensive"
+            TOXENV_SUFFIX: "-extensive"
           - python-version: "3.10"
             os: ubuntu-latest
             extensive-tests: true
             PREPARATION: "sudo apt-get install -y libxml2-dev libxslt-dev"
-            suffix: "-min"
-            TOXENV_SUFFIX: "-min"
+            suffix: "-extensive-min"
+            TOXENV_SUFFIX: "-extensive-min"
           - python-version: "3.10"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "- black --check --diff ./rdflib"
+            suffix: "-lxml"
             TOXENV_SUFFIX: "-lxml"
           - python-version: "3.11"
             os: ubuntu-latest
