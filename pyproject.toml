@@ -50,6 +50,7 @@ graphdb = ["httpx>=0.28.1,<0.29.0"]
 [dependency-groups]
 dev = [
     "black==24.8.0",
+    "isort>=5.13.2,<6.0.0",
     "mypy==1.14.1",
     "lxml-stubs>=0.4,<0.6",
     "pip-tools>=7.4.1,<8.0.0",
@@ -221,7 +222,7 @@ log_cli_date_format = "%Y-%m-%dT%H:%M:%S"
 
 [tool.isort]
 profile = "black"
-py_version = 38
+py_version = 310
 line_length = 88
 src_paths= ["rdflib", "test", "devtools", "examples"]
 supported_extensions = ["pyw", "pyi", "py"]

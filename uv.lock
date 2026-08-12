@@ -488,6 +488,15 @@ wheels = [
 ]
 
 [[package]]
+name = "isort"
+version = "5.13.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/87/f9/c1eb8635a24e87ade2efce21e3ce8cd6b8630bb685ddc9cdaca1349b2eb5/isort-5.13.2.tar.gz", hash = "sha256:48fdfcb9face5d58a4f6dde2e72a1fb8dcaf8ab26f95ab49fab84c2ddefb0109", size = 175303, upload-time = "2023-12-13T20:37:26.124Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d1/b3/8def84f539e7d2289a02f0524b944b15d7c75dab7628bedf1c4f0992029c/isort-5.13.2-py3-none-any.whl", hash = "sha256:8ca5e72a8d85860d5a3fa69b8745237f2939afe12dbf656afbcb47fe72d947a6", size = 92310, upload-time = "2023-12-13T20:37:23.244Z" },
+]
+
+[[package]]
 name = "jinja2"
 version = "3.1.6"
 source = { registry = "https://pypi.org/simple" }
@@ -1250,6 +1259,7 @@ coverage = [
 ]
 dev = [
     { name = "black" },
+    { name = "isort" },
     { name = "lxml-stubs" },
     { name = "mypy" },
     { name = "pip-tools" },
@@ -1291,6 +1301,7 @@ provides-extras = ["berkeleydb", "networkx", "html", "lxml", "orjson", "rdf4j", 
 coverage = [{ name = "coveralls", marker = "python_full_version >= '3.10'", specifier = "==4.1.0" }]
 dev = [
     { name = "black", specifier = "==24.8.0" },
+    { name = "isort", specifier = ">=5.13.2,<6.0.0" },
     { name = "lxml-stubs", specifier = ">=0.4,<0.6" },
     { name = "mypy", specifier = "==1.14.1" },
     { name = "pip-tools", specifier = ">=7.4.1,<8.0.0" },

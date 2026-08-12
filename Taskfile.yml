@@ -43,7 +43,7 @@ tasks:
       - echo "OS = {{OS}}"
       - echo "ARCH = {{ARCH}}"
       - |
-        {{if (and (mustFromJson .EXTENSIVE) (eq OS "linux"))}}
+        {{if (and (mustFromJson .EXTENSIVE) (or (eq OS "linux") (eq OS "ubuntu-latest")))}}
           if type apt-get >/dev/null 2>&1
           then
             sudo apt-get install -y libdb-dev
@@ -51,14 +51,14 @@ tasks:
           then
             sudo dnf install -y libdb-devel
           fi
-        {{else if (and (mustFromJson .EXTENSIVE) (eq OS "darwin"))}}
+        {{else if (and (mustFromJson .EXTENSIVE) (or (eq OS "darwin") (eq OS "macos-latest")))}}
           brew install berkeley-db@4
         {{end}}
 
   install:tox:
     desc: Install tox
     cmds:
-      - "{{.PYTHON}} -m pip install tox {{if (mustFromJson .WITH_GITHUB_ACTIONS)}}tox-gh-actions{{end}}"
+      - '{{.UV}} tool install "tox>=4,<5"'
 
   uv:configure:
     desc: Configure the environment for development with uv
@@ -101,8 +101,7 @@ tasks:
         {{if .TOX_JUNIT_XML_PREFIX}}TOX_JUNIT_XML_PREFIX={{shellQuote .TOX_JUNIT_XML_PREFIX}}{{end}} \
         {{if .COVERAGE_FILE}}COVERAGE_FILE={{shellQuote .COVERAGE_FILE}}{{end}} \
         {{.TEST_HARNESS}} \
-        {{.PYTHON | shellQuote}} \
-          -m tox \
+        tox \
           {{.CLI_ARGS}}
     env:
       TOXENV: '{{if .TOX_PYTHON_VERSION}}py{{mustRegexReplaceAll "^([0-9]+)[.]([0-9]+).*" .TOX_PYTHON_VERSION "${1}${2}"}}{{if (mustFromJson .EXTENSIVE)}}-extensive{{end}}{{.TOXENV_SUFFIX | default ""}}{{end}}'
