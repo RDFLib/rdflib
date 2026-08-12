@@ -110,7 +110,7 @@ main() {
     # : ${FUSEKI_PORT:=3030}
     : "${XDG_CACHE_HOME:=${HOME}/.cache}"
 
-    local jena_uri="https://archive.apache.org/dist/jena/binaries/apache-jena-fuseki-6.1.0.tar.gz"
+    local jena_uri="https://dlcdn.apache.org/jena/binaries/apache-jena-fuseki-6.1.0.tar.gz"
     local jena_sha512="75457f45d14397876a41ed51abe7ae5d2f1e708dfe1315765f858158bc5c6813bc036ec1539ddc4dffd26201f5cc31fadec299ca5c3dc2548b723513ed31d326"
     local jena_archive_basename
     jena_archive_basename="$(basename "${jena_uri}")"
