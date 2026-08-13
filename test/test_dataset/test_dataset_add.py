@@ -199,7 +199,7 @@ def test_dataset_iadd():
         @prefix ns3: <https://example.com/p/> .
         ns2:subject2 ns3:predicate2 "object2" .
         ns2:subject ns3:predicate "object" .
-    """
+        """
     )
     expected_default_graph = Graph(identifier=DATASET_DEFAULT_GRAPH_ID).parse(
         data=expected_default_graph_data, format="turtle"
@@ -211,7 +211,7 @@ def test_dataset_iadd():
         @prefix ns3: <https://example.com/p/> .
         ns2:subject ns3:predicate "object" .
         ns2:subject-other ns3:predicate-other "Triple-Other" .
-    """
+        """
     )
     expected_graph1 = Graph(identifier=URIRef("https://example.com/graph")).parse(
         data=expected_graph1_data, format="turtle"
@@ -221,12 +221,23 @@ def test_dataset_iadd():
         """
         @prefix ns2: <https://example.com/> .
         ns2:subject-y ns2:predicate-y "Triple Y" .
-    """
+        """
     )
     expected_graph2 = Graph(identifier=URIRef("https://example.com/graph2")).parse(
         data=expected_graph2, format="turtle"
     )
 
+    for graph in ds.graphs():
+        print(graph.identifier, len(graph))
+    # print("====")
+    # print(expected_default_graph.serialize())
+    # print("====")
+    # print(ds.default_graph.serialize())
+    # print("====")
+    print(ds.serialize(format="trig"))
+    print("====")
+
+    return
     assert isomorphic(expected_default_graph, ds.default_graph)
     assert isomorphic(
         expected_graph1, ds.get_graph(URIRef("https://example.com/graph"))

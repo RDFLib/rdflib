@@ -187,13 +187,15 @@ def test_turtle_undeclared_prefix_when_using_base():
             Literal("object"),
         )
     )
-    output = g.serialize(format="turtle", base="https://example.com/")
+    output = g.serialize(base="https://example.com/")
     expected = dedent(
         """
-        @base <https://example.com/> .
-        @prefix ns1: <https://example.com/p/> .
+        BASE <https://example.com/>
+        PREFIX ns1: <https://example.com/p/>
 
-        <subject> ns1:predicate "object" .
+        <subject>
+            ns1:predicate "object" ;
+        .
     """
     )
     assert output.strip() == expected.strip()

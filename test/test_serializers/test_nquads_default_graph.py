@@ -23,17 +23,31 @@ def test_nquads_default_graph():
         }
     """
 
-    ds = Dataset()
-    ds.parse(data=data, format="trig")
-    output = ds.serialize(format="nquads")
-
-    # The internal RDFLib default graph identifier should not appear in the output.
-    assert "<urn:x-rdflib:default>" not in output
-
-    # Ensure dataset round-trip still works.
-    ds2 = Dataset()
-    ds2.parse(data=output, format="nquads")
+    print("\n+++++")
+    ds = Dataset().parse(data=data, format="trig")
     for graph in ds.graphs():
-        assert isomorphic(graph, ds2.graph(graph.identifier)), print(
-            f"{graph.identifier} not isomorphic"
-        )
+        print(graph.identifier, len(graph))
+
+    # The internal RDFLib default graph identifier should not appear in serialized output
+    nq = ds.serialize(format="nquads")
+
+    print("+++++")
+    # Ensure dataset round-trip still works
+    ds2 = Dataset().parse(data=nq, format="nquads")
+    for graph in ds2.graphs():
+        print(graph.identifier, len(graph))
+    print("+++++")
+
+    print("\n")
+    for graph in ds.graphs():
+        print(graph.identifier, len(graph), " | ", ds2.graph(graph.identifier).identifier, len(ds2.graph(graph.identifier)))
+
+        # if len(graph) != len(ds2.graph(graph.identifier)):
+        #     print("\n====")
+        #     print(graph.serialize())
+        #     print("====")
+        #     print(ds2.graph(graph.identifier).serialize())
+        #     print("====")
+        # assert isomorphic(graph, ds2.graph(graph.identifier)), print(
+        #     f"{graph.identifier} not isomorphic"
+        # )

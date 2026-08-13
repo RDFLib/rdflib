@@ -1717,8 +1717,8 @@ class Graph(Node):
 
         if self.default_union:
             query_graph = "__UNION__"
-        elif isinstance(self, ConjunctiveGraph):
-            query_graph = self.default_context.identifier
+        elif isinstance(self, Dataset):
+            query_graph = self.default_graph.identifier
         else:
             query_graph = self.identifier
         if hasattr(self.store, "query") and use_store_provided:
@@ -1777,8 +1777,8 @@ class Graph(Node):
 
         if self.default_union:
             query_graph = "__UNION__"
-        elif isinstance(self, ConjunctiveGraph):
-            query_graph = self.default_context.identifier
+        elif isinstance(self, Dataset):
+            query_graph = self.default_graph.identifier
         else:
             query_graph = self.identifier
 
@@ -2164,6 +2164,11 @@ class ConjunctiveGraph(Graph):
     def default_context(self, value):
         self._default_context = value
 
+    @default_context.setter
+    def default_graph(self, value):
+        """Alias of default_context for compatibility with Dataset"""
+        self._default_context = value
+
     def __str__(self) -> str:
         pattern = (
             "[a rdflib:ConjunctiveGraph;rdflib:storage "
@@ -2225,7 +2230,7 @@ class ConjunctiveGraph(Graph):
         if triple_or_quad is None:
             return (None, None, None, self.default_context if default else None)
         if len(triple_or_quad) == 3:
-            c = self.default_context if default else None
+            c = self.default_graph if default else None
             # type error: Too many values to unpack (3 expected, 4 provided)
             (s, p, o) = triple_or_quad  # type: ignore[misc, unused-ignore]
         elif len(triple_or_quad) == 4:
@@ -2337,11 +2342,11 @@ class ConjunctiveGraph(Graph):
         context = self._graph(context or c)
 
         if self.default_union:
-            if context == self.default_context:
+            if context == self.default_graph:
                 context = None
         else:
             if context is None:
-                context = self.default_context
+                context = self.default_graph
 
         if isinstance(p, Path):
             if context is None:
@@ -2404,7 +2409,7 @@ class ConjunctiveGraph(Graph):
 
     def get_graph(self, identifier: _ContextIdentifierType) -> Union[Graph, None]:
         """Returns the graph identified by given identifier"""
-        return [x for x in self.contexts() if x.identifier == identifier][0]
+        return [x for x in self.graphs() if x.identifier == identifier][0]
 
     def get_context(
         self,
@@ -2505,7 +2510,7 @@ class ConjunctiveGraph(Graph):
         # would be good if this guarantee was made more explicit i.e. by type
         # hint on InputSource (TODO/FIXME).
 
-        context = self.default_context
+        context = self.default_graph
         context.parse(source, publicID=publicID, format=format, **args)
         return self
 
@@ -2749,6 +2754,9 @@ class Dataset(ConjunctiveGraph):
         BNode IDs are not changed."""
         self.addN((s, p, o, g) for s, p, o, g in other)
         return self
+
+    def __repr__(self) -> str:
+        return "<Dataset: %s graphs>" % len(self.graphs)
 
     def graph(
         self,

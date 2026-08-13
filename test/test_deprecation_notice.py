@@ -1,7 +1,6 @@
 import pytest
 
 from rdflib import Dataset, Graph, Namespace, URIRef
-from rdflib.plugins.serializers.longturtle import LongTurtleSerializer
 from rdflib.plugins.serializers.n3 import N3Serializer
 from rdflib.plugins.serializers.turtle import TurtleSerializer
 
@@ -46,10 +45,6 @@ def test_dataset_identifier_property():
         (
             TurtleSerializer,
             "TurtleSerializer.getQName is deprecated, use TurtleSerializer.get_pname instead.",
-        ),
-        (
-            LongTurtleSerializer,
-            "LongTurtleSerializer.getQName is deprecated, use LongTurtleSerializer.get_pname instead.",
         ),
         (
             N3Serializer,

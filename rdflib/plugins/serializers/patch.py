@@ -71,13 +71,13 @@ class PatchSerializer(Serializer):
                 stream.write(f"H prev <{header_prev}>\n".encode(encoding, "replace"))
             stream.write("TX .\n".encode(encoding, "replace"))
 
-        def write_triples(contexts, op_code, use_passed_contexts=False):
-            for context in contexts:
-                if not use_passed_contexts:
-                    context = self.store.get_context(context.identifier)
-                for triple in context:
+        def write_triples(graphs, op_code, use_passed_graphs=False):
+            for graph in graphs:
+                if not use_passed_graphs:
+                    graph = self.store.get_graph(graph.identifier)
+                for triple in graph:
                     stream.write(
-                        self._patch_row(triple, context.identifier, op_code).encode(
+                        self._patch_row(triple, graph.identifier, op_code).encode(
                             encoding, "replace"
                         )
                     )
@@ -91,11 +91,11 @@ class PatchSerializer(Serializer):
         write_header()
         if operation:
             operation_code = add_remove_methods.get(operation)
-            write_triples(self.store.contexts(), operation_code)
+            write_triples(self.store.graphs(), operation_code)
         elif target:
             to_add, to_remove = self._diff(target)
-            write_triples(to_add.contexts(), "A", use_passed_contexts=True)
-            write_triples(to_remove.contexts(), "D", use_passed_contexts=True)
+            write_triples(to_add.contexts(), "A", use_passed_graphs=True)
+            write_triples(to_remove.contexts(), "D", use_passed_graphs=True)
 
         stream.write("TC .\n".encode(encoding, "replace"))
 
@@ -105,7 +105,7 @@ class PatchSerializer(Serializer):
         return rows_to_add, rows_to_remove
 
     def _patch_row(self, triple, context_id, operation):
-        if context_id == self.store.default_context.identifier:
+        if context_id == self.store.default_graph.identifier:
             return f"{operation} {_nt_row(triple)}"
         else:
             return f"{operation} {_nq_row(triple, context_id)}"
