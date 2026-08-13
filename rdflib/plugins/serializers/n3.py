@@ -6,14 +6,15 @@ import warnings
 
 from rdflib.graph import Graph
 from rdflib.namespace import OWL, Namespace
-from rdflib.plugins.serializers.turtle import OBJECT, SUBJECT, TurtleSerializer
+from rdflib.plugins.serializers.turtle import OBJECT, SUBJECT
+from rdflib.plugins.serializers.origturtle import OrigTurtleSerializer
 
 __all__ = ["N3Serializer"]
 
 SWAP_LOG = Namespace("http://www.w3.org/2000/10/swap/log#")
 
 
-class N3Serializer(TurtleSerializer):
+class N3Serializer(OrigTurtleSerializer):
     """Notation 3 (N3) RDF graph serializer."""
 
     short_name = "n3"
