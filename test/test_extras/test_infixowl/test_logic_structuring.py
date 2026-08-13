@@ -44,7 +44,7 @@ def test_logic_structuring(graph):
     locatedInLeg = hasLocation @ some @ leg  # noqa: N806
     locatedInLeg += knee  # noqa: N806
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n"
