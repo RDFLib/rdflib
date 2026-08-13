@@ -24,22 +24,22 @@ class TrigSerializer(TurtleSerializer):
     indentString = 4 * " "
 
     def __init__(self, store: Union[Graph, ConjunctiveGraph]):
-        self.default_context: Optional[Node]
+        self.default_graph: Optional[Node]
         if store.context_aware:
             if TYPE_CHECKING:
                 assert isinstance(store, ConjunctiveGraph)
-            self.contexts = list(store.contexts())
-            self.default_context = store.default_context.identifier
-            if store.default_context:
-                self.contexts.append(store.default_context)
+            self.graphs = list(store.graphs())
+            self.default_graph = store.default_graph.identifier
+            if store.default_graph:
+                self.graphs.append(store.default_graph)
         else:
-            self.contexts = [store]
-            self.default_context = None
+            self.graphs = [store]
+            self.default_graph = None
 
         super(TrigSerializer, self).__init__(store)
 
     def preprocess(self) -> None:
-        for context in self.contexts:
+        for context in self.graphs:
             # do not write unnecessary prefix (ex: for an empty default graph)
             if len(context) == 0:
                 continue
@@ -54,11 +54,11 @@ class TrigSerializer(TurtleSerializer):
             for subject in self._subjects.keys():
                 self._references[subject] += 1
 
-            self._contexts[context] = (self.orderSubjects(), self._subjects)
+            self._graphs[context] = (self.orderSubjects(), self._subjects)
 
     def reset(self) -> None:
         super(TrigSerializer, self).reset()
-        self._contexts: Dict[
+        self._graphs: Dict[
             _ContextType,
             Tuple[List[_SubjectType], Dict[_SubjectType, bool]],
         ] = {}
@@ -87,7 +87,7 @@ class TrigSerializer(TurtleSerializer):
         self.startDocument()
 
         firstTime = True
-        for store, (ordered_subjects, subjects) in self._contexts.items():
+        for store, (ordered_subjects, subjects) in self._graphs.items():
             if not ordered_subjects:
                 continue
 
@@ -95,7 +95,7 @@ class TrigSerializer(TurtleSerializer):
             self.store = store
             self._subjects = subjects
 
-            if self.default_context and store.identifier == self.default_context:
+            if self.default_graph and store.identifier == self.default_graph:
                 self.write(self.indent() + "\n{")
             else:
                 iri: Optional[str]

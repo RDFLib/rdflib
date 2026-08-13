@@ -77,18 +77,18 @@ class NQuadsParser(W3CNTriplesParser):
         ), "NQuadsParser must be given a context-aware store."
         # Set default_union to True to mimic ConjunctiveGraph behavior
         ds = Dataset(store=sink.store, default_union=True)
-        ds_default = ds.default_context  # the DEFAULT_DATASET_GRAPH_ID
-        new_default_context = None
+        ds_default = ds.default_graph  # the DEFAULT_DATASET_GRAPH_ID
+        new_default_graph = None
         if isinstance(sink, (Dataset, ConjunctiveGraph)):
-            new_default_context = sink.default_context
+            new_default_graph = sink.default_graph
         elif sink.identifier is not None:
             if sink.identifier == ds_default.identifier:
-                new_default_context = sink
+                new_default_graph = sink
             else:
-                new_default_context = ds.get_context(sink.identifier)
+                new_default_graph = ds.get_context(sink.identifier)
 
-        if new_default_context is not None:
-            ds.default_context = new_default_context
+        if new_default_graph is not None:
+            ds.default_graph = new_default_graph
             ds.remove_graph(ds_default)  # remove the original unused default graph
         # type error: Incompatible types in assignment (expression has type "ConjunctiveGraph", base class "W3CNTriplesParser" defined the type as "Union[DummySink, NTGraphSink]")
         self.sink: Dataset = ds  # type: ignore[assignment]
@@ -139,4 +139,4 @@ class NQuadsParser(W3CNTriplesParser):
         if context:
             self.sink.get_context(context).add((subject, predicate, obj))
         else:
-            self.sink.default_context.add((subject, predicate, obj))
+            self.sink.default_graph.add((subject, predicate, obj))
