@@ -1,18 +1,14 @@
-[tool.poetry]
+[project]
 name = "rdflib"
 version = "7.7.0a0"
 description = """RDFLib is a Python library for working with RDF, \
 a simple yet powerful language for representing information."""
-authors = ["Daniel 'eikeon' Krech <eikeon@eikeon.com>"]
-maintainers = ["RDFLib Team <rdflib-dev@googlegroups.com>"]
-repository = "https://github.com/RDFLib/rdflib"
-documentation = "https://rdflib.readthedocs.org/"
-license = "BSD-3-Clause"
+authors = [{ name = "Daniel 'eikeon' Krech", email = "eikeon@eikeon.com" }]
+maintainers = [{ name = "RDFLib Team", email = "rdflib-dev@googlegroups.com" }]
+license = { text = "BSD-3-Clause" }
 classifiers=[
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -24,16 +20,17 @@ classifiers=[
     "Natural Language :: English"
 ]
 readme = "README.md"
-packages = [
-    { include = "rdflib" },
-]
-include = [
-    { path = "test", format = "sdist" },
-    { path = "docs", format = "sdist" },
-    { path = "examples", format = "sdist" },
+requires-python = ">=3.10"
+dependencies = [
+    "isodate>=0.7.2,<1.0.0; python_version < '3.11'",
+    "pyparsing>=3.1.0,<4",
 ]
 
-[tool.poetry.scripts]
+[project.urls]
+Repository = "https://github.com/RDFLib/rdflib"
+Documentation = "https://rdflib.readthedocs.org/"
+
+[project.scripts]
 rdfpipe = 'rdflib.tools.rdfpipe:main'
 csv2rdf = 'rdflib.tools.csv2rdf:main'
 rdf2dot = 'rdflib.tools.rdf2dot:main'
@@ -41,63 +38,52 @@ rdfs2dot = 'rdflib.tools.rdfs2dot:main'
 rdfgraphisomorphism = 'rdflib.tools.graphisomorphism:main'
 sparqlquery = 'rdflib.tools.sparqlquery:main'
 
-[tool.poetry.dependencies]
-python = ">=3.8.1"
-isodate = {version=">=0.7.2,<1.0.0", python = "<3.11"}
-pyparsing = ">=2.1.0,<4"
-berkeleydb = {version = "^18.1.0", optional = true}
-networkx = {version = ">=2,<4", optional = true}
-html5rdf = {version = ">=1.2,<2", optional = true}
-lxml = {version = ">=4.3,<6.0", optional = true}
-orjson = {version = ">=3.9.14,<4", optional = true}
-httpx = {version = "^0.28.1", optional = true}
+[project.optional-dependencies]
+berkeleydb = ["berkeleydb>=18.1.0,<19.0.0"]
+networkx = ["networkx>=2.8.8,<4"]
+html = ["html5rdf>=1.2,<2"]
+lxml = ["lxml>=4.6.5,<6.0"]
+orjson = ["orjson>=3.9.14,<4"]
+rdf4j = ["httpx>=0.28.1,<0.29.0"]
+graphdb = ["httpx>=0.28.1,<0.29.0"]
 
-[tool.poetry.group.dev.dependencies]
-black = "24.8.0"
-mypy = "1.14.1"
-lxml-stubs = ">=0.4,<0.6"
-pip-tools = "^7.4.1"
-
-[tool.poetry.group.tests.dependencies]
-pytest = ">=7.1.3,<9.0.0"
-pytest-cov = ">=4,<6"
-coverage = {version = "^7.0.1", extras = ["toml"]}
-types-setuptools = ">=68.0.0.3,<72.0.0.0"
-setuptools = ">=68,<72"
-wheel = ">=0.42,<0.46"
-testcontainers = {version = "^4.13.2", python = ">=3.9.2"}
-
-[tool.poetry.group.coverage.dependencies]
-coveralls = {version = "4.1.0", python = ">=3.10,<4.0"}
-
-[tool.poetry.group.docs.dependencies]
-typing-extensions = "^4.11.0"
-zensical = {version = ">=0.0.51", extras = ["python"], python = ">=3.11"}
+[dependency-groups]
+dev = [
+    "black==24.8.0",
+    "isort>=5.13.2,<6.0.0",
+    "mypy==1.14.1",
+    "lxml-stubs>=0.4,<0.6",
+    "pip-tools>=7.4.1,<8.0.0",
+]
+tests = [
+    "pytest>=7.1.3,<9.0.0",
+    "pytest-cov>=4,<6",
+    "coverage[toml]>=7.0.1,<8.0.0",
+    "types-setuptools>=68.0.0.3,<72.0.0.0",
+    "setuptools>=68,<72",
+    "wheel>=0.42,<0.46",
+    "testcontainers>=4.13.2,<5.0.0",
+]
+coverage = ["coveralls==4.1.0; python_version >= '3.10'"]
+docs = [
+    "typing-extensions>=4.11.0,<5.0.0",
+    "zensical>=0.0.51; python_version >= '3.11'",
 # Set python to 3.11 or greater as that's what's used in the validate workflow to test doc builds.
-mkdocstrings = {version = ">=1.0.6", extras = ["python"], python = ">=3.11"}
-httpx = "^0.28.1"
-
-[tool.poetry.group.lint.dependencies]
-ruff = "0.15.0"
-
-[tool.poetry.extras]
-berkeleydb = ["berkeleydb"]
-networkx = ["networkx"]
-# html support is optional, it is used only in tokenizing `rdf:HTML` type Literals
-html = ["html5rdf"]
-# lxml support is optional, it is used only for parsing XML-formatted SPARQL results
-lxml = ["lxml"]
-orjson = ["orjson"]
-rdf4j = ["httpx"]
-graphdb = ["httpx"]
+    "mkdocstrings[python]>=1.0.6; python_version >= '3.11'",
+    "httpx>=0.28.1,<0.29.0",
+]
+lint = ["ruff==0.15.0"]
 
 [build-system]
-requires = ["poetry-core>=1.4.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["rdflib*"]
 
 [tool.ruff]
 # https://beta.ruff.rs/docs/configuration/
-target-version = "py38"
+target-version = "py310"
 # Same as Black.
 line-length = 88
 
@@ -129,7 +115,6 @@ select = [
     "UP026", # mock is deprecated, use unittest.mock
     "UP029", # Unnecessary builtin import
     "UP034", # Avoid extraneous parentheses
-    "UP035", # Import from {target} instead:
     "UP036", # Version block is outdated for minimum Python version
     "UP037", # Remove quotes from type annotation
     "UP039", # Unnecessary parentheses after class definition
@@ -178,7 +163,7 @@ ignore = [
 
 [tool.black]
 line-length = 88
-target-version = ['py38']
+target-version = ['py310']
 required-version = "24.8.0"
 include = '\.pyi?$'
 exclude = '''
@@ -237,7 +222,7 @@ log_cli_date_format = "%Y-%m-%dT%H:%M:%S"
 
 [tool.isort]
 profile = "black"
-py_version = 38
+py_version = 310
 line_length = 88
 src_paths= ["rdflib", "test", "devtools", "examples"]
 supported_extensions = ["pyw", "pyi", "py"]
@@ -264,7 +249,7 @@ skip = [
 
 [tool.mypy]
 files = ['rdflib', 'test', 'devtools', 'examples']
-python_version = "3.8"
+python_version = "3.10"
 warn_unused_configs = true
 ignore_missing_imports = true
 disallow_subclassing_any = false

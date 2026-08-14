@@ -42,6 +42,7 @@ def ctx_plugin(tmp_path: Path, plugin_src: Path) -> Generator[None, None, None]:
             "--no-input",
             "--no-clean",
             "--no-index",
+            "--no-build-isolation",
             "--disable-pip-version-check",
             "--target",
             f"{pypath}",

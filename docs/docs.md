@@ -8,18 +8,18 @@ These docs are generated with [Zensical](https://zensical.org/).
 
 ## Building
 
-To build the documentation you can use `zensical` from within the poetry environment. To do this, run the following commands:
+To build the documentation you can use `zensical` from within the uv environment. To do this, run the following commands:
 
 ```bash
-# Install poetry venv
-poetry install
+# Install the docs dependencies
+uv sync --group docs
 
 # Build the docs
-poetry run python docs/gen_ref_pages.py
-poetry run zensical build
+uv run python docs/gen_ref_pages.py
+uv run zensical build
 ```
 
-Built HTML docs will be generated in `site/` and API documentation, generated as markdown from doc-strings, will be placed in `docs/apidocs/`.
+Built HTML docs will be generated in `site/` and API documentation, generated as Markdown from doc-strings, will be placed in `docs/apidocs/`.
 
 API Docs are automatically generated with `mkdocstring`
 
@@ -40,8 +40,8 @@ npx -p live-server live-server site/
 Run development server with auto-reload on change to code:
 
 ```bash
-poetry run python docs/gen_ref_pages.py
-poetry run zensical serve
+uv run python docs/gen_ref_pages.py
+uv run zensical serve
 ```
 
 ## Tables

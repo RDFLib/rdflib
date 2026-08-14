@@ -8,18 +8,16 @@ build:
     python: "3"
   jobs:
     post_create_environment:
-    # Using requirements-poetry.in as requirements-poetry.txt has conflicts with
-    # the readthedocs environment.
-    - pip install -r devtools/requirements-poetry.in
+    - pip install uv
     post_install:
-    # rdf4j extra is needed to document the modules in rdflib.contrib.rdf4j
-    - poetry export --only=main --only=docs --extras=rdf4j --without-hashes -o requirements.txt
-    - pip install --no-cache-dir -r requirements.txt
-    - pip install .
+    # RDF4J is needed to document rdflib.contrib.rdf4j
+      - uv export --frozen --no-dev --group docs --extra rdf4j --no-emit-project -o requirements.txt
+      - uv pip install --system --no-cache -r requirements.txt
+      - uv pip install --system --no-deps .
     build:
       html:
-      - python docs/gen_ref_pages.py
-      - zensical build
+        - python -m docs.gen_ref_pages
+        - python -m zensical build
     post_build:
     - mkdir -p $READTHEDOCS_OUTPUT/html/
     - cp --recursive site/* $READTHEDOCS_OUTPUT/html/

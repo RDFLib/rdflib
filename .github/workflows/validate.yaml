@@ -9,7 +9,6 @@ on:
 env:
   FORCE_COLOR: 1
   XDG_CACHE_HOME: ${{ github.workspace }}/.var/cache
-  POETRY_CACHE_DIR: ${{ github.workspace }}/.var/cache/pypoetry
   PIP_CACHE_DIR: ${{ github.workspace }}/.var/cache/pip
 
 concurrency:
@@ -24,26 +23,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
         os: [ubuntu-latest, macos-latest, windows-latest]
         # This is used for injecting additional tests for a specific python
         # version and OS.
         suffix: [""]
         include:
-          - python-version: "3.8"
+          - python-version: "3.10"
             os: ubuntu-latest
             extensive-tests: true
-          - python-version: "3.8"
+            suffix: "-extensive"
+          - python-version: "3.10"
             os: ubuntu-latest
             extensive-tests: true
             PREPARATION: "sudo apt-get install -y libxml2-dev libxslt-dev"
-            suffix: "-min"
+            suffix: "-extensive-min"
             TOXENV_SUFFIX: "-min"
-          - python-version: "3.9"
-            os: ubuntu-latest
           - python-version: "3.10"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "- black --check --diff ./rdflib"
+            suffix: "-lxml"
             TOXENV_SUFFIX: "-lxml"
           - python-version: "3.11"
             os: ubuntu-latest
@@ -55,7 +54,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ${{ env.XDG_CACHE_HOME }}
-          key: ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock', '**/with-fuseki.sh', '**/*requirements*.txt', '**/*requirements*.in') }}
+          key: ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/uv.lock', '**/with-fuseki.sh', '**/*requirements*.txt', '**/*requirements*.in') }}
           restore-keys: |
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-
@@ -63,14 +62,12 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install poetry
-        run: |
-          pip install -r devtools/requirements-poetry.in
+      - uses: astral-sh/setup-uv@v7
       - uses: actions/setup-java@v5
         if: ${{ matrix.extensive-tests }}
         with:
           distribution: "temurin"
-          java-version: "17"
+          java-version: "21"
       - name: Install Task
         uses: go-task/setup-task@v2
         with:
@@ -130,14 +127,14 @@ jobs:
       matrix:
         include:
           - task: "gha:lint"
-            python-version: 3.8
+            python-version: "3.10"
     steps:
       - uses: actions/checkout@v7
       - name: Cache XDG_CACHE_HOME
         uses: actions/cache@v6
         with:
           path: ${{ env.XDG_CACHE_HOME }}
-          key: ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock', '**/with-fuseki.sh', '**/*requirements*.txt', '**/*requirements*.in') }}
+          key: ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/uv.lock', '**/with-fuseki.sh', '**/*requirements*.txt', '**/*requirements*.in') }}
           restore-keys: |
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-
@@ -145,9 +142,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install poetry
-        run: |
-          pip install -r devtools/requirements-poetry.in
+      - uses: astral-sh/setup-uv@v7
       - name: Install Task
         uses: go-task/setup-task@v2
         with:
@@ -166,12 +161,10 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
-      - name: Install poetry
-        run: |
-          pip install -r devtools/requirements-poetry.in
+      - uses: astral-sh/setup-uv@v7
       - name: Install coverage tools
         run: |
-          poetry install --no-root --only=coverage
+          uv sync --frozen --only-group coverage --no-install-project
       - name: Download coverage data
         uses: actions/download-artifact@v8
         with:
@@ -179,8 +172,8 @@ jobs:
           path: .coverage-artifacts
       - name: Combine and validate coverage data
         run: |
-          poetry run coverage combine --keep .coverage-artifacts/*
-          poetry run coverage report
+          uv run --frozen --only-group coverage coverage combine --keep .coverage-artifacts/*
+          uv run --frozen --only-group coverage coverage report
       - name: Upload coverage to Coveralls
         uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
         env:
@@ -191,4 +184,4 @@ jobs:
           max_attempts: 4
           retry_wait_seconds: 15
           retry_on: error
-          command: poetry run coveralls
+          command: uv run --frozen --only-group coverage coveralls

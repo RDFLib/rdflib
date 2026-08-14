@@ -71,9 +71,11 @@ fuseki_pid_tdb=""
 fuseki_log_normal=""
 fuseki_log_tdb=""
 
+xrc=1
+
 exit_handler() {
     1>&2 declare -p fuseki_pid_normal fuseki_pid_tdb
-    if [ -z "${FUSEKI_SKIP_SHUTDOWN}" ]
+    if [ -z "${FUSEKI_SKIP_SHUTDOWN:-}" ]
     then
         if [ -n "${fuseki_pid_normal}" ]
         then
@@ -88,19 +90,25 @@ exit_handler() {
     fi
 
     local -a dump_cmd
-    if [ -n "${FUSEKI_DUMP_FULL_LOGS}" ]
+    if [ -n "${FUSEKI_DUMP_FULL_LOGS:-}" ]
     then
         dump_cmd=(cat)
     else
         dump_cmd=(tail -15)
     fi
 
-    if [ -n "${FUSEKI_DUMP_LOGS}" ] || [ "${xrc}" != "0" ]
+    if [ -n "${FUSEKI_DUMP_LOGS:-}" ] || [ "${xrc}" != "0" ]
     then
-        1>&2 echo "dumping fuseki_log_normal=${fuseki_log_normal}"
-        "${dump_cmd[@]}" "${fuseki_log_normal}" || :
-        1>&2 echo "dumping fuseki_log_tdb=${fuseki_log_tdb}"
-        "${dump_cmd[@]}"  "${fuseki_log_tdb}" || :
+        if [ -n "${fuseki_log_normal}" ]
+        then
+            1>&2 echo "dumping fuseki_log_normal=${fuseki_log_normal}"
+            "${dump_cmd[@]}" "${fuseki_log_normal}" || :
+        fi
+        if [ -n "${fuseki_log_tdb}" ]
+        then
+            1>&2 echo "dumping fuseki_log_tdb=${fuseki_log_tdb}"
+            "${dump_cmd[@]}" "${fuseki_log_tdb}" || :
+        fi
     fi
 }
 
@@ -110,28 +118,35 @@ main() {
     # : ${FUSEKI_PORT:=3030}
     : "${XDG_CACHE_HOME:=${HOME}/.cache}"
 
-    local jena_uri="https://archive.apache.org/dist/jena/binaries/apache-jena-fuseki-3.17.0.tar.gz"
-    local jena_sha512="2b92f3304743da335f648c1be7b5d7c3a94725ed0a9b5123362c89a50986690114dcef0813e328126b14240f321f740b608cc353417e485c9235476f059bd380"
-    local jena_archive_basename
-    jena_archive_basename="$(basename "${jena_uri}")"
+    local jena_archive_basename="apache-jena-fuseki-6.1.0.tar.gz"
+    local jena_uri="https://dlcdn.apache.org/jena/binaries/${jena_archive_basename}"
+    local jena_archive_uri="https://archive.apache.org/dist/jena/binaries/${jena_archive_basename}"
+    local jena_sha512="75457f45d14397876a41ed51abe7ae5d2f1e708dfe1315765f858158bc5c6813bc036ec1539ddc4dffd26201f5cc31fadec299ca5c3dc2548b723513ed31d326"
     local jena_archive="${XDG_CACHE_HOME}/${jena_archive_basename}"
+    local jena_checksum="${jena_archive}.sha512"
     local jena_stem="${jena_archive_basename%%.tar.gz}"
 
-    1>&2 declare -p jena_uri jena_archive XDG_CACHE_HOME LOCALSTATEDIR
+    1>&2 declare -p jena_uri jena_archive_uri jena_archive XDG_CACHE_HOME LOCALSTATEDIR
     if ! [ -e "${jena_archive}" ]
     then
         mkdir -vp "${XDG_CACHE_HOME}"
-        curl "${jena_uri}" -o "${jena_archive}"
+        curl --fail --location --retry 3 --retry-delay 2 \
+            "${jena_uri}" -o "${jena_archive}" || {
+            1>&2 echo "WARNING: CDN download failed; trying Apache archive"
+            curl --fail --location --retry 3 --retry-delay 2 \
+                "${jena_archive_uri}" -o "${jena_archive}"
+        }
     fi
-    printf "%s  %s\n" "${jena_sha512}" "${jena_archive_basename}" > "${jena_archive}.sha512"
-    (cd "${XDG_CACHE_HOME}" && shasum -c -a512 "${jena_archive_basename}.sha512") || {
+    printf "%s  %s\n" "${jena_sha512}" "${jena_archive_basename}" > "${jena_checksum}"
+    (cd "${XDG_CACHE_HOME}" && shasum -c -a 512 "$(basename "${jena_checksum}")") || {
         echo 1>&2 "ERROR: digest verification failed"
-        rm -rv "${jena_archive}" "${jena_archive}.sha512"
+        rm -v "${jena_archive}" "${jena_checksum}"
+        exit 1
     }
     mkdir -vp "${LOCALSTATEDIR}"
     tar -zxf "${jena_archive}" -C "${LOCALSTATEDIR}"
 
-    local FUSEKI_HOME=${LOCALSTATEDIR}/${jena_stem}
+    local FUSEKI_HOME="${LOCALSTATEDIR}/${jena_stem}"
     1>&2 declare -p FUSEKI_HOME
     export FUSEKI_HOME
 
@@ -161,9 +176,28 @@ main() {
     echo "${fuseki_pid_normal}" > "${fuseki_pidfile_normal}"
 
     1>&2 echo "INFO: starting fuseki: tdb"
+    mkdir -vp "${fuseki_base_tdb}/database"
+    local fuseki_config_tdb="${fuseki_base_tdb}/config.ttl"
+    printf '%s\n' \
+        'PREFIX fuseki: <http://jena.apache.org/fuseki#>' \
+        'PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>' \
+        'PREFIX tdb2:   <http://jena.apache.org/2016/tdb#>' \
+        '' \
+        '<#service> rdf:type fuseki:Service ;' \
+        '    fuseki:name "db" ;' \
+        '    fuseki:serviceQuery "query" ;' \
+        '    fuseki:serviceQuery "sparql" ;' \
+        '    fuseki:serviceUpdate "update" ;' \
+        '    fuseki:serviceReadWriteGraphStore "data" ;' \
+        '    fuseki:dataset <#dataset> .' \
+        '' \
+        '<#dataset> rdf:type tdb2:DatasetTDB2 ;' \
+        "    tdb2:location \"${fuseki_base_tdb}/database\" ;" \
+        '    tdb2:unionDefaultGraph true .' \
+        > "${fuseki_config_tdb}"
     FUSEKI_BASE="${fuseki_base_tdb}" bash "${FUSEKI_HOME}/fuseki-server" \
         --port "${fuseki_port_tdb}" --debug \
-        --update --memTDB --set tdb:unionDefaultGraph=true /db &>"${fuseki_log_tdb}" &
+        --conf "${fuseki_config_tdb}" &>"${fuseki_log_tdb}" &
     fuseki_pid_tdb="${!}"
     echo "${fuseki_pid_tdb}" > "${fuseki_pidfile_tdb}"
 
@@ -179,9 +213,20 @@ main() {
 
     1>&2 echo "running: ${args[*]}"
 
-    local xrc=1
-    "${args[@]}"; xrc="${?}"
-    exit "${xrc}"
+    if [ "${#args[@]}" -eq 0 ]
+    then
+        1>&2 echo "ERROR: no command supplied"
+        xrc=2
+        return "${xrc}"
+    fi
+
+    set +e
+    "${args[@]}"
+    xrc="${?}"
+    set -e
+
+    return "${xrc}"
 }
 
 main "${@}"
+exit "${xrc}"

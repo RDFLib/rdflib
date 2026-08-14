@@ -589,7 +589,7 @@ else:
     # (these cannot be directly in terms.py
     #  as it would introduce circular imports)
 
-    URIRef.__or__ = path_alternative
+    URIRef.__or__ = path_alternative  # type: ignore[method-assign, assignment]
     # ignore typing here as URIRef inherits from str,
     # which has an incompatible definition of __mul__.
     URIRef.__mul__ = mul_path  # type: ignore
@@ -602,5 +602,5 @@ else:
     Path.__neg__ = neg_path  # type: ignore[assignment]
     # type error: Incompatible types in assignment (expression has type "Callable[[Union[URIRef, Path], Literal['*', '+', '?']], MulPath]", variable has type "Callable[[Path, str], MulPath]")
     Path.__mul__ = mul_path  # type: ignore[assignment]
-    Path.__or__ = path_alternative
+    Path.__or__ = path_alternative  # type: ignore[method-assign, assignment]
     Path.__truediv__ = path_sequence
