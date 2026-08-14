@@ -81,12 +81,3 @@ class TestContainer:
 
     def test_q(self):
         assert self.c2.index(Literal("1000")) != 3
-
-    def test_r(self):
-        match = "rdflib.container.Container.type_of_conatiner is deprecated. Use type_of_container method instead."
-        with pytest.warns(DeprecationWarning, match=match):
-            assert self.c1.type_of_container() == self.c1.type_of_conatiner()
-        with pytest.warns(DeprecationWarning, match=match):
-            assert self.c3.type_of_container() == self.c3.type_of_conatiner()
-        with pytest.warns(DeprecationWarning, match=match):
-            assert self.c4.type_of_container() == self.c4.type_of_conatiner()
