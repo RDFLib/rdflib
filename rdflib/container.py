@@ -20,14 +20,14 @@ class Container:
     >>> from rdflib import Graph, BNode, Literal, Bag
     >>> g = Graph()
     >>> b = Bag(g, BNode(), [Literal("One"), Literal("Two"), Literal("Three")])
-    >>> print(g.serialize(format="turtle"))
-    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    >>> print(g.serialize())
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     <BLANKLINE>
-    [] a rdf:Bag ;
+    []    a rdf:Bag ;
         rdf:_1 "One" ;
         rdf:_2 "Two" ;
-        rdf:_3 "Three" .
-    <BLANKLINE>
+        rdf:_3 "Three" ;
+    .
     <BLANKLINE>
 
     >>> # print out an item using an index reference
@@ -37,15 +37,15 @@ class Container:
     >>> # add a new item
     >>> b.append(Literal("Hello")) # doctest: +ELLIPSIS
     <rdflib.container.Bag object at ...>
-    >>> print(g.serialize(format="turtle"))
-    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    >>> print(g.serialize())
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     <BLANKLINE>
-    [] a rdf:Bag ;
+    []    a rdf:Bag ;
         rdf:_1 "One" ;
         rdf:_2 "Two" ;
         rdf:_3 "Three" ;
-        rdf:_4 "Hello" .
-    <BLANKLINE>
+        rdf:_4 "Hello" ;
+    .
     <BLANKLINE>
 
     ```
