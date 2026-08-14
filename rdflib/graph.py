@@ -2164,8 +2164,14 @@ class ConjunctiveGraph(Graph):
     def default_context(self, value):
         self._default_context = value
 
-    # Added for forwards compatibility with Dataset
-    default_graph = default_context
+    @property
+    def default_graph(self) -> _ContextType:
+        """Alias of default_context for compatibility with Dataset."""
+        return self.default_context
+
+    @default_graph.setter
+    def default_graph(self, value: _ContextType) -> None:
+        self.default_context = value
 
     def __str__(self) -> str:
         pattern = (
@@ -2405,8 +2411,11 @@ class ConjunctiveGraph(Graph):
                 # type error: Statement is unreachable
                 yield self.get_context(context)  # type: ignore[unreachable]
 
-    # for forwards compatability with Dataset
-    graphs = contexts
+    def graphs(
+        self, triple: Optional[_TripleType] = None
+    ) -> Generator[_ContextType, None, None]:
+        """Alias of contexts for compatibility with Dataset."""
+        yield from self.contexts(triple)
 
     def get_graph(self, identifier: _ContextIdentifierType) -> Optional[Graph]:
         return next(
@@ -3129,10 +3138,10 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
             and graphs
             and [g for g in graphs if isinstance(g, Graph)]
         ), "graphs argument must be a list of Graphs!!"
-        self.graphs = graphs
+        self._graphs = graphs
 
     def __repr__(self) -> str:
-        return "<ReadOnlyGraphAggregate: %s graphs>" % len(self.graphs)
+        return "<ReadOnlyGraphAggregate: %s graphs>" % len(self._graphs)
 
     def destroy(self, configuration: str) -> NoReturn:
         raise ModificationException()
@@ -3146,7 +3155,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
     def open(self, configuration: str | tuple[str, str], create: bool = False) -> None:
         # TODO: is there a use case for this method?
-        for graph in self.graphs:
+        for graph in self._graphs:
             # type error: Too many arguments for "open" of "Graph"
             # type error: Argument 1 to "open" of "Graph" has incompatible type "ReadOnlyGraphAggregate"; expected "str"  [arg-type]
             # type error: Argument 2 to "open" of "Graph" has incompatible type "str"; expected "bool"  [arg-type]
@@ -3154,7 +3163,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
     # type error: Signature of "close" incompatible with supertype "Graph"
     def close(self) -> None:  # type: ignore[override]
-        for graph in self.graphs:
+        for graph in self._graphs:
             graph.close()
 
     def add(self, triple: _TripleOrOptionalQuadType) -> NoReturn:
@@ -3191,7 +3200,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         triple: _TripleSelectorType,
     ) -> Generator[_TripleOrTriplePathType, None, None]:
         s, p, o = triple
-        for graph in self.graphs:
+        for graph in self._graphs:
             if isinstance(p, Path):
                 for s, o in p.eval(self, s, o):
                     yield s, p, o
@@ -3204,7 +3213,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         if len(triple_or_quad) == 4:
             # type error: Tuple index out of range
             context = triple_or_quad[3]  # type: ignore [misc, unused-ignore]
-        for graph in self.graphs:
+        for graph in self._graphs:
             if context is None or graph.identifier == context.identifier:
                 if triple_or_quad[:3] in graph:
                     return True
@@ -3228,16 +3237,16 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
             s, p, o = triple_or_quad  # type: ignore[misc, unused-ignore]
 
         if c is not None:
-            for graph in [g for g in self.graphs if g == c]:
+            for graph in [g for g in self._graphs if g == c]:
                 for s1, p1, o1 in graph.triples((s, p, o)):
                     yield s1, p1, o1, graph
         else:
-            for graph in self.graphs:
+            for graph in self._graphs:
                 for s1, p1, o1 in graph.triples((s, p, o)):
                     yield s1, p1, o1, graph
 
     def __len__(self) -> int:
-        return sum(len(g) for g in self.graphs)
+        return sum(len(g) for g in self._graphs)
 
     def __hash__(self) -> NoReturn:
         raise UnSupportedAggregateOperation()
@@ -3248,7 +3257,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         elif isinstance(other, Graph):
             return -1
         elif isinstance(other, ReadOnlyGraphAggregate):
-            return (self.graphs > other.graphs) - (self.graphs < other.graphs)
+            return (self._graphs > other._graphs) - (self._graphs < other._graphs)
         else:
             return -1
 
@@ -3266,7 +3275,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         context: Optional[_ContextType] = None,
     ) -> Generator[_TripleType, None, None]:
         subject, predicate, object_ = triple
-        for graph in self.graphs:
+        for graph in self._graphs:
             # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Union[List[Node], Node], Union[Node, List[Node]], Union[Node, List[Node]]]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
             # type error note: unpacking discards type info
             choices = graph.triples_choices((subject, predicate, object_))  # type: ignore[arg-type]
@@ -3294,7 +3303,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
             for prefix, namespace in self.namespace_manager.namespaces():
                 yield prefix, namespace
         else:
-            for graph in self.graphs:
+            for graph in self._graphs:
                 for prefix, namespace in graph.namespaces():
                     yield prefix, namespace
 
