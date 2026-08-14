@@ -2164,10 +2164,8 @@ class ConjunctiveGraph(Graph):
     def default_context(self, value):
         self._default_context = value
 
-    @default_context.setter
-    def default_graph(self, value):
-        """Alias of default_context for compatibility with Dataset"""
-        self._default_context = value
+    # Added for forwards compatibility with Dataset
+    default_graph = default_context
 
     def __str__(self) -> str:
         pattern = (
@@ -2407,9 +2405,14 @@ class ConjunctiveGraph(Graph):
                 # type error: Statement is unreachable
                 yield self.get_context(context)  # type: ignore[unreachable]
 
-    def get_graph(self, identifier: _ContextIdentifierType) -> Union[Graph, None]:
-        """Returns the graph identified by given identifier"""
-        return [x for x in self.graphs() if x.identifier == identifier][0]
+    # for forwards compatability with Dataset
+    graphs = contexts
+
+    def get_graph(self, identifier: _ContextIdentifierType) -> Optional[Graph]:
+        return next(
+            (graph for graph in self.graphs() if graph.identifier == identifier),
+            None,
+        )
 
     def get_context(
         self,
@@ -2565,7 +2568,7 @@ class Dataset(ConjunctiveGraph):
     ...     URIRef("http://www.example.org/b"),
     ...     Literal("foo")
     ... ))  # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Dataset'>)>
+    <Dataset: 1 graphs>
 
     >>> # Create a graph in the dataset, if the graph name has already been
     >>> # used, the corresponding graph will be returned
@@ -2586,7 +2589,7 @@ class Dataset(ConjunctiveGraph):
     ...     Literal("foo-bar"),
     ...     g
     ... )) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Dataset'>)>
+    <Dataset: 2 graphs>
 
     >>> # querying triples return them all regardless of the graph
     >>> for t in ds.triples((None,None,None)):  # doctest: +SKIP
@@ -2756,7 +2759,7 @@ class Dataset(ConjunctiveGraph):
         return self
 
     def __repr__(self) -> str:
-        return "<Dataset: %s graphs>" % len(self.graphs)
+        return "<Dataset: %s graphs>" % len(list(self.graphs()))
 
     def graph(
         self,
