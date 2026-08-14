@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import warnings
 from random import randint
 from typing import Iterable, Optional
 

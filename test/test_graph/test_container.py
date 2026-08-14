@@ -1,5 +1,3 @@
-import pytest
-
 from rdflib import Graph
 from rdflib.container import Alt, Bag, Seq
 from rdflib.term import BNode, Literal

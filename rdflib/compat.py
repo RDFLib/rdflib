@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import codecs
 import re
-import warnings
 from typing import Match
 
 
