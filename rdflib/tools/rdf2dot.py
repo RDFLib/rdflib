@@ -166,15 +166,13 @@ def rdf2dot(g: Graph, stream: TextIO, opts: Dict[str, Any] = {}):
 
 
 def _help():
-    sys.stderr.write(
-        """
+    sys.stderr.write("""
 rdf2dot.py [-f <format>] files...
 Read RDF files given on STDOUT, writes a graph of the RDFS schema in DOT
 language to stdout
 -f specifies parser to use, if not given,
 
-"""
-    )
+""")
 
 
 def main():

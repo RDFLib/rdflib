@@ -65,9 +65,7 @@ def test_turtle_valid_list():
         data="""
             @prefix : <{0}> .
             :s :p (""), (0), (false) .
-            """.format(
-            ns
-        ),
+            """.format(ns),
         format="turtle",
     )
 
@@ -120,9 +118,7 @@ def test_turtle_private_list_still_uses_collection_syntax():
         data="""
             @prefix : <{0}> .
             :s :p ("a" "b" "c") .
-            """.format(
-            ns
-        ),
+            """.format(ns),
         format="turtle",
     )
     output = g.serialize(format="turtle")
@@ -188,14 +184,12 @@ def test_turtle_undeclared_prefix_when_using_base():
         )
     )
     output = g.serialize(base="https://example.com/")
-    expected = dedent(
-        """
+    expected = dedent("""
         BASE <https://example.com/>
         PREFIX ns1: <https://example.com/p/>
 
         <subject>
             ns1:predicate "object" ;
         .
-    """
-    )
+    """)
     assert output.strip() == expected.strip()

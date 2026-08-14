@@ -744,8 +744,7 @@ def test_default_serializer():
     for pre, ns in prefixes.items():
         g.bind(pre, ns)
 
-    original_turtle = dedent(
-        """
+    original_turtle = dedent("""
         @prefix eg: <http://example.com/> .
         @prefix ex: <example:> .
         @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -758,11 +757,9 @@ def test_default_serializer():
 
         ex:subject ex:predicate ex:object,
                 12 .
-        """
-    ).strip()
+        """).strip()
 
-    default_turtle = dedent(
-        """
+    default_turtle = dedent("""
         PREFIX eg: <http://example.com/>
         PREFIX ex: <example:>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -784,8 +781,7 @@ def test_default_serializer():
                 ex:object ,
                 12 ;
         .
-        """
-    ).strip()
+        """).strip()
 
     assert g.serialize(format="origturtle").strip() == original_turtle
 

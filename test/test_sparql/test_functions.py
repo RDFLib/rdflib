@@ -156,9 +156,7 @@ def test_function(expression: str, expected_result: Identifier) -> None:
     WHERE {
         BIND(???EXPRESSION_PLACEHOLDER??? AS ?o)
     }
-    """.replace(
-        "???EXPRESSION_PLACEHOLDER???", expression
-    )
+    """.replace("???EXPRESSION_PLACEHOLDER???", expression)
     result = graph.query(query_string)
     assert result.type == "CONSTRUCT"
     assert isinstance(result.graph, Graph)

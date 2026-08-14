@@ -622,7 +622,7 @@ def _iri2uri(iri: str) -> str:
     # https://datatracker.ietf.org/doc/html/rfc3305
 
     parts = urlsplit(iri)
-    (scheme, netloc, path, query, fragment) = parts
+    scheme, netloc, path, query, fragment = parts
 
     # Just support http/https, otherwise return the iri unaltered
     if scheme not in ["http", "https"]:

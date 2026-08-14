@@ -49,8 +49,7 @@ graphdb = ["httpx>=0.28.1,<0.29.0"]
 
 [dependency-groups]
 dev = [
-    "black==24.8.0",
-    "isort>=5.13.2,<6.0.0",
+    "black==26.3.1",
     "mypy==1.14.1",
     "lxml-stubs>=0.4,<0.6",
     "pip-tools>=7.4.1,<8.0.0",
@@ -164,7 +163,7 @@ ignore = [
 [tool.black]
 line-length = 88
 target-version = ['py310']
-required-version = "24.8.0"
+required-version = "26.3.1"
 include = '\.pyi?$'
 exclude = '''
 (

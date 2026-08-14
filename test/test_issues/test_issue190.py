@@ -5,8 +5,7 @@ import pytest
 from rdflib.graph import ConjunctiveGraph
 from rdflib.parser import StringInputSource
 
-prefix = textwrap.dedent(
-    """\
+prefix = textwrap.dedent("""\
     @prefix nie: <http://www.semanticdesktop.org/ontologies/2007/01/19/nie#> .
     @prefix nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#> .
     @prefix nco: <http://www.semanticdesktop.org/ontologies/2007/03/22/nco#> .
@@ -17,11 +16,9 @@ prefix = textwrap.dedent(
     @prefix dc: <http://dublincore.org/documents/2010/10/11/dces/#> .
     @prefix nmm: <http://library.gnome.org/devel/ontology/unstable/nmm-classes.html#> .
     @prefix nao: <http://www.semanticdesktop.org/ontologies/2007/08/15/nao#> .
-    """
-)
+    """)
 
-meta = textwrap.dedent(
-    """\
+meta = textwrap.dedent("""\
 a nfo:PaginatedTextDocument ;
     nie:title "SV Meldung" ;
     nco:creator [ a nco:Contact ;
@@ -34,8 +31,7 @@ a nfo:PaginatedTextDocument ;
     nie:plainTextContent "%s" .
 } } WHERE { {
 ?tag1 a nao:Tag ; nao:prefLabel "()" .
-"""
-)
+""")
 
 test_string1 = """\
 Betriebsnummer der Einzugsstelle:\nKnappschaft\n980 0000 6\nWICHTIGES DOKUMENT - SORGFÄLTIG AUFBEWAHREN!\n """

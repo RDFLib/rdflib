@@ -10,12 +10,9 @@ def test_turtle():
     g.add((mns.foo, URIRef("http://my-base.net/my-predicate"), mns.bar))
     result = g.serialize(format="origturtle").strip()
 
-    assert (
-        result
-        == """@base <http://my-base.net/> .
+    assert result == """@base <http://my-base.net/> .
 
 <http://my-namespace.net/foo> <my-predicate> <http://my-namespace.net/bar> ."""
-    )
 
 
 def test_longturtle():
@@ -23,11 +20,8 @@ def test_longturtle():
     g.add((mns.foo, URIRef("http://my-base.net/my-predicate"), mns.bar))
     result = g.serialize(canon=True).strip()
 
-    assert (
-        result
-        == """BASE <http://my-base.net/>
+    assert result == """BASE <http://my-base.net/>
 
 <http://my-namespace.net/foo>
     <my-predicate> <http://my-namespace.net/bar> ;
-."""
-    ), print(result)
+.""", print(result)

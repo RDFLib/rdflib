@@ -905,7 +905,7 @@ class Graph(Node):
         Remove any existing triples for subject and predicate before adding
         (subject, predicate, object).
         """
-        (subject, predicate, object_) = triple
+        subject, predicate, object_ = triple
         assert (
             subject is not None
         ), "s can't be None in .set([s,p,o]), as it would remove (*, p, *)"
@@ -1950,7 +1950,7 @@ class Graph(Node):
         basepath: Optional[str] = None,
     ) -> Graph:
         def do_skolemize(bnode: BNode, t: _TripleType) -> _TripleType:
-            (s, p, o) = t
+            s, p, o = t
             if s == bnode:
                 if TYPE_CHECKING:
                     assert isinstance(s, BNode)
@@ -1962,7 +1962,7 @@ class Graph(Node):
             return s, p, o
 
         def do_skolemize2(t: _TripleType) -> _TripleType:
-            (s, p, o) = t
+            s, p, o = t
             if isinstance(s, BNode):
                 s = s.skolemize(authority=authority, basepath=basepath)
             if isinstance(o, BNode):
@@ -1983,7 +1983,7 @@ class Graph(Node):
         self, new_graph: Optional[Graph] = None, uriref: Optional[URIRef] = None
     ) -> Graph:
         def do_de_skolemize(uriref: URIRef, t: _TripleType) -> _TripleType:
-            (s, p, o) = t
+            s, p, o = t
             if s == uriref:
                 if TYPE_CHECKING:
                     assert isinstance(s, URIRef)
@@ -1995,7 +1995,7 @@ class Graph(Node):
             return s, p, o
 
         def do_de_skolemize2(t: _TripleType) -> _TripleType:
-            (s, p, o) = t
+            s, p, o = t
 
             if RDFLibGenid._is_rdflib_skolem(s):
                 # type error: Argument 1 to "RDFLibGenid" has incompatible type "Node"; expected "str"
@@ -2236,10 +2236,10 @@ class ConjunctiveGraph(Graph):
         if len(triple_or_quad) == 3:
             c = self.default_graph if default else None
             # type error: Too many values to unpack (3 expected, 4 provided)
-            (s, p, o) = triple_or_quad  # type: ignore[misc, unused-ignore]
+            s, p, o = triple_or_quad  # type: ignore[misc, unused-ignore]
         elif len(triple_or_quad) == 4:
             # type error: Need more than 3 values to unpack (4 expected)
-            (s, p, o, c) = triple_or_quad  # type: ignore[misc, unused-ignore]
+            s, p, o, c = triple_or_quad  # type: ignore[misc, unused-ignore]
             c = self._graph(c)
         return s, p, o, c
 

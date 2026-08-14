@@ -322,7 +322,7 @@ class BerkeleyDB(Store):
         """\
         Add a triple to the store of triples.
         """
-        (subject, predicate, object) = triple
+        subject, predicate, object = triple
         assert self.__open, "The Store must be open."
         assert context != self, "Can not add triple directly to store"
         Store.add(self, (subject, predicate, object), context, quoted)

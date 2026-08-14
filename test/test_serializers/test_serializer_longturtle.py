@@ -201,16 +201,14 @@ def test_longturtle_undeclared_prefix_when_using_base():
         )
     )
     output = g.serialize(base="https://example.com/")
-    expected = dedent(
-        """
+    expected = dedent("""
         BASE <https://example.com/>
         PREFIX ns1: <https://example.com/p/>
 
         <subject>
             ns1:predicate "object" ;
         .
-    """
-    )
+    """)
     assert output.strip() == expected.strip()
 
 

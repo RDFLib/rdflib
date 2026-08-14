@@ -38,21 +38,21 @@ class ConcurrentStore:
         self.__pending_adds = []
 
     def add(self, triple):
-        (s, p, o) = triple
+        s, p, o = triple
         if self.__visit_count == 0:
             self.store.add((s, p, o))
         else:
             self.__pending_adds.append((s, p, o))
 
     def remove(self, triple):
-        (s, p, o) = triple
+        s, p, o = triple
         if self.__visit_count == 0:
             self.store.remove((s, p, o))
         else:
             self.__pending_removes.append((s, p, o))
 
     def triples(self, triple):
-        (su, pr, ob) = triple
+        su, pr, ob = triple
         g = self.store.triples((su, pr, ob))
         pending_removes = self.__pending_removes
         self.__begin_read()
@@ -84,7 +84,7 @@ class ConcurrentStore:
         if self.__visit_count == 0:
             pending_removes = self.__pending_removes
             while pending_removes:
-                (s, p, o) = pending_removes.pop()
+                s, p, o = pending_removes.pop()
                 try:
                     self.store.remove((s, p, o))
                 except:  # noqa: E722
@@ -92,6 +92,6 @@ class ConcurrentStore:
                     print(s, p, o, "Not in store to remove")
             pending_adds = self.__pending_adds
             while pending_adds:
-                (s, p, o) = pending_adds.pop()
+                s, p, o = pending_adds.pop()
                 self.store.add((s, p, o))
         lock.release()

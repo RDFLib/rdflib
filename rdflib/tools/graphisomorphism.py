@@ -88,7 +88,7 @@ def main():
         + "or 'rdfa'.  The default is %default",
     )
 
-    (options, args) = op.parse_args()
+    options, args = op.parse_args()
 
     graphs = []
     graph2FName = {}  # noqa: N806
