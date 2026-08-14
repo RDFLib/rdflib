@@ -1,19 +1,7 @@
 """
-LongTurtle RDF graph serializer for RDFLib.
-See http://www.w3.org/TeamSubmission/turtle/ for syntax specification.
+Turtle RDF graph serializer for RDFLib.
+See https://www.w3.org/TR/turtle/ for the Turtle 1.1 syntax specification.
 
-This variant, longturtle as opposed to just turtle, makes some small format changes
-to turtle - the original turtle serializer. It:
-
-* uses PREFIX instead of @prefix
-* uses BASE instead of @base
-* adds a new line at RDF.type, or 'a'
-* adds a newline and an indent for all triples with more than one object (object list)
-* adds a new line and ';' for the last triple in a set with '.'
-    on the start of the next line
-* uses default encoding (encode()) is used instead of "latin-1"
-
-- Nicholas Car, 2023
 """
 
 from __future__ import annotations
@@ -210,7 +198,7 @@ class TurtleSerializer(RecursiveSerializer):
 
     def getQName(self, uri, gen_prefix=True):
         warnings.warn(
-            "LongTurtleSerializer.getQName is deprecated, use LongTurtleSerializer.get_pname instead.",
+            "TurtleSerializer.getQName is deprecated, use TurtleSerializer.get_pname instead.",
             DeprecationWarning,
             stacklevel=2,
         )
