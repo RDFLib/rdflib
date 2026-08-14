@@ -9,7 +9,6 @@ import http.client
 import logging
 import mimetypes
 import string
-import urllib.request
 from dataclasses import dataclass
 from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
 from typing import Callable, Optional, Set, Tuple, Type, TypeVar, Union
@@ -33,13 +32,13 @@ def _windows_url2pathname(uri_path: str) -> str:
 
     uri_path = uri_path.replace(":", "|")
     if "|" not in uri_path:
-        return urllib.request.url2pathname(uri_path).replace("/", "\\")
+        return unquote(uri_path).replace("/", "\\")
 
     components = uri_path.split("|")
     if len(components) != 2 or components[0][-1] not in string.ascii_letters:
         raise OSError(f"Bad URL: {uri_path}")
     drive = components[0][-1].upper()
-    tail = urllib.request.url2pathname(components[1]).replace("/", "\\")
+    tail = unquote(components[1]).replace("/", "\\")
     return f"{drive}:{tail}"
 
 
@@ -66,7 +65,7 @@ def file_uri_to_path(
         if is_windows_path:
             url2pathname = _windows_url2pathname
         else:
-            url2pathname = urllib.request.url2pathname
+            url2pathname = unquote
     pathname = url2pathname(file_uri_parsed.path)
     result = path_class(pathname)
     return result
