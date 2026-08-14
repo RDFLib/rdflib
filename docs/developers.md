@@ -336,6 +336,8 @@ Please do *not* commit tests you know will fail, even if you're just pointing ou
 
 ## Compatibility
 
+RDFLib 8.0.0 release and later only support Python 3.10 and newer.
+
 RDFLib 7.0.0 release and later only support Python 3.8.1 and newer.
 
 RDFLib 6.0.0 release and later only support Python 3.7 and newer.
