@@ -21,7 +21,7 @@ class TrigSerializer(TurtleSerializer):
     """TriG RDF graph serializer."""
 
     short_name = "trig"
-    indentString = 4 * " "
+    indent_string = 4 * " "
 
     def __init__(self, store: Union[Graph, Dataset]):
         self.default_graph: Optional[Node]
@@ -84,7 +84,7 @@ class TrigSerializer(TurtleSerializer):
 
         self.preprocess()
 
-        self.startDocument()
+        self.start_document()
 
         firstTime = True
         for store, (ordered_subjects, subjects) in self._graphs.items():
@@ -119,5 +119,5 @@ class TrigSerializer(TurtleSerializer):
             self.depth -= 1
             self.write("}\n")
 
-        self.endDocument()
+        self.end_document()
         stream.write("\n".encode("latin-1"))

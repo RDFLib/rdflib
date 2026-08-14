@@ -239,8 +239,8 @@ def test_longturtle_shared_list_tail_round_trips():
     g.add((ns.s2, ns.p, tail))
 
     serializer = TurtleSerializer(g)
-    assert serializer.isValidList(head) is False
-    assert serializer.isValidList(tail) is False
+    assert serializer.is_valid_list(head) is False
+    assert serializer.is_valid_list(tail) is False
 
     ttl_dump = g.serialize(format="origturtle")
     g2 = Graph()

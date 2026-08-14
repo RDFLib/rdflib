@@ -74,7 +74,7 @@ def test_turtle_valid_list():
     turtle_serializer = TurtleSerializer(g)
 
     for o in g.objects(ns.s, ns.p):
-        assert turtle_serializer.isValidList(o)
+        assert turtle_serializer.is_valid_list(o)
 
 
 def test_turtle_shared_list_tail_round_trips():
@@ -102,8 +102,8 @@ def test_turtle_shared_list_tail_round_trips():
 
     turtle_serializer = TurtleSerializer(g)
     # The shared tail must not be considered part of a safely-inlineable list.
-    assert turtle_serializer.isValidList(head) is False
-    assert turtle_serializer.isValidList(tail) is False
+    assert turtle_serializer.is_valid_list(head) is False
+    assert turtle_serializer.is_valid_list(tail) is False
 
     ttl_dump = g.serialize(format="turtle")
     g2 = Graph()

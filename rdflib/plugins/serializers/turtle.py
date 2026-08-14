@@ -36,7 +36,7 @@ class TurtleSerializer(RecursiveSerializer):
     """
 
     short_name = "turtle"
-    indentString = "    "
+    indent_string = "    "
 
     def __init__(self, store):
         self._ns_rewrite = {}
@@ -123,7 +123,7 @@ class TurtleSerializer(RecursiveSerializer):
         self.preprocess()
         subjects_list = self.order_subjects()
 
-        self.startDocument()
+        self.start_document()
 
         firstTime = True
         for subject in subjects_list:
@@ -134,7 +134,7 @@ class TurtleSerializer(RecursiveSerializer):
             if self.statement(subject) and not firstTime:
                 self.write("\n")
 
-        self.endDocument()
+        self.end_document()
 
         self.base = None
 
@@ -196,7 +196,7 @@ class TurtleSerializer(RecursiveSerializer):
 
         return "%s:%s" % (prefix, local)
 
-    def getQName(self, uri, gen_prefix=True):
+    def get_q_name(self, uri, gen_prefix=True):
         warnings.warn(
             "TurtleSerializer.getQName is deprecated, use TurtleSerializer.get_pname instead.",
             DeprecationWarning,
@@ -204,7 +204,7 @@ class TurtleSerializer(RecursiveSerializer):
         )
         return self.get_pname(uri, gen_prefix)
 
-    def startDocument(self):
+    def start_document(self):
         self._started = True
         ns_list = sorted(self.namespaces.items())
 
@@ -215,7 +215,7 @@ class TurtleSerializer(RecursiveSerializer):
         if ns_list and self._spacious:
             self.write("\n")
 
-    def endDocument(self):
+    def end_document(self):
         if self._spacious:
             self.write("\n")
 
@@ -227,7 +227,7 @@ class TurtleSerializer(RecursiveSerializer):
         self.write("\n" + self.indent())
         self.path(subject, SUBJECT)
         self.write("\n" + self.indent())
-        self.predicateList(subject)
+        self.predicate_list(subject)
         self.write("\n.")
         return True
 
@@ -235,7 +235,7 @@ class TurtleSerializer(RecursiveSerializer):
         if (self._references[subject] > 0) or not isinstance(subject, BNode):
             return False
         self.write("\n" + self.indent() + "[]")
-        self.predicateList(subject, newline=False)
+        self.predicate_list(subject, newline=False)
         self.write("\n.")
         return True
 
@@ -279,25 +279,25 @@ class TurtleSerializer(RecursiveSerializer):
         ):
             return False
 
-        if self.isValidList(node):
+        if self.is_valid_list(node):
             # this is a list
             self.depth += 2
             self.write(" (\n")
             self.depth -= 2
-            self.doList(node)
+            self.do_list(node)
             self.write("\n" + self.indent() + ")")
         else:
             # this is a Blank Node
             self.subject_done(node)
             self.write("\n" + self.indent(1) + "[\n")
             self.depth += 1
-            self.predicateList(node)
+            self.predicate_list(node)
             self.depth -= 1
             self.write("\n" + self.indent(1) + "]")
 
         return True
 
-    def isValidList(self, l_):
+    def is_valid_list(self, l_):
         """
         Checks if l is a valid RDF list, i.e. no nodes have other properties,
         and no node in the list (including the head) is the object of more
@@ -323,7 +323,7 @@ class TurtleSerializer(RecursiveSerializer):
             l_ = self.store.value(l_, RDF.rest)
         return True
 
-    def doList(self, l_):
+    def do_list(self, l_):
         i = 0
         while l_:
             item = self.store.value(l_, RDF.first)
@@ -337,24 +337,24 @@ class TurtleSerializer(RecursiveSerializer):
             l_ = self.store.value(l_, RDF.rest)
             i += 1
 
-    def predicateList(self, subject, newline=False):
+    def predicate_list(self, subject, newline=False):
         properties = self.build_predicate_hash(subject)
         propList = self.sort_properties(properties)
         if len(propList) == 0:
             return
         self.write(self.indent(1))
         self.verb(propList[0], newline=True)
-        self.objectList(properties[propList[0]])
+        self.object_list(properties[propList[0]])
         for predicate in propList[1:]:
             self.write(" ;\n" + self.indent(1))
             self.verb(predicate, newline=True)
-            self.objectList(properties[predicate])
+            self.object_list(properties[predicate])
         self.write(" ;")
 
     def verb(self, node, newline=False):
         self.path(node, VERB, newline)
 
-    def objectList(self, objects):
+    def object_list(self, objects):
         count = len(objects)
         if count == 0:
             return
