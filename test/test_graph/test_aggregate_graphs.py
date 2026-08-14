@@ -111,8 +111,8 @@ def test_aggregate2():
     g = Dataset(store=mem_store, default_union=True)
     assert g is not None
     assert len(list(g.quads((None, None, None, None)))) == 11
-    assert len(list(g.contexts())) == 5
-    logger.debug(list(g.contexts()))
+    assert len(list(g.graphs())) == 5
+    logger.debug(list(g.graphs()))
     assert (
         len(list(g.quads((None, None, None, URIRef("http://example.com/graph2"))))) == 4
     )

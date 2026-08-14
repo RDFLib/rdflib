@@ -229,15 +229,7 @@ def test_dataset_iadd():
 
     for graph in ds.graphs():
         print(graph.identifier, len(graph))
-    # print("====")
-    # print(expected_default_graph.serialize())
-    # print("====")
-    # print(ds.default_graph.serialize())
-    # print("====")
-    print(ds.serialize(format="trig"))
-    print("====")
 
-    return
     assert isomorphic(expected_default_graph, ds.default_graph)
     assert isomorphic(
         expected_graph1, ds.get_graph(URIRef("https://example.com/graph"))
