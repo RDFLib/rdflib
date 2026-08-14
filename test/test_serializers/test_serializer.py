@@ -735,9 +735,7 @@ def test_default_serializer():
         )
     )
     g.add((EGURN.subject, EGSCHEME.predicate, EGSCHEME.subject))
-    g.add(
-        (EGSCHEME.object, EGDC.predicate, Literal("XSD string", datatype=XSD.string))
-    )
+    g.add((EGSCHEME.object, EGDC.predicate, Literal("XSD string", datatype=XSD.string)))
 
     prefixes = {
         "eg": "http://example.com/",

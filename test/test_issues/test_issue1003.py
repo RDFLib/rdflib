@@ -63,7 +63,9 @@ def test_scenarios_3(get_graph):
     g3 = Graph()
     g3 += g
     # @base should be in output, from serialization (two)
-    assert "@base <http://two.org/> ." in g3.serialize(format="origturtle", base=base_two)
+    assert "@base <http://two.org/> ." in g3.serialize(
+        format="origturtle", base=base_two
+    )
 
 
 # 4. base one set for graph, base two set for serialization, Graph one overrides
@@ -72,7 +74,9 @@ def test_scenarios_4(get_graph):
     g4 = Graph(base=base_one)
     g4 += g
     # @base should be in output, from graph (one)
-    assert "@base <http://two.org/> ." in g4.serialize(format="origturtle", base=base_two)
+    assert "@base <http://two.org/> ." in g4.serialize(
+        format="origturtle", base=base_two
+    )
     # just checking that the serialization setting (two) hasn't snuck through
     assert "@base <http://one.org/> ." not in g4.serialize(
         format="origturtle", base=base_two
@@ -85,7 +89,9 @@ def test_scenarios_5(get_graph):
     g5 = Graph()
     g5 += g
     # @base should be in output, from serialization (two)
-    assert "@base <http://two.org/> ." in g5.serialize(format="origturtle", base=base_two)
+    assert "@base <http://two.org/> ." in g5.serialize(
+        format="origturtle", base=base_two
+    )
 
     # checking for side affects - no base now set for this serialization
     # @base should not be in output
