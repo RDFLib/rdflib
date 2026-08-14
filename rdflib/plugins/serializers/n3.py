@@ -60,7 +60,7 @@ class N3Serializer(OrigTurtleSerializer):
 
     def get_q_name(self, uri, gen_prefix=True):
         warnings.warn(
-            "N3Serializer.getQName is deprecated, use N3Serializer.get_pname instead.",
+            "N3Serializer.get_q_name is deprecated, use N3Serializer.get_pname instead.",
             DeprecationWarning,
             stacklevel=2,
         )
