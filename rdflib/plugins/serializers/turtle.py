@@ -47,7 +47,7 @@ class TurtleSerializer(RecursiveSerializer):
         self.stream = None
         self._spacious: bool = _SPACIOUS_OUTPUT
 
-    def addNamespace(self, prefix, namespace):
+    def add_namespace(self, prefix, namespace):
         # Turtle does not support prefixes that start with _
         # if they occur in the graph, rewrite to p_blah
         # this is more complicated since we need to make sure p_blah
@@ -68,7 +68,7 @@ class TurtleSerializer(RecursiveSerializer):
 
             prefix = self._ns_rewrite.get(prefix, prefix)
 
-        super(TurtleSerializer, self).addNamespace(prefix, namespace)
+        super(TurtleSerializer, self).add_namespace(prefix, namespace)
         return prefix
 
     def canonize(self):
@@ -121,13 +121,13 @@ class TurtleSerializer(RecursiveSerializer):
             self._spacious = spacious
 
         self.preprocess()
-        subjects_list = self.orderSubjects()
+        subjects_list = self.order_subjects()
 
         self.startDocument()
 
         firstTime = True
         for subject in subjects_list:
-            if self.isDone(subject):
+            if self.is_done(subject):
                 continue
             if firstTime:
                 firstTime = False
@@ -138,8 +138,8 @@ class TurtleSerializer(RecursiveSerializer):
 
         self.base = None
 
-    def preprocessTriple(self, triple: _TripleType) -> None:
-        super(TurtleSerializer, self).preprocessTriple(triple)
+    def preprocess_triple(self, triple: _TripleType) -> None:
+        super(TurtleSerializer, self).preprocess_triple(triple)
         for i, node in enumerate(triple):
             if i == VERB:
                 if node in self.keywords:
@@ -192,7 +192,7 @@ class TurtleSerializer(RecursiveSerializer):
         if local.endswith("."):
             return None
 
-        prefix = self.addNamespace(prefix, namespace)
+        prefix = self.add_namespace(prefix, namespace)
 
         return "%s:%s" % (prefix, local)
 
@@ -220,7 +220,7 @@ class TurtleSerializer(RecursiveSerializer):
             self.write("\n")
 
     def statement(self, subject):
-        self.subjectDone(subject)
+        self.subject_done(subject)
         return self.s_squared(subject) or self.s_default(subject)
 
     def s_default(self, subject):
@@ -288,7 +288,7 @@ class TurtleSerializer(RecursiveSerializer):
             self.write("\n" + self.indent() + ")")
         else:
             # this is a Blank Node
-            self.subjectDone(node)
+            self.subject_done(node)
             self.write("\n" + self.indent(1) + "[\n")
             self.depth += 1
             self.predicateList(node)
@@ -333,13 +333,13 @@ class TurtleSerializer(RecursiveSerializer):
                 else:
                     self.write("\n" + self.indent(1))
                 self.path(item, OBJECT, newline=True)
-                self.subjectDone(l_)
+                self.subject_done(l_)
             l_ = self.store.value(l_, RDF.rest)
             i += 1
 
     def predicateList(self, subject, newline=False):
-        properties = self.buildPredicateHash(subject)
-        propList = self.sortProperties(properties)
+        properties = self.build_predicate_hash(subject)
+        propList = self.sort_properties(properties)
         if len(propList) == 0:
             return
         self.write(self.indent(1))

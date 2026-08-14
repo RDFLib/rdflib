@@ -6,8 +6,8 @@ import warnings
 
 from rdflib.graph import Graph
 from rdflib.namespace import OWL, Namespace
-from rdflib.plugins.serializers.turtle import OBJECT, SUBJECT
 from rdflib.plugins.serializers.origturtle import OrigTurtleSerializer
+from rdflib.plugins.serializers.turtle import OBJECT, SUBJECT
 
 __all__ = ["N3Serializer"]
 
@@ -28,9 +28,9 @@ class N3Serializer(OrigTurtleSerializer):
         super(N3Serializer, self).reset()
         self._stores = {}
 
-    def endDocument(self):  # noqa: N802
+    def end_document(self):
         if not self.parent:
-            super(N3Serializer, self).endDocument()
+            super(N3Serializer, self).end_document()
 
     def indent(self, modifier=0):
         indent = super(N3Serializer, self).indent(modifier)
@@ -38,17 +38,17 @@ class N3Serializer(OrigTurtleSerializer):
             indent += self.parent.indent()  # modifier)
         return indent
 
-    def preprocessTriple(self, triple):  # noqa: N802
-        super(N3Serializer, self).preprocessTriple(triple)
+    def preprocess_triple(self, triple):
+        super(N3Serializer, self).preprocess_triple(triple)
         if isinstance(triple[0], Graph):
             for t in triple[0]:
-                self.preprocessTriple(t)
+                self.preprocess_triple(t)
         if isinstance(triple[1], Graph):
             for t in triple[1]:
-                self.preprocessTriple(t)
+                self.preprocess_triple(t)
         if isinstance(triple[2], Graph):
             for t in triple[2]:
-                self.preprocessTriple(t)
+                self.preprocess_triple(t)
 
     def get_pname(self, uri, gen_prefix=True):
         qname = None
@@ -58,7 +58,7 @@ class N3Serializer(OrigTurtleSerializer):
             qname = super(N3Serializer, self).get_pname(uri, gen_prefix)
         return qname
 
-    def getQName(self, uri, gen_prefix=True):  # noqa: N802
+    def get_q_name(self, uri, gen_prefix=True):
         warnings.warn(
             "N3Serializer.getQName is deprecated, use N3Serializer.get_pname instead.",
             DeprecationWarning,
@@ -67,8 +67,8 @@ class N3Serializer(OrigTurtleSerializer):
         return self.get_pname(uri, gen_prefix)
 
     def statement(self, subject):
-        self.subjectDone(subject)
-        properties = self.buildPredicateHash(subject)
+        self.subject_done(subject)
+        properties = self.build_predicate_hash(subject)
         if len(properties) == 0:
             return False
         return self.s_clause(subject) or super(N3Serializer, self).statement(subject)
@@ -81,7 +81,7 @@ class N3Serializer(OrigTurtleSerializer):
         if isinstance(subject, Graph):
             self.write("\n" + self.indent())
             self.p_clause(subject, SUBJECT)
-            self.predicateList(subject)
+            self.predicate_list(subject)
             self.write(" .")
             return True
         else:
@@ -89,7 +89,7 @@ class N3Serializer(OrigTurtleSerializer):
 
     def p_clause(self, node, position):
         if isinstance(node, Graph):
-            self.subjectDone(node)
+            self.subject_done(node)
             if position is OBJECT:
                 self.write(" ")
             self.write("{")

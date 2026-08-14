@@ -9,6 +9,7 @@ from contextlib import ExitStack
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path, PosixPath, PurePath
+from textwrap import dedent
 from typing import (
     IO,
     Callable,
@@ -35,7 +36,6 @@ from rdflib.serializer import Serializer
 from test.utils import GraphHelper, get_unique_plugins
 from test.utils.destination import DestinationType, DestParmType, DestRef
 from test.utils.namespace import EGDC, EGSCHEME, EGURN
-from textwrap import dedent
 
 
 @pytest.mark.parametrize(

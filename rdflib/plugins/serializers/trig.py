@@ -49,12 +49,12 @@ class TrigSerializer(TurtleSerializer):
             self._subjects = {}
 
             for triple in context:
-                self.preprocessTriple(triple)
+                self.preprocess_triple(triple)
 
             for subject in self._subjects.keys():
                 self._references[subject] += 1
 
-            self._graphs[context] = (self.orderSubjects(), self._subjects)
+            self._graphs[context] = (self.order_subjects(), self._subjects)
 
     def reset(self) -> None:
         super(TrigSerializer, self).reset()
@@ -110,7 +110,7 @@ class TrigSerializer(TurtleSerializer):
 
             self.depth += 1
             for subject in ordered_subjects:
-                if self.isDone(subject):
+                if self.is_done(subject):
                     continue
                 if firstTime:
                     firstTime = False

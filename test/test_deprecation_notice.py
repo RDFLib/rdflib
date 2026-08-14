@@ -62,6 +62,6 @@ def test_serializer_getqname_method(
     serializer = serializer_cls(graph)
 
     with pytest.warns(DeprecationWarning, match=warning_message):
-        qname = serializer.getQName(URIRef("http://example.org/value"))
+        qname = serializer.get_q_name(URIRef("http://example.org/value"))
 
     assert qname == "ex:value"
