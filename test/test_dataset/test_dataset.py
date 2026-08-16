@@ -255,6 +255,12 @@ def test_iter(get_dataset):
                 (TAREK, LIKES, PIZZA, CONTEXT2),
             },
         ),
+        (
+            DATASET_DEFAULT_GRAPH_ID,
+            {
+                (TAREK, LIKES, CHEESE, DATASET_DEFAULT_GRAPH_ID),
+            },
+        ),
     ],
 )
 def test_quads_restricted_to_requested_graph(get_dataset, graph_name, expected_quads):
@@ -264,6 +270,7 @@ def test_quads_restricted_to_requested_graph(get_dataset, graph_name, expected_q
     d.add((TAREK, LIKES, PIZZA, CONTEXT1))
     d.add((TAREK, LIKES, CHEESE, CONTEXT1))
     d.add((TAREK, LIKES, PIZZA, CONTEXT2))
+    d.add((TAREK, LIKES, CHEESE))
 
     quads = set(d.quads((None, None, None, graph_name)))
 
