@@ -109,7 +109,8 @@ class ContextTestCase(unittest.TestCase):
         # add to context 1
         graph = Graph(self.graph.store, self.c1)
         graph.add(triple)
-        self.assertEqual(len(self.graph), len(graph))
+        self.assertEqual(len(self.graph), 4)
+        self.assertEqual(len(graph), 2)
 
     def test_add(self):
         self.add_stuff()
@@ -141,11 +142,11 @@ class ContextTestCase(unittest.TestCase):
         self.add_stuff_in_multiple_contexts()
 
         # add_stuff_in_multiple_contexts is adding the same triple to
-        # three different contexts. So it's only + 1
-        self.assertEqual(len(self.graph), old_len + 1)
+        # three different contexts. Each context contributes one quad.
+        self.assertEqual(len(self.graph), old_len + 3)
 
         graph = Graph(self.graph.store, self.c1)
-        self.assertEqual(len(graph), old_len + 1)
+        self.assertEqual(len(graph), 1)
 
     def test_remove_in_multiple_contexts(self):
         c1 = self.c1

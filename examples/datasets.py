@@ -201,8 +201,8 @@ http://example.com/subject-z, http://example.com/predicate-z, Triple Z, http://e
 http://example.com/subject-z, http://example.com/predicate-z, Triple Z, http://example.com/graph-2
 """
 
-# but the 'length' of the Dataset is still only 3 as only distinct triples are counted
-assert len(d) == 3
+# the 'length' of the Dataset is now 4 because each graph occurrence is counted
+assert len(d) == 4
 
 
 # Looping through triples sees the 'Z' triple only once

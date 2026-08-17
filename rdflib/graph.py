@@ -2729,6 +2729,10 @@ class Dataset(ConjunctiveGraph):
         )
         return pattern % self.store.__class__.__name__
 
+    def __len__(self) -> int:
+        """Number of quads in the dataset."""
+        return sum(1 for _ in self.quads((None, None, None, None)))
+
     # type error: Return type "Tuple[Type[Dataset], Tuple[Store, bool]]" of "__reduce__" incompatible with return type "Tuple[Type[Graph], Tuple[Store, IdentifiedNode]]" in supertype "ConjunctiveGraph"
     # type error: Return type "Tuple[Type[Dataset], Tuple[Store, bool]]" of "__reduce__" incompatible with return type "Tuple[Type[Graph], Tuple[Store, IdentifiedNode]]" in supertype "Graph"
     def __reduce__(self) -> Tuple[Type[Dataset], Tuple[Store, bool]]:  # type: ignore[override]
