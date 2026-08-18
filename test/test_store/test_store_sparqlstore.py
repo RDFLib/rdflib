@@ -12,6 +12,7 @@ import pytest
 
 from rdflib import Graph, Literal, URIRef
 from rdflib.namespace import FOAF, RDF, RDFS, XMLNS, XSD
+from rdflib.paths import ZeroOrMore
 from rdflib.plugins.stores.sparqlconnector import SPARQLConnector
 from test.utils import helper
 from test.utils.http import MethodName, MockHTTPResponse
@@ -525,3 +526,158 @@ class TestSPARQLMock:
 
         for _, uri in graph.namespaces():
             assert query.count(f"<{uri}>") == 1
+
+
+class TestSPARQLStoreEvalPath:
+    """Test that SPARQLStore.eval_path() sends a single SPARQL query
+    with the property path in the predicate position."""
+
+    httpmock: ServedBaseHTTPServerMock
+
+    def setup_method(self) -> None:
+        self.httpmock = ServedBaseHTTPServerMock()
+        self.graph = Graph(store="SPARQLStore")
+        self.graph.open(f"{self.httpmock.url}/sparql", create=True)
+
+    def teardown_method(self) -> None:
+        self.graph.close()
+        self.httpmock.stop()
+
+    def _sparql_xml_response(self, bindings: list) -> bytes:
+        """Build a SPARQL XML results response with the given bindings.
+
+        Each binding is a dict of variable name -> URI string.
+        """
+        rows = ""
+        for binding in bindings:
+            row_parts = ""
+            for var, uri in binding.items():
+                row_parts += f'<binding name="{var}"><uri>{uri}</uri></binding>'
+            rows += f"<result>{row_parts}</result>"
+
+        variables = ""
+        if bindings:
+            for var in bindings[0]:
+                variables += f'<variable name="{var}"/>'
+
+        return (
+            f'<sparql xmlns="http://www.w3.org/2005/sparql-results#">'
+            f"<head>{variables}</head>"
+            f"<results>{rows}</results>"
+            f"</sparql>"
+        ).encode()
+
+    def test_eval_path_sequence(self) -> None:
+        """eval_path with a SequencePath sends a single SPARQL query."""
+        response_body = self._sparql_xml_response(
+            [
+                {"s": "http://example.org/A", "o": "http://example.org/C"},
+            ]
+        )
+        self.httpmock.responses[MethodName.GET].append(
+            MockHTTPResponse(
+                200,
+                "OK",
+                response_body,
+                {"Content-Type": ["application/sparql-results+xml"]},
+            )
+        )
+
+        path = RDF.type / RDFS.subClassOf
+        results = list(self.graph.triples((None, path, None)))
+
+        assert len(results) == 1
+        s, p, o = results[0]
+        assert s == URIRef("http://example.org/A")
+        assert o == URIRef("http://example.org/C")
+
+        # Verify only ONE request was made (not decomposed into multiple)
+        assert self.httpmock.mocks[MethodName.GET].call_count == 1
+        req = self.httpmock.requests[MethodName.GET].pop(0)
+        query_str = req.path_query["query"][0]
+        # The query should contain the property path
+        assert "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>" in query_str
+        assert "<http://www.w3.org/2000/01/rdf-schema#subClassOf>" in query_str
+        assert "/" in query_str  # sequence path operator
+
+    def test_eval_path_with_bound_subject(self) -> None:
+        """eval_path with a bound subject sends the subject in the query."""
+        response_body = self._sparql_xml_response(
+            [
+                {"o": "http://example.org/C"},
+            ]
+        )
+        self.httpmock.responses[MethodName.GET].append(
+            MockHTTPResponse(
+                200,
+                "OK",
+                response_body,
+                {"Content-Type": ["application/sparql-results+xml"]},
+            )
+        )
+
+        subj = URIRef("http://example.org/A")
+        path = RDF.type / RDFS.subClassOf
+        results = list(self.graph.triples((subj, path, None)))
+
+        assert len(results) == 1
+        s, p, o = results[0]
+        assert s == URIRef("http://example.org/A")
+        assert o == URIRef("http://example.org/C")
+
+        # Verify query contains the bound subject
+        req = self.httpmock.requests[MethodName.GET].pop(0)
+        query_str = req.path_query["query"][0]
+        assert "<http://example.org/A>" in query_str
+
+    def test_eval_path_mulpath(self) -> None:
+        """eval_path with a MulPath (ZeroOrMore) sends * in the query."""
+        response_body = self._sparql_xml_response(
+            [
+                {"s": "http://example.org/A", "o": "http://example.org/B"},
+                {"s": "http://example.org/A", "o": "http://example.org/C"},
+            ]
+        )
+        self.httpmock.responses[MethodName.GET].append(
+            MockHTTPResponse(
+                200,
+                "OK",
+                response_body,
+                {"Content-Type": ["application/sparql-results+xml"]},
+            )
+        )
+
+        path = RDFS.subClassOf * ZeroOrMore  # type: ignore[operator]
+        results = list(self.graph.triples((None, path, None)))
+
+        assert len(results) == 2
+        # Only one HTTP request for the entire path
+        assert self.httpmock.mocks[MethodName.GET].call_count == 1
+        req = self.httpmock.requests[MethodName.GET].pop(0)
+        query_str = req.path_query["query"][0]
+        assert "*" in query_str
+
+    def test_eval_path_alternative(self) -> None:
+        """eval_path with an AlternativePath sends | in the query."""
+        response_body = self._sparql_xml_response(
+            [
+                {"s": "http://example.org/A", "o": "http://example.org/B"},
+            ]
+        )
+        self.httpmock.responses[MethodName.GET].append(
+            MockHTTPResponse(
+                200,
+                "OK",
+                response_body,
+                {"Content-Type": ["application/sparql-results+xml"]},
+            )
+        )
+
+        path = RDF.type | RDFS.subClassOf
+        results = list(self.graph.triples((None, path, None)))
+
+        assert len(results) == 1
+        assert self.httpmock.mocks[MethodName.GET].call_count == 1
+        req = self.httpmock.requests[MethodName.GET].pop(0)
+        query_str = req.path_query["query"][0]
+        assert "|" in query_str

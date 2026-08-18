@@ -24,6 +24,7 @@ from typing import (
 )
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph
+from rdflib.paths import Path
 from rdflib.plugins.stores.regexmatching import NATIVE_REGEX
 from rdflib.store import Store
 from rdflib.term import BNode, Identifier, Node, URIRef, Variable
@@ -36,6 +37,7 @@ if TYPE_CHECKING:
         _QuadType,
         _TripleChoiceType,
         _TriplePatternType,
+        _TripleSelectorType,
         _SubjectType,
         _PredicateType,
         _ObjectType,
@@ -53,10 +55,10 @@ ORDERBY = "ORDER BY"
 
 BNODE_IDENT_PATTERN = re.compile(r"(?P<label>_\:[^\s]+)")
 
-_NodeToSparql = Callable[["Node"], str]
+_NodeToSparql = Callable[[Union["Node", "Path"]], str]
 
 
-def _node_to_sparql(node: Node) -> str:
+def _node_to_sparql(node: Union[Node, Path]) -> str:
     if isinstance(node, BNode):
         raise Exception(
             "SPARQLStore does not support BNodes! "
@@ -292,7 +294,26 @@ class SPARQLStore(SPARQLConnector, Store):
         del a_graph.OFFSET
         ```
         """
+        for s, p, o in self._query_spo(spo, context):
+            yield (
+                s,
+                p,
+                o,
+            ), None  # why is the context here not the passed in graph 'context'?
 
+    def _query_spo(
+        self,
+        spo: _TripleSelectorType,
+        context: Optional[_ContextType] = None,
+    ) -> Iterator[Tuple[Any, ...]]:
+        """Build and execute a SPARQL query for the given (s, p, o) pattern.
+
+        This is the shared implementation used by both triples() and
+        eval_path(). It accepts Path objects in the predicate position
+        (which are serialized via n3() into SPARQL property path syntax).
+
+        Yields (s, p, o) tuples of resolved result values.
+        """
         s, p, o = spo
 
         vars = []
@@ -367,10 +388,10 @@ class SPARQLStore(SPARQLConnector, Store):
                     row.get(s, s),  # type: ignore[call-overload]
                     row.get(p, p),  # type: ignore[call-overload]
                     row.get(o, o),  # type: ignore[call-overload]
-                ), None  # why is the context here not the passed in graph 'context'?
+                )
         else:
             if result.askAnswer:
-                yield (s, p, o), None
+                yield (s, p, o)
 
     def triples_choices(
         self,
@@ -392,6 +413,22 @@ class SPARQLStore(SPARQLConnector, Store):
         triples.
         """
         raise NotImplementedError("Triples choices currently not supported")
+
+    def eval_path(
+        self,
+        path: Path,
+        subj: Optional[_SubjectType] = None,
+        obj: Optional[_ObjectType] = None,
+        context: Optional[_ContextType] = None,
+    ) -> Iterator[Tuple[_SubjectType, _ObjectType]]:
+        """Evaluate a property path via SPARQL.
+
+        Constructs a single SPARQL query with the path in the predicate
+        position (using path.n3()), rather than decomposing the path into
+        multiple individual queries.
+        """
+        for s, _, o in self._query_spo((subj, path, obj), context=context):
+            yield s, o
 
     def __len__(self, context: Optional[_ContextType] = None) -> int:
         if not self.sparql11:
