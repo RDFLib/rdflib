@@ -383,7 +383,7 @@ def translateGroupGraphPattern(graphPattern: CompValue) -> CompValue:
                 "Unknown part in GroupGraphPattern: %s - %s" % (type(p), p.name)
             )
 
-    if filters:
+    if filters is not None:
         G = Filter(expr=filters, p=G)
 
     # Mark this graph pattern as translated

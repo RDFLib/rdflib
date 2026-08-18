@@ -19,6 +19,8 @@ from __future__ import annotations
 import logging
 from typing import Set, Tuple
 
+import pytest
+
 from rdflib import Graph, URIRef
 from rdflib.query import ResultRow
 
@@ -346,3 +348,43 @@ WHERE {
         computed.add((result[0], result[1], result[2]))
 
     assert expected == computed
+
+
+@pytest.mark.parametrize(
+    ("filter_expr", "expected"),
+    [
+        # A FILTER with a constant, Python-falsy effective boolean value must
+        # eliminate every solution (SPARQL 1.1 section 17.2), so the ASK is
+        # false. These were silently dropped from the algebra before the fix.
+        ("false", False),
+        ("0", False),
+        ("0.0", False),
+        ('""', False),
+        # Truthy constants keep the (single, empty) solution.
+        ("true", True),
+        ("1", True),
+        # Non-constant expressions were already handled and must stay correct.
+        ("1 = 2", False),
+        ("1 = 1", True),
+    ],
+)
+def test_constant_filter_ask(filter_expr: str, expected: bool) -> None:
+    # Regression test for https://github.com/RDFLib/rdflib/issues/3381
+    query = "ASK WHERE { FILTER(%s) }" % filter_expr
+    assert Graph().query(query).askAnswer is expected
+
+
+@pytest.mark.parametrize(
+    ("filter_expr", "expected_rows"),
+    [
+        ("false", 0),
+        ('""', 0),
+        ("1 = 2", 0),
+        ("true", 1),
+        ("1", 1),
+    ],
+)
+def test_constant_filter_select_rowcount(filter_expr: str, expected_rows: int) -> None:
+    # A dropped constant FILTER also leaks rows into SELECT results.
+    query = "SELECT ?s WHERE { BIND(1 AS ?s) FILTER(%s) }" % filter_expr
+    assert len(list(Graph().query(query))) == expected_rows
