@@ -2541,6 +2541,9 @@ class Dataset(ConjunctiveGraph):
     structure to include a graph identifier - archaically called Context - producing
     'quads' of s, p, o, g.
 
+    The length of a Dataset is the number of quads it contains. Identical triples
+    in different graphs are therefore counted separately.
+
     Triples, or quads, can be added to a Dataset. Triples, or quads with the graph
     identifer :code:`urn:x-rdflib:default` go into the default graph.
 

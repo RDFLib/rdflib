@@ -66,7 +66,7 @@ d.add(
     )
 )
 
-# We now have 2 distinct quads in the Dataset to the Dataset has a length of 2
+# We now have 2 distinct quads in the Dataset, so the Dataset has a length of 2
 assert len(d) == 2
 
 # Add another quad to the Dataset specifying a non-existent Graph.
@@ -179,8 +179,7 @@ http://example.com/subject-x, http://example.com/predicate-x, Triple X, http://e
 http://example.com/subject-y, http://example.com/predicate-y, Triple Y, http://example.com/graph-2
 """
 
-# Adding a triple in graph-1 to graph-2 increases the number of distinct of quads in
-# the Dataset
+# Adding a triple in graph-1 to graph-2 increases the number of quads in the Dataset
 d.add(
     (
         URIRef("http://example.com/subject-z"),
