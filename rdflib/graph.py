@@ -2231,7 +2231,11 @@ class ConjunctiveGraph(Graph):
         elif len(triple_or_quad) == 4:
             # type error: Need more than 3 values to unpack (4 expected)
             (s, p, o, c) = triple_or_quad  # type: ignore[misc, unused-ignore]
-            c = self._graph(c)
+            c = (
+                self._graph(c)
+                if c is not None
+                else (self.default_context if default else None)
+            )
         return s, p, o, c
 
     def __contains__(self, triple_or_quad: _TripleOrQuadSelectorType) -> bool:
@@ -2284,7 +2288,14 @@ class ConjunctiveGraph(Graph):
         """Add a sequence of triples with context"""
 
         self.store.addN(
-            (s, p, o, self._graph(c)) for s, p, o, c in quads if _assertnode(s, p, o)
+            (
+                s,
+                p,
+                o,
+                self._graph(c) if c is not None else self.default_context,
+            )
+            for s, p, o, c in quads
+            if _assertnode(s, p, o)
         )
         return self
 
@@ -2896,13 +2907,15 @@ class Dataset(ConjunctiveGraph):
     def quads(  # type: ignore[override]
         self, quad: Optional[_TripleOrQuadPatternType] = None
     ) -> Generator[_OptionalIdentifiedQuadType, None, None]:
-        for s, p, o, c in super(Dataset, self).quads(quad):
-            # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"
-            if c.identifier == self.default_graph:  # type: ignore[union-attr]
-                yield s, p, o, None
-            else:
-                # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"  [union-attr]
-                yield s, p, o, c.identifier  # type: ignore[union-attr]
+        subject, predicate, obj, context = self._spoc(quad)
+        graphs = [context] if context is not None else self.graphs()
+        for graph in graphs:
+            for s, p, o in graph.triples((subject, predicate, obj)):
+                yield s, p, o, (
+                    None
+                    if graph.identifier == DATASET_DEFAULT_GRAPH_ID
+                    else graph.identifier
+                )
 
     # type error: Return type "Generator[Tuple[Node, URIRef, Node, Optional[IdentifiedNode]], None, None]" of "__iter__" incompatible with return type "Generator[Tuple[IdentifiedNode, IdentifiedNode, Union[IdentifiedNode, Literal]], None, None]" in supertype "Graph"
     def __iter__(  # type: ignore[override]

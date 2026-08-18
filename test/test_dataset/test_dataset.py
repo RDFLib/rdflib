@@ -218,9 +218,6 @@ def test_not_union(get_dataset):
 def test_iter(get_dataset):
     store, d = get_dataset
     """PR 1382: adds __iter__ to Dataset"""
-    if store == "SPARQLUpdateStore":
-        pytest.skip("SPARQLUpdateStore does not expose contexts through triples()")
-
     uri_a = URIRef("https://example.com/a")
     uri_b = URIRef("https://example.com/b")
     uri_c = URIRef("https://example.com/c")
