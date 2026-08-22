@@ -1,7 +1,10 @@
 import pickle
 
+from rdflib import BNode, Graph, Namespace, TripleTerm
 from rdflib.store import NodePickler
 from rdflib.term import Literal
+
+EX = Namespace("http://example.org/")
 
 # same as nt/more_literals.nt
 cases = [
@@ -46,3 +49,18 @@ class TestUtil:
         np2 = pickle.loads(dump)
         assert np._ids == np2._ids
         assert np._objects == np2._objects
+
+    def test_store_node_pickler_triple_term_round_trip(self):
+        node_pickler = Graph().store.node_pickler
+        term = TripleTerm(
+            BNode("outer"),
+            EX.outer_predicate,
+            TripleTerm(EX.inner_subject, EX.inner_predicate, BNode("inner")),
+        )
+
+        restored = node_pickler.loads(node_pickler.dumps(term))
+
+        assert node_pickler._objects["T"] is TripleTerm
+        assert restored == term
+        assert isinstance(restored.object, TripleTerm)
+        assert restored.object.object == BNode("inner")
