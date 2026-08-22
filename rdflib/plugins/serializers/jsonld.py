@@ -41,7 +41,7 @@ from typing import IO, Any, Dict, List, Optional
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph, _ObjectType
 from rdflib.namespace import RDF, XSD
-from rdflib.serializer import Serializer
+from rdflib.serializer import Serializer, _check_rdf1_1_triple
 from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, URIRef
 
 from ..shared.jsonld.context import UNDEF, Context
@@ -225,6 +225,9 @@ class Converter:
 
     def from_graph(self, graph: Graph):
         nodemap: Dict[Any, Any] = {}
+
+        for triple in graph:
+            _check_rdf1_1_triple(triple)
 
         for s in set(graph.subjects()):
             ## only iri:s and unreferenced (rest will be promoted to top if needed)

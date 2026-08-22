@@ -9,7 +9,7 @@ from rdflib.graph import Graph
 from rdflib.namespace import RDF, RDFS, Namespace  # , split_uri
 from rdflib.plugins.parsers.RDFVOC import RDFVOC
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
-from rdflib.serializer import Serializer
+from rdflib.serializer import Serializer, _check_rdf1_1_term
 from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, Node, URIRef
 from rdflib.util import first, more_than
 
@@ -30,6 +30,7 @@ class XMLSerializer(Serializer):
         bindings: Dict[str, URIRef] = {}
 
         for predicate in set(store.predicates()):
+            _check_rdf1_1_term(predicate)
             # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
             prefix, namespace, name = nm.compute_qname_strict(predicate)  # type: ignore[arg-type]
             bindings[prefix] = URIRef(namespace)
@@ -98,6 +99,7 @@ class XMLSerializer(Serializer):
         del self.__serialized
 
     def subject(self, subject: Identifier, depth: int = 1) -> None:
+        _check_rdf1_1_term(subject)
         if subject not in self.__serialized:
             self.__serialized[subject] = 1
 
@@ -127,6 +129,7 @@ class XMLSerializer(Serializer):
     def predicate(
         self, predicate: Identifier, object: Identifier, depth: int = 1
     ) -> None:
+        _check_rdf1_1_term(object)
         write = self.write
         indent = "  " * depth
         qname = self.store.namespace_manager.qname_strict(predicate)
@@ -201,6 +204,7 @@ class PrettyXMLSerializer(Serializer):
         )
 
         for predicate in possible:
+            _check_rdf1_1_term(predicate)
             # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
             prefix, namespace, local = nm.compute_qname_strict(predicate)  # type: ignore[arg-type]
             namespaces[prefix] = namespace
@@ -249,6 +253,7 @@ class PrettyXMLSerializer(Serializer):
         self.__serialized = None  # type: ignore[assignment]
 
     def subject(self, subject: Identifier, depth: int = 1):
+        _check_rdf1_1_term(subject)
         store = self.store
         writer = self.writer
 
@@ -307,6 +312,7 @@ class PrettyXMLSerializer(Serializer):
     def predicate(
         self, predicate: Identifier, object: Identifier, depth: int = 1
     ) -> None:
+        _check_rdf1_1_term(object)
         writer = self.writer
         store = self.store
         writer.push(predicate)

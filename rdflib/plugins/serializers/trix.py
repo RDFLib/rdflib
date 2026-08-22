@@ -5,7 +5,7 @@ from typing import IO, Any, Optional
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import Namespace
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
-from rdflib.serializer import Serializer
+from rdflib.serializer import Serializer, _check_rdf1_1_triple
 from rdflib.term import BNode, Literal, URIRef
 
 __all__ = ["TriXSerializer"]
@@ -69,6 +69,7 @@ class TriXSerializer(Serializer):
         self.writer.pop()
 
     def _writeTriple(self, triple):  # noqa: N802
+        _check_rdf1_1_triple(triple)
         self.writer.push(TRIXNS["triple"])
         for component in triple:
             if isinstance(component, URIRef):
