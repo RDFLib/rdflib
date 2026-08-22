@@ -35,6 +35,7 @@ __all__ = [
     "URIRef",
     "BNode",
     "Literal",
+    "TripleTerm",
     "Variable",
 ]
 import logging
@@ -1140,7 +1141,7 @@ class Literal(Identifier):
         2. Incompatible datatypes are ordered by their datatype URIs
         3. Literals with language tags are ordered by their language tags
         4. Plain literals come before xsd:string literals
-        5. In the node order: None < BNode < URIRef < Literal
+        5. In the implementation node order: None < BNode < URIRef < Literal < TripleTerm
 
         Example:
             ```python
@@ -1236,7 +1237,7 @@ class Literal(Identifier):
             return False  # they are the same
 
         elif isinstance(other, Node):
-            return True  # Literal are the greatest!
+            return _ORDERING[type(self)] > _ORDERING[type(other)]
         else:
             return NotImplemented  # we can only compare to nodes
 
@@ -1249,7 +1250,7 @@ class Literal(Identifier):
             except TypeError:
                 return NotImplemented
         if isinstance(other, Node):
-            return False  # all nodes are less-than Literals
+            return _ORDERING[type(self)] < _ORDERING[type(other)]
 
         return NotImplemented
 
@@ -2334,6 +2335,147 @@ def bind(
         _GenericPythonToXSDRules.append((pythontype, (lexicalizer, datatype)))
 
 
+_TripleTermSubject = Union[URIRef, BNode]
+_TripleTermObject = Union[URIRef, BNode, Literal, "TripleTerm"]
+
+
+class TripleTerm(Node):
+    """An immutable RDF 1.2 triple term.
+
+    A triple term represents a proposition without asserting it. Its subject
+    must be an IRI or blank node, its predicate must be an IRI, and its object
+    may be an IRI, blank node, literal, or another triple term.
+
+    Triple terms can be used only in the object position of asserted RDF
+    triples.
+
+    Example:
+        ```python
+        >>> from rdflib import Literal, Namespace, TripleTerm
+        >>> EX = Namespace("http://example.org/")
+        >>> term = TripleTerm(EX.Alice, EX.name, Literal("Alice"))
+        >>> term.n3()
+        '<<( <http://example.org/Alice> <http://example.org/name> "Alice" )>>'
+
+        ```
+
+    See: https://www.w3.org/TR/rdf12-concepts/#section-triple-terms
+    """
+
+    __slots__ = ("_triple", "_hash")
+    _triple: Tuple[_TripleTermSubject, URIRef, _TripleTermObject]
+    _hash: int
+
+    def __init__(
+        self,
+        subject: _TripleTermSubject,
+        predicate: URIRef,
+        object: _TripleTermObject,
+    ) -> None:
+        if not isinstance(subject, (URIRef, BNode)):
+            raise TypeError(
+                "TripleTerm subject must be URIRef or BNode, "
+                f"got {type(subject).__name__}"
+            )
+        if not isinstance(predicate, URIRef):
+            raise TypeError(
+                f"TripleTerm predicate must be URIRef, got {type(predicate).__name__}"
+            )
+        if not isinstance(object, (URIRef, BNode, Literal, TripleTerm)):
+            raise TypeError(
+                "TripleTerm object must be URIRef, BNode, Literal, or TripleTerm, "
+                f"got {type(object).__name__}"
+            )
+
+        triple: Tuple[_TripleTermSubject, URIRef, _TripleTermObject] = (
+            subject,
+            predicate,
+            object,
+        )
+        super().__setattr__("_triple", triple)
+        super().__setattr__("_hash", hash(triple))
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        raise AttributeError("TripleTerm is immutable")
+
+    def __delattr__(self, name: str) -> None:
+        raise AttributeError("TripleTerm is immutable")
+
+    @property
+    def subject(self) -> _TripleTermSubject:
+        """The IRI or blank-node subject of this triple term."""
+        return self._triple[0]
+
+    @property
+    def predicate(self) -> URIRef:
+        """The IRI predicate of this triple term."""
+        return self._triple[1]
+
+    @property
+    def object(self) -> _TripleTermObject:
+        """The object of this triple term."""
+        return self._triple[2]
+
+    def __eq__(self, other: Any) -> bool:
+        if self is other:
+            return True
+        if not isinstance(other, TripleTerm):
+            return False
+        return self._triple == other._triple
+
+    def __hash__(self) -> int:
+        return self._hash
+
+    def __lt__(self, other: Any) -> bool:
+        if other is None:
+            return False
+        if isinstance(other, TripleTerm):
+            return _triple_term_ordering_key(self) < _triple_term_ordering_key(other)
+        if isinstance(other, Node):
+            return _ORDERING[type(self)] < _ORDERING[type(other)]
+        return NotImplemented
+
+    def __gt__(self, other: Any) -> bool:
+        if other is None:
+            return True
+        if isinstance(other, TripleTerm):
+            return _triple_term_ordering_key(self) > _triple_term_ordering_key(other)
+        if isinstance(other, Node):
+            return _ORDERING[type(self)] > _ORDERING[type(other)]
+        return NotImplemented
+
+    def __le__(self, other: Any) -> bool:
+        result = self.__lt__(other)
+        if result is NotImplemented:
+            return NotImplemented
+        if result:
+            return True
+        return self == other
+
+    def __ge__(self, other: Any) -> bool:
+        result = self.__gt__(other)
+        if result is NotImplemented:
+            return NotImplemented
+        if result:
+            return True
+        return self == other
+
+    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+        """Return the RDF 1.2 ``<<( subject predicate object )>>`` syntax."""
+        subject = self.subject.n3(namespace_manager=namespace_manager)
+        predicate = self.predicate.n3(namespace_manager=namespace_manager)
+        object = self.object.n3(namespace_manager=namespace_manager)
+        return f"<<( {subject} {predicate} {object} )>>"
+
+    def __reduce__(
+        self,
+    ) -> Tuple[Type[TripleTerm], Tuple[_TripleTermSubject, URIRef, _TripleTermObject]]:
+        return TripleTerm, self._triple
+
+    def __repr__(self) -> str:
+        return f"TripleTerm({self.subject!r}, {self.predicate!r}, {self.object!r})"
+
+
 class Variable(Identifier):
     """
     A Variable - this is used for querying, or in Formula aware
@@ -2367,12 +2509,39 @@ class Variable(Identifier):
         return (Variable, (str(self),))
 
 
-# Nodes are ordered like this
-# See http://www.w3.org/TR/sparql11-query/#modOrderBy
+# Python implementation ordering used by RDFLib's internal sorting.
+# Existing term ranks follow http://www.w3.org/TR/sparql11-query/#modOrderBy.
+# The TripleTerm rank is deterministic implementation behavior, not RDF or
+# SPARQL semantic ordering.
 # we leave "space" for more subclasses of Node elsewhere
 # default-dict to grazefully fail for new subclasses
 _ORDERING: Dict[Type[Node], int] = defaultdict(int)
-_ORDERING.update({BNode: 10, Variable: 20, URIRef: 30, Literal: 40})
+_ORDERING.update({BNode: 10, Variable: 20, URIRef: 30, Literal: 40, TripleTerm: 50})
+
+
+def _term_ordering_key(term: Node) -> Tuple[Any, ...]:
+    """Return a deterministic implementation-ordering key for an RDF term."""
+    term_type = type(term)
+    type_key = (term_type.__module__, term_type.__qualname__)
+
+    if isinstance(term, TripleTerm):
+        value: Any = _triple_term_ordering_key(term)
+    elif isinstance(term, Literal):
+        value = (
+            str(term),
+            (term.language or "").lower(),
+            term.datatype is not None,
+            str(term.datatype) if term.datatype is not None else "",
+        )
+    else:
+        value = str(term)
+
+    return (_ORDERING[term_type], type_key, value)
+
+
+def _triple_term_ordering_key(term: TripleTerm) -> Tuple[Tuple[Any, ...], ...]:
+    """Return the recursive implementation-ordering key for a triple term."""
+    return tuple(_term_ordering_key(component) for component in term._triple)
 
 
 def _isEqualXMLNode(  # noqa: N802

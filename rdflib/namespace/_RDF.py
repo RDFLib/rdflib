@@ -27,6 +27,7 @@ class RDF(DefinedNamespace):
     language: URIRef  # The language component of a CompoundLiteral.
     object: URIRef  # The object of the subject RDF statement.
     predicate: URIRef  # The predicate of the subject RDF statement.
+    reifies: URIRef  # Relates a reifier to the triple term it reifies.
     rest: URIRef  # The rest of the subject RDF list after the first item.
     subject: URIRef  # The subject of the subject RDF statement.
     type: URIRef  # The subject is an instance of a class.

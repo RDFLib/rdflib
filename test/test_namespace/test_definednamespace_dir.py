@@ -1,4 +1,4 @@
-from rdflib import RDF
+from rdflib import RDF, RDFS, URIRef
 
 
 def test_definednamespace_dir():
@@ -11,6 +11,7 @@ def test_definednamespace_dir():
         RDF.language,
         RDF.object,
         RDF.predicate,
+        RDF.reifies,
         RDF.rest,
         RDF.subject,
         RDF.type,
@@ -33,3 +34,11 @@ def test_definednamespace_dir():
 
     for value in values:
         assert value in x
+
+
+def test_rdf12_namespace_terms() -> None:
+    assert RDF.reifies == URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies")
+    assert RDFS.Proposition == URIRef(
+        "http://www.w3.org/2000/01/rdf-schema#Proposition"
+    )
+    assert RDFS.Proposition in dir(RDFS)

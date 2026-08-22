@@ -30,6 +30,7 @@ class RDFS(DefinedNamespace):
     ContainerMembershipProperty: URIRef  # The class of container membership properties, rdf:_1, rdf:_2, ...,                     all of which are sub-properties of 'member'.
     Datatype: URIRef  # The class of RDF datatypes.
     Literal: URIRef  # The class of literal values, eg. textual strings and integers.
+    Proposition: URIRef  # The class of RDF propositions.
     Resource: URIRef  # The class resource, everything.
 
     _NS = Namespace("http://www.w3.org/2000/01/rdf-schema#")

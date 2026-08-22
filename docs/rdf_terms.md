@@ -1,13 +1,13 @@
 # RDF terms in rdflib
 
-Terms are the kinds of objects that can appear in a RDFLib's graph's triples. Those that are part of core RDF concepts are: `IRIs`, `Blank Node` and `Literal`, the latter consisting of a literal value and either a [datatype](https://www.w3.org/TR/xmlschema-2/#built-in-datatypes) or an [RFC 3066](https://tools.ietf.org/html/rfc3066) language tag.
+Terms are the kinds of objects that can appear in RDFLib graph triples. RDF 1.2 core terms are `IRIs`, `Blank Nodes`, `Literals`, and `Triple Terms`. A literal consists of a lexical value and either a [datatype](https://www.w3.org/TR/xmlschema-2/#built-in-datatypes) or an [RFC 3066](https://tools.ietf.org/html/rfc3066) language tag.
 
 !!! info "Origins"
     RDFLib's class for representing IRIs/URIs is called "URIRef" because, at the time it was implemented, that was what the then current RDF specification called URIs/IRIs. We preserve that class name but refer to the RDF object as "IRI".
 
 ## Class hierarchy
 
-All terms in RDFLib are subclasses of the [`Identifier`][rdflib.term.Identifier] class. A class diagram of the various terms is:
+All RDFLib terms are subclasses of [`Node`][rdflib.term.Node]. The established string-backed term classes are subclasses of [`Identifier`][rdflib.term.Identifier], while [`TripleTerm`][rdflib.term.TripleTerm] is a direct `Node` subclass. A class diagram of the string-backed terms is:
 
 ![Term Class Hierarchy](_static/term_class_hierarchy.svg)
 
@@ -17,7 +17,7 @@ The set of such Terms depends on whether or not the store is formula-aware. Stor
 
 ## Python Classes
 
-The three main RDF objects - *IRI*, *Blank Node* and *Literal* are represented in RDFLib by these three main Python classes:
+IRIs, blank nodes, literals, and triple terms are represented by RDFLib's `URIRef`, `BNode`, `Literal`, and `TripleTerm` classes.
 
 ### URIRef
 
@@ -53,6 +53,22 @@ rdflib.term.BNode('AFwALAKU0')
 >>> bn.n3()  # doctest: +SKIP
 '_:AFwALAKU0'
 ```
+
+### Triple terms
+
+An RDF 1.2 triple term represents a proposition without asserting it. RDFLib's [`TripleTerm`][rdflib.term.TripleTerm] is immutable and may be used in the object position of an asserted triple. Its subject is an IRI or blank node, its predicate is an IRI, and its object may be an IRI, blank node, literal, or nested triple term.
+
+```python
+>>> from rdflib import Graph, Namespace, RDF, TripleTerm
+>>> EX = Namespace("http://example.org/")
+>>> term = TripleTerm(EX.alice, EX.knows, EX.bob)
+>>> graph = Graph()
+>>> _ = graph.add((EX.statement, RDF.reifies, term))
+>>> term.n3()
+'<<( <http://example.org/alice> <http://example.org/knows> <http://example.org/bob> )>>'
+```
+
+Triple terms may be objects of predicates other than `rdf:reifies`. RDF 1.1 serializers reject them; RDF 1.2 parser and serializer support is provided separately.
 
 ### Literals
 

@@ -26,7 +26,7 @@ from typing import (
 from rdflib.exceptions import Error
 from rdflib.graph import Graph
 from rdflib.namespace import RDF, RDFS
-from rdflib.serializer import Serializer
+from rdflib.serializer import Serializer, _check_rdf1_1_triple
 from rdflib.term import BNode, Literal, Node, URIRef
 
 _StrT = TypeVar("_StrT", bound=str)
@@ -107,6 +107,7 @@ class RecursiveSerializer(Serializer):
             self.preprocessTriple(triple)
 
     def preprocessTriple(self, spo: _TripleType) -> None:
+        _check_rdf1_1_triple(spo)
         s, p, o = spo
         self._references[o] += 1
         self._subjects[s] = True

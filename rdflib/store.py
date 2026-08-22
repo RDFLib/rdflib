@@ -178,7 +178,7 @@ class Store:
     def node_pickler(self) -> NodePickler:
         if self.__node_pickler is None:
             from rdflib.graph import Graph, QuotedGraph
-            from rdflib.term import BNode, Literal, URIRef, Variable
+            from rdflib.term import BNode, Literal, TripleTerm, URIRef, Variable
 
             self.__node_pickler = np = NodePickler()
             np.register(self, "S")
@@ -187,6 +187,7 @@ class Store:
             np.register(Literal, "L")
             np.register(Graph, "G")
             np.register(QuotedGraph, "Q")
+            np.register(TripleTerm, "T")
             np.register(Variable, "V")
         return self.__node_pickler
 
