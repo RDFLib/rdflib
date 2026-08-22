@@ -13,9 +13,10 @@ under [`rdflib.plugins.serializers`][rdflib.plugins.serializers].
 
 from __future__ import annotations
 
-from typing import IO, TYPE_CHECKING, Any, Optional, TypeVar, Union
+from typing import IO, TYPE_CHECKING, Any, Iterable, Optional, TypeVar, Union
 
-from rdflib.term import URIRef
+from rdflib.exceptions import Error
+from rdflib.term import Literal, Node, URIRef
 
 if TYPE_CHECKING:
     from rdflib.graph import Graph
@@ -24,6 +25,19 @@ if TYPE_CHECKING:
 __all__ = ["Serializer"]
 
 _StrT = TypeVar("_StrT", bound=str)
+
+
+def _check_rdf1_1_term(term: Node) -> None:
+    if isinstance(term, Literal) and term.direction is not None:
+        raise Error(
+            "Directional language-tagged Literal requires an RDF 1.2-capable "
+            "serializer"
+        )
+
+
+def _check_rdf1_1_triple(triple: Iterable[Node]) -> None:
+    for term in triple:
+        _check_rdf1_1_term(term)
 
 
 class Serializer:

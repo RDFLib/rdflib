@@ -5,7 +5,7 @@ import warnings
 from typing import IO, TYPE_CHECKING, Any, Optional, Tuple, Union
 
 from rdflib.graph import Graph
-from rdflib.serializer import Serializer
+from rdflib.serializer import Serializer, _check_rdf1_1_triple
 from rdflib.term import Literal
 
 if TYPE_CHECKING:
@@ -56,6 +56,7 @@ class NT11Serializer(NTSerializer):
 
 
 def _nt_row(triple: _TripleType) -> str:
+    _check_rdf1_1_triple(triple)
     if isinstance(triple[2], Literal):
         return "%s %s %s .\n" % (
             triple[0].n3(),
