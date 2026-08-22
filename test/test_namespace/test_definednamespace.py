@@ -134,6 +134,7 @@ def test_definednamespace_dir():
         RDF.language,
         RDF.object,
         RDF.predicate,
+        RDF.reifies,
         RDF.rest,
         RDF.subject,
         RDF.type,
