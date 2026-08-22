@@ -5,7 +5,8 @@ that are core to RDF:
 
 * [Blank Nodes][rdflib.term.BNode] - Blank Nodes
 * [URI References][rdflib.term.URIRef] - URI References
-* [Literals][rdflib.term.Literal] - Literals (which consist of a literal value, datatype and language tag)
+* [Literals][rdflib.term.Literal] - Literals (which consist of a literal value,
+  datatype, language tag, and optional base direction)
 
 Those that extend the RDF model into N3:
 
@@ -525,15 +526,16 @@ class BNode(IdentifiedNode):
 class Literal(Identifier):
     """
 
-    RDF 1.1's Literals Section: http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
+    RDF 1.2 Literals Section: https://www.w3.org/TR/rdf12-concepts/#section-Graph-Literal
 
     Literals are used for values such as strings, numbers, and dates.
 
-    A literal in an RDF graph consists of two or three elements:
+    A literal in an RDF graph consists of two, three, or four elements:
 
     * a lexical form, being a Unicode string, which SHOULD be in Normal Form C
     * a datatype IRI, being an IRI identifying a datatype that determines how the lexical form maps to a literal value, and
     * if and only if the datatype IRI is `http://www.w3.org/1999/02/22-rdf-syntax-ns#langString`, a non-empty language tag. The language tag MUST be well-formed according to section 2.2.9 of `Tags for identifying languages <http://tools.ietf.org/html/bcp47>`_.
+    * if the datatype IRI is `http://www.w3.org/1999/02/22-rdf-syntax-ns#dirLangString`, a base direction of `ltr` or `rtl`; this also requires a non-empty language tag.
 
     A literal is a language-tagged string if the third element is present. Lexical representations of language tags MAY be converted to lower case. The value space of language tags is always in lower case.
 
@@ -636,7 +638,8 @@ class Literal(Identifier):
     # NOTE: _datatype should maybe be of type URIRef, and not optional.
     _datatype: Optional[URIRef]
     _ill_typed: Optional[bool]
-    __slots__ = ("_language", "_datatype", "_value", "_ill_typed")
+    _direction: Optional[str]
+    __slots__ = ("_language", "_datatype", "_value", "_ill_typed", "_direction")
 
     def __new__(
         cls,
@@ -644,6 +647,7 @@ class Literal(Identifier):
         lang: Optional[str] = None,
         datatype: Optional[str] = None,
         normalize: Optional[bool] = None,
+        direction: Optional[str] = None,
     ):
         """Create a new Literal instance."""
         if lang == "":
@@ -651,14 +655,23 @@ class Literal(Identifier):
 
         normalize = normalize if normalize is not None else rdflib.NORMALIZE_LITERALS
 
+        if direction is not None and direction not in ("ltr", "rtl"):
+            raise ValueError("Literal direction must be 'ltr' or 'rtl'")
+
         if lang is not None and datatype is not None:
-            raise TypeError(
-                "A Literal can only have one of lang or datatype, "
-                "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal"
-            )
+            if not (
+                direction is not None and str(datatype) == str(_RDF_DIR_LANG_STRING)
+            ):
+                raise TypeError(
+                    "A Literal can only have one of lang or datatype, "
+                    "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal"
+                )
 
         if lang is not None and not _is_valid_langtag(lang):
             raise ValueError(f"'{str(lang)}' is not a valid language tag!")
+
+        if direction is not None and datatype is None:
+            datatype = _RDF_DIR_LANG_STRING
 
         if datatype is not None:
             datatype = URIRef(datatype)
@@ -669,6 +682,8 @@ class Literal(Identifier):
             # create from another Literal instance
 
             lang = lang or lexical_or_value.language
+            if direction is None:
+                direction = lexical_or_value.direction
             if datatype is not None:
                 # override datatype
                 value = _castLexicalToPython(lexical_or_value, datatype)
@@ -702,8 +717,22 @@ class Literal(Identifier):
             datatype = rdflib.util._coalesce(datatype, _datatype)
             if _value is not None:
                 lexical_or_value = _value
-            if datatype is not None:
+            if datatype is not None and datatype != _RDF_DIR_LANG_STRING:
                 lang = None
+
+        if direction is not None:
+            if not lang:
+                raise ValueError("Literal direction requires a non-empty language tag")
+            if datatype is not None and datatype != _RDF_DIR_LANG_STRING:
+                raise TypeError(
+                    "A directional language-tagged Literal must use "
+                    "rdf:dirLangString"
+                )
+            datatype = _RDF_DIR_LANG_STRING
+            value = None
+            ill_typed = None
+        elif datatype == _RDF_DIR_LANG_STRING:
+            raise TypeError("rdf:dirLangString requires a language tag and direction")
 
         if isinstance(lexical_or_value, bytes):
             lexical_or_value = lexical_or_value.decode("utf-8")
@@ -723,8 +752,22 @@ class Literal(Identifier):
         inst._datatype = datatype
         inst._value = value
         inst._ill_typed = ill_typed
+        inst._direction = direction
 
         return inst
+
+    def _new_with_metadata(self, lexical_or_value: Any) -> Literal:
+        if self.direction is not None:
+            return Literal(
+                lexical_or_value,
+                lang=self.language,
+                direction=self.direction,
+            )
+        return Literal(
+            lexical_or_value,
+            datatype=self.datatype,
+            lang=self.language,
+        )
 
     def normalize(self) -> Literal:
         """
@@ -748,7 +791,7 @@ class Literal(Identifier):
         """
 
         if self.value is not None:
-            return Literal(self.value, datatype=self.datatype, lang=self.language)
+            return self._new_with_metadata(self.value)
         else:
             return self
 
@@ -777,21 +820,45 @@ class Literal(Identifier):
     def datatype(self) -> Optional[URIRef]:
         return self._datatype
 
+    @property
+    def direction(self) -> Optional[str]:
+        """The base direction of this literal, if present."""
+        return self._direction
+
     def __reduce__(
         self,
-    ) -> Tuple[Type[Literal], Tuple[str, Union[str, None], Union[str, None]]]:
+    ) -> Tuple[Type[Literal], Tuple[Any, ...]]:
+        if self.direction is not None:
+            return (
+                Literal,
+                (
+                    str(self),
+                    self.language,
+                    self.datatype,
+                    None,
+                    self.direction,
+                ),
+            )
         return (
             Literal,
             (str(self), self.language, self.datatype),
         )
 
     def __getstate__(self) -> Tuple[None, Dict[str, Union[str, None]]]:
-        return (None, dict(language=self.language, datatype=self.datatype))
+        return (
+            None,
+            dict(
+                language=self.language,
+                datatype=self.datatype,
+                direction=self.direction,
+            ),
+        )
 
     def __setstate__(self, arg: Tuple[Any, Dict[str, Any]]) -> None:
         _, d = arg
         self._language = d["language"]
         self._datatype = d["datatype"]
+        self._direction = d.get("direction")
 
     def __add__(self, val: Any) -> Literal:
         """
@@ -823,6 +890,9 @@ class Literal(Identifier):
         # convert the val to a Literal, if it isn't already one
         if not isinstance(val, Literal):
             val = Literal(val)
+
+        if self.direction is not None:
+            return self._new_with_metadata(str.__add__(self, val))
 
         # if self is datetime based and value is duration
         if (
@@ -948,6 +1018,11 @@ class Literal(Identifier):
         # convert the val to a Literal, if it isn't already one
         if not isinstance(val, Literal):
             val = Literal(val)
+
+        if self.direction is not None or val.direction is not None:
+            raise TypeError(
+                "Directional language-tagged Literals do not support subtraction"
+            )
 
         if not getattr(self, "datatype"):
             raise TypeError(
@@ -1202,13 +1277,22 @@ class Literal(Identifier):
                 else:
                     return dtself > dtother
 
-            if self.language != other.language:
-                if not self.language:
+            language = self.language
+            other_language = other.language
+            if self.direction is not None or other.direction is not None:
+                language = language.lower() if language else None
+                other_language = other_language.lower() if other_language else None
+
+            if language != other_language:
+                if not language:
                     return False
-                elif not other.language:
+                elif not other_language:
                     return True
                 else:
-                    return self.language > other.language
+                    return language > other_language
+
+            if self.direction != other.direction:
+                return (self.direction or "") > (other.direction or "")
 
             if self.value is not None and other.value is not None:
                 if type(self.value) in _TOTAL_ORDER_CASTERS:
@@ -1283,6 +1367,12 @@ class Literal(Identifier):
     def _comparable_to(self, other: Any) -> bool:
         """Helper method to decide which things are meaningful to rich-compare with this literal."""
         if isinstance(other, Literal):
+            if self.direction is not None or other.direction is not None:
+                if self.direction != other.direction:
+                    return False
+                if (self.language or "").lower() != (other.language or "").lower():
+                    return False
+
             if self.datatype is not None and other.datatype is not None:
                 # two datatyped literals
                 if (
@@ -1347,6 +1437,8 @@ class Literal(Identifier):
             res ^= hash(self._language.lower())
         if self._datatype is not None:
             res ^= hash(self._datatype)
+        if self._direction is not None:
+            res ^= hash(self._direction)
         return res
 
     def __eq__(self, other: Any) -> bool:
@@ -1402,6 +1494,7 @@ class Literal(Identifier):
                 self._datatype == other._datatype
                 and (self._language.lower() if self._language else None)
                 == (other._language.lower() if other._language else None)
+                and self._direction == other._direction
                 and str.__eq__(self, other)
             )
 
@@ -1424,6 +1517,9 @@ class Literal(Identifier):
         Any other operations returns NotImplemented.
         """
         if isinstance(other, Literal):
+            if self.direction != other.direction:
+                return False
+
             # Fast path for comparing numeric literals
             # that are not ill-typed and don't have a None value
             if (
@@ -1452,6 +1548,9 @@ class Literal(Identifier):
 
             if dtself == _XSD_STRING and dtother == _XSD_STRING:
                 # string/plain literals, compare on lexical form
+                return str.__eq__(self, other)
+
+            if dtself == _RDF_DIR_LANG_STRING and dtother == _RDF_DIR_LANG_STRING:
                 return str.__eq__(self, other)
 
             # XML can be compared to HTML, only if html5rdf is enabled
@@ -1691,6 +1790,12 @@ class Literal(Identifier):
 
         encoded: str = self._quote_encode()
 
+        language = self.language
+        if language:
+            if self.direction:
+                return f"{encoded}@{language}--{self.direction}"
+            return f"{encoded}@{language}"
+
         datatype = self.datatype
         quoted_dt = None
         if datatype is not None:
@@ -1714,13 +1819,9 @@ class Literal(Identifier):
                     # still serialize. Warn user about it
                     warnings.warn(f"Serializing weird numerical {self!r}")
 
-        language = self.language
-        if language:
-            return f"{encoded}@{language}"
-        elif datatype:
+        if datatype:
             return f"{encoded}^^{quoted_dt}"
-        else:
-            return encoded
+        return encoded
 
     def _quote_encode(self) -> str:
         # This simpler encoding doesn't work; a newline gets encoded as "\\n",
@@ -1753,8 +1854,10 @@ class Literal(Identifier):
         args = [str.__repr__(self)]
         if self.language is not None:
             args.append("lang=" + repr(self.language))
-        if self.datatype is not None:
+        if self.datatype is not None and self.direction is None:
             args.append("datatype=" + repr(self.datatype))
+        if self.direction is not None:
+            args.append("direction=" + repr(self.direction))
         if self.__class__ == Literal:
             clsName = "rdflib.term.Literal"  # noqa: N806
         else:
@@ -1766,6 +1869,8 @@ class Literal(Identifier):
         Returns an appropriate python datatype derived from this RDF Literal
         """
 
+        if self.direction is not None:
+            return self
         if self.value is not None:
             return self.value
         return self
@@ -1968,6 +2073,7 @@ _RDF_PFX = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 
 _RDF_XMLLITERAL = URIRef(_RDF_PFX + "XMLLiteral")
 _RDF_HTMLLITERAL = URIRef(_RDF_PFX + "HTML")
+_RDF_DIR_LANG_STRING = URIRef(_RDF_PFX + "dirLangString")
 
 _XSD_STRING = URIRef(_XSD_PFX + "string")
 _XSD_NORMALISED_STRING = URIRef(_XSD_PFX + "normalizedString")
