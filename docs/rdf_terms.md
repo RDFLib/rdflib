@@ -71,6 +71,21 @@ name = Literal("Nicholas", lang="en")  # the name 'Nicholas', as an English stri
 imie = Literal("Mikołaj", lang="pl")  # the Polish version of the name 'Nicholas'
 ```
 
+RDF 1.2 also defines directional language-tagged strings. Pass `direction="ltr"`
+or `direction="rtl"` together with a non-empty language tag:
+
+```python
+greeting = Literal("hello", lang="en", direction="ltr")
+powitanie = Literal("مرحبا", lang="ar", direction="rtl")
+
+assert greeting.datatype == RDF.dirLangString
+assert greeting.n3() == '"hello"@en--ltr'
+```
+
+Direction is part of literal identity, comparison, and hashing. Existing RDF
+1.1 serializers reject directional literals rather than dropping this metadata;
+RDF 1.2 syntax plugin support is outside this core change.
+
 Special literal types indicated by use of a custom IRI for a literal's `datatype` value, for example the [GeoSPARQL RDF standard](https://opengeospatial.github.io/ogc-geosparql/geosparql11/spec.html#_geometry_serializations) invents a custom datatype, `geoJSONLiteral` to indicate [GeoJSON geometry serlializations](https://opengeospatial.github.io/ogc-geosparql/geosparql11/spec.html#_rdfs_datatype_geogeojsonliteral) like this:
 
 ```python
