@@ -41,7 +41,7 @@ from typing import IO, Any, Dict, List, Optional
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph, _ObjectType
 from rdflib.namespace import RDF, XSD
-from rdflib.serializer import Serializer
+from rdflib.serializer import Serializer, _check_rdf1_1_triple
 from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, URIRef
 
 from ..shared.jsonld.context import UNDEF, Context
@@ -225,8 +225,13 @@ class Converter:
 
     def from_graph(self, graph: Graph):
         nodemap: Dict[Any, Any] = {}
+        subjects = set()
 
-        for s in set(graph.subjects()):
+        for triple in graph:
+            _check_rdf1_1_triple(triple)
+            subjects.add(triple[0])
+
+        for s in subjects:
             ## only iri:s and unreferenced (rest will be promoted to top if needed)
             if isinstance(s, URIRef) or (
                 isinstance(s, BNode) and not any(graph.subjects(None, s))
@@ -253,6 +258,7 @@ class Converter:
         nodemap[node_id] = node
 
         for p, o in graph.predicate_objects(s):
+            _check_rdf1_1_triple((s, p, o))
             # type error: Argument 3 to "add_to_node" of "Converter" has incompatible type "Node"; expected "IdentifiedNode"
             # type error: Argument 4 to "add_to_node" of "Converter" has incompatible type "Node"; expected "Identifier"
             self.add_to_node(graph, s, p, o, node, nodemap)  # type: ignore[arg-type]
