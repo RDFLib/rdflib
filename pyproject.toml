@@ -72,7 +72,7 @@ docs = [
     "mkdocstrings[python]>=1.0.6; python_version >= '3.11'",
     "httpx>=0.28.1,<0.29.0",
 ]
-lint = ["ruff==0.15.0"]
+lint = ["ruff==0.16.4"]
 
 [build-system]
 requires = ["setuptools>=68"]
