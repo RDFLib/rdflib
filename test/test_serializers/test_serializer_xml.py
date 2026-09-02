@@ -1,6 +1,8 @@
 from io import BytesIO
 
-from rdflib.graph import Dataset
+import pytest
+
+from rdflib.graph import Dataset, Graph
 from rdflib.namespace import RDFS
 from rdflib.plugins.serializers.rdfxml import XMLSerializer
 from rdflib.term import BNode, URIRef
@@ -187,3 +189,10 @@ def _assert_expected_object_types_for_predicates(graph, predicates, types):
             assert (
                 True in some_true
             ), "Bad type %s for object when predicate is <%s>." % (type(o), p)
+
+
+def test_unprefixable_predicate_raises_clear_error():
+    """A predicate equal to a bound namespace/prefix cannot be shortened, and should raise a clear error (regression test for issue #2409)."""
+    g = Graph().parse(data='<a> <> "test"@en .', publicID="http://example.org/")
+    with pytest.raises(ValueError, match="Cannot serialize predicate"):
+        g.serialize(format="xml")
