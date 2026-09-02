@@ -6,7 +6,7 @@ from xml.sax.saxutils import escape, quoteattr
 
 from rdflib.collection import Collection
 from rdflib.graph import Graph
-from rdflib.namespace import RDF, RDFS, Namespace  # , split_uri
+from rdflib.namespace import RDF, RDFS, Namespace, NamespaceManager  # , split_uri
 from rdflib.plugins.parsers.RDFVOC import RDFVOC
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
 from rdflib.serializer import Serializer
@@ -16,6 +16,24 @@ from rdflib.util import first, more_than
 from .xmlwriter import ESCAPE_ENTITIES
 
 __all__ = ["fix", "XMLSerializer", "PrettyXMLSerializer"]
+
+
+def _compute_qname_strict_for_term(
+    nm: NamespaceManager, term: Node
+) -> Tuple[str, str, str]:
+    """Compute the strict qname for predicate ``term``, raising a clear
+    error if it cannot be split into a namespace and a valid XML local
+    name (and therefore cannot be represented in RDF/XML).
+    """
+    try:
+        # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
+        return nm.compute_qname_strict(term)  # type: ignore[arg-type]
+    except ValueError as e:
+        raise ValueError(
+            f"Cannot serialize predicate {term} to RDF/XML: it cannot be "
+            "split into a namespace and a valid XML local name, so it "
+            "cannot be written as an XML element name."
+        ) from e
 
 
 class XMLSerializer(Serializer):
@@ -30,8 +48,7 @@ class XMLSerializer(Serializer):
         bindings: Dict[str, URIRef] = {}
 
         for predicate in set(store.predicates()):
-            # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
-            prefix, namespace, name = nm.compute_qname_strict(predicate)  # type: ignore[arg-type]
+            prefix, namespace, name = _compute_qname_strict_for_term(nm, predicate)
             bindings[prefix] = URIRef(namespace)
 
         RDFNS = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#")  # noqa: N806
@@ -196,13 +213,20 @@ class PrettyXMLSerializer(Serializer):
         self.writer = writer = XMLWriter(stream, nm, encoding)
         namespaces = {}
 
-        possible: Set[Node] = set(store.predicates()).union(
-            store.objects(None, RDF.type)
-        )
+        for predicate in set(store.predicates()):
+            prefix, namespace, local = _compute_qname_strict_for_term(nm, predicate)
+            namespaces[prefix] = namespace
 
-        for predicate in possible:
-            # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
-            prefix, namespace, local = nm.compute_qname_strict(predicate)  # type: ignore[arg-type]
+        # rdf:type objects are only used as element names when they can be
+        # shortened; the others are written as rdf:type properties of an
+        # rdf:Description element (see `subject`), so failing to shorten one
+        # is not an error.
+        for type_ in store.objects(None, RDF.type):
+            try:
+                # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
+                prefix, namespace, local = nm.compute_qname_strict(type_)  # type: ignore[arg-type]
+            except ValueError:
+                continue
             namespaces[prefix] = namespace
 
         namespaces["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -263,8 +287,8 @@ class PrettyXMLSerializer(Serializer):
             type = first(store.objects(subject, RDF.type))
 
             try:
-                # type error: Argument 1 to "qname" of "NamespaceManager" has incompatible type "Optional[Node]"; expected "str"
-                self.nm.qname(type)  # type: ignore[arg-type]
+                # type error: Argument 1 to "qname_strict" of "NamespaceManager" has incompatible type "Optional[Node]"; expected "str"
+                self.nm.qname_strict(type)  # type: ignore[arg-type]
             except Exception:
                 type = None
 

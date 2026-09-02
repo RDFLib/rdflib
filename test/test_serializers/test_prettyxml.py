@@ -1,6 +1,9 @@
 from io import BytesIO
 
-from rdflib.graph import Dataset
+import pytest
+
+from rdflib.compare import isomorphic
+from rdflib.graph import Dataset, Graph
 from rdflib.namespace import RDF, RDFS
 from rdflib.plugins.serializers.rdfxml import PrettyXMLSerializer
 from rdflib.term import BNode, Literal, URIRef
@@ -209,3 +212,41 @@ def _assert_expected_object_types_for_predicates(graph, predicates, types):
             assert (
                 True in some_true
             ), "Bad type %s for object when predicate is <%s>." % (type(o), p)
+
+
+def test_unprefixable_predicate_raises_clear_error():
+    """A predicate equal to a bound namespace/prefix cannot be shortened, and should raise a clear error (regression test for issue #2409)."""
+    g = Graph().parse(data='<a> <> "test"@en .', publicID="http://example.org/")
+    with pytest.raises(ValueError, match="Cannot serialize predicate"):
+        g.serialize(format="pretty-xml")
+
+
+@pytest.mark.parametrize("rdf_format", ["xml", "pretty-xml"])
+def test_unshortenable_rdf_type_object_serializes(rdf_format):
+    """An rdf:type object that cannot be shortened to a qname (e.g. one equal to a bound namespace/prefix) is representable in RDF/XML as an ordinary rdf:type property, and should serialize and round-trip successfully rather than raising (regression test for issue #2409)."""
+    g = Graph().parse(
+        data=(
+            "<http://example.org/a> a <http://example.org/> ;"
+            ' <http://example.org/p> "x" .'
+        ),
+        format="turtle",
+    )
+
+    serialized = g.serialize(format=rdf_format)
+
+    reparsed = Graph().parse(data=serialized, format="xml")
+    assert isomorphic(g, reparsed)
+
+    if rdf_format == "pretty-xml":
+        assert "rdf:Description" in serialized
+        assert '<rdf:type rdf:resource="http://example.org/"/>' in serialized
+
+
+@pytest.mark.parametrize("rdf_format", ["xml", "pretty-xml"])
+def test_unshortenable_predicate_raises_in_both_serializers(rdf_format):
+    """The same unshortenable URI used as a predicate (rather than as an rdf:type object) is not representable in RDF/XML and must still raise, in both serializers (regression test for issue #2409)."""
+    g = Graph().parse(
+        data='<http://example.org/a> <http://example.org/> "x" .', format="turtle"
+    )
+    with pytest.raises(ValueError, match="Cannot serialize predicate"):
+        g.serialize(format=rdf_format)
