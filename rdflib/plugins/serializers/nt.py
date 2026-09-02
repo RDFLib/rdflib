@@ -57,13 +57,9 @@ class NT11Serializer(NTSerializer):
 
 def _nt_row(triple: _TripleType) -> str:
     if isinstance(triple[2], Literal):
-        return "%s %s %s .\n" % (
-            triple[0].n3(),
-            triple[1].n3(),
-            _quoteLiteral(triple[2]),
-        )
+        return f"{triple[0].n3()} {triple[1].n3()} {_quoteLiteral(triple[2])} .\n"
     else:
-        return "%s %s %s .\n" % (triple[0].n3(), triple[1].n3(), triple[2].n3())
+        return f"{triple[0].n3()} {triple[1].n3()} {triple[2].n3()} .\n"
 
 
 def _quoteLiteral(l_: Literal) -> str:  # noqa: N802
@@ -82,9 +78,34 @@ def _quoteLiteral(l_: Literal) -> str:  # noqa: N802
 
 
 def _quote_encode(l_: str) -> str:
-    return '"%s"' % l_.replace("\\", "\\\\").replace("\n", "\\n").replace(
-        '"', '\\"'
-    ).replace("\r", "\\r")
+    # Accept either an rdflib Literal or a plain string
+    s = str(l_)
+
+    parts = ""
+    for ch in s:
+        code = ord(ch)
+        if ch == "\\":
+            parts += "\\\\"
+        elif ch == '"':
+            parts += '\\"'
+        elif ch == "\n":
+            parts += "\\n"
+        elif ch == "\r":
+            parts += "\\r"
+        elif ch == "\t":
+            parts += "\\t"
+        elif code == 0x08:  # backspace
+            parts += "\\b"
+        elif code == 0x0C:  # form feed
+            parts += "\\f"
+        elif (
+            code == 0x0B or (code < 0x20) or (code == 0x7F)
+        ):  # vertical tab -> use \u000B
+            parts += f"\\u{code:04X}"
+        else:
+            parts += ch
+
+    return '"' + parts + '"'
 
 
 def _nt_unicode_error_resolver(
