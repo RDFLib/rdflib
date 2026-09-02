@@ -9,6 +9,7 @@ from contextlib import ExitStack
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path, PosixPath, PurePath
+from textwrap import dedent
 from typing import (
     IO,
     Callable,
@@ -108,9 +109,9 @@ def simple_dataset() -> Dataset:
     than that it contains no blank nodes.
     """
     graph = Dataset()
-    graph.default_context.add((EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object))
-    graph.default_context.add((EGURN.subject, EGURN.predicate, EGURN.object))
-    graph.default_context.add((EGDC.subject, EGDC.predicate, Literal("typeless")))
+    graph.default_graph.add((EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object))
+    graph.default_graph.add((EGURN.subject, EGURN.predicate, EGURN.object))
+    graph.default_graph.add((EGDC.subject, EGDC.predicate, Literal("typeless")))
     graph.get_context(EGSCHEME.graph).add(
         (EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object)
     )
@@ -262,7 +263,7 @@ class GraphFormat(str, enum.Enum):
                 GraphFormat.TURTLE,
                 graph_types={GraphType.TRIPLE},
                 encodings={"utf-8"},
-                serializer_list=["longturtle", "turtle"],
+                serializer_list=["origturtle", "turtle"],
             ),
             GraphFormatInfo(
                 GraphFormat.NT11,
@@ -719,3 +720,69 @@ def test_serialize_to_fileuri_with_authortiy(
         assert False  # this should never happen as serialize should always fail
     # type error, mypy thinks this line is unreachable, but it works fine
     assert catcher.value is not None  # type: ignore[unreachable, unused-ignore]
+
+
+def test_default_serializer():
+    # same graph as in simple_graph() above but unaffected by session qname calculations
+    g = Graph()
+    g.add((EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object))
+    g.add((EGSCHEME.subject, EGSCHEME.predicate, Literal(12)))
+    g.add(
+        (
+            EGDC.subject,
+            EGDC.predicate,
+            Literal("日本語の表記体系", lang="jpx"),
+        )
+    )
+    g.add((EGURN.subject, EGSCHEME.predicate, EGSCHEME.subject))
+    g.add((EGSCHEME.object, EGDC.predicate, Literal("XSD string", datatype=XSD.string)))
+
+    prefixes = {
+        "eg": "http://example.com/",
+        "ex": "example:",
+    }
+    for pre, ns in prefixes.items():
+        g.bind(pre, ns)
+
+    original_turtle = dedent("""
+        @prefix eg: <http://example.com/> .
+        @prefix ex: <example:> .
+        @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+        eg:subject eg:predicate "日本語の表記体系"@jpx .
+
+        <urn:example:subject> ex:predicate ex:subject .
+
+        ex:object eg:predicate "XSD string"^^xsd:string .
+
+        ex:subject ex:predicate ex:object,
+                12 .
+        """).strip()
+
+    default_turtle = dedent("""
+        PREFIX eg: <http://example.com/>
+        PREFIX ex: <example:>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+        eg:subject
+            eg:predicate "日本語の表記体系"@jpx ;
+        .
+
+        <urn:example:subject>
+            ex:predicate ex:subject ;
+        .
+
+        ex:object
+            eg:predicate "XSD string"^^xsd:string ;
+        .
+
+        ex:subject
+            ex:predicate
+                ex:object ,
+                12 ;
+        .
+        """).strip()
+
+    assert g.serialize(format="origturtle").strip() == original_turtle
+
+    assert g.serialize().strip() == default_turtle

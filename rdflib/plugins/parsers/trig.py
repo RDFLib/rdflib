@@ -63,7 +63,7 @@ class TrigSinkParser(SinkParser):
         """
         Parse trig graph, i.e.
 
-           <urn:graphname> = { .. triples .. }
+           <urn:graphname> = { ... triples ... }
 
         return -1 if it doesn't look like a graph-decl
         raise Exception if it looks like a graph, but isn't.
@@ -153,7 +153,7 @@ class TrigParser(Parser):
         assert graph.store.context_aware, "TriG Parser needs a context-aware store!"
 
         conj_graph = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
-        conj_graph.default_context = graph  # TODO: CG __init__ should have a
+        conj_graph.default_graph = graph  # TODO: CG __init__ should have a
         # default_context arg
         # TODO: update N3Processor so that it can use conj_graph as the sink
         conj_graph.namespace_manager = graph.namespace_manager

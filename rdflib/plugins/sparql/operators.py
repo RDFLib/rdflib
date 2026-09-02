@@ -1204,18 +1204,14 @@ def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> bool:
                 # Type error, see: http://www.w3.org/TR/rdf-sparql-query/#ebv
                 raise SPARQLTypeError(
                     "http://www.w3.org/TR/rdf-sparql-query/#ebv - ' + \
-                    'Could not determine the EBV for : %r"
-                    % rt
+                    'Could not determine the EBV for : %r" % rt
                 )
             else:
                 return bool(pyRT)
 
     else:
-        raise SPARQLTypeError(
-            "http://www.w3.org/TR/rdf-sparql-query/#ebv - ' + \
-            'Only literals have Boolean values! %r"
-            % rt
-        )
+        raise SPARQLTypeError("http://www.w3.org/TR/rdf-sparql-query/#ebv - ' + \
+            'Only literals have Boolean values! %r" % rt)
 
 
 def _lang_range_check(range: Literal, lang: Literal) -> bool:

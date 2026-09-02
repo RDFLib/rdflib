@@ -127,20 +127,20 @@ It is also possible to pass a mime-type for the `format` parameter:
 graph.serialize(my_url, format='application/rdf+xml')
 ```
 
-| Name | Class |
-|------|-------|
-| json-ld | [`JsonLDSerializer`][rdflib.plugins.serializers.jsonld.JsonLDSerializer] |
-| n3 | [`N3Serializer`][rdflib.plugins.serializers.n3.N3Serializer] |
-| nquads | [`NQuadsSerializer`][rdflib.plugins.serializers.nquads.NQuadsSerializer] |
-| nt | [`NTSerializer`][rdflib.plugins.serializers.nt.NTSerializer] |
-| hext | [`HextuplesSerializer`][rdflib.plugins.serializers.hext.HextuplesSerializer] |
-| patch | [`PatchSerializer`][rdflib.plugins.serializers.patch.PatchSerializer] |
-| pretty-xml | [`PrettyXMLSerializer`][rdflib.plugins.serializers.rdfxml.PrettyXMLSerializer] |
-| trig | [`TrigSerializer`][rdflib.plugins.serializers.trig.TrigSerializer] |
-| trix | [`TriXSerializer`][rdflib.plugins.serializers.trix.TriXSerializer] |
-| turtle | [`TurtleSerializer`][rdflib.plugins.serializers.turtle.TurtleSerializer] |
-| longturtle | [`LongTurtleSerializer`][rdflib.plugins.serializers.longturtle.LongTurtleSerializer] |
-| xml | [`XMLSerializer`][rdflib.plugins.serializers.rdfxml.XMLSerializer] |
+| Name       | Class                                                                                |
+|------------|--------------------------------------------------------------------------------------|
+| json-ld    | [`JsonLDSerializer`][rdflib.plugins.serializers.jsonld.JsonLDSerializer]             |
+| n3         | [`N3Serializer`][rdflib.plugins.serializers.n3.N3Serializer]                         |
+| nquads     | [`NQuadsSerializer`][rdflib.plugins.serializers.nquads.NQuadsSerializer]             |
+| nt         | [`NTSerializer`][rdflib.plugins.serializers.nt.NTSerializer]                         |
+| hext       | [`HextuplesSerializer`][rdflib.plugins.serializers.hext.HextuplesSerializer]         |
+| patch      | [`PatchSerializer`][rdflib.plugins.serializers.patch.PatchSerializer]                |
+| pretty-xml | [`PrettyXMLSerializer`][rdflib.plugins.serializers.rdfxml.PrettyXMLSerializer]       |
+| trig       | [`TrigSerializer`][rdflib.plugins.serializers.trig.TrigSerializer]                   |
+| trix       | [`TriXSerializer`][rdflib.plugins.serializers.trix.TriXSerializer]                   |
+| turtle     | [`TurtleSerializer`][rdflib.plugins.serializers.turtle.TurtleSerializer]             |
+| origturtle | [`OrigTurtleSerializer`][rdflib.plugins.serializers.origturtle.OrigTurtleSerializer] |
+| xml        | [`XMLSerializer`][rdflib.plugins.serializers.rdfxml.XMLSerializer]                   |
 
 ### JSON-LD
 

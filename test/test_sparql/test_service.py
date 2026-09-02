@@ -76,15 +76,13 @@ def test_service_with_bind():
 @pytest.mark.webtest
 def test_service_with_bound_solutions():
     g = Graph()
-    g.update(
-        """
+    g.update("""
         INSERT DATA {
           []
             <http://www.w3.org/2002/07/owl#sameAs> <http://de.dbpedia.org/resource/John_Lilburne> ;
             <http://purl.org/dc/terms/subject> <http://dbpedia.org/resource/Category:1614_births> .
         }
-        """
-    )
+        """)
     q = """
             PREFIX dbp:	<http://dbpedia.org/property/>
             SELECT ?sameAs ?dbpComment ?subject
@@ -228,7 +226,7 @@ def test_service_with_implicit_select_and_allcaps():
 
 
 def freeze_bindings(
-    bindings: Sequence[Mapping[Variable, Identifier]]
+    bindings: Sequence[Mapping[Variable, Identifier]],
 ) -> FrozenSet[FrozenSet[Tuple[Variable, Identifier]]]:
     result = []
     for binding in bindings:

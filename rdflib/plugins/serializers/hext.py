@@ -53,22 +53,22 @@ class HextuplesSerializer(Serializer):
         return super(cls, cls).__new__(cls)
 
     def __init__(self, store: Union[Graph, Dataset, ConjunctiveGraph]):
-        self.default_context: Optional[Union[Graph, IdentifiedNode]]
+        self.default_graph: Optional[Union[Graph, IdentifiedNode]]
         self.graph_type: Union[Type[Graph], Type[Dataset], Type[ConjunctiveGraph]]
         if isinstance(store, (Dataset, ConjunctiveGraph)):
             self.graph_type = (
                 Dataset if isinstance(store, Dataset) else ConjunctiveGraph
             )
-            self.contexts = list(store.contexts())
-            if store.default_context:
-                self.default_context = store.default_context
-                self.contexts.append(store.default_context)
+            self.graphs = list(store.graphs())
+            if store.default_graph:
+                self.default_graph = store.default_graph
+                self.graphs.append(store.default_graph)
             else:
-                self.default_context = None
+                self.default_graph = None
         else:
             self.graph_type = Graph
-            self.contexts = [store]
-            self.default_context = None
+            self.graphs = [store]
+            self.default_graph = None
 
         Serializer.__init__(self, store)
 
@@ -98,7 +98,7 @@ class HextuplesSerializer(Serializer):
             )
         context: Union[Graph, IdentifiedNode]
         context_str: Union[bytes, str]
-        for context in self.contexts:
+        for context in self.graphs:
             for triple in context:
                 # Generate context string just once, because it doesn't change
                 # for every triple in this context
@@ -186,15 +186,15 @@ class HextuplesSerializer(Serializer):
         )
         if context_identifier == DATASET_DEFAULT_GRAPH_ID:
             return ""
-        if self.default_context is not None:
+        if self.default_graph is not None:
             if (
-                isinstance(self.default_context, IdentifiedNode)
-                and context_identifier == self.default_context
+                isinstance(self.default_graph, IdentifiedNode)
+                and context_identifier == self.default_graph
             ):
                 return ""
             elif (
-                isinstance(self.default_context, Graph)
-                and context_identifier == self.default_context.identifier
+                isinstance(self.default_graph, Graph)
+                and context_identifier == self.default_graph.identifier
             ):
                 return ""
         if self.graph_type is Graph:

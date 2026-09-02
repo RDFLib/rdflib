@@ -40,6 +40,5 @@ class UniquenessError(Error):
         Error.__init__(
             self,
             "\
-Uniqueness assumption is not fulfilled. Multiple values are: %s"
-            % values,
+Uniqueness assumption is not fulfilled. Multiple values are: %s" % values,
         )

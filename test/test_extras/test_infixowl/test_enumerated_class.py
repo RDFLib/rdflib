@@ -61,7 +61,7 @@ def test_enumerated_class_serialize(graph):
 
     assert len(sg) == 8
 
-    assert sg.serialize(format="ttl") == (
+    assert sg.serialize(format="origturtle") == (
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n"
         "\n"

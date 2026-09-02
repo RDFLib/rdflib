@@ -71,7 +71,7 @@ def parse_identifier(identifier_string: str, format: str) -> Identifier:
     )
     triples = list(g.triples((None, None, None)))
     assert len(triples) == 1
-    (subj, pred, obj) = triples[0]
+    subj, pred, obj = triples[0]
     assert subj == EGDC.subject
     assert pred == EGDC.predicate
     assert isinstance(obj, Identifier)

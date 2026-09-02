@@ -65,14 +65,12 @@ if __name__ == "__main__":
     g.add((FOAF.Person, RDFS.subClassOf, FOAF.Agent))
 
     # Find all FOAF Agents
-    for x in g.query(
-        f"""
+    for x in g.query(f"""
         PREFIX foaf: <{FOAF}>
 
         SELECT *
         WHERE {{
             ?s a foaf:Agent .
         }}
-        """
-    ):
+        """):
         print(x)

@@ -81,7 +81,7 @@ class AuditableStore(Store):
     def add(
         self, triple: _TripleType, context: _ContextType, quoted: bool = False
     ) -> None:
-        (s, p, o) = triple
+        s, p, o = triple
         lock = destructiveOpLocks["add"]
         lock = lock if lock else threading.RLock()
         with lock:
@@ -147,7 +147,7 @@ class AuditableStore(Store):
     def triples(
         self, triple: _TriplePatternType, context: Optional[_ContextType] = None
     ) -> Iterator[Tuple[_TripleType, Iterator[Optional[_ContextType]]]]:
-        (su, pr, ob) = triple
+        su, pr, ob = triple
         context = (
             context.__class__(self.store, context.identifier)
             if context is not None

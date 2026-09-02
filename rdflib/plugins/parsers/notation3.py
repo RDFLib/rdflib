@@ -2077,8 +2077,8 @@ class N3Parser(TurtleParser):
             raise ParserError("Cannot parse N3 into non-formula-aware store.")
 
         conj_graph = Dataset(store=graph.store)
-        conj_graph.default_context = graph  # TODO: CG __init__ should have a
-        # default_context arg
+        conj_graph.default_graph = graph  # TODO: CG __init__ should have a
+        # default_graph arg
         # TODO: update N3Processor so that it can use conj_graph as the sink
         conj_graph.namespace_manager = graph.namespace_manager
 

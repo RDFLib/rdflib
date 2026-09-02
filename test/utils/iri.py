@@ -8,8 +8,8 @@ import email.utils
 import http.client
 import logging
 import mimetypes
+import string
 from dataclasses import dataclass
-from nturl2path import url2pathname as nt_url2pathname
 from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
 from typing import Callable, Optional, Set, Tuple, Type, TypeVar, Union
 from urllib.parse import quote, unquote, urljoin, urlparse, urlsplit, urlunsplit
@@ -19,6 +19,27 @@ from urllib.response import addinfourl
 from test.utils import ensure_suffix
 
 PurePathT = TypeVar("PurePathT", bound=PurePath)
+
+
+def _windows_url2pathname(uri_path: str) -> str:
+    """Convert a file URI path using Windows path semantics on any platform."""
+    if uri_path[:3] == "///":
+        uri_path = uri_path[2:]
+    elif uri_path[:12] == "//localhost/":
+        uri_path = uri_path[11:]
+    if uri_path[:3] == "///":
+        uri_path = uri_path[1:]
+
+    uri_path = uri_path.replace(":", "|")
+    if "|" not in uri_path:
+        return unquote(uri_path).replace("/", "\\")
+
+    components = uri_path.split("|")
+    if len(components) != 2 or components[0][-1] not in string.ascii_letters:
+        raise OSError(f"Bad URL: {uri_path}")
+    drive = components[0][-1].upper()
+    tail = unquote(components[1]).replace("/", "\\")
+    return f"{drive}:{tail}"
 
 
 def file_uri_to_path(
@@ -42,10 +63,7 @@ def file_uri_to_path(
     file_uri_parsed = urlparse(file_uri)
     if url2pathname is None:
         if is_windows_path:
-            # def _url2pathname(uri_path: str) -> str:
-            #     return nt_url2pathname(unquote(uri_path))
-            # url2pathname = _url2pathname
-            url2pathname = nt_url2pathname
+            url2pathname = _windows_url2pathname
         else:
             url2pathname = unquote
     pathname = url2pathname(file_uri_parsed.path)

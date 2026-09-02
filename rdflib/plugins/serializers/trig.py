@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import IO, TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import Dataset, Graph
 from rdflib.plugins.serializers.turtle import TurtleSerializer
 from rdflib.term import BNode, Node
 
@@ -21,25 +21,25 @@ class TrigSerializer(TurtleSerializer):
     """TriG RDF graph serializer."""
 
     short_name = "trig"
-    indentString = 4 * " "
+    indent_string = 4 * " "
 
-    def __init__(self, store: Union[Graph, ConjunctiveGraph]):
-        self.default_context: Optional[Node]
+    def __init__(self, store: Union[Graph, Dataset]):
+        self.default_graph: Optional[Node]
         if store.context_aware:
             if TYPE_CHECKING:
-                assert isinstance(store, ConjunctiveGraph)
-            self.contexts = list(store.contexts())
-            self.default_context = store.default_context.identifier
-            if store.default_context:
-                self.contexts.append(store.default_context)
+                assert isinstance(store, Dataset)
+            self.graphs = list(store.graphs())
+            self.default_graph = store.default_graph.identifier
+            if store.default_graph:
+                self.graphs.append(store.default_graph)
         else:
-            self.contexts = [store]
-            self.default_context = None
+            self.graphs = [store]
+            self.default_graph = None
 
         super(TrigSerializer, self).__init__(store)
 
     def preprocess(self) -> None:
-        for context in self.contexts:
+        for context in self.graphs:
             # do not write unnecessary prefix (ex: for an empty default graph)
             if len(context) == 0:
                 continue
@@ -49,16 +49,16 @@ class TrigSerializer(TurtleSerializer):
             self._subjects = {}
 
             for triple in context:
-                self.preprocessTriple(triple)
+                self.preprocess_triple(triple)
 
             for subject in self._subjects.keys():
                 self._references[subject] += 1
 
-            self._contexts[context] = (self.orderSubjects(), self._subjects)
+            self._graphs[context] = (self.order_subjects(), self._subjects)
 
     def reset(self) -> None:
         super(TrigSerializer, self).reset()
-        self._contexts: Dict[
+        self._graphs: Dict[
             _ContextType,
             Tuple[List[_SubjectType], Dict[_SubjectType, bool]],
         ] = {}
@@ -84,10 +84,10 @@ class TrigSerializer(TurtleSerializer):
 
         self.preprocess()
 
-        self.startDocument()
+        self.start_document()
 
         firstTime = True
-        for store, (ordered_subjects, subjects) in self._contexts.items():
+        for store, (ordered_subjects, subjects) in self._graphs.items():
             if not ordered_subjects:
                 continue
 
@@ -95,7 +95,7 @@ class TrigSerializer(TurtleSerializer):
             self.store = store
             self._subjects = subjects
 
-            if self.default_context and store.identifier == self.default_context:
+            if self.default_graph and store.identifier == self.default_graph:
                 self.write(self.indent() + "\n{")
             else:
                 iri: Optional[str]
@@ -110,7 +110,7 @@ class TrigSerializer(TurtleSerializer):
 
             self.depth += 1
             for subject in ordered_subjects:
-                if self.isDone(subject):
+                if self.is_done(subject):
                     continue
                 if firstTime:
                     firstTime = False
@@ -119,5 +119,5 @@ class TrigSerializer(TurtleSerializer):
             self.depth -= 1
             self.write("}\n")
 
-        self.endDocument()
+        self.end_document()
         stream.write("\n".encode("latin-1"))

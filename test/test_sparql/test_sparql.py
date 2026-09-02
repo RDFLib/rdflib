@@ -253,16 +253,14 @@ def test_txtresult():
     """
     graph = Graph()
     graph.parse(data=data, format="turtle")
-    result = graph.query(
-        """\
+    result = graph.query("""\
     SELECT ?class ?superClass ?label ?comment WHERE {
         ?class rdf:type rdfs:Class.
         ?class rdfs:label ?label.
         ?class rdfs:comment ?comment.
         ?class rdfs:subClassOf ?superClass.
     }
-    """
-    )
+    """)
     vars = [
         Variable("class"),
         Variable("superClass"),
@@ -283,14 +281,12 @@ def test_property_bindings(rdfs_graph: Graph) -> None:
     """
     The `bindings` property of a `rdflib.query.Result` result works as expected.
     """
-    result = rdfs_graph.query(
-        """
+    result = rdfs_graph.query("""
             SELECT ?class ?label WHERE {
                 ?class rdf:type rdfs:Class.
                 ?class rdfs:label ?label.
             } ORDER BY ?class
-        """
-    )
+        """)
     expected_bindings = [
         {
             Variable("class"): RDFS.Class,
@@ -497,8 +493,7 @@ def test_operator_exception(
     )
 
     graph = Graph()
-    result: Result = graph.query(
-        """
+    result: Result = graph.query("""
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT (?d + ?duration AS ?next_year)
     WHERE {
@@ -507,8 +502,7 @@ def test_operator_exception(
             ("P1Y"^^xsd:yearMonthDuration"2019-05-28"^^xsd:date)
         }
     }
-    """
-    )
+    """)
 
     with pytest.raises(exception_type) as excinfo:
         result_consumer(result)

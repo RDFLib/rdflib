@@ -114,7 +114,7 @@ class TestSPARQLStoreFakeDBPedia:
             def unpacker(query, default_graph=None, named_graph=None):
                 return query, default_graph, named_graph
 
-            (mquery, _, _) = unpacker(*args, *kwargs)
+            mquery, _, _ = unpacker(*args, *kwargs)
             for _, uri in self.graph.namespaces():
                 assert mquery.count(f"<{uri}>") == 1
         assert self.httpmock.mocks[MethodName.GET].call_count == 1

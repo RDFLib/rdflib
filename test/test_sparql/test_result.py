@@ -101,14 +101,12 @@ def test_xsv_serialize(
 ) -> None:
     graph = Graph()
     graph.add((EGSCHEME.checkSubject, EGSCHEME.checkPredicate, node))
-    result = graph.query(
-        f"""
+    result = graph.query(f"""
     PREFIX egscheme: <{EGSCHEME}>
     SELECT ?o {{
         egscheme:checkSubject egscheme:checkPredicate ?o
     }}
-    """
-    )
+    """)
     assert len(result.bindings) == 1
     with BytesIO() as bio:
         result.serialize(bio, format=format)

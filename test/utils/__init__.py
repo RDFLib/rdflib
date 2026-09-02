@@ -284,7 +284,7 @@ class GraphHelper:
         negate: bool = False,
     ) -> None:
         """
-        Asserts that that ther quad or triple sets from the two graphs are equal.
+        Asserts that the quad or triple sets from the two graphs are equal.
         """
         lhs_set = (
             cls.triple_or_quad_set(lhs, bnode_handling)

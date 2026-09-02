@@ -161,16 +161,16 @@ class Converter:
         # plain triples end up in separate unnamed graphs (rdflib issue #436)
         if graph.context_aware:
             # type error: "Graph" has no attribute "contexts"
-            all_contexts = list(graph.contexts())  # type: ignore[attr-defined]
+            all_contexts = list(graph.graphs())  # type: ignore[attr-defined]
             has_dataset_default_id = any(
                 c.identifier == DATASET_DEFAULT_GRAPH_ID for c in all_contexts
             )
             if (
                 has_dataset_default_id
                 # # type error: "Graph" has no attribute "contexts"
-                and graph.default_context.identifier == DATASET_DEFAULT_GRAPH_ID  # type: ignore[attr-defined]
+                and graph.default_graph.identifier == DATASET_DEFAULT_GRAPH_ID  # type: ignore[attr-defined]
             ):
-                default_graph = graph.default_context  # type: ignore[attr-defined]
+                default_graph = graph.default_graph  # type: ignore[attr-defined]
             else:
                 default_graph = Graph()
             graphs = [default_graph]

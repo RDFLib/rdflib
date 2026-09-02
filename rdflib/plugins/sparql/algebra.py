@@ -70,7 +70,7 @@ def Graph(term: Identifier, graph: CompValue) -> CompValue:
 
 
 def BGP(
-    triples: Optional[List[Tuple[Identifier, Identifier, Identifier]]] = None
+    triples: Optional[List[Tuple[Identifier, Identifier, Identifier]]] = None,
 ) -> CompValue:
     return CompValue("BGP", triples=triples or [])
 
@@ -120,7 +120,7 @@ def _knownTerms(
 
 
 def reorderTriples(
-    l_: Iterable[Tuple[Identifier, Identifier, Identifier]]
+    l_: Iterable[Tuple[Identifier, Identifier, Identifier]],
 ) -> List[Tuple[Identifier, Identifier, Identifier]]:
     """
     Reorder triple patterns so that we execute the
@@ -171,7 +171,7 @@ def reorderTriples(
 def triples(
     l: typing.Union[  # noqa: E741
         List[List[Identifier]], List[Tuple[Identifier, Identifier, Identifier]]
-    ]
+    ],
 ) -> List[Tuple[Identifier, Identifier, Identifier]]:
     _l = reduce(lambda x, y: x + y, l)
     if (len(_l) % 3) != 0:
@@ -255,7 +255,7 @@ def translatePath(p: typing.Union[CompValue, URIRef]) -> Optional[Path]:  # type
 
 
 def translateExists(
-    e: typing.Union[Expr, Literal, Variable, URIRef]
+    e: typing.Union[Expr, Literal, Variable, URIRef],
 ) -> typing.Union[Expr, Literal, Variable, URIRef]:
     """
     Translate the graph pattern used by EXISTS and NOT EXISTS

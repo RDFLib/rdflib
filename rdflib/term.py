@@ -1821,7 +1821,7 @@ def _write_html(value: xml.dom.minidom.DocumentFragment) -> bytes:
 
 
 def _writeXML(  # noqa: N802
-    xmlnode: Union[xml.dom.minidom.Document, xml.dom.minidom.DocumentFragment]
+    xmlnode: Union[xml.dom.minidom.Document, xml.dom.minidom.DocumentFragment],
 ) -> bytes:
     if isinstance(xmlnode, xml.dom.minidom.DocumentFragment):
         d = xml.dom.minidom.Document()
