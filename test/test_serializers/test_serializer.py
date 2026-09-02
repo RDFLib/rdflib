@@ -237,19 +237,15 @@ class GraphFormat(str, enum.Enum):
             ),
             GraphFormatInfo(
                 GraphFormat.NQUADS,
-                # TODO FIXME: Currently nquads rejects requests to seralize
-                # non-context-aware stores, this does not make a lot of sense and
-                # should be fixed.
-                #
-                graph_types={GraphType.QUAD},
+                graph_types={GraphType.TRIPLE, GraphType.QUAD},
                 encodings={"utf-8"},
             ),
             GraphFormatInfo(
                 GraphFormat.TRIX,
-                # TODO FIXME: Currently trix rejects requests to seralize
-                # non-context-aware stores, this does not make a lot of sense and
-                # should be fixed.
-                #
+                # TriX can serialize a plain Graph (issue #1892), but parsing
+                # the result back into a non-context-aware Graph drops triples
+                # because they land in a named/unnamed dataset graph. Round-trip
+                # tests therefore stay Dataset-only.
                 graph_types={GraphType.QUAD},
                 encodings={"utf-8"},
             ),
