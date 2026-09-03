@@ -248,6 +248,7 @@ class ResultFormat(str, enum.Enum):
                 frozenset(
                     {
                         ResultFormatTrait.HAS_PARSER,
+                        ResultFormatTrait.HAS_SERIALIZER,
                     }
                 ),
                 frozenset({"utf-8", "utf-16"}),

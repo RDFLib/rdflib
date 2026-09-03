@@ -563,6 +563,18 @@ register(
     "rdflib.plugins.sparql.results.csvresults",
     "CSVResultSerializer",
 )
+register(
+    "tsv",
+    ResultSerializer,
+    "rdflib.plugins.sparql.results.tsvresults",
+    "TSVResultSerializer",
+)
+register(
+    "text/tab-separated-values",
+    ResultSerializer,
+    "rdflib.plugins.sparql.results.tsvresults",
+    "TSVResultSerializer",
+)
 
 # Register SPARQL Result Parsers
 register(
