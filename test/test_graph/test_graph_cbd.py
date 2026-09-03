@@ -4,7 +4,7 @@ import pytest
 
 from rdflib import Graph, Namespace
 from rdflib.namespace import RDF, RDFS
-from rdflib.term import Literal, URIRef
+from rdflib.term import BNode, Literal, URIRef
 from test.data import TEST_DATA_DIR
 from test.utils import BNodeHandling, GraphHelper
 
@@ -176,3 +176,99 @@ def test_cbd_target(rdfs_graph: Graph):
 
     assert result is target
     assert expected_result == set(result.triples((None, None, None)))
+
+
+def test_cbd_rdf12_reification():
+    """CBD Rule 3 includes RDF 1.2 reifiers linked via rdf:reifies."""
+    g = Graph()
+    g.add((EX.R1, EX.propOne, EX.P1))
+    g.add((EX.R1, EX.propTwo, EX.P2))
+
+    # Reify one of R1's triples using RDF 1.2 reification
+    reifier = g.reify(EX.R1, EX.propOne, EX.P1, reifier=EX.rei1)
+    # Add extra metadata on the reifier
+    g.add((reifier, EX.certainty, Literal("0.9")))
+    g.add((reifier, EX.source, EX.S1))
+
+    cbd = g.cbd(EX.R1)
+
+    # CBD should include: 2 triples about R1, 1 reifying triple, 2 reifier metadata
+    assert (EX.R1, EX.propOne, EX.P1) in cbd
+    assert (EX.R1, EX.propTwo, EX.P2) in cbd
+    assert (EX.rei1, EX.certainty, Literal("0.9")) in cbd
+    assert (EX.rei1, EX.source, EX.S1) in cbd
+    # The rdf:reifies triple about the reifier should also be included
+    assert len(list(cbd.triples((EX.rei1, RDF.reifies, None)))) == 1
+    assert len(cbd) == 5
+
+
+def test_cbd_rdf12_reification_multiple_reifiers():
+    """CBD Rule 3 includes multiple RDF 1.2 reifiers of the same triple."""
+    g = Graph()
+    g.add((EX.R1, EX.knows, EX.R2))
+
+    g.reify(EX.R1, EX.knows, EX.R2, reifier=EX.rei1)
+    g.add((EX.rei1, EX.source, EX.S1))
+
+    g.reify(EX.R1, EX.knows, EX.R2, reifier=EX.rei2)
+    g.add((EX.rei2, EX.source, EX.S2))
+
+    cbd = g.cbd(EX.R1)
+
+    # 1 triple about R1 + 2 reifiers * (1 rdf:reifies + 1 metadata) = 5
+    assert (EX.rei1, EX.source, EX.S1) in cbd
+    assert (EX.rei2, EX.source, EX.S2) in cbd
+    assert len(cbd) == 5
+
+
+def test_cbd_rdf12_reification_with_bnode_reifier():
+    """CBD Rule 3 follows BNode reifiers linked via rdf:reifies."""
+    g = Graph()
+    g.add((EX.R1, EX.propOne, EX.P1))
+
+    # Reify with a blank node reifier
+    reifier = g.reify(EX.R1, EX.propOne, EX.P1)
+    g.add((reifier, EX.source, EX.S1))
+
+    cbd = g.cbd(EX.R1)
+
+    # 1 triple about R1 + 1 rdf:reifies + 1 metadata on bnode reifier = 3
+    assert (EX.R1, EX.propOne, EX.P1) in cbd
+    assert (reifier, EX.source, EX.S1) in cbd
+    assert len(cbd) == 3
+
+
+def test_cbd_rdf12_reification_reifier_with_bnode_object():
+    """CBD Rule 3 recursively follows BNodes in reifier descriptions."""
+    g = Graph()
+    g.add((EX.R1, EX.propOne, EX.P1))
+
+    reifier = g.reify(EX.R1, EX.propOne, EX.P1, reifier=EX.rei1)
+    bn = BNode()
+    g.add((reifier, EX.details, bn))
+    g.add((bn, EX.note, Literal("important")))
+
+    cbd = g.cbd(EX.R1)
+
+    # 1 R1 triple + 1 rdf:reifies + 1 reifier->bnode + 1 bnode detail = 4
+    assert (EX.R1, EX.propOne, EX.P1) in cbd
+    assert (reifier, EX.details, bn) in cbd
+    assert (bn, EX.note, Literal("important")) in cbd
+    assert len(cbd) == 4
+
+
+def test_cbd_rdf12_reification_no_false_match():
+    """CBD Rule 3 does not include reifiers of triples not in the CBD."""
+    g = Graph()
+    g.add((EX.R1, EX.propOne, EX.P1))
+
+    # Reify a triple about R2 (not R1)
+    g.reify(EX.R2, EX.propOne, EX.P1, reifier=EX.rei1)
+    g.add((EX.rei1, EX.source, EX.S1))
+
+    cbd = g.cbd(EX.R1)
+
+    # Only R1's own triple should be present
+    assert len(cbd) == 1
+    assert (EX.R1, EX.propOne, EX.P1) in cbd
+    assert (EX.rei1, EX.source, EX.S1) not in cbd

@@ -182,6 +182,162 @@ def to_term(
         raise Exception(msg)
 
 
+def _find_n3_term_end(s: str, start: int) -> int:
+    """Find the end index (exclusive) of an N3 term starting at position `start`.
+
+    Handles IRIs (<...>), literals ("..." with optional @lang or ^^datatype),
+    blank nodes (_:...), triple terms (<<( ... )>>), and prefixed names.
+    """
+    n = len(s)
+    i = start
+
+    if s[i : i + 3] == "<<(":
+        # Triple term - find matching )>>
+        depth = 1
+        i += 3
+        while i < n and depth > 0:
+            if s[i : i + 3] == "<<(":
+                depth += 1
+                i += 3
+            elif s[i : i + 3] == ")>>":
+                depth -= 1
+                i += 3
+            elif s[i] == '"':
+                # Skip quoted string inside triple term
+                i = _skip_quoted_string(s, i)
+            else:
+                i += 1
+        return i
+    elif s[i] == "<":
+        # IRI - find matching >
+        i += 1
+        while i < n and s[i] != ">":
+            i += 1
+        return i + 1  # include the >
+    elif s[i] == '"':
+        # Literal - find end of quoted content + optional suffix
+        i = _skip_quoted_string(s, i)
+        # Check for @lang (possibly with --dir) or ^^datatype suffix
+        if i < n and s[i] == "@":
+            i += 1
+            while i < n and s[i] not in " \t\n\r":
+                i += 1
+        elif i < n and s[i : i + 2] == "^^":
+            i += 2
+            if i < n and s[i] == "<":
+                # Full IRI datatype
+                i += 1
+                while i < n and s[i] != ">":
+                    i += 1
+                i += 1  # include the >
+            else:
+                # Prefixed name datatype
+                while i < n and s[i] not in " \t\n\r":
+                    i += 1
+        return i
+    elif s[i : i + 2] == "_:":
+        # Blank node
+        i += 2
+        while i < n and s[i] not in " \t\n\r":
+            i += 1
+        return i
+    else:
+        # Prefixed name or other token
+        while i < n and s[i] not in " \t\n\r":
+            i += 1
+        return i
+
+
+def _skip_quoted_string(s: str, start: int) -> int:
+    """Skip past a quoted N3 string starting at `start`, returning the position
+    after the closing quote(s). Does not consume @lang or ^^datatype suffixes."""
+    n = len(s)
+    i = start
+    if s[i : i + 3] == '"""':
+        i += 3
+        while i < n:
+            if s[i] == "\\" and i + 1 < n:
+                i += 2  # skip escape sequence
+            elif s[i : i + 3] == '"""':
+                i += 3
+                return i
+            else:
+                i += 1
+        return i  # unterminated, return end
+    else:
+        i += 1  # skip opening "
+        while i < n:
+            if s[i] == "\\" and i + 1 < n:
+                i += 2  # skip escape sequence
+            elif s[i] == '"':
+                i += 1
+                return i
+            else:
+                i += 1
+        return i  # unterminated, return end
+
+
+def _split_n3_terms(s: str) -> List[str]:
+    """Split a whitespace-separated string of N3 terms into individual terms.
+
+    Used internally to parse the contents of a triple term ``<<( s p o )>>``.
+    """
+    terms: List[str] = []
+    i = 0
+    n = len(s)
+    while i < n and len(terms) < 3:
+        # Skip whitespace
+        while i < n and s[i] in " \t\n\r":
+            i += 1
+        if i >= n:
+            break
+        end = _find_n3_term_end(s, i)
+        terms.append(s[i:end])
+        i = end
+    return terms
+
+
+def _triple_term_from_n3(
+    s: str,
+    default: Optional[str] = None,
+    backend: Optional[str] = None,
+    nsm: Optional[rdflib.namespace.NamespaceManager] = None,
+) -> rdflib.term.Node:
+    """Parse an RDF 1.2 triple term from its N3 representation.
+
+    The expected format is ``<<( subject predicate object )>>`` as produced
+    by ``TripleTerm.n3()``.
+
+    Args:
+        s: The N3 string starting with ``<<(`` and ending with ``)>>``.
+        default: Default value (unused, for API consistency).
+        backend: Backend identifier (unused, for API consistency).
+        nsm: Optional namespace manager for resolving prefixed names.
+
+    Returns:
+        A ``TripleTerm`` instance.
+
+    Raises:
+        ValueError: If the string cannot be parsed as a valid triple term.
+    """
+    # Strip the outer <<( and )>> delimiters
+    if not (s.startswith("<<(") and s.endswith(")>>")):
+        raise ValueError(f"Invalid triple term syntax: {s!r}")
+
+    inner = s[3:-3].strip()
+    parts = _split_n3_terms(inner)
+    if len(parts) != 3:
+        raise ValueError(
+            f"Triple term must contain exactly 3 terms, got {len(parts)}: {s!r}"
+        )
+
+    subject = from_n3(parts[0], default, backend, nsm)
+    predicate = from_n3(parts[1], default, backend, nsm)
+    object_ = from_n3(parts[2], default, backend, nsm)
+
+    return rdflib.term.TripleTerm(subject, predicate, object_)  # type: ignore[arg-type]
+
+
 def from_n3(
     s: str,
     default: Optional[str] = None,
@@ -219,7 +375,10 @@ def from_n3(
     '''
     if not s:
         return default
-    if s.startswith("<"):
+    if s.startswith("<<("):
+        # RDF 1.2 Triple Term: <<( subject predicate object )>>
+        return _triple_term_from_n3(s, default, backend, nsm)
+    elif s.startswith("<"):
         # Hack: this should correctly handle strings with either native unicode
         # characters, or \u1234 unicode escapes.
         return rdflib.term.URIRef(
@@ -234,6 +393,7 @@ def from_n3(
         value = value[len(quotes) :]  # strip leading quotes
         datatype = None
         language = None
+        direction = None
 
         # as a given datatype overrules lang-tag check for it first
         dtoffset = rest.rfind("^^")
@@ -245,7 +405,17 @@ def from_n3(
             datatype = from_n3(rest[dtoffset + 2 :], default, backend, nsm)
         else:
             if rest.startswith("@"):
-                language = rest[1:]  # strip leading at sign
+                lang_str = rest[1:]  # strip leading at sign
+                # RDF 1.2: check for directional language tag (e.g., @ar--rtl)
+                if "--" in lang_str:
+                    lang_part, dir_part = lang_str.rsplit("--", 1)
+                    if dir_part in ("ltr", "rtl"):
+                        language = lang_part
+                        direction = dir_part
+                    else:
+                        language = lang_str
+                else:
+                    language = lang_str
 
         value = value.replace(r"\"", '"')
         # unicode-escape interprets \xhh as an escape sequence,
@@ -255,7 +425,7 @@ def from_n3(
         # characters, or \u1234 unicode escapes.
         value = value.encode("raw-unicode-escape").decode("unicode-escape")
         # type error: Argument 3 to "Literal" has incompatible type "Union[Node, str, None]"; expected "Optional[str]"
-        return rdflib.term.Literal(value, language, datatype)  # type: ignore[arg-type]
+        return rdflib.term.Literal(value, language, datatype, direction=direction)  # type: ignore[arg-type]
     elif s == "true" or s == "false":
         return rdflib.term.Literal(s == "true")
     elif (

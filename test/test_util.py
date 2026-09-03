@@ -345,6 +345,157 @@ class TestUtilTermConvert:
         literal_str = str(util.from_n3(f'"{string}"'))
         assert literal_str == f"{string}"
 
+    def test_util_from_n3_triple_term_basic(self):
+        """Test parsing a basic triple term with IRIs and a literal."""
+        s = '<<( <http://example.org/Alice> <http://example.org/name> "Alice" )>>'
+        res = util.from_n3(s)
+        from rdflib.term import TripleTerm
+
+        assert isinstance(res, TripleTerm)
+        assert res.subject == URIRef("http://example.org/Alice")
+        assert res.predicate == URIRef("http://example.org/name")
+        assert res.object == Literal("Alice")
+
+    def test_util_from_n3_triple_term_all_iris(self):
+        """Test parsing a triple term where all components are IRIs."""
+        s = "<<( <http://example.org/s> <http://example.org/p> <http://example.org/o> )>>"
+        res = util.from_n3(s)
+        from rdflib.term import TripleTerm
+
+        assert isinstance(res, TripleTerm)
+        assert res.subject == URIRef("http://example.org/s")
+        assert res.predicate == URIRef("http://example.org/p")
+        assert res.object == URIRef("http://example.org/o")
+
+    def test_util_from_n3_triple_term_with_bnode(self):
+        """Test parsing a triple term with a blank node subject."""
+        s = "<<( _:b1 <http://example.org/knows> <http://example.org/Bob> )>>"
+        res = util.from_n3(s)
+        from rdflib.term import TripleTerm
+
+        assert isinstance(res, TripleTerm)
+        assert isinstance(res.subject, BNode)
+        assert res.predicate == URIRef("http://example.org/knows")
+        assert res.object == URIRef("http://example.org/Bob")
+
+    def test_util_from_n3_triple_term_with_lang_literal(self):
+        """Test parsing a triple term with a language-tagged literal."""
+        s = '<<( <http://example.org/Alice> <http://example.org/name> "Alice"@en )>>'
+        res = util.from_n3(s)
+        from rdflib.term import TripleTerm
+
+        assert isinstance(res, TripleTerm)
+        assert res.object == Literal("Alice", lang="en")
+
+    def test_util_from_n3_triple_term_with_typed_literal(self):
+        """Test parsing a triple term with a datatype literal."""
+        s = '<<( <http://example.org/Bob> <http://example.org/age> "30"^^<http://www.w3.org/2001/XMLSchema#integer> )>>'
+        res = util.from_n3(s)
+        from rdflib.term import TripleTerm
+
+        assert isinstance(res, TripleTerm)
+        assert res.object == Literal(
+            "30", datatype=URIRef("http://www.w3.org/2001/XMLSchema#integer")
+        )
+
+    def test_util_from_n3_triple_term_nested(self):
+        """Test parsing a nested triple term."""
+        s = '<<( <http://example.org/Alice> <http://example.org/believes> <<( <http://example.org/Bob> <http://example.org/age> "30"^^<http://www.w3.org/2001/XMLSchema#integer> )>> )>>'
+        res = util.from_n3(s)
+        from rdflib.term import TripleTerm
+
+        assert isinstance(res, TripleTerm)
+        assert isinstance(res.object, TripleTerm)
+        inner = res.object
+        assert inner.subject == URIRef("http://example.org/Bob")
+        assert inner.predicate == URIRef("http://example.org/age")
+        assert inner.object == Literal(
+            "30", datatype=URIRef("http://www.w3.org/2001/XMLSchema#integer")
+        )
+
+    def test_util_from_n3_triple_term_roundtrip(self):
+        """Test that from_n3(tt.n3()) round-trips correctly."""
+        from rdflib.term import TripleTerm
+
+        tt = TripleTerm(
+            URIRef("http://example.org/Alice"),
+            URIRef("http://example.org/name"),
+            Literal("Alice"),
+        )
+        assert util.from_n3(tt.n3()) == tt
+        assert util.from_n3(tt.n3()).n3() == tt.n3()
+
+    def test_util_from_n3_directional_lang_string_rtl(self):
+        """Test parsing a directional language-tagged literal (RTL)."""
+        s = '"مرحبا"@ar--rtl'
+        res = util.from_n3(s)
+        assert isinstance(res, Literal)
+        assert str(res) == "مرحبا"
+        assert res.language == "ar"
+        assert res.direction == "rtl"
+
+    def test_util_from_n3_directional_lang_string_ltr(self):
+        """Test parsing a directional language-tagged literal (LTR)."""
+        s = '"Hello"@en--ltr'
+        res = util.from_n3(s)
+        assert isinstance(res, Literal)
+        assert str(res) == "Hello"
+        assert res.language == "en"
+        assert res.direction == "ltr"
+
+    def test_util_from_n3_directional_lang_string_roundtrip(self):
+        """Test that from_n3(lit.n3()) round-trips for directional literals."""
+        lit = Literal("مرحبا", lang="ar", direction="rtl")
+        result = util.from_n3(lit.n3())
+        assert result == lit
+        assert result.direction == "rtl"
+        assert result.language == "ar"
+        assert result.n3() == lit.n3()
+
+    def test_util_from_n3_directional_lang_complex_tag(self):
+        """Test directional literal with a complex BCP47 language tag."""
+        s = '"你好"@zh-Hant--ltr'
+        res = util.from_n3(s)
+        assert isinstance(res, Literal)
+        assert res.language == "zh-Hant"
+        assert res.direction == "ltr"
+
+    def test_util_from_n3_lang_without_direction(self):
+        """Test that a normal language tag without -- is still parsed correctly."""
+        s = '"hello"@en'
+        res = util.from_n3(s)
+        assert isinstance(res, Literal)
+        assert res.language == "en"
+        assert res.direction is None
+
+    def test_util_from_n3_triple_term_with_dir_literal(self):
+        """Test triple term containing a directional language-tagged literal."""
+        from rdflib.term import TripleTerm
+
+        s = '<<( <http://example.org/Alice> <http://example.org/greeting> "مرحبا"@ar--rtl )>>'
+        res = util.from_n3(s)
+        assert isinstance(res, TripleTerm)
+        assert isinstance(res.object, Literal)
+        assert res.object.direction == "rtl"
+        assert res.object.language == "ar"
+
+    def test_util_from_n3_triple_term_invalid_too_few_terms(self):
+        """Test that a triple term with fewer than 3 terms raises ValueError."""
+        with pytest.raises(ValueError, match="exactly 3 terms"):
+            util.from_n3("<<( <http://example.org/s> )>>")
+
+    def test_util_from_n3_triple_term_with_escaped_literal(self):
+        """Test triple term with a literal containing escaped characters."""
+        from rdflib.term import TripleTerm
+
+        tt = TripleTerm(
+            URIRef("http://example.org/Alice"),
+            URIRef("http://example.org/says"),
+            Literal('She said "hello"'),
+        )
+        result = util.from_n3(tt.n3())
+        assert result == tt
+
 
 @pytest.mark.parametrize(
     ["params", "default", "expected_result"],

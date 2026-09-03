@@ -119,10 +119,91 @@ from typing import (
 )
 
 from rdflib.graph import ConjunctiveGraph, Graph, ReadOnlyGraphAggregate, _TripleType
-from rdflib.term import BNode, IdentifiedNode, Node, URIRef
+from rdflib.term import BNode, IdentifiedNode, Literal, Node, TripleTerm, URIRef
 
 if TYPE_CHECKING:
     from _hashlib import HASH
+
+
+def _get_bnodes_from_term(term: Node) -> Set[BNode]:
+    """Extract all blank nodes from a term, recursing into TripleTerms.
+
+    RDF 1.2 introduces triple terms (see
+    https://www.w3.org/TR/rdf12-concepts/#section-triple-terms) which may
+    contain blank nodes in their subject and object positions. For graph
+    canonicalization and isomorphism checking, we need to discover *all*
+    blank nodes that participate in a graph -- including those embedded
+    inside triple terms that appear as objects of asserted triples.
+
+    Per the RDF 1.2 abstract model:
+      - A triple term's **subject** is always an IRI or blank node (never
+        a nested TripleTerm, since triple terms can only appear in the
+        object position of a triple).
+      - A triple term's **predicate** is always an IRI.
+      - A triple term's **object** may be an IRI, blank node, literal, or
+        another (nested) triple term.
+
+    This function therefore:
+      1. Returns ``{term}`` immediately if the term itself is a BNode.
+      2. For a TripleTerm, collects BNodes from the subject and object
+         positions, recursing into nested TripleTerms in the object.
+      3. Returns the empty set for IRIs and Literals.
+
+    Args:
+        term: Any RDF node (BNode, URIRef, Literal, or TripleTerm).
+
+    Returns:
+        The set of all BNodes reachable within this term.
+    """
+    if isinstance(term, BNode):
+        return {term}
+    elif isinstance(term, TripleTerm):
+        result: Set[BNode] = set()
+        if isinstance(term.subject, BNode):
+            result.add(term.subject)
+        if isinstance(term.object, BNode):
+            result.add(term.object)
+        elif isinstance(term.object, TripleTerm):
+            result.update(_get_bnodes_from_term(term.object))
+        return result
+    return set()
+
+
+def _remap_triple_term(tt: TripleTerm, mapping: Dict[BNode, BNode]) -> TripleTerm:
+    """Apply a blank node mapping to a TripleTerm, producing a new TripleTerm.
+
+    During graph canonicalization and isomorphism checking, blank nodes are
+    relabeled (e.g., to canonical ``cb<hash>`` identifiers or to a mock BNode
+    for similarity checks). When a blank node appears *inside* an RDF 1.2
+    triple term -- either as the subject or the object -- those embedded
+    BNodes must be remapped consistently with how they are remapped at the
+    graph level.
+
+    This function walks the TripleTerm structure and replaces any BNode that
+    appears in the provided ``mapping`` dict. Because the RDF 1.2 spec allows
+    nested triple terms only in the **object** position, we recurse into the
+    object when it is itself a TripleTerm, but never into the subject.
+
+    Args:
+        tt: The TripleTerm whose embedded BNodes should be remapped.
+        mapping: A dictionary mapping original BNodes to their replacements.
+
+    Returns:
+        A new TripleTerm with BNodes replaced according to the mapping.
+        If no BNodes in the TripleTerm appear in the mapping, the returned
+        TripleTerm may still be a new instance.
+    """
+    s: Union[URIRef, BNode] = (
+        mapping.get(tt.subject, tt.subject)
+        if isinstance(tt.subject, BNode)
+        else tt.subject
+    )
+    o: Union[URIRef, BNode, Literal, TripleTerm] = tt.object
+    if isinstance(o, BNode):
+        o = mapping.get(o, o)
+    elif isinstance(o, TripleTerm):
+        o = _remap_triple_term(o, mapping)
+    return TripleTerm(s, tt.predicate, o)
 
 
 def _total_seconds(td):
@@ -320,25 +401,149 @@ class _TripleCanonicalizer:
         non-blank nodes that are adjacent. Nodes that are not adjacent to blank
         nodes are not included, as they are a) already colored (by URI or literal)
         and b) do not factor into the color of any blank node.
+
+        RDF 1.2 TripleTerm handling:
+            Triple terms (``<<( s p o )>>``) may contain embedded blank nodes
+            in their subject or object positions. For correct canonicalization,
+            the algorithm must handle two classes of BNodes differently:
+
+            **Graph-level BNodes** (those that appear as a direct subject,
+            predicate, or object in asserted triples) are collected into a
+            single initial color class and refined by ``Color.distinguish()``
+            which uses ``graph.triples()`` to find their structural edges.
+
+            **Embedded-only BNodes** (those that appear exclusively inside
+            TripleTerms and never directly in asserted triple positions) are
+            invisible to ``graph.triples()`` queries, so ``distinguish()``
+            cannot differentiate them. To solve this, we record each embedded
+            BNode's *structural context* -- its position within the TripleTerm
+            (subject vs object), the asserted triple's subject and predicate,
+            and the other non-bnode terms in the TripleTerm. Embedded-only
+            BNodes are then grouped by this context and assigned distinct
+            initial colors, ensuring that BNodes in different structural
+            positions produce different canonical hashes deterministically.
+
+            Additionally:
+            1. BNodes embedded inside TripleTerms are discovered via
+               ``_get_bnodes_from_term`` and included in the bnode set.
+            2. The TripleTerm itself is added to "others" as a composite value
+               for coloring (it is not a blank node, even though it contains
+               blank nodes).
+            3. Each embedded BNode is registered as a neighbor of the asserted
+               triple's subject (used as supplementary structural data).
         """
         bnodes: Set[BNode] = set()
         others = set()
         self._neighbors = defaultdict(set)
+        # RDF 1.2: Track structural context for BNodes embedded in TripleTerms.
+        # BNodes that appear only inside TripleTerms are invisible to
+        # graph.triples() queries, so Color.distinguish() cannot differentiate
+        # them from other embedded BNodes. We record contextual information
+        # (their position and surrounding terms in the TripleTerm) so that we
+        # can assign them distinguishing initial colors.
+        self._embedded_bnode_contexts: Dict[BNode, Set[tuple]] = defaultdict(set)
+        # Collect graph-level BNodes (those appearing directly as s/p/o in
+        # asserted triples) in the same pass to avoid a second iteration.
+        graph_level_bnodes: Set[BNode] = set()
         for s, p, o in self.graph:
-            nodes = set([s, p, o])
-            b = set([x for x in nodes if isinstance(x, BNode)])
+            # Track graph-level BNodes as we encounter them.
+            if isinstance(s, BNode):
+                graph_level_bnodes.add(s)
+            if isinstance(p, BNode):
+                graph_level_bnodes.add(p)
+            if isinstance(o, BNode):
+                graph_level_bnodes.add(o)
+
+            # RDF 1.2: Extract BNodes embedded inside TripleTerms in object
+            # position. These must participate in the canonicalization just
+            # like top-level BNodes.
+            embedded_bnodes: Set[BNode] = set()
+            if isinstance(o, TripleTerm):
+                embedded_bnodes = _get_bnodes_from_term(o)
+                # Record structural context for each embedded BNode.
+                # This enables distinguish-by-context for BNodes that are
+                # invisible to graph.triples().
+                self._record_triple_term_context(o, s, p)
+
+            b = set([x for x in (s, p, o) if isinstance(x, BNode)]) | embedded_bnodes
             if len(b) > 0:
-                others |= nodes - b
+                # Collect non-bnode, non-TripleTerm terms as "others" for
+                # coloring. Only `o` can be a TripleTerm per the RDF model.
+                for term in (s, p, o):
+                    if term not in b and not isinstance(term, TripleTerm):
+                        others.add(term)
+                # Add the TripleTerm itself to "others" for coloring. It acts
+                # as a distinguishing label (like a literal or IRI) but is not
+                # a bnode.
+                if isinstance(o, TripleTerm):
+                    others.add(o)
                 bnodes |= b
                 if isinstance(s, BNode):
                     self._neighbors[s].add(o)
                 if isinstance(o, BNode):
                     self._neighbors[o].add(s)
+                elif isinstance(o, TripleTerm):
+                    # Each BNode embedded in a TripleTerm is considered a
+                    # neighbor of the asserted triple's subject. This ensures
+                    # that the coloring algorithm can distinguish graphs where
+                    # the same BNode appears inside different TripleTerms.
+                    for bn in embedded_bnodes:
+                        self._neighbors[bn].add(s)
                 if isinstance(p, BNode):
                     self._neighbors[p].add(s)
                     self._neighbors[p].add(p)
         if len(bnodes) > 0:
-            return [Color(list(bnodes), self.hashfunc, hash_cache=self._hash_cache)] + [
+            # Separate embedded-only BNodes into distinct initial color
+            # classes based on their structural context within TripleTerms.
+            # BNodes that also appear at the graph level are handled normally
+            # by distinguish() since graph.triples() can see them.
+            embedded_only = bnodes - graph_level_bnodes
+            graph_bnodes = bnodes & graph_level_bnodes
+
+            # Group embedded-only BNodes by their structural context hash
+            # so that structurally equivalent BNodes get the same color.
+            embedded_color_groups: Dict[str, List[BNode]] = defaultdict(list)
+            for bn in embedded_only:
+                # Create a hashable context key from the sorted string
+                # representations of the BNode's structural contexts.
+                ctx = self._embedded_bnode_contexts.get(bn, set())
+                ctx_key = str(sorted(str(c) for c in ctx))
+                embedded_color_groups[ctx_key].append(bn)
+
+            # Build the initial coloring:
+            # - One color for all graph-level BNodes (they will be refined by
+            #   distinguish() using graph.triples()).
+            # - Separate colors for each group of embedded-only BNodes that
+            #   share the same structural context. Each group receives a
+            #   unique initial color derived from its context key, ensuring
+            #   that BNodes in different positions produce different canonical
+            #   hashes even when they cannot be reached by graph.triples().
+            bnode_colors: List[Color] = []
+            if graph_bnodes:
+                bnode_colors.append(
+                    Color(
+                        list(graph_bnodes), self.hashfunc, hash_cache=self._hash_cache
+                    )
+                )
+            for ctx_key, group in embedded_color_groups.items():
+                # Use the context key as the initial color so that BNodes in
+                # different structural positions start with different colors
+                # and thus produce different canonical labels.
+                # We wrap it in a tuple-of-tuples structure compatible with
+                # Color.hash_color() which expects ColorItemTuple.
+                context_color: Tuple = (
+                    (ctx_key, URIRef("urn:rdflib:tt-ctx"), ctx_key),
+                )
+                bnode_colors.append(
+                    Color(
+                        list(group),
+                        self.hashfunc,
+                        context_color,
+                        hash_cache=self._hash_cache,
+                    )
+                )
+
+            return bnode_colors + [
                 # type error: List item 0 has incompatible type "Union[IdentifiedNode, Literal]"; expected "IdentifiedNode"
                 # type error: Argument 3 to "Color" has incompatible type "Union[IdentifiedNode, Literal]"; expected "Tuple[Tuple[Union[int, str], URIRef, Union[int, str]], ...]"
                 Color([x], self.hashfunc, x, hash_cache=self._hash_cache)  # type: ignore[list-item, arg-type]
@@ -346,6 +551,67 @@ class _TripleCanonicalizer:
             ]
         else:
             return []
+
+    @staticmethod
+    def _describe_term(term: Node) -> str:
+        """Return a position-stable descriptor for a term, masking BNode identity.
+
+        Used by ``_record_triple_term_context`` to build structural context
+        tuples without leaking specific BNode labels (which would defeat the
+        purpose of position-based coloring).
+        """
+        if isinstance(term, BNode):
+            return "_:*"
+        elif isinstance(term, TripleTerm):
+            return "<<TripleTerm>>"
+        return term.n3()
+
+    def _record_triple_term_context(
+        self, tt: TripleTerm, graph_subject: Node, graph_predicate: Node
+    ) -> None:
+        """Record structural context for BNodes embedded in a TripleTerm.
+
+        For each BNode found inside the TripleTerm, we record a tuple
+        describing its position and the surrounding non-bnode terms. This
+        contextual information is used during initial coloring to distinguish
+        BNodes that appear only inside TripleTerms (and are thus invisible
+        to graph.triples() queries used by Color.distinguish()).
+
+        The context tuple for a BNode in the **subject** position of a
+        TripleTerm is: ``("tt_subject", graph_subject, graph_predicate,
+        tt.predicate, <object_descriptor>)``
+
+        The context tuple for a BNode in the **object** position is:
+        ``("tt_object", graph_subject, graph_predicate, <subject_descriptor>,
+        tt.predicate)``
+
+        Where descriptors for non-bnode terms are their n3() representation,
+        and descriptors for BNode terms are the placeholder string "_:*".
+
+        Args:
+            tt: The TripleTerm to scan.
+            graph_subject: The subject of the asserted triple containing this
+                TripleTerm.
+            graph_predicate: The predicate of the asserted triple containing
+                this TripleTerm.
+        """
+        desc = self._describe_term
+        obj_desc = desc(tt.object)
+        subj_desc = desc(tt.subject)
+        gs = desc(graph_subject)
+        gp = desc(graph_predicate)
+
+        if isinstance(tt.subject, BNode):
+            self._embedded_bnode_contexts[tt.subject].add(
+                ("tt_subject", gs, gp, tt.predicate.n3(), obj_desc)
+            )
+        if isinstance(tt.object, BNode):
+            self._embedded_bnode_contexts[tt.object].add(
+                ("tt_object", gs, gp, subj_desc, tt.predicate.n3())
+            )
+        elif isinstance(tt.object, TripleTerm):
+            # Recurse into nested TripleTerms
+            self._record_triple_term_context(tt.object, graph_subject, graph_predicate)
 
     def _individuate(self, color, individual):
         new_color = list(color.color)
@@ -540,9 +806,43 @@ class _TripleCanonicalizer:
         triple: _TripleType,
         labels: Dict[Node, str],
     ):
+        """Yield canonicalized terms for a triple, replacing BNodes with
+        deterministic canonical labels.
+
+        For each term in the triple:
+          - **BNode**: replaced with a new BNode whose identifier is
+            ``cb<hash>`` where ``<hash>`` is the canonical color computed
+            by the coloring algorithm.
+          - **TripleTerm** (RDF 1.2): any BNodes embedded inside the triple
+            term are remapped using the same canonical labels via
+            ``_remap_triple_term``. This ensures that a BNode appearing both
+            at the graph level and inside a TripleTerm receives the same
+            canonical identifier, preserving structural consistency.
+          - **Other terms** (URIRef, Literal): yielded unchanged.
+
+        Args:
+            triple: A 3-tuple (subject, predicate, object) from the graph.
+            labels: A mapping from BNode -> canonical hash string, as
+                computed by the coloring/individualization algorithm.
+
+        Yields:
+            The canonicalized terms in order (subject, predicate, object).
+        """
         for term in triple:
             if isinstance(term, BNode):
                 yield BNode(value="cb%s" % labels[term])
+            elif isinstance(term, TripleTerm):
+                # Remap any bnodes inside the TripleTerm to their canonical
+                # labels so that isomorphic graphs produce identical TripleTerms.
+                bnode_mapping = {
+                    bn: BNode(value="cb%s" % labels[bn])
+                    for bn in _get_bnodes_from_term(term)
+                    if bn in labels
+                }
+                if bnode_mapping:
+                    yield _remap_triple_term(term, bnode_mapping)
+                else:
+                    yield term
             else:
                 yield term
 
@@ -644,4 +944,38 @@ def _squash_graph(graph: Graph):
 
 
 def _squash_bnodes(triple):
-    return tuple((isinstance(t, BNode) and _MOCK_BNODE) or t for t in triple)
+    """Replace all BNodes in a triple with a singular mock BNode.
+
+    This is used by the ``similar()`` function as a cheap approximation of
+    graph isomorphism. By replacing every BNode with the same mock value,
+    two graphs can be compared structurally without needing full
+    canonicalization.
+
+    RDF 1.2 TripleTerm handling:
+        When the object of a triple is a TripleTerm that contains embedded
+        BNodes (in subject or object position), those embedded BNodes are
+        also replaced with the mock BNode via ``_remap_triple_term``. This
+        ensures that TripleTerms with different BNodes are treated as
+        structurally equivalent for the purposes of the similarity check,
+        mirroring how top-level BNodes are squashed.
+
+    Args:
+        triple: A 3-tuple (subject, predicate, object) from the graph.
+
+    Returns:
+        A new tuple where all BNodes (including those inside TripleTerms)
+        have been replaced with ``_MOCK_BNODE``.
+    """
+
+    def _squash_term(t):
+        if isinstance(t, BNode):
+            return _MOCK_BNODE
+        elif isinstance(t, TripleTerm):
+            bnodes = _get_bnodes_from_term(t)
+            if bnodes:
+                mapping = {bn: _MOCK_BNODE for bn in bnodes}
+                return _remap_triple_term(t, mapping)
+            return t
+        return t
+
+    return tuple(_squash_term(t) for t in triple)
