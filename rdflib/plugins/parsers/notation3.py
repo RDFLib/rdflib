@@ -898,7 +898,8 @@ class SinkParser:
         if j < 0:
             return j  # nope
 
-        while argstr[j] in {"!", "^"}:  # no spaces, must follow exactly (?)
+        # no spaces, must follow exactly (?)
+        while j < len(argstr) and argstr[j] in {"!", "^"}:
             ch = argstr[j]
             subj = res.pop()
             obj = self.blankNode(uri=self.here(j))
@@ -1579,7 +1580,7 @@ class SinkParser:
                 dt = None
                 j, s = self.strconst(argstr, i, delim)
                 lang = None
-                if argstr[j] == "@":  # Language?
+                if j < len(argstr) and argstr[j] == "@":  # Language?
                     m = langcode.match(argstr, j + 1)
                     if m is None:
                         raise BadSyntax(
