@@ -254,7 +254,7 @@ def Builtin_REPLACE(expr: Expr, ctx) -> Literal:
         # @@FIXME@@ either datatype OR lang, NOT both
 
     return Literal(
-        re.sub(str(pattern), replacement, text, cFlag),
+        re.sub(str(pattern), replacement, text, flags=cFlag),
         datatype=text.datatype,
         lang=text.language,
     )
