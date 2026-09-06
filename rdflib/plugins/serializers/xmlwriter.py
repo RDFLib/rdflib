@@ -4,6 +4,7 @@ import codecs
 from typing import IO, TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple
 from xml.sax.saxutils import escape, quoteattr
 
+from rdflib.namespace import XMLNS
 from rdflib.term import URIRef
 
 if TYPE_CHECKING:
@@ -91,10 +92,12 @@ class XMLWriter:
         write = self.stream.write
         write("\n")
         for prefix, namespace in namespaces:
+            # Allow user-provided namespace bindings to prevail
+            if prefix in self.extra_ns:
+                continue
             if prefix:
                 write('  xmlns:%s="%s"\n' % (prefix, namespace))
-            # Allow user-provided namespace bindings to prevail
-            elif prefix not in self.extra_ns:
+            else:
                 write('  xmlns="%s"\n' % namespace)
 
         for prefix, namespace in self.extra_ns.items():
@@ -126,5 +129,9 @@ class XMLWriter:
                     return ":".join([pre, uri[len(ns) :]])
                 else:
                     return uri[len(ns) :]
+
+        # The xml prefix is predefined and never declared
+        if uri.startswith(XMLNS):
+            return "xml:" + uri[len(XMLNS) :]
 
         return self.nm.qname_strict(uri)
