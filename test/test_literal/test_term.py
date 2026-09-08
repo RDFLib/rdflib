@@ -8,7 +8,7 @@ import random
 import pytest
 
 from rdflib.graph import Graph, QuotedGraph
-from rdflib.namespace import XSD
+from rdflib.namespace import RDFS, XSD
 from rdflib.term import BNode, Literal, URIRef, _is_valid_unicode, _is_valid_uri
 
 
@@ -51,6 +51,10 @@ def test_uri_ref_rejects_ascii_control_characters(uri):
 
     with pytest.raises(Exception, match="does not look like a valid URI"):
         URIRef(uri).n3()
+
+
+def test_uri_ref_accepts_defined_namespace():
+    assert URIRef(RDFS) == URIRef(str(RDFS))
 
 
 class TestBNodeRepr:
