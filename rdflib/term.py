@@ -102,8 +102,12 @@ _invalid_uri_chars = '<>" {}|\\^`'
 
 
 def _is_valid_uri(uri: str) -> bool:
+    uri_text = str(uri)
     for c in _invalid_uri_chars:
-        if c in uri:
+        if c in uri_text:
+            return False
+    for c in uri_text:
+        if ord(c) < 0x20 or ord(c) == 0x7F:
             return False
     return True
 
