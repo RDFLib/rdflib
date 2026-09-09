@@ -8,17 +8,12 @@ from __future__ import annotations
 import re
 import warnings
 from collections import defaultdict
+from collections.abc import Mapping, Sequence
 from typing import (
     IO,
     TYPE_CHECKING,
     Any,
-    DefaultDict,
-    Dict,
-    List,
-    Mapping,
     Optional,
-    Sequence,
-    Tuple,
     TypeVar,
     Union,
 )
@@ -44,7 +39,7 @@ class RecursiveSerializer(Serializer):
     predicateOrder = [RDF.type, RDFS.label]
     maxDepth = 10
     indentString = "  "
-    roundtrip_prefixes: Tuple[Any, ...] = ()
+    roundtrip_prefixes: tuple[Any, ...] = ()
     LOCALNAME_PECRENT_CHARACTER_REQUIRING_ESCAPE_REGEX = re.compile(
         r"%(?![0-9A-Fa-f]{2})"
     )
@@ -77,14 +72,14 @@ class RecursiveSerializer(Serializer):
         """Return true if subject is serialized"""
         return subject in self._serialized
 
-    def orderSubjects(self) -> List[_SubjectType]:
-        seen: Dict[_SubjectType, bool] = {}
-        subjects: List[_SubjectType] = []
+    def orderSubjects(self) -> list[_SubjectType]:
+        seen: dict[_SubjectType, bool] = {}
+        subjects: list[_SubjectType] = []
 
         for classURI in self.topClasses:
             members = list(self.store.subjects(RDF.type, classURI))
             # type error: All overload variants of "sort" of "list" require at least one argument
-            members.sort()  # type: ignore[call-overload]
+            members.sort()  # type: ignore[call-arg]
 
             subjects.extend(members)
             for member in members:
@@ -114,12 +109,12 @@ class RecursiveSerializer(Serializer):
     def reset(self) -> None:
         self.depth = 0
         # Typed none because nothing is using it ...
-        self.lists: Dict[None, None] = {}
-        self.namespaces: Dict[str, URIRef] = {}
-        self._references: DefaultDict[Node, int] = defaultdict(int)
-        self._serialized: Dict[_SubjectType, bool] = {}
-        self._subjects: Dict[_SubjectType, bool] = {}
-        self._topLevels: Dict[_SubjectType, bool] = {}
+        self.lists: dict[None, None] = {}
+        self.namespaces: dict[str, URIRef] = {}
+        self._references: defaultdict[Node, int] = defaultdict(int)
+        self._serialized: dict[_SubjectType, bool] = {}
+        self._subjects: dict[_SubjectType, bool] = {}
+        self._topLevels: dict[_SubjectType, bool] = {}
 
         if self.roundtrip_prefixes:
             if hasattr(self.roundtrip_prefixes, "__iter__"):
@@ -132,12 +127,12 @@ class RecursiveSerializer(Serializer):
 
     def buildPredicateHash(
         self, subject: _SubjectType
-    ) -> Mapping[_PredicateType, List[Node]]:
+    ) -> Mapping[_PredicateType, list[Node]]:
         """
         Build a hash key by predicate to a list of objects for the given
         subject
         """
-        properties: Dict[_PredicateType, List[Node]] = {}
+        properties: dict[_PredicateType, list[Node]] = {}
         for s, p, o in self.store.triples((subject, None, None)):
             oList = properties.get(p, [])
             oList.append(o)
@@ -145,25 +140,25 @@ class RecursiveSerializer(Serializer):
         return properties
 
     def sortProperties(
-        self, properties: Mapping[_PredicateType, List[Node]]
-    ) -> List[_PredicateType]:
+        self, properties: Mapping[_PredicateType, list[Node]]
+    ) -> list[_PredicateType]:
         """Take a hash from predicate uris to lists of values.
         Sort the lists of values.  Return a sorted list of properties."""
         # Sort object lists
         for prop, objects in properties.items():
             # type error: All overload variants of "sort" of "list" require at least one argument
-            objects.sort()  # type: ignore[call-overload]
+            objects.sort()  # type: ignore[call-arg]
 
         # Make sorted list of properties
-        propList: List[_PredicateType] = []
-        seen: Dict[_PredicateType, bool] = {}
+        propList: list[_PredicateType] = []
+        seen: dict[_PredicateType, bool] = {}
         for prop in self.predicateOrder:
             if (prop in properties) and (prop not in seen):
                 propList.append(prop)
                 seen[prop] = True
         props = list(properties.keys())
         # type error: All overload variants of "sort" of "list" require at least one argument
-        props.sort()  # type: ignore[call-overload]
+        props.sort()  # type: ignore[call-arg]
         for prop in props:
             if prop not in seen:
                 propList.append(prop)
@@ -214,9 +209,9 @@ class TurtleSerializer(RecursiveSerializer):
     )
 
     def __init__(self, store: Graph):
-        self._ns_rewrite: Dict[str, str] = {}
+        self._ns_rewrite: dict[str, str] = {}
         super(TurtleSerializer, self).__init__(store)
-        self.keywords: Dict[Node, str] = {RDF.type: "a"}
+        self.keywords: dict[Node, str] = {RDF.type: "a"}
         self.reset()
         self.stream = None
         self._spacious = _SPACIOUS_OUTPUT
@@ -248,8 +243,8 @@ class TurtleSerializer(RecursiveSerializer):
 
     def reset(self) -> None:
         super(TurtleSerializer, self).reset()
-        # typing as Dict[None, None] because nothing seems to be using it
-        self._shortNames: Dict[None, None] = {}
+        # typing as dict[None, None] because nothing seems to be using it
+        self._shortNames: dict[None, None] = {}
         self._started = False
         self._ns_rewrite = {}
 

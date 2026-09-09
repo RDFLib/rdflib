@@ -4,7 +4,7 @@ Utility functions for supporting the XML Schema Datatypes hierarchy
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, List, Optional, Set
+from typing import TYPE_CHECKING, Optional
 
 from rdflib.namespace import XSD
 
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from rdflib.term import URIRef
 
 
-XSD_DTs: Set[URIRef] = set(
+XSD_DTs: set[URIRef] = set(
     (
         XSD.integer,
         XSD.decimal,
@@ -43,7 +43,7 @@ XSD_DateTime_DTs = set((XSD.dateTime, XSD.date, XSD.time))
 
 XSD_Duration_DTs = set((XSD.duration, XSD.dayTimeDuration, XSD.yearMonthDuration))
 
-_sub_types: Dict[URIRef, List[URIRef]] = {
+_sub_types: dict[URIRef, list[URIRef]] = {
     XSD.integer: [
         XSD.nonPositiveInteger,
         XSD.negativeInteger,
@@ -60,13 +60,13 @@ _sub_types: Dict[URIRef, List[URIRef]] = {
     ],
 }
 
-_super_types: Dict[URIRef, URIRef] = {}
+_super_types: dict[URIRef, URIRef] = {}
 for superdt in XSD_DTs:
     for subdt in _sub_types.get(superdt, []):
         _super_types[subdt] = superdt
 
 # we only care about float, double, integer, decimal
-_typePromotionMap: Dict[URIRef, Dict[URIRef, URIRef]] = {
+_typePromotionMap: dict[URIRef, dict[URIRef, URIRef]] = {
     XSD.float: {XSD.integer: XSD.float, XSD.decimal: XSD.float, XSD.double: XSD.double},
     XSD.double: {
         XSD.integer: XSD.double,

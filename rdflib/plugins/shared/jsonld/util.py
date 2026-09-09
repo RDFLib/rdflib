@@ -5,7 +5,7 @@ import json
 import pathlib
 from html.parser import HTMLParser
 from io import StringIO, TextIOBase, TextIOWrapper
-from typing import IO, TYPE_CHECKING, Any, Dict, List, Optional, TextIO, Tuple, Union
+from typing import IO, TYPE_CHECKING, Any, Optional, TextIO, Union
 
 if TYPE_CHECKING:
     import json
@@ -46,7 +46,7 @@ def source_to_json(
     ],
     fragment_id: Optional[str] = None,
     extract_all_scripts: Optional[bool] = False,
-) -> Tuple[Union[Dict, List[Dict]], Any]:
+) -> tuple[Union[dict, list[dict]], Any]:
     """Extract JSON from a source document.
 
     The source document can be JSON or HTML with embedded JSON script elements (type attribute = "application/ld+json").
@@ -58,7 +58,7 @@ def source_to_json(
         extract_all_scripts: if source is an HTML document then extract all script elements (unless fragment_id is provided), defaults to False (extract only the first script element)
 
     Returns:
-        Tuple with the extracted JSON document and value of the HTML base element
+        tuple with the extracted JSON document and value of the HTML base element
     """
 
     if isinstance(source, PythonInputSource):
@@ -71,7 +71,7 @@ def source_to_json(
         # It's hidden in the BytesIOWrapper 'wrapped' attribute
         b_stream = source.getByteStream()
         original_string: Optional[str] = None
-        json_dict: Union[Dict, List[Dict]]
+        json_dict: Union[dict, list[dict]]
         if isinstance(b_stream, BytesIOWrapper):
             wrapped_inner = cast(Union[str, StringIO, TextIOBase], b_stream.wrapped)
             if isinstance(wrapped_inner, str):
@@ -84,16 +84,16 @@ def source_to_json(
             elif isinstance(b_stream, BytesIOWrapper):
                 # use the CharacterStream instead
                 c_stream = source.getCharacterStream()
-                json_dict = orjson.loads(c_stream.read())
+                json_dict = orjson.loads(c_stream.read())  # type: ignore[union-attr]
             else:
                 # orjson assumes its in utf-8 encoding so
                 # don't bother to check the source.getEncoding()
-                json_dict = orjson.loads(b_stream.read())
+                json_dict = orjson.loads(b_stream.read())  # type: ignore[union-attr]
         else:
             if original_string is not None:
                 json_dict = json.loads(original_string)
             else:
-                json_dict = json.load(source.getCharacterStream())
+                json_dict = json.load(source.getCharacterStream())  # type: ignore[arg-type]
         return json_dict, html_base
 
     # TODO: conneg for JSON (fix support in rdflib's URLInputSource!)
@@ -149,7 +149,7 @@ def source_to_json(
                     assert b_stream is not None
                 if b_encoding is None:
                     b_encoding = "utf-8"
-                html_string = TextIOWrapper(b_stream, encoding=b_encoding).read()
+                html_string = TextIOWrapper(b_stream, encoding=b_encoding).read()  # type: ignore[type-var]
             html_docparser.feed(html_string)
             json_dict, html_base = html_docparser.get_json(), html_docparser.get_base()
         elif _HAS_ORJSON:
@@ -179,7 +179,7 @@ def source_to_json(
                 # b_stream is not None
                 if b_encoding is None:
                     b_encoding = "utf-8"
-                use_stream = TextIOWrapper(b_stream, encoding=b_encoding)
+                use_stream = TextIOWrapper(b_stream, encoding=b_encoding)  # type: ignore[type-var]
             json_dict = json.load(use_stream)
         return json_dict, html_base
     finally:
@@ -198,7 +198,7 @@ def source_to_json(
 VOCAB_DELIMS = ("#", "/", ":")
 
 
-def split_iri(iri: str) -> Tuple[str, Optional[str]]:
+def split_iri(iri: str) -> tuple[str, Optional[str]]:
     for delim in VOCAB_DELIMS:
         at = iri.rfind(delim)
         if at > -1:
@@ -296,7 +296,7 @@ class HTMLJSONParser(HTMLParser):
     ):
         super().__init__()
         self.fragment_id = fragment_id
-        self.json: List[Dict] = []
+        self.json: list[dict] = []
         self.contains_json = False
         self.fragment_id_does_not_match = False
         self.base = None
@@ -351,7 +351,7 @@ class HTMLJSONParser(HTMLParser):
 
             self.script_count += 1
 
-    def get_json(self) -> List[Dict]:
+    def get_json(self) -> list[dict]:
         return self.json
 
     def get_base(self):

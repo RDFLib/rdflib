@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import itertools
 import logging
-from typing import Iterable, Type, Union
+from collections.abc import Iterable
+from typing import Union
 
 import pytest
 from _pytest.mark.structures import ParameterSet
@@ -38,7 +39,7 @@ EXTENSION_FORMATS = {
     ["container_type", "file_extension"], make_load_default_and_named()
 )
 def test_load_default_and_named(
-    container_type: Union[Type[Dataset], Type[ConjunctiveGraph]], file_extension: str
+    container_type: Union[type[Dataset], type[ConjunctiveGraph]], file_extension: str
 ) -> None:
     logging.debug("container_type = %s", container_type)
     container = container_type()
@@ -105,7 +106,7 @@ def make_load_default_only_cases() -> Iterable[ParameterSet]:
     ["container_type", "file_extension"], make_load_default_only_cases()
 )
 def test_load_default_only(
-    container_type: Union[Type[Dataset], Type[ConjunctiveGraph]], file_extension: str
+    container_type: Union[type[Dataset], type[ConjunctiveGraph]], file_extension: str
 ) -> None:
     logging.debug("container_type = %s", container_type)
     container = container_type()

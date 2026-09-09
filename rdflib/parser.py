@@ -20,10 +20,8 @@ from typing import (
     TYPE_CHECKING,
     Any,
     BinaryIO,
-    List,
     Optional,
     TextIO,
-    Tuple,
     Union,
     cast,
 )
@@ -517,26 +515,26 @@ class URLInputSource(InputSource):
     Constructs an RDFLib Parser InputSource from a URL to read it from the Web.
     """
 
-    links: List[str]
+    links: list[str]
 
     @classmethod
-    def getallmatchingheaders(cls, message: Message, name) -> List[str]:
+    def getallmatchingheaders(cls, message: Message, name) -> list[str]:
         # This is reimplemented here, because the method
         # getallmatchingheaders from HTTPMessage is broken since Python 3.0
         name = name.lower()
         return [val for key, val in message.items() if key.lower() == name]
 
     @classmethod
-    def get_links(cls, response: addinfourl) -> List[str]:
+    def get_links(cls, response: addinfourl) -> list[str]:
         linkslines = cls.getallmatchingheaders(response.headers, "Link")
-        retarray: List[str] = []
+        retarray: list[str] = []
         for linksline in linkslines:
             links = [linkstr.strip() for linkstr in linksline.split(",")]
             for link in links:
                 retarray.append(link)
         return retarray
 
-    def get_alternates(self, type_: Optional[str] = None) -> List[str]:
+    def get_alternates(self, type_: Optional[str] = None) -> list[str]:
         typestr: Optional[str] = f'type="{type_}"' if type_ else None
         relstr = 'rel="alternate"'
         alts = []
@@ -697,15 +695,15 @@ def create_input_source(
                 f = source
                 input_source = InputSource()
                 if hasattr(source, "encoding"):
-                    input_source.setCharacterStream(source)
+                    input_source.setCharacterStream(source)  # type: ignore[arg-type]
                     input_source.setEncoding(source.encoding)
                     try:
                         b = source.buffer  # type: ignore[union-attr]
                         input_source.setByteStream(b)
                     except (AttributeError, LookupError):
-                        input_source.setByteStream(source)
+                        input_source.setByteStream(source)  # type: ignore[arg-type]
                 else:
-                    input_source.setByteStream(f)
+                    input_source.setByteStream(f)  # type: ignore[arg-type]
                 if f is sys.stdin:
                     input_source.setSystemId("file:///dev/stdin")
                 elif hasattr(f, "name"):
@@ -774,7 +772,7 @@ def _create_input_source_from_location(
     format: Optional[str],
     input_source: Optional[InputSource],
     location: str,
-) -> Tuple[URIRef, bool, Optional[Union[BinaryIO, TextIO]], Optional[InputSource]]:
+) -> tuple[URIRef, bool, Optional[Union[BinaryIO, TextIO]], Optional[InputSource]]:
     # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145 and
     # https://github.com/RDFLib/rdflib/issues/1430
     # NOTE: using pathlib.Path.exists on a URL fails on windows as it is not a

@@ -3,8 +3,9 @@ from __future__ import annotations
 import builtins
 import datetime
 import logging
+from collections.abc import Callable, Generator
 from decimal import Decimal
-from typing import Any, Callable, Generator, Optional, Type, Union
+from typing import Any, Optional, Union
 
 from rdflib.xsd_datetime import Duration
 from test.utils import affix_tuples
@@ -107,7 +108,7 @@ def test_literal_from_bool() -> None:
 )
 def test_cant_pass_invalid_lang(
     lang: Any,
-    exception_type: Type[Exception],
+    exception_type: type[Exception],
 ) -> None:
     """
     Construction of Literal fails if the language tag is invalid.

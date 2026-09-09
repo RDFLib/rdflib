@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from contextlib import ExitStack
 from copy import deepcopy
-from typing import Any, Dict, Iterable, Optional, Type, TypeVar, Union
+from typing import Any, Optional, TypeVar, Union
 from urllib.error import HTTPError
 from urllib.request import HTTPRedirectHandler, Request
 
@@ -189,8 +190,8 @@ def generate_make_redirect_request_cases() -> Iterable[ParameterSet]:
 def test_make_redirect_request(
     http_request: Request,
     http_error: HTTPError,
-    expected_result: Union[Type[RaisesIdentity], ExceptionChecker, Request],
-    expected_redirect_dict: Dict[str, int],
+    expected_result: Union[type[RaisesIdentity], ExceptionChecker, Request],
+    expected_redirect_dict: dict[str, int],
 ) -> None:
     """
     `_make_redirect_request` correctly handles redirects.

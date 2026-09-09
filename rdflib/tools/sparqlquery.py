@@ -25,7 +25,7 @@ import logging
 import os
 import sys
 from inspect import Parameter
-from typing import Any, Dict, List, Optional, Tuple, Type
+from typing import Any, Optional
 from urllib.parse import urlparse
 
 try:
@@ -61,11 +61,11 @@ class InvalidQueryError(Exception):
 
 
 def sparqlquery(
-    endpoints: List[str],
+    endpoints: list[str],
     query: str,
     result_format: Optional[str] = None,
-    result_keywords: Dict[str, str] = {},
-    auth: Optional[Tuple[str, str]] = None,
+    result_keywords: dict[str, str] = {},
+    auth: Optional[tuple[str, str]] = None,
     use_stdin: bool = False,
     remote_storetype: Optional[str] = None,
 ):
@@ -104,7 +104,7 @@ def _dest_is_internet_addr(dest: str):
 
 
 def _get_graph(
-    endpoints, auth: Optional[Tuple[str, str]], remote_storetype: Optional[str]
+    endpoints, auth: Optional[tuple[str, str]], remote_storetype: Optional[str]
 ) -> Graph:
     graph: Graph
     if remote_storetype is not None:
@@ -121,8 +121,8 @@ def _get_graph(
     return graph
 
 
-def _extract_query_and_format(parser) -> Tuple[Dict[str, Any], Optional[str]]:
-    opts: Dict[str, Any] = {}
+def _extract_query_and_format(parser) -> tuple[dict[str, Any], Optional[str]]:
+    opts: dict[str, Any] = {}
     tmp_args, rest_args = parser.parse_known_args()
     if tmp_args.query and tmp_args.queryfile is None:
         query = tmp_args.query
@@ -190,7 +190,7 @@ def parse_args():
         "after format like: "
         "FORMAT:(+)KW1,-KW2,KW3=VALUE.",
     )
-    opts: Dict[str, Any]
+    opts: dict[str, Any]
     opts, parser.epilog = _extract_query_and_format(parser)
 
     parser.add_argument(
@@ -297,7 +297,7 @@ def parse_args():
 
 
 def _create_epilog_from_format(format_, construct) -> Optional[str]:
-    serializer_plugin_type: Type[ResultSerializer | Serializer]
+    serializer_plugin_type: type[ResultSerializer | Serializer]
     if construct:
         serializer_plugin_type = Serializer
     else:
@@ -310,7 +310,7 @@ def _create_epilog_from_format(format_, construct) -> Optional[str]:
             f"No plugin registered for sparql result in format '{format_}'. "
             f"available plugins: {available_plugins}"
         )
-    serialize_method = plugin.serialize  # type: ignore[attr-defined]
+    serialize_method = plugin.serialize
     module = inspect.getmodule(serialize_method)
     if module is None:
         return None

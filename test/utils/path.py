@@ -1,7 +1,8 @@
 import os
+from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import PurePath
-from typing import Iterator, TypeVar, Union
+from typing import TypeVar, Union
 
 PathLike = Union[PurePath, str]
 PathLikeT = TypeVar("PathLikeT", bound=PathLike)

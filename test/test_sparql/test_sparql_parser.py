@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import math
 import sys
-from typing import Set, Tuple
 
 from rdflib import Graph, Literal
 from rdflib.namespace import Namespace
@@ -10,7 +9,7 @@ from rdflib.plugins.sparql.processor import processUpdate
 from rdflib.term import Node
 
 
-def triple_set(graph: Graph) -> Set[Tuple[Node, Node, Node]]:
+def triple_set(graph: Graph) -> set[tuple[Node, Node, Node]]:
     return set(graph.triples((None, None, None)))
 
 

@@ -5,8 +5,9 @@ from __future__ import annotations
 import contextlib
 import io
 import typing as t
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Any, BinaryIO, Iterable
+from typing import Any, BinaryIO
 
 import httpx
 

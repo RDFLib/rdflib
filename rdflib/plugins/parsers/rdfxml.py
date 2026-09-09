@@ -4,7 +4,7 @@ An RDF/XML parser for RDFLib
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Tuple
+from typing import TYPE_CHECKING, Any, NoReturn, Optional
 from urllib.parse import urldefrag, urljoin
 from xml.sax import handler, make_parser, xmlreader
 from xml.sax.handler import ErrorHandler
@@ -19,7 +19,7 @@ from rdflib.term import BNode, Identifier, Literal, URIRef
 
 if TYPE_CHECKING:
     # from xml.sax.expatreader import ExpatLocator
-    from xml.sax.xmlreader import AttributesImpl, Locator
+    from xml.sax.xmlreader import AttributesImpl, AttributesNSImpl, Locator
 
     from rdflib.graph import _ObjectType, _SubjectType, _TripleType
 
@@ -146,16 +146,16 @@ class RDFXMLHandler(handler.ContentHandler):
         document_element = ElementHandler()
         document_element.start = self.document_element_start
         document_element.end = lambda name, qname: None
-        self.stack: List[Optional[ElementHandler]] = [
+        self.stack: list[Optional[ElementHandler]] = [
             None,
             document_element,
         ]
-        self.ids: Dict[str, int] = {}  # remember IDs we have already seen
-        self.bnode: Dict[str, Identifier] = {}
-        self._ns_contexts: List[Dict[str, Optional[str]]] = [
+        self.ids: dict[str, int] = {}  # remember IDs we have already seen
+        self.bnode: dict[str, Identifier] = {}
+        self._ns_contexts: list[dict[str, Optional[str]]] = [
             {}
         ]  # contains uri -> prefix dicts
-        self._current_context: Dict[str, Optional[str]] = self._ns_contexts[-1]
+        self._current_context: dict[str, Optional[str]] = self._ns_contexts[-1]
 
     # ContentHandler methods
 
@@ -175,7 +175,7 @@ class RDFXMLHandler(handler.ContentHandler):
         del self._ns_contexts[-1]
 
     def startElementNS(
-        self, name: Tuple[Optional[str], str], qname, attrs: AttributesImpl
+        self, name: tuple[Optional[str], str], qname, attrs: AttributesNSImpl
     ) -> None:
         stack = self.stack
         stack.append(ElementHandler())
@@ -207,7 +207,7 @@ class RDFXMLHandler(handler.ContentHandler):
         current.language = language
         current.start(name, qname, attrs)
 
-    def endElementNS(self, name: Tuple[Optional[str], str], qname) -> None:
+    def endElementNS(self, name: tuple[Optional[str], str], qname) -> None:
         self.current.end(name, qname)
         self.stack.pop()
 
@@ -267,14 +267,14 @@ class RDFXMLHandler(handler.ContentHandler):
         return URIRef(result)
 
     def convert(
-        self, name: Tuple[Optional[str], str], qname, attrs: AttributesImpl
-    ) -> Tuple[URIRef, Dict[URIRef, str]]:
+        self, name: tuple[Optional[str], str], qname, attrs: AttributesImpl
+    ) -> tuple[URIRef, dict[URIRef, str]]:
         if name[0] is None:
-            # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "Tuple[Optional[str], str]")
+            # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "tuple[Optional[str], str]")
             name = URIRef(name[1])  # type: ignore[assignment]
         else:
-            # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "Tuple[Optional[str], str]")
-            # type error: Argument 1 to "join" of "str" has incompatible type "Tuple[Optional[str], str]"; expected "Iterable[str]"
+            # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "tuple[Optional[str], str]")
+            # type error: Argument 1 to "join" of "str" has incompatible type "tuple[Optional[str], str]"; expected "Iterable[str]"
             name = URIRef("".join(name))  # type: ignore[assignment, arg-type]
         atts = {}
         for n, v in attrs.items():
@@ -291,11 +291,11 @@ class RDFXMLHandler(handler.ContentHandler):
                 atts[RDFNS[att]] = v  # type: ignore[misc, valid-type]
             else:
                 atts[URIRef(att)] = v
-        # type error: Incompatible return value type (got "Tuple[Tuple[Optional[str], str], Dict[Any, Any]]", expected "Tuple[URIRef, Dict[URIRef, str]]")
+        # type error: Incompatible return value type (got "tuple[tuple[Optional[str], str], dict[Any, Any]]", expected "tuple[URIRef, dict[URIRef, str]]")
         return name, atts  # type: ignore[return-value]
 
     def document_element_start(
-        self, name: Tuple[str, str], qname, attrs: AttributesImpl
+        self, name: tuple[str, str], qname, attrs: AttributesImpl
     ) -> None:
         if name[0] and URIRef("".join(name)) == RDFVOC.RDF:
             # Cheap hack so 2to3 doesn't turn it into __next__
@@ -309,9 +309,9 @@ class RDFXMLHandler(handler.ContentHandler):
             # another element will cause error
 
     def node_element_start(
-        self, name: Tuple[str, str], qname, attrs: AttributesImpl
+        self, name: tuple[str, str], qname, attrs: AttributesImpl
     ) -> None:
-        # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "Tuple[str, str]")
+        # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "tuple[str, str]")
         name, atts = self.convert(name, qname, attrs)  # type: ignore[assignment]
         current = self.current
         absolutize = self.absolutize
@@ -358,7 +358,7 @@ class RDFXMLHandler(handler.ContentHandler):
             subject = BNode()
 
         if name != RDFVOC.Description:  # S1
-            # error: Argument 1 has incompatible type "Tuple[str, str]"; expected "str"
+            # error: Argument 1 has incompatible type "tuple[str, str]"; expected "str"
             self.store.add((subject, RDF.type, absolutize(name)))  # type: ignore[arg-type]
 
         object: _ObjectType
@@ -391,7 +391,7 @@ class RDFXMLHandler(handler.ContentHandler):
 
         current.subject = subject
 
-    def node_element_end(self, name: Tuple[str, str], qname) -> None:
+    def node_element_end(self, name: tuple[str, str], qname) -> None:
         # repeat node-elements are only allowed
         # at at top-level
 
@@ -403,9 +403,9 @@ class RDFXMLHandler(handler.ContentHandler):
         self.parent.object = self.current.subject
 
     def property_element_start(
-        self, name: Tuple[str, str], qname, attrs: AttributesImpl
+        self, name: tuple[str, str], qname, attrs: AttributesImpl
     ) -> None:
-        # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "Tuple[str, str]")
+        # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "tuple[str, str]")
         name, atts = self.convert(name, qname, attrs)  # type: ignore[assignment]
         current = self.current
         absolutize = self.absolutize
@@ -416,9 +416,9 @@ class RDFXMLHandler(handler.ContentHandler):
         current.data = None
         current.list = None
 
-        # type error: "Tuple[str, str]" has no attribute "startswith"
+        # type error: "tuple[str, str]" has no attribute "startswith"
         if not name.startswith(str(RDFNS)):  # type: ignore[attr-defined]
-            # type error: Argument 1 has incompatible type "Tuple[str, str]"; expected "str"
+            # type error: Argument 1 has incompatible type "tuple[str, str]"; expected "str"
             current.predicate = absolutize(name)  # type: ignore[arg-type]
         elif name == RDFVOC.li:
             current.predicate = current.next_li()
@@ -426,7 +426,7 @@ class RDFXMLHandler(handler.ContentHandler):
             # type error: Not all arguments converted during string formatting
             self.error("Invalid property element URI: %s" % name)  # type: ignore[str-format]
         else:
-            # type error: Argument 1 has incompatible type "Tuple[str, str]"; expected "str"
+            # type error: Argument 1 has incompatible type "tuple[str, str]"; expected "str"
             current.predicate = absolutize(name)  # type: ignore[arg-type]
 
         id = atts.get(RDFVOC.ID, None)
@@ -533,7 +533,7 @@ class RDFXMLHandler(handler.ContentHandler):
         if current.data is not None:
             current.data += data
 
-    def property_element_end(self, name: Tuple[str, str], qname) -> None:
+    def property_element_end(self, name: tuple[str, str], qname) -> None:
         current = self.current
         if current.data is not None and current.object is None:
             literalLang = current.language
@@ -552,7 +552,7 @@ class RDFXMLHandler(handler.ContentHandler):
                 )
         current.subject = None
 
-    def list_node_element_end(self, name: Tuple[str, str], qname) -> None:
+    def list_node_element_end(self, name: tuple[str, str], qname) -> None:
         current = self.current
         if self.parent.list == RDF.nil:
             list = BNode()
@@ -571,7 +571,7 @@ class RDFXMLHandler(handler.ContentHandler):
             self.parent.list = list
 
     def literal_element_start(
-        self, name: Tuple[str, str], qname, attrs: AttributesImpl
+        self, name: tuple[str, str], qname, attrs: AttributesImpl
     ) -> None:
         current = self.current
         self.next.start = self.literal_element_start
@@ -592,14 +592,14 @@ class RDFXMLHandler(handler.ContentHandler):
                     current.object += ' xmlns="%s"' % name[0]
         else:
             current.object = "<%s" % name[1]
-        # type error: Incompatible types in assignment (expression has type "str", variable has type "Tuple[str, str]")
+        # type error: Incompatible types in assignment (expression has type "str", variable has type "tuple[str, str]")
         for name, value in attrs.items():  # type: ignore[assignment, unused-ignore]
             if name[0]:
                 if not name[0] in current.declared:  # noqa: E713
                     current.declared[name[0]] = self._current_context[name[0]]
                 name = current.declared[name[0]] + ":" + name[1]
             else:
-                # type error: Incompatible types in assignment (expression has type "str", variable has type "Tuple[str, str]")
+                # type error: Incompatible types in assignment (expression has type "str", variable has type "tuple[str, str]")
                 name = name[1]  # type: ignore[assignment]
             current.object += " %s=%s" % (name, quoteattr(value))
         current.object += ">"
@@ -607,7 +607,7 @@ class RDFXMLHandler(handler.ContentHandler):
     def literal_element_char(self, data: str) -> None:
         self.current.object += escape(data)
 
-    def literal_element_end(self, name: Tuple[str, str], qname) -> None:
+    def literal_element_end(self, name: tuple[str, str], qname) -> None:
         if name[0]:
             prefix = self._current_context[name[0]]
             if prefix:
