@@ -1,6 +1,7 @@
 from io import BytesIO
 
-from rdflib.graph import Dataset
+from rdflib.compare import isomorphic
+from rdflib.graph import Dataset, Graph
 from rdflib.namespace import RDF, RDFS
 from rdflib.plugins.serializers.rdfxml import PrettyXMLSerializer
 from rdflib.term import BNode, Literal, URIRef
@@ -209,3 +210,17 @@ def _assert_expected_object_types_for_predicates(graph, predicates, types):
             assert (
                 True in some_true
             ), "Bad type %s for object when predicate is <%s>." % (type(o), p)
+
+
+def test_pretty_xml_bind_namespaces_none():
+    # https://github.com/RDFLib/rdflib/issues/2408
+    graph = Graph(bind_namespaces="none")
+    graph.parse(data='prefix ex: <http://example.org/> ex:a ex:b "test"@en .')
+
+    result = graph.serialize(format="pretty-xml")
+
+    assert "<rdf:RDF" in result
+    assert 'rdf:about="http://example.org/a"' in result
+    assert 'xml:lang="en"' in result
+    assert "ns1" not in result
+    assert isomorphic(graph, Graph().parse(data=result, format="xml"))

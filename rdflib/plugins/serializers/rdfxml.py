@@ -194,7 +194,12 @@ class PrettyXMLSerializer(Serializer):
         assert self.max_depth > 0, "max_depth must be greater than 0"
 
         self.nm = nm = store.namespace_manager
-        self.writer = writer = XMLWriter(stream, nm, encoding)
+        self.writer = writer = XMLWriter(
+            stream,
+            nm,
+            encoding,
+            extra_ns={"rdf": Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")},
+        )
         namespaces = {}
 
         possible: set[Node] = set(store.predicates()).union(
@@ -205,8 +210,6 @@ class PrettyXMLSerializer(Serializer):
             # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
             prefix, namespace, local = nm.compute_qname_strict(predicate)  # type: ignore[arg-type]
             namespaces[prefix] = namespace
-
-        namespaces["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 
         writer.push(RDFVOC.RDF)
 
