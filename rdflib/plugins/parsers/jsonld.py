@@ -35,10 +35,11 @@ from __future__ import annotations
 
 import secrets
 import warnings
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Union
+from collections.abc import Iterable
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 import rdflib.parser
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import Dataset, Graph
 from rdflib.namespace import RDF, XSD
 from rdflib.parser import InputSource, URLInputSource
 from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef
@@ -77,6 +78,39 @@ TYPE_TERM = Term(str(RDF.type), TYPE, VOCAB)  # type: ignore[call-arg]
 ALLOW_LISTS_OF_LISTS = True  # NOTE: Not allowed in JSON-LD 1.0
 
 
+class _ContextAwareGraph(Graph):
+    """Context-aware graph view used while parsing JSON-LD into a Graph sink."""
+
+    def __init__(self, sink: Graph):
+        super().__init__(store=sink.store, identifier=sink.identifier)
+        assert (
+            self.store.context_aware
+        ), "JSON-LD named graphs require a context-aware store."
+        self.context_aware = True
+        self.default_union = True
+        self._default_context = Graph(
+            store=self.store,
+            identifier=sink.identifier,
+        )
+
+    @property
+    def default_context(self) -> Graph:
+        return self._default_context
+
+    def get_context(
+        self,
+        identifier: Optional[Union[IdentifiedNode, str]],
+        quoted: bool = False,
+        base: Optional[str] = None,
+    ) -> Graph:
+        return Graph(
+            store=self.store,
+            identifier=identifier,
+            namespace_manager=self.namespace_manager,
+            base=base,
+        )
+
+
 class JsonLDParser(rdflib.parser.Parser):
     def __init__(self):
         super(JsonLDParser, self).__init__()
@@ -91,8 +125,8 @@ class JsonLDParser(rdflib.parser.Parser):
         base: Optional[str] = None,
         context: Optional[
             Union[
-                List[Union[Dict[str, Any], str, None]],
-                Dict[str, Any],
+                list[Union[dict[str, Any], str, None]],
+                dict[str, Any],
                 str,
             ]
         ] = None,
@@ -142,27 +176,28 @@ class JsonLDParser(rdflib.parser.Parser):
             version = 1.1
 
         # Get the optional fragment identifier
-        try:
-            fragment_id = URIRef(source.getSystemId()).fragment
-        except Exception:
+        if (_fragment_id := source.getSystemId()) is None:
             fragment_id = None
+        else:
+            fragment_id = URIRef(_fragment_id).fragment
 
         data, html_base = source_to_json(source, fragment_id, extract_all_scripts)
         if html_base is not None:
             base = URIRef(html_base, base=base)
 
-        # NOTE: A ConjunctiveGraph parses into a Graph sink, so no sink will be
-        # context_aware. Keeping this check in case RDFLib is changed, or
-        # someone passes something context_aware to this parser directly.
-        conj_sink: Graph
+        # Graph.parse passes a non-context-aware Graph sink to parsers. JSON-LD
+        # needs a context-aware view to preserve named graphs, but Dataset would
+        # additionally require a graph-aware store. Use a minimal internal view
+        # that preserves the existing context-aware store contract.
+        context_sink: Graph
         if not sink.context_aware:
-            conj_sink = ConjunctiveGraph(store=sink.store, identifier=sink.identifier)
+            context_sink = _ContextAwareGraph(sink)
         else:
-            conj_sink = sink
+            context_sink = sink
 
         to_rdf(
             data,
-            conj_sink,
+            context_sink,
             base,
             context_data,
             version,
@@ -177,8 +212,8 @@ def to_rdf(
     base: Optional[str] = None,
     context_data: Optional[
         Union[
-            List[Union[Dict[str, Any], str, None]],
-            Dict[str, Any],
+            list[Union[dict[str, Any], str, None]],
+            dict[str, Any],
             str,
         ]
     ] = None,
@@ -217,7 +252,7 @@ class Parser:
 
     def parse(self, data: Any, context: Context, dataset: Graph) -> Graph:
         topcontext = False
-        resources: Union[Dict[str, Any], List[Any]]
+        resources: Union[dict[str, Any], list[Any]]
         if isinstance(data, list):
             resources = data
         elif isinstance(data, dict):
@@ -226,7 +261,7 @@ class Parser:
                 context.load(local_context, context.base)
                 topcontext = True
             resources = data
-            # type error: Subclass of "Dict[str, Any]" and "List[Any]" cannot exist: would have incompatible method signatures
+            # type error: Subclass of "dict[str, Any]" and "list[Any]" cannot exist: would have incompatible method signatures
             if not isinstance(resources, list):  # type: ignore[unreachable]
                 resources = [resources]
 
@@ -236,8 +271,13 @@ class Parser:
             if term.id and term.id.endswith(VOCAB_DELIMS):
                 dataset.bind(name, term.id)
 
-        # type error: "Graph" has no attribute "default_context"
-        graph = dataset.default_context if dataset.context_aware else dataset  # type: ignore[attr-defined]
+        if isinstance(dataset, Dataset):
+            graph = dataset.default_graph
+        elif dataset.context_aware:
+            # type error: "Graph" has no attribute "default_context"
+            graph = dataset.default_context  # type: ignore[attr-defined]
+        else:
+            graph = dataset
 
         for node in resources:
             self._add_to_graph(dataset, graph, context, node, topcontext)
@@ -308,7 +348,7 @@ class Parser:
         return subj
 
     # type error: Missing return statement
-    def _get_nested_id(self, context: Context, node: Dict[str, Any]) -> Optional[str]:  # type: ignore[return]
+    def _get_nested_id(self, context: Context, node: dict[str, Any]) -> Optional[str]:  # type: ignore[return]
         for key, obj in node.items():
             if context.version >= 1.1 and key in context.get_keys(NEST):
                 term = context.terms.get(key)
@@ -360,10 +400,8 @@ class Parser:
 
         if GRAPH in (key, term_id):
             if dataset.context_aware and not no_id:
-                if TYPE_CHECKING:
-                    assert isinstance(dataset, ConjunctiveGraph)
-                # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Node"; expected "Union[IdentifiedNode, str, None]"
-                subgraph = dataset.get_context(subj)  # type: ignore[arg-type]
+                # type error: "Graph" has no attribute "get_context"
+                subgraph = dataset.get_context(subj)  # type: ignore[attr-defined]
             else:
                 subgraph = graph
             for onode in obj_nodes:
@@ -402,7 +440,7 @@ class Parser:
         context = context.get_context_for_term(term)
 
         # Flatten deep nested lists
-        def flatten(n: Iterable[Any]) -> List[Any]:
+        def flatten(n: Iterable[Any]) -> list[Any]:
             flattened = []
             for obj in n:
                 if isinstance(obj, dict):
@@ -444,8 +482,8 @@ class Parser:
                 graph.add((subj, pred, obj))
 
     def _parse_container(
-        self, context: Context, term: Term, obj: Dict[str, Any]
-    ) -> List[Any]:
+        self, context: Context, term: Term, obj: dict[str, Any]
+    ) -> list[Any]:
         if LANG in term.container:
             obj_nodes = []
             for lang, values in obj.items():
@@ -524,7 +562,7 @@ class Parser:
         return [obj]
 
     @staticmethod
-    def _add_type(context: Context, o: Dict[str, Any], k: str) -> Dict[str, Any]:
+    def _add_type(context: Context, o: dict[str, Any], k: str) -> dict[str, Any]:
         otype = context.get_type(o) or []
         if otype and not isinstance(otype, list):
             otype = [otype]
@@ -660,7 +698,7 @@ class Parser:
 
             if rest:
                 # type error: Statement is unreachable
-                graph.add((subj, RDF.rest, rest))  # type: ignore[unreachable]
+                graph.add((subj, RDF.rest, rest))
                 subj = rest
 
             obj = self._to_object(dataset, graph, context, term, node, inlist=True)
@@ -680,7 +718,7 @@ class Parser:
             return RDF.nil
 
     @staticmethod
-    def _to_typed_json_value(value: Any) -> Dict[str, str]:
+    def _to_typed_json_value(value: Any) -> dict[str, str]:
         if _HAS_ORJSON:
             val_string: str = orjson.dumps(
                 value,
@@ -696,7 +734,7 @@ class Parser:
         }
 
     @classmethod
-    def _expand_nested_list(cls, obj_nodes: List[Any]) -> Dict[str, List[Any]]:
+    def _expand_nested_list(cls, obj_nodes: list[Any]) -> dict[str, list[Any]]:
         result = [
             cls._expand_nested_list(o) if isinstance(o, list) else o for o in obj_nodes
         ]

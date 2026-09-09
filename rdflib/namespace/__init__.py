@@ -88,9 +88,10 @@ except ImportError:  # pragma: no cover
             return thing.__annotations__
 
 
+from collections.abc import Iterable
 from functools import lru_cache
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Set, Tuple, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 from unicodedata import category
 from urllib.parse import urldefrag, urljoin
 
@@ -246,7 +247,7 @@ class URIPattern(str):
 # always raise AttributeError if they are not defined and which should not be
 # considered part of __dir__ results. These should be all annotations on
 # `DefinedNamespaceMeta`.
-_DFNS_RESERVED_ATTRS: Set[str] = {
+_DFNS_RESERVED_ATTRS: set[str] = {
     "__slots__",
     "_NS",
     "_warn",
@@ -257,7 +258,7 @@ _DFNS_RESERVED_ATTRS: Set[str] = {
 
 # Some libraries probe classes for certain attributes or items.
 # This is a list of those attributes and items that should be ignored.
-_IGNORED_ATTR_LOOKUP: Set[str] = {
+_IGNORED_ATTR_LOOKUP: set[str] = {
     "_pytestfixturefunction",  # pytest tries to look this up on Defined namespaces
     "_partialmethod",  # sphinx tries to look this up during autodoc generation
 }
@@ -266,12 +267,12 @@ _IGNORED_ATTR_LOOKUP: Set[str] = {
 class DefinedNamespaceMeta(type):
     """Utility metaclass for generating URIRefs with a common prefix."""
 
-    __slots__: Tuple[str, ...] = tuple()
+    __slots__: tuple[str, ...] = tuple()
 
     _NS: Namespace
     _warn: bool = True
     _fail: bool = False  # True means mimic ClosedNamespace
-    _extras: List[str] = []  # List of non-pythonesque items
+    _extras: list[str] = []  # List of non-pythonesque items
     _underscore_num: bool = False  # True means pass "_n" constructs
 
     @lru_cache(maxsize=None)
@@ -361,7 +362,7 @@ class DefinedNamespace(metaclass=DefinedNamespaceMeta):
     Warnings are emitted if unknown members are referenced if _warn is True.
     """
 
-    __slots__: Tuple[str, ...] = tuple()
+    __slots__: tuple[str, ...] = tuple()
 
     def __init__(self):
         raise TypeError("namespace may not be instantiated")
@@ -374,9 +375,9 @@ class ClosedNamespace(Namespace):
     Trying to create terms not listed is an error
     """
 
-    __uris: Dict[str, URIRef]
+    __uris: dict[str, URIRef]
 
-    def __new__(cls, uri: str, terms: List[str]):
+    def __new__(cls, uri: str, terms: list[str]):
         rt = super().__new__(cls, uri)
         rt.__uris = {t: URIRef(rt + t) for t in terms}  # type: ignore[attr-defined]
         return rt
@@ -406,7 +407,7 @@ class ClosedNamespace(Namespace):
     def __repr__(self) -> str:
         return f"{self.__module__}.{self.__class__.__name__}({str(self)!r})"
 
-    def __dir__(self) -> List[str]:
+    def __dir__(self) -> list[str]:
         return list(self.__uris)
 
     def __contains__(self, ref: str) -> bool:  # type: ignore[override]
@@ -414,7 +415,7 @@ class ClosedNamespace(Namespace):
             ref in self.__uris.values()
         )  # test namespace membership with "ref in ns" syntax
 
-    def _ipython_key_completions_(self) -> List[str]:
+    def _ipython_key_completions_(self) -> list[str]:
         return dir(self)
 
 
@@ -477,11 +478,11 @@ class NamespaceManager:
 
     def __init__(self, graph: Graph, bind_namespaces: _NamespaceSetString = "rdflib"):
         self.graph = graph
-        self.__cache: Dict[str, Tuple[str, URIRef, str]] = {}
-        self.__cache_strict: Dict[str, Tuple[str, URIRef, str]] = {}
+        self.__cache: dict[str, tuple[str, URIRef, str]] = {}
+        self.__cache_strict: dict[str, tuple[str, URIRef, str]] = {}
         self.__log = None
-        self.__strie: Dict[str, Any] = {}
-        self.__trie: Dict[str, Any] = {}
+        self.__strie: dict[str, Any] = {}
+        self.__trie: dict[str, Any] = {}
         # This type declaration is here becuase there is no common base class
         # for all namespaces and without it the inferred type of ns is not
         # compatible with all prefixes.
@@ -515,8 +516,8 @@ class NamespaceManager:
     def __contains__(self, ref: str) -> bool:
         # checks if a reference is in any of the managed namespaces with syntax
         # "ref in manager". Note that we don't use "ref in ns", as
-        # NamespaceManager.namespaces() returns Iterator[Tuple[str, URIRef]]
-        # rather than Iterator[Tuple[str, Namespace]]
+        # NamespaceManager.namespaces() returns Iterator[tuple[str, URIRef]]
+        # rather than Iterator[tuple[str, Namespace]]
         return any(ref.startswith(ns) for prefix, ns in self.namespaces())
 
     def reset(self) -> None:
@@ -602,7 +603,7 @@ class NamespaceManager:
             qNameParts = self.compute_qname(rdfTerm)  # noqa: N806
             return ":".join([qNameParts[0], qNameParts[-1]])
 
-    def compute_qname(self, uri: str, generate: bool = True) -> Tuple[str, URIRef, str]:
+    def compute_qname(self, uri: str, generate: bool = True) -> tuple[str, URIRef, str]:
         prefix: Optional[str]
         if uri not in self.__cache:
             if not _is_valid_uri(uri):
@@ -649,7 +650,7 @@ class NamespaceManager:
 
     def compute_qname_strict(
         self, uri: str, generate: bool = True
-    ) -> Tuple[str, str, str]:
+    ) -> tuple[str, str, str]:
         # code repeated to avoid branching on strict every time
         # if output needs to be strict (e.g. for xml) then
         # only the strict output should bear the overhead
@@ -817,7 +818,7 @@ class NamespaceManager:
 
         insert_trie(self.__trie, str(namespace))
 
-    def namespaces(self) -> Iterable[Tuple[str, URIRef]]:
+    def namespaces(self) -> Iterable[tuple[str, URIRef]]:
         for prefix, namespace in self.store.namespaces():
             namespace = URIRef(namespace)
             yield prefix, namespace
@@ -900,10 +901,15 @@ def is_ncname(name: str) -> int:
 
 
 def split_uri(
-    uri: str, split_start: List[str] = SPLIT_START_CATEGORIES
-) -> Tuple[str, str]:
+    uri: str, split_start: list[str] = SPLIT_START_CATEGORIES
+) -> tuple[str, str]:
     if uri.startswith(XMLNS):
-        return (XMLNS, uri.split(XMLNS)[1])
+        # The XML namespace has no trailing delimiter, so only split on it when
+        # the remainder is a usable local name; otherwise fall through to the
+        # generic splitting below (e.g. ".../namespace/" must not become "/").
+        ln = uri[len(XMLNS) :]
+        if ln == "" or is_ncname(ln):
+            return (XMLNS, ln)
     length = len(uri)
     for i in range(0, length):
         c = uri[-i - 1]
@@ -923,8 +929,8 @@ def split_uri(
 
 
 def insert_trie(
-    trie: Dict[str, Any], value: str
-) -> Dict[str, Any]:  # aka get_subtrie_or_insert
+    trie: dict[str, Any], value: str
+) -> dict[str, Any]:  # aka get_subtrie_or_insert
     """Insert a value into the trie if it is not already contained in the trie.
     Return the subtree for the value regardless of whether it is a new value
     or not."""
@@ -947,12 +953,12 @@ def insert_trie(
     return trie[value]
 
 
-def insert_strie(strie: Dict[str, Any], trie: Dict[str, Any], value: str) -> None:
+def insert_strie(strie: dict[str, Any], trie: dict[str, Any], value: str) -> None:
     if value not in strie:
         strie[value] = insert_trie(trie, value)
 
 
-def get_longest_namespace(trie: Dict[str, Any], value: str) -> Optional[str]:
+def get_longest_namespace(trie: dict[str, Any], value: str) -> Optional[str]:
     for key in trie:
         if value.startswith(key):
             out = get_longest_namespace(trie[key], value)

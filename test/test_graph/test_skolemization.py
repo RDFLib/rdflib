@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Pattern, Union
+from re import Pattern
+from typing import Union
 
 import pytest
 

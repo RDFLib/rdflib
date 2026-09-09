@@ -9,20 +9,10 @@ from __future__ import annotations
 
 import enum
 import pprint
+from collections.abc import Callable, Collection, Generator, Iterable, Sequence
 from typing import (
     Any,
-    Callable,
-    Collection,
-    Dict,
-    FrozenSet,
-    Generator,
-    Iterable,
-    List,
     Optional,
-    Sequence,
-    Set,
-    Tuple,
-    Type,
     TypeVar,
     Union,
     cast,
@@ -45,31 +35,31 @@ __all__ = ["file_uri_to_path"]
 
 
 def get_unique_plugins(
-    type: Type[PluginT],
-) -> Dict[Type[PluginT], Set[Plugin[PluginT]]]:
-    result: Dict[Type[PluginT], Set[Plugin[PluginT]]] = {}
-    for plugin in rdflib.plugin.plugins(None, type):
+    _type: type[PluginT],
+) -> dict[type[PluginT], set[Plugin[PluginT]]]:
+    result: dict[type[PluginT], set[Plugin[PluginT]]] = {}
+    for plugin in rdflib.plugin.plugins(None, _type):
         cls = plugin.getClass()
         plugins = result.setdefault(cls, set())
         plugins.add(plugin)
     return result
 
 
-def get_unique_plugin_names(type: Type[PluginT]) -> Set[str]:
-    result: Set[str] = set()
+def get_unique_plugin_names(type: type[PluginT]) -> set[str]:
+    result: set[str] = set()
     unique_plugins = get_unique_plugins(type)
     for type, plugin_set in unique_plugins.items():
         result.add(next(iter(plugin_set)).name)
     return result
 
 
-GHNode = Union[Identifier, FrozenSet[Tuple[Identifier, Identifier, Identifier]]]
-GHTriple = Tuple[GHNode, GHNode, GHNode]
-GHTripleSet = Set[GHTriple]
-GHTripleFrozenSet = FrozenSet[GHTriple]
-GHQuad = Tuple[GHNode, GHNode, GHNode, Identifier]
-GHQuadSet = Set[GHQuad]
-GHQuadFrozenSet = FrozenSet[GHQuad]
+GHNode = Union[Identifier, frozenset[tuple[Identifier, Identifier, Identifier]]]
+GHTriple = tuple[GHNode, GHNode, GHNode]
+GHTripleSet = set[GHTriple]
+GHTripleFrozenSet = frozenset[GHTriple]
+GHQuad = tuple[GHNode, GHNode, GHNode, Identifier]
+GHQuadSet = set[GHQuad]
+GHQuadFrozenSet = frozenset[GHQuad]
 
 NodeT = TypeVar("NodeT", bound=GHNode)
 
@@ -89,7 +79,7 @@ class GraphHelper:
 
     @classmethod
     def add_triples(
-        cls, graph: Graph, triples: Iterable[Tuple[Node, Node, Node]]
+        cls, graph: Graph, triples: Iterable[tuple[Node, Node, Node]]
     ) -> Graph:
         for triple in triples:
             graph.add(triple)
@@ -111,9 +101,9 @@ class GraphHelper:
     @classmethod
     def nodes(
         cls,
-        nodes: Tuple[Node, ...],
+        nodes: tuple[Node, ...],
         bnode_handling: BNodeHandling = BNodeHandling.COMPARE,
-    ) -> Tuple[GHNode, ...]:
+    ) -> tuple[GHNode, ...]:
         """
         Return the identifiers of the provided nodes.
         """
@@ -123,7 +113,7 @@ class GraphHelper:
         return tuple(result)
 
     @classmethod
-    def _contains_bnodes(cls, nodes: Tuple[GHNode, ...]) -> bool:
+    def _contains_bnodes(cls, nodes: tuple[GHNode, ...]) -> bool:
         """
         Return true if any of the nodes are BNodes.
         """
@@ -133,11 +123,11 @@ class GraphHelper:
         return False
 
     @classmethod
-    def _collapse_bnodes(cls, nodes: Tuple[NodeT, ...]) -> Tuple[NodeT, ...]:
+    def _collapse_bnodes(cls, nodes: tuple[NodeT, ...]) -> tuple[NodeT, ...]:
         """
         Return BNodes as COLLAPSED_BNODE
         """
-        result: List[NodeT] = []
+        result: list[NodeT] = []
         for node in nodes:
             if isinstance(node, BNode):
                 result.append(cast(NodeT, COLLAPSED_BNODE))
@@ -170,11 +160,11 @@ class GraphHelper:
         cls,
         graphs: Iterable[Graph],
         bnode_handling: BNodeHandling = BNodeHandling.COMPARE,
-    ) -> List[GHTripleFrozenSet]:
+    ) -> list[GHTripleFrozenSet]:
         """
         Extracts the set of all triples from the supplied Graph.
         """
-        result: List[GHTripleFrozenSet] = []
+        result: list[GHTripleFrozenSet] = []
         for graph in graphs:
             result.append(cls.triple_set(graph, bnode_handling))
         return result
@@ -358,7 +348,7 @@ class GraphHelper:
         exclude_bnodes: bool,
         message: Optional[str] = None,
     ) -> None:
-        def get_contexts(cgraph: ConjunctiveGraph) -> Dict[URIRef, Graph]:
+        def get_contexts(cgraph: ConjunctiveGraph) -> dict[URIRef, Graph]:
             result = {}
             for context in cgraph.contexts():
                 if isinstance(context.identifier, BNode):
@@ -387,7 +377,7 @@ class GraphHelper:
             cls.assert_isomorphic(lhs_context, rhs_contexts[id], message)
 
     @classmethod
-    def strip_literal_datatypes(cls, graph: Graph, datatypes: Set[URIRef]) -> None:
+    def strip_literal_datatypes(cls, graph: Graph, datatypes: set[URIRef]) -> None:
         """
         Strips datatypes in the provided set from literals in the graph.
         """
@@ -402,7 +392,7 @@ class GraphHelper:
     @classmethod
     def non_default_graph_names(
         cls, container: ConjunctiveGraph
-    ) -> Set[IdentifiedNode]:
+    ) -> set[IdentifiedNode]:
         return set(context.identifier for context in container.contexts()) - {
             container.default_context.identifier
         }
@@ -429,7 +419,7 @@ def eq_(lhs, rhs, msg=None):
 
 ParamsT = TypeVar("ParamsT", bound=tuple)
 MarksType = Collection[Union[MarkDecorator, Mark]]
-MarkListType = List[Union[MarkDecorator, Mark]]
+MarkListType = list[Union[MarkDecorator, Mark]]
 MarkType = Union[MarkDecorator, MarksType]
 
 MarkerType = Callable[..., Optional[MarkType]]
@@ -445,7 +435,7 @@ def marks_to_list(mark: MarkType) -> MarkListType:
 
 def pytest_mark_filter(
     param_sets: Iterable[Union[ParamsT, ParameterSet]],
-    mark_dict: Dict[ParamsT, MarksType],
+    mark_dict: dict[ParamsT, MarksType],
 ) -> Generator[ParameterSet, None, None]:
     """
     Adds marks to test parameters. Useful for adding xfails to test parameters.
@@ -470,10 +460,10 @@ def pytest_mark_filter(
 
 
 def affix_tuples(
-    prefix: Optional[Tuple[Any, ...]],
-    tuples: Iterable[Tuple[Any, ...]],
-    suffix: Optional[Tuple[Any, ...]],
-) -> Generator[Tuple[Any, ...], None, None]:
+    prefix: Optional[tuple[Any, ...]],
+    tuples: Iterable[tuple[Any, ...]],
+    suffix: Optional[tuple[Any, ...]],
+) -> Generator[tuple[Any, ...], None, None]:
     if prefix is None:
         prefix = tuple()
     if suffix is None:

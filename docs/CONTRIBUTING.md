@@ -4,6 +4,22 @@ Thank you for considering contributing to RDFLib. This project has no formal
 funding or full-time maintainers, and relies entirely on independent
 contributors to keep it alive and relevant.
 
+## Which branch should I target?
+
+Most pull requests should target `main`, the current major release branch.
+Backwards-compatible bug fixes, documentation updates, dependency updates, and
+new features should usually target `main`.
+
+The `next` branch is reserved for work toward the next major release. Target
+`next` only for breaking changes or other work that maintainers have identified
+as next-major work.
+
+Maintainers periodically merge `main` forward into `next`, so changes accepted
+on `main` will be carried into next-major development when `next` catches up.
+
+If you are unsure which branch to use, open the pull request against `main` and
+ask for maintainer guidance.
+
 ## Ways to contribute
 
 Some ways in which you can contribute to RDFLib are:

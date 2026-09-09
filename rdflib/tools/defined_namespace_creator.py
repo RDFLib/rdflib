@@ -16,8 +16,9 @@ from __future__ import annotations
 import argparse
 import datetime
 import keyword
+from collections.abc import Iterable
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterable, List, Tuple
+from typing import TYPE_CHECKING
 
 from rdflib.graph import Graph
 from rdflib.namespace import DCTERMS, OWL, RDFS, SKOS
@@ -73,7 +74,7 @@ def validate_object_id(object_id: str) -> None:
 
 def get_target_namespace_elements(
     g: Graph, target_namespace: str
-) -> Tuple[List[Tuple[str, str]], List[str], List[str]]:
+) -> tuple[list[tuple[str, str]], list[str], list[str]]:
     namespaces = {"dcterms": DCTERMS, "owl": OWL, "rdfs": RDFS, "skos": SKOS}
     q = """
         SELECT ?s (GROUP_CONCAT(DISTINCT STR(?def)) AS ?defs)
@@ -94,7 +95,7 @@ def get_target_namespace_elements(
         """.replace(
         "xxx", target_namespace
     )
-    elements: List[Tuple[str, str]] = []
+    elements: list[tuple[str, str]] = []
     for r in g.query(q, initNs=namespaces):
         if TYPE_CHECKING:
             assert isinstance(r, ResultRow)
@@ -102,8 +103,8 @@ def get_target_namespace_elements(
 
     elements.sort(key=lambda tup: tup[0])
 
-    elements_strs: List[str] = []
-    non_python_elements_strs: List[str] = []
+    elements_strs: list[str] = []
+    non_python_elements_strs: list[str] = []
     for e in elements:
         name = e[0].replace(target_namespace, "")
         desc = e[1].replace("\n", " ")
@@ -119,7 +120,7 @@ def make_dn_file(
     output_file_name: Path,
     target_namespace: str,
     elements_strs: Iterable[str],
-    non_python_elements_strs: List[str],
+    non_python_elements_strs: list[str],
     object_id: str,
     fail: bool,
 ) -> None:

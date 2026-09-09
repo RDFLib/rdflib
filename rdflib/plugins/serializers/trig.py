@@ -5,7 +5,7 @@ See <http://www.w3.org/TR/trig/> for syntax specification.
 
 from __future__ import annotations
 
-from typing import IO, TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from typing import IO, TYPE_CHECKING, Any, Optional, Union
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.serializers.turtle import TurtleSerializer
@@ -58,9 +58,9 @@ class TrigSerializer(TurtleSerializer):
 
     def reset(self) -> None:
         super(TrigSerializer, self).reset()
-        self._contexts: Dict[
+        self._contexts: dict[
             _ContextType,
-            Tuple[List[_SubjectType], Dict[_SubjectType, bool]],
+            tuple[list[_SubjectType], dict[_SubjectType, bool]],
         ] = {}
 
     def serialize(

@@ -13,7 +13,12 @@ If you have any questions regarding our guidelines, submit the PR as is
 and ask.
 
 More detailed guidelines for pull requests are provided in our [developers
-guide](https://github.com/RDFLib/rdflib/blob/main/docs/developers.rst).
+guide](https://github.com/RDFLib/rdflib/blob/main/docs/developers.md).
+
+Most pull requests should target `main`, the current major release branch.
+Target `next` only for breaking changes or other work intended for the next
+major release. If you are unsure which branch to use, submit the PR against
+`main` and ask for maintainer guidance.
 
 PRs that are smaller in size and scope will be reviewed and merged quicker, so
 please consider if your PR could be split up into more than one independent part
@@ -64,4 +69,3 @@ unsure about them, submit your PR as is and ask for help.
   - [ ] Considered adding additional documentation.
 - [ ] Considered granting [push permissions to the PR branch](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/allowing-changes-to-a-pull-request-branch-created-from-a-fork),
   so maintainers can fix minor issues and keep your PR up to date.
-

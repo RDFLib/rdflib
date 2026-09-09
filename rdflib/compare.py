@@ -104,17 +104,12 @@ __all__ = [
 ]
 
 from collections import defaultdict
+from collections.abc import Callable, Iterator
 from datetime import datetime
 from hashlib import sha256
 from typing import (
     TYPE_CHECKING,
-    Callable,
-    Dict,
-    Iterator,
-    List,
     Optional,
-    Set,
-    Tuple,
     Union,
 )
 
@@ -216,16 +211,16 @@ class IsomorphicGraph(ConjunctiveGraph):
 
 
 HashFunc = Callable[[str], int]
-ColorItem = Tuple[Union[int, str], URIRef, Union[int, str]]
-ColorItemTuple = Tuple[ColorItem, ...]
-HashCache = Optional[Dict[ColorItemTuple, str]]
-Stats = Dict[str, Union[int, str]]
+ColorItem = tuple[Union[int, str], URIRef, Union[int, str]]
+ColorItemTuple = tuple[ColorItem, ...]
+HashCache = Optional[dict[ColorItemTuple, str]]
+Stats = dict[str, Union[int, str]]
 
 
 class Color:
     def __init__(
         self,
-        nodes: List[IdentifiedNode],
+        nodes: list[IdentifiedNode],
         hashfunc: HashFunc,
         color: ColorItemTuple = (),
         hash_cache: HashCache = None,
@@ -245,7 +240,7 @@ class Color:
     def key(self):
         return (len(self.nodes), self.hash_color())
 
-    def hash_color(self, color: Optional[Tuple[ColorItem, ...]] = None) -> str:
+    def hash_color(self, color: Optional[tuple[ColorItem, ...]] = None) -> str:
         if color is None:
             color = self.color
         if color in self._hash_cache:
@@ -267,9 +262,9 @@ class Color:
         return val
 
     def distinguish(self, W: Color, graph: Graph):  # noqa: N803
-        colors: Dict[str, Color] = {}
+        colors: dict[str, Color] = {}
         for n in self.nodes:
-            new_color: Tuple[ColorItem, ...] = list(self.color)  # type: ignore[assignment]
+            new_color: tuple[ColorItem, ...] = list(self.color)  # type: ignore[assignment]
             for node in W.nodes:
                 new_color += [  # type: ignore[operator]
                     (1, p, W.hash_color()) for s, p, o in graph.triples((n, None, node))
@@ -310,10 +305,10 @@ class _TripleCanonicalizer:
         self._hash_cache: HashCache = {}
         self.hashfunc = _hashfunc
 
-    def _discrete(self, coloring: List[Color]) -> bool:
+    def _discrete(self, coloring: list[Color]) -> bool:
         return len([c for c in coloring if not c.discrete()]) == 0
 
-    def _initial_color(self) -> List[Color]:
+    def _initial_color(self) -> list[Color]:
         """Finds an initial color for the graph.
 
         Finds an initial color of the graph by finding all blank nodes and
@@ -321,7 +316,7 @@ class _TripleCanonicalizer:
         nodes are not included, as they are a) already colored (by URI or literal)
         and b) do not factor into the color of any blank node.
         """
-        bnodes: Set[BNode] = set()
+        bnodes: set[BNode] = set()
         others = set()
         self._neighbors = defaultdict(set)
         for s, p, o in self.graph:
@@ -340,7 +335,7 @@ class _TripleCanonicalizer:
         if len(bnodes) > 0:
             return [Color(list(bnodes), self.hashfunc, hash_cache=self._hash_cache)] + [
                 # type error: List item 0 has incompatible type "Union[IdentifiedNode, Literal]"; expected "IdentifiedNode"
-                # type error: Argument 3 to "Color" has incompatible type "Union[IdentifiedNode, Literal]"; expected "Tuple[Tuple[Union[int, str], URIRef, Union[int, str]], ...]"
+                # type error: Argument 3 to "Color" has incompatible type "Union[IdentifiedNode, Literal]"; expected "tuple[tuple[Union[int, str], URIRef, Union[int, str]], ...]"
                 Color([x], self.hashfunc, x, hash_cache=self._hash_cache)  # type: ignore[list-item, arg-type]
                 for x in others
             ]
@@ -357,12 +352,12 @@ class _TripleCanonicalizer:
         )
         return c
 
-    def _get_candidates(self, coloring: List[Color]) -> Iterator[Tuple[Node, Color]]:
+    def _get_candidates(self, coloring: list[Color]) -> Iterator[tuple[Node, Color]]:
         for c in [c for c in coloring if not c.discrete()]:
             for node in c.nodes:
                 yield node, c
 
-    def _refine(self, coloring: List[Color], sequence: List[Color]) -> List[Color]:
+    def _refine(self, coloring: list[Color], sequence: list[Color]) -> list[Color]:
         sequence = sorted(sequence, key=lambda x: x.key(), reverse=True)
         coloring = coloring[:]
         while len(sequence) > 0 and not self._discrete(coloring):
@@ -381,8 +376,8 @@ class _TripleCanonicalizer:
                         sequence = sequence[:si] + colors + sequence[si + 1 :]
                     except ValueError:
                         sequence = colors[1:] + sequence
-        combined_colors: List[Color] = []
-        combined_color_map: Dict[str, Color] = dict()
+        combined_colors: list[Color] = []
+        combined_color_map: dict[str, Color] = dict()
         for color in coloring:
             color_hash = color.hash_color()
             # This is a hash collision, and be combined into a single color for individuation.
@@ -402,7 +397,7 @@ class _TripleCanonicalizer:
             stats["graph_digest"] = "%x" % result
         return result
 
-    def _experimental_path(self, coloring: List[Color]) -> List[Color]:
+    def _experimental_path(self, coloring: list[Color]) -> list[Color]:
         coloring = [c.copy() for c in coloring]
         while not self._discrete(coloring):
             color = [x for x in coloring if not x.discrete()][0]
@@ -414,9 +409,9 @@ class _TripleCanonicalizer:
 
     def _create_generator(
         self,
-        colorings: List[List[Color]],
-        groupings: Optional[Dict[Node, Set[Node]]] = None,
-    ) -> Dict[Node, Set[Node]]:
+        colorings: list[list[Color]],
+        groupings: Optional[dict[Node, set[Node]]] = None,
+    ) -> dict[Node, set[Node]]:
         if not groupings:
             groupings = defaultdict(set)
         for group in zip(*colorings):
@@ -430,20 +425,20 @@ class _TripleCanonicalizer:
     @_call_count("individuations")
     def _traces(
         self,
-        coloring: List[Color],
+        coloring: list[Color],
         stats: Optional[Stats] = None,
-        depth: List[int] = [0],
-    ) -> List[Color]:
+        depth: list[int] = [0],
+    ) -> list[Color]:
         if stats is not None and "prunings" not in stats:
             stats["prunings"] = 0
         depth[0] += 1
         candidates = self._get_candidates(coloring)
-        best: List[List[Color]] = []
+        best: list[list[Color]] = []
         best_score = None
         best_experimental_score = None
         last_coloring = None
-        generator: Dict[Node, Set[Node]] = defaultdict(set)
-        visited: Set[Node] = set()
+        generator: dict[Node, set[Node]] = defaultdict(set)
+        visited: set[Node] = set()
         for candidate, color in candidates:
             if candidate in generator:
                 v = generator[candidate] & visited
@@ -451,7 +446,7 @@ class _TripleCanonicalizer:
                     visited.add(candidate)
                     continue
             visited.add(candidate)
-            coloring_copy: List[Color] = []
+            coloring_copy: list[Color] = []
             color_copy = None
             for c in coloring:
                 c_copy = c.copy()
@@ -466,15 +461,15 @@ class _TripleCanonicalizer:
             experimental_score = set([c.key() for c in experimental])
             if last_coloring:
                 # type error: Statement is unreachable
-                generator = self._create_generator(  # type: ignore[unreachable]
+                generator = self._create_generator(
                     [last_coloring, experimental], generator
                 )
             last_coloring = experimental
-            if best_score is None or best_score < color_score:  # type: ignore[unreachable]
+            if best_score is None or best_score < color_score:
                 best = [refined_coloring]
                 best_score = color_score
                 best_experimental_score = experimental_score
-            elif best_score > color_score:  # type: ignore[unreachable]
+            elif best_score > color_score:
                 # prune this branch.
                 if stats is not None and isinstance(stats["prunings"], int):
                     stats["prunings"] += 1
@@ -484,7 +479,7 @@ class _TripleCanonicalizer:
                 # prune this branch.
                 if stats is not None and isinstance(stats["prunings"], int):
                     stats["prunings"] += 1
-        discrete: List[List[Color]] = [x for x in best if self._discrete(x)]
+        discrete: list[list[Color]] = [x for x in best if self._discrete(x)]
         if len(discrete) == 0:
             best_score = None
             best_depth = None
@@ -492,7 +487,7 @@ class _TripleCanonicalizer:
                 d = [depth[0]]
                 new_color = self._traces(coloring, stats=stats, depth=d)
                 color_score = tuple([c.key() for c in refined_coloring])
-                if best_score is None or color_score > best_score:  # type: ignore[unreachable]
+                if best_score is None or color_score > best_score:
                     discrete = [new_color]
                     best_score = color_score
                     best_depth = d[0]
@@ -524,7 +519,7 @@ class _TripleCanonicalizer:
         if stats is not None:
             stats["color_count"] = len(coloring)
 
-        bnode_labels: Dict[Node, str] = dict(
+        bnode_labels: dict[Node, str] = dict(
             [(c.nodes[0], c.hash_color()) for c in coloring]
         )
         if stats is not None:
@@ -538,7 +533,7 @@ class _TripleCanonicalizer:
     def _canonicalize_bnodes(
         self,
         triple: _TripleType,
-        labels: Dict[Node, str],
+        labels: dict[Node, str],
     ):
         for term in triple:
             if isinstance(term, BNode):
@@ -607,7 +602,7 @@ def to_canonical_graph(
     return ReadOnlyGraphAggregate([graph])
 
 
-def graph_diff(g1: Graph, g2: Graph) -> Tuple[Graph, Graph, Graph]:
+def graph_diff(g1: Graph, g2: Graph) -> tuple[Graph, Graph, Graph]:
     """Returns three sets of triples: "in both", "in first" and "in second"."""
     # bnodes have deterministic values in canonical graphs:
     cg1 = to_canonical_graph(g1)

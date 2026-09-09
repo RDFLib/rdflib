@@ -6,13 +6,32 @@ This document describes the process and conventions to follow when
 developing RDFLib code.
 
 * Please be as Pythonic as possible ([PEP 8](https://www.python.org/dev/peps/pep-0008/)).
-* Code should be formatted using [black](https://github.com/psf/black) and we use Black v23.1.0, with the black config in `pyproject.toml`.
+* Code should be formatted using [black](https://github.com/psf/black), and we use Black v23.1.0, with the black config in `pyproject.toml`.
 * Code should also pass [flake8](https://flake8.pycqa.org/en/latest/) linting
   and [mypy](http://mypy-lang.org/) type checking.
 * You must supply tests for new code.
-* RDFLib uses [Poetry](https://python-poetry.org/docs/master/) for dependency management and packaging.
+* RDFLib uses [uv](https://docs.astral.sh/uv/) for dependency management and packaging.
 
 If you add a new cool feature, consider also adding an example in `./examples`.
+
+## Branch targets
+
+RDFLib keeps separate branches for the active release series and the next major
+release. Most pull requests should target `main`, the current major release
+branch, so they can be released in a patch or minor release.
+
+Target `main` for backwards-compatible bug fixes, documentation updates,
+dependency updates, and new features. Maintainers periodically merge `main`
+forward into `next`, so backwards-compatible changes accepted on `main` are
+carried into next-major development without contributors needing to target
+`next` directly.
+
+Target `next` for breaking changes and other work intended for the next major
+release. Breaking changes should be discussed in an issue before implementation
+so maintainers can confirm that the change belongs on `next`.
+
+If you are unsure which branch to use, open the pull request against `main` and
+ask for maintainer guidance.
 
 ## Pull Requests Guidelines
 
@@ -43,7 +62,7 @@ In general, maintainers will only merge PRs if the following conditions are met:
 
 In addition to these conditions, PRs that are easier to review and approve will be processed quicker. The primary factors that determine this are the scope and size of a PR. If there are few changes and the scope is limited, then there is less that a reviewer has to understand and less that they can disagree with. It is thus important to try to split up your changes into multiple independent PRs if possible. No PR is too small.
 
-For PRs that introduce breaking changes, it is even more critical that they are limited in size and scope, as they will likely have to be kept up to date with the `main` branch of this project for some time before they are merged.
+For PRs that introduce breaking changes, it is even more critical that they are limited in size and scope, as they will likely have to be kept up to date with the `main` branch for some time before they are merged.
 
 It is also critical that your PR is understandable both in what it does and why it does it, and how the change will impact the users of this project, for this reason, it is essential that your PR's description explains the nature of the PR, what the PR intends to do, why this is desirable, and how this will affect the users of this project.
 
@@ -55,11 +74,11 @@ This section contains guidelines for maintaining RDFLib. RDFLib maintainers shou
 
 ### Breaking changes
 
-Breaking changes to RDFLib's public API should be made incrementally, with small pull requests to the main branch that change as few things as possible.
+Breaking changes to RDFLib's public API should be made incrementally, with small pull requests to the `next` branch that change as few things as possible.
 
 Breaking changes should be discussed first in an issue before work is started, as it is possible that the change is not necessary or that there is a better way to achieve the same goal, in which case the work on the PR would have been wasted. This will however not be strictly enforced, and no PR will be rejected solely on the basis that it was not discussed upfront.
 
-RDFLib follows [semantic versioning](https://semver.org/spec/v2.0.0.html) and [trunk-based development](https://trunkbaseddevelopment.com/), so if any breaking changes were introduced into the main branch since the last release, then the next release will be a major release with an incremented major version.
+RDFLib follows [semantic versioning](https://semver.org/spec/v2.0.0.html). If any breaking changes were introduced into the `next` branch since the last release, then the next release from that branch will be a major release with an incremented major version.
 
 Releases of RDFLib will not as a rule be conditioned on specific features, so there may be new major releases that contain very few breaking changes, and there could be no minor or patch releases between two major releases.
 
@@ -96,7 +115,7 @@ RDFLib uses semantic versioning and provides type hints, and these are the prima
 
 Any new functionality being added to RDFLib *must* have unit tests and should have doc tests supplied.
 
-Typically, you should add your functionality and new tests to a branch of RDFlib and run all tests locally and see them pass. There are currently close to 4,000 tests, with a some expected failures and skipped tests. We won't merge pull requests unless the test suite completes successfully.
+Typically, you should add your functionality and new tests to a branch of RDFLib and run all tests locally and see them pass. There are currently close to 4,000 tests, with a some expected failures and skipped tests. We won't merge pull requests unless the test suite completes successfully.
 
 Tests that you add should show how your new feature or bug fix is doing what you say it is doing: if you remove your enhancement, your new tests should fail!
 
@@ -111,26 +130,26 @@ RDFLib uses the [pytest](https://docs.pytest.org/en/latest/) testing framework.
 To run RDFLib's test suite with [pytest](https://docs.pytest.org/en/latest/):
 
 ```bash
-poetry install
-poetry run pytest
+uv sync --group tests
+uv run pytest
 ```
 
 Specific tests can be run by file name. For example:
 
 ```bash
-poetry run pytest test/test_graph/test_graph.py
+uv run pytest test/test_graph/test_graph.py
 ```
 
 For more extensive tests, including tests for the [berkleydb](https://www.oracle.com/database/technologies/related/berkeleydb.html) backend, install extra requirements before executing the tests.
 
 ```bash
-poetry install --all-extras
-poetry run pytest
+uv sync --group tests --all-extras
+uv run pytest
 ```
 
 ### Writing tests
 
-New tests should be written for [pytest](https://docs.pytest.org/en/latest/) instead of for python's built-in `unittest` module as pytest provides advanced features such as parameterization and more flexibility in writing expected failure tests than `unittest`.
+New tests should be written for [pytest](https://docs.pytest.org/en/latest/) instead of for python's built-in `unittest` module as pytest provides advanced features such as parameterisation and more flexibility in writing expected failure tests than `unittest`.
 
 A primer on how to write tests for pytest can be found [here](https://docs.pytest.org/en/latest/getting-started.html#create-your-first-test).
 
@@ -144,25 +163,25 @@ Check formatting with [black](https://github.com/psf/black), making sure you use
 our black.toml config file:
 
 ```bash
-poetry run black .
+uv run black .
 ```
 
 Check style and conventions with [ruff](https://docs.astral.sh/ruff/linter/):
 
 ```bash
-poetry run ruff check
+uv run ruff check
 ```
 
 Any issues that are found can potentially be fixed automatically using:
 
 ```bash
-poetry run ruff check --fix
+uv run ruff check --fix
 ```
 
 Check types with [mypy](http://mypy-lang.org/):
 
 ```bash
-poetry run mypy --show-error-context --show-error-codes
+uv run mypy --show-error-context --show-error-codes
 ```
 
 ## pre-commit and pre-commit ci
@@ -218,13 +237,13 @@ tox
 tox -a
 
 # Run a specific environment.
-tox -e py39 # default environment with py39
+tox -e py310 # default environment with py310
 tox -e py311-extra # extra tests with py311
 
 # Override the test command.
 # the below command will run `pytest test/test_translate_algebra.py`
 # instead of the default pytest command.
-tox -e py39,py311 -- pytest test/test_translate_algebra.py
+tox -e py310,py311 -- pytest test/test_translate_algebra.py
 ```
 
 ## `go-task` and `Taskfile.yml`
@@ -305,7 +324,7 @@ devcontainer open .
 
 ## Writing documentation
 
-We use mkdocs for generating HTML docs, see [docs](docs.md).
+We use Zensical for generating HTML docs, see [docs](docs.md).
 
 ## Continuous Integration
 
@@ -317,9 +336,11 @@ Please do *not* commit tests you know will fail, even if you're just pointing ou
 
 ## Compatibility
 
-RDFlib 7.0.0 release and later only support Python 3.8.1 and newer.
+RDFLib 8.0.0 release and later only support Python 3.10 and newer.
 
-RDFlib 6.0.0 release and later only support Python 3.7 and newer.
+RDFLib 7.0.0 release and later only support Python 3.8.1 and newer.
+
+RDFLib 6.0.0 release and later only support Python 3.7 and newer.
 
 RDFLib 5.0.0 maintained compatibility with Python versions 2.7, 3.4, 3.5, 3.6, 3.7.
 
@@ -327,13 +348,13 @@ RDFLib 5.0.0 maintained compatibility with Python versions 2.7, 3.4, 3.5, 3.6, 3
 
 Create a release-preparation pull request with the following changes:
 
-* Updated version and date in [`CITATION.cff`](../CITATION.cff).
-* Updated copyright year in the [`LICENSE`](../LICENSE) file.
-* Updated copyright year in the [`mkdocs.yml`](../mkdocs.yml) file.
-* Updated main branch version and current version in the [`README.md`](../README.md) file.
-* Updated version in the [`pyproject.toml`](../pyproject.toml) file.
-* Updated `__date__` in the [`rdflib/__init__.py`](../rdflib/__init__.py) file.
-* Updated [`CHANGELOG.md`](../CHANGELOG.md) entry for the release with admin tools as described in [`admin/README.md`](../admin/README.md).
+* Updated version and date in [`CITATION.cff`](https://github.com/RDFLib/rdflib/blob/main/CITATION.cff).
+* Updated copyright year in the [`LICENSE`](https://github.com/RDFLib/rdflib/blob/main/LICENSE) file.
+* Updated copyright year in the [`mkdocs.yml`](https://github.com/RDFLib/rdflib/blob/main/mkdocs.yml) file.
+* Updated main branch version and current version in the [`README.md`](https://github.com/RDFLib/rdflib/blob/main/README.md) file.
+* Updated version in the [`pyproject.toml`](https://github.com/RDFLib/rdflib/blob/main/pyproject.toml) file.
+* Updated `__date__` in the [`rdflib/__init__.py`](https://github.com/RDFLib/rdflib/blob/main/rdflib/__init__.py) file.
+* Updated [`CHANGELOG.md`](https://github.com/RDFLib/rdflib/blob/main/CHANGELOG.md) entry for the release with admin tools as described in [`admin/README.md`](https://github.com/RDFLib/rdflib/blob/main/admin/README.md).
 
 Once the PR is merged, switch to the main branch, build the release and upload it to PyPI:
 
@@ -341,8 +362,8 @@ Once the PR is merged, switch to the main branch, build the release and upload i
 # Clean up any previous builds
 rm -vf dist/*
 
-# Build artifacts
-poetry build
+# Build artefacts
+uv build
 
 # Verify package metadata
 bsdtar -xvf dist/rdflib-*.whl -O '*/METADATA' | view -
@@ -356,21 +377,68 @@ pipx run --no-cache --spec "$(readlink -f dist/rdflib*.tar.gz)" rdfpipe --versio
 pipx run --no-cache --spec "$(readlink -f dist/rdflib*.tar.gz)" rdfpipe https://github.com/RDFLib/rdflib/raw/main/test/data/defined_namespaces/rdfs.ttl
 
 # Dry run publishing
-poetry publish --repository=testpypi --dry-run
-poetry publish --dry-run
+uv publish --publish-url https://test.pypi.org/legacy/ --dry-run
+uv publish --dry-run
 
 # Publish to TestPyPI
-## ensure you are authed as per https://pypi.org/help/#apitoken and https://github.com/python-poetry/poetry/issues/6320
-poetry publish --repository=testpypi
+## Set UV_PUBLISH_TOKEN to a TestPyPI API token first.
+uv publish --publish-url https://test.pypi.org/legacy/
 
 # Publish to PyPI
-poetry publish
-## poetry publish -u __token__ -p pypi-<REDACTED>
+uv publish
 ```
 
-Once this is done, create a release tag from [GitHub releases](https://github.com/RDFLib/rdflib/releases/new). For a release of version 6.3.1 the tag should be `6.3.1` (without a "v" prefix), and the release title should be "RDFLib 6.3.1". The release notes for the latest version be added to the release description. The artifacts built with `poetry build` should be uploaded to the release as release artifacts.
+Once this is done, create a release tag from [GitHub releases](https://github.com/RDFLib/rdflib/releases/new). For a release of version 6.3.1 the tag should be `6.3.1` (without a "v" prefix), and the release title should be "RDFLib 6.3.1". The release notes for the latest version be added to the release description. The artefacts built with `uv build` should be uploaded to the release as release artefacts.
 
 The resulting release will be available at https://github.com/RDFLib/rdflib/releases/tag/6.3.1
+
+### Archiving a major release in Zenodo
+
+Every major RDFLib release must be archived in Zenodo through the
+[Zenodo GitHub integration](https://help.zenodo.org/docs/github/). Before
+publishing the GitHub release, confirm that the version and release date in
+`CITATION.cff` are correct and that the release-preparation pull request
+containing those values has been merged. Zenodo uses `CITATION.cff` to describe
+software releases from GitHub. If a `.zenodo.json` file is added in the future,
+be aware that [Zenodo will use it instead of
+`CITATION.cff`](https://help.zenodo.org/docs/github/describe-software/).
+
+The repository connection is normally a one-time setup, but verify it before
+each major release:
+
+1. Sign in to [Zenodo](https://zenodo.org/) using an account with access to the
+   RDFLib GitHub repository.
+2. Ensure that the GitHub account is connected under **Linked accounts**.
+3. Open **GitHub** from the Zenodo profile menu and click **Sync now**.
+4. Find `RDFLib/rdflib` and confirm that its repository toggle is enabled. See
+   Zenodo's [repository enablement
+   instructions](https://help.zenodo.org/docs/github/enable-repository/) if it
+   is not enabled. Once enabled, new GitHub releases are automatically ingested
+   and archived by Zenodo.
+
+After publishing the GitHub release described above:
+
+1. Open **GitHub** from the Zenodo profile menu and select `RDFLib/rdflib`.
+2. Wait for the new release to finish processing. Processing may take some time.
+3. Open the release's record using the DOI displayed by Zenodo.
+4. Confirm that the record has the correct RDFLib version, release date,
+   creators, description, license, files, and GitHub release link. Zenodo
+   assigns the published record a persistent DOI.
+5. On the record page, check **External resources** > **Archived in** to verify
+   its archival status. Zenodo notes that external archival may complete after
+   the record itself has been created.
+6. Confirm that the repository's [DOI
+   link](https://doi.org/10.5281/zenodo.6845245) resolves and that the new
+   release appears among the record's versions.
+
+If processing fails, select the failed release on the repository page in
+Zenodo, expand it, and inspect **Errors**. Correct any reported release metadata
+problems before retrying. See Zenodo's complete [GitHub release archiving and
+failure-diagnosis
+guide](https://help.zenodo.org/docs/github/archive-software/github-upload/).
+Zenodo creates a distinct, persistently identified record for each software
+version and links it to the other versions, as described in its [versioning
+documentation](https://help.zenodo.org/docs/deposit/manage-versions/).
 
 Once this is done, announce the release at the following locations:
 
@@ -382,3 +450,4 @@ Once this is all done, create another post-release pull request with the followi
 
 * Set the just released version in `docker/latest/requirements.in` and run `task docker:prepare` to update the `docker/latest/requirements.txt` file.
 * Set the version in the `pyproject.toml` file to the next minor release with a `a0` suffix to indicate alpha 0.
+* Ensure the released changes from `main` are merged forward into `next`.

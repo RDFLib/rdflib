@@ -23,6 +23,7 @@ Date/time utilities
 from __future__ import annotations
 
 from calendar import timegm
+from collections.abc import Callable, Hashable, Iterable, Iterator
 from os.path import splitext
 
 # from time import daylight
@@ -30,15 +31,7 @@ from time import altzone, gmtime, localtime, time, timezone
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
-    Dict,
-    Hashable,
-    Iterable,
-    Iterator,
-    List,
     Optional,
-    Set,
-    Tuple,
     TypeVar,
     Union,
     overload,
@@ -115,7 +108,7 @@ RESPONSE_TABLE_FORMAT_MIMETYPE_MAP = {
 }
 
 
-def list2set(seq: Iterable[_HashableT]) -> List[_HashableT]:
+def list2set(seq: Iterable[_HashableT]) -> list[_HashableT]:
     """
     Return a new list without duplicates.
     Preserves the order, unlike set(seq)
@@ -135,7 +128,7 @@ def first(seq: Iterable[_AnyT]) -> Optional[_AnyT]:
     return None
 
 
-def uniq(sequence: Iterable[str], strip: int = 0) -> Set[str]:
+def uniq(sequence: Iterable[str], strip: int = 0) -> set[str]:
     """removes duplicate strings from the sequence."""
     if strip:
         return set(s.strip() for s in sequence)
@@ -379,7 +372,7 @@ def parse_date_time(val: str) -> int:
     return t
 
 
-def guess_format(fpath: str, fmap: Optional[Dict[str, str]] = None) -> Optional[str]:
+def guess_format(fpath: str, fmap: Optional[dict[str, str]] = None) -> Optional[str]:
     """
     Guess RDF serialization based on file suffix. Uses
     `SUFFIX_FORMAT_MAP` unless `fmap` is provided.
@@ -451,8 +444,8 @@ def _get_ext(fpath: str, lower: bool = True) -> str:
 def find_roots(
     graph: Graph,
     prop: rdflib.term.URIRef,
-    roots: Optional[Set[rdflib.term.Node]] = None,
-) -> Set[rdflib.term.Node]:
+    roots: Optional[set[rdflib.term.Node]] = None,
+) -> set[rdflib.term.Node]:
     """Find the roots in some sort of transitive hierarchy.
 
     find_roots(graph, rdflib.RDFS.subClassOf)
@@ -462,7 +455,7 @@ def find_roots(
     `RDFS.subClassOf` or `SKOS.broader`
     """
 
-    non_roots: Set[rdflib.term.Node] = set()
+    non_roots: set[rdflib.term.Node] = set()
     if roots is None:
         roots = set()
     for x, y in graph.subject_objects(prop):
@@ -480,9 +473,9 @@ def get_tree(
     prop: rdflib.term.URIRef,
     mapper: Callable[[rdflib.term.Node], rdflib.term.Node] = lambda x: x,
     sortkey: Optional[Callable[[Any], Any]] = None,
-    done: Optional[Set[rdflib.term.Node]] = None,
+    done: Optional[set[rdflib.term.Node]] = None,
     dir: str = "down",
-) -> Optional[Tuple[rdflib.term.Node, List[Any]]]:
+) -> Optional[tuple[rdflib.term.Node, list[Any]]]:
     """
     Return a nested list/tuple structure representing the tree
     built by the transitive property given, starting from the root given
