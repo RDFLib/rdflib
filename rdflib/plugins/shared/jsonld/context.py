@@ -5,9 +5,9 @@ Implementation of the JSON-LD Context structure. See: http://json-ld.org/
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/context.py
 from __future__ import annotations
 
-from enum import Enum
 from collections import namedtuple
 from collections.abc import Collection, Generator
+from enum import Enum
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -52,6 +52,8 @@ from .util import norm_url, source_to_json, split_iri
 NODE_KEYS = {GRAPH, ID, INCLUDED, JSON, LIST, NEST, NONE, REV, SET, TYPE, VALUE, LANG}
 
 
+# Following PEP 484, we define the UNDEF as an Enum member
+# Ultimately this should become a PEP 661 sentinel.
 class Defined(Enum):
     UNDEF = 0
 
