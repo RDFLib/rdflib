@@ -57,6 +57,10 @@ NODE_KEYS = {GRAPH, ID, INCLUDED, JSON, LIST, NEST, NONE, REV, SET, TYPE, VALUE,
 class Defined(Enum):
     UNDEF = 0
 
+    def __bool__(self) -> bool:
+        # Ensure that UNDEF is falsy
+        return False
+
 
 UNDEF = Defined.UNDEF
 
