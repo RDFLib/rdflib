@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from collections import namedtuple
 from collections.abc import Collection, Generator
+from enum import Enum
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -51,11 +52,17 @@ from .util import norm_url, source_to_json, split_iri
 NODE_KEYS = {GRAPH, ID, INCLUDED, JSON, LIST, NEST, NONE, REV, SET, TYPE, VALUE, LANG}
 
 
-class Defined(int):
-    pass
+# Following PEP 484, we define the UNDEF as an Enum member
+# Ultimately this should become a PEP 661 sentinel.
+class Defined(Enum):
+    UNDEF = 0
+
+    def __bool__(self) -> bool:
+        # Ensure that UNDEF is falsy
+        return False
 
 
-UNDEF = Defined(0)
+UNDEF = Defined.UNDEF
 
 # From <https://tools.ietf.org/html/rfc3986#section-2.2>
 URI_GEN_DELIMS = (":", "/", "?", "#", "[", "]", "@")
