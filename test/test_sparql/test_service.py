@@ -5,11 +5,13 @@ from collections.abc import Mapping, Sequence
 from http.client import IncompleteRead, RemoteDisconnected
 from typing import Union
 from urllib.error import URLError
+from urllib.parse import parse_qs
 
 import pytest
 
 from rdflib import Graph, Literal, URIRef, Variable
 from rdflib.namespace import XSD
+from rdflib.plugins.sparql import parser
 from rdflib.term import BNode, Identifier
 from test.utils import helper
 from test.utils.http import MethodName, MockHTTPResponse
@@ -385,6 +387,138 @@ def test_with_mock(
     with checker.context():
         bindings = graph.query(query).bindings
         checker.check(bindings)
+
+
+def _queue_sparql_json(
+    httpmock: ServedBaseHTTPServerMock,
+    vars_: list[str],
+    bindings: list[dict[str, dict[str, str]]],
+) -> None:
+    mock_response = MockHTTPResponse(
+        200,
+        "OK",
+        json.dumps({"head": {"vars": vars_}, "results": {"bindings": bindings}}).encode(
+            "utf-8"
+        ),
+        {"Content-Type": ["application/sparql-results+json"]},
+    )
+    # GET vs POST depends on the generated SERVICE query length.
+    httpmock.responses[MethodName.GET].append(mock_response)
+    httpmock.responses[MethodName.POST].append(mock_response)
+
+
+def _service_request_query(httpmock: ServedBaseHTTPServerMock) -> str:
+    requests = httpmock.requests[MethodName.GET] + httpmock.requests[MethodName.POST]
+    assert requests, "expected a SERVICE HTTP request"
+    request = requests[0]
+    if request.body:
+        return parse_qs(request.body.decode())["query"][0]
+    return request.path_query["query"][0]
+
+
+def test_service_values_uses_undef_for_blank_nodes(
+    function_httpmock: ServedBaseHTTPServerMock,
+) -> None:
+    """Blank nodes in SERVICE VALUES must be UNDEF, not blank node labels.
+
+    Issue: https://github.com/RDFLib/rdflib/issues/3111
+    """
+    graph = Graph()
+    graph.parse(
+        data="""
+            prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            [] rdfs:label "a blank node" .
+        """,
+        format="turtle",
+    )
+    query = """
+        prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        select *
+        where {
+            ?s rdfs:label ?o .
+            SERVICE <REMOTE_URL> {
+                ?s a ?type .
+            }
+        }
+    """.replace(
+        "REMOTE_URL", function_httpmock.url
+    )
+    _queue_sparql_json(
+        function_httpmock,
+        ["s", "type"],
+        [
+            {
+                "s": {"type": "uri", "value": "http://example.org/Person"},
+                "type": {"type": "uri", "value": "http://example.org/Type"},
+            }
+        ],
+    )
+
+    results = list(graph.query(query))
+    service_query = _service_request_query(function_httpmock)
+    values_clause = service_query[service_query.rfind("VALUES") :]
+
+    assert "UNDEF" in values_clause
+    assert "_:" not in values_clause
+    parser.parseQuery(service_query)
+    # A local blank node is not the same term as a remote IRI, so the join
+    # is empty (SPARQL 1.1 Federated Query: blank nodes are not shared).
+    assert results == []
+
+
+def test_service_with_blank_node_unused_in_service(
+    function_httpmock: ServedBaseHTTPServerMock,
+) -> None:
+    """A local blank node that is not a SERVICE join key must not 400 the call."""
+    graph = Graph()
+    graph.parse(
+        data="""
+            prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            [] rdfs:label "a blank node" .
+        """,
+        format="turtle",
+    )
+    query = """
+        prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        select ?s ?o ?x
+        where {
+            ?s rdfs:label ?o .
+            SERVICE <REMOTE_URL> {
+                <http://example.org/a> <http://example.org/b> ?x
+            }
+        }
+    """.replace(
+        "REMOTE_URL", function_httpmock.url
+    )
+    # SELECT * echoes VALUES terms. A typed-string ?o must not be treated as
+    # incompatible with the local plain literal (only UNDEF/bnode vars are).
+    _queue_sparql_json(
+        function_httpmock,
+        ["s", "o", "x"],
+        [
+            {
+                "o": {
+                    "type": "literal",
+                    "value": "a blank node",
+                    "datatype": f"{XSD.string}",
+                },
+                "x": {"type": "uri", "value": "http://example.org/x"},
+            }
+        ],
+    )
+
+    results = graph.query(query).bindings
+    service_query = _service_request_query(function_httpmock)
+    values_clause = service_query[service_query.rfind("VALUES") :]
+
+    assert "UNDEF" in values_clause
+    assert "_:" not in values_clause
+    assert '"a blank node"' in values_clause
+    assert len(results) == 1
+    row = results[0]
+    assert isinstance(row[Variable("s")], BNode)
+    assert row[Variable("o")] == Literal("a blank node")
+    assert row[Variable("x")] == URIRef("http://example.org/x")
 
 
 if __name__ == "__main__":
