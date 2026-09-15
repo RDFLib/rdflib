@@ -10,7 +10,7 @@ class WGS(DefinedNamespace):
     here <https://www.w3.org/2003/01/geo/>.
     """
 
-    _NS = Namespace("https://www.w3.org/2003/01/geo/wgs84_pos#")
+    _NS = Namespace("http://www.w3.org/2003/01/geo/wgs84_pos#")
 
     # http://www.w3.org/2000/01/rdf-schema#Class
     SpatialThing: URIRef
