@@ -6,22 +6,16 @@ import itertools
 import logging
 import re
 import socket
+from collections.abc import Iterator, Mapping, Sequence
 from contextlib import ExitStack
 from io import BytesIO, StringIO
 from pathlib import Path, PosixPath, PurePath
+from re import Pattern
 from typing import (
     IO,
     BinaryIO,
-    Dict,
-    Iterator,
-    Mapping,
     Optional,
-    Pattern,
-    Sequence,
-    Set,
     TextIO,
-    Tuple,
-    Type,
     Union,
 )
 from urllib.parse import urlsplit, urlunsplit
@@ -43,7 +37,7 @@ from test.utils.result import (
 )
 
 BindingsType = Sequence[Mapping[Variable, Identifier]]
-ParseOutcomeType = Union[BindingsType, Type[Exception]]
+ParseOutcomeType = Union[BindingsType, type[Exception]]
 
 
 @pytest.mark.parametrize(
@@ -179,7 +173,7 @@ def narrow_dest_param(param: DestParmType) -> ResultDestParamType:
 
 
 def make_select_result_serialize_parse_tests() -> Iterator[ParameterSet]:
-    xfails: Dict[Tuple[str, DestinationType, str], Union[MarkDecorator, Mark]] = {}
+    xfails: dict[tuple[str, DestinationType, str], Union[MarkDecorator, Mark]] = {}
     format_infos = [
         format_info
         for format_info in ResultFormat.info_set()
@@ -206,7 +200,7 @@ def make_select_result_serialize_parse_tests() -> Iterator[ParameterSet]:
 def test_select_result_serialize_parse(
     tmp_path: Path,
     select_result: Result,
-    test_args: Tuple[ResultFormatInfo, DestinationType, str],
+    test_args: tuple[ResultFormatInfo, DestinationType, str],
 ) -> None:
     """
     Round tripping of a select query through the serializer and parser of a
@@ -251,7 +245,7 @@ def serialize_select(select_result: Result, format: str, encoding: str) -> bytes
 
 
 def make_select_result_parse_serialized_tests() -> Iterator[ParameterSet]:
-    xfails: Dict[Tuple[str, Optional[SourceType], str], Union[MarkDecorator, Mark]] = {}
+    xfails: dict[tuple[str, Optional[SourceType], str], Union[MarkDecorator, Mark]] = {}
     format_infos = [
         format_info
         for format_info in ResultFormat.info_set()
@@ -286,7 +280,7 @@ def make_select_result_parse_serialized_tests() -> Iterator[ParameterSet]:
 def test_select_result_parse_serialized(
     tmp_path: Path,
     select_result: Result,
-    test_args: Tuple[ResultFormatInfo, SourceType, str],
+    test_args: tuple[ResultFormatInfo, SourceType, str],
 ) -> None:
     """
     Parsing a serialized result produces the expected result object.
@@ -311,7 +305,7 @@ def test_select_result_parse_serialized(
 
 
 def make_test_serialize_to_strdest_tests() -> Iterator[ParameterSet]:
-    destination_types: Set[DestinationType] = {
+    destination_types: set[DestinationType] = {
         DestinationType.FILE_URI,
         DestinationType.STR_PATH,
     }

@@ -177,17 +177,12 @@ from __future__ import annotations
 
 import warnings
 from abc import ABC, abstractmethod
+from collections.abc import Callable, Generator, Iterator
 from functools import total_ordering
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
-    Generator,
-    Iterator,
-    List,
     Optional,
-    Set,
-    Tuple,
     Union,
 )
 
@@ -230,7 +225,7 @@ class Path(ABC):
         graph: Graph,
         subj: Optional[_SubjectType] = None,
         obj: Optional[_ObjectType] = None,
-    ) -> Iterator[Tuple[_SubjectType, _ObjectType]]: ...
+    ) -> Iterator[tuple[_SubjectType, _ObjectType]]: ...
 
     @abstractmethod
     def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str: ...
@@ -258,7 +253,7 @@ class InvPath(Path):
         graph: Graph,
         subj: Optional[_SubjectType] = None,
         obj: Optional[_ObjectType] = None,
-    ) -> Generator[Tuple[_ObjectType, _SubjectType], None, None]:
+    ) -> Generator[tuple[_ObjectType, _SubjectType], None, None]:
         for s, o in eval_path(graph, (obj, self.arg, subj)):
             yield o, s
 
@@ -271,7 +266,7 @@ class InvPath(Path):
 
 class SequencePath(Path):
     def __init__(self, *args: Union[Path, URIRef]):
-        self.args: List[Union[Path, URIRef]] = []
+        self.args: list[Union[Path, URIRef]] = []
         for a in args:
             if isinstance(a, SequencePath):
                 self.args += a.args
@@ -283,12 +278,12 @@ class SequencePath(Path):
         graph: Graph,
         subj: Optional[_SubjectType] = None,
         obj: Optional[_ObjectType] = None,
-    ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
+    ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
         def _eval_seq(
-            paths: List[Union[Path, URIRef]],
+            paths: list[Union[Path, URIRef]],
             subj: Optional[_SubjectType],
             obj: Optional[_ObjectType],
-        ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
+        ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
             if paths[1:]:
                 for s, o in eval_path(graph, (subj, paths[0], None)):
                     for r in _eval_seq(paths[1:], o, obj):
@@ -299,10 +294,10 @@ class SequencePath(Path):
                     yield s, o
 
         def _eval_seq_bw(
-            paths: List[Union[Path, URIRef]],
+            paths: list[Union[Path, URIRef]],
             subj: Optional[_SubjectType],
             obj: _ObjectType,
-        ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
+        ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
             if paths[:-1]:
                 for s, o in eval_path(graph, (None, paths[-1], obj)):
                     for r in _eval_seq(paths[:-1], subj, s):
@@ -328,7 +323,7 @@ class SequencePath(Path):
 
 class AlternativePath(Path):
     def __init__(self, *args: Union[Path, URIRef]):
-        self.args: List[Union[Path, URIRef]] = []
+        self.args: list[Union[Path, URIRef]] = []
         for a in args:
             if isinstance(a, AlternativePath):
                 self.args += a.args
@@ -340,7 +335,7 @@ class AlternativePath(Path):
         graph: Graph,
         subj: Optional[_SubjectType] = None,
         obj: Optional[_ObjectType] = None,
-    ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
+    ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
         for x in self.args:
             for y in eval_path(graph, (subj, x, obj)):
                 yield y
@@ -375,7 +370,7 @@ class MulPath(Path):
         subj: Optional[_SubjectType] = None,
         obj: Optional[_ObjectType] = None,
         first: bool = True,
-    ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
+    ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
         if self.zero and first:
             if subj and obj:
                 if subj == obj:
@@ -388,9 +383,9 @@ class MulPath(Path):
         def _fwd(
             subj: Optional[_SubjectType] = None,
             obj: Optional[_ObjectType] = None,
-            seen: Optional[Set[_SubjectType]] = None,
-        ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
-            # type error: Item "None" of "Optional[Set[Node]]" has no attribute "add"
+            seen: Optional[set[_SubjectType]] = None,
+        ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
+            # type error: Item "None" of "Optional[set[Node]]" has no attribute "add"
             # type error: Argument 1 to "add" of "set" has incompatible type "Optional[Node]"; expected "Node"
             seen.add(subj)  # type: ignore[union-attr, arg-type]
 
@@ -398,7 +393,7 @@ class MulPath(Path):
                 if not obj or o == obj:
                     yield s, o
                 if self.more:
-                    # type error: Unsupported right operand type for in ("Optional[Set[Node]]")
+                    # type error: Unsupported right operand type for in ("Optional[set[Node]]")
                     if o in seen:  # type: ignore[operator]
                         continue
                     for s2, o2 in _fwd(o, obj, seen):
@@ -407,9 +402,9 @@ class MulPath(Path):
         def _bwd(
             subj: Optional[_SubjectType] = None,
             obj: Optional[_ObjectType] = None,
-            seen: Optional[Set[_ObjectType]] = None,
-        ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
-            # type error: Item "None" of "Optional[Set[Node]]" has no attribute "add"
+            seen: Optional[set[_ObjectType]] = None,
+        ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
+            # type error: Item "None" of "Optional[set[Node]]" has no attribute "add"
             # type error: Argument 1 to "add" of "set" has incompatible type "Optional[Node]"; expected "Node"
             seen.add(obj)  # type: ignore[union-attr, arg-type]
 
@@ -417,14 +412,14 @@ class MulPath(Path):
                 if not subj or subj == s:
                     yield s, o
                 if self.more:
-                    # type error: Unsupported right operand type for in ("Optional[Set[Node]]")
+                    # type error: Unsupported right operand type for in ("Optional[set[Node]]")
                     if s in seen:  # type: ignore[operator]
                         continue
 
                     for s2, o2 in _bwd(None, s, seen):
                         yield s2, o
 
-        def _all_fwd_paths() -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
+        def _all_fwd_paths() -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
             if self.zero:
                 seen1 = set()
                 # According to the spec, ALL nodes are possible solutions
@@ -478,7 +473,7 @@ class MulPath(Path):
 
 class NegatedPath(Path):
     def __init__(self, arg: Union[AlternativePath, InvPath, URIRef]):
-        self.args: List[Union[URIRef, Path]]
+        self.args: list[Union[URIRef, Path]]
         if isinstance(arg, (URIRef, InvPath)):
             self.args = [arg]
         elif isinstance(arg, AlternativePath):
@@ -534,12 +529,12 @@ def path_sequence(self: Union[URIRef, Path], other: Union[URIRef, Path]):
 
 def evalPath(  # noqa: N802
     graph: Graph,
-    t: Tuple[
+    t: tuple[
         Optional[_SubjectType],
         Union[None, Path, _PredicateType],
         Optional[_ObjectType],
     ],
-) -> Iterator[Tuple[_SubjectType, _ObjectType]]:
+) -> Iterator[tuple[_SubjectType, _ObjectType]]:
     warnings.warn(
         DeprecationWarning(
             "rdflib.path.evalPath() is deprecated, use the (snake-cased) eval_path(). "
@@ -552,12 +547,12 @@ def evalPath(  # noqa: N802
 
 def eval_path(
     graph: Graph,
-    t: Tuple[
+    t: tuple[
         Optional[_SubjectType],
         Union[None, Path, _PredicateType],
         Optional[_ObjectType],
     ],
-) -> Iterator[Tuple[_SubjectType, _ObjectType]]:
+) -> Iterator[tuple[_SubjectType, _ObjectType]]:
     return ((s, o) for s, p, o in graph.triples(t))
 
 

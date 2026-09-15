@@ -17,17 +17,16 @@
 from __future__ import annotations
 
 import logging
-from typing import Set, Tuple
 
 from rdflib import Graph, URIRef
 from rdflib.query import ResultRow
 
 
 def test_nested_filter_outer_binding_propagation() -> None:
-    expected: Set[URIRef] = {
+    expected: set[URIRef] = {
         URIRef("http://example.org/Superclass"),
     }
-    computed: Set[URIRef] = set()
+    computed: set[URIRef] = set()
     graph_data = """\
 @prefix ex: <http://example.org/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -74,14 +73,14 @@ def test_nested_filter_outermost_binding_propagation() -> None:
     * The second member is a wholly redundant HistoricRecord in consideration of latter HistoricRecords that cover all non-HistoricRecord inputs to the Action, and
     * The third member is the superseding record.
     """
-    expected: Set[Tuple[URIRef, URIRef, URIRef]] = {
+    expected: set[tuple[URIRef, URIRef, URIRef]] = {
         (
             URIRef("http://example.org/kb/action-1-2"),
             URIRef("http://example.org/kb/record-123-1"),
             URIRef("http://example.org/kb/record-1-2"),
         )
     }
-    computed: Set[Tuple[URIRef, URIRef, URIRef]] = set()
+    computed: set[tuple[URIRef, URIRef, URIRef]] = set()
 
     historic_ontology_graph_data = """\
 @prefix case-investigation: <https://ontology.caseontology.org/case/investigation/> .

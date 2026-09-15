@@ -37,7 +37,7 @@ Example:
 from __future__ import annotations
 
 import warnings
-from typing import IO, Any, Dict, List, Optional
+from typing import IO, Any, Optional
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph, _ObjectType
 from rdflib.namespace import RDF, XSD
@@ -189,7 +189,7 @@ class Converter:
 
         context = self.context
 
-        objs: List[Any] = []
+        objs: list[Any] = []
         for g in graphs:
             obj = {}
             graphname = None
@@ -224,7 +224,7 @@ class Converter:
         return objs
 
     def from_graph(self, graph: Graph):
-        nodemap: Dict[Any, Any] = {}
+        nodemap: dict[Any, Any] = {}
 
         for s in set(graph.subjects()):
             ## only iri:s and unreferenced (rest will be promoted to top if needed)
@@ -265,7 +265,7 @@ class Converter:
         s: IdentifiedNode,
         p: IdentifiedNode,
         o: Identifier,
-        s_node: Dict[str, Any],
+        s_node: dict[str, Any],
         nodemap,
     ):
         context = self.context
@@ -298,8 +298,12 @@ class Converter:
             elif term.language and o.language == term.language:  # type: ignore[attr-defined]
                 node = str(o)
             # type error: Right operand of "and" is never evaluated
-            elif context.language and (term.language is None and o.language is None):  # type: ignore[unreachable]
-                node = str(o)  # type: ignore[unreachable]
+            elif (
+                context.language
+                and isinstance(o, Literal)
+                and (term.language is None and o.language is None)
+            ):
+                node = str(o)
 
             if LIST in term.container:
                 node = [
@@ -323,6 +327,10 @@ class Converter:
 
         else:
             p_key = context.to_symbol(p)
+            if p_key is None:
+                raise ValueError(
+                    f"Predicate {p} is not in context and cannot be coerced to a symbol"
+                )
             # TODO: for coercing curies - quite clumsy; unify to_symbol and find_term?
             key_term = context.terms.get(p_key)
             if key_term and (key_term.type or key_term.container):
@@ -362,7 +370,7 @@ class Converter:
             return None
 
     def to_raw_value(
-        self, graph: Graph, s: IdentifiedNode, o: Identifier, nodemap: Dict[str, Any]
+        self, graph: Graph, s: IdentifiedNode, o: Identifier, nodemap: dict[str, Any]
     ):
         context = self.context
         coll = self.to_collection(graph, o)
@@ -403,7 +411,7 @@ class Converter:
             elif o.language and o.language != context.language:
                 return {context.lang_key: o.language, context.value_key: v}
             # type error: Right operand of "and" is never evaluated
-            elif not context.active or context.language and not o.language:  # type: ignore[unreachable]
+            elif not context.active or context.language and not o.language:
                 return {context.value_key: v}
             else:
                 return v
@@ -411,7 +419,7 @@ class Converter:
     def to_collection(self, graph: Graph, l_: Identifier):
         if l_ != RDF.nil and not graph.value(l_, RDF.first):
             return None
-        list_nodes: List[Optional[_ObjectType]] = []
+        list_nodes: list[Optional[_ObjectType]] = []
         chain = set([l_])
         while l_:
             if l_ == RDF.nil:

@@ -15,9 +15,10 @@ import random
 import re
 import uuid
 import warnings
+from collections.abc import Callable
 from decimal import ROUND_HALF_DOWN, ROUND_HALF_UP, Decimal, InvalidOperation
 from functools import reduce
-from typing import Any, Callable, Dict, NoReturn, Optional, Tuple, Union, overload
+from typing import Any, NoReturn, Optional, Union, overload
 from urllib.parse import quote
 
 from pyparsing import ParseResults
@@ -290,16 +291,16 @@ def Builtin_CONCAT(expr: Expr, ctx) -> Literal:
     # dt/lang passed on only if they all match
 
     dt = set(x.datatype for x in expr.arg if isinstance(x, Literal))
-    # type error: Incompatible types in assignment (expression has type "Optional[str]", variable has type "Set[Optional[str]]")
+    # type error: Incompatible types in assignment (expression has type "Optional[str]", variable has type "set[Optional[str]]")
     dt = dt.pop() if len(dt) == 1 else None  # type: ignore[assignment]
 
     lang = set(x.language for x in expr.arg if isinstance(x, Literal))
-    # type error: error: Incompatible types in assignment (expression has type "Optional[str]", variable has type "Set[Optional[str]]")
+    # type error: error: Incompatible types in assignment (expression has type "Optional[str]", variable has type "set[Optional[str]]")
     lang = lang.pop() if len(lang) == 1 else None  # type: ignore[assignment]
 
     # NOTE on type errors: this is because same variable is used for two incompatibel types
-    # type error: Argument "datatype" to "Literal" has incompatible type "Set[Any]"; expected "Optional[str]"  [arg-type]
-    # type error: Argument "lang" to "Literal" has incompatible type "Set[Any]"; expected "Optional[str]"
+    # type error: Argument "datatype" to "Literal" has incompatible type "set[Any]"; expected "Optional[str]"  [arg-type]
+    # type error: Argument "lang" to "Literal" has incompatible type "set[Any]"; expected "Optional[str]"
     return Literal("".join(string(x) for x in expr.arg), datatype=dt, lang=lang)  # type: ignore[arg-type]
 
 
@@ -593,7 +594,7 @@ def Builtin_EXISTS(e: Expr, ctx: FrozenBindings) -> Literal:
 
 _CustomFunction = Callable[[Expr, FrozenBindings], Node]
 
-_CUSTOM_FUNCTIONS: Dict[URIRef, Tuple[_CustomFunction, bool]] = {}
+_CUSTOM_FUNCTIONS: dict[URIRef, tuple[_CustomFunction, bool]] = {}
 
 
 def register_custom_function(

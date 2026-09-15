@@ -1,5 +1,6 @@
 import logging
 from decimal import Decimal
+from typing import Union
 
 import pytest
 
@@ -147,7 +148,7 @@ EG = Namespace("https://example.com/")
         ),
     ],
 )
-def test_function(expression: str, expected_result: Identifier) -> None:
+def test_function(expression: str, expected_result: Union[Identifier, type]) -> None:
     graph = Graph()
     query_string = """
     PREFIX eg: <https://example.com/>

@@ -4,7 +4,7 @@ import base64
 import copy
 import logging
 from io import BytesIO
-from typing import TYPE_CHECKING, Optional, Tuple
+from typing import TYPE_CHECKING, Optional
 from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -35,7 +35,7 @@ class SPARQLConnector:
         update_endpoint: Optional[str] = None,
         returnFormat: Optional[str] = "xml",  # noqa: N803
         method: te.Literal["GET", "POST", "POST_FORM"] = "GET",
-        auth: Optional[Tuple[str, str]] = None,
+        auth: Optional[tuple[str, str]] = None,
         **kwargs,
     ):
         """
@@ -122,7 +122,7 @@ class SPARQLConnector:
                     )
                 )
             except HTTPError as e:
-                # type error: Incompatible return value type (got "Tuple[int, str, None]", expected "Result")
+                # type error: Incompatible return value type (got "tuple[int, str, None]", expected "Result")
                 return e.code, str(e), None  # type: ignore[return-value]
         elif self.method == "POST_FORM":
             params["query"] = query
@@ -136,7 +136,7 @@ class SPARQLConnector:
                     )
                 )
             except HTTPError as e:
-                # type error: Incompatible return value type (got "Tuple[int, str, None]", expected "Result")
+                # type error: Incompatible return value type (got "tuple[int, str, None]", expected "Result")
                 return e.code, str(e), None  # type: ignore[return-value]
         else:
             raise SPARQLConnectorException("Unknown method %s" % self.method)

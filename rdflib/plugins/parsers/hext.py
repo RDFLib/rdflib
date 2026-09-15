@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import warnings
 from io import TextIOWrapper
-from typing import TYPE_CHECKING, Any, BinaryIO, List, Optional, TextIO, Union
+from typing import TYPE_CHECKING, Any, BinaryIO, Callable, Optional, TextIO, Union, cast
 
 from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from rdflib.parser import InputSource, Parser
@@ -40,7 +40,7 @@ class HextuplesParser(Parser):
         self.skolemize = False
 
     def _parse_hextuple(
-        self, ds: Union[Dataset, ConjunctiveGraph], tup: List[Union[str, None]]
+        self, ds: Union[Dataset, ConjunctiveGraph], tup: list[Union[str, None]]
     ) -> None:
         # all values check
         # subject, predicate, value, datatype cannot be None
@@ -124,11 +124,11 @@ class HextuplesParser(Parser):
             ds.remove_graph(ds_default)  # remove the original unused default graph
 
         try:
-            text_stream: Optional[TextIO] = source.getCharacterStream()
+            text_stream = cast(TextIO | None, source.getCharacterStream())
         except (AttributeError, LookupError):
             text_stream = None
         try:
-            binary_stream: Optional[BinaryIO] = source.getByteStream()
+            binary_stream = cast(BinaryIO | None, source.getByteStream())
         except (AttributeError, LookupError):
             binary_stream = None
 
@@ -138,7 +138,8 @@ class HextuplesParser(Parser):
             )
         if TYPE_CHECKING:
             assert text_stream is not None or binary_stream is not None
-        use_stream: Union[TextIO, BinaryIO]
+        use_stream: TextIO | BinaryIO
+        loads: Callable[[str | bytes], Any]
         if _HAS_ORJSON:
             if binary_stream is not None:
                 use_stream = binary_stream
@@ -165,7 +166,7 @@ class HextuplesParser(Parser):
             # this complex handing is because the 'value' component is
             # allowed to be "" but not None
             # all other "" values are treated as None
-            raw_line: List[str] = loads(line)
+            raw_line: list[str] = loads(line)
             hex_tuple_line = [x if x != "" else None for x in raw_line]
             if raw_line[2] == "":
                 hex_tuple_line[2] = ""

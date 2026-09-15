@@ -1,16 +1,11 @@
 from __future__ import annotations
 
+import builtins
 import logging
+from collections.abc import Callable, Collection, Generator, Iterable, Mapping
 from dataclasses import dataclass, field
 from typing import (
-    Callable,
-    Collection,
-    Generator,
-    Iterable,
-    Mapping,
     Optional,
-    Tuple,
-    Type,
     TypeVar,
     Union,
 )
@@ -27,7 +22,7 @@ from test.utils.graph import GraphSource, GraphSourceType
 from test.utils.iri import URIMapper
 from test.utils.namespace import MF
 
-POFilterType = Tuple[Optional[URIRef], Optional[URIRef]]
+POFilterType = tuple[Optional[URIRef], Optional[URIRef]]
 POFiltersType = Iterable[POFilterType]
 
 MarkType = Union[MarkDecorator, Collection[Union[MarkDecorator, Mark]]]
@@ -84,7 +79,7 @@ class ManifestEntry:
         return pytest.param(self, id=f"{self.identifier}", marks=marks)
 
     def value(
-        self, predicate: Identifier, value_type: Type[IdentifierT]
+        self, predicate: Identifier, value_type: builtins.type[IdentifierT]
     ) -> Optional[IdentifierT]:
         value = self.graph.value(self.identifier, predicate)
         if value is not None:
@@ -163,7 +158,7 @@ class Manifest:
 
     def entires(
         self,
-        entry_type: Type[ManifestEntryT],
+        entry_type: type[ManifestEntryT],
         exclude: Optional[POFiltersType] = None,
         include: Optional[POFiltersType] = None,
     ) -> Generator[ManifestEntryT, None, None]:
@@ -179,7 +174,7 @@ class Manifest:
 
     def params(
         self,
-        entry_type: Type[ManifestEntryT],
+        entry_type: type[ManifestEntryT],
         exclude: Optional[POFiltersType] = None,
         include: Optional[POFiltersType] = None,
         mark_dict: Optional[MarksDictType] = None,
@@ -191,7 +186,7 @@ class Manifest:
 
 def params_from_sources(
     uri_mapper: URIMapper,
-    entry_type: Type[ManifestEntryT],
+    entry_type: type[ManifestEntryT],
     *sources: GraphSourceType,
     exclude: Optional[POFiltersType] = None,
     include: Optional[POFiltersType] = None,

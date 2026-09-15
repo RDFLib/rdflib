@@ -44,6 +44,7 @@ import xml.dom.minidom
 from base64 import b64decode, b64encode
 from binascii import hexlify, unhexlify
 from collections import defaultdict
+from collections.abc import Callable, Generator
 from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from re import compile, sub
@@ -51,13 +52,7 @@ from types import GeneratorType
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
-    Dict,
-    Generator,
-    List,
     Optional,
-    Tuple,
-    Type,
     TypeVar,
     Union,
 )
@@ -95,7 +90,7 @@ _SKOLEM_DEFAULT_AUTHORITY = "https://rdflib.github.io"
 logger = logging.getLogger(__name__)
 skolem_genid = "/.well-known/genid/"
 rdflib_skolem_genid = "/.well-known/genid/rdflib/"
-skolems: Dict[str, BNode] = {}
+skolems: dict[str, BNode] = {}
 
 
 _invalid_uri_chars = '<>" {}|\\^`'
@@ -231,8 +226,8 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
             return True
         return self == other
 
-    # type error: Argument 1 of "startswith" is incompatible with supertype "str"; supertype defines the argument type as "Union[str, Tuple[str, ...]]"
-    # FIXME: this does not accommodate prefix of type Tuple[str, ...] which is a
+    # type error: Argument 1 of "startswith" is incompatible with supertype "str"; supertype defines the argument type as "Union[str, tuple[str, ...]]"
+    # FIXME: this does not accommodate prefix of type tuple[str, ...] which is a
     # valid for str.startswith
     def startswith(self, prefix: str, start=..., end=...) -> bool:  # type: ignore[override] # FIXME
         return str(self).startswith(str(prefix))
@@ -253,7 +248,7 @@ class IdentifiedNode(Identifier):
 
     __slots__ = ()
 
-    def __getnewargs__(self) -> Tuple[str]:
+    def __getnewargs__(self) -> tuple[str]:
         return (str(self),)
 
     def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
@@ -300,7 +295,7 @@ class URIRef(IdentifiedNode):
         try:
             rt = str.__new__(cls, value)
         except UnicodeDecodeError:
-            # type error: No overload variant of "__new__" of "str" matches argument types "Type[URIRef]", "str", "str"
+            # type error: No overload variant of "__new__" of "str" matches argument types "type[URIRef]", "str", "str"
             rt = str.__new__(cls, value, "utf-8")  # type: ignore[call-overload]
         return rt
 
@@ -344,7 +339,7 @@ class URIRef(IdentifiedNode):
         """
         return urlparse(self).fragment
 
-    def __reduce__(self) -> Tuple[Type[URIRef], Tuple[str]]:
+    def __reduce__(self) -> tuple[type[URIRef], tuple[str]]:
         return (URIRef, (str(self),))
 
     def __repr__(self) -> str:
@@ -496,7 +491,7 @@ class BNode(IdentifiedNode):
         # note - for two strings, concat with + is faster than f"{x}{y}"
         return "_:" + self
 
-    def __reduce__(self) -> Tuple[Type[BNode], Tuple[str]]:
+    def __reduce__(self) -> tuple[type[BNode], tuple[str]]:
         return (BNode, (str(self),))
 
     def __repr__(self) -> str:
@@ -779,16 +774,16 @@ class Literal(Identifier):
 
     def __reduce__(
         self,
-    ) -> Tuple[Type[Literal], Tuple[str, Union[str, None], Union[str, None]]]:
+    ) -> tuple[type[Literal], tuple[str, Union[str, None], Union[str, None]]]:
         return (
             Literal,
             (str(self), self.language, self.datatype),
         )
 
-    def __getstate__(self) -> Tuple[None, Dict[str, Union[str, None]]]:
+    def __getstate__(self) -> tuple[None, dict[str, Union[str, None]]]:
         return (None, dict(language=self.language, datatype=self.datatype))
 
-    def __setstate__(self, arg: Tuple[Any, Dict[str, Any]]) -> None:
+    def __setstate__(self, arg: tuple[Any, dict[str, Any]]) -> None:
         _, d = arg
         self._language = d["language"]
         self._datatype = d["datatype"]
@@ -1310,7 +1305,7 @@ class Literal(Identifier):
     #  Superclass: def __hash__(self: str) -> int
     #  Subclass: def __hash__(self) -> int
     #  NOTE for type ignore: This can possibly be fixed by changing how __hash__ is implemented in Identifier
-    def __hash__(self) -> int:  # type: ignore[override]
+    def __hash__(self) -> int:
         """Hash function for Literals to enable their use as dictionary keys.
 
         Example:
@@ -1825,7 +1820,7 @@ def _writeXML(  # noqa: N802
 ) -> bytes:
     if isinstance(xmlnode, xml.dom.minidom.DocumentFragment):
         d = xml.dom.minidom.Document()
-        d.childNodes += xmlnode.childNodes
+        d.childNodes += xmlnode.childNodes  # type: ignore[arg-type]
         xmlnode = d
     s = xmlnode.toxml("utf-8")
     # for clean round-tripping, remove headers -- I have great and
@@ -1993,7 +1988,7 @@ _XSD_GYEAR = URIRef(_XSD_PFX + "gYear")
 _XSD_GYEARMONTH = URIRef(_XSD_PFX + "gYearMonth")
 # TODO: gMonthDay, gDay, gMonth
 
-_NUMERIC_LITERAL_TYPES: Tuple[URIRef, ...] = (
+_NUMERIC_LITERAL_TYPES: tuple[URIRef, ...] = (
     _XSD_INTEGER,
     _XSD_DECIMAL,
     _XSD_DOUBLE,
@@ -2013,7 +2008,7 @@ _NUMERIC_LITERAL_TYPES: Tuple[URIRef, ...] = (
 )
 
 # these have "native" syntax in N3/SPARQL
-_PLAIN_LITERAL_TYPES: Tuple[URIRef, ...] = (
+_PLAIN_LITERAL_TYPES: tuple[URIRef, ...] = (
     _XSD_INTEGER,
     _XSD_BOOLEAN,
     _XSD_DOUBLE,
@@ -2022,14 +2017,14 @@ _PLAIN_LITERAL_TYPES: Tuple[URIRef, ...] = (
 )
 
 # these have special INF and NaN XSD representations
-_NUMERIC_INF_NAN_LITERAL_TYPES: Tuple[URIRef, ...] = (
+_NUMERIC_INF_NAN_LITERAL_TYPES: tuple[URIRef, ...] = (
     URIRef(_XSD_PFX + "float"),
     _XSD_DOUBLE,
     _XSD_DECIMAL,
 )
 
 # these need dedicated operators
-_DATE_AND_TIME_TYPES: Tuple[URIRef, ...] = (
+_DATE_AND_TIME_TYPES: tuple[URIRef, ...] = (
     _XSD_DATETIME,
     _XSD_DATE,
     _XSD_TIME,
@@ -2038,17 +2033,17 @@ _DATE_AND_TIME_TYPES: Tuple[URIRef, ...] = (
 # These are recognized datatype IRIs
 # (https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris) that
 # represents durations.
-_TIME_DELTA_TYPES: Tuple[URIRef, ...] = (
+_TIME_DELTA_TYPES: tuple[URIRef, ...] = (
     _XSD_DURATION,
     _XSD_DAYTIMEDURATION,
 )
 
-_ALL_DATE_AND_TIME_TYPES: Tuple[URIRef, ...] = _DATE_AND_TIME_TYPES + _TIME_DELTA_TYPES
+_ALL_DATE_AND_TIME_TYPES: tuple[URIRef, ...] = _DATE_AND_TIME_TYPES + _TIME_DELTA_TYPES
 
 # the following types need special treatment for reasonable sorting because
 # certain instances can't be compared to each other. We treat this by
 # partitioning and then sorting within those partitions.
-_TOTAL_ORDER_CASTERS: Dict[Type[Any], Callable[[Any], Any]] = {
+_TOTAL_ORDER_CASTERS: dict[type[Any], Callable[[Any], Any]] = {
     datetime: lambda value: (
         # naive vs. aware
         value.tzinfo is not None and value.tzinfo.utcoffset(value) is not None,
@@ -2063,7 +2058,7 @@ _TOTAL_ORDER_CASTERS: Dict[Type[Any], Callable[[Any], Any]] = {
 }
 
 
-_STRING_LITERAL_TYPES: Tuple[URIRef, ...] = (
+_STRING_LITERAL_TYPES: tuple[URIRef, ...] = (
     _XSD_STRING,
     _RDF_XMLLITERAL,
     _RDF_HTMLLITERAL,
@@ -2079,7 +2074,7 @@ def _py2literal(
     pType: Any,  # noqa: N803
     castFunc: Optional[Callable[[Any], Any]],  # noqa: N803
     dType: Optional[_StrT],  # noqa: N803
-) -> Tuple[Any, Optional[_StrT]]:
+) -> tuple[Any, Optional[_StrT]]:
     if castFunc is not None:
         return castFunc(obj), dType
     elif dType is not None:
@@ -2090,7 +2085,7 @@ def _py2literal(
 
 def _castPythonToLiteral(  # noqa: N802
     obj: Any, datatype: Optional[str]
-) -> Tuple[Any, Optional[str]]:
+) -> tuple[Any, Optional[str]]:
     """
     Casts a tuple of a python type and a special datatype URI to a tuple of the lexical value and a
     datatype URI (or None)
@@ -2118,8 +2113,8 @@ def _castPythonToLiteral(  # noqa: N802
 # python longs have no limit
 # both map to the abstract integer type,
 # rather than some concrete bit-limited datatype
-_GenericPythonToXSDRules: List[
-    Tuple[Type[Any], Tuple[Optional[Callable[[Any], Union[str, bytes]]], Optional[str]]]
+_GenericPythonToXSDRules: list[
+    tuple[type[Any], tuple[Optional[Callable[[Any], Union[str, bytes]]], Optional[str]]]
 ] = [
     (str, (None, None)),
     (float, (None, _XSD_DOUBLE)),
@@ -2150,8 +2145,8 @@ if html5rdf is not None:
 
 _OriginalGenericPythonToXSDRules = list(_GenericPythonToXSDRules)
 
-_SpecificPythonToXSDRules: List[
-    Tuple[Tuple[Type[Any], str], Optional[Callable[[Any], Union[str, bytes]]]]
+_SpecificPythonToXSDRules: list[
+    tuple[tuple[type[Any], str], Optional[Callable[[Any], Union[str, bytes]]]]
 ] = [
     ((date, _XSD_GYEAR), lambda val: val.strftime("%Y").zfill(4)),
     ((date, _XSD_GYEARMONTH), lambda val: val.strftime("%Y-%m").zfill(7)),
@@ -2163,7 +2158,7 @@ _SpecificPythonToXSDRules: List[
 
 _OriginalSpecificPythonToXSDRules = list(_SpecificPythonToXSDRules)
 
-XSDToPython: Dict[Optional[str], Optional[Callable[[str], Any]]] = {
+XSDToPython: dict[Optional[str], Optional[Callable[[str], Any]]] = {
     None: None,  # plain literals map directly to value space
     URIRef(_XSD_PFX + "time"): parse_time,
     URIRef(_XSD_PFX + "date"): parse_xsd_date,
@@ -2202,11 +2197,11 @@ if html5rdf is not None:
     # It is probably best to keep this close to the definition of
     # _GenericPythonToXSDRules so nobody misses it.
     XSDToPython[_RDF_HTMLLITERAL] = _parse_html
-    _XML_COMPARABLE: Tuple[URIRef, ...] = (_RDF_XMLLITERAL, _RDF_HTMLLITERAL)
+    _XML_COMPARABLE: tuple[URIRef, ...] = (_RDF_XMLLITERAL, _RDF_HTMLLITERAL)
 else:
     _XML_COMPARABLE = (_RDF_XMLLITERAL,)
 
-_check_well_formed_types: Dict[URIRef, Callable[[Union[str, bytes], Any], bool]] = {
+_check_well_formed_types: dict[URIRef, Callable[[Union[str, bytes], Any], bool]] = {
     URIRef(_XSD_PFX + "boolean"): _well_formed_boolean,
     URIRef(_XSD_PFX + "nonPositiveInteger"): _well_formed_non_positive_integer,
     URIRef(_XSD_PFX + "nonNegativeInteger"): _well_formed_non_negative_integer,
@@ -2221,7 +2216,7 @@ _check_well_formed_types: Dict[URIRef, Callable[[Union[str, bytes], Any], bool]]
     URIRef(_XSD_PFX + "unsignedByte"): _well_formed_unsignedbyte,
 }
 
-_toPythonMapping: Dict[Optional[str], Optional[Callable[[str], Any]]] = {}  # noqa: N816
+_toPythonMapping: dict[Optional[str], Optional[Callable[[str], Any]]] = {}  # noqa: N816
 
 _toPythonMapping.update(XSDToPython)
 
@@ -2301,7 +2296,7 @@ def _strip_and_collapse_whitespace(lexical_or_value: _AnyT) -> _AnyT:
 
 def bind(
     datatype: str,
-    pythontype: Type[Any],
+    pythontype: type[Any],
     constructor: Optional[Callable[[str], Any]] = None,
     lexicalizer: Optional[Callable[[Any], Union[str, bytes]]] = None,
     datatype_specific: bool = False,
@@ -2363,7 +2358,7 @@ class Variable(Identifier):
     def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
         return "?" + self
 
-    def __reduce__(self) -> Tuple[Type[Variable], Tuple[str]]:
+    def __reduce__(self) -> tuple[type[Variable], tuple[str]]:
         return (Variable, (str(self),))
 
 
@@ -2371,7 +2366,7 @@ class Variable(Identifier):
 # See http://www.w3.org/TR/sparql11-query/#modOrderBy
 # we leave "space" for more subclasses of Node elsewhere
 # default-dict to grazefully fail for new subclasses
-_ORDERING: Dict[Type[Node], int] = defaultdict(int)
+_ORDERING: dict[type[Node], int] = defaultdict(int)
 _ORDERING.update({BNode: 10, Variable: 20, URIRef: 30, Literal: 40})
 
 

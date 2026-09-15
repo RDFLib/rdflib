@@ -7,7 +7,8 @@ from __future__ import annotations
 
 import codecs
 import re
-from typing import Match
+import warnings
+from re import Match
 
 
 def cast_bytes(s, enc="utf-8"):
@@ -21,7 +22,7 @@ def ascii(stream):
 
 
 def bopen(*args, **kwargs):
-    # type error: No overload variant of "open" matches argument types "Tuple[Any, ...]", "str", "Dict[str, Any]"
+    # type error: No overload variant of "open" matches argument types "tuple[Any, ...]", "str", "dict[str, Any]"
     return open(*args, mode="rb", **kwargs)  # type: ignore[call-overload]
 
 

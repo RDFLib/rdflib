@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import IO, Any, MutableMapping, Optional, Union
+from collections.abc import MutableMapping
+from typing import IO, Any, Optional, Union
 
 from rdflib.graph import Graph
 from rdflib.namespace import RDF, Namespace

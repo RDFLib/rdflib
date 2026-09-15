@@ -3,7 +3,7 @@ from __future__ import annotations
 import itertools
 import json
 import re
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import pytest
 
@@ -14,10 +14,10 @@ from rdflib.serializer import Serializer
 register("json-ld", Serializer, "rdflib.plugins.serializers.jsonld", "JsonLDSerializer")
 
 
-cases: List[Tuple[str, Dict[str, Any]]] = []
+cases: list[tuple[str, dict[str, Any]]] = []
 
 
-def case(source: str, data: Dict[str, Any]):
+def case(source: str, data: dict[str, Any]):
     cases.append((source, data))
 
 

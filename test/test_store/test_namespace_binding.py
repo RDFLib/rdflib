@@ -3,9 +3,10 @@ from __future__ import annotations
 import enum
 import itertools
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Dict, Set, Union
+from typing import Any, Union
 
 import pytest
 
@@ -25,7 +26,7 @@ class StoreTrait(enum.Enum):
 @dataclass
 class StoreInfo:
     name: str
-    traits: Set[StoreTrait] = field(default_factory=set)
+    traits: set[StoreTrait] = field(default_factory=set)
 
     def make_graph(
         self, tmp_path: Path, identifier: Union[IdentifiedNode, str, None] = None
@@ -39,7 +40,7 @@ class StoreInfo:
         return graph
 
 
-def make_store_info_dict(*result_format: StoreInfo) -> Dict[str, StoreInfo]:
+def make_store_info_dict(*result_format: StoreInfo) -> dict[str, StoreInfo]:
     result = {}
     for item in result_format:
         result[item.name] = item
@@ -71,7 +72,7 @@ EGNSSUB_V0 = EGNSSUB["v0"]
 EGNSSUB_V1 = EGNSSUB["v1"]
 EGNSSUB_V2 = EGNSSUB["v2"]
 
-NamespaceBindings = Dict[str, URIRef]
+NamespaceBindings = dict[str, URIRef]
 
 
 def make_graph(tmp_path: Path, store_name: str) -> Graph:

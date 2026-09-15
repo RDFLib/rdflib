@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import logging
-from typing import Iterable
+from collections.abc import Iterable
+from typing import Union
 
 import pytest
 from _pytest.mark.structures import ParameterSet
@@ -27,15 +28,25 @@ EXTENSION_FORMATS = {
 }
 
 
-@pytest.mark.parametrize("file_extension", make_load_default_and_named())
-def test_load_default_and_named(file_extension: str) -> None:
-    container = Dataset()
+@pytest.mark.parametrize(
+    ["container_type", "file_extension"], make_load_default_and_named()
+)
+def test_load_default_and_named(
+    container_type: Union[type[Dataset], type[ConjunctiveGraph]], file_extension: str
+) -> None:
+    logging.debug("container_type = %s", container_type)
+    container = container_type()
 
-    assert 1 == sum(1 for _ in container.graphs())
-    assert DATASET_DEFAULT_GRAPH_ID == next(
-        (graph.identifier for graph in container.graphs()), None
-    )
-    assert container.default_graph == next(container.graphs(), None)
+    if container_type is Dataset:
+        # An empty dataset has 1 default graph and no named graphs, so 1 graph in
+        # total.
+        assert 1 == sum(1 for _ in container.contexts())
+        assert DATASET_DEFAULT_GRAPH_ID == next(
+            (context.identifier for context in container.contexts()), None
+        )
+        assert container.default_context == next(container.contexts(), None)
+    else:
+        assert isinstance(container.default_context.identifier, BNode)
 
     # Load an RDF document with triples in three graphs into the container.
     format = EXTENSION_FORMATS[file_extension]
@@ -74,19 +85,35 @@ def test_load_default_and_named(file_extension: str) -> None:
 
 
 def make_load_default_only_cases() -> Iterable[ParameterSet]:
-    for file_extension in ("trig", "ttl", "nq", "nt", "jsonld", "hext", "n3"):
-        yield pytest.param(file_extension, id=file_extension)
+    for container_type, file_extension in itertools.product(
+        (Dataset, ConjunctiveGraph), ("trig", "ttl", "nq", "nt", "jsonld", "hext", "n3")
+    ):
+        yield pytest.param(
+            container_type,
+            file_extension,
+            id=f"{container_type.__name__}-{file_extension}",
+        )
 
 
-@pytest.mark.parametrize("file_extension", make_load_default_only_cases())
-def test_load_default_only(file_extension: str) -> None:
-    container = Dataset()
+@pytest.mark.parametrize(
+    ["container_type", "file_extension"], make_load_default_only_cases()
+)
+def test_load_default_only(
+    container_type: Union[type[Dataset], type[ConjunctiveGraph]], file_extension: str
+) -> None:
+    logging.debug("container_type = %s", container_type)
+    container = container_type()
 
-    assert 1 == sum(1 for _ in container.graphs())
-    assert DATASET_DEFAULT_GRAPH_ID == next(
-        (graph.identifier for graph in container.graphs()), None
-    )
-    assert container.default_graph == next(container.graphs(), None)
+    if container_type is Dataset:
+        # An empty dataset has 1 default graph and no named graphs, so 1 graph in
+        # total.
+        assert 1 == sum(1 for _ in container.contexts())
+        assert DATASET_DEFAULT_GRAPH_ID == next(
+            (context.identifier for context in container.contexts()), None
+        )
+        assert container.default_context == next(container.contexts(), None)
+    else:
+        assert isinstance(container.default_context.identifier, BNode)
 
     # Load an RDF document with only triples in the default graph into the container.
     format = EXTENSION_FORMATS[file_extension]
