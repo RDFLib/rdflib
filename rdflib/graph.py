@@ -315,6 +315,8 @@ from rdflib.term import (
 )
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
+
     import typing_extensions as te
 
     import rdflib.query
@@ -331,6 +333,7 @@ _OptionalQuadType = tuple[
     "_SubjectType", "_PredicateType", "_ObjectType", Optional["_ContextType"]
 ]
 _TripleOrOptionalQuadType = Union["_TripleType", "_OptionalQuadType"]
+_TripleOrQuadType = Union["_TripleType", "_QuadType"]
 _OptionalIdentifiedQuadType = tuple[
     "_SubjectType", "_PredicateType", "_ObjectType", Optional["_ContextIdentifierType"]
 ]
@@ -411,7 +414,9 @@ __all__ = [
     "_QuadType",
     "_SubjectType",
     "_TripleOrOptionalQuadType",
+    "_TripleOrQuadType",
     "_TripleOrTriplePathType",
+    "to_quads",
     "_TripleOrQuadPathPatternType",
     "_TripleOrQuadPatternType",
     "_TripleOrQuadSelectorType",
@@ -622,17 +627,46 @@ class Graph(Node):
         self.__store.add((s, p, o), self, quoted=False)
         return self
 
-    def addN(self: _GraphT, quads: Iterable[_QuadType]) -> _GraphT:  # noqa: N802
-        """Add a sequence of triple with context"""
+    def add_many(
+        self: _GraphT, triples_or_quads: Iterable[_TripleOrQuadType]
+    ) -> _GraphT:
+        """Add a sequence of triples or quads.
+
+        When a triple ``(s, p, o)`` is given, ``self`` is used as the context.
+        When a quad ``(s, p, o, context)`` is given, only quads whose context
+        identifier matches this graph's identifier are added.
+
+        Args:
+            triples_or_quads: An iterable of triples ``(s, p, o)`` or quads
+                ``(s, p, o, context)``.
+
+        Returns:
+            The graph instance.
+        """
 
         self.__store.addN(
             (s, p, o, c)
-            for s, p, o, c in quads
+            for s, p, o, c in to_quads(triples_or_quads, self)
             if isinstance(c, Graph)
             and c.identifier is self.identifier
             and _assertnode(s, p, o)
         )
         return self
+
+    def addN(  # noqa: N802
+        self: _GraphT, triples_or_quads: Iterable[_TripleOrQuadType]
+    ) -> _GraphT:
+        """Add a sequence of triples or quads.
+
+        .. deprecated::
+            Use :meth:`add_many` instead.
+        """
+        warnings.warn(
+            "Graph.addN is deprecated, use Graph.add_many instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.add_many(triples_or_quads)
 
     def remove(self: _GraphT, triple: _TriplePatternType) -> _GraphT:
         """Remove a triple from the graph
@@ -830,7 +864,7 @@ class Graph(Node):
     def __iadd__(self: _GraphT, other: Iterable[_TripleType]) -> _GraphT:
         """Add all triples in Graph other to Graph.
         BNode IDs are not changed."""
-        self.addN((s, p, o, self) for s, p, o in other)
+        self.add_many((s, p, o, self) for s, p, o in other)
         return self
 
     def __isub__(self: _GraphT, other: Iterable[_TripleType]) -> _GraphT:
@@ -1088,7 +1122,8 @@ class Graph(Node):
         # type error: Argument 1 to "triples_choices" of "Store" has incompatible type "tuple[Union[list[Node], Node], Union[Node, list[Node]], Union[Node, list[Node]]]"; expected "Union[tuple[list[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
         # type error note: unpacking discards type info
         for (s, p, o), cg in self.store.triples_choices(
-            (subject, predicate, object_), context=self  # type: ignore[arg-type]
+            (subject, predicate, object_),
+            context=self,  # type: ignore[arg-type]
         ):
             yield s, p, o
 
@@ -2139,9 +2174,9 @@ class ConjunctiveGraph(Graph):
                 stacklevel=2,
             )
 
-        assert self.store.context_aware, (
-            "ConjunctiveGraph must be backed by" " a context aware store."
-        )
+        assert (
+            self.store.context_aware
+        ), "ConjunctiveGraph must be backed by a context aware store."
         self.context_aware = True
         self.default_union = True  # Conjunctive!
         self._default_context: _ContextType = Graph(
@@ -2270,15 +2305,43 @@ class ConjunctiveGraph(Graph):
             return self.get_context(c.identifier)
         return self.get_context(c)
 
-    def addN(  # noqa: N802
-        self: _ConjunctiveGraphT, quads: Iterable[_QuadType]
+    def add_many(
+        self: _ConjunctiveGraphT, triples_or_quads: Iterable[_TripleOrQuadType]
     ) -> _ConjunctiveGraphT:
-        """Add a sequence of triples with context"""
+        """Add a sequence of triples or quads.
+
+        When a triple ``(s, p, o)`` is given, ``self.default_context`` is used
+        as the context.
+
+        Args:
+            triples_or_quads: An iterable of triples ``(s, p, o)`` or quads
+                ``(s, p, o, context)``.
+
+        Returns:
+            The graph instance.
+        """
 
         self.store.addN(
-            (s, p, o, self._graph(c)) for s, p, o, c in quads if _assertnode(s, p, o)
+            (s, p, o, self._graph(c))
+            for s, p, o, c in to_quads(triples_or_quads, self.default_context)
+            if _assertnode(s, p, o)
         )
         return self
+
+    def addN(  # noqa: N802
+        self: _ConjunctiveGraphT, triples_or_quads: Iterable[_TripleOrQuadType]
+    ) -> _ConjunctiveGraphT:
+        """Add a sequence of triples or quads.
+
+        .. deprecated::
+            Use :meth:`add_many` instead.
+        """
+        warnings.warn(
+            "ConjunctiveGraph.addN is deprecated, use add_many instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.add_many(triples_or_quads)
 
     # type error: Argument 1 of "remove" is incompatible with supertype "Graph"; supertype defines the argument type as "tuple[Optional[Node], Optional[Node], Optional[Node]]"
     def remove(self: _ConjunctiveGraphT, triple_or_quad: _TripleOrOptionalQuadType) -> _ConjunctiveGraphT:  # type: ignore[override]
@@ -2716,9 +2779,7 @@ class Dataset(ConjunctiveGraph):
         return super(Dataset, self).identifier
 
     def __str__(self) -> str:
-        pattern = (
-            "[a rdflib:Dataset;rdflib:storage " "[a rdflib:Store;rdfs:label '%s']]"
-        )
+        pattern = "[a rdflib:Dataset;rdflib:storage [a rdflib:Store;rdfs:label '%s']]"
         return pattern % self.store.__class__.__name__
 
     # type error: Return type "tuple[type[Dataset], tuple[Store, bool]]" of "__reduce__" incompatible with return type "tuple[type[Graph], tuple[Store, IdentifiedNode]]" in supertype "ConjunctiveGraph"
@@ -2739,7 +2800,7 @@ class Dataset(ConjunctiveGraph):
     def __iadd__(self: _DatasetT, other: Iterable[_QuadType]) -> _DatasetT:  # type: ignore[override, misc]
         """Add all quads in Dataset other to Dataset.
         BNode IDs are not changed."""
-        self.addN((s, p, o, g) for s, p, o, g in other)
+        self.add_many((s, p, o, g) for s, p, o, g in other)
         return self
 
     def graph(
@@ -3089,7 +3150,7 @@ class UnSupportedAggregateOperation(Exception):  # noqa: N818
         pass
 
     def __str__(self) -> str:
-        return "This operation is not supported by ReadOnlyGraphAggregate " "instances"
+        return "This operation is not supported by ReadOnlyGraphAggregate instances"
 
 
 class ReadOnlyGraphAggregate(ConjunctiveGraph):
@@ -3266,7 +3327,10 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
     # type error: Signature of "bind" incompatible with supertype "Graph"
     def bind(  # type: ignore[override]
-        self, prefix: Optional[str], namespace: Any, override: bool = True  # noqa: F811
+        self,
+        prefix: str | None,
+        namespace: Any,  # noqa: F811
+        override: bool = True,
     ) -> NoReturn:
         raise UnSupportedAggregateOperation()
 
@@ -3313,6 +3377,31 @@ def _assertnode(*terms: Any) -> bool:
     for t in terms:
         assert isinstance(t, Node), "Term %s must be an rdflib term" % (t,)
     return True
+
+
+def to_quads(
+    triples_or_quads: Iterable[_TripleOrQuadType],
+    default_context: _ContextType,
+) -> Iterator[_QuadType]:
+    """Normalise an iterable of triples or quads into quads.
+
+    Triples ``(s, p, o)`` are extended with *default_context* as the fourth
+    element.  Quads are yielded unchanged.
+
+    Args:
+        triples_or_quads: An iterable of triples ``(s, p, o)`` or quads
+            ``(s, p, o, context)``.
+        default_context: The graph to use as context when the input item is a
+            triple.
+
+    Yields:
+        4-tuples ``(subject, predicate, object, context)``.
+    """
+    for item in triples_or_quads:
+        if len(item) == 3:
+            yield *item, default_context  # type: ignore[misc]
+        else:
+            yield item  # type: ignore[misc]
 
 
 class BatchAddGraph:
@@ -3365,7 +3454,7 @@ class BatchAddGraph:
             The BatchAddGraph instance
         """
         if len(self.batch) >= self.__batch_size:
-            self.graph.addN(self.batch)
+            self.graph.add_many(self.batch)
             self.batch = []
         self.count += 1
         if len(triple_or_quad) == 3:
@@ -3376,13 +3465,23 @@ class BatchAddGraph:
             self.batch.append(triple_or_quad)  # type: ignore[arg-type, unused-ignore]
         return self
 
-    def addN(self, quads: Iterable[_QuadType]) -> BatchAddGraph:  # noqa: N802
+    def add_many(self, quads: Iterable[_QuadType]) -> BatchAddGraph:
+        """Add a sequence of quads to the buffer."""
         if self.__batch_addn:
             for q in quads:
                 self.add(q)
         else:
-            self.graph.addN(quads)
+            self.graph.add_many(quads)
         return self
+
+    def addN(self, quads: Iterable[_QuadType]) -> BatchAddGraph:  # noqa: N802
+        """.. deprecated:: Use :meth:`add_many` instead."""
+        warnings.warn(
+            "BatchAddGraph.addN is deprecated, use add_many instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.add_many(quads)
 
     def __enter__(self) -> BatchAddGraph:
         self.reset()
@@ -3390,4 +3489,4 @@ class BatchAddGraph:
 
     def __exit__(self, *exc) -> None:
         if exc[0] is None:
-            self.graph.addN(self.batch)
+            self.graph.add_many(self.batch)
