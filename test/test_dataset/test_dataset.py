@@ -8,7 +8,7 @@ import pytest
 from rdflib import BNode, Namespace, URIRef, plugin
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
 from rdflib.store import Store
-from test.data import CONTEXT1, LIKES, PIZZA, TAREK
+from test.data import CHEESE, CONTEXT1, CONTEXT2, LIKES, PIZZA, TAREK
 
 # Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
 # available. This assumes SPARQL1.1 query/update endpoints running locally at
@@ -237,6 +237,44 @@ def test_iter(get_dataset):
         i_new += 1
 
     assert i_new == i_trad  # both should be 3
+
+
+@pytest.mark.parametrize(
+    "graph_name, expected_quads",
+    [
+        (
+            CONTEXT1,
+            {
+                (TAREK, LIKES, PIZZA, CONTEXT1),
+                (TAREK, LIKES, CHEESE, CONTEXT1),
+            },
+        ),
+        (
+            CONTEXT2,
+            {
+                (TAREK, LIKES, PIZZA, CONTEXT2),
+            },
+        ),
+        (
+            DATASET_DEFAULT_GRAPH_ID,
+            {
+                (TAREK, LIKES, CHEESE, DATASET_DEFAULT_GRAPH_ID),
+            },
+        ),
+    ],
+)
+def test_quads_restricted_to_requested_graph(get_dataset, graph_name, expected_quads):
+    """A quad shared by several graphs must only be reported for the graph asked for."""
+    store, d = get_dataset
+
+    d.add((TAREK, LIKES, PIZZA, CONTEXT1))
+    d.add((TAREK, LIKES, CHEESE, CONTEXT1))
+    d.add((TAREK, LIKES, PIZZA, CONTEXT2))
+    d.add((TAREK, LIKES, CHEESE))
+
+    quads = set(d.quads((None, None, None, graph_name)))
+
+    assert quads == expected_quads
 
 
 def test_graph_without_identifier() -> None:
