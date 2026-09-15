@@ -38,6 +38,14 @@
       },
       "input": "toRdf-twoinvalidids-in.jsonld",
       "expect": "toRdf-twoinvalidids-out.nq"
+    },
+    {
+      "@id": "#toRdf-type-map-list",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "List-valued entries in @type, @id and @graph+@id maps",
+      "purpose": "Map container values may be node objects or arrays of node objects. Issue #3538",
+      "input": "toRdf-typemaplist-in.jsonld",
+      "expect": "toRdf-typemaplist-out.nq"
     }
   ]
 }
