@@ -45,7 +45,7 @@ class TriXSerializer(Serializer):
         self.writer.namespaces()
 
         if isinstance(self.store, ConjunctiveGraph):
-            for subgraph in self.store.contexts():
+            for subgraph in self.store.graphs():
                 self._writeGraph(subgraph)
         elif isinstance(self.store, Graph):
             self._writeGraph(self.store)

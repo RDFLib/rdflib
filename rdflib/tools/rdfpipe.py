@@ -4,6 +4,7 @@
 A commandline tool for parsing RDF in different formats and serializing the
 resulting graph to a chosen format.
 """
+
 from __future__ import annotations
 
 import logging

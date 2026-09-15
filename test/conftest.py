@@ -64,7 +64,7 @@ def function_httpmock(
     """
     HTTP server mock that is reset for each test function.
     """
-    (mock, _) = _session_function_httpmocks
+    mock, _ = _session_function_httpmocks
     mock.reset()
     yield mock
 
@@ -78,7 +78,7 @@ def function_httpmocks(
 
     This exists in case a tests needs to work with two different HTTP servers.
     """
-    (mock_a, mock_b) = _session_function_httpmocks
+    mock_a, mock_b = _session_function_httpmocks
     mock_a.reset()
     mock_b.reset()
     yield mock_a, mock_b

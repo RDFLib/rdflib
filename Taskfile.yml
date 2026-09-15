@@ -117,10 +117,6 @@ tasks:
     desc: Run black
     cmds:
       - '{{.VENV_PYTHON}} -m black {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
-  isort:
-    desc: Run isort
-    cmds:
-      - '{{.VENV_PYTHON}} -m isort {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
   mypy:
     desc: Run mypy
     cmds:

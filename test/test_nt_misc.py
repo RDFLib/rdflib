@@ -36,10 +36,10 @@ def test_issue859():
 
 def test_issue78():
     g = Graph()
-    g.add((URIRef("foo"), URIRef("foo"), Literal("R\u00E4ksm\u00F6rg\u00E5s")))
+    g.add((URIRef("foo"), URIRef("foo"), Literal("R\u00e4ksm\u00f6rg\u00e5s")))
     s = g.serialize(format="nt")
     assert type(s) == str  # noqa: E721
-    assert "R\u00E4ksm\u00F6rg\u00E5s" in s
+    assert "R\u00e4ksm\u00f6rg\u00e5s" in s
 
 
 def test_issue146():
@@ -190,18 +190,14 @@ def test_bnode_shared_across_instances():
     my_sink = FakeSink()
     bnode_context = dict()
     p = ntriples.W3CNTriplesParser(my_sink, bnode_context=bnode_context)
-    p.parsestring(
-        """
+    p.parsestring("""
     _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
-    """
-    )
+    """)
 
     q = ntriples.W3CNTriplesParser(my_sink, bnode_context=bnode_context)
-    q.parsestring(
-        """
+    q.parsestring("""
     _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000002> .
-    """
-    )
+    """)
 
     assert len(my_sink.subs) == 1
 
@@ -209,18 +205,14 @@ def test_bnode_shared_across_instances():
 def test_bnode_distinct_across_instances():
     my_sink = FakeSink()
     p = ntriples.W3CNTriplesParser(my_sink)
-    p.parsestring(
-        """
+    p.parsestring("""
     _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
-    """
-    )
+    """)
 
     q = ntriples.W3CNTriplesParser(my_sink)
-    q.parsestring(
-        """
+    q.parsestring("""
     _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000002> .
-    """
-    )
+    """)
 
     assert len(my_sink.subs) == 2
 
@@ -250,17 +242,13 @@ def test_bnode_shared_across_parse():
     my_sink = FakeSink()
     p = ntriples.W3CNTriplesParser(my_sink)
 
-    p.parsestring(
-        """
+    p.parsestring("""
     _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
-    """
-    )
+    """)
 
-    p.parsestring(
-        """
+    p.parsestring("""
     _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000002> .
-    """
-    )
+    """)
 
     assert len(my_sink.subs) == 1
 

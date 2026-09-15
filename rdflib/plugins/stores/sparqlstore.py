@@ -718,7 +718,7 @@ class SPARQLUpdateStore(SPARQLStore):
             raise Exception("UpdateEndpoint is not set")
 
         assert not quoted
-        (subject, predicate, obj) = spo
+        subject, predicate, obj = spo
 
         nts = self.node_to_sparql
         triple = "%s %s %s ." % (nts(subject), nts(predicate), nts(obj))
@@ -764,7 +764,7 @@ class SPARQLUpdateStore(SPARQLStore):
         if not self.update_endpoint:
             raise Exception("UpdateEndpoint is not set - call 'open'")
 
-        (subject, predicate, obj) = spo
+        subject, predicate, obj = spo
         if not subject:
             subject = Variable("S")
         if not predicate:

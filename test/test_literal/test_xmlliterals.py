@@ -122,25 +122,17 @@ def testHTML():  # noqa: N802
         pytest.param(
             [
                 lambda: Literal(
-                    xml.dom.minidom.parseString(
-                        textwrap.dedent(
-                            """\
+                    xml.dom.minidom.parseString(textwrap.dedent("""\
                     <!DOCTYPE example>
                     <something2/>
-                    """
-                        )
-                    ),
+                    """)),
                     datatype=RDF.XMLLiteral,
                 ),
                 lambda: Literal(
-                    xml.dom.minidom.parseString(
-                        textwrap.dedent(
-                            """\
+                    xml.dom.minidom.parseString(textwrap.dedent("""\
                     <!DOCTYPE example>
                     <something2 />
-                    """
-                        )
-                    ),
+                    """)),
                     datatype=RDF.XMLLiteral,
                 ),
             ],

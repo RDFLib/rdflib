@@ -228,13 +228,11 @@ def test_parse_rebinds_prefix():
     assert ("friend-of-a-friend", foaf1_uri) in list(g.namespaces())
 
 
-@pytest.mark.xfail(
-    reason="""
+@pytest.mark.xfail(reason="""
     Automatic handling of unknown predicates not automatically registered with namespace manager
 
     NOTE: This is not a bug, but more of a feature request.
-    """
-)
+    """)
 def test_automatic_handling_of_unknown_predicates():
     # AUTOMATIC HANDLING OF UNKNOWN PREDICATES
 

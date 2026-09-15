@@ -1,9 +1,8 @@
 import pytest
 
 from rdflib import Dataset, Graph, Namespace, URIRef
-from rdflib.plugins.serializers.longturtle import LongTurtleSerializer
 from rdflib.plugins.serializers.n3 import N3Serializer
-from rdflib.plugins.serializers.turtle import TurtleSerializer
+from rdflib.plugins.serializers.origturtle import OrigTurtleSerializer
 
 
 def test_dataset_contexts_method():
@@ -44,16 +43,12 @@ def test_dataset_identifier_property():
     ("serializer_cls", "warning_message"),
     [
         (
-            TurtleSerializer,
-            "TurtleSerializer.getQName is deprecated, use TurtleSerializer.get_pname instead.",
-        ),
-        (
-            LongTurtleSerializer,
-            "LongTurtleSerializer.getQName is deprecated, use LongTurtleSerializer.get_pname instead.",
+            OrigTurtleSerializer,
+            "TurtleSerializer.get_q_name is deprecated, use TurtleSerializer.get_pname instead.",
         ),
         (
             N3Serializer,
-            "N3Serializer.getQName is deprecated, use N3Serializer.get_pname instead.",
+            "N3Serializer.get_q_name is deprecated, use N3Serializer.get_pname instead.",
         ),
     ],
 )
@@ -67,6 +62,6 @@ def test_serializer_getqname_method(
     serializer = serializer_cls(graph)
 
     with pytest.warns(DeprecationWarning, match=warning_message):
-        qname = serializer.getQName(URIRef("http://example.org/value"))
+        qname = serializer.get_q_name(URIRef("http://example.org/value"))
 
     assert qname == "ex:value"

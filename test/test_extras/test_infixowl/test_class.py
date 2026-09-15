@@ -51,7 +51,7 @@ def test_class_instantiation(graph):
     )
     c.serialize(graph)
 
-    res = graph.serialize(format="ttl")
+    res = graph.serialize(format="origturtle")
 
     assert res == (
         "@prefix ace: <http://attempto.ifi.uzh.ch/ace_lexicon#> .\n"
@@ -155,7 +155,7 @@ def test_class_getparents(graph):
 
     assert str(brother.manchesterClass(full=True)) == "Class: ex:Brother "
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n"
@@ -288,7 +288,7 @@ def test_class_nameislabel():
 
     assert list(owlc.annotation) == [Literal("Man")]
 
-    assert g.serialize(format="ttl") == (
+    assert g.serialize(format="origturtle") == (
         "@prefix ace: <http://attempto.ifi.uzh.ch/ace_lexicon#> .\n"
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
@@ -330,7 +330,7 @@ def test_class_nameisnotlabel():
 
     assert list(owlc.annotation) == []
 
-    assert g.serialize(format="ttl") == (
+    assert g.serialize(format="origturtle") == (
         "@prefix ace: <http://attempto.ifi.uzh.ch/ace_lexicon#> .\n"
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"

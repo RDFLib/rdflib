@@ -5,12 +5,12 @@ from textwrap import dedent
 from rdflib import RDF, BNode, Graph, Literal, Namespace
 from rdflib.compare import isomorphic
 from rdflib.namespace import GEO, SDO
-from rdflib.plugins.serializers.longturtle import LongTurtleSerializer
+from rdflib.plugins.serializers.turtle import TurtleSerializer
 
 
 def test_longturtle():
     """Compares the output of a longturtle graph serialization to a fixed, hand-typed, target
-    to test most of the longtertle differences to regular turtle
+    to test most of the longturtle differences to regular turtle
 
     Includes basic triples, Blank Nodes - 2-levels deep - Collections and so on"""
     # load graph with data
@@ -170,7 +170,7 @@ def test_longturtle():
     g.bind("sdo", SDO)
 
     # run the long turtle serializer
-    output = g.serialize(format="longturtle", canon=True)
+    output = g.serialize(canon=True)
 
     # fix the target
     current_dir = Path.cwd()  # Get the current directory
@@ -200,17 +200,15 @@ def test_longturtle_undeclared_prefix_when_using_base():
             Literal("object"),
         )
     )
-    output = g.serialize(format="longturtle", base="https://example.com/")
-    expected = dedent(
-        """
+    output = g.serialize(base="https://example.com/")
+    expected = dedent("""
         BASE <https://example.com/>
         PREFIX ns1: <https://example.com/p/>
 
         <subject>
             ns1:predicate "object" ;
         .
-    """
-    )
+    """)
     assert output.strip() == expected.strip()
 
 
@@ -238,11 +236,11 @@ def test_longturtle_shared_list_tail_round_trips():
     g.add((ns.s1, ns.p, head))
     g.add((ns.s2, ns.p, tail))
 
-    serializer = LongTurtleSerializer(g)
-    assert serializer.isValidList(head) is False
-    assert serializer.isValidList(tail) is False
+    serializer = TurtleSerializer(g)
+    assert serializer.is_valid_list(head) is False
+    assert serializer.is_valid_list(tail) is False
 
-    ttl_dump = g.serialize(format="longturtle")
+    ttl_dump = g.serialize(format="origturtle")
     g2 = Graph()
     g2.parse(data=ttl_dump, format="turtle")
     assert len(g2) == len(g)

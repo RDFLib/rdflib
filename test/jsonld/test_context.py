@@ -243,8 +243,7 @@ def test_dict_source(tmp_path: Path) -> None:
 
 EG = Namespace("https://example.com/")
 
-DIVERSE_CONTEXT = json.loads(
-    """
+DIVERSE_CONTEXT = json.loads("""
         {
             "@context": {
                 "ex": "https://example.com/",
@@ -254,8 +253,7 @@ DIVERSE_CONTEXT = json.loads(
                 "children": { "@reverse": "https://example.com/parent" }
             }
         }
-        """
-)
+        """)
 
 
 def test_parsing() -> None:

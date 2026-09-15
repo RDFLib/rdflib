@@ -41,16 +41,14 @@ def test_datetime_datetime_subs_issue():
     f = io.StringIO(data1)
     graph1.parse(f, format="n3")
 
-    result = graph1.query(
-        """
+    result = graph1.query("""
     SELECT ?c ?duration
     WHERE {
         ?c :start ?start;
             :end ?end.
         BIND(?end - ?start AS ?duration)
     }
-    """
-    )
+    """)
 
     answer = list(result)
     answer = sorted(answer)
@@ -88,8 +86,7 @@ def test_datetime_duration_subs():
 
     # 1st Test Case
 
-    result1 = graph.query(
-        """
+    result1 = graph.query("""
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT (?d - ?duration AS ?next_year)
     WHERE {
@@ -98,8 +95,7 @@ def test_datetime_duration_subs():
             ("P1Y"^^xsd:yearMonthDuration "2019-05-28"^^xsd:date)
         }
     }
-    """
-    )
+    """)
     expected = []
     expected.append(
         rdflib.term.Literal(
@@ -119,8 +115,7 @@ def test_datetime_duration_subs():
 
     # 2nd Test Case
 
-    result2 = graph.query(
-        """
+    result2 = graph.query("""
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT (?d - ?duration AS ?next_year)
     WHERE {
@@ -129,8 +124,7 @@ def test_datetime_duration_subs():
             ("P3DT1H15M"^^xsd:dayTimeDuration "2000-10-30"^^xsd:date)
         }
     }
-    """
-    )
+    """)
 
     expected = []
     expected.append(
@@ -167,8 +161,7 @@ def test_datetime_duration_add():
 
     # 1st Test case
 
-    result1 = graph.query(
-        """
+    result1 = graph.query("""
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT (?d + ?duration AS ?next_year)
     WHERE {
@@ -177,8 +170,7 @@ def test_datetime_duration_add():
             ("P1Y"^^xsd:yearMonthDuration"2019-05-28"^^xsd:date)
         }
     }
-    """
-    )
+    """)
 
     # print(list(result1))
     expected = []
@@ -200,8 +192,7 @@ def test_datetime_duration_add():
 
     # 2nd Test case
 
-    result2 = graph.query(
-        """
+    result2 = graph.query("""
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT (?d + ?duration AS ?next_year)
     WHERE {
@@ -210,8 +201,7 @@ def test_datetime_duration_add():
             ("P3DT1H15M"^^xsd:dayTimeDuration "2000-10-30"^^xsd:date)
         }
     }
-    """
-    )
+    """)
 
     # print(list(result2))
     expected = []
@@ -248,8 +238,7 @@ def test_datetime_datetime_subs():
     f = io.StringIO(data)
     graph.parse(f, format="n3")
 
-    result1 = graph.query(
-        """
+    result1 = graph.query("""
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT (?l - ?r AS ?duration)
     WHERE {
@@ -258,8 +247,7 @@ def test_datetime_datetime_subs():
             ("2000-10-30"^^xsd:date"1999-11-28"^^xsd:date)
         }
     }
-    """
-    )
+    """)
 
     expected1 = rdflib.term.Literal(
         "P337DT2H12M",

@@ -248,7 +248,7 @@ def translatePath(p: typing.Union[CompValue, URIRef]) -> Optional[Path]:  # type
 
 
 def translateExists(
-    e: typing.Union[Expr, Literal, Variable, URIRef]
+    e: typing.Union[Expr, Literal, Variable, URIRef],
 ) -> typing.Union[Expr, Literal, Variable, URIRef]:
     """
     Translate the graph pattern used by EXISTS and NOT EXISTS

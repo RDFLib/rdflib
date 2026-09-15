@@ -111,8 +111,7 @@ def test_reevaluation_between_updates_modify() -> None:
 
     g.add((ex.bar, ex.value, Literal(3)))
 
-    g.update(
-        """
+    g.update("""
     DELETE {
         ex:bar ex:value ?oldValue .
     }
@@ -124,8 +123,7 @@ def test_reevaluation_between_updates_modify() -> None:
         OPTIONAL { ex:bar ex:value ?oldValue . }
         BIND(COALESCE(?oldValue, 0) + ?instValue AS ?newValue)
     }
-    """
-    )
+    """)
 
     result = g.query("SELECT ?x WHERE { ex:bar ex:value ?x }")
     values = {b.get(Variable("x")) for b in result}  # type: ignore
@@ -149,8 +147,7 @@ def test_reevaluation_between_updates_insert() -> None:
 
     g.add((ex.bar, ex.value, Literal(3)))
 
-    g.update(
-        """
+    g.update("""
     INSERT {
         ex:bar ex:value ?newValue .
     }
@@ -159,8 +156,7 @@ def test_reevaluation_between_updates_insert() -> None:
         OPTIONAL { ex:bar ex:value ?oldValue . }
         BIND(COALESCE(?oldValue, 0) + ?instValue AS ?newValue)
     }
-    """
-    )
+    """)
 
     result = g.query("SELECT ?x WHERE { ex:bar ex:value ?x }")
     values = {b.get(Variable("x")) for b in result}  # type: ignore
@@ -185,8 +181,7 @@ def test_inserts_in_named_graph():
     }
     """
     ds = Dataset().parse(data=trig_data, format="trig")
-    ds.update(
-        """
+    ds.update("""
     INSERT {
         GRAPH <urn:graph> {
             ?s ?p ?o
@@ -199,8 +194,7 @@ def test_inserts_in_named_graph():
             ?s ?p ?o
         }
     }
-    """
-    )
+    """)
 
     expected_trig = """
     @prefix ex: <http://example.org/> .

@@ -44,32 +44,6 @@ def _unicodeExpand(s):  # noqa: N802
     return r_unicodeEscape.sub(lambda m: chr(int(m.group(0)[2:], 16)), s)
 
 
-def decodeStringEscape(s):  # noqa: N802
-    warnings.warn(
-        DeprecationWarning(
-            "rdflib.compat.decodeStringEscape() is deprecated, "
-            "it will be removed in rdflib 7.0.0. "
-            "This function is not used anywhere in rdflib anymore "
-            "and the utility that it does provide is not implemented correctly."
-        )
-    )
-    r"""
-    s is byte-string - replace \ escapes in string
-    """
-
-    s = s.replace("\\t", "\t")
-    s = s.replace("\\n", "\n")
-    s = s.replace("\\r", "\r")
-    s = s.replace("\\b", "\b")
-    s = s.replace("\\f", "\f")
-    s = s.replace('\\"', '"')
-    s = s.replace("\\'", "'")
-    s = s.replace("\\\\", "\\")
-
-    return s
-    # return _unicodeExpand(s) # hmm - string escape doesn't do unicode escaping
-
-
 _string_escape_map = {
     "t": "\t",
     "b": "\b",

@@ -38,7 +38,7 @@ class NQuadsSerializer(Serializer):
                 f"Given encoding was: {encoding}"
             )
         encoding = self.encoding
-        for context in self.store.contexts():
+        for context in self.store.graphs():
             for triple in context:
                 stream.write(
                     _nq_row(triple, context.identifier).encode(encoding, "replace")

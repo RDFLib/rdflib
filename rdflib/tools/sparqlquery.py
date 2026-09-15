@@ -17,6 +17,7 @@ example usage:
 Tip: You can check the truth value for an ASK query, by regex in stdout for 'true'
 or 'false'.
 """
+
 from __future__ import annotations
 
 import argparse

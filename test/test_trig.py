@@ -84,7 +84,7 @@ def test_blank_graph_identifier():
     g = rdflib.Dataset()
     g.add(TRIPLE + (rdflib.BNode(),))
     out = g.serialize(format="trig", encoding="latin-1")
-    graph_label_line = out.splitlines()[-4]
+    graph_label_line = out.splitlines()[2]
 
     assert re.match(rb"^_:[a-zA-Z0-9]+ \{", graph_label_line)
 

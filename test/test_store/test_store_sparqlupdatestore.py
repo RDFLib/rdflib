@@ -242,11 +242,8 @@ def test_named_graph_update(get_graph):
     # Strings with unbalanced curly braces
     tricky_strs = ["With an unbalanced curly brace %s " % brace for brace in ["{", "}"]]
     for tricky_str in tricky_strs:
-        r3 = (
-            """INSERT { ?b <urn:says> "%s" }
-        WHERE { ?b <urn:example:likes> <urn:example:pizza>} """
-            % tricky_str
-        )
+        r3 = """INSERT { ?b <urn:says> "%s" }
+        WHERE { ?b <urn:example:likes> <urn:example:pizza>} """ % tricky_str
         g.update(r3)
 
     values = set()

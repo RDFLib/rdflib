@@ -45,8 +45,7 @@ def _node_to_sparql(node: Node) -> str:
 
 
 def _default_repo_config(repository_id: str) -> str:
-    return dedent(
-        f"""
+    return dedent(f"""
         PREFIX config: <tag:rdf4j.org,2023:config/>
 
         []    a config:Repository ;
@@ -63,8 +62,7 @@ def _default_repo_config(repository_id: str) -> str:
                         ] ;
                 ] ;
         .
-    """
-    )
+    """)
 
 
 class RDF4JStore(Store):
