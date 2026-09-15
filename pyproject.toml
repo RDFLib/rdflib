@@ -61,7 +61,7 @@ tests = [
     "coverage[toml]>=7.0.1,<8.0.0",
     "types-setuptools>=68.0.0.3,<72.0.0.0",
     "setuptools>=68,<72",
-    "wheel>=0.42,<0.46",
+    "wheel>=0.42,<0.49",
     "testcontainers>=4.13.2,<5.0.0",
 ]
 coverage = ["coveralls==4.1.0; python_version >= '3.10'"]
