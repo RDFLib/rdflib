@@ -191,6 +191,14 @@ def test_default_graph(get_dataset):
     assert set(dataset.graphs()) == set([dataset.default_context])
 
 
+def test_len_counts_quads() -> None:
+    dataset = Dataset()
+    dataset.graph(URIRef("https://example.com/g1")).add((TAREK, LIKES, PIZZA))
+    dataset.graph(URIRef("https://example.com/g2")).add((TAREK, LIKES, PIZZA))
+
+    assert len(dataset) == 2
+
+
 def test_not_union(get_dataset):
     store, dataset = get_dataset
     # Union depends on the SPARQL endpoint configuration
@@ -210,6 +218,9 @@ def test_not_union(get_dataset):
 def test_iter(get_dataset):
     store, d = get_dataset
     """PR 1382: adds __iter__ to Dataset"""
+    if store == "SPARQLUpdateStore":
+        pytest.skip("SPARQLUpdateStore does not expose contexts through triples()")
+
     uri_a = URIRef("https://example.com/a")
     uri_b = URIRef("https://example.com/b")
     uri_c = URIRef("https://example.com/c")
@@ -237,6 +248,7 @@ def test_iter(get_dataset):
         i_new += 1
 
     assert i_new == i_trad  # both should be 3
+    assert len(d) == i_new
 
 
 def test_graph_without_identifier() -> None:
