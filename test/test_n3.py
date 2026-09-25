@@ -189,6 +189,39 @@ foo-bar:Ex foo-bar:name "Test" . """
         g.parse(data=data, format="n3")
         g.parse(data=data, format="turtle")
 
+    @pytest.mark.parametrize(
+        ("statement", "complete_when_terminated"),
+        [
+            ('ex:Cat ex:hasName "Kitty"', True),
+            ("ex:Cat ex:p ex:o", True),
+            ('ex:Cat ex:p "x"@en', True),
+            ('ex:Cat ex:p "5"^^xsd:integer', True),
+            ("ex:Cat ex:p 5", True),
+            ("ex:Cat ex:hasName", False),  # truncated before the object
+            ("ex:Cat", False),  # subject only
+        ],
+    )
+    def test_issue3404_truncated_input_raises_badsyntax(
+        self, statement, complete_when_terminated
+    ):
+        """A statement truncated at EOF (before its terminating ".") must raise
+        BadSyntax rather than an uncaught IndexError.
+        https://github.com/RDFLib/rdflib/issues/3404
+        """
+        prefixes = (
+            "@prefix ex: <http://example.org/> .\n"
+            "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
+        )
+        for format in ("turtle", "n3"):
+            with pytest.raises(BadSyntax):
+                Graph().parse(data=prefixes + statement, format=format)
+            if complete_when_terminated:
+                # The same statement, properly terminated, parses cleanly: the
+                # fix only rejects the truncated form, not valid input.
+                g = Graph()
+                g.parse(data=prefixes + statement + " .", format=format)
+                assert len(g) == 1
+
     def test_dot_in_prefix(self):
         g = Graph()
         g.parse(
