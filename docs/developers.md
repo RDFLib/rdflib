@@ -16,19 +16,12 @@ If you add a new cool feature, consider also adding an example in `./examples`.
 
 ## Branch targets
 
-RDFLib keeps separate branches for the active release series and the next major
-release. Most pull requests should target `main`, the current major release
-branch, so they can be released in a patch or minor release.
+The `main` branch targets RDFLib v8. Target `main` for bug fixes, documentation
+updates, dependency updates, new features, and agreed breaking changes for v8.
 
-Target `main` for backwards-compatible bug fixes, documentation updates,
-dependency updates, and new features. Maintainers periodically merge `main`
-forward into `next`, so backwards-compatible changes accepted on `main` are
-carried into next-major development without contributors needing to target
-`next` directly.
-
-Target `next` for breaking changes and other work intended for the next major
-release. Breaking changes should be discussed in an issue before implementation
-so maintainers can confirm that the change belongs on `next`.
+The `next` branch is reserved for future major-release work identified by the
+maintainers. Breaking changes should be discussed in an issue before work is
+started so maintainers can confirm their intended release and target branch.
 
 If you are unsure which branch to use, open the pull request against `main` and
 ask for maintainer guidance.
@@ -74,7 +67,7 @@ This section contains guidelines for maintaining RDFLib. RDFLib maintainers shou
 
 ### Breaking changes
 
-Breaking changes to RDFLib's public API should be made incrementally, with small pull requests to the `next` branch that change as few things as possible.
+Breaking changes to RDFLib's public API should be made incrementally, with small pull requests that change as few things as possible. Agreed v8 changes target `main`; see [Branch targets](#branch-targets).
 
 Breaking changes should be discussed first in an issue before work is started, as it is possible that the change is not necessary or that there is a better way to achieve the same goal, in which case the work on the PR would have been wasted. This will however not be strictly enforced, and no PR will be rejected solely on the basis that it was not discussed upfront.
 
@@ -132,6 +125,19 @@ To run RDFLib's test suite with [pytest](https://docs.pytest.org/en/latest/):
 ```bash
 uv sync --group tests
 uv run pytest
+```
+
+By default, tests of `SPARQLStore` against remote public endpoints are skipped.
+To enable them, add the flag:
+
+```bash
+uv run pytest --public-endpoints
+```
+
+To run only the public endpoint tests:
+
+```bash
+uv run pytest test/test_store/test_store_sparqlstore_public.py --public-endpoints
 ```
 
 Specific tests can be run by file name. For example:
