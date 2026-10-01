@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import Optional
 
 import pytest
 
@@ -20,7 +19,7 @@ from test.utils.httpservermock import ServedBaseHTTPServerMock
     ],
 )
 def test_query_url_construct_format(
-    function_httpmock: ServedBaseHTTPServerMock, graph_identifier: Optional[str]
+    function_httpmock: ServedBaseHTTPServerMock, graph_identifier: str | None
 ) -> None:
     """
     This tests that query string params (foo & bar) are appended to the endpoint

@@ -22,7 +22,6 @@ from collections.abc import Generator, Iterable, Mapping
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
     Union,
 )
 from urllib.parse import urlencode
@@ -647,8 +646,8 @@ def evalDescribeQuery(ctx: QueryContext, query) -> dict[str, Union[str, Graph]]:
 def evalQuery(
     graph: Graph,
     query: Query,
-    initBindings: Optional[Mapping[str, Identifier]] = None,
-    base: Optional[str] = None,
+    initBindings: Mapping[str, Identifier] | None = None,
+    base: str | None = None,
 ) -> Mapping[Any, Any]:
     """Evaluate a SPARQL query against a graph.
 

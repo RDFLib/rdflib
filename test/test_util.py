@@ -377,7 +377,7 @@ def test__coalesce_typing() -> None:
     type checking for _coalesce behaves as expected.
     """
     str_value: str
-    optional_str_value: Optional[str]
+    optional_str_value: str | None
 
     optional_str_value = _coalesce(None, "a", None)
     assert optional_str_value == "a"
@@ -433,7 +433,7 @@ def test_find_roots(
     roots: Optional[set[Node]],
     expected_result: Union[set[URIRef], type[Exception]],
 ) -> None:
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
 
     graph = cached_graph(graph_sources)
 
@@ -558,7 +558,7 @@ def test_get_tree(
     dir: str,
     expected_result: Union[tuple[IdentifiedNode, list[Any]], type[Exception]],
 ) -> None:
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
 
     graph = cached_graph(graph_sources)
 
@@ -660,7 +660,7 @@ def test_iri2uri(iri: str, expected_result: Union[set[str], type[Exception]]) ->
     """
     Tests that
     """
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
 
     with ExitStack() as xstack:
         if isinstance(expected_result, type) and issubclass(expected_result, Exception):

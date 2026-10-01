@@ -14,7 +14,6 @@ from collections.abc import Callable, Iterable, Mapping
 from functools import reduce
 from typing import (
     Any,
-    Optional,
     overload,
 )
 
@@ -50,7 +49,7 @@ def Union(p1: CompValue, p2: CompValue) -> CompValue:
     return CompValue("Union", p1=p1, p2=p2)
 
 
-def Join(p1: CompValue, p2: Optional[CompValue]) -> CompValue:
+def Join(p1: CompValue, p2: CompValue | None) -> CompValue:
     return CompValue("Join", p1=p1, p2=p2)
 
 
@@ -63,7 +62,7 @@ def Graph(term: Identifier, graph: CompValue) -> CompValue:
 
 
 def BGP(
-    triples: Optional[list[tuple[Identifier, Identifier, Identifier]]] = None
+    triples: list[tuple[Identifier, Identifier, Identifier]] | None = None
 ) -> CompValue:
     return CompValue("BGP", triples=triples or [])
 
@@ -90,7 +89,7 @@ def Project(p: CompValue, PV: list[Variable]) -> CompValue:
     return CompValue("Project", p=p, PV=PV)
 
 
-def Group(p: CompValue, expr: Optional[list[Variable]] = None) -> CompValue:
+def Group(p: CompValue, expr: list[Variable] | None = None) -> CompValue:
     return CompValue("Group", p=p, expr=expr)
 
 
@@ -175,7 +174,7 @@ def triples(
 # type error: Missing return statement
 def translatePName(  # type: ignore[return]
     p: typing.Union[CompValue, str], prologue: Prologue
-) -> Optional[Identifier]:
+) -> Identifier | None:
     """
     Expand prefixed/relative URIs
     """
@@ -202,7 +201,7 @@ def translatePath(p: CompValue) -> Path: ...
 
 
 # type error: Missing return statement
-def translatePath(p: typing.Union[CompValue, URIRef]) -> Optional[Path]:  # type: ignore[return]
+def translatePath(p: typing.Union[CompValue, URIRef]) -> Path | None:  # type: ignore[return]
     """
     Translate PropertyPath expressions
     """
@@ -268,7 +267,7 @@ def translateExists(
     return e
 
 
-def collectAndRemoveFilters(parts: list[CompValue]) -> Optional[Expr]:
+def collectAndRemoveFilters(parts: list[CompValue]) -> Expr | None:
     """FILTER expressions apply to the whole group graph pattern in which
     they appear.
 
@@ -293,8 +292,8 @@ def collectAndRemoveFilters(parts: list[CompValue]) -> Optional[Expr]:
     return None
 
 
-def translateGroupOrUnionGraphPattern(graphPattern: CompValue) -> Optional[CompValue]:
-    A: Optional[CompValue] = None
+def translateGroupOrUnionGraphPattern(graphPattern: CompValue) -> CompValue | None:
+    A: CompValue | None = None
 
     for g in graphPattern.graph:
         g = translateGroupGraphPattern(g)
@@ -445,7 +444,7 @@ def traverse(
     tree,
     visitPre: Callable[[Any], Any] = lambda n: None,
     visitPost: Callable[[Any], Any] = lambda n: None,
-    complete: Optional[bool] = None,
+    complete: bool | None = None,
 ) -> Any:
     """
     Traverse tree, visit each node with visit function
@@ -474,7 +473,7 @@ def _hasAggregate(x) -> None:
 
 
 # type error: Missing return statement
-def _aggs(e, A) -> Optional[Variable]:  # type: ignore[return]
+def _aggs(e, A) -> Variable | None:  # type: ignore[return]
     """
     Collect Aggregates in A
     replaces aggregates with variable references
@@ -490,7 +489,7 @@ def _aggs(e, A) -> Optional[Variable]:  # type: ignore[return]
 
 
 # type error: Missing return statement
-def _findVars(x, res: set[Variable]) -> Optional[CompValue]:  # type: ignore[return]
+def _findVars(x, res: set[Variable]) -> CompValue | None:  # type: ignore[return]
     """
     Find all variables in a tree
     """
@@ -541,7 +540,7 @@ def _addVars(x, children: list[set[Variable]]) -> set[Variable]:
 
 
 # type error: Missing return statement
-def _sample(e: typing.Union[CompValue, list[Expr], Expr, list[str], Variable], v: Optional[Variable] = None) -> Optional[CompValue]:  # type: ignore[return]
+def _sample(e: typing.Union[CompValue, list[Expr], Expr, list[str], Variable], v: Variable | None = None) -> CompValue | None:  # type: ignore[return]
     """
     For each unaggregated variable V in expr
     Replace V with Sample(V)
@@ -614,7 +613,7 @@ def translateValues(
     return Values(res)
 
 
-def translate(q: CompValue) -> tuple[Optional[CompValue], list[Variable]]:
+def translate(q: CompValue) -> tuple[CompValue | None, list[Variable]]:
     """
     http://www.w3.org/TR/sparql11-query/#convertSolMod
     """
@@ -769,7 +768,7 @@ def _find_first_child_projections(M: CompValue) -> Iterable[CompValue]:
 
 
 # type error: Missing return statement
-def simplify(n: Any) -> Optional[CompValue]:  # type: ignore[return]
+def simplify(n: Any) -> CompValue | None:  # type: ignore[return]
     """Remove joins to empty BGPs"""
     if isinstance(n, CompValue):
         if n.name == "Join":
@@ -803,9 +802,9 @@ def analyse(n: Any, children: Any) -> bool:
 
 def translatePrologue(
     p: ParseResults,
-    base: Optional[str],
-    initNs: Optional[Mapping[str, Any]] = None,
-    prologue: Optional[Prologue] = None,
+    base: str | None,
+    initNs: Mapping[str, Any] | None = None,
+    prologue: Prologue | None = None,
 ) -> Prologue:
     if prologue is None:
         prologue = Prologue()
@@ -875,8 +874,8 @@ def translateUpdate1(u: CompValue, prologue: Prologue) -> CompValue:
 
 def translateUpdate(
     q: CompValue,
-    base: Optional[str] = None,
-    initNs: Optional[Mapping[str, Any]] = None,
+    base: str | None = None,
+    initNs: Mapping[str, Any] | None = None,
 ) -> Update:
     """
     Returns a list of SPARQL Update Algebra expressions
@@ -904,8 +903,8 @@ def translateUpdate(
 
 def translateQuery(
     q: ParseResults,
-    base: Optional[str] = None,
-    initNs: Optional[Mapping[str, Any]] = None,
+    base: str | None = None,
+    initNs: Mapping[str, Any] | None = None,
 ) -> Query:
     """
     Translate a query-parsetree to a SPARQL Algebra Expression

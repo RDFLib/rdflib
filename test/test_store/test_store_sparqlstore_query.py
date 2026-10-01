@@ -3,7 +3,6 @@ from __future__ import annotations
 import itertools
 import logging
 from collections.abc import Iterable
-from typing import Optional
 
 import pytest
 from _pytest.mark.structures import ParameterSet
@@ -42,7 +41,7 @@ def make_test_query_construct_format_cases() -> Iterable[ParameterSet]:
             ),
         )
     ]
-    response_format_encodings: list[tuple[str, str, set[Optional[str]]]] = [
+    response_format_encodings: list[tuple[str, str, set[str | None]]] = [
         (
             "application/rdf+xml",
             "utf-8",

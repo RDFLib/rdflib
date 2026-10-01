@@ -31,7 +31,6 @@ from types import MethodType
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
     TypeVar,
     Union,
 )
@@ -204,7 +203,7 @@ class Expr(CompValue):
     def __init__(
         self,
         name: str,
-        evalfn: Optional[Callable[[Any, Any], Any]] = None,
+        evalfn: Callable[[Any, Any], Any] | None = None,
         **values,
     ):
         super(Expr, self).__init__(name, **values)
@@ -215,7 +214,7 @@ class Expr(CompValue):
 
     def eval(self, ctx: Any = {}) -> Union[SPARQLError, Any]:
         try:
-            self.ctx: Optional[Union[Mapping, FrozenBindings]] = ctx
+            self.ctx: Union[Mapping, FrozenBindings] | None = ctx
             # type error: "None" not callable
             return self._evalfn(ctx)  # type: ignore[misc]
         except SPARQLError as e:
@@ -236,7 +235,7 @@ class Comp(TokenConverter):
         self.expr = expr
         TokenConverter.__init__(self, expr)
         self.set_name(name)
-        self.evalfn: Optional[Callable[[Any, Any], Any]] = None
+        self.evalfn: Callable[[Any, Any], Any] | None = None
 
     def postParse(
         self, instring: str, loc: int, tokenList: ParseResults

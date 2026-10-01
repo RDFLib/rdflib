@@ -27,7 +27,7 @@ import logging
 import os.path
 from collections.abc import Callable, Iterable
 from pathlib import Path
-from typing import Optional, Union
+from typing import Union
 from xml.sax import SAXParseException
 
 import pytest
@@ -210,7 +210,7 @@ CONSTRAINED_FORMAT_MAP = {
 
 
 def collect_files(
-    directory: Path, exclude_names: Optional[set[str]] = None, pattern: str = "**/*"
+    directory: Path, exclude_names: set[str] | None = None, pattern: str = "**/*"
 ) -> list[tuple[Path, str]]:
     result = []
     for path in directory.glob(pattern):
@@ -236,7 +236,7 @@ def roundtrip(
     testfmt: str,
     source: Path,
     graph_type: type[Graph] = ConjunctiveGraph,
-    checks: Optional[set[Check]] = None,
+    checks: set[Check] | None = None,
     same_public_id: bool = False,
 ) -> None:
     g1 = graph_type()
@@ -301,7 +301,7 @@ def roundtrip(
         logger.debug("OK")
 
 
-_formats: Optional[set[str]] = None
+_formats: set[str] | None = None
 
 
 def get_formats() -> set[str]:
@@ -317,9 +317,9 @@ def get_formats() -> set[str]:
 
 def make_cases(
     files: Iterable[tuple[Path, str]],
-    formats: Optional[set[str]] = None,
+    formats: set[str] | None = None,
     hext_okay: bool = False,
-    checks: Optional[set[Check]] = None,
+    checks: set[Check] | None = None,
     graph_type: type[Graph] = ConjunctiveGraph,
     same_public_id: bool = False,
 ) -> Iterable[ParameterSet]:
