@@ -417,6 +417,16 @@ class Converter:
                 return v
 
     def to_collection(self, graph: Graph, l_: Identifier):
+        """Return the members of the ``rdf:List`` headed by ``l_``, or None.
+
+        None means the chain must not be rendered as ``@list``. Besides a
+        malformed or cyclic chain, that includes a chain any of whose cells is
+        the object of more than one statement: the ``@list`` form inlines the
+        whole chain at a single reference and writes its cells nowhere else, so
+        another statement pointing at one of those cells would be left
+        referring to a node the output never defines, and the serialization
+        would not round-trip.
+        """
         if l_ != RDF.nil and not graph.value(l_, RDF.first):
             return None
         list_nodes: list[Optional[_ObjectType]] = []
@@ -425,6 +435,8 @@ class Converter:
             if l_ == RDF.nil:
                 return list_nodes
             if isinstance(l_, URIRef):
+                return None
+            if len(list(graph.subject_predicates(l_))) != 1:
                 return None
             first, rest = None, None
             for p, o in graph.predicate_objects(l_):
