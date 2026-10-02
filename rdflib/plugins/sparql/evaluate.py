@@ -482,7 +482,9 @@ def evalAggregateJoin(
         yield FrozenBindings(ctx, aggregator.get_bindings())
 
     # there were no matches
-    if len(res) == 0:
+    # A grouped aggregate over zero solutions has zero groups, so it must not
+    # yield a row; only an implicit (ungrouped) aggregate yields a single one.
+    if len(res) == 0 and group_expr is None:
         yield FrozenBindings(ctx)
 
 
