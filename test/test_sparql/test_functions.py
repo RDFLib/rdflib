@@ -93,6 +93,7 @@ EG = Namespace("https://example.com/")
         (r'replace("abcd", "b", "Z")', Literal("aZcd")),
         (r'replace("abab", "B", "Z", "i")', Literal("aZaZ")),
         (r'replace("abab", "B.", "Z", "i")', Literal("aZb")),
+        (r'replace("aaaaaa", "a", "X", "i")', Literal("XXXXXX")),
         (r"abs(-1.5)", Literal("1.5", datatype=XSD.decimal)),
         (r"round(2.4999)", Literal("2", datatype=XSD.decimal)),
         (r"round(2.5)", Literal("3", datatype=XSD.decimal)),
