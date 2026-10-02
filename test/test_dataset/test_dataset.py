@@ -230,6 +230,53 @@ def test_dataset_internal_default_graph_operations_do_not_warn() -> None:
         assert bool(dataset.query("ASK WHERE { <urn:s> <urn:p> <urn:o> }"))
 
 
+def test_dataset_parse_default_graph_does_not_warn() -> None:
+    dataset = Dataset()
+    triple: Tuple[Node, Node, Node] = (
+        URIRef("urn:s"),
+        URIRef("urn:p"),
+        URIRef("urn:o"),
+    )
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "error",
+            message=(
+                r"^Dataset\.default_context is deprecated, "
+                r"use Dataset\.default_graph instead\.$"
+            ),
+            category=DeprecationWarning,
+        )
+
+        dataset.parse(data="<urn:s> <urn:p> <urn:o> .", format="turtle")
+
+    assert triple in dataset.default_graph
+
+
+def test_dataset_update_default_graph_does_not_warn() -> None:
+    dataset = Dataset()
+    triple: Tuple[Node, Node, Node] = (
+        URIRef("urn:s"),
+        URIRef("urn:p"),
+        URIRef("urn:o"),
+    )
+    dataset.default_graph.add(triple)
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "error",
+            message=(
+                r"^Dataset\.default_context is deprecated, "
+                r"use Dataset\.default_graph instead\.$"
+            ),
+            category=DeprecationWarning,
+        )
+
+        dataset.update("DELETE DATA { <urn:s> <urn:p> <urn:o> }")
+
+    assert triple not in dataset.default_graph
+
+
 def test_not_union(get_dataset):
     store, dataset = get_dataset
     # Union depends on the SPARQL endpoint configuration
