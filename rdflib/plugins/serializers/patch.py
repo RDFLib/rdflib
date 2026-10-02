@@ -46,7 +46,9 @@ class PatchSerializer(Serializer):
         - operation: The operation to perform. Either 'add' or 'remove'.
         - target: The target Dataset to compare against.
         NB: Only one of 'operation' or 'target' should be provided.
-        - header_id: The header ID to use.
+        - header_id: The header ID to use. If omitted, no H id header is emitted.
+          Consumers producing RDF Patch Logs must supply an explicit globally
+          unique URI, as each log entry requires exactly one ID header.
         - header_prev: The previous header ID to use.
         """
         operation = kwargs.get("operation")
