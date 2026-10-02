@@ -288,7 +288,7 @@ class SPARQLXMLWriter:
                 # type error: Argument 2 to "AttributesNSImpl" has incompatible type "dict[tuple[Optional[str], str], str]"; expected "Mapping[tuple[str, str], str]"
                 AttributesNSImpl(attr_vals, attr_qnames),  # type: ignore[arg-type, unused-ignore]
             )
-            self.writer.characters(val)
+            self.writer.characters(str(val))
             self.writer.endElementNS((SPARQL_XML_NAMESPACE, "literal"), "literal")
 
         else:
