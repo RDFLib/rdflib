@@ -12,7 +12,7 @@ import rdflib.plugins.sparql.operators
 import rdflib.plugins.sparql.parser
 from rdflib import BNode, Dataset, Graph, Literal, URIRef
 from rdflib.compare import isomorphic
-from rdflib.namespace import RDF, RDFS, Namespace
+from rdflib.namespace import RDF, RDFS, XSD, Namespace
 from rdflib.plugins.sparql import prepareQuery, sparql
 from rdflib.plugins.sparql.algebra import translateQuery
 from rdflib.plugins.sparql.evaluate import evalPart
@@ -998,3 +998,124 @@ def test_expand_unicode_escapes(arg: str, expected_result: str, expected_valid: 
     else:
         with pytest.raises(ValueError, match="Invalid unicode code point"):
             _ = expandUnicodeEscapes(arg)
+
+
+# `IN` / `NOT IN` membership. SPARQL 1.1 17.4.1.9 defines `IN` as exactly
+# `(lhs = expr1) || (lhs = expr2) || ...` ("The test is done with `=` operator, which
+# tests for the same value"), and 17.4.1.10 defines `NOT IN` as its negation. So
+# membership must agree with `=`, and must follow the same error semantics: "Errors in
+# comparisons cause the IN expression to raise an error if the RDF term being tested is
+# not found elsewhere in the list". All six normative examples from those two sections
+# are covered by the parametrisations below.
+_EX = Namespace("urn:ex:")
+_IN_PREFIXES = "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> PREFIX ex: <urn:ex:> "
+
+
+def _in_count(stored: Identifier, filter_expr: str) -> int:
+    """Rows surviving ``filter_expr``, counted by ITERATING the result.
+
+    Deliberately not ``len(list(...))``: ``Result.__len__`` is consulted by
+    ``list()`` via ``PyObject_LengthHint``, which *clears* a ``TypeError`` raised
+    during evaluation, so a crashing filter would silently look like "no rows"
+    instead of failing the test.
+    """
+    g = Graph()
+    g.add((URIRef("urn:ex:s"), URIRef("urn:ex:p"), stored))
+    query = (
+        f"{_IN_PREFIXES}SELECT ?s WHERE {{ ?s <urn:ex:p> ?o . FILTER({filter_expr}) }}"
+    )
+    return sum(1 for _ in g.query(query))
+
+
+@pytest.mark.parametrize(
+    "stored, listed, in_matches",
+    [
+        # RDF 1.1: a simple literal and an xsd:string-typed literal are the SAME term.
+        (Literal("x"), '"x"', True),
+        (Literal("x", datatype=XSD.string), '"x"', True),
+        (Literal("x"), '"x"^^xsd:string', True),
+        (Literal("x", datatype=XSD.string), '"x"^^xsd:string', True),
+        # Numeric literals compare in value space across xsd types.
+        (Literal(1), "1.0", True),
+        (Literal(1.0), "1", True),
+        (Literal(1), "1", True),
+        (Literal(2), "1, 2, 3", True),
+        # Spec example (17.4.1.9): mixed IRI / string / numeric list.
+        (Literal(2), '<http://example/iri>, "str", 2.0', True),
+        # Non-literal terms: `Identifier.eq` falls back to `__eq__` for these.
+        (URIRef("urn:ex:x"), "<urn:ex:x>", True),
+        (URIRef("urn:ex:x"), "<urn:ex:y>", False),
+        (URIRef("urn:ex:x"), '"urn:ex:x"', False),
+        # Genuine non-matches must stay non-matches.
+        (Literal("x"), '"y"', False),
+        (Literal(1), "2", False),
+        # Incomparable operands: must not match, and must agree with `=`.
+        (Literal("x"), "1", False),
+        (Literal(1), '"x"', False),
+        (Literal("x", lang="en"), '"x"', False),
+        # Language tags are case-insensitive in RDF 1.1, so these ARE the same term.
+        (Literal("x", lang="en"), '"x"@EN', True),
+        (Literal("x"), '"x"@en', False),
+        (
+            Literal("2024-01-01", datatype=XSD.date),
+            '"2024-01-01T00:00:00"^^xsd:dateTime',
+            False,
+        ),
+        (Literal(True), "1", False),
+    ],
+)
+def test_in_operator_uses_value_equality(
+    stored: Identifier, listed: str, in_matches: bool
+) -> None:
+    """`IN` / `NOT IN` must compare in value space, exactly like `=` / `!=`.
+
+    The membership test previously used Python `==`, i.e. strict *term* equality, under
+    which `"x"` and `"x"^^xsd:string` -- identical terms in RDF 1.1 -- compared unequal
+    and `1` never matched `1.0`, while the equivalent `=` comparisons were correct.
+    """
+    assert _in_count(stored, f"?o IN ({listed})") == (1 if in_matches else 0)
+    assert _in_count(stored, f"?o NOT IN ({listed})") == (0 if in_matches else 1)
+    # The equivalence SPARQL 1.1 actually mandates, asserted directly.
+    assert _in_count(stored, f"?o IN ({listed})") == _in_count(
+        stored, " || ".join(f"?o = {item}" for item in listed.split(", "))
+    )
+
+
+@pytest.mark.parametrize(
+    "stored, listed, expected_rows",
+    [
+        # A match elsewhere in the list wins over an erroring entry, in either order.
+        # Spec: `2 IN (1/0, 2)` and `2 IN (2, 1/0)` are both true.
+        (Literal(2), "1/0, 2", 1),
+        (Literal(2), "2, 1/0", 1),
+        # Two literals of the same unknown datatype, different lexical forms: rdflib
+        # raises TypeError here, which must be recorded as an error and NOT abort the
+        # scan, so the later genuine match still wins.
+        (Literal("x", datatype=_EX.custom), '"y"^^ex:custom, "x"^^ex:custom', 1),
+        # Ill-typed literal compared to a well-typed one of the same datatype.
+        (Literal("abc", datatype=XSD.integer), '1, "abc"^^xsd:integer', 1),
+        # An erroring entry with NO match must not match -- in particular it must not
+        # be evaluated in a boolean context, where `NotImplemented` is truthy (and is
+        # a TypeError on Python 3.14), which would make `IN` match everything.
+        (Literal(2), "1/0", 0),
+        (Literal(2), "3, 1/0", 0),
+        # Empty list (the `RDF.nil` branch).
+        (Literal(2), "", 0),
+    ],
+)
+def test_in_operator_error_handling(
+    stored: Identifier, listed: str, expected_rows: int
+) -> None:
+    """An erroring list entry must not suppress a match elsewhere, nor fabricate one.
+
+    SPARQL 1.1 17.4.1.9: an error is only raised "if the RDF term being tested is not
+    found elsewhere in the list". The membership loop therefore has to record a failed
+    comparison and keep scanning -- a raised `TypeError` must not escape, and a
+    `NotImplemented` result must not be treated as a match.
+    """
+    assert _in_count(stored, f"?o IN ({listed})") == expected_rows
+    # `NOT IN` is the exact complement whenever a match was found; when every entry
+    # errored and none matched, both forms yield no rows (the error is propagated and
+    # the FILTER drops the row), so the two are still consistent.
+    not_in_rows = _in_count(stored, f"?o NOT IN ({listed})")
+    assert not_in_rows == (0 if expected_rows else (1 if listed == "" else 0))
