@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from io import StringIO
-from typing import IO, List, Optional, Union
+from typing import IO, Optional, Union
 
 from rdflib.namespace import NamespaceManager
 from rdflib.query import ResultSerializer
@@ -58,10 +58,10 @@ class TXTResultSerializer(ResultSerializer):
         if not self.result:
             string_stream.write("(no results)\n")
         else:
-            keys: List[Variable] = self.result.vars  # type: ignore[assignment]
+            keys: list[Variable] = self.result.vars  # type: ignore[assignment]
             maxlen = [0] * len(keys)
             b = [
-                # type error: Value of type "Union[Tuple[Node, Node, Node], bool, ResultRow]" is not indexable
+                # type error: Value of type "Union[tuple[Node, Node, Node], bool, ResultRow]" is not indexable
                 # type error: Argument 1 to "_termString" has incompatible type "Union[Node, Any]"; expected "Union[URIRef, Literal, BNode, None]"  [arg-type]
                 # type error: No overload variant of "__getitem__" of "tuple" matches argument type "Variable"
                 # NOTE on type error: The problem here is that r can be more types than _termString expects because result can be a result of multiple types.

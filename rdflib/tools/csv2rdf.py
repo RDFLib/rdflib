@@ -18,7 +18,7 @@ import re
 import sys
 import time
 import warnings
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 from urllib.parse import quote
 
 import rdflib
@@ -90,7 +90,7 @@ col4=date("%Y-%b-%d %H:%M:%S")
 """
 
 # bah - ugly global
-uris: Dict[Any, Tuple[URIRef, Optional[URIRef]]] = {}
+uris: dict[Any, tuple[URIRef, Optional[URIRef]]] = {}
 
 
 def toProperty(label: str):  # noqa: N802
@@ -116,7 +116,7 @@ def toPropertyLabel(label):  # noqa: N802
     return label
 
 
-def index(l_: List[int], i: Tuple[int, ...]) -> Tuple[int, ...]:
+def index(l_: list[int], i: tuple[int, ...]) -> tuple[int, ...]:
     """return a set of indexes from a list
     >>> index([1,2,3],(0,2))
     (1, 3)
@@ -305,7 +305,7 @@ class CSV2RDF:
         self.CLASS = None
         self.BASE = None
         self.PROPBASE = None
-        self.IDENT: Union[Tuple[str, ...], str] = "auto"
+        self.IDENT: Union[tuple[str, ...], str] = "auto"
         self.LABEL = None
         self.DEFINECLASS = False
         self.SKIP = 0
@@ -379,7 +379,7 @@ class CSV2RDF:
                             [
                                 # type error: "int" has no attribute "encode"
                                 quote(x.encode("utf8").replace(" ", "_"), safe="")  # type: ignore[attr-defined]
-                                # type error: Argument 2 to "index" has incompatible type "Union[Tuple[str, ...], str]"; expected "Tuple[int, ...]"
+                                # type error: Argument 2 to "index" has incompatible type "Union[tuple[str, ...], str]"; expected "tuple[int, ...]"
                                 for x in index(l_, self.IDENT)  # type: ignore[arg-type]
                             ]
                         )
@@ -387,7 +387,7 @@ class CSV2RDF:
 
                 if self.LABEL:
                     self.triple(
-                        # type error: Argument 1 to "join" of "str" has incompatible type "Tuple[int, ...]"; expected "Iterable[str]"
+                        # type error: Argument 1 to "join" of "str" has incompatible type "tuple[int, ...]"; expected "Iterable[str]"
                         uri,
                         RDFS.label,
                         rdflib.Literal(" ".join(index(l_, self.LABEL))),  # type: ignore[arg-type]
@@ -399,7 +399,7 @@ class CSV2RDF:
 
                 for i, x in enumerate(l_):
                     # type error: "int" has no attribute "strip"
-                    x = x.strip()  # type: ignore[attr-defined]
+                    x = x.strip()
                     if x != "":
                         if self.COLUMNS.get(i, self.DEFAULT) == "ignore":
                             continue
@@ -431,7 +431,7 @@ class CSV2RDF:
 
         # output types/labels for generated URIs
         classes = set()
-        # type error: Incompatible types in assignment (expression has type "Tuple[URIRef, Optional[URIRef]]", variable has type "int")
+        # type error: Incompatible types in assignment (expression has type "tuple[URIRef, Optional[URIRef]]", variable has type "int")
         for l_, x in uris.items():  # type: ignore[assignment]
             # type error: "int" object is not iterable
             u, c = x  # type: ignore[misc]
@@ -456,7 +456,7 @@ class CSV2RDF:
 def main():
     csv2rdf = CSV2RDF()
 
-    opts: Union[Dict[str, str], List[Tuple[str, str]]]
+    opts: Union[dict[str, str], list[tuple[str, str]]]
     opts, files = getopt.getopt(
         sys.argv[1:],
         "hc:b:p:i:o:Cf:l:s:d:D:",

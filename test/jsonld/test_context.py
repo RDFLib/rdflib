@@ -7,7 +7,7 @@ from __future__ import annotations
 import json
 from functools import wraps
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 from rdflib.namespace import PROV, XSD, Namespace
 from rdflib.plugins.shared.jsonld import context, errors
@@ -135,7 +135,7 @@ def test_prefix_like_vocab():
 
 
 # Mock external sources loading
-SOURCES: Dict[str, Dict[str, Any]] = {}
+SOURCES: dict[str, dict[str, Any]] = {}
 # type error: Module "rdflib.plugins.shared.jsonld.context" does not explicitly export attribute "source_to_json"
 _source_to_json = context.source_to_json  # type: ignore[attr-defined]
 

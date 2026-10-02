@@ -4,7 +4,7 @@ A TriX parser for RDFLib
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Tuple
+from typing import TYPE_CHECKING, Any, NoReturn, Optional
 from xml.sax import handler, make_parser
 from xml.sax.handler import ErrorHandler
 
@@ -17,7 +17,7 @@ from rdflib.term import BNode, Identifier, Literal, URIRef
 
 if TYPE_CHECKING:
     # from xml.sax.expatreader import ExpatLocator
-    from xml.sax.xmlreader import AttributesImpl, Locator, XMLReader
+    from xml.sax.xmlreader import AttributesNSImpl, Locator, XMLReader
 
 __all__ = ["create_parser", "TriXHandler", "TriXParser"]
 
@@ -38,9 +38,9 @@ class TriXHandler(handler.ContentHandler):
         self.reset()
 
     def reset(self) -> None:
-        self.bnode: Dict[str, BNode] = {}
+        self.bnode: dict[str, BNode] = {}
         self.graph: Optional[Graph] = None
-        self.triple: Optional[List[Identifier]] = None
+        self.triple: Optional[list[Identifier]] = None
         self.state = 0
         self.lang = None
         self.datatype = None
@@ -60,7 +60,7 @@ class TriXHandler(handler.ContentHandler):
         pass
 
     def startElementNS(
-        self, name: Tuple[Optional[str], str], qname, attrs: AttributesImpl
+        self, name: tuple[Optional[str], str], qname, attrs: AttributesNSImpl
     ) -> None:
         if name[0] != str(TRIXNS):
             self.error(
@@ -125,7 +125,7 @@ class TriXHandler(handler.ContentHandler):
                 self.lang = None
                 self.datatype = None
                 try:
-                    # type error: Argument 1 to "getValue" of "AttributesImpl" has incompatible type "Tuple[str, str]"; expected "str"
+                    # type error: Argument 1 to "getValue" of "AttributesImpl" has incompatible type "tuple[str, str]"; expected "str"
                     self.lang = attrs.getValue((str(XMLNS), "lang"))  # type: ignore[arg-type, unused-ignore]
                 except Exception:
                     # language not required - ignore
@@ -150,7 +150,7 @@ class TriXHandler(handler.ContentHandler):
 
         self.chars = ""
 
-    def endElementNS(self, name: Tuple[Optional[str], str], qname) -> None:
+    def endElementNS(self, name: tuple[Optional[str], str], qname) -> None:
         if TYPE_CHECKING:
             assert self.triple is not None
         if name[0] != str(TRIXNS):
@@ -206,7 +206,7 @@ class TriXHandler(handler.ContentHandler):
                         % (len(self.triple), self.triple)
                     )
                 # type error: Item "None" of "Optional[Graph]" has no attribute "add"
-                # type error: Argument 1 to "add" of "Graph" has incompatible type "List[Identifier]"; expected "Tuple[Node, Node, Node]"
+                # type error: Argument 1 to "add" of "Graph" has incompatible type "list[Identifier]"; expected "tuple[Node, Node, Node]"
                 self.graph.add(self.triple)  # type: ignore[union-attr, arg-type]
                 # self.store.store.add(self.triple,context=self.graph)
                 # self.store.addN([self.triple+[self.graph]])

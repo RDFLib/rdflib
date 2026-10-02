@@ -39,7 +39,7 @@ import re
 import sys
 from datetime import date, datetime, time, timedelta
 from decimal import ROUND_FLOOR, Decimal
-from typing import List, Optional, Tuple, Union, cast
+from typing import Optional, Union, cast
 
 if sys.version_info[:3] < (3, 11, 0):
     from isodate import parse_date, parse_datetime, parse_time
@@ -52,7 +52,7 @@ else:
 
 def fquotmod(
     val: Decimal, low: Union[Decimal, int], high: Union[Decimal, int]
-) -> Tuple[int, Decimal]:
+) -> tuple[int, Decimal]:
     """A divmod function with boundaries."""
     # assumes that all the maths is done with Decimals.
     # divmod for Decimal uses truncate instead of floor as builtin
@@ -512,7 +512,7 @@ def parse_xsd_duration(
 
 def duration_isoformat(tdt: Union[Duration, timedelta], in_weeks: bool = False) -> str:
     if not in_weeks:
-        ret: List[str] = []
+        ret: list[str] = []
         minus = False
         has_year_or_month = False
         if isinstance(tdt, Duration):

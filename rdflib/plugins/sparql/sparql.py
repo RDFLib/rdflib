@@ -4,17 +4,11 @@ import collections
 import datetime
 import itertools
 import typing as t
-from collections.abc import Mapping, MutableMapping
+from collections.abc import Container, Generator, Iterable, Mapping, MutableMapping
 from typing import (
     TYPE_CHECKING,
     Any,
-    Container,
-    Dict,
-    Generator,
-    Iterable,
-    List,
     Optional,
-    Tuple,
     TypeVar,
     Union,
 )
@@ -65,7 +59,7 @@ class Bindings(MutableMapping):
     """
 
     def __init__(self, outer: Optional[Bindings] = None, d=[]):
-        self._d: Dict[str, str] = dict(d)
+        self._d: dict[str, str] = dict(d)
         self.outer = outer
 
     def __getitem__(self, key: str) -> str:
@@ -104,7 +98,7 @@ class Bindings(MutableMapping):
             d = d.outer
 
     def __str__(self) -> str:
-        # type error: Generator has incompatible item type "Tuple[Any, str]"; expected "str"
+        # type error: Generator has incompatible item type "tuple[Any, str]"; expected "str"
         return "Bindings({" + ", ".join((k, self[k]) for k in self) + "})"  # type: ignore[misc]
 
     def __repr__(self) -> str:
@@ -120,7 +114,7 @@ class FrozenDict(Mapping):
     """
 
     def __init__(self, *args: Any, **kwargs: Any):
-        self._d: Dict[Identifier, Identifier] = dict(*args, **kwargs)
+        self._d: dict[Identifier, Identifier] = dict(*args, **kwargs)
         self._hash: Optional[int] = None
 
     def __iter__(self):
@@ -186,8 +180,8 @@ class FrozenBindings(FrozenDict):
             return key
 
         if key not in self._d:
-            # type error: Value of type "Optional[Dict[Variable, Identifier]]" is not indexable
-            # type error: Invalid index type "Union[BNode, Variable]" for "Optional[Dict[Variable, Identifier]]"; expected type "Variable"
+            # type error: Value of type "Optional[dict[Variable, Identifier]]" is not indexable
+            # type error: Invalid index type "Union[BNode, Variable]" for "Optional[dict[Variable, Identifier]]"; expected type "Variable"
             return self.ctx.initBindings[key]  # type: ignore[index]
         else:
             return self._d[key]
@@ -229,7 +223,7 @@ class FrozenBindings(FrozenDict):
                 for x in self.items()
                 if (
                     x[0] in _except
-                    # type error: Unsupported right operand type for in ("Optional[Dict[Variable, Identifier]]")
+                    # type error: Unsupported right operand type for in ("Optional[dict[Variable, Identifier]]")
                     or x[0] in self.ctx.initBindings  # type: ignore[operator]
                     or before[x[0]] is None
                 )
@@ -251,7 +245,7 @@ class QueryContext:
     def __init__(
         self,
         graph: Optional[Graph] = None,
-        bindings: Optional[Union[Bindings, FrozenBindings, List[Any]]] = None,
+        bindings: Optional[Union[Bindings, FrozenBindings, list[Any]]] = None,
         initBindings: Optional[Mapping[str, Identifier]] = None,
         datasetClause=None,
     ):
@@ -304,7 +298,7 @@ class QueryContext:
         return self._now
 
     def clone(
-        self, bindings: Optional[Union[FrozenBindings, Bindings, List[Any]]] = None
+        self, bindings: Optional[Union[FrozenBindings, Bindings, list[Any]]] = None
     ) -> QueryContext:
         r = QueryContext(
             self._dataset if self._dataset is not None else self.graph,
@@ -486,7 +480,7 @@ class Query:
     def __init__(self, prologue: Prologue, algebra: CompValue):
         self.prologue = prologue
         self.algebra = algebra
-        self._original_args: Tuple[str, Mapping[str, str], Optional[str]]
+        self._original_args: tuple[str, Mapping[str, str], Optional[str]]
 
 
 class Update:
@@ -494,7 +488,7 @@ class Update:
     A parsed and translated update
     """
 
-    def __init__(self, prologue: Prologue, algebra: List[CompValue]):
+    def __init__(self, prologue: Prologue, algebra: list[CompValue]):
         self.prologue = prologue
         self.algebra = algebra
-        self._original_args: Tuple[str, Mapping[str, str], Optional[str]]
+        self._original_args: tuple[str, Mapping[str, str], Optional[str]]

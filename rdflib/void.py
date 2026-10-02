@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import collections
-from typing import DefaultDict, Dict, Optional, Set
+from typing import Optional
 
 from rdflib.graph import Graph, _ObjectType, _PredicateType, _SubjectType
 from rdflib.namespace import RDF, VOID
@@ -31,29 +31,29 @@ def generateVoID(  # noqa: N802
     this requires more memory again
     """
 
-    typeMap: Dict[_SubjectType, Set[_SubjectType]] = (  # noqa: N806
+    typeMap: dict[_SubjectType, set[_SubjectType]] = (  # noqa: N806
         collections.defaultdict(set)
     )
-    classes: Dict[_ObjectType, Set[_SubjectType]] = collections.defaultdict(set)
+    classes: dict[_ObjectType, set[_SubjectType]] = collections.defaultdict(set)
     for e, c in g.subject_objects(RDF.type):
         classes[c].add(e)
         typeMap[e].add(c)
 
     triples = 0
-    subjects: Set[_SubjectType] = set()
-    objects: Set[_ObjectType] = set()
-    properties: Set[_PredicateType] = set()
-    classCount: DefaultDict[_SubjectType, int] = collections.defaultdict(  # noqa: N806
+    subjects: set[_SubjectType] = set()
+    objects: set[_ObjectType] = set()
+    properties: set[_PredicateType] = set()
+    class_count: collections.defaultdict[_SubjectType, int] = collections.defaultdict(
         int
     )
-    propCount: DefaultDict[_PredicateType, int] = collections.defaultdict(  # noqa: N806
+    prop_count: collections.defaultdict[_PredicateType, int] = collections.defaultdict(
         int
     )
 
-    classProps = collections.defaultdict(set)  # noqa: N806
-    classObjects = collections.defaultdict(set)  # noqa: N806
-    propSubjects = collections.defaultdict(set)  # noqa: N806
-    propObjects = collections.defaultdict(set)  # noqa: N806
+    class_props = collections.defaultdict(set)
+    class_objects = collections.defaultdict(set)
+    prop_subjects = collections.defaultdict(set)
+    prop_objects = collections.defaultdict(set)
 
     for s, p, o in g:
         triples += 1
@@ -64,16 +64,16 @@ def generateVoID(  # noqa: N802
         # class partitions
         if s in typeMap:
             for c in typeMap[s]:
-                classCount[c] += 1
+                class_count[c] += 1
                 if distinctForPartitions:
-                    classObjects[c].add(o)
-                    classProps[c].add(p)
+                    class_objects[c].add(o)
+                    class_props[c].add(p)
 
         # property partitions
-        propCount[p] += 1
+        prop_count[p] += 1
         if distinctForPartitions:
-            propObjects[p].add(o)
-            propSubjects[p].add(s)
+            prop_objects[p].add(o)
+            prop_subjects[p].add(s)
 
     if not dataset:
         dataset = URIRef("http://example.org/Dataset")
@@ -96,7 +96,7 @@ def generateVoID(  # noqa: N802
         res.add((dataset, VOID.classPartition, part))
         res.add((part, RDF.type, VOID.Dataset))
 
-        res.add((part, VOID.triples, Literal(classCount[c])))
+        res.add((part, VOID.triples, Literal(class_count[c])))
         res.add((part, VOID.classes, Literal(1)))
 
         res.add((part, VOID["class"], c))
@@ -105,15 +105,15 @@ def generateVoID(  # noqa: N802
         res.add((part, VOID.distinctSubjects, Literal(len(classes[c]))))
 
         if distinctForPartitions:
-            res.add((part, VOID.properties, Literal(len(classProps[c]))))
-            res.add((part, VOID.distinctObjects, Literal(len(classObjects[c]))))
+            res.add((part, VOID.properties, Literal(len(class_props[c]))))
+            res.add((part, VOID.distinctObjects, Literal(len(class_objects[c]))))
 
     for i, p in enumerate(properties):
         part = URIRef(dataset + "_property%d" % i)
         res.add((dataset, VOID.propertyPartition, part))
         res.add((part, RDF.type, VOID.Dataset))
 
-        res.add((part, VOID.triples, Literal(propCount[p])))
+        res.add((part, VOID.triples, Literal(prop_count[p])))
         res.add((part, VOID.properties, Literal(1)))
 
         res.add((part, VOID.property, p))
@@ -121,7 +121,7 @@ def generateVoID(  # noqa: N802
         if distinctForPartitions:
             entities = 0
             propClasses = set()  # noqa: N806
-            for s in propSubjects[p]:
+            for s in prop_subjects[p]:
                 if s in typeMap:
                     entities += 1
                 for c in typeMap[s]:
@@ -130,7 +130,7 @@ def generateVoID(  # noqa: N802
             res.add((part, VOID.entities, Literal(entities)))
             res.add((part, VOID.classes, Literal(len(propClasses))))
 
-            res.add((part, VOID.distinctSubjects, Literal(len(propSubjects[p]))))
-            res.add((part, VOID.distinctObjects, Literal(len(propObjects[p]))))
+            res.add((part, VOID.distinctSubjects, Literal(len(prop_subjects[p]))))
+            res.add((part, VOID.distinctObjects, Literal(len(prop_objects[p]))))
 
     return res, dataset

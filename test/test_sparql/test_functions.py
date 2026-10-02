@@ -1,5 +1,6 @@
 import logging
 from decimal import Decimal
+from typing import Union
 
 import pytest
 
@@ -91,6 +92,9 @@ EG = Namespace("https://example.com/")
         (r'regex("Alice", "^ali", "i")', Literal(True)),
         (r'regex("Bob", "^ali", "i")', Literal(False)),
         (r'replace("abcd", "b", "Z")', Literal("aZcd")),
+        (r'replace("abab", "B", "Z", "i")', Literal("aZaZ")),
+        (r'replace("abab", "B.", "Z", "i")', Literal("aZb")),
+        (r'replace("aaaaaa", "a", "X", "i")', Literal("XXXXXX")),
         (r"abs(-1.5)", Literal("1.5", datatype=XSD.decimal)),
         (r"round(2.4999)", Literal("2", datatype=XSD.decimal)),
         (r"round(2.5)", Literal("3", datatype=XSD.decimal)),
@@ -147,7 +151,7 @@ EG = Namespace("https://example.com/")
         ),
     ],
 )
-def test_function(expression: str, expected_result: Identifier) -> None:
+def test_function(expression: str, expected_result: Union[Identifier, type]) -> None:
     graph = Graph()
     query_string = """
     PREFIX eg: <https://example.com/>

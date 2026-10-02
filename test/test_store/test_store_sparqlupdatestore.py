@@ -16,8 +16,8 @@ DB = "/db/"
 # default graph as the union of all known graphs! This is incompatible with the
 # endpoint behavior required by our Dataset tests in test_dataset.py, so you
 # need to run a second SPARQL endpoint on a non standard port,
-# e.g. fuseki started with:
-# ./fuseki-server --port 3031 --memTDB --update --set tdb:unionDefaultGraph=true /db
+# e.g. Fuseki started with a TDB2 assembler configuration containing:
+# tdb2:unionDefaultGraph true
 
 # THIS WILL DELETE ALL DATA IN THE /db dataset
 

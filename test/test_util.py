@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import logging
 import time
+from collections.abc import Collection
 from contextlib import ExitStack
 from pathlib import Path
-from typing import Any, Collection, List, Optional, Set, Tuple, Type, Union
+from typing import Any, Optional, Union
 
 import pytest
 
@@ -427,10 +428,10 @@ def test__coalesce_typing() -> None:
     ],
 )
 def test_find_roots(
-    graph_sources: Tuple[Path, ...],
+    graph_sources: tuple[Path, ...],
     prop: URIRef,
-    roots: Optional[Set[Node]],
-    expected_result: Union[Set[URIRef], Type[Exception]],
+    roots: Optional[set[Node]],
+    expected_result: Union[set[URIRef], type[Exception]],
 ) -> None:
     catcher: Optional[pytest.ExceptionInfo[Exception]] = None
 
@@ -551,11 +552,11 @@ def test_find_roots(
     ],
 )
 def test_get_tree(
-    graph_sources: Tuple[Path, ...],
+    graph_sources: tuple[Path, ...],
     root: IdentifiedNode,
     prop: URIRef,
     dir: str,
-    expected_result: Union[Tuple[IdentifiedNode, List[Any]], Type[Exception]],
+    expected_result: Union[tuple[IdentifiedNode, list[Any]], type[Exception]],
 ) -> None:
     catcher: Optional[pytest.ExceptionInfo[Exception]] = None
 
@@ -655,7 +656,7 @@ def test_get_tree(
         ),
     ],
 )
-def test_iri2uri(iri: str, expected_result: Union[Set[str], Type[Exception]]) -> None:
+def test_iri2uri(iri: str, expected_result: Union[set[str], type[Exception]]) -> None:
     """
     Tests that
     """

@@ -6,9 +6,9 @@ version: "3"
 vars:
   TASKFILE_DIR:
     sh: pwd
-  POETRY: poetry
+  UV: uv
   # The prefix to use when running dev commands
-  RUN_PREFIX: "{{.POETRY}} run"
+  RUN_PREFIX: "{{.UV}} run --frozen"
   # The python to use for running in the venv
   VENV_PYTHON: "{{.RUN_PREFIX}} python"
     # The python interpreter to use.
@@ -43,7 +43,7 @@ tasks:
       - echo "OS = {{OS}}"
       - echo "ARCH = {{ARCH}}"
       - |
-        {{if (and (mustFromJson .EXTENSIVE) (eq OS "linux"))}}
+        {{if (and (mustFromJson .EXTENSIVE) (or (eq OS "linux") (eq OS "ubuntu-latest")))}}
           if type apt-get >/dev/null 2>&1
           then
             sudo apt-get install -y libdb-dev
@@ -51,21 +51,19 @@ tasks:
           then
             sudo dnf install -y libdb-devel
           fi
-        {{else if (and (mustFromJson .EXTENSIVE) (eq OS "darwin"))}}
+        {{else if (and (mustFromJson .EXTENSIVE) (or (eq OS "darwin") (eq OS "macos-latest")))}}
           brew install berkeley-db@4
         {{end}}
 
   install:tox:
     desc: Install tox
     cmds:
-      - "{{.PYTHON}} -m pip install tox {{if (mustFromJson .WITH_GITHUB_ACTIONS)}}tox-gh-actions{{end}}"
+      - '{{.UV}} tool install "tox>=4,<5"'
 
-  poetry:configure:
-    desc: Configure the environment for development with poetry
+  uv:configure:
+    desc: Configure the environment for development with uv
     cmds:
-      - |
-        {{if .POETRY_PYTHON}} {{.POETRY}} env use {{.POETRY_PYTHON}} {{end}}
-        {{.POETRY}} install {{if (or (mustFromJson .INSTALL_EXTRAS) (mustFromJson .EXTENSIVE))}} --all-extras{{end}} {{.CLI_ARGS}}
+      - '{{.UV}} sync --all-groups {{if .UV_PYTHON}}--python {{.UV_PYTHON}}{{end}} {{if (or (mustFromJson .INSTALL_EXTRAS) (mustFromJson .EXTENSIVE))}}--all-extras{{end}} {{.CLI_ARGS}}'
 
   configure:
     desc: Configure the environment for development
@@ -75,12 +73,13 @@ tasks:
   venv:install:
     desc: Create and install a venv
     cmds:
-      - task: poetry:configure
+      - task: uv:configure
 
   venv:clean:
     desc: Clean the virtual environment
     cmds:
-      - "{{.POETRY}} env remove --all {{.CLI_ARGS}}"
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: ".venv" }
 
   venv:run:
     desc: Run a command inside the venv
@@ -102,8 +101,7 @@ tasks:
         {{if .TOX_JUNIT_XML_PREFIX}}TOX_JUNIT_XML_PREFIX={{shellQuote .TOX_JUNIT_XML_PREFIX}}{{end}} \
         {{if .COVERAGE_FILE}}COVERAGE_FILE={{shellQuote .COVERAGE_FILE}}{{end}} \
         {{.TEST_HARNESS}} \
-        {{.PYTHON | shellQuote}} \
-          -m tox \
+        tox \
           {{.CLI_ARGS}}
     env:
       TOXENV: '{{if .TOX_PYTHON_VERSION}}py{{mustRegexReplaceAll "^([0-9]+)[.]([0-9]+).*" .TOX_PYTHON_VERSION "${1}${2}"}}{{if (mustFromJson .EXTENSIVE)}}-extensive{{end}}{{.TOXENV_SUFFIX | default ""}}{{end}}'
@@ -255,10 +253,8 @@ tasks:
   gha:lint:
     desc: GitHub Actions lint workflow
     cmds:
-      - task: poetry:configure
-        vars:
-          CLI_ARGS: --no-root --only=lint
-      - task: ruff
+    - "{{.UV}} sync --frozen --only-group lint --no-install-project"
+    - task: ruff
 
   cmd:rdfpipe:
     desc: Run rdfpipe
@@ -282,8 +278,8 @@ tasks:
 
           set -eo pipefail
           mkdir -vp var
-          {{.POETRY}} export -o var/requirements.txt
-          pipx run --spec=build build --wheel
+          {{.UV}} export --frozen --no-dev --no-emit-project -o var/requirements.txt
+          {{.UV}} build --wheel
           {{.DOCKER}} buildx build \
             --cache-to=type=inline \
             --cache-from=type=registry,ref={{.OCI_REFERENCE}}:unstable \
@@ -345,15 +341,15 @@ tasks:
         vars: { RIMRAF_TARGET: "dist" }
       - task: _rimraf
         vars: { RIMRAF_TARGET: "var/test-sdist" }
-      - poetry build
+      - uv build
       - python -c 'import tarfile, glob; tarfile.open(glob.glob("dist/*.tar.gz")[0]).extractall("var/test-sdist")'
       - |
         cd var/test-sdist/rdflib-*
-        poetry install
-        poetry run mypy --show-error-context --show-error-codes -p rdflib
-        poetry run python docs/gen_ref_pages.py
-        poetry run zensical build
-        poetry run pytest
+        uv sync --all-groups
+        uv run mypy --show-error-context --show-error-codes -p rdflib
+        uv run python docs/gen_ref_pages.py
+        uv run zensical build
+        uv run pytest
 
   test:no_internet:
     desc: Run tests without internet access
@@ -362,7 +358,7 @@ tasks:
         {{.TEST_HARNESS}}{{.RUN_PREFIX}} firejail --net=none -- pytest -m "not webtest" {{.CLI_ARGS}}
   _rimraf:
     # This task is a utility task for recursively removing directories, it is
-    # similar to rm -rf but not identical and it should work wherever there is
+    # similar to rm -rf but not identical, and it should work wherever there is
     # a python interpreter. The name is inspired by
     # <https://www.npmjs.com/package/rimraf>.
     - cmd: |

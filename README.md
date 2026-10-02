@@ -92,7 +92,7 @@ or
 
 or from your locally cloned repository you can install it with one of the following options:
 
-    $ poetry install  # installs into a poetry-managed venv
+    $ uv sync  # installs into a uv-managed venv
 
 or
 
@@ -202,22 +202,22 @@ Multiple other projects are contained within the RDFlib "family", see <https://g
 
 Run the test suite with `pytest`.
 ```shell
-poetry install
-poetry run pytest
+uv sync --group tests
+uv run pytest
 ```
 
 ### Running test coverage on the host with coverage report
 
 Run the test suite and generate a HTML coverage report with `pytest` and `pytest-cov`.
 ```shell
-poetry run pytest --cov
+uv run pytest --cov
 ```
 
 ### Viewing test coverage
 
 Once tests have produced HTML output of the coverage report, view it by running:
 ```shell
-poetry run pytest --cov --cov-report term --cov-report html
+uv run pytest --cov --cov-report term --cov-report html
 python -m http.server --directory=htmlcov
 ```
 

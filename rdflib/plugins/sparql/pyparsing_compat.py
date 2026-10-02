@@ -4,7 +4,8 @@ Compatibility helpers for supporting pyparsing v2 and v3 APIs.
 
 from __future__ import annotations
 
-from typing import Callable, Dict, Type, cast
+from collections.abc import Callable
+from typing import cast
 
 import pyparsing
 
@@ -37,7 +38,7 @@ else:
     rest_of_line = pyparsing.restOfLine
 
 
-def _alias_instance_method(klass: Type[object], new_name: str, old_name: str) -> None:
+def _alias_instance_method(klass: type[object], new_name: str, old_name: str) -> None:
     if hasattr(klass, new_name) or not hasattr(klass, old_name):
         return
 
@@ -49,7 +50,7 @@ def _alias_instance_method(klass: Type[object], new_name: str, old_name: str) ->
     setattr(klass, new_name, _method)
 
 
-def _alias_static_method(klass: Type[object], new_name: str, old_name: str) -> None:
+def _alias_static_method(klass: type[object], new_name: str, old_name: str) -> None:
     if hasattr(klass, new_name) or not hasattr(klass, old_name):
         return
 
@@ -94,7 +95,7 @@ if not hasattr(ParserElement, "parse_string"):
 _alias_instance_method(ParseResults, "as_list", "asList")
 
 
-def combine_join_kwargs(value: str) -> Dict[str, str]:
+def combine_join_kwargs(value: str) -> dict[str, str]:
     if PYPARSING_V3:
         return {"join_string": value}
     return {"joinString": value}

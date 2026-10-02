@@ -2,8 +2,8 @@
 Runs the RDFLib SPARQL test suite.
 """
 
+from collections.abc import Generator
 from contextlib import ExitStack
-from typing import Generator
 
 import pytest
 from pytest import MonkeyPatch

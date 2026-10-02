@@ -161,9 +161,6 @@ MARK_DICT = {
     f"{REMOTE_BASE_IRI}#trig-eval-bad-02": pytest.mark.xfail(reason="accepts bad IRI"),
     f"{REMOTE_BASE_IRI}#trig-eval-bad-03": pytest.mark.xfail(reason="accepts bad IRI"),
     f"{REMOTE_BASE_IRI}#trig-eval-bad-04": pytest.mark.xfail(reason="accepts bad IRI"),
-    f"{REMOTE_BASE_IRI}#trig-syntax-bad-ln-dash-start": pytest.mark.xfail(
-        reason="accepts dash in start of local name"
-    ),
     f"{REMOTE_BASE_IRI}#trig-syntax-bad-list-01": pytest.mark.xfail(
         reason="ignores badly formed quad"
     ),

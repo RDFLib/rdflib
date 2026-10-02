@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from contextlib import ExitStack
 from pathlib import PurePath, PurePosixPath, PureWindowsPath
-from typing import Optional, Type, Union
+from typing import Optional, Union
 
 import pytest
 
@@ -48,8 +48,8 @@ from test.utils.iri import file_uri_to_path, rebase_url
 )
 def test_file_uri_to_path(
     file_uri: str,
-    path_class: Type[PurePath],
-    expected_result: Union[PurePath, Type[Exception]],
+    path_class: type[PurePath],
+    expected_result: Union[PurePath, type[Exception]],
 ) -> None:
     """
     Tests that
@@ -102,7 +102,7 @@ def test_rebase_url(
     old_url: str,
     old_base: str,
     new_base: str,
-    expected_result: Union[str, Type[Exception]],
+    expected_result: Union[str, type[Exception]],
 ) -> None:
     """
     Tests that

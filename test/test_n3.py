@@ -241,6 +241,24 @@ foo-bar:Ex foo-bar:name "Test" . """
             for _, _, o, c in g:
                 assert o == Literal("o")
 
+    def test_local_name_must_not_begin_with_dash(self):
+        # this is issue https://github.com/RDFLib/rdflib/issues/3403
+        # PN_LOCAL may contain "-" but must not start with it.
+        for format in ("n3", "turtle"):
+            g = Graph()
+            with pytest.raises(BadSyntax):
+                g.parse(
+                    data="@prefix : <http://example.org/> .\n:s :p :-o .",
+                    format=format,
+                )
+
+            g = Graph()
+            g.parse(
+                data="@prefix : <http://example.org/> .\n:s :p :o-1 .",
+                format=format,
+            )
+            assert len(g) == 1
+
     def test_missing_datatype_iri_raises_badsyntax(self):
         # A literal with a "^^" datatype marker but no datatype IRI must raise
         # BadSyntax, not IndexError from reading the (empty) datatype result.

@@ -63,13 +63,13 @@ FileContent = t.Union[
     bytes,
     str,
     t.IO[bytes],
-    t.Tuple[t.Optional[str], t.Union[bytes, str, t.IO[bytes]]],
-    t.Tuple[t.Optional[str], t.Union[bytes, str, t.IO[bytes]], t.Optional[str]],
+    tuple[t.Optional[str], t.Union[bytes, str, t.IO[bytes]]],
+    tuple[t.Optional[str], t.Union[bytes, str, t.IO[bytes]], t.Optional[str]],
 ]
 
 FilesType = t.Union[
     t.Mapping[str, FileContent],
-    t.Iterable[t.Tuple[str, FileContent]],
+    t.Iterable[tuple[str, FileContent]],
 ]
 
 _ALLOWED_FGAC_SCOPES = {"statement", "clear_graph", "plugin", "system"}
@@ -102,7 +102,7 @@ class AccessControlListManagement:
         plugin: str | None = None,
         role: str | None = None,
         policy: t.Literal["allow", "deny", "abstain"] | None = None,
-    ) -> t.List[
+    ) -> list[
         SystemAccessControlEntry
         | StatementAccessControlEntry
         | PluginAccessControlEntry

@@ -20,5 +20,5 @@
     "paulvarache.vscode-taskfile",
     "stardog-union.vscode-stardog-languages"
   ],
-  "postCreateCommand": "poetry install --all-extras"
+  "postCreateCommand": "uv sync --all-groups --all-extras"
 }

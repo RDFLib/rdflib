@@ -7,7 +7,7 @@ repo_url: https://github.com/RDFLib/rdflib
 edit_uri: "edit/main/docs/"
 copyright: Copyright &copy; 2002 - 2026, RDFLib Team.
 
-# poetry run zensical serve -a localhost:8000
+# uv run zensical serve -a localhost:8000
 
 nav:
   - Usage:

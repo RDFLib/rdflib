@@ -18,7 +18,8 @@ system fails): A and I out of ACID.
 from __future__ import annotations
 
 import threading
-from typing import TYPE_CHECKING, Any, Generator, Iterator, List, Optional, Tuple, Union
+from collections.abc import Generator, Iterator
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.store import Store
@@ -53,8 +54,8 @@ class AuditableStore(Store):
         # info to reverse the removal of a quoted statement
         self.formula_aware = False  # store.formula_aware
         self.transaction_aware = True  # This is only half true
-        self.reverseOps: List[
-            Tuple[
+        self.reverseOps: list[
+            tuple[
                 Optional[_SubjectType],
                 Optional[_PredicateType],
                 Optional[_ObjectType],
@@ -146,7 +147,7 @@ class AuditableStore(Store):
 
     def triples(
         self, triple: _TriplePatternType, context: Optional[_ContextType] = None
-    ) -> Iterator[Tuple[_TripleType, Iterator[Optional[_ContextType]]]]:
+    ) -> Iterator[tuple[_TripleType, Iterator[Optional[_ContextType]]]]:
         (su, pr, ob) = triple
         context = (
             context.__class__(self.store, context.identifier)
@@ -179,7 +180,7 @@ class AuditableStore(Store):
     def namespace(self, prefix: str) -> Optional[URIRef]:
         return self.store.namespace(prefix)
 
-    def namespaces(self) -> Iterator[Tuple[str, URIRef]]:
+    def namespaces(self) -> Iterator[tuple[str, URIRef]]:
         return self.store.namespaces()
 
     def commit(self) -> None:

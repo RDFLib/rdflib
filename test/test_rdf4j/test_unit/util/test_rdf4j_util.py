@@ -63,8 +63,8 @@ def test_rdf_payload_to_stream(
     expected_should_close: bool,
 ):
     value, should_close = rdf_payload_to_stream(data)
-    assert isinstance(value, expected_value_type)
     assert should_close == expected_should_close
+    assert isinstance(value, expected_value_type)
 
 
 def test_build_sparql_query_accept_header(monkeypatch: pytest.MonkeyPatch):

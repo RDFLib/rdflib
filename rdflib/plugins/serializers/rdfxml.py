@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import xml.dom.minidom
-from typing import IO, Any, Dict, Generator, Optional, Set, Tuple
+from collections.abc import Generator
+from typing import IO, Any, Optional
 from xml.sax.saxutils import escape, quoteattr
 
 from rdflib.collection import Collection
@@ -24,10 +25,10 @@ class XMLSerializer(Serializer):
     def __init__(self, store: Graph):
         super(XMLSerializer, self).__init__(store)
 
-    def __bindings(self) -> Generator[Tuple[str, URIRef], None, None]:
+    def __bindings(self) -> Generator[tuple[str, URIRef], None, None]:
         store = self.store
         nm = store.namespace_manager
-        bindings: Dict[str, URIRef] = {}
+        bindings: dict[str, URIRef] = {}
 
         for predicate in set(store.predicates()):
             # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
@@ -57,7 +58,7 @@ class XMLSerializer(Serializer):
         elif self.store.base is not None:
             self.base = self.store.base
         self.__stream = stream
-        self.__serialized: Dict[Identifier, int] = {}
+        self.__serialized: dict[Identifier, int] = {}
         encoding = self.encoding
         self.write = write = lambda uni: stream.write(uni.encode(encoding, "replace"))
 
@@ -173,7 +174,7 @@ class PrettyXMLSerializer(Serializer):
 
     def __init__(self, store: Graph, max_depth=3):
         super(PrettyXMLSerializer, self).__init__(store)
-        self.forceRDFAbout: Set[URIRef] = set()
+        self.forceRDFAbout: set[URIRef] = set()
 
     def serialize(
         self,
@@ -182,7 +183,7 @@ class PrettyXMLSerializer(Serializer):
         encoding: Optional[str] = None,
         **kwargs: Any,
     ) -> None:
-        self.__serialized: Dict[Identifier, int] = {}
+        self.__serialized: dict[Identifier, int] = {}
         store = self.store
         # if base is given here, use that, if not and a base is set for the graph use that
         if base is not None:
@@ -196,7 +197,7 @@ class PrettyXMLSerializer(Serializer):
         self.writer = writer = XMLWriter(stream, nm, encoding)
         namespaces = {}
 
-        possible: Set[Node] = set(store.predicates()).union(
+        possible: set[Node] = set(store.predicates()).union(
             store.objects(None, RDF.type)
         )
 
@@ -363,12 +364,12 @@ class PrettyXMLSerializer(Serializer):
                     self.subject(item)  # type: ignore[arg-type]
 
                     if not isinstance(item, URIRef):
-                        # type error: Invalid index type "Node" for "Dict[Identifier, int]"; expected type "Identifier"
+                        # type error: Invalid index type "Node" for "dict[Identifier, int]"; expected type "Identifier"
                         self.__serialized[item] = 1  # type: ignore[index]
             else:
                 if first(
                     store.triples_choices(
-                        # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Identifier, URIRef, List[URIRef]]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
+                        # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "tuple[Identifier, URIRef, list[URIRef]]"; expected "Union[tuple[list[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
                         (object, RDF.type, [OWL_NS.Class, RDFS.Class])  # type: ignore[arg-type]
                     )
                 ) and isinstance(object, URIRef):
