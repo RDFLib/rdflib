@@ -504,10 +504,7 @@ class StringInputSource(InputSource):
             self.setEncoding(c_stream.encoding)
 
 
-headers = {
-    "User-agent": "rdflib-%s (https://rdflib.github.io/; eikeon@eikeon.com)"
-    % __version__
-}
+headers = {"User-agent": f"rdflib/{__version__}"}
 
 
 class URLInputSource(InputSource):

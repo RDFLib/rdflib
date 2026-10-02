@@ -30,6 +30,7 @@ from urllib.request import Request, urlopen
 
 from pyparsing import ParseException
 
+from rdflib import __version__
 from rdflib.graph import Graph
 from rdflib.plugins.sparql import CUSTOM_EVALS, parser
 from rdflib.plugins.sparql.aggregates import Aggregator
@@ -350,7 +351,7 @@ def evalServiceQuery(ctx: QueryContext, part: CompValue):
         query_settings = {"query": service_query, "output": "json"}
         headers = {
             "accept": "application/sparql-results+json",
-            "user-agent": "rdflibForAnUser",
+            "user-agent": f"rdflib/{__version__}",
         }
         # GET is easier to cache so prefer that if the query is not to long
         if len(service_query) < 600:

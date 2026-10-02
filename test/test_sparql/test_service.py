@@ -8,7 +8,7 @@ from urllib.error import URLError
 
 import pytest
 
-from rdflib import Graph, Literal, URIRef, Variable
+from rdflib import Graph, Literal, URIRef, Variable, __version__
 from rdflib.namespace import XSD
 from rdflib.term import BNode, Identifier
 from test.utils import helper
@@ -385,6 +385,44 @@ def test_with_mock(
     with checker.context():
         bindings = graph.query(query).bindings
         checker.check(bindings)
+
+
+@pytest.mark.parametrize(
+    ("method", "value"),
+    [(MethodName.GET, "short"), (MethodName.POST, "x" * 700)],
+    ids=["GET", "POST"],
+)
+def test_service_user_agent(
+    function_httpmock: ServedBaseHTTPServerMock, method: MethodName, value: str
+) -> None:
+    # Use an explicit SELECT so automatic prefix insertion does not make the
+    # short query exceed the GET size limit. The long literal forces POST.
+    query = f"""
+    SELECT ?var WHERE {{
+        SERVICE <{function_httpmock.url}> {{
+            SELECT ?var WHERE {{ VALUES ?var {{ "{value}" }} }}
+        }}
+    }}
+    """
+    response = {
+        "head": {"vars": ["var"]},
+        "results": {"bindings": [{"var": {"type": "literal", "value": value}}]},
+    }
+    function_httpmock.responses[method].append(
+        MockHTTPResponse(
+            200,
+            "OK",
+            json.dumps(response).encode("utf-8"),
+            {"Content-Type": ["application/sparql-results+json"]},
+        )
+    )
+
+    assert Graph().query(query).bindings == [{Variable("var"): Literal(value)}]
+    assert function_httpmock.call_count == 1
+    assert len(function_httpmock.requests[method]) == 1
+    request = function_httpmock.requests[method][0]
+    assert request.method == method
+    assert request.headers["User-Agent"] == f"rdflib/{__version__}"
 
 
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ from urllib.error import HTTPError
 
 import pytest
 
-from rdflib import Graph
+from rdflib import Graph, __version__
 from test.data import TEST_DATA_DIR
 from test.utils import GraphHelper
 from test.utils.graph import cached_graph
@@ -287,3 +287,16 @@ def test_iri_source(
     req = function_httpmock.requests[MethodName.GET].pop(0)
     logging.debug("req = %s", req)
     assert expected_request == req
+
+
+def test_url_input_source_user_agent(
+    function_httpmock: ServedBaseHTTPServerMock,
+) -> None:
+    function_httpmock.responses[MethodName.GET].append(
+        MockHTTPResponse(200, "OK", b"", {"Content-Type": ["text/turtle"]})
+    )
+
+    Graph().parse(function_httpmock.url, format="turtle")
+
+    request = function_httpmock.requests[MethodName.GET].pop()
+    assert request.headers["User-Agent"] == f"rdflib/{__version__}"
