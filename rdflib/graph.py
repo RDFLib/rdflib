@@ -1710,7 +1710,7 @@ class Graph(Node):
         if self.default_union:
             query_graph = "__UNION__"
         elif isinstance(self, ConjunctiveGraph):
-            query_graph = self.default_context.identifier
+            query_graph = self._default_context.identifier
         else:
             query_graph = self.identifier
         if hasattr(self.store, "query") and use_store_provided:
@@ -1770,7 +1770,7 @@ class Graph(Node):
         if self.default_union:
             query_graph = "__UNION__"
         elif isinstance(self, ConjunctiveGraph):
-            query_graph = self.default_context.identifier
+            query_graph = self._default_context.identifier
         else:
             query_graph = self.identifier
 
@@ -2215,9 +2215,9 @@ class ConjunctiveGraph(Graph):
         either triples or quads
         """
         if triple_or_quad is None:
-            return (None, None, None, self.default_context if default else None)
+            return (None, None, None, self._default_context if default else None)
         if len(triple_or_quad) == 3:
-            c = self.default_context if default else None
+            c = self._default_context if default else None
             # type error: Too many values to unpack (3 expected, 4 provided)
             (s, p, o) = triple_or_quad  # type: ignore[misc, unused-ignore]
         elif len(triple_or_quad) == 4:
@@ -2329,11 +2329,11 @@ class ConjunctiveGraph(Graph):
         context = self._graph(context or c)
 
         if self.default_union:
-            if context == self.default_context:
+            if context == self._default_context:
                 context = None
         else:
             if context is None:
-                context = self.default_context
+                context = self._default_context
 
         if isinstance(p, Path):
             if context is None:
@@ -2365,7 +2365,7 @@ class ConjunctiveGraph(Graph):
         s, p, o = triple
         if context is None:
             if not self.default_union:
-                context = self.default_context
+                context = self._default_context
         else:
             context = self._graph(context)
         # type error: Argument 1 to "triples_choices" of "Store" has incompatible type "tuple[Union[list[Node], Node], Union[Node, list[Node]], Union[Node, list[Node]]]"; expected "Union[tuple[list[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
@@ -2497,7 +2497,7 @@ class ConjunctiveGraph(Graph):
         # would be good if this guarantee was made more explicit i.e. by type
         # hint on InputSource (TODO/FIXME).
 
-        context = self.default_context
+        context = self._default_context
         context.parse(source, publicID=publicID, format=format, **args)
         return self
 
