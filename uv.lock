@@ -1481,6 +1481,7 @@ rdf4j = [
 [package.dev-dependencies]
 coverage = [
     { name = "coveralls" },
+    { name = "pyyaml" },
 ]
 dev = [
     { name = "black" },
@@ -1523,7 +1524,10 @@ requires-dist = [
 provides-extras = ["berkeleydb", "networkx", "html", "lxml", "orjson", "rdf4j", "graphdb"]
 
 [package.metadata.requires-dev]
-coverage = [{ name = "coveralls", marker = "python_full_version >= '3.10'", specifier = "==4.1.0" }]
+coverage = [
+    { name = "coveralls", marker = "python_full_version >= '3.10'", specifier = "==4.1.0" },
+    { name = "pyyaml", specifier = "==6.0.3" },
+]
 dev = [
     { name = "black", specifier = "==24.8.0" },
     { name = "isort", specifier = ">=5.13.2,<6.0.0" },

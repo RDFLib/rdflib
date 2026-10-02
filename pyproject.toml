@@ -64,7 +64,10 @@ tests = [
     "wheel>=0.42,<0.46",
     "testcontainers>=4.13.2,<5.0.0",
 ]
-coverage = ["coveralls==4.1.0; python_version >= '3.10'"]
+coverage = [
+    "coveralls==4.1.0; python_version >= '3.10'",
+    "PyYAML==6.0.3",
+]
 docs = [
     "typing-extensions>=4.11.0,<5.0.0",
     "zensical>=0.0.51; python_version >= '3.11'",
