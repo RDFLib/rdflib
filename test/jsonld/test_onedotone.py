@@ -128,7 +128,6 @@ known_bugs: tuple[str, ...] = (
     # Investigate property issues:
     "toRdf/pr38-in",
     "toRdf/pr39-in",
-    "toRdf/pr40-in",
     # Negative zero representation?
     "toRdf/rt01-in",
     # Property scope with @propagate not working
