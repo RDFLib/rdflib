@@ -63,6 +63,39 @@ def test_group_by_null():
     assert results[1][0] == Literal(2)
 
 
+def test_group_by_no_matches():
+    """
+    A GROUP BY query matching nothing has zero groups, so it must return no
+    solutions rather than a single row with unbound variables.
+    """
+    g = Graph()
+    result = g.query(
+        """
+        SELECT ?s (COUNT(?o) as ?n) {
+            ?s <http://example.com/predicate> ?o
+        } GROUP BY ?s
+    """
+    )
+    assert result.bindings == []
+
+
+def test_implicit_group_no_matches():
+    """
+    An aggregate without GROUP BY still yields exactly one solution when
+    nothing matches.
+    """
+    g = Graph()
+    result = g.query(
+        """
+        SELECT (COUNT(?o) as ?n) {
+            ?s <http://example.com/predicate> ?o
+        }
+    """
+    )
+    assert len(result.bindings) == 1
+    assert list(result)[0][0] == Literal(0)
+
+
 def test_values_outside_group_by():
     """
     Ensure that VALUES defined outside an aggregate (group by) query join and filter
