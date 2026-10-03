@@ -110,7 +110,7 @@ True
 True
 >>> list(eval_path(g, (e.a, -(e.p1|e.p2), None))) == []
 True
->>> list(eval_path(g, (e.g, -~e.p2, None))) == [(e.g, e.j)]
+>>> list(eval_path(g, (e.g, -~e.p2, None))) == [(e.g, e.c)]
 True
 >>> list(eval_path(g, (e.e, ~(e.p1/e.p2), None))) == [(e.e, e.a)]
 True
@@ -144,7 +144,7 @@ True
 True
 >>> list(eval_path(g, (None, -(e.p1|e.p2), e.c))) == []
 True
->>> list(eval_path(g, (None, -~e.p2, e.j))) == [(e.g, e.j)]
+>>> list(eval_path(g, (None, -~e.p2, e.c))) == [(e.g, e.c)]
 True
 >>> list(eval_path(g, (None, ~(e.p1/e.p2), e.a))) == [(e.e, e.a)]
 True
@@ -485,17 +485,25 @@ class NegatedPath(Path):
             )
 
     def eval(self, graph, subj=None, obj=None):
-        for s, p, o in graph.triples((subj, None, obj)):
-            for a in self.args:
-                if isinstance(a, URIRef):
-                    if p == a:
-                        break
-                elif isinstance(a, InvPath):
-                    if (o, a.arg, s) in graph:
-                        break
-                else:
-                    raise Exception("Invalid path in NegatedPath: %s" % a)
-            else:
+        for path in self.args:
+            if not isinstance(path, (URIRef, InvPath)):
+                raise Exception("Invalid path in NegatedPath: %s" % path)
+
+        forward = {a for a in self.args if isinstance(a, URIRef)}
+        inverse = {a.arg for a in self.args if isinstance(a, InvPath)}
+
+        if forward:
+            for s, p, o in graph.triples((subj, None, obj)):
+                if p not in forward:
+                    yield s, o
+
+        if inverse:
+            for o, p, s in graph.triples((obj, None, subj)):
+                if p not in inverse:
+                    yield s, o
+
+        if not forward and not inverse:
+            for s, _, o in graph.triples((subj, None, obj)):
                 yield s, o
 
     def __repr__(self) -> str:
