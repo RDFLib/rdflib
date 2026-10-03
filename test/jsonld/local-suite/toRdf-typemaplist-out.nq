@@ -1,0 +1,10 @@
+<http://example.org/alice> <http://example.org/name> "Alice" .
+<http://example.org/alice> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Person> .
+<http://example.org/bob> <http://example.org/name> "Bob" .
+<http://example.org/bob> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Person> .
+<http://example.org/carol> <http://example.org/name> "Carol" .
+<http://example.org/carol> <http://example.org/name> "Caroline" .
+_:b0 <http://example.org/byId> <http://example.org/carol> .
+_:b0 <http://example.org/graphs> <http://example.org/g> .
+_:b1 <http://example.org/name> "G1" <http://example.org/g> .
+_:b2 <http://example.org/name> "G2" <http://example.org/g> .

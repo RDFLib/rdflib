@@ -505,7 +505,8 @@ class Parser:
                     if k in context.get_keys(NONE)
                     else dict({ID: k, GRAPH: o}) if isinstance(o, dict) else o
                 )
-                for k, o in obj.items()
+                for k, values in obj.items()
+                for o in (values if isinstance(values, list) else [values])
             ]
 
         elif v11 and GRAPH in term.container and INDEX in term.container:
@@ -521,7 +522,8 @@ class Parser:
                     if isinstance(o, dict) and k not in context.get_keys(NONE)
                     else o
                 )
-                for k, o in obj.items()
+                for k, values in obj.items()
+                for o in (values if isinstance(values, list) else [values])
             ]
 
         elif v11 and TYPE in term.container:
@@ -539,7 +541,8 @@ class Parser:
                     if isinstance(o, (dict, str)) and k not in context.get_keys(NONE)
                     else o
                 )
-                for k, o in obj.items()
+                for k, values in obj.items()
+                for o in (values if isinstance(values, list) else [values])
             ]
 
         elif INDEX in term.container:

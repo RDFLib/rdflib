@@ -1,0 +1,23 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "ex": "http://example.org/",
+    "byType": {"@id": "@graph", "@container": "@type"},
+    "byId": {"@id": "ex:byId", "@container": "@id"},
+    "graphs": {"@id": "ex:graphs", "@container": ["@graph", "@id"]},
+    "Person": "ex:Person",
+    "name": "ex:name"
+  },
+  "byType": {
+    "Person": [
+      {"@id": "ex:alice", "name": "Alice"},
+      {"@id": "ex:bob", "name": "Bob"}
+    ]
+  },
+  "byId": {
+    "ex:carol": [{"name": "Carol"}, {"name": "Caroline"}]
+  },
+  "graphs": {
+    "ex:g": [{"name": "G1"}, {"name": "G2"}]
+  }
+}
