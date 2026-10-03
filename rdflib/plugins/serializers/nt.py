@@ -4,6 +4,7 @@ import codecs
 import warnings
 from typing import IO, TYPE_CHECKING, Any, Optional, Union
 
+from rdflib.compare import to_canonical_graph
 from rdflib.graph import Graph
 from rdflib.serializer import Serializer
 from rdflib.term import Literal
@@ -33,6 +34,16 @@ class NTSerializer(Serializer):
         encoding: Optional[str] = "utf-8",
         **kwargs: Any,
     ) -> None:
+        """Write the graph as N-Triples.
+
+        When the optional parameter ``canon`` is set to ``True``, the graph is
+        canonicalized and the statements are written in sorted order, so
+        isomorphic graphs serialize to identical bytes. This mirrors the
+        ``canon`` parameter of the longturtle serializer, and carries the same
+        cost: canonicalization is not free, and the statements are held in
+        memory to be sorted. It is off by default, so ordinary serialization
+        still streams statement by statement.
+        """
         if base is not None:
             warnings.warn("NTSerializer does not support base.")
         if encoding != "utf-8":
@@ -40,6 +51,17 @@ class NTSerializer(Serializer):
                 "NTSerializer always uses UTF-8 encoding. "
                 f"Given encoding was: {encoding}"
             )
+
+        if kwargs.get("canon", False):
+            # Sort the rendered rows rather than the triples: two distinct
+            # terms can have the same str(), which would leave their relative
+            # order down to the store's iteration order, whereas identical
+            # rows mean identical statements.
+            for row in sorted(
+                _nt_row(triple) for triple in to_canonical_graph(self.store)
+            ):
+                stream.write(row.encode())
+            return
 
         for triple in self.store:
             stream.write(_nt_row(triple).encode())
