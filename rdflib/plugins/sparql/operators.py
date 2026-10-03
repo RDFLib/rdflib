@@ -880,10 +880,36 @@ def RelationalExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> L
 
         for x in other:
             try:
-                if x == expr:
+                # SPARQL 1.1 defines `IN` (17.4.1.9) as exactly
+                #   (lhs = expr1) || (lhs = expr2) || ...
+                # and `NOT IN` (17.4.1.10) as its negation, so membership must use
+                # the same *value*-space equality as the `=` operator --
+                # `Identifier.eq`, which falls back to `__eq__` for IRIs and blank
+                # nodes. Using `==` here applied strict *term* equality instead,
+                # under which the RDF 1.1-identical terms `"x"` and
+                # `"x"^^xsd:string` compared unequal, and numerics such as `1` and
+                # `1.0` never matched across xsd types.
+                match = expr.eq(x) if isinstance(expr, Identifier) else x == expr
+                # `Literal.eq` reports incomparable operands as `NotImplemented`
+                # rather than raising, and the `=` operator below turns exactly
+                # that into a `SPARQLError`. Do the same instead of evaluating it
+                # in a boolean context, which is truthy (so `IN` would wrongly
+                # match) and is a `TypeError` on Python 3.14. Recording it as an
+                # error -- rather than as "no match" -- is also what the spec
+                # requires: "Errors in comparisons cause the IN expression to
+                # raise an error if the RDF term being tested is not found
+                # elsewhere in the list", which the `error` accumulator below
+                # implements (`2 IN (1/0, 2)` is true; `2 IN (3, 1/0)` errors).
+                if match is NotImplemented:
+                    raise SPARQLError("Error when comparing")
+                if match:
                     return Literal(True ^ res)
             except SPARQLError as e:
                 error = e
+            except TypeError as te:
+                # Mirrors the `=` path, which also normalises a comparison
+                # `TypeError` into a `SPARQLError`.
+                error = SPARQLError(*te.args)
         if not error:
             return Literal(False ^ res)
         else:
