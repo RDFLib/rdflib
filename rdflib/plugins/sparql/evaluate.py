@@ -374,10 +374,19 @@ def evalServiceQuery(ctx: QueryContext, part: CompValue):
             # or just return the bindings?
             res = json_dict["results"]["bindings"]
             if len(res) > 0:
+                incoming = ctx.solution()
+                # Only blank nodes were sent as UNDEF. Other incoming terms are
+                # already in VALUES and re-applied by evalLazyJoin; SELECT *
+                # echoes them, and RDFLib treats plain literals as unequal to
+                # xsd:string.
+                bnode_bindings = {
+                    k: v for k, v in incoming.items() if isinstance(v, BNode)
+                }
                 for r in res:
                     # type error: Argument 2 to "_yieldBindingsFromServiceCallResult" has incompatible type "str"; expected "dict[str, dict[str, str]]"
                     for bound in _yieldBindingsFromServiceCallResult(ctx, r, variables):
-                        yield bound
+                        if bound.compatible(bnode_bindings):
+                            yield bound
         else:
             raise Exception(
                 "Service: %s responded with code: %s", service_url, response.status
@@ -409,7 +418,13 @@ def _buildQueryStringForServiceCall(ctx: QueryContext, service_query: str) -> st
     sol = [v for v in ctx.solution() if isinstance(v, Variable)]
     if len(sol) > 0:
         variables = " ".join([v.n3() for v in sol])
-        variables_bound = " ".join([ctx.get(v).n3() for v in sol])
+        # SPARQL DataBlockValue does not allow blank nodes; use UNDEF.
+        # https://www.w3.org/TR/sparql11-query/#rDataBlockValue
+        bound_terms = []
+        for v in sol:
+            term = ctx.get(v)
+            bound_terms.append("UNDEF" if isinstance(term, BNode) else term.n3())
+        variables_bound = " ".join(bound_terms)
         service_query = (
             service_query + "VALUES (" + variables + ") {(" + variables_bound + ")}"
         )
