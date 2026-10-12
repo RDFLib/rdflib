@@ -391,13 +391,17 @@ def Builtin_SUBSTR(expr: Expr, ctx) -> Literal:
 
     a = string(expr.arg)
 
+    # SUBSTR keeps the characters at 1-based positions p with
+    # start <= p < start + length. A start below 1 selects nothing before the
+    # first character, so clamp the slice bounds at 0 instead of letting a
+    # negative index count from the end of the string.
     start = numeric(expr.start) - 1
 
-    length = expr.length
-    if length is not None:
-        length = numeric(length) + start
+    end = expr.length
+    if end is not None:
+        end = max(numeric(end) + start, 0)
 
-    return Literal(a[start:length], lang=a.language, datatype=a.datatype)
+    return Literal(a[max(start, 0) : end], lang=a.language, datatype=a.datatype)
 
 
 def Builtin_STRLEN(e: Expr, ctx) -> Literal:
