@@ -59,11 +59,11 @@ jobs:
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
       - uses: astral-sh/setup-uv@v7
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         if: ${{ matrix.extensive-tests }}
         with:
           distribution: "temurin"
@@ -107,7 +107,8 @@ jobs:
           path: .coverage.*
           include-hidden-files: true
           if-no-files-found: error
-          retention-days: 7
+          # Cover GitHub's 30-day workflow rerun window plus a one-day buffer.
+          retention-days: 31
       - uses: actions/upload-artifact@v7
         if: ${{ (success() || failure()) }}
         with:
@@ -139,7 +140,7 @@ jobs:
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-
       - name: Set up Python ${{env.DEFAULT_PYTHON}}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
       - uses: astral-sh/setup-uv@v7
@@ -151,14 +152,18 @@ jobs:
         shell: bash
         run: |
           task ${{ matrix.task }}
+      - name: Test coverage artifact helper
+        run: |
+          uv run --frozen --only-group coverage python -m unittest discover -v -s devtools -p test_coverage_artifacts.py
   coverage:
     permissions:
       contents: read
+      actions: read
     needs: validate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
       - uses: astral-sh/setup-uv@v7
@@ -171,11 +176,14 @@ jobs:
           pattern: coverage-*
           path: .coverage-artifacts
       - name: Combine and validate coverage data
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          uv run --frozen --only-group coverage coverage combine --keep .coverage-artifacts/*
+          gh api --paginate --slurp "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts" > .coverage-artifacts.json
+          uv run --frozen --only-group coverage python devtools/coverage_artifacts.py .coverage-artifacts.json .coverage-artifacts
           uv run --frozen --only-group coverage coverage report
       - name: Upload coverage to Coveralls
-        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COVERALLS_SERVICE_NAME: github
