@@ -1,3 +1,7 @@
+## Unreleased
+
+- feat: add SPARQL Result TSV serializer (`TSVResultSerializer`) implementing the W3C SPARQL 1.1 Query Results TSV Format. Users can now call `result.serialize(format="tsv")` to produce tab-separated output.
+
 ## 2026-02-13 RELEASE 7.6.0
 
 This release introduces a new major feature: GraphDB integration via the Python GraphDB Client. Users can now manage GraphDB instances and perform administrative tasks directly from Python. As GraphDB also supports the RDF4J REST API, users may utilize the recently released RDF4J Client and Store with GraphDB instances. For more details, see the new RDFLib GraphDB documentation under the extras section of the [RDFLib documentation](https://rdflib.readthedocs.io/en/stable/).
