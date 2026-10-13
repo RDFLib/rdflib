@@ -5,9 +5,11 @@ some more specific Literal tests are in test_literal.py
 import base64
 import random
 
+import pytest
+
 from rdflib.graph import Graph, QuotedGraph
-from rdflib.namespace import XSD
-from rdflib.term import BNode, Literal, URIRef, _is_valid_unicode
+from rdflib.namespace import RDFS, XSD
+from rdflib.term import BNode, Literal, URIRef, _is_valid_unicode, _is_valid_uri
 
 
 def uformat(s):
@@ -33,6 +35,26 @@ class TestURIRefRepr:
         a = u > BNode()
         a = u > QuotedGraph(g.store, u)
         a = u > g  # noqa: F841
+
+
+@pytest.mark.parametrize(
+    "uri",
+    [
+        "http://example.com/a\tb",
+        "http://example.com/a\x00b",
+        "http://example.com/a\x1fb",
+        "http://example.com/a\x7fb",
+    ],
+)
+def test_uri_ref_rejects_ascii_control_characters(uri):
+    assert not _is_valid_uri(uri)
+
+    with pytest.raises(Exception, match="does not look like a valid URI"):
+        URIRef(uri).n3()
+
+
+def test_uri_ref_accepts_defined_namespace():
+    assert URIRef(RDFS) == URIRef(str(RDFS))
 
 
 class TestBNodeRepr:
