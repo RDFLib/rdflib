@@ -5,8 +5,7 @@ Implementation of the JSON-LD Context structure. See: http://json-ld.org/
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/context.py
 from __future__ import annotations
 
-from collections.abc import Generator
-from collections.abc import Set as AbstractSet
+from collections.abc import Generator, Set
 from enum import Enum
 from typing import (
     TYPE_CHECKING,
@@ -734,7 +733,7 @@ class Term(NamedTuple):
     type: Defined | str | None = UNDEF
     #: The container type(s): any of @graph, @id, @index, @language, @list, @set or @type. See:
     #: https://www.w3.org/TR/json-ld11/#syntax-tokens-and-keywords (§1.7) and the sections it references
-    container: AbstractSet[ContainerLiteral] = frozenset()
+    container: Set[ContainerLiteral] = frozenset()
     #: A predicate IRI that should be used to interpret keys of this object,
     #: when used alongside `@container: @index`.
     #: See https://www.w3.org/TR/json-ld11/#property-based-data-indexing (§4.6.1.1)
