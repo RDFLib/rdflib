@@ -80,8 +80,7 @@ ContainerLiteral: TypeAlias = Literal[
     "@list", "@set", "@language", "@index", "@id", "@graph", "@type"
 ]
 #: The value of @container in an expanded term definition: a keyword, an array
-#: of keywords, or null (§9.15.1). The spec only allows certain combinations
-#: in an array, which this type does not check.
+#: of keywords, or null (§9.15.1).
 ContainerType: TypeAlias = list[ContainerLiteral] | ContainerLiteral | None
 
 #: An expanded term definition.
