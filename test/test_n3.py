@@ -5,7 +5,7 @@ from urllib.error import URLError
 import pytest
 
 from rdflib.graph import Dataset, Graph
-from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax
+from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax, join
 from rdflib.term import Literal, URIRef
 from test import TEST_DIR
 
@@ -325,3 +325,28 @@ class TestRegularExpressions:
         invalid = (".e1",)
         for expstring in invalid:
             assert not exponent_syntax.match(expstring)
+
+
+@pytest.mark.parametrize(
+    "base, reference, expected",
+    [
+        ("http://example.org/doc#", "#a", "http://example.org/doc#a"),
+        ("http://example.org/doc#x", "#a", "http://example.org/doc#a"),
+        ("http://example.org/doc#", "#", "http://example.org/doc#"),
+        ("http://example.org/doc#x", "", "http://example.org/doc"),
+        ("http://example.org/a/b#x/y", "c", "http://example.org/a/c"),
+        ("http://example.org/a/b/c#x/y", "../d", "http://example.org/a/d"),
+    ],
+)
+def test_join_ignores_base_fragment(base: str, reference: str, expected: str) -> None:
+    """RFC 3986, section 5.2.2, resolves a reference without the base's fragment."""
+    assert join(base, reference) == expected
+
+
+@pytest.mark.parametrize("format", ["turtle", "trig", "n3"])
+def test_parse_resolves_against_base_with_fragment(format: str) -> None:
+    """A fragment-only reference replaces the fragment of the base IRI."""
+    data = '@base <http://example.org/doc#> . <#a> <http://example.org/p> "v" .'
+    dataset = Dataset()
+    dataset.parse(data=data, format=format)
+    assert {s for s, _, _, _ in dataset.quads()} == {URIRef("http://example.org/doc#a")}
