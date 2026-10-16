@@ -127,6 +127,26 @@ EG = Namespace("https://example.com/")
             Literal("PT0S", datatype=XSD.dayTimeDuration),
         ),
         (
+            r'timezone("2020-01-01T12:00:00+05:30"^^xsd:dateTime)',
+            Literal("PT5H30M", datatype=XSD.dayTimeDuration),
+        ),
+        (
+            r'timezone("2020-01-01T12:00:00-03:30"^^xsd:dateTime)',
+            Literal("-PT3H30M", datatype=XSD.dayTimeDuration),
+        ),
+        (
+            r'timezone("2020-01-01T12:00:00+05:45"^^xsd:dateTime)',
+            Literal("PT5H45M", datatype=XSD.dayTimeDuration),
+        ),
+        (
+            r'timezone("2020-01-01T12:00:00+00:30"^^xsd:dateTime)',
+            Literal("PT30M", datatype=XSD.dayTimeDuration),
+        ),
+        (
+            r'timezone("2020-01-01T12:00:00-00:30"^^xsd:dateTime)',
+            Literal("-PT30M", datatype=XSD.dayTimeDuration),
+        ),
+        (
             r'tz("2011-01-10T14:45:13.815-05:00"^^xsd:dateTime)	',
             Literal("-05:00"),
         ),

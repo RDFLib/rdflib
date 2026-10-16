@@ -508,8 +508,8 @@ def Builtin_TIMEZONE(e: Expr, ctx) -> Literal:
         d = 0
         neg = "-"
 
-    h = s / (60 * 60)
-    m = (s - h * 60 * 60) / 60
+    h = s // (60 * 60)
+    m = (s - h * 60 * 60) // 60
     s = s - h * 60 * 60 - m * 60
 
     tzdelta = "%sP%sT%s%s%s" % (
