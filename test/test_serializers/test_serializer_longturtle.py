@@ -2,7 +2,7 @@ import difflib
 from pathlib import Path
 from textwrap import dedent
 
-from rdflib import RDF, BNode, Graph, Literal, Namespace
+from rdflib import RDF, BNode, Dataset, Graph, Literal, Namespace
 from rdflib.compare import isomorphic
 from rdflib.namespace import GEO, SDO
 from rdflib.plugins.serializers.longturtle import LongTurtleSerializer
@@ -247,3 +247,22 @@ def test_longturtle_shared_list_tail_round_trips():
     g2.parse(data=ttl_dump, format="turtle")
     assert len(g2) == len(g)
     assert isomorphic(g, g2)
+
+
+def test_longturtle_canon_works_for_dataset():
+    """``canon=True`` must accept a Dataset (default-graph triples only).
+
+    A Dataset iterates quads, which ``to_canonical_graph`` rejects. Without
+    ``canon``, longturtle writes only the default graph; canonicalize those
+    triples so behaviour stays consistent. See #3573.
+    """
+    ns = Namespace("http://example.org/")
+    ds = Dataset()
+    ds.add((ns.s, ns.p, BNode()))
+    ds.graph(ns.g).add((ns.s, ns.p, Literal("named")))
+
+    out = ds.serialize(format="longturtle", canon=True)
+    reparsed = Graph().parse(data=out, format="turtle")
+    # Only the default-graph triple is written (named graph excluded).
+    assert len(reparsed) == 1
+    assert (ns.s, ns.p, None) in reparsed

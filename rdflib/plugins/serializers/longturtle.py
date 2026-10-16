@@ -88,12 +88,19 @@ class LongTurtleSerializer(RecursiveSerializer):
 
         This normalizes blank node identifiers and allows for deterministic
         serialization of the graph.
+
+        A ``Dataset`` iterates quads, which ``to_canonical_graph`` does not
+        accept. Without ``canon``, longturtle writes only the default graph;
+        canonicalize those triples so ``Dataset`` round-trips the same way.
         """
         if not self._canon:
             return
 
         namespace_manager = self.store.namespace_manager
-        store = to_canonical_graph(self.store)
+        # Default-graph triples only (matches non-canon Dataset serialization).
+        triples = Graph()
+        triples += self.store.triples((None, None, None))
+        store = to_canonical_graph(triples)
         content = store.serialize(format="application/n-triples")
         lines = content.split("\n")
         lines.sort()
