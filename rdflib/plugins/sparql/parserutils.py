@@ -85,6 +85,8 @@ def value(
         # not bound
         if variables:
             return val
+        elif errors:
+            return NotBoundError()
         else:
             raise NotBoundError
 
@@ -169,7 +171,7 @@ class CompValue(OrderedDict):
         self, val: _ValT, variables: bool = False, errors: bool = False
     ) -> Union[_ValT, Any]:
         if self.ctx is not None:
-            return value(self.ctx, val, variables)
+            return value(self.ctx, val, variables, errors)
         else:
             return val
 
