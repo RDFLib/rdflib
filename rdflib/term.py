@@ -73,8 +73,9 @@ from .xsd_datetime import (  # type: ignore[attr-defined]
 )
 
 if TYPE_CHECKING:
+    import rdflib.paths
+
     from .namespace import NamespaceManager
-    from .paths import AlternativePath, InvPath, NegatedPath, Path, SequencePath
 
 _HAS_HTML5RDF = False
 
@@ -273,10 +274,15 @@ class URIRef(IdentifiedNode):
 
     __slots__ = ()
 
-    __or__: Callable[[URIRef, Union[URIRef, Path]], AlternativePath]
-    __invert__: Callable[[URIRef], InvPath]
-    __neg__: Callable[[URIRef], NegatedPath]
-    __truediv__: Callable[[URIRef, Union[URIRef, Path]], SequencePath]
+    # Resolve path types through the package after its circular imports complete.
+    __or__: Callable[
+        [URIRef, Union[URIRef, rdflib.paths.Path]], rdflib.paths.AlternativePath
+    ]
+    __invert__: Callable[[URIRef], rdflib.paths.InvPath]
+    __neg__: Callable[[URIRef], rdflib.paths.NegatedPath]
+    __truediv__: Callable[
+        [URIRef, Union[URIRef, rdflib.paths.Path]], rdflib.paths.SequencePath
+    ]
 
     def __new__(cls, value: str, base: Optional[str] = None):
         if base is not None:

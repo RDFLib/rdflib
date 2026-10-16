@@ -148,6 +148,14 @@ def join(here: str, there: str) -> str:
 
     ```
 
+    The fragment of `here` is not part of the base (RFC 3986, section 5.1).
+
+    ```python
+    >>> join('http://example/doc#', '#a')
+    'http://example/doc#a'
+
+    ```
+
     We grok IRIs
 
     ```python
@@ -160,8 +168,8 @@ def join(here: str, there: str) -> str:
     ```
     """
 
-    #    assert(here.find("#") < 0), \
-    #        "Base may not contain hash: '%s'" % here  # why must caller splitFrag?
+    # RFC 3986, section 5.2.2, never uses the base's fragment.
+    here = splitFragP(here)[0]
 
     slashl = there.find("/")
     colonl = there.find(":")

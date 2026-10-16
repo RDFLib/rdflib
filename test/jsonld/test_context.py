@@ -7,11 +7,14 @@ from __future__ import annotations
 import json
 from functools import wraps
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal, Union
+
+import pytest
+from typing_extensions import assert_type
 
 from rdflib.namespace import PROV, XSD, Namespace
 from rdflib.plugins.shared.jsonld import context, errors
-from rdflib.plugins.shared.jsonld.context import Context
+from rdflib.plugins.shared.jsonld.context import UNDEF, Context, Defined
 
 
 # exception utility (see also nose.tools.raises)
@@ -288,3 +291,27 @@ def test_to_dict() -> None:
     result = ctx.to_dict()
     result["graphMap"]["@container"] = sorted(result["graphMap"]["@container"])
     assert DIVERSE_CONTEXT["@context"] == result
+
+
+def test_undef_is_falsy() -> None:
+    assert not UNDEF
+
+
+@pytest.mark.parametrize(
+    ("value", "is_undef"),
+    [
+        (UNDEF, True),
+        ("", False),
+        ("@id", False),
+    ],
+)
+def test_undef_identity_narrowing(value: Union[str, Defined], is_undef: bool) -> None:
+    """
+    Test that `value is UNDEF` will narrow the type to exclude `Defined` entirely
+    """
+    if value is UNDEF:
+        assert_type(value, Literal[Defined.UNDEF])
+        assert is_undef
+    else:
+        assert_type(value, str)
+        assert not is_undef
