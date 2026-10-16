@@ -107,7 +107,8 @@ jobs:
           path: .coverage.*
           include-hidden-files: true
           if-no-files-found: error
-          retention-days: 7
+          # Cover GitHub's 30-day workflow rerun window plus a one-day buffer.
+          retention-days: 31
       - uses: actions/upload-artifact@v7
         if: ${{ (success() || failure()) }}
         with:
@@ -151,9 +152,13 @@ jobs:
         shell: bash
         run: |
           task ${{ matrix.task }}
+      - name: Test coverage artifact helper
+        run: |
+          uv run --frozen --only-group coverage python -m unittest discover -v -s devtools -p test_coverage_artifacts.py
   coverage:
     permissions:
       contents: read
+      actions: read
     needs: validate
     runs-on: ubuntu-latest
     steps:
@@ -171,8 +176,11 @@ jobs:
           pattern: coverage-*
           path: .coverage-artifacts
       - name: Combine and validate coverage data
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          uv run --frozen --only-group coverage coverage combine --keep .coverage-artifacts/*
+          gh api --paginate --slurp "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts" > .coverage-artifacts.json
+          uv run --frozen --only-group coverage python devtools/coverage_artifacts.py .coverage-artifacts.json .coverage-artifacts
           uv run --frozen --only-group coverage coverage report
       - name: Upload coverage to Coveralls
         uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0

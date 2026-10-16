@@ -391,13 +391,17 @@ def Builtin_SUBSTR(expr: Expr, ctx) -> Literal:
 
     a = string(expr.arg)
 
+    # SUBSTR keeps the characters at 1-based positions p with
+    # start <= p < start + length. A start below 1 selects nothing before the
+    # first character, so clamp the slice bounds at 0 instead of letting a
+    # negative index count from the end of the string.
     start = numeric(expr.start) - 1
 
-    length = expr.length
-    if length is not None:
-        length = numeric(length) + start
+    end = expr.length
+    if end is not None:
+        end = max(numeric(end) + start, 0)
 
-    return Literal(a[start:length], lang=a.language, datatype=a.datatype)
+    return Literal(a[max(start, 0) : end], lang=a.language, datatype=a.datatype)
 
 
 def Builtin_STRLEN(e: Expr, ctx) -> Literal:
@@ -878,12 +882,29 @@ def RelationalExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> L
         if other == RDF.nil:
             other = []
 
+        # SPARQL 1.1 17.4.1.9: `IN` is `(lhs = e1) || (lhs = e2) || ...`, so it
+        # uses the value equality of `=`, and an erroring comparison only raises
+        # if no other entry matches. An erroring lhs makes every comparison err.
+        if isinstance(expr, SPARQLError):
+            raise expr
+        if not isinstance(expr, Identifier):
+            raise SPARQLError("I cannot compare this non-node: %r" % expr)
+
         for x in other:
             try:
-                if x == expr:
+                if isinstance(x, SPARQLError):
+                    raise x
+                match = expr.eq(x)
+                # `Literal.eq` signals incomparable operands with NotImplemented,
+                # which is truthy (and a TypeError in a boolean context on 3.14).
+                if match is NotImplemented:
+                    raise SPARQLError("Error when comparing")
+                if match:
                     return Literal(True ^ res)
             except SPARQLError as e:
                 error = e
+            except TypeError as te:
+                error = SPARQLError(*te.args)
         if not error:
             return Literal(False ^ res)
         else:
