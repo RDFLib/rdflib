@@ -156,6 +156,14 @@ def join(here: str, there: str) -> str:
 
     ```
 
+    A query-only reference keeps the base path (RFC 3986, section 5.2.2).
+
+    ```python
+    >>> join('http://a/b/c/d;p?q', '?y')
+    'http://a/b/c/d;p?y'
+
+    ```
+
     We grok IRIs
 
     ```python
@@ -174,14 +182,18 @@ def join(here: str, there: str) -> str:
     slashl = there.find("/")
     colonl = there.find(":")
 
-    # join(base, 'foo:/') -- absolute
-    if colonl >= 0 and (slashl < 0 or colonl < slashl):
+    # join(base, 'foo:/') -- absolute, but a colon in a query is not a scheme.
+    if not there.startswith("?") and colonl >= 0 and (slashl < 0 or colonl < slashl):
         return there
 
     bcolonl = here.find(":")
     assert bcolonl >= 0, (
         "Base uri '%s' is not absolute" % here
     )  # else it's not absolute
+
+    # RFC 3986, section 5.2.2: an empty reference path keeps the base path.
+    if there.startswith("?"):
+        return here.split("?", 1)[0] + there
 
     path, frag = splitFragP(there)
     if not path:

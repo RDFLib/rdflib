@@ -350,3 +350,82 @@ def test_parse_resolves_against_base_with_fragment(format: str) -> None:
     dataset = Dataset()
     dataset.parse(data=data, format=format)
     assert {s for s, _, _, _ in dataset.quads()} == {URIRef("http://example.org/doc#a")}
+
+
+@pytest.mark.parametrize(
+    "base, reference, expected",
+    [
+        ("http://a/b/c/d;p?q", "?y", "http://a/b/c/d;p?y"),
+        ("http://a/b/c/d;p?q", "?", "http://a/b/c/d;p?"),
+        ("http://a/b/c/d;p?q", "?y#s", "http://a/b/c/d;p?y#s"),
+        ("http://a/b/c/d;p?q", "?y:z", "http://a/b/c/d;p?y:z"),
+        ("http://a/b/c/d;p?q", "?y/../z", "http://a/b/c/d;p?y/../z"),
+        ("http://a/b/c/d;p?q", "?y?z", "http://a/b/c/d;p?y?z"),
+        ("http://a/b/c/d;p?q", "?#s", "http://a/b/c/d;p?#s"),
+        ("http://a/b/c/d;p?q/x#s/t", "?y", "http://a/b/c/d;p?y"),
+        ("http://a", "?y", "http://a?y"),
+        ("http://a?old/path", "?y", "http://a?y"),
+        ("http://a/b/", "?y", "http://a/b/?y"),
+        ("http://a/caf\u00e9/%3F?q", "?x=%2F", "http://a/caf\u00e9/%3F?x=%2F"),
+        ("local:/a/b?old", "?y", "local:/a/b?y"),
+    ],
+)
+def test_join_query_only_reference(base: str, reference: str, expected: str) -> None:
+    """RFC 3986, section 5.2.2, keeps the base path for a query-only reference."""
+    assert join(base, reference) == expected
+
+
+@pytest.mark.parametrize("format", ["turtle", "trig", "n3"])
+@pytest.mark.parametrize("reference", ["?y", "?", "?y:z", "?y/../z", "?y#s"])
+def test_parse_query_only_reference(format: str, reference: str) -> None:
+    """Resolve query-only references in every position of a triple."""
+    data = (
+        "@base <http://a/b/c/d;p?q/x#s/t> . "
+        f"<{reference}> <{reference}> <{reference}> ."
+    )
+    dataset = Dataset()
+    dataset.parse(data=data, format=format)
+    expected = URIRef("http://a/b/c/d;p" + reference)
+    assert set(dataset.triples((None, None, None))) == {(expected, expected, expected)}
+
+
+@pytest.mark.parametrize("format", ["turtle", "trig", "n3"])
+def test_parse_query_only_base_and_prefix(format: str) -> None:
+    """Base and prefix declarations use the same query-only resolution."""
+    data = """
+        @base <http://a/b/c/d;p?q/x> .
+        @base <?y:z> .
+        @prefix e: <?term=> .
+        <#s> e:p e:o .
+    """
+    dataset = Dataset()
+    dataset.parse(data=data, format=format)
+    assert set(dataset.triples((None, None, None))) == {
+        (
+            URIRef("http://a/b/c/d;p?y:z#s"),
+            URIRef("http://a/b/c/d;p?term=p"),
+            URIRef("http://a/b/c/d;p?term=o"),
+        )
+    }
+
+
+@pytest.mark.parametrize(
+    "reference, expected",
+    [
+        ("", "http://a/b/c/d;p?q"),
+        ("#s", "http://a/b/c/d;p?q#s"),
+        ("https://other/path?q", "https://other/path?q"),
+    ],
+)
+def test_join_non_query_reference(reference: str, expected: str) -> None:
+    assert join("http://a/b/c/d;p?q#old", reference) == expected
+
+
+def test_join_query_requires_absolute_base() -> None:
+    with pytest.raises(AssertionError, match="is not absolute"):
+        join("relative/path", "?y:z")
+
+
+def test_join_rejects_relative_path_with_opaque_base() -> None:
+    with pytest.raises(ValueError, match="no slash after colon"):
+        join("mid:foo@example", "../foo")
