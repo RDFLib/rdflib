@@ -18,8 +18,13 @@ from rdflib.plugins.sparql.algebra import translateQuery
 from rdflib.plugins.sparql.evaluate import evalPart
 from rdflib.plugins.sparql.evalutils import _eval
 from rdflib.plugins.sparql.parser import expandUnicodeEscapes, parseQuery
-from rdflib.plugins.sparql.parserutils import prettify_parsetree
-from rdflib.plugins.sparql.sparql import SPARQLError
+from rdflib.plugins.sparql.parserutils import CompValue, prettify_parsetree, value
+from rdflib.plugins.sparql.sparql import (
+    FrozenBindings,
+    NotBoundError,
+    QueryContext,
+    SPARQLError,
+)
 from rdflib.query import Result, ResultRow
 from rdflib.term import Identifier, Variable
 from test.utils import eq_
@@ -1090,6 +1095,9 @@ def test_in_operator_uses_value_equality(
         # Spec: `2 IN (1/0, 2)` and `2 IN (2, 1/0)` are both true.
         (Literal(2), "1/0, 2", 1),
         (Literal(2), "2, 1/0", 1),
+        # An unbound variable is also only an error for that list entry (#3572).
+        (Literal(2), "?unbound, 2", 1),
+        (Literal(2), "2, ?unbound", 1),
         # Two literals of the same unknown datatype, different lexical forms: rdflib
         # raises TypeError here, which must be recorded as an error and NOT abort the
         # scan, so the later genuine match still wins.
@@ -1101,9 +1109,14 @@ def test_in_operator_uses_value_equality(
         # a TypeError on Python 3.14), which would make `IN` match everything.
         (Literal(2), "1/0", 0),
         (Literal(2), "3, 1/0", 0),
+        (Literal(2), "?unbound", 0),
+        (Literal(2), "3, ?unbound", 0),
+        (Literal(2), "?unbound, 3", 0),
         # An erroring entry is an error for an IRI on the left as well.
         (URIRef("urn:ex:x"), "1/0", 0),
         (URIRef("urn:ex:x"), "1/0, <urn:ex:x>", 1),
+        (URIRef("urn:ex:x"), "?unbound, <urn:ex:x>", 1),
+        (URIRef("urn:ex:x"), "?unbound", 0),
         # Empty list (the `RDF.nil` branch).
         (Literal(2), "", 0),
     ],
@@ -1153,3 +1166,49 @@ def test_in_operator_follows_strict_literal_comparison(
     monkeypatch.setattr(rdflib, "DAWG_LITERAL_COLLATION", True)
     assert _in_count(Literal("x"), f"?o IN ({listed})") == in_rows
     assert _in_count(Literal("x"), f"?o NOT IN ({listed})") == not_in_rows
+
+
+@pytest.mark.parametrize("operator", ["IN", "NOT IN"])
+@pytest.mark.parametrize(
+    "listed, expected",
+    [
+        ("?unbound, 2", True),
+        ("2, ?unbound", True),
+        ("?unbound, 2.0, ?also_unbound", True),
+        ("?unbound, 3", None),
+        ("3, ?unbound", None),
+        ("?unbound", None),
+    ],
+)
+def test_in_operator_unbound_entry_result(
+    operator: str, listed: str, expected: bool | None
+) -> None:
+    """Distinguish a false NOT IN result from an error hidden by FILTER."""
+    query = f"SELECT ?o ?result WHERE {{ VALUES ?o {{ 2 }} BIND(?o {operator} ({listed}) AS ?result) }}"
+    rows = [row for row in Graph().query(query)]
+    result = None if expected is None else Literal(expected == (operator == "IN"))
+    assert rows == [(Literal(2), result)]
+
+
+@pytest.mark.parametrize("node", [Variable("missing"), BNode("missing")])
+def test_value_unbound_error_flags(node: Variable | BNode) -> None:
+    """Returning errors is opt-in; variable-preserving callers keep their behavior."""
+    ctx = FrozenBindings(QueryContext(initBindings={}), {})
+    with pytest.raises(NotBoundError):
+        value(ctx, node)
+    assert isinstance(value(ctx, node, errors=True), NotBoundError)
+    assert value(ctx, node, variables=True) is node
+    assert value(ctx, node, variables=True, errors=True) is node
+
+
+def test_compvalue_preserves_list_errors() -> None:
+    """CompValue forwards error handling without changing ordinary item access."""
+    node = Variable("missing")
+    comp = CompValue("test", arg=[node, Literal(2)])
+    comp.ctx = FrozenBindings(QueryContext(initBindings={}), {})
+    result = comp.get("arg", errors=True)
+    assert isinstance(result[0], NotBoundError)
+    assert result[1] == Literal(2)
+    with pytest.raises(NotBoundError):
+        comp["arg"]
+    assert comp.get("arg", variables=True) == [node, Literal(2)]
