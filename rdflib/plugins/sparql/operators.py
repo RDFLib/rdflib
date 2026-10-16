@@ -882,12 +882,29 @@ def RelationalExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> L
         if other == RDF.nil:
             other = []
 
+        # SPARQL 1.1 17.4.1.9: `IN` is `(lhs = e1) || (lhs = e2) || ...`, so it
+        # uses the value equality of `=`, and an erroring comparison only raises
+        # if no other entry matches. An erroring lhs makes every comparison err.
+        if isinstance(expr, SPARQLError):
+            raise expr
+        if not isinstance(expr, Identifier):
+            raise SPARQLError("I cannot compare this non-node: %r" % expr)
+
         for x in other:
             try:
-                if x == expr:
+                if isinstance(x, SPARQLError):
+                    raise x
+                match = expr.eq(x)
+                # `Literal.eq` signals incomparable operands with NotImplemented,
+                # which is truthy (and a TypeError in a boolean context on 3.14).
+                if match is NotImplemented:
+                    raise SPARQLError("Error when comparing")
+                if match:
                     return Literal(True ^ res)
             except SPARQLError as e:
                 error = e
+            except TypeError as te:
+                error = SPARQLError(*te.args)
         if not error:
             return Literal(False ^ res)
         else:
