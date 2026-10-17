@@ -616,8 +616,11 @@ class FileInputSource(InputSource):
         /,
         encoding: Optional[str] = None,
     ):
-        base = pathlib.Path.cwd().as_uri()
-        system_id = URIRef(pathlib.Path(file.name).absolute().as_uri(), base=base)  # type: ignore[union-attr]
+        system_id = None
+        name = getattr(file, "name", None)
+        if isinstance(name, (str, os.PathLike)):
+            base = pathlib.Path.cwd().as_uri()
+            system_id = URIRef(pathlib.Path(name).absolute().as_uri(), base=base)
         super(FileInputSource, self).__init__(system_id)
         self.file = file
         if isinstance(file, TextIOBase):  # Python3 unicode fp
@@ -703,7 +706,7 @@ def create_input_source(
                     input_source.setByteStream(f)  # type: ignore[arg-type]
                 if f is sys.stdin:
                     input_source.setSystemId("file:///dev/stdin")
-                elif hasattr(f, "name"):
+                elif isinstance(getattr(f, "name", None), str):
                     input_source.setSystemId(f.name)
             else:
                 raise Exception(
