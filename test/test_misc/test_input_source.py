@@ -11,6 +11,7 @@ from contextlib import AbstractContextManager, ExitStack, contextmanager
 from dataclasses import dataclass
 from io import BytesIO, StringIO, TextIOWrapper
 from pathlib import Path
+from tempfile import SpooledTemporaryFile, TemporaryFile
 from typing import (
     IO,
     TYPE_CHECKING,
@@ -34,6 +35,7 @@ from rdflib.parser import (
     URLInputSource,
     create_input_source,
 )
+from rdflib.term import Literal, URIRef
 from test.utils import GraphHelper
 from test.utils.httpfileserver import (
     HTTPFileInfo,
@@ -57,6 +59,41 @@ def test_too_many_arguments():
     """create_input_source() function has a few conflicting arguments."""
     with pytest.raises(ValueError):
         create_input_source(source="a", location="b")
+
+
+@pytest.mark.parametrize("argument", ["source", "file"])
+@pytest.mark.parametrize("kind", ["temporary", "spooled", "rolled"])
+@pytest.mark.parametrize("mode", ["w+b", "w+"])
+@pytest.mark.parametrize("public_id", [None, "https://example.org/base/"])
+def test_parse_temporary_file(argument, kind, mode, public_id):
+    factory = TemporaryFile if kind == "temporary" else SpooledTemporaryFile
+    subject = "subject" if public_id is not None else "urn:subject"
+    data = f'<{subject}> <urn:predicate> "value" .'
+    with factory(mode=mode) as stream:
+        stream.write(data.encode("utf-8") if "b" in mode else data)
+        if kind == "rolled":
+            stream.rollover()
+        stream.seek(0)
+
+        graph = Graph().parse(**{argument: stream}, format="turtle", publicID=public_id)
+
+        expected_subject = URIRef(
+            "https://example.org/base/subject" if public_id else subject
+        )
+        assert set(graph) == {
+            (expected_subject, URIRef("urn:predicate"), Literal("value"))
+        }
+        assert not stream.closed
+
+
+@pytest.mark.parametrize("argument", ["source", "file"])
+def test_input_source_file_descriptor(argument, tmp_path):
+    with (tmp_path / "input.ttl").open("w+b") as backing:
+        with open(backing.fileno(), "rb", closefd=False) as stream:
+            input_source = create_input_source(**{argument: stream})
+            assert input_source.getSystemId() is None
+            assert input_source.getByteStream() is stream
+            assert not input_source.auto_close
 
 
 SourceParamType = Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]
