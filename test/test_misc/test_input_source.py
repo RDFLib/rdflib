@@ -96,6 +96,15 @@ def test_input_source_file_descriptor(argument, tmp_path):
             assert not input_source.auto_close
 
 
+@pytest.mark.parametrize("argument", ["source", "file"])
+def test_input_source_unnamed_stream(argument):
+    stream = BytesIO(b"")
+    input_source = create_input_source(**{argument: stream})
+    assert input_source.getSystemId() is None
+    assert input_source.getByteStream() is stream
+    assert not input_source.auto_close
+
+
 SourceParamType = Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]
 FileParamType = Union[BinaryIO, TextIO]
 DataParamType = Union[str, bytes, dict]
