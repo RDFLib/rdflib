@@ -108,22 +108,19 @@ def test_parse_text_spooled_file_ntriples():
 
 
 @pytest.mark.parametrize("argument", ["source", "file"])
-def test_input_source_file_descriptor(argument, tmp_path):
-    with (tmp_path / "input.ttl").open("w+b") as backing:
-        with open(backing.fileno(), "rb", closefd=False) as stream:
-            input_source = create_input_source(**{argument: stream})
-            assert input_source.getSystemId() is None
-            assert input_source.getByteStream() is stream
-            assert not input_source.auto_close
+@pytest.mark.parametrize("kind", ["descriptor", "unnamed"])
+def test_input_source_without_system_id(argument, kind, tmp_path):
+    with ExitStack() as stack:
+        if kind == "descriptor":
+            backing = stack.enter_context((tmp_path / "input.ttl").open("w+b"))
+            stream = stack.enter_context(open(backing.fileno(), "rb", closefd=False))
+        else:
+            stream = BytesIO(b"")
 
-
-@pytest.mark.parametrize("argument", ["source", "file"])
-def test_input_source_unnamed_stream(argument):
-    stream = BytesIO(b"")
-    input_source = create_input_source(**{argument: stream})
-    assert input_source.getSystemId() is None
-    assert input_source.getByteStream() is stream
-    assert not input_source.auto_close
+        input_source = create_input_source(**{argument: stream})
+        assert input_source.getSystemId() is None
+        assert input_source.getByteStream() is stream
+        assert not input_source.auto_close
 
 
 @pytest.mark.parametrize(
