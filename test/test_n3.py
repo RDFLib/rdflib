@@ -391,6 +391,22 @@ def test_parse_query_only_reference(format: str, reference: str) -> None:
     assert set(dataset.triples((None, None, None))) == {(expected, expected, expected)}
 
 
+@pytest.mark.parametrize(
+    "reference, expected",
+    [
+        ("#s:t", "http://a/b/c/d;p?q#s:t"),
+        ("g?y:z", "http://a/b/c/g?y:z"),
+        ("g#s:t", "http://a/b/c/g#s:t"),
+        ("./a:b", "http://a/b/c/a:b"),
+    ],
+)
+def test_join_reference_with_colon_after_delimiter(
+    reference: str, expected: str
+) -> None:
+    """A colon after "/", "?" or "#" does not make a reference absolute."""
+    assert join("http://a/b/c/d;p?q", reference) == expected
+
+
 @pytest.mark.parametrize("format", ["turtle", "trig", "n3"])
 @pytest.mark.parametrize(
     "reference, expected",
@@ -437,10 +453,6 @@ def test_parse_query_only_base_and_prefix(format: str) -> None:
         ("", "http://a/b/c/d;p?q"),
         ("#s", "http://a/b/c/d;p?q#s"),
         ("https://other/path?q", "https://other/path?q"),
-        ("#s:t", "http://a/b/c/d;p?q#s:t"),
-        ("g?y:z", "http://a/b/c/g?y:z"),
-        ("g#s:t", "http://a/b/c/g#s:t"),
-        ("./a:b", "http://a/b/c/a:b"),
     ],
 )
 def test_join_non_query_reference(reference: str, expected: str) -> None:
