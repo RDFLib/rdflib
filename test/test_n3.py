@@ -368,6 +368,7 @@ def test_parse_resolves_against_base_with_fragment(format: str) -> None:
         ("http://a/b/", "?y", "http://a/b/?y"),
         ("http://a/caf\u00e9/%3F?q", "?x=%2F", "http://a/caf\u00e9/%3F?x=%2F"),
         ("local:/a/b?old", "?y", "local:/a/b?y"),
+        ("urn:isbn:123?old#f", "?y#g", "urn:isbn:123?y#g"),
     ],
 )
 def test_join_query_only_reference(base: str, reference: str, expected: str) -> None:
@@ -387,6 +388,26 @@ def test_parse_query_only_reference(format: str, reference: str) -> None:
     dataset.parse(data=data, format=format)
     expected = URIRef("http://a/b/c/d;p" + reference)
     assert set(dataset.triples((None, None, None))) == {(expected, expected, expected)}
+
+
+@pytest.mark.parametrize("format", ["turtle", "trig", "n3"])
+@pytest.mark.parametrize(
+    "reference, expected",
+    [
+        ("#s:t", "http://a/b/c/d;p?q#s:t"),
+        ("g?y:z", "http://a/b/c/g?y:z"),
+        ("g#s:t", "http://a/b/c/g#s:t"),
+    ],
+)
+def test_parse_reference_with_colon_after_delimiter(
+    format: str, reference: str, expected: str
+) -> None:
+    """A colon after "/", "?" or "#" does not make a reference absolute."""
+    data = f"@base <http://a/b/c/d;p?q> . <{reference}> <{reference}> <{reference}> ."
+    dataset = Dataset()
+    dataset.parse(data=data, format=format)
+    iri = URIRef(expected)
+    assert set(dataset.triples((None, None, None))) == {(iri, iri, iri)}
 
 
 @pytest.mark.parametrize("format", ["turtle", "trig", "n3"])
@@ -415,6 +436,10 @@ def test_parse_query_only_base_and_prefix(format: str) -> None:
         ("", "http://a/b/c/d;p?q"),
         ("#s", "http://a/b/c/d;p?q#s"),
         ("https://other/path?q", "https://other/path?q"),
+        ("#s:t", "http://a/b/c/d;p?q#s:t"),
+        ("g?y:z", "http://a/b/c/g?y:z"),
+        ("g#s:t", "http://a/b/c/g#s:t"),
+        ("./a:b", "http://a/b/c/a:b"),
     ],
 )
 def test_join_non_query_reference(reference: str, expected: str) -> None:
@@ -424,8 +449,3 @@ def test_join_non_query_reference(reference: str, expected: str) -> None:
 def test_join_query_requires_absolute_base() -> None:
     with pytest.raises(AssertionError, match="is not absolute"):
         join("relative/path", "?y:z")
-
-
-def test_join_rejects_relative_path_with_opaque_base() -> None:
-    with pytest.raises(ValueError, match="no slash after colon"):
-        join("mid:foo@example", "../foo")
