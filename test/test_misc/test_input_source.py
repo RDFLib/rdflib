@@ -168,6 +168,25 @@ def test_parse_file_opened_with_bytes_path(argument, tmp_path):
     assert set(bytes_graph) == set(str_graph)
 
 
+@pytest.mark.parametrize("kind", ["bytes", "path_like"])
+def test_parse_guesses_format_from_stream_name(kind, tmp_path):
+    path = tmp_path / "input.jsonld"
+    path.write_bytes(b'{"@id": "urn:s", "urn:p": {"@id": "urn:o"}}')
+    with open(path, "rb") as stream:
+        str_graph = Graph().parse(file=stream)
+
+    with ExitStack() as stack:
+        if kind == "bytes":
+            stream = stack.enter_context(open(os.fsencode(path), "rb"))
+        else:
+            stream = BytesIO(path.read_bytes())
+            stream.name = path
+        graph = Graph().parse(file=stream)
+
+    assert set(graph) == set(str_graph)
+    assert len(graph) == 1
+
+
 SourceParamType = Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]
 FileParamType = Union[BinaryIO, TextIO]
 DataParamType = Union[str, bytes, dict]
