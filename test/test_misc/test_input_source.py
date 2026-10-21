@@ -123,6 +123,18 @@ def test_input_source_without_system_id(argument, kind, tmp_path):
         assert not input_source.auto_close
 
 
+@pytest.mark.parametrize("argument", ["source", "file"])
+def test_input_source_path_like_name(argument, tmp_path):
+    path = tmp_path / "input.ttl"
+    stream = BytesIO(b"")
+    stream.name = path
+
+    input_source = create_input_source(**{argument: stream})
+
+    expected = f"{path}" if argument == "source" else URIRef(path.absolute().as_uri())
+    assert input_source.getSystemId() == expected
+
+
 @pytest.mark.parametrize(
     "argument",
     [

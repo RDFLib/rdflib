@@ -609,6 +609,19 @@ class URLInputSource(InputSource):
         return self.url  # type: ignore[return-value]
 
 
+def _stream_name(stream: object) -> Optional[str]:
+    """
+    Return the path a stream was opened with, or None if it has none.
+
+    Temporary files can have an integer or None name, and in-memory streams
+    have no name at all.
+    """
+    name = getattr(stream, "name", None)
+    if isinstance(name, (str, bytes, os.PathLike)):
+        return os.fsdecode(name)
+    return None
+
+
 class FileInputSource(InputSource):
     def __init__(
         self,
@@ -617,10 +630,8 @@ class FileInputSource(InputSource):
         encoding: Optional[str] = None,
     ):
         system_id = None
-        name = getattr(file, "name", None)
-        if isinstance(name, bytes):
-            name = os.fsdecode(name)
-        if isinstance(name, (str, os.PathLike)):
+        name = _stream_name(file)
+        if name is not None:
             base = pathlib.Path.cwd().as_uri()
             system_id = URIRef(pathlib.Path(name).absolute().as_uri(), base=base)
         super(FileInputSource, self).__init__(system_id)
@@ -706,12 +717,10 @@ def create_input_source(
                         input_source.setByteStream(source)  # type: ignore[arg-type]
                 else:
                     input_source.setByteStream(f)  # type: ignore[arg-type]
-                name = getattr(f, "name", None)
-                if isinstance(name, bytes):
-                    name = os.fsdecode(name)
+                name = _stream_name(f)
                 if f is sys.stdin:
                     input_source.setSystemId("file:///dev/stdin")
-                elif isinstance(name, str):
+                elif name is not None:
                     input_source.setSystemId(name)
             else:
                 raise Exception(
