@@ -11,6 +11,7 @@ import sys
 from collections.abc import Collection, Generator, Iterable
 from contextlib import AbstractContextManager, ExitStack, contextmanager
 from dataclasses import dataclass
+from gzip import GzipFile
 from io import BytesIO, StringIO, TextIOWrapper
 from pathlib import Path
 from tempfile import SpooledTemporaryFile, TemporaryFile
@@ -108,12 +109,14 @@ def test_parse_text_spooled_file_ntriples():
 
 
 @pytest.mark.parametrize("argument", ["source", "file"])
-@pytest.mark.parametrize("kind", ["descriptor", "unnamed"])
+@pytest.mark.parametrize("kind", ["descriptor", "unnamed", "empty_name"])
 def test_input_source_without_system_id(argument, kind, tmp_path):
     with ExitStack() as stack:
         if kind == "descriptor":
             backing = stack.enter_context((tmp_path / "input.ttl").open("w+b"))
             stream = stack.enter_context(open(backing.fileno(), "rb", closefd=False))
+        elif kind == "empty_name":
+            stream = stack.enter_context(GzipFile(fileobj=BytesIO(), mode="rb"))
         else:
             stream = BytesIO(b"")
 

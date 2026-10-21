@@ -613,12 +613,12 @@ def _stream_name(stream: object) -> Optional[str]:
     """
     Return the path a stream was opened with, or None if it has none.
 
-    Temporary files can have an integer or None name, and in-memory streams
-    have no name at all.
+    Temporary files can have an integer or None name, wrappers such as
+    GzipFile can have an empty one, and in-memory streams have no name at all.
     """
     name = getattr(stream, "name", None)
     if isinstance(name, (str, bytes, os.PathLike)):
-        return os.fsdecode(name)
+        return os.fsdecode(name) or None
     return None
 
 
