@@ -88,6 +88,25 @@ def test_parse_temporary_file(argument, kind, mode, public_id):
         assert not stream.closed
 
 
+@pytest.mark.xfail(
+    strict=True,
+    raises=TypeError,
+    reason="a text-mode SpooledTemporaryFile is not a TextIOBase, so"
+    " FileInputSource passes it to the parser as a byte stream",
+)
+def test_parse_text_spooled_file_ntriples():
+    data = '<urn:subject> <urn:predicate> "value" .\n'
+    with SpooledTemporaryFile(mode="w+") as stream:
+        stream.write(data)
+        stream.seek(0)
+
+        graph = Graph().parse(file=stream, format="nt")
+
+        assert set(graph) == {
+            (URIRef("urn:subject"), URIRef("urn:predicate"), Literal("value"))
+        }
+
+
 @pytest.mark.parametrize("argument", ["source", "file"])
 def test_input_source_file_descriptor(argument, tmp_path):
     with (tmp_path / "input.ttl").open("w+b") as backing:
