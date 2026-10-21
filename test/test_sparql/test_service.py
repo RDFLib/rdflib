@@ -458,17 +458,34 @@ def test_service_raw_tab_in_string_literal(
     assert '"a\tb"' in request.path_query["query"][0]
 
 
-def test_service_tab_whitespace(function_httpmock: ServedBaseHTTPServerMock) -> None:
+@pytest.mark.parametrize(
+    "query",
+    [
+        # The tab before SERVICE stays at the start of the SERVICE text.
+        pytest.param(
+            "SELECT ?var WHERE {\n"
+            "\tSERVICE\t<REMOTE_URL>\t{\n"
+            '\t\tSELECT ?var WHERE { VALUES ?var { "x" } }\n'
+            "\t}\n"
+            "}\n",
+            id="tab-indented",
+        ),
+        # Expanding this tab after SERVICE gave several spaces, which the
+        # SERVICE pattern used to reject.
+        pytest.param(
+            "SELECT ?var WHERE { SERVICE\t<REMOTE_URL>\t{ "
+            'SELECT ?var WHERE { VALUES ?var { "x" } } } }',
+            id="tab-mid-line",
+        ),
+    ],
+)
+def test_service_tab_whitespace(
+    function_httpmock: ServedBaseHTTPServerMock, query: str
+) -> None:
     # Parsing TSV results changes pyparsing's default whitespace characters
     # for the whole process, so do that first.
     Result.parse(StringIO("?var\n"), format="tsv")
-    query = (
-        "SELECT ?var WHERE {\n"
-        f"\tSERVICE\t<{function_httpmock.url}>\t{{\n"
-        '\t\tSELECT ?var WHERE { VALUES ?var { "x" } }\n'
-        "\t}\n"
-        "}\n"
-    )
+    query = query.replace("REMOTE_URL", function_httpmock.url)
     response = {
         "head": {"vars": ["var"]},
         "results": {"bindings": [{"var": {"type": "literal", "value": "x"}}]},
