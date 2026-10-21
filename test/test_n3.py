@@ -364,6 +364,7 @@ def test_parse_resolves_against_base_with_fragment(format: str) -> None:
         ("http://a/b/c/d;p?q", "?#s", "http://a/b/c/d;p?#s"),
         ("http://a/b/c/d;p?q/x#s/t", "?y", "http://a/b/c/d;p?y"),
         ("http://a/b#f?g", "?y", "http://a/b?y"),
+        ("http://a/b?q?r", "?y", "http://a/b?y"),
         ("http://a", "?y", "http://a?y"),
         ("http://a?old/path", "?y", "http://a?y"),
         ("http://a/b/", "?y", "http://a/b/?y"),
