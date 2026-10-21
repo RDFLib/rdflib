@@ -1036,6 +1036,11 @@ class Literal(Identifier):
             -Literal(10.5)
             # rdflib.term.Literal('-10.5', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#double'))
 
+            # Negating a decimal Literal
+            from decimal import Decimal
+            -Literal(Decimal("2.5"))
+            # rdflib.term.Literal('-2.5', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#decimal'))
+
             # Using a string with a datatype
             from rdflib.namespace import XSD
             -Literal("1", datatype=XSD.integer)
@@ -1047,7 +1052,11 @@ class Literal(Identifier):
             ```
         """
 
-        if isinstance(self.value, (int, long_type, float)):
+        if isinstance(self.value, Decimal):
+            # unlike Decimal.__neg__, copy_negate() is exact: it ignores the
+            # decimal context's precision and never signals
+            return Literal(self.value.copy_negate())
+        elif isinstance(self.value, (int, long_type, float)):
             return Literal(self.value.__neg__())
         else:
             raise TypeError(f"Not a number; {self!r}")
@@ -1075,7 +1084,10 @@ class Literal(Identifier):
             # TypeError: Not a number; rdflib.term.Literal('1')
             ```
         """
-        if isinstance(self.value, (int, long_type, float)):
+        if isinstance(self.value, Decimal):
+            # Decimal.__pos__ would round to the decimal context's precision
+            return Literal(self.value)
+        elif isinstance(self.value, (int, long_type, float)):
             return Literal(self.value.__pos__())
         else:
             raise TypeError(f"Not a number; {self!r}")
@@ -1099,7 +1111,11 @@ class Literal(Identifier):
             # TypeError: Not a number; rdflib.term.Literal('1')
             ```
         """
-        if isinstance(self.value, (int, long_type, float)):
+        if isinstance(self.value, Decimal):
+            # unlike Decimal.__abs__, copy_abs() is exact: it ignores the
+            # decimal context's precision and never signals
+            return Literal(self.value.copy_abs())
+        elif isinstance(self.value, (int, long_type, float)):
             return Literal(self.value.__abs__())
         else:
             raise TypeError(f"Not a number; {self!r}")

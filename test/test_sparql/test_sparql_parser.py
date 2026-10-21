@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import math
 import sys
+from decimal import Decimal
 
 import pytest
 
 from rdflib import Graph, Literal, URIRef, Variable
-from rdflib.namespace import Namespace
+from rdflib.namespace import XSD, Namespace
 from rdflib.plugins.sparql.processor import processUpdate
 from rdflib.term import Node
 
@@ -77,3 +78,35 @@ def test_update_raw_tab_in_string_literal(string_literal: str) -> None:
     )
 
     assert list(graph.objects()) == [Literal("a\tb")]
+
+
+@pytest.mark.parametrize(
+    ("query", "expected"),
+    [
+        pytest.param(
+            "SELECT ?x WHERE { VALUES ?x { -2.5 } }",
+            Literal("-2.5", datatype=XSD.decimal),
+            id="values",
+        ),
+        pytest.param(
+            "SELECT ?x WHERE { ?x <urn:p> -2.5 }",
+            URIRef("urn:s"),
+            id="triple-object",
+        ),
+        pytest.param(
+            "SELECT ?x WHERE { VALUES ?x { -1.234567890123456789012345678901234567890 } }",
+            Literal("-1.234567890123456789012345678901234567890", datatype=XSD.decimal),
+            id="values-40-digits",
+        ),
+        pytest.param(
+            "SELECT ?x WHERE { VALUES ?x { -0.0 } }",
+            Literal("-0.0", datatype=XSD.decimal),
+            id="values-negative-zero",
+        ),
+    ],
+)
+def test_negative_decimal_literal(query: str, expected: Node) -> None:
+    graph = Graph()
+    graph.add((URIRef("urn:s"), URIRef("urn:p"), Literal(Decimal("-2.5"))))
+
+    assert list(graph.query(query)) == [(expected,)]

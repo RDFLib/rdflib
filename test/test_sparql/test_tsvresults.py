@@ -2,6 +2,7 @@ from io import BytesIO, StringIO
 
 import pytest
 
+from rdflib.namespace import XSD
 from rdflib.plugins.sparql.parserutils import CompValue
 from rdflib.plugins.sparql.results.tsvresults import TSVResultParser
 from rdflib.query import ResultRow
@@ -70,6 +71,22 @@ def test_parse_tsv_from_bytes_skips_blank_lines() -> None:
 
     assert len(result.bindings) == 1
     assert result.bindings[0][var_x] == URIRef("urn:x1")
+
+
+@pytest.mark.parametrize(
+    "cell",
+    [
+        pytest.param("-2.5", id="short"),
+        pytest.param("-1.234567890123456789012345678901234567890", id="40-digits"),
+    ],
+)
+def test_negative_decimal(cell: str) -> None:
+    parser = TSVResultParser()
+    result = parser.parse(StringIO(f"?a\n{cell}\n"))
+    assert result.vars is not None
+    var_a = result.vars[0]
+
+    assert result.bindings == [{var_a: Literal(cell, datatype=XSD.decimal)}]
 
 
 def test_convert_term_rejects_unknown_compvalue_name() -> None:
