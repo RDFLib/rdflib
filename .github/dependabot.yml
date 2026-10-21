@@ -40,8 +40,3 @@ updates:
     directory: docker/unstable/
     schedule:
       interval: weekly
-  - package-ecosystem: pip
-    directory: devtools/
-    schedule:
-      interval: weekly
-    versioning-strategy: auto
