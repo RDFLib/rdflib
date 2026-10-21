@@ -456,6 +456,7 @@ def test_parse_query_only_base_and_prefix(format: str) -> None:
     ],
 )
 def test_join_non_query_reference(reference: str, expected: str) -> None:
+    """Resolve references that are not query-only, even if they contain a query."""
     assert join("http://a/b/c/d;p?q#old", reference) == expected
 
 
