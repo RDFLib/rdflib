@@ -253,7 +253,7 @@ tasks:
   gha:lint:
     desc: GitHub Actions lint workflow
     cmds:
-    - "{{.UV}} sync --frozen --only-group lint --no-install-project"
+    - "{{.UV}} sync --locked --only-group lint --no-install-project"
     - task: ruff
 
   cmd:rdfpipe:
