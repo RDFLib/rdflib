@@ -143,9 +143,12 @@ def test_input_source_path_like_name(argument, tmp_path):
     [
         pytest.param(
             "source",
-            marks=pytest.mark.skipif(
+            marks=pytest.mark.xfail(
                 sys.platform == "win32",
-                reason="relative IRIs cannot be resolved against a Windows path",
+                raises=ValueError,
+                strict=True,
+                reason="source= uses the raw Windows path as the base, and"
+                " relative IRIs cannot be resolved against it",
             ),
         ),
         "file",
