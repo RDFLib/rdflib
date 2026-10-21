@@ -487,6 +487,18 @@ def evalAggregateJoin(
         yield FrozenBindings(ctx)
 
 
+def _order_key(v: Any) -> tuple[Any, ...]:
+    """Sort key for an ORDER BY condition.
+
+    An expression that errors has no value, which SPARQL 1.1 section 15.1 orders
+    lowest. `(0,)` sorts before every key from `_val`, so errors come first in
+    ascending order and last with DESC.
+    """
+    if isinstance(v, SPARQLError):
+        return (0,)
+    return _val(v)
+
+
 def evalOrderBy(
     ctx: QueryContext, part: CompValue
 ) -> Generator[FrozenBindings, None, None]:
@@ -495,7 +507,9 @@ def evalOrderBy(
     for e in reversed(part.expr):
         reverse = bool(e.order and e.order == "DESC")
         res = sorted(
-            res, key=lambda x: _val(value(x, e.expr, variables=True)), reverse=reverse
+            res,
+            key=lambda x: _order_key(value(x, e.expr, variables=True)),
+            reverse=reverse,
         )
 
     return res
