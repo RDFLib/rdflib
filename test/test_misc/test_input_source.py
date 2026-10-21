@@ -4,8 +4,10 @@ import builtins
 import enum
 import itertools
 import logging
+import os
 import pathlib
 import re
+import sys
 from collections.abc import Collection, Generator, Iterable
 from contextlib import AbstractContextManager, ExitStack, contextmanager
 from dataclasses import dataclass
@@ -103,6 +105,33 @@ def test_input_source_unnamed_stream(argument):
     assert input_source.getSystemId() is None
     assert input_source.getByteStream() is stream
     assert not input_source.auto_close
+
+
+@pytest.mark.parametrize(
+    "argument",
+    [
+        pytest.param(
+            "source",
+            marks=pytest.mark.skipif(
+                sys.platform == "win32",
+                reason="relative IRIs cannot be resolved against a Windows path",
+            ),
+        ),
+        "file",
+    ],
+)
+def test_parse_file_opened_with_bytes_path(argument, tmp_path):
+    path = tmp_path / "sub" / "input.ttl"
+    path.parent.mkdir()
+    path.write_bytes(b"<s> <p> <o> .")
+    graphs = []
+    for name in (os.fsencode(path), str(path)):
+        with open(name, "rb") as stream:
+            graphs.append(Graph().parse(**{argument: stream}, format="turtle"))
+    bytes_graph, str_graph = graphs
+
+    assert set(bytes_graph.subjects()) == {URIRef(path.parent.as_uri() + "/s")}
+    assert set(bytes_graph) == set(str_graph)
 
 
 SourceParamType = Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]

@@ -618,6 +618,8 @@ class FileInputSource(InputSource):
     ):
         system_id = None
         name = getattr(file, "name", None)
+        if isinstance(name, bytes):
+            name = os.fsdecode(name)
         if isinstance(name, (str, os.PathLike)):
             base = pathlib.Path.cwd().as_uri()
             system_id = URIRef(pathlib.Path(name).absolute().as_uri(), base=base)
@@ -704,10 +706,13 @@ def create_input_source(
                         input_source.setByteStream(source)  # type: ignore[arg-type]
                 else:
                     input_source.setByteStream(f)  # type: ignore[arg-type]
+                name = getattr(f, "name", None)
+                if isinstance(name, bytes):
+                    name = os.fsdecode(name)
                 if f is sys.stdin:
                     input_source.setSystemId("file:///dev/stdin")
-                elif isinstance(getattr(f, "name", None), str):
-                    input_source.setSystemId(f.name)
+                elif isinstance(name, str):
+                    input_source.setSystemId(name)
             else:
                 raise Exception(
                     "Unexpected type '%s' for source '%s'" % (type(source), source)
