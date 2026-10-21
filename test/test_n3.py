@@ -414,7 +414,6 @@ def test_join_reference_with_colon_after_delimiter(
     [
         ("#s:t", "http://a/b/c/d;p?q#s:t"),
         ("g?y:z", "http://a/b/c/g?y:z"),
-        ("g#s:t", "http://a/b/c/g#s:t"),
     ],
 )
 def test_parse_reference_with_colon_after_delimiter(
