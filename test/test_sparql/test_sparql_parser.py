@@ -5,7 +5,7 @@ import sys
 
 import pytest
 
-from rdflib import Graph, Literal, URIRef
+from rdflib import Graph, Literal, URIRef, Variable
 from rdflib.namespace import Namespace
 from rdflib.plugins.sparql.processor import processUpdate
 from rdflib.term import Node
@@ -65,7 +65,7 @@ def test_query_raw_tab_in_string_literal(string_literal: str) -> None:
 
     result = graph.query(f"SELECT ?s WHERE {{ ?s ?p {string_literal} }}")
 
-    assert [row[0] for row in result] == [subject]
+    assert result.bindings == [{Variable("s"): subject}]
 
 
 @pytest.mark.parametrize("string_literal", RAW_TAB_STRING_LITERALS)
