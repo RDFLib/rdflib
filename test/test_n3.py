@@ -450,3 +450,8 @@ def test_join_non_query_reference(reference: str, expected: str) -> None:
 def test_join_query_requires_absolute_base() -> None:
     with pytest.raises(AssertionError, match="is not absolute"):
         join("relative/path", "?y:z")
+
+
+def test_join_rejects_relative_path_with_opaque_base() -> None:
+    with pytest.raises(ValueError, match="no slash after colon"):
+        join("urn:isbn:123", "g?y:z")
