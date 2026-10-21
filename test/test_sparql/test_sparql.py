@@ -1170,24 +1170,28 @@ def test_in_operator_follows_strict_literal_comparison(
 
 @pytest.mark.parametrize("operator", ["IN", "NOT IN"])
 @pytest.mark.parametrize(
-    "listed, expected",
+    "listed, in_result, not_in_result",
     [
-        ("?unbound, 2", True),
-        ("2, ?unbound", True),
-        ("?unbound, 2.0, ?also_unbound", True),
-        ("?unbound, 3", None),
-        ("3, ?unbound", None),
-        ("?unbound", None),
+        ("?unbound, 2", True, False),
+        ("2, ?unbound", True, False),
+        ("?unbound, 2.0, ?also_unbound", True, False),
+        # No match: the error is the result, so `?result` is left unbound.
+        ("?unbound, 3", None, None),
+        ("3, ?unbound", None, None),
+        ("?unbound", None, None),
     ],
 )
 def test_in_operator_unbound_entry_result(
-    operator: str, listed: str, expected: bool | None
+    operator: str, listed: str, in_result: bool | None, not_in_result: bool | None
 ) -> None:
     """Distinguish a false NOT IN result from an error hidden by FILTER."""
+    # Keep `?o` bound and selected: `Result.__iter__` skips solutions with no
+    # bindings, so with only `?result` selected an error would return no rows
+    # instead of one row with `?result` unbound.
     query = f"SELECT ?o ?result WHERE {{ VALUES ?o {{ 2 }} BIND(?o {operator} ({listed}) AS ?result) }}"
     rows = [row for row in Graph().query(query)]
-    result = None if expected is None else Literal(expected == (operator == "IN"))
-    assert rows == [(Literal(2), result)]
+    expected = in_result if operator == "IN" else not_in_result
+    assert rows == [(Literal(2), None if expected is None else Literal(expected))]
 
 
 @pytest.mark.parametrize("node", [Variable("missing"), BNode("missing")])
