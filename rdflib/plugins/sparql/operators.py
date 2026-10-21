@@ -853,8 +853,9 @@ def AdditiveExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> Lit
 
 def RelationalExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> Literal:
     expr = e.expr
-    other = e.other
     op = e.op
+    # Membership must retain per-entry errors until it knows whether any item matches.
+    other = e.get("other", errors=True) if op in ("IN", "NOT IN") else e.other
 
     # because of the way the add-expr production handled operator precedence
     # we sometimes have nothing to do
