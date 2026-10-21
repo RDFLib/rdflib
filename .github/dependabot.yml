@@ -5,8 +5,10 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
-    # auto already widens ranges: Dependabot treats rdflib as a library because
-    # its PyPI summary matches the pyproject.toml description.
+    # auto widens ranges only while Dependabot detects rdflib as a library, i.e.
+    # PyPI's summary for the latest release equals [project].description. If they
+    # differ (e.g. the description is edited before a release), auto falls back to
+    # increase and raises lower bounds.
     versioning-strategy: auto
     ignore:
       # We only use setuptools for a couple of things in the test suite
