@@ -1053,8 +1053,12 @@ class _AlgebraTranslator:
                         "This expression might not be covered yet."
                     )
                 if node.p:
-                    # Filter with p=AggregateJoin = Having
-                    if node.p.name == "AggregateJoin":
+                    # Filter with p=AggregateJoin = Having. Each projected group variable
+                    # puts an Extend between them.
+                    below = node.p
+                    while below.name == "Extend":
+                        below = below.p
+                    if below.name == "AggregateJoin":
                         self._replace("{Filter}", "{" + node.p.name + "}")
                         self._replace(
                             self._clause_placeholder("Having"),

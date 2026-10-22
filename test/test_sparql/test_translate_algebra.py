@@ -367,6 +367,40 @@ _RESULTS_DATA = """
             """,
             id="having_after_values_only_subquery",
         ),
+        pytest.param(
+            """
+            SELECT ?x (COUNT(?y) AS ?n) WHERE { ?x :p ?y }
+            GROUP BY ?x HAVING (COUNT(?y) > 1)
+            """,
+            id="having_with_group_variable_projected",
+        ),
+        pytest.param(
+            """
+            SELECT ?x (SUM(?y) AS ?n) WHERE { ?x :p ?y }
+            GROUP BY ?x HAVING (SUM(?y) > 5)
+            """,
+            id="having_sum_with_group_variable_projected",
+        ),
+        pytest.param(
+            """
+            SELECT ?x (COUNT(?y) AS ?n) WHERE { ?x :p ?y }
+            GROUP BY ?x HAVING (MAX(?y) > 4)
+            """,
+            id="having_on_aggregate_not_projected",
+        ),
+        pytest.param(
+            """
+            SELECT ?x (COUNT(?y) AS ?n) WHERE { ?x :p ?y }
+            GROUP BY ?x HAVING (?x = :a)
+            """,
+            id="having_on_group_variable",
+        ),
+        pytest.param(
+            """
+            SELECT ?x WHERE { ?x :p ?y } GROUP BY ?x HAVING (COUNT(?y) > 1)
+            """,
+            id="having_with_only_group_variable_projected",
+        ),
     ],
 )
 def test_translation_returns_same_results(query: str) -> None:
