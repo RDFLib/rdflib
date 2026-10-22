@@ -5,7 +5,7 @@ import logging
 import time
 from collections.abc import Iterator, Mapping, Sequence
 from http.client import IncompleteRead, RemoteDisconnected
-from typing import Optional, Union
+from typing import Any, Optional, Union
 from urllib.error import HTTPError, URLError
 
 import pytest
@@ -18,6 +18,7 @@ from rdflib.plugins.sparql.parserutils import CompValue
 from rdflib.plugins.sparql.sparql import FrozenBindings, QueryContext
 from rdflib.term import BNode, Identifier
 from test.utils import helper
+from test.utils.audit import AuditHookDispatcher, AuditHookType
 from test.utils.http import MethodName, MockHTTPResponse
 from test.utils.httpservermock import ServedBaseHTTPServerMock
 from test.utils.outcome import OutcomeChecker
@@ -864,6 +865,65 @@ def test_service_silent_warning_is_one_line(
     assert record.levelno == logging.WARNING
     assert "HTTPError 500" in record.getMessage()
     assert not record.exc_info
+
+
+def refuse_requests_to(url: str) -> AuditHookType:
+    """Make an audit hook that refuses every request to url, as in
+    docs/security_considerations.md."""
+
+    def audit_hook(name: str, args: tuple[Any, ...]) -> None:
+        if args[0].startswith(url):
+            raise PermissionError("Permission denied for URL")
+
+    return audit_hook
+
+
+def test_service_silent_refused_by_audit_hook(
+    function_httpmock: ServedBaseHTTPServerMock,
+    audit_hook_dispatcher: AuditHookDispatcher,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    # A request that an audit hook refuses is never sent, and SILENT turns the
+    # refusal into a warning.
+    caplog.set_level(logging.WARNING, logger=evaluate.__name__)
+    query = f"""
+    SELECT ?kept ?var WHERE {{
+        BIND("kept" AS ?kept)
+        SERVICE SILENT <{function_httpmock.url}> {{
+            SELECT ?var WHERE {{ VALUES ?var {{ "x" }} }}
+        }}
+    }}
+    """
+
+    with audit_hook_dispatcher.ctx_hook(
+        "urllib.Request", refuse_requests_to(function_httpmock.url)
+    ):
+        bindings = Graph().query(query).bindings
+
+    assert bindings == [{Variable("kept"): Literal("kept")}]
+    assert function_httpmock.call_count == 0
+    (record,) = [r for r in caplog.records if r.name == evaluate.__name__]
+    assert record.levelno == logging.WARNING
+
+
+def test_service_refused_by_audit_hook_raises(
+    function_httpmock: ServedBaseHTTPServerMock,
+    audit_hook_dispatcher: AuditHookDispatcher,
+) -> None:
+    query = f"""
+    SELECT ?var WHERE {{
+        SERVICE <{function_httpmock.url}> {{
+            SELECT ?var WHERE {{ VALUES ?var {{ "x" }} }}
+        }}
+    }}
+    """
+
+    with audit_hook_dispatcher.ctx_hook(
+        "urllib.Request", refuse_requests_to(function_httpmock.url)
+    ):
+        with pytest.raises(PermissionError, match="Permission denied for URL"):
+            Graph().query(query).bindings
+    assert function_httpmock.call_count == 0
 
 
 @pytest.mark.parametrize("failure", ENDPOINT_FAILURES)
