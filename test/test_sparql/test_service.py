@@ -13,6 +13,7 @@ from http.client import (
 from io import BytesIO
 from typing import Any, Optional, Union
 from urllib.error import HTTPError, URLError
+from urllib.parse import parse_qs
 from urllib.request import BaseHandler, HTTPHandler, OpenerDirector, Request
 from urllib.response import addinfourl
 
@@ -562,6 +563,54 @@ def test_service_endpoint_forms(
     ]
 
 
+@pytest.mark.parametrize(
+    ("method", "value"),
+    [(MethodName.GET, "x"), (MethodName.POST, "x" * 700)],
+    ids=["GET", "POST"],
+)
+@pytest.mark.parametrize(
+    ("endpoint", "endpoint_params"),
+    [
+        pytest.param("/sparql", {}, id="plain"),
+        pytest.param("/sparql?", {}, id="empty-query-string"),
+        pytest.param(
+            "/sparql?default-graph-uri=http%3A%2F%2Fg",
+            {"default-graph-uri": ["http://g"]},
+            id="query-string",
+        ),
+        pytest.param("/sparql#frag", {}, id="fragment"),
+        pytest.param("/sparql?a=b#frag", {"a": ["b"]}, id="query-string-and-fragment"),
+    ],
+)
+def test_service_endpoint_parameters(
+    function_httpmock: ServedBaseHTTPServerMock,
+    method: MethodName,
+    value: str,
+    endpoint: str,
+    endpoint_params: dict[str, list[str]],
+) -> None:
+    # The endpoint's own parameters are kept, and its fragment is dropped as
+    # fragments are never sent over HTTP. The long literal forces POST.
+    service_query = f' SELECT ?var WHERE {{ VALUES ?var {{ "{value}" }} }} '
+    query = f"""
+    SELECT ?var WHERE {{
+        SERVICE <{function_httpmock.url}{endpoint}> {{{service_query}}}
+    }}
+    """
+    function_httpmock.responses[method].append(make_select_response({"var": value}))
+
+    assert Graph().query(query).bindings == [{Variable("var"): Literal(value)}]
+    service_params = {"query": [service_query], "output": ["json"]}
+    (request,) = function_httpmock.requests[method]
+    assert request.parsed_path.path == "/sparql"
+    if method == MethodName.GET:
+        assert request.path_query == {**endpoint_params, **service_params}
+    else:
+        assert request.path_query == endpoint_params
+        assert request.body is not None
+        assert parse_qs(request.body.decode()) == service_params
+
+
 def find_service_patterns(query: str) -> list[CompValue]:
     """Get the SERVICE patterns in the algebra of a query."""
     patterns: list[CompValue] = []
@@ -946,7 +995,7 @@ def test_service_silent_warning_hides_secrets(
 
     # The request itself is unchanged.
     (url,) = requested
-    assert url.startswith(endpoint + "?query=")
+    assert url.startswith(endpoint + "&query=")
     (record,) = [r for r in caplog.records if r.name == evaluate.__name__]
     assert record.getMessage() == (
         f"Ignoring failed SERVICE SILENT call to http://{host}/sparql: PermissionError"

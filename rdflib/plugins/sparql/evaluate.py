@@ -413,8 +413,14 @@ def _callService(
     }
     # GET is easier to cache so prefer that if the query is not to long
     if len(service_query) < 600:
+        # Keep the endpoint's own query string. A fragment is never sent, so
+        # drop it rather than put the query in it.
+        parts = urlsplit(service_url)
+        query = "&".join(filter(None, [parts.query, urlencode(query_settings)]))
         response = urlopen(
-            Request(service_url + "?" + urlencode(query_settings), headers=headers)
+            Request(
+                urlunsplit(parts._replace(query=query, fragment="")), headers=headers
+            )
         )
     else:
         response = urlopen(
