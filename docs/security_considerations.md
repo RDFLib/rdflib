@@ -76,3 +76,7 @@ Users of RDFLib can install a custom URL opener that raises an exception when an
 RDFLib's test suite includes tests which verify that custom URL openers can be used to block access to network resources.
 
 RDFLib also includes an example that shows how a custom opener can be used to restrict network access in [`secure_with_urlopen`][examples.secure_with_urlopen].
+
+## SPARQL `SERVICE SILENT`
+
+A SPARQL `SERVICE SILENT` pattern ignores a failed call to its endpoint, and that includes a call that an audit hook or a custom URL opener refuses. The request is still not made, but the exception does not reach the caller. Instead, RDFLib logs a warning from the `rdflib.plugins.sparql.evaluate` logger, and the `SERVICE` pattern gives one solution with no bindings.

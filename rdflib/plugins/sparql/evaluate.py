@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import collections
 import itertools
+import logging
 import re
 from collections.abc import Generator, Iterable, Mapping
 from typing import (
@@ -67,6 +68,8 @@ except ImportError:
     _HAS_ORJSON = False
 
 _Triple = tuple[Identifier, Identifier, Identifier]
+
+logger = logging.getLogger(__name__)
 
 
 def evalBGP(
@@ -365,7 +368,26 @@ def evalServiceQuery(ctx: QueryContext, part: CompValue):
     service_url = str(part.term)
     service_query = _buildQueryStringForServiceCall(ctx, _serviceGraphPatternText(part))
 
-    yield from _callService(ctx, service_url, service_query)
+    if not part.silent:
+        yield from _callService(ctx, service_url, service_query)
+        return
+    try:
+        # Convert every row before yielding any, so that a failure part way
+        # through gives only the one solution below.
+        solutions = list(_callService(ctx, service_url, service_query))
+    except Exception as error:
+        # A failing endpoint can fail once for each solution it is joined
+        # with, so give the traceback only when debugging.
+        logger.warning(
+            "Ignoring failed SERVICE SILENT call to %s: %r",
+            service_url,
+            error,
+            exc_info=logger.isEnabledFor(logging.DEBUG),
+        )
+        # A failed SERVICE SILENT pattern gives one solution with no bindings,
+        # see https://www.w3.org/TR/sparql11-federated-query/#serviceFailure
+        solutions = [FrozenBindings(ctx)]
+    yield from solutions
 
 
 def _callService(

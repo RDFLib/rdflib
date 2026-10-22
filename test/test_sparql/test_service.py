@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import time
 from collections.abc import Iterator, Mapping, Sequence
 from http.client import IncompleteRead, RemoteDisconnected
@@ -812,6 +813,57 @@ ENDPOINT_FAILURES: dict[
         "invalid type",
     ),
 }
+
+
+@pytest.mark.parametrize("failure", ENDPOINT_FAILURES)
+def test_service_silent_ignores_endpoint_failure(
+    function_httpmock: ServedBaseHTTPServerMock,
+    caplog: pytest.LogCaptureFixture,
+    failure: str,
+) -> None:
+    # A failed SERVICE SILENT pattern gives one solution with no bindings, see
+    # https://www.w3.org/TR/sparql11-federated-query/#serviceFailure
+    caplog.set_level(logging.DEBUG, logger=evaluate.__name__)
+    query = f"""
+    SELECT ?kept ?var WHERE {{
+        BIND("kept" AS ?kept)
+        SERVICE SILENT <{function_httpmock.url}> {{
+            SELECT ?var WHERE {{ VALUES ?var {{ "x" }} }}
+        }}
+    }}
+    """
+    response, _, _ = ENDPOINT_FAILURES[failure]
+    function_httpmock.responses[MethodName.GET].append(response)
+
+    assert Graph().query(query).bindings == [{Variable("kept"): Literal("kept")}]
+    assert function_httpmock.call_count == 1
+    (record,) = [r for r in caplog.records if r.name == evaluate.__name__]
+    assert record.levelno == logging.WARNING
+    assert function_httpmock.url in record.getMessage()
+    assert record.exc_info is not None
+
+
+def test_service_silent_warning_is_one_line(
+    function_httpmock: ServedBaseHTTPServerMock, caplog: pytest.LogCaptureFixture
+) -> None:
+    # A failing endpoint can fail once for each solution it is joined with, so
+    # the warning has no traceback unless debug logging is on.
+    caplog.set_level(logging.WARNING, logger=evaluate.__name__)
+    query = f"""
+    SELECT ?var WHERE {{
+        SERVICE SILENT <{function_httpmock.url}> {{
+            SELECT ?var WHERE {{ VALUES ?var {{ "x" }} }}
+        }}
+    }}
+    """
+    response, _, _ = ENDPOINT_FAILURES["http-error"]
+    function_httpmock.responses[MethodName.GET].append(response)
+
+    Graph().query(query).bindings
+    (record,) = [r for r in caplog.records if r.name == evaluate.__name__]
+    assert record.levelno == logging.WARNING
+    assert "HTTPError 500" in record.getMessage()
+    assert not record.exc_info
 
 
 @pytest.mark.parametrize("failure", ENDPOINT_FAILURES)
