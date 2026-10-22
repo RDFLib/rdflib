@@ -965,6 +965,13 @@ class _AlgebraTranslator:
             collections.defaultdict(list)
         )
         self._alg_translation: str = ""
+        # The SELECTs being translated, innermost last, so that a GROUP BY or
+        # HAVING fills the placeholder of its own SELECT (see Project below).
+        self._select_ids: list[int] = []
+
+    def _clause_placeholder(self, clause: str) -> str:
+        """Placeholder for a clause, such as GroupBy, of the innermost SELECT."""
+        return "{%s_%d}" % (clause, self._select_ids[-1])
 
     def _replace(
         self,
@@ -1029,12 +1036,6 @@ class _AlgebraTranslator:
                 # The dummy -*-SELECT-*- is placed during a SelectQuery or Multiset pattern in order to be able
                 # to match extended variables in a specific Select-clause (see "Extend" below)
                 self._replace("-*-SELECT-*-", "SELECT", count=-1)
-                # If there is no "Group By" clause the placeholder will simply be deleted. Otherwise there will be
-                # no matching {GroupBy} placeholder because it has already been replaced by "group by variables".
-                # Deleting the unused placeholders here, before a later sibling subquery is visited, stops that
-                # subquery's Group or Having handler from filling an earlier subquery's placeholder.
-                self._replace("{GroupBy}", "", count=-1)
-                self._replace("{Having}", "", count=-1)
             elif node.name == "Join":
                 self._replace(
                     "{Join}", "{" + node.p1.name + "}{" + node.p2.name + "}"
@@ -1055,7 +1056,10 @@ class _AlgebraTranslator:
                     # Filter with p=AggregateJoin = Having
                     if node.p.name == "AggregateJoin":
                         self._replace("{Filter}", "{" + node.p.name + "}")
-                        self._replace("{Having}", "HAVING({" + expr + "})")
+                        self._replace(
+                            self._clause_placeholder("Having"),
+                            "HAVING({" + expr + "})",
+                        )
                     else:
                         self._replace(
                             "{Filter}", "FILTER({" + expr + "}) {" + node.p.name + "}"
@@ -1099,7 +1103,8 @@ class _AlgebraTranslator:
                             )
                     self._replace("{Group}", "{" + node.p.name + "}")
                     self._replace(
-                        "{GroupBy}", "GROUP BY " + " ".join(group_by_vars) + " "
+                        self._clause_placeholder("GroupBy"),
+                        "GROUP BY " + " ".join(group_by_vars) + " ",
                     )
                 else:
                     self._replace("{Group}", "{" + node.p.name + "}")
@@ -1218,16 +1223,23 @@ class _AlgebraTranslator:
                 order_by_pattern = ""
                 if node.p.name == "OrderBy":
                     order_by_pattern = "ORDER BY {OrderConditions}"
+                self._select_ids.append(id(node))
                 self._replace(
                     "{Project}",
                     " ".join(project_variables)
                     + "{{"
                     + node.p.name
                     + "}}"
-                    + "{GroupBy}"
+                    + self._clause_placeholder("GroupBy")
                     + order_by_pattern
-                    + "{Having}",
+                    + self._clause_placeholder("Having"),
                 )
+                traverse(node.p, visitPre=self.sparql_query_text)
+                # Without a GROUP BY or HAVING, this SELECT's placeholders are still there.
+                self._replace(self._clause_placeholder("GroupBy"), "")
+                self._replace(self._clause_placeholder("Having"), "")
+                self._select_ids.pop()
+                return node
             elif node.name == "Distinct":
                 self._replace("{Distinct}", "DISTINCT {" + node.p.name + "}")
             elif node.name == "Reduced":
@@ -1654,10 +1666,6 @@ class _AlgebraTranslator:
         # locate the right SELECT clause for nested subqueries (see Extend handler)
         # Replace all remaining occurrences with SELECT now that traversal is done
         self._alg_translation = self._alg_translation.replace("-*-SELECT-*-", "SELECT")
-        # {GroupBy} and {Having} are filled by the Group handler, if there is no GROUP BY
-        # clause the placeholders remain and must be removed.
-        self._alg_translation = self._alg_translation.replace("{GroupBy}", "")
-        self._alg_translation = self._alg_translation.replace("{Having}", "")
         return self._alg_translation
 
 

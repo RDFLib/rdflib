@@ -330,6 +330,74 @@ def test_group_by_stays_on_its_subquery(data_path: Path) -> None:
     assert sorted(graph.query(query_from_algebra)) == sorted(graph.query(query_text))
 
 
+_RESULTS_DATA = """
+@prefix : <http://example.org/> .
+:a :p 1 , 2 , 3 .
+:b :p 4 .
+:c :p 5 , 6 .
+"""
+
+
+@pytest.mark.parametrize(
+    "query",
+    [
+        pytest.param(
+            """
+            SELECT ?k ?n WHERE {
+              { SELECT ?k WHERE { VALUES ?k { 1 1 2 } } }
+              {
+                SELECT (COUNT(?v) AS ?n)
+                WHERE { VALUES (?x ?v) { (:a 1) (:a 2) (:b 3) } }
+                GROUP BY ?x
+              }
+            }
+            """,
+            id="group_by_after_values_only_subquery",
+        ),
+        pytest.param(
+            """
+            SELECT ?k ?n WHERE {
+              { SELECT ?k WHERE { VALUES ?k { 1 1 2 } } }
+              {
+                SELECT (COUNT(?v) AS ?n)
+                WHERE { VALUES (?x ?v) { (:a 1) (:a 2) (:b 3) } }
+                GROUP BY ?x HAVING (COUNT(?v) > 1)
+              }
+            }
+            """,
+            id="having_after_values_only_subquery",
+        ),
+    ],
+)
+def test_translation_returns_same_results(query: str) -> None:
+    """The query translated from the algebra returns the same rows as the original."""
+    query = "PREFIX : <http://example.org/>\n" + query
+    graph = Graph().parse(format="turtle", data=_RESULTS_DATA)
+
+    query_from_algebra = translateAlgebra(
+        algebra.translateQuery(parser.parseQuery(query))
+    )
+
+    assert sorted(graph.query(query_from_algebra)) == sorted(graph.query(query))
+
+
+def test_group_by_stays_on_its_subquery_after_service() -> None:
+    """A GROUP BY must not move to an earlier sibling subquery that only has a SERVICE."""
+    query = """
+    PREFIX : <http://example.org/>
+    SELECT ?k ?n WHERE {
+      { SELECT ?k WHERE { SERVICE <http://example.org/sparql> { ?k :p ?v } } }
+      { SELECT (COUNT(?v) AS ?n) WHERE { ?x :p ?v } GROUP BY ?x }
+    }
+    """
+
+    query_from_algebra = translateAlgebra(
+        algebra.translateQuery(parser.parseQuery(query))
+    )
+
+    assert query_from_algebra.index("GROUP BY") > query_from_algebra.index("COUNT(")
+
+
 def test_sparql_group_concat():
     """Tests if GROUP_CONCAT correctly uses the separator keyword"""
     query = """
