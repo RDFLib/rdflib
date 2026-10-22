@@ -611,6 +611,31 @@ def test_service_endpoint_parameters(
         assert parse_qs(request.body.decode()) == service_params
 
 
+def test_service_with_base(
+    function_httpmock: ServedBaseHTTPServerMock, caplog: pytest.LogCaptureFixture
+) -> None:
+    # The BASE added to the query for a bare pattern must not make the query an
+    # IRI, which logged warnings holding the whole query. The PREFIX lines also
+    # added make the query long enough to be POSTed.
+    caplog.set_level(logging.WARNING)
+    query = f"""
+    BASE <http://example.org/>
+    SELECT ?var WHERE {{
+        SERVICE <{function_httpmock.url}/sparql> {{ VALUES ?var {{ "x" }} }}
+    }}
+    """
+    function_httpmock.responses[MethodName.POST].append(
+        make_select_response({"var": "x"})
+    )
+
+    assert Graph().query(query).bindings == [{Variable("var"): Literal("x")}]
+    (request,) = function_httpmock.requests[MethodName.POST]
+    assert request.body is not None
+    (service_query,) = parse_qs(request.body.decode())["query"]
+    assert service_query.startswith("BASE <http://example.org/> ")
+    assert [record.getMessage() for record in caplog.records] == []
+
+
 def find_service_patterns(query: str) -> list[CompValue]:
     """Get the SERVICE patterns in the algebra of a query."""
     patterns: list[CompValue] = []

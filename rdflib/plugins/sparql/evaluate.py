@@ -465,7 +465,8 @@ def _buildQueryStringForServiceCall(ctx: QueryContext, service_query: str) -> st
         # type error: Item "None" of "Optional[Prologue]" has no attribute "base"
         base = ctx.prologue.base  # type: ignore[union-attr]
         if base is not None and len(base) > 0:
-            service_query = "BASE <" + base + "> " + service_query
+            # base can be a URIRef, which would make the whole query one
+            service_query = "BASE <" + str(base) + "> " + service_query
     sol = [v for v in ctx.solution() if isinstance(v, Variable)]
     if len(sol) > 0:
         variables = " ".join([v.n3() for v in sol])
