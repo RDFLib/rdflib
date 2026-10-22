@@ -503,6 +503,43 @@ def test_service_tab_whitespace(
     assert function_httpmock.call_count == 1
 
 
+def test_service_two_patterns(function_httpmock: ServedBaseHTTPServerMock) -> None:
+    # Each SERVICE pattern must send its own text to its own endpoint, see
+    # https://github.com/RDFLib/rdflib/issues/3069
+    query = f"""
+    SELECT ?a ?b WHERE {{
+        SERVICE <{function_httpmock.url}/first> {{
+            SELECT ?a WHERE {{ VALUES ?a {{ "1" }} }}
+        }}
+        SERVICE <{function_httpmock.url}/second> {{
+            SELECT ?b WHERE {{ VALUES ?b {{ "2" }} }}
+        }}
+    }}
+    """
+    for var, value in (("a", "1"), ("b", "2")):
+        response = {
+            "head": {"vars": [var]},
+            "results": {"bindings": [{var: {"type": "literal", "value": value}}]},
+        }
+        function_httpmock.responses[MethodName.GET].append(
+            MockHTTPResponse(
+                200,
+                "OK",
+                json.dumps(response).encode("utf-8"),
+                {"Content-Type": ["application/sparql-results+json"]},
+            )
+        )
+
+    assert Graph().query(query).bindings == [
+        {Variable("a"): Literal("1"), Variable("b"): Literal("2")}
+    ]
+    first, second = function_httpmock.requests[MethodName.GET]
+    assert first.parsed_path.path == "/first"
+    assert 'VALUES ?a { "1" }' in first.path_query["query"][0]
+    assert second.parsed_path.path == "/second"
+    assert 'VALUES ?b { "2" }' in second.path_query["query"][0]
+
+
 if __name__ == "__main__":
     test_service()
     test_service_with_bind()

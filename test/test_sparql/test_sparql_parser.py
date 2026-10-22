@@ -8,6 +8,8 @@ import pytest
 
 from rdflib import Graph, Literal, URIRef, Variable
 from rdflib.namespace import XSD, Namespace
+from rdflib.plugins.sparql.algebra import translateQuery
+from rdflib.plugins.sparql.parser import parseQuery
 from rdflib.plugins.sparql.processor import processUpdate
 from rdflib.term import Node
 
@@ -46,6 +48,41 @@ class TestSPARQLParser:
         processUpdate(g1, f"INSERT DATA {{ {g0ntriples!s} }}")
 
         assert triple_set(g0) == triple_set(g1)
+
+    def test_nested_service(self) -> None:
+        query = """
+        PREFIX wikibase: <http://wikiba.se/ontology#>
+        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+        PREFIX bd: <http://www.bigdata.com/rdf#>
+        PREFIX wd: <http://www.wikidata.org/entity/>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+        SELECT ?item ?pic
+        WHERE
+        {
+            SERVICE <https://query.wikidata.org/sparql> {
+                ?item wdt:P31 wd:Q146 .
+                ?item wdt:P18 ?pic
+                SERVICE wikibase:label {
+                    bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en".
+                }
+            }
+        }"""
+        parsed_query = translateQuery(parseQuery(query))
+        outer_service = parsed_query.algebra.p.p
+        assert outer_service.name == "ServiceGraphPattern"
+        assert outer_service.term == URIRef("https://query.wikidata.org/sparql")
+        inner_parts = outer_service.graph.part
+        inner_services = [p for p in inner_parts if p.name == "ServiceGraphPattern"]
+        assert len(inner_services) == 1
+        assert inner_services[0].term == URIRef("http://wikiba.se/ontology#label")
+
+        # Each pattern keeps its own text, from its SERVICE keyword to its closing brace
+        inner_start = query.index("SERVICE wikibase:label")
+        inner_end = query.index("}", inner_start) + 1
+        outer_start = query.index("SERVICE <https://query.wikidata.org/sparql>")
+        outer_end = query.index("}", inner_end) + 1
+        assert inner_services[0].service_string == query[inner_start:inner_end]
+        assert outer_service.service_string == query[outer_start:outer_end]
 
 
 # A raw TAB is allowed inside every SPARQL string literal form, see
