@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import os
 from collections.abc import Collection
 from dataclasses import dataclass, field
 from io import StringIO
@@ -188,6 +187,10 @@ algebra_tests = [
         "Test if unary expressions are properly translated into the query text.",
     ),
     AlgebraTest(
+        "test_other__service1",
+        "Test if a nested service pattern is properly translated",
+    ),
+    AlgebraTest(
         "test_other__service2",
         'Test if "service" along with its service string is properly translated'
         "into the query text.",
@@ -258,21 +261,6 @@ unused_files = {
     "test_property_path__predicate_path.txt",
     "test_solution_modifiers__project.txt",
 }
-
-
-if os.name != "nt":
-    # On Windows this test was causing a stackoverflow or memory error, so don't run
-    # it on Windows. The test fails anyway on linux and should be fixed. Once
-    # the cause of this failure is fixed the condition to not run it on windows
-    # should be removed and it should be added to the normal tests.
-    algebra_tests.append(
-        AlgebraTest(
-            "test_other__service1",
-            "Test if a nested service pattern is properly translated",
-        )
-    )
-else:
-    unused_files.add("test_other__service1.txt")
 
 
 def test_all_files_used(data_path: Path) -> None:
