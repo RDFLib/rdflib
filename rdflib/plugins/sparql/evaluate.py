@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import collections
 import itertools
+import logging
 import re
 from collections.abc import Generator, Iterable, Mapping
 from typing import (
@@ -25,7 +26,7 @@ from typing import (
     Optional,
     Union,
 )
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
 from pyparsing import ParseException
@@ -67,6 +68,8 @@ except ImportError:
     _HAS_ORJSON = False
 
 _Triple = tuple[Identifier, Identifier, Identifier]
+
+logger = logging.getLogger(__name__)
 
 
 def evalBGP(
@@ -335,54 +338,104 @@ def evalPart(ctx: QueryContext, part: CompValue) -> Any:
         raise Exception("I dont know: %s" % part.name)
 
 
+# Everything in the text of a SERVICE pattern before its group graph pattern:
+# the keywords, the endpoint, whitespace and comments. There, only a comment
+# can hold a "{", and only an IRI, an escaped character in a prefixed name or a
+# comment can hold a "#". A comment runs to the end of its line, which also
+# stops the pattern backtracking through a run of comments.
+_SERVICE_HEAD = re.compile(r"(?:<[^>]*>|\\.|#[^\n]*(?![^\n])|[^<\\#{])*{")
+
+
+def _serviceGraphPatternText(part: CompValue) -> str:
+    """Get the text inside the braces of a SERVICE pattern's group graph pattern."""
+    service_string = part.service_string
+    head = None
+    if isinstance(service_string, str):
+        service_string = service_string.rstrip()
+        head = _SERVICE_HEAD.match(service_string)
+    if head is None or not service_string.endswith("}"):
+        raise ValueError(
+            f"SERVICE pattern has no usable service_string: {service_string!r}"
+        )
+    return service_string[head.end() : -1]
+
+
 def evalServiceQuery(ctx: QueryContext, part: CompValue):
-    res = {}
-    match = re.match(
-        r"^\s*service\s+<(.*)>\s*{(.*)}\s*$",
-        # type error: Argument 2 to "get" of "CompValue" has incompatible type "str"; expected "bool"  [arg-type]
-        part.get("service_string", ""),  # type: ignore[arg-type]
-        re.DOTALL | re.I,
-    )
+    if not isinstance(part.term, URIRef):
+        raise ValueError(
+            f"SERVICE {part.term.n3()} is not supported, the endpoint must be an IRI"
+        )
+    service_url = str(part.term)
+    service_query = _buildQueryStringForServiceCall(ctx, _serviceGraphPatternText(part))
 
-    if match:
-        service_url = match.group(1)
-        service_query = _buildQueryStringForServiceCall(ctx, match.group(2))
+    if not part.silent:
+        yield from _callService(ctx, service_url, service_query)
+        return
+    try:
+        # Convert every row before yielding any, so that a failure part way
+        # through gives only the one solution below.
+        solutions = list(_callService(ctx, service_url, service_query))
+    except Exception as error:
+        # The endpoint's userinfo and query, and the error's message, can hold
+        # secrets, so the warning leaves them out. A failing endpoint can also
+        # fail once for each solution it is joined with, so give the message
+        # and traceback only when debugging.
+        logger.warning(
+            "Ignoring failed SERVICE SILENT call to %s: %s",
+            _endpointWithoutSecrets(service_url),
+            type(error).__name__,
+            exc_info=logger.isEnabledFor(logging.DEBUG),
+        )
+        # A failed SERVICE SILENT pattern gives one solution with no bindings,
+        # see https://www.w3.org/TR/sparql11-federated-query/#serviceFailure
+        solutions = [FrozenBindings(ctx)]
+    yield from solutions
 
-        query_settings = {"query": service_query, "output": "json"}
-        headers = {
-            "accept": "application/sparql-results+json",
-            "user-agent": f"rdflib/{__version__}",
-        }
-        # GET is easier to cache so prefer that if the query is not to long
-        if len(service_query) < 600:
-            response = urlopen(
-                Request(service_url + "?" + urlencode(query_settings), headers=headers)
+
+def _endpointWithoutSecrets(service_url: str) -> str:
+    """Get an endpoint without its userinfo, query and fragment, which can hold
+    secrets, for use in log and error messages."""
+    try:
+        parts = urlsplit(service_url)
+    except ValueError:
+        return "an endpoint with an invalid IRI"
+    host = parts.netloc.rpartition("@")[2]
+    return urlunsplit((parts.scheme, host, parts.path, "", ""))
+
+
+def _callService(
+    ctx: QueryContext, service_url: str, service_query: str
+) -> Generator[FrozenBindings, None, None]:
+    query_settings = {"query": service_query, "output": "json"}
+    headers = {
+        "accept": "application/sparql-results+json",
+        "user-agent": f"rdflib/{__version__}",
+    }
+    # GET is easier to cache so prefer that if the query is not to long
+    if len(service_query) < 600:
+        response = urlopen(
+            Request(service_url + "?" + urlencode(query_settings), headers=headers)
+        )
+    else:
+        response = urlopen(
+            Request(
+                service_url,
+                data=urlencode(query_settings).encode(),
+                headers=headers,
             )
-        else:
-            response = urlopen(
-                Request(
-                    service_url,
-                    data=urlencode(query_settings).encode(),
-                    headers=headers,
-                )
-            )
-        if response.status == 200:
-            if _HAS_ORJSON:
-                json_dict = orjson.loads(response.read())
-            else:
-                json_dict = json.loads(response.read())
-            variables = res["vars_"] = json_dict["head"]["vars"]
-            # or just return the bindings?
-            res = json_dict["results"]["bindings"]
-            if len(res) > 0:
-                for r in res:
-                    # type error: Argument 2 to "_yieldBindingsFromServiceCallResult" has incompatible type "str"; expected "dict[str, dict[str, str]]"
-                    for bound in _yieldBindingsFromServiceCallResult(ctx, r, variables):
-                        yield bound
-        else:
-            raise Exception(
-                "Service: %s responded with code: %s", service_url, response.status
-            )
+        )
+    if response.status != 200:
+        raise Exception(
+            f"Service: {_endpointWithoutSecrets(service_url)}"
+            f" responded with code: {response.status}"
+        )
+    if _HAS_ORJSON:
+        json_dict = orjson.loads(response.read())
+    else:
+        json_dict = json.loads(response.read())
+    variables = json_dict["head"]["vars"]
+    for r in json_dict["results"]["bindings"]:
+        yield from _yieldBindingsFromServiceCallResult(ctx, r, variables)
 
 
 """
