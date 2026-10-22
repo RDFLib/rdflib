@@ -138,6 +138,11 @@ algebra_tests = [
         "uses a group variable gets properly translated into the query text.",
     ),
     AlgebraTest(
+        "test_graph_patterns__group_in_second_subquery",
+        'Test if a "GROUP BY" stays on its own subquery when an earlier sibling '
+        "subquery has none.",
+    ),
+    AlgebraTest(
         "test_graph_patterns__having",
         'Test if "having" gets properly translated into the query text.',
     ),
@@ -307,6 +312,29 @@ def test_roundtrip(test_spec: AlgebraTest, data_path: Path) -> None:
     # TODO: Execute the raw query (query_text) and the reconstituted query
     # (query_from_query_from_algebra) against a well defined graph and ensure
     # they yield the same result.
+
+
+def test_group_by_stays_on_its_subquery(data_path: Path) -> None:
+    """A later subquery's GROUP BY must not move to an earlier sibling subquery."""
+    query_text = (
+        data_path / "test_graph_patterns__group_in_second_subquery.txt"
+    ).read_text()
+    graph = Graph().parse(
+        format="turtle",
+        data="""
+        @prefix : <http://example.org/> .
+        :a :p 1 , 2 .
+        :b :p 3 .
+        :a :q 10 , 11 .
+        :b :q 20 .
+        """,
+    )
+
+    query_from_algebra = translateAlgebra(
+        algebra.translateQuery(parser.parseQuery(query_text))
+    )
+
+    assert sorted(graph.query(query_from_algebra)) == sorted(graph.query(query_text))
 
 
 def test_sparql_group_concat():

@@ -1026,6 +1026,15 @@ class _AlgebraTranslator:
                     for triple in node.triples
                 )
                 self._replace("{BGP}", triples)
+                # The dummy -*-SELECT-*- is placed during a SelectQuery or Multiset pattern in order to be able
+                # to match extended variables in a specific Select-clause (see "Extend" below)
+                self._replace("-*-SELECT-*-", "SELECT", count=-1)
+                # If there is no "Group By" clause the placeholder will simply be deleted. Otherwise there will be
+                # no matching {GroupBy} placeholder because it has already been replaced by "group by variables".
+                # Deleting the unused placeholders here, before a later sibling subquery is visited, stops that
+                # subquery's Group or Having handler from filling an earlier subquery's placeholder.
+                self._replace("{GroupBy}", "", count=-1)
+                self._replace("{Having}", "", count=-1)
             elif node.name == "Join":
                 self._replace(
                     "{Join}", "{" + node.p1.name + "}{" + node.p2.name + "}"
