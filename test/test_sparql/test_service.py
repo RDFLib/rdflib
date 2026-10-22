@@ -840,7 +840,7 @@ def test_service_silent_ignores_endpoint_failure(
     (record,) = [r for r in caplog.records if r.name == evaluate.__name__]
     assert record.levelno == logging.WARNING
     assert function_httpmock.url in record.getMessage()
-    assert record.exc_info is not None
+    assert isinstance(record.exc_info, tuple)
 
 
 def test_service_silent_warning_is_one_line(
