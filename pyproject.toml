@@ -77,6 +77,11 @@ docs = [
 ]
 lint = ["ruff==0.17.0"]
 
+[tool.uv]
+# Install the tests and lint groups too, so `uv run pytest`, `uv run ruff` and
+# `uv run mypy` use the locked versions.
+default-groups = ["dev", "tests", "lint"]
+
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
