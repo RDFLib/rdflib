@@ -193,6 +193,11 @@ algebra_tests = [
         "into the query text.",
     ),
     AlgebraTest(
+        "test_other__service_minus",
+        'Test if "minus" inside a "service" pattern is properly translated into '
+        "the query text.",
+    ),
+    AlgebraTest(
         "test_other__values",
         'Test if "values" gets properly translated into the query text.',
     ),

@@ -76,6 +76,14 @@ class TestSPARQLParser:
         assert len(inner_services) == 1
         assert inner_services[0].term == URIRef("http://wikiba.se/ontology#label")
 
+        # Each pattern keeps its own text, from its SERVICE keyword to its closing brace
+        inner_start = query.index("SERVICE wikibase:label")
+        inner_end = query.index("}", inner_start) + 1
+        outer_start = query.index("SERVICE <https://query.wikidata.org/sparql>")
+        outer_end = query.index("}", inner_end) + 1
+        assert inner_services[0].service_string == query[inner_start:inner_end]
+        assert outer_service.service_string == query[outer_start:outer_end]
+
 
 # A raw TAB is allowed inside every SPARQL string literal form, see
 # https://github.com/RDFLib/rdflib/issues/3586
