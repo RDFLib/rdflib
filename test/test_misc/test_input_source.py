@@ -39,6 +39,8 @@ from rdflib.parser import (
     URLInputSource,
     create_input_source,
 )
+from rdflib.plugins.parsers import hext
+from rdflib.plugins.shared.jsonld import util as jsonld_util
 from rdflib.term import Literal, URIRef
 from test.utils import GraphHelper
 from test.utils.httpfileserver import (
@@ -109,7 +111,7 @@ def test_parse_temporary_file(argument, kind, mode, public_id):
         ),
     ],
 )
-def test_parse_spooled_file(format, data, mode, rolled):
+def test_parse_spooled_file(format, data, mode, rolled, request):
     with SpooledTemporaryFile(
         mode=mode, encoding="utf-8" if "b" not in mode else None
     ) as stream:
@@ -117,6 +119,23 @@ def test_parse_spooled_file(format, data, mode, rolled):
         stream.seek(0)
         if rolled:
             stream.rollover()
+
+        if (
+            mode == "w+b"
+            and not hasattr(stream, "readable")
+            and (
+                (format == "json-ld" and not jsonld_util._HAS_ORJSON)
+                or (format == "hext" and not hext._HAS_ORJSON)
+            )
+        ):
+            request.applymarker(
+                pytest.mark.xfail(
+                    strict=True,
+                    raises=AttributeError,
+                    reason="Before Python 3.11, binary SpooledTemporaryFile lacks"
+                    " readable(), required by these parsers' TextIOWrapper path",
+                )
+            )
 
         graph = Graph().parse(file=stream, format=format)
 
