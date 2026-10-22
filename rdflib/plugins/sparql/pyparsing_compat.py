@@ -22,19 +22,15 @@ except (TypeError, ValueError):
 PYPARSING_V3 = PYPARSING_MAJOR_VERSION >= 3
 
 _ParserFactory = Callable[..., ParserElement]
-_ParserTransform = Callable[..., ParserElement]
 
 DelimitedList: _ParserFactory
-original_text_for: _ParserTransform
 rest_of_line: ParserElement
 
 if PYPARSING_V3:
     DelimitedList = pyparsing.DelimitedList
-    original_text_for = pyparsing.original_text_for
     rest_of_line = pyparsing.rest_of_line
 else:
     DelimitedList = pyparsing.delimitedList
-    original_text_for = pyparsing.originalTextFor
     rest_of_line = pyparsing.restOfLine
 
 
