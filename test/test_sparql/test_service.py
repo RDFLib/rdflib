@@ -4,9 +4,12 @@ import json
 import logging
 import time
 from collections.abc import Iterator, Mapping, Sequence
-from http.client import IncompleteRead, RemoteDisconnected
+from http.client import HTTPMessage, IncompleteRead, RemoteDisconnected
+from io import BytesIO
 from typing import Any, Optional, Union
 from urllib.error import HTTPError, URLError
+from urllib.request import BaseHandler, OpenerDirector, Request
+from urllib.response import addinfourl
 
 import pytest
 
@@ -22,6 +25,7 @@ from test.utils.audit import AuditHookDispatcher, AuditHookType
 from test.utils.http import MethodName, MockHTTPResponse
 from test.utils.httpservermock import ServedBaseHTTPServerMock
 from test.utils.outcome import OutcomeChecker
+from test.utils.urlopen import context_urlopener
 
 
 @pytest.mark.webtest
@@ -942,6 +946,38 @@ def test_service_silent_warning_hides_secrets(
     assert record.getMessage() == (
         f"Ignoring failed SERVICE SILENT call to http://{host}/sparql: PermissionError"
     )
+
+
+class NoContentHandler(BaseHandler):
+    """Answer every HTTP request with 204 No Content, without any network."""
+
+    def http_open(self, req: Request) -> addinfourl:
+        return addinfourl(BytesIO(), HTTPMessage(), req.get_full_url(), 204)
+
+
+def test_service_error_hides_secrets(caplog: pytest.LogCaptureFixture) -> None:
+    # rdflib's own error for a 2xx response other than 200 names the endpoint
+    # without its userinfo and query, which can hold secrets. urllib cannot
+    # send a request with userinfo, so a stub opener gives the 204.
+    caplog.set_level(logging.DEBUG, logger=evaluate.__name__)
+    endpoint = "http://user:hunter2@example.org/sparql?apikey=s3cr3t"
+    opener = OpenerDirector()
+    opener.add_handler(NoContentHandler())
+
+    with context_urlopener(opener):
+        with pytest.raises(Exception, match="responded with code: 204") as raised:
+            Graph().query(
+                f"SELECT * WHERE {{ SERVICE <{endpoint}> {{ ?s ?p ?o }} }}"
+            ).bindings
+        Graph().query(
+            f"SELECT * WHERE {{ SERVICE SILENT <{endpoint}> {{ ?s ?p ?o }} }}"
+        ).bindings
+
+    message = "Service: http://example.org/sparql responded with code: 204"
+    assert str(raised.value) == message
+    assert message in caplog.text
+    assert "hunter2" not in caplog.text
+    assert "s3cr3t" not in caplog.text
 
 
 def test_service_refused_by_audit_hook_raises(

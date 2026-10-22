@@ -382,7 +382,7 @@ def evalServiceQuery(ctx: QueryContext, part: CompValue):
         # and traceback only when debugging.
         logger.warning(
             "Ignoring failed SERVICE SILENT call to %s: %s",
-            _endpointForLog(service_url),
+            _endpointWithoutSecrets(service_url),
             type(error).__name__,
             exc_info=logger.isEnabledFor(logging.DEBUG),
         )
@@ -392,8 +392,9 @@ def evalServiceQuery(ctx: QueryContext, part: CompValue):
     yield from solutions
 
 
-def _endpointForLog(service_url: str) -> str:
-    """Get an endpoint without its userinfo, query and fragment."""
+def _endpointWithoutSecrets(service_url: str) -> str:
+    """Get an endpoint without its userinfo, query and fragment, which can hold
+    secrets, for use in log and error messages."""
     try:
         parts = urlsplit(service_url)
     except ValueError:
@@ -425,7 +426,8 @@ def _callService(
         )
     if response.status != 200:
         raise Exception(
-            f"Service: {service_url} responded with code: {response.status}"
+            f"Service: {_endpointWithoutSecrets(service_url)}"
+            f" responded with code: {response.status}"
         )
     if _HAS_ORJSON:
         json_dict = orjson.loads(response.read())
