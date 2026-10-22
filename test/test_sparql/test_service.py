@@ -863,7 +863,9 @@ def test_service_silent_warning_is_one_line(
     Graph().query(query).bindings
     (record,) = [r for r in caplog.records if r.name == evaluate.__name__]
     assert record.levelno == logging.WARNING
-    assert "HTTPError 500" in record.getMessage()
+    assert record.getMessage() == (
+        f"Ignoring failed SERVICE SILENT call to {function_httpmock.url}: HTTPError"
+    )
     assert not record.exc_info
 
 
@@ -904,6 +906,42 @@ def test_service_silent_refused_by_audit_hook(
     assert function_httpmock.call_count == 0
     (record,) = [r for r in caplog.records if r.name == evaluate.__name__]
     assert record.levelno == logging.WARNING
+
+
+def test_service_silent_warning_hides_secrets(
+    function_httpmock: ServedBaseHTTPServerMock,
+    audit_hook_dispatcher: AuditHookDispatcher,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    # The endpoint's userinfo and query string can hold secrets, and so can an
+    # error's message, so the warning leaves them out.
+    caplog.set_level(logging.WARNING, logger=evaluate.__name__)
+    host = function_httpmock.address_string
+    endpoint = f"http://user:hunter2@{host}/sparql?apikey=s3cr3t"
+    query = f"""
+    SELECT ?var WHERE {{
+        SERVICE SILENT <{endpoint}> {{
+            SELECT ?var WHERE {{ VALUES ?var {{ "x" }} }}
+        }}
+    }}
+    """
+
+    requested = []
+
+    def audit_hook(name: str, args: tuple[Any, ...]) -> None:
+        requested.append(args[0])
+        raise PermissionError(f"Permission denied for {args[0]}")
+
+    with audit_hook_dispatcher.ctx_hook("urllib.Request", audit_hook):
+        Graph().query(query).bindings
+
+    # The request itself is unchanged.
+    (url,) = requested
+    assert url.startswith(endpoint + "?query=")
+    (record,) = [r for r in caplog.records if r.name == evaluate.__name__]
+    assert record.getMessage() == (
+        f"Ignoring failed SERVICE SILENT call to http://{host}/sparql: PermissionError"
+    )
 
 
 def test_service_refused_by_audit_hook_raises(

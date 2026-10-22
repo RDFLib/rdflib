@@ -80,3 +80,5 @@ RDFLib also includes an example that shows how a custom opener can be used to re
 ## SPARQL `SERVICE SILENT`
 
 A SPARQL `SERVICE SILENT` pattern ignores a failed call to its endpoint, and that includes a call that an audit hook or a custom URL opener refuses. The request is still not made, but the exception does not reach the caller. Instead, RDFLib logs a warning from the `rdflib.plugins.sparql.evaluate` logger, and the `SERVICE` pattern gives one solution with no bindings.
+
+The warning names the endpoint without its user information, query or fragment, and gives only the type of the error, since these can hold credentials. The error's message and traceback are added to the warning only when that logger is set to `DEBUG`.

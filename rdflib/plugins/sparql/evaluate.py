@@ -26,7 +26,7 @@ from typing import (
     Optional,
     Union,
 )
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
 from pyparsing import ParseException
@@ -376,18 +376,30 @@ def evalServiceQuery(ctx: QueryContext, part: CompValue):
         # through gives only the one solution below.
         solutions = list(_callService(ctx, service_url, service_query))
     except Exception as error:
-        # A failing endpoint can fail once for each solution it is joined
-        # with, so give the traceback only when debugging.
+        # The endpoint's userinfo and query, and the error's message, can hold
+        # secrets, so the warning leaves them out. A failing endpoint can also
+        # fail once for each solution it is joined with, so give the message
+        # and traceback only when debugging.
         logger.warning(
-            "Ignoring failed SERVICE SILENT call to %s: %r",
-            service_url,
-            error,
+            "Ignoring failed SERVICE SILENT call to %s: %s",
+            _endpointForLog(service_url),
+            type(error).__name__,
             exc_info=logger.isEnabledFor(logging.DEBUG),
         )
         # A failed SERVICE SILENT pattern gives one solution with no bindings,
         # see https://www.w3.org/TR/sparql11-federated-query/#serviceFailure
         solutions = [FrozenBindings(ctx)]
     yield from solutions
+
+
+def _endpointForLog(service_url: str) -> str:
+    """Get an endpoint without its userinfo, query and fragment."""
+    try:
+        parts = urlsplit(service_url)
+    except ValueError:
+        return "an endpoint with an invalid IRI"
+    host = parts.netloc.rpartition("@")[2]
+    return urlunsplit((parts.scheme, host, parts.path, "", ""))
 
 
 def _callService(
