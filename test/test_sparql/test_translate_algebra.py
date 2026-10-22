@@ -332,8 +332,8 @@ def test_group_by_stays_on_its_subquery(data_path: Path) -> None:
 
 _RESULTS_DATA = """
 @prefix : <http://example.org/> .
-:a :p 1 , 2 , 3 .
-:b :p 4 .
+:a :p 1 , 2 , 3 ; :q 10 ; :name "x" , "" .
+:b :p 4 ; :q 30 .
 :c :p 5 , 6 .
 """
 
@@ -400,6 +400,35 @@ _RESULTS_DATA = """
             SELECT ?x WHERE { ?x :p ?y } GROUP BY ?x HAVING (COUNT(?y) > 1)
             """,
             id="having_with_only_group_variable_projected",
+        ),
+        pytest.param(
+            """
+            SELECT ?n ?m WHERE {
+              { SELECT (COUNT(?y) AS ?n) WHERE { ?x :p ?y } }
+              { SELECT (COUNT(?z) AS ?m) WHERE { ?w :q ?z } }
+            }
+            """,
+            id="aggregate_in_sibling_subqueries",
+        ),
+        pytest.param(
+            """
+            SELECT (SUM(?n) AS ?t) WHERE {
+              { SELECT ?k (COUNT(?v) AS ?n) WHERE { ?k :p ?v } GROUP BY ?k }
+            }
+            """,
+            id="aggregate_in_nested_subquery",
+        ),
+        pytest.param(
+            """
+            SELECT ?k (SUM(?v) + 1 AS ?y) WHERE { ?k :p ?v } GROUP BY ?k
+            """,
+            id="aggregate_inside_select_expression",
+        ),
+        pytest.param(
+            """
+            SELECT ?s (STR(?o) AS ?b) WHERE { ?s :name ?o FILTER(STR(?s) != "") }
+            """,
+            id="select_expression_and_filter_with_same_function",
         ),
     ],
 )

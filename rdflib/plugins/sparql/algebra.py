@@ -961,9 +961,6 @@ class _AlgebraTranslator:
 
     def __init__(self, query_algebra: Query):
         self.query_algebra = query_algebra
-        self.aggr_vars: collections.defaultdict[Identifier, list[Identifier]] = (
-            collections.defaultdict(list)
-        )
         self._alg_translation: str = ""
         # The SELECTs being translated, innermost last, so that a GROUP BY or
         # HAVING fills the placeholder of its own SELECT (see Project below).
@@ -1002,11 +999,7 @@ class _AlgebraTranslator:
         self, node_arg: typing.Union[Identifier, CompValue, Expr, str]
     ) -> str:
         if isinstance(node_arg, Identifier):
-            if node_arg in self.aggr_vars.keys():
-                grp_var = self.aggr_vars[node_arg].pop(0).n3()
-                return grp_var
-            else:
-                return node_arg.n3()
+            return node_arg.n3()
         elif isinstance(node_arg, CompValue):
             return "{" + node_arg.name + "}"
         elif isinstance(node_arg, str):
@@ -1092,6 +1085,13 @@ class _AlgebraTranslator:
                     search_from_match_occurrence=select_occurrences,
                 )
                 self._replace("{Extend}", "{" + node.p.name + "}")
+                # The expression comes before node.p in the text, so render it first.
+                # Otherwise node.p could fill the expression's placeholders, and an
+                # AggregateJoin in node.p would fill in its aggregates before the
+                # expression had put them in the text.
+                traverse(node.expr, visitPre=self.sparql_query_text)
+                traverse(node.p, visitPre=self.sparql_query_text)
+                return node
             elif node.name == "Minus":
                 expr = "{" + node.p1.name + "}MINUS{{" + node.p2.name + "}}"
                 self._replace("{Minus}", expr)
@@ -1121,8 +1121,6 @@ class _AlgebraTranslator:
                         raise ExpressionNotCoveredException(
                             "This expression might not be covered yet."
                         )
-                    self.aggr_vars[agg_func.res].append(agg_func.vars)
-
                     agg_func_name = agg_func.name.split("_")[1]
                     distinct = ""
                     if agg_func.distinct:
