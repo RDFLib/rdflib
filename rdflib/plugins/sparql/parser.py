@@ -1524,6 +1524,11 @@ QueryUnit = Query
 QueryUnit.ignore("#" + rest_of_line)
 UpdateUnit.ignore("#" + rest_of_line)
 
+# pyparsing expands tabs to spaces by default, which changes string literals
+# that contain a raw tab
+QueryUnit.parse_with_tabs()
+UpdateUnit.parse_with_tabs()
+
 
 expandUnicodeEscapes_re: re.Pattern = re.compile(
     r"\\u([0-9a-f]{4}(?:[0-9a-f]{4})?)", flags=re.I

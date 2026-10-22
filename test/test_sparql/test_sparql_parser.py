@@ -3,7 +3,9 @@ from __future__ import annotations
 import math
 import sys
 
-from rdflib import Graph, Literal
+import pytest
+
+from rdflib import Graph, Literal, URIRef, Variable
 from rdflib.namespace import Namespace
 from rdflib.plugins.sparql.processor import processUpdate
 from rdflib.term import Node
@@ -43,3 +45,35 @@ class TestSPARQLParser:
         processUpdate(g1, f"INSERT DATA {{ {g0ntriples!s} }}")
 
         assert triple_set(g0) == triple_set(g1)
+
+
+# A raw TAB is allowed inside every SPARQL string literal form, see
+# https://github.com/RDFLib/rdflib/issues/3586
+RAW_TAB_STRING_LITERALS = [
+    pytest.param("'a\tb'", id="STRING_LITERAL1"),
+    pytest.param('"a\tb"', id="STRING_LITERAL2"),
+    pytest.param("'''a\tb'''", id="STRING_LITERAL_LONG1"),
+    pytest.param('"""a\tb"""', id="STRING_LITERAL_LONG2"),
+]
+
+
+@pytest.mark.parametrize("string_literal", RAW_TAB_STRING_LITERALS)
+def test_query_raw_tab_in_string_literal(string_literal: str) -> None:
+    subject = URIRef("http://example.org/s")
+    graph = Graph()
+    graph.add((subject, URIRef("http://example.org/p"), Literal("a\tb")))
+
+    result = graph.query(f"SELECT ?s WHERE {{ ?s ?p {string_literal} }}")
+
+    assert result.bindings == [{Variable("s"): subject}]
+
+
+@pytest.mark.parametrize("string_literal", RAW_TAB_STRING_LITERALS)
+def test_update_raw_tab_in_string_literal(string_literal: str) -> None:
+    graph = Graph()
+
+    graph.update(
+        f"INSERT DATA {{ <http://example.org/s> <http://example.org/p> {string_literal} }}"
+    )
+
+    assert list(graph.objects()) == [Literal("a\tb")]

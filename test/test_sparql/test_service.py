@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from collections.abc import Mapping, Sequence
 from http.client import IncompleteRead, RemoteDisconnected
+from io import StringIO
 from typing import Union
 from urllib.error import URLError
 
@@ -10,6 +11,7 @@ import pytest
 
 from rdflib import Graph, Literal, URIRef, Variable, __version__
 from rdflib.namespace import XSD
+from rdflib.query import Result
 from rdflib.term import BNode, Identifier
 from test.utils import helper
 from test.utils.http import MethodName, MockHTTPResponse
@@ -423,6 +425,82 @@ def test_service_user_agent(
     request = function_httpmock.requests[method][0]
     assert request.method == method
     assert request.headers["User-Agent"] == f"rdflib/{__version__}"
+
+
+def test_service_raw_tab_in_string_literal(
+    function_httpmock: ServedBaseHTTPServerMock,
+) -> None:
+    # The raw TAB must reach the endpoint unchanged, see
+    # https://github.com/RDFLib/rdflib/issues/3586
+    query = f"""
+    SELECT ?var WHERE {{
+        SERVICE <{function_httpmock.url}> {{
+            SELECT ?var WHERE {{ VALUES ?var {{ "a\tb" }} }}
+        }}
+    }}
+    """
+    response = {
+        "head": {"vars": ["var"]},
+        "results": {"bindings": [{"var": {"type": "literal", "value": "a\tb"}}]},
+    }
+    function_httpmock.responses[MethodName.GET].append(
+        MockHTTPResponse(
+            200,
+            "OK",
+            json.dumps(response).encode("utf-8"),
+            {"Content-Type": ["application/sparql-results+json"]},
+        )
+    )
+
+    Graph().query(query).bindings
+
+    (request,) = function_httpmock.requests[MethodName.GET]
+    assert '"a\tb"' in request.path_query["query"][0]
+
+
+@pytest.mark.parametrize(
+    "query",
+    [
+        # The tab before SERVICE stays at the start of the SERVICE text.
+        pytest.param(
+            "SELECT ?var WHERE {\n"
+            "\tSERVICE\t<REMOTE_URL>\t{\n"
+            '\t\tSELECT ?var WHERE { VALUES ?var { "x" } }\n'
+            "\t}\n"
+            "}\n",
+            id="tab-indented",
+        ),
+        # Expanding this tab after SERVICE gave several spaces, which the
+        # SERVICE pattern used to reject.
+        pytest.param(
+            "SELECT ?var WHERE { SERVICE\t<REMOTE_URL>\t{ "
+            'SELECT ?var WHERE { VALUES ?var { "x" } } } }',
+            id="tab-mid-line",
+        ),
+    ],
+)
+def test_service_tab_whitespace(
+    function_httpmock: ServedBaseHTTPServerMock, query: str
+) -> None:
+    # Parsing TSV results changes pyparsing's default whitespace characters
+    # for the whole process, so do that first.
+    Result.parse(StringIO("?var\n"), format="tsv")
+    query = query.replace("REMOTE_URL", function_httpmock.url)
+    response = {
+        "head": {"vars": ["var"]},
+        "results": {"bindings": [{"var": {"type": "literal", "value": "x"}}]},
+    }
+    function_httpmock.responses[MethodName.GET].append(
+        MockHTTPResponse(
+            200,
+            "OK",
+            json.dumps(response).encode("utf-8"),
+            {"Content-Type": ["application/sparql-results+json"]},
+        )
+    )
+
+    assert Graph().query(query).bindings == [{Variable("var"): Literal("x")}]
+    assert function_httpmock.call_count == 1
 
 
 if __name__ == "__main__":

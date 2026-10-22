@@ -253,7 +253,7 @@ class Comp(TokenConverter):
                 # Then this must be a service graph pattern and have
                 # already matched.
                 # lets assume there is one, for now, then test for two later.
-                sgp = original_text_for(self.expr)
+                sgp = original_text_for(self.expr).parse_with_tabs()
                 service_string = sgp.search_string(instring)[0][0]
                 res["service_string"] = service_string
 
