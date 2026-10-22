@@ -942,6 +942,35 @@ class ExpressionNotCoveredException(Exception):  # noqa: N818
     pass
 
 
+def _select_expressions(project: CompValue) -> dict[Identifier, CompValue]:
+    """
+    Find the Extends that come from the SELECT clause of a Project, by variable.
+    The other Extends below it are BINDs or GROUP BY expressions.
+    """
+    node = project.p
+    if node.name == "OrderBy":
+        node = node.p
+    # In an aggregate query, every Extend above the AggregateJoin comes from the
+    # SELECT clause, with HAVING and the VALUES clause in between.
+    extends = []
+    below = node
+    while isinstance(below, CompValue) and below.name in ("Extend", "Filter", "Join"):
+        if below.name == "Extend":
+            extends.append(below)
+        below = below.p1 if below.name == "Join" else below.p
+    if not (isinstance(below, CompValue) and below.name == "AggregateJoin"):
+        # Otherwise they are the Extends just below the Project. A BIND at the end
+        # of the WHERE clause looks the same and means the same, as long as the
+        # SELECT clause can list it in the order it is evaluated in.
+        extends = []
+        position = len(project.PV)
+        while node.name == "Extend" and node.var in project.PV[:position]:
+            position = project.PV.index(node.var)
+            extends.append(node)
+            node = node.p
+    return {extend.var: extend for extend in extends}
+
+
 class _AlgebraTranslator:
     """Translator of a Query's algebra to its equivalent SPARQL (string).
 
@@ -965,35 +994,25 @@ class _AlgebraTranslator:
         # The SELECTs being translated, innermost last, so that a GROUP BY or
         # HAVING fills the placeholder of its own SELECT (see Project below).
         self._select_ids: list[int] = []
+        # The Extends that a Project rendered into its SELECT clause, by id. Every
+        # other Extend is a BIND.
+        self._select_expression_ids: set[int] = set()
 
     def _clause_placeholder(self, clause: str) -> str:
         """Placeholder for a clause, such as GroupBy, of the innermost SELECT."""
         return "{%s_%d}" % (clause, self._select_ids[-1])
 
-    def _replace(
-        self,
-        old: str,
-        new: str,
-        search_from_match: str = None,
-        search_from_match_occurrence: int = None,
-        count: int = 1,
-    ):
-        def find_nth(haystack, needle, n):
-            start = haystack.lower().find(needle)
-            while start >= 0 and n > 1:
-                start = haystack.lower().find(needle, start + len(needle))
-                n -= 1
-            return start
+    def _group_part(self, node: CompValue) -> str:
+        """
+        Placeholder for a pattern that shares a group with others. A Filter keeps
+        braces of its own, so that its FILTER does not see the others' variables.
+        """
+        if node.name == "Filter":
+            return "{{" + node.name + "}}"
+        return "{" + node.name + "}"
 
-        if search_from_match and search_from_match_occurrence:
-            position = find_nth(
-                self._alg_translation, search_from_match, search_from_match_occurrence
-            )
-            filedata_pre = self._alg_translation[:position]
-            filedata_post = self._alg_translation[position:].replace(old, new, count)
-            self._alg_translation = filedata_pre + filedata_post
-        else:
-            self._alg_translation = self._alg_translation.replace(old, new, count)
+    def _replace(self, old: str, new: str, count: int = 1):
+        self._alg_translation = self._alg_translation.replace(old, new, count)
 
     def convert_node_arg(
         self, node_arg: typing.Union[Identifier, CompValue, Expr, str]
@@ -1015,7 +1034,7 @@ class _AlgebraTranslator:
         if isinstance(node, CompValue):
             # 18.2 Query Forms
             if node.name == "SelectQuery":
-                self._alg_translation = "-*-SELECT-*- " + "{" + node.p.name + "}"
+                self._alg_translation = "SELECT {" + node.p.name + "}"
 
             # 18.2 Graph Patterns
             elif node.name == "BGP":
@@ -1026,13 +1045,10 @@ class _AlgebraTranslator:
                     for triple in node.triples
                 )
                 self._replace("{BGP}", triples)
-                # The dummy -*-SELECT-*- is placed during a SelectQuery or Multiset pattern in order to be able
-                # to match extended variables in a specific Select-clause (see "Extend" below)
-                self._replace("-*-SELECT-*-", "SELECT", count=-1)
             elif node.name == "Join":
                 self._replace(
-                    "{Join}", "{" + node.p1.name + "}{" + node.p2.name + "}"
-                )  #
+                    "{Join}", self._group_part(node.p1) + self._group_part(node.p2)
+                )
             elif node.name == "LeftJoin":
                 self._replace(
                     "{LeftJoin}",
@@ -1072,26 +1088,20 @@ class _AlgebraTranslator:
                 expr = "GRAPH " + node.term.n3() + " {{" + node.p.name + "}}"
                 self._replace("{Graph}", expr)
             elif node.name == "Extend":
-                query_string = self._alg_translation.lower()
-                select_occurrences = query_string.count("-*-select-*-")
+                if id(node) in self._select_expression_ids:
+                    # The Project handler has already rendered the expression.
+                    self._replace("{Extend}", "{" + node.p.name + "}")
+                    traverse(node.p, visitPre=self.sparql_query_text)
+                    return node
                 self._replace(
-                    node.var.n3(),
-                    "("
+                    "{Extend}",
+                    self._group_part(node.p)
+                    + " BIND("
                     + self.convert_node_arg(node.expr)
                     + " as "
                     + node.var.n3()
                     + ")",
-                    search_from_match="-*-select-*-",
-                    search_from_match_occurrence=select_occurrences,
                 )
-                self._replace("{Extend}", "{" + node.p.name + "}")
-                # The expression comes before node.p in the text, so render it first.
-                # Otherwise node.p could fill the expression's placeholders, and an
-                # AggregateJoin in node.p would fill in its aggregates before the
-                # expression had put them in the text.
-                traverse(node.expr, visitPre=self.sparql_query_text)
-                traverse(node.p, visitPre=self.sparql_query_text)
-                return node
             elif node.name == "Minus":
                 expr = "{" + node.p1.name + "}MINUS{{" + node.p2.name + "}}"
                 self._replace("{Minus}", expr)
@@ -1214,10 +1224,23 @@ class _AlgebraTranslator:
                 self._replace("{OrderBy}", "{" + node.p.name + "}")
                 self._replace("{OrderConditions}", " ".join(order_conditions) + " ")
             elif node.name == "Project":
+                select_expressions = _select_expressions(node)
                 project_variables = []
+                expressions = []
                 for var in node.PV:
                     if isinstance(var, Identifier):
-                        project_variables.append(var.n3())
+                        extend = select_expressions.get(var)
+                        if extend is None:
+                            project_variables.append(var.n3())
+                        else:
+                            expressions.append(extend.expr)
+                            project_variables.append(
+                                "("
+                                + self.convert_node_arg(extend.expr)
+                                + " as "
+                                + var.n3()
+                                + ")"
+                            )
                     else:
                         raise ExpressionNotCoveredException(
                             "This expression might not be covered yet."
@@ -1236,6 +1259,15 @@ class _AlgebraTranslator:
                     + order_by_pattern
                     + self._clause_placeholder("Having"),
                 )
+                # The expressions come before node.p in the text, so render them
+                # first. Otherwise node.p could fill their placeholders, and the
+                # AggregateJoin in node.p would fill in aggregates before the
+                # expressions had put them in the text.
+                for expr in expressions:
+                    traverse(expr, visitPre=self.sparql_query_text)
+                self._select_expression_ids.update(
+                    id(extend) for extend in select_expressions.values()
+                )
                 traverse(node.p, visitPre=self.sparql_query_text)
                 # Without a GROUP BY or HAVING, this SELECT's placeholders are still there.
                 self._replace(self._clause_placeholder("GroupBy"), "")
@@ -1253,9 +1285,7 @@ class _AlgebraTranslator:
                 if node.p.name == "values":
                     self._replace("{ToMultiSet}", "{{" + node.p.name + "}}")
                 else:
-                    self._replace(
-                        "{ToMultiSet}", "{-*-SELECT-*- " + "{" + node.p.name + "}" + "}"
-                    )
+                    self._replace("{ToMultiSet}", "{SELECT {" + node.p.name + "}}")
 
             # 18.2 Property Path
 
@@ -1664,10 +1694,6 @@ class _AlgebraTranslator:
 
     def translateAlgebra(self) -> str:
         traverse(self.query_algebra.algebra, visitPre=self.sparql_query_text)
-        # The dummy -*-SELECT-*- marker is used during traversal so that Extend can
-        # locate the right SELECT clause for nested subqueries (see Extend handler)
-        # Replace all remaining occurrences with SELECT now that traversal is done
-        self._alg_translation = self._alg_translation.replace("-*-SELECT-*-", "SELECT")
         return self._alg_translation
 
 

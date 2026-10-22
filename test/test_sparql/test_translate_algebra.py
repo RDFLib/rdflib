@@ -430,6 +430,70 @@ _RESULTS_DATA = """
             """,
             id="select_expression_and_filter_with_same_function",
         ),
+        pytest.param(
+            """
+            SELECT ?s ?b WHERE { ?s :name ?o BIND(STR(?o) AS ?b) FILTER(?b != "") }
+            """,
+            id="bind_used_by_filter",
+        ),
+        pytest.param(
+            """
+            SELECT ?s WHERE { ?s :name ?o BIND(STR(?o) AS ?b) FILTER(?b != "") }
+            """,
+            id="bind_not_projected",
+        ),
+        pytest.param(
+            """
+            SELECT ?s ?c WHERE {
+              ?s :name ?o BIND(STR(?o) AS ?b) BIND(CONCAT(?b, "!") AS ?c)
+            }
+            """,
+            id="chained_binds",
+        ),
+        pytest.param(
+            """
+            SELECT ?c ?b WHERE {
+              ?s :name ?o BIND(STR(?o) AS ?b) BIND(CONCAT(?b, "!") AS ?c)
+            }
+            """,
+            id="chained_binds_projected_in_other_order",
+        ),
+        pytest.param(
+            """
+            SELECT ?s ?o WHERE { BIND(:a AS ?s) ?s :p ?o }
+            """,
+            id="leading_bind",
+        ),
+        pytest.param(
+            """
+            SELECT ?x ?one WHERE { ?x :p ?v OPTIONAL { ?x :q ?w BIND(1 AS ?one) } }
+            """,
+            id="bind_in_optional",
+        ),
+        pytest.param(
+            """
+            SELECT ?s ?o WHERE { { ?s :name ?o FILTER(!BOUND(?b)) } BIND(STR(?o) AS ?b) }
+            """,
+            id="bind_after_group_with_filter",
+        ),
+        pytest.param(
+            """
+            SELECT ?s ?v ?z WHERE { BIND(4 AS ?z) { ?s :p ?v FILTER(?v = ?z) } }
+            """,
+            id="bind_before_group_with_filter",
+        ),
+        pytest.param(
+            """
+            SELECT ?k (COUNT(?v) AS ?n) WHERE { ?x :p ?v } GROUP BY (STR(?x) AS ?k)
+            """,
+            id="group_by_expression",
+        ),
+        pytest.param(
+            """
+            SELECT ?ss (STR(?o) AS ?s) WHERE { ?ss :name ?o }
+            """,
+            id="select_expression_named_as_prefix_of_variable",
+        ),
     ],
 )
 def test_translation_returns_same_results(query: str) -> None:
