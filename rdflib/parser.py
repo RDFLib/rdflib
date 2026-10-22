@@ -609,6 +609,19 @@ class URLInputSource(InputSource):
         return self.url  # type: ignore[return-value]
 
 
+def _stream_name(stream: object) -> Optional[str]:
+    """
+    Return the path a stream was opened with, or None if it has none.
+
+    Temporary files can have an integer or None name, wrappers such as
+    GzipFile can have an empty one, and in-memory streams have no name at all.
+    """
+    name = getattr(stream, "name", None)
+    if isinstance(name, (str, bytes, os.PathLike)):
+        return os.fsdecode(name) or None
+    return None
+
+
 class FileInputSource(InputSource):
     def __init__(
         self,
@@ -616,8 +629,11 @@ class FileInputSource(InputSource):
         /,
         encoding: Optional[str] = None,
     ):
-        base = pathlib.Path.cwd().as_uri()
-        system_id = URIRef(pathlib.Path(file.name).absolute().as_uri(), base=base)  # type: ignore[union-attr]
+        system_id = None
+        name = _stream_name(file)
+        if name is not None:
+            base = pathlib.Path.cwd().as_uri()
+            system_id = URIRef(pathlib.Path(name).absolute().as_uri(), base=base)
         super(FileInputSource, self).__init__(system_id)
         self.file = file
         if isinstance(file, TextIOBase):  # Python3 unicode fp
@@ -701,10 +717,11 @@ def create_input_source(
                         input_source.setByteStream(source)  # type: ignore[arg-type]
                 else:
                     input_source.setByteStream(f)  # type: ignore[arg-type]
+                name = _stream_name(f)
                 if f is sys.stdin:
                     input_source.setSystemId("file:///dev/stdin")
-                elif hasattr(f, "name"):
-                    input_source.setSystemId(f.name)
+                elif name is not None:
+                    input_source.setSystemId(name)
             else:
                 raise Exception(
                     "Unexpected type '%s' for source '%s'" % (type(source), source)

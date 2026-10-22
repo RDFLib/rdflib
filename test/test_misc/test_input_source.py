@@ -4,13 +4,17 @@ import builtins
 import enum
 import itertools
 import logging
+import os
 import pathlib
 import re
+import sys
 from collections.abc import Collection, Generator, Iterable
 from contextlib import AbstractContextManager, ExitStack, contextmanager
 from dataclasses import dataclass
+from gzip import GzipFile
 from io import BytesIO, StringIO, TextIOWrapper
 from pathlib import Path
+from tempfile import SpooledTemporaryFile, TemporaryFile
 from typing import (
     IO,
     TYPE_CHECKING,
@@ -34,6 +38,7 @@ from rdflib.parser import (
     URLInputSource,
     create_input_source,
 )
+from rdflib.term import Literal, URIRef
 from test.utils import GraphHelper
 from test.utils.httpfileserver import (
     HTTPFileInfo,
@@ -57,6 +62,129 @@ def test_too_many_arguments():
     """create_input_source() function has a few conflicting arguments."""
     with pytest.raises(ValueError):
         create_input_source(source="a", location="b")
+
+
+@pytest.mark.parametrize("argument", ["source", "file"])
+@pytest.mark.parametrize("kind", ["temporary", "spooled", "rolled"])
+@pytest.mark.parametrize("mode", ["w+b", "w+"])
+@pytest.mark.parametrize("public_id", [None, "https://example.org/base/"])
+def test_parse_temporary_file(argument, kind, mode, public_id):
+    factory = TemporaryFile if kind == "temporary" else SpooledTemporaryFile
+    subject = "subject" if public_id is not None else "urn:subject"
+    data = f'<{subject}> <urn:predicate> "value" .'
+    with factory(mode=mode) as stream:
+        stream.write(data.encode("utf-8") if "b" in mode else data)
+        if kind == "rolled":
+            stream.rollover()
+        stream.seek(0)
+
+        graph = Graph().parse(**{argument: stream}, format="turtle", publicID=public_id)
+
+        expected_subject = URIRef(
+            "https://example.org/base/subject" if public_id else subject
+        )
+        assert set(graph) == {
+            (expected_subject, URIRef("urn:predicate"), Literal("value"))
+        }
+        assert not stream.closed
+
+
+@pytest.mark.xfail(
+    strict=True,
+    raises=TypeError,
+    reason="a text-mode SpooledTemporaryFile is not a TextIOBase, so"
+    " FileInputSource passes it to the parser as a byte stream",
+)
+def test_parse_text_spooled_file_ntriples():
+    data = '<urn:subject> <urn:predicate> "value" .\n'
+    with SpooledTemporaryFile(mode="w+") as stream:
+        stream.write(data)
+        stream.seek(0)
+
+        graph = Graph().parse(file=stream, format="nt")
+
+        assert set(graph) == {
+            (URIRef("urn:subject"), URIRef("urn:predicate"), Literal("value"))
+        }
+
+
+@pytest.mark.parametrize("argument", ["source", "file"])
+@pytest.mark.parametrize("kind", ["descriptor", "unnamed", "empty_name"])
+def test_input_source_without_system_id(argument, kind, tmp_path):
+    with ExitStack() as stack:
+        if kind == "descriptor":
+            backing = stack.enter_context((tmp_path / "input.ttl").open("w+b"))
+            stream = stack.enter_context(open(backing.fileno(), "rb", closefd=False))
+        elif kind == "empty_name":
+            stream = stack.enter_context(GzipFile(fileobj=BytesIO(), mode="rb"))
+        else:
+            stream = BytesIO(b"")
+
+        input_source = create_input_source(**{argument: stream})
+        assert input_source.getSystemId() is None
+        assert input_source.getByteStream() is stream
+        assert not input_source.auto_close
+
+
+@pytest.mark.parametrize("argument", ["source", "file"])
+def test_input_source_path_like_name(argument, tmp_path):
+    path = tmp_path / "input.ttl"
+    stream = BytesIO(b"")
+    stream.name = path
+
+    input_source = create_input_source(**{argument: stream})
+
+    expected = f"{path}" if argument == "source" else URIRef(path.absolute().as_uri())
+    assert input_source.getSystemId() == expected
+
+
+@pytest.mark.parametrize(
+    "argument",
+    [
+        pytest.param(
+            "source",
+            marks=pytest.mark.xfail(
+                sys.platform == "win32",
+                raises=ValueError,
+                strict=True,
+                reason="source= uses the raw Windows path as the base, and"
+                " relative IRIs cannot be resolved against it",
+            ),
+        ),
+        "file",
+    ],
+)
+def test_parse_file_opened_with_bytes_path(argument, tmp_path):
+    path = tmp_path / "sub" / "input.ttl"
+    path.parent.mkdir()
+    path.write_bytes(b"<s> <p> <o> .")
+    graphs = []
+    for name in (os.fsencode(path), str(path)):
+        with open(name, "rb") as stream:
+            graphs.append(Graph().parse(**{argument: stream}, format="turtle"))
+    bytes_graph, str_graph = graphs
+
+    assert set(bytes_graph.subjects()) == {URIRef(path.parent.as_uri() + "/s")}
+    assert set(bytes_graph) == set(str_graph)
+
+
+@pytest.mark.parametrize("kind", ["bytes", "path_like"])
+def test_parse_guesses_format_from_stream_name(kind, tmp_path):
+    path = tmp_path / "input.jsonld"
+    path.write_bytes(b'{"@id": "urn:s", "urn:p": {"@id": "urn:o"}}')
+    with open(path, "rb") as stream:
+        str_graph = Graph().parse(file=stream)
+
+    with ExitStack() as stack:
+        if kind == "bytes":
+            stream = stack.enter_context(open(os.fsencode(path), "rb"))
+        else:
+            stream = BytesIO(path.read_bytes())
+            stream.name = path
+        graph = Graph().parse(file=stream)
+
+    assert set(graph) == set(str_graph)
+    assert len(graph) == 1
 
 
 SourceParamType = Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]
