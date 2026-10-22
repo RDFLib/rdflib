@@ -4,11 +4,16 @@ import json
 import logging
 import time
 from collections.abc import Iterator, Mapping, Sequence
-from http.client import HTTPMessage, IncompleteRead, RemoteDisconnected
+from http.client import (
+    HTTPMessage,
+    HTTPResponse,
+    IncompleteRead,
+    RemoteDisconnected,
+)
 from io import BytesIO
 from typing import Any, Optional, Union
 from urllib.error import HTTPError, URLError
-from urllib.request import BaseHandler, OpenerDirector, Request
+from urllib.request import BaseHandler, HTTPHandler, OpenerDirector, Request
 from urllib.response import addinfourl
 
 import pytest
@@ -995,6 +1000,62 @@ def test_service_refused_by_audit_hook_raises(
     with audit_hook_dispatcher.ctx_hook(
         "urllib.Request", refuse_requests_to(function_httpmock.url)
     ):
+        with pytest.raises(PermissionError, match="Permission denied for URL"):
+            Graph().query(query).bindings
+    assert function_httpmock.call_count == 0
+
+
+def refusing_opener(url: str) -> OpenerDirector:
+    """Make a URL opener that refuses every request to url, as in
+    docs/security_considerations.md."""
+
+    class RefusingHTTPHandler(HTTPHandler):
+        def http_open(self, req: Request) -> HTTPResponse:
+            if req.get_full_url().startswith(url):
+                raise PermissionError("Permission denied for URL")
+            return super().http_open(req)
+
+    opener = OpenerDirector()
+    opener.add_handler(RefusingHTTPHandler())
+    return opener
+
+
+def test_service_silent_refused_by_opener(
+    function_httpmock: ServedBaseHTTPServerMock, caplog: pytest.LogCaptureFixture
+) -> None:
+    # A request that a custom URL opener refuses is never sent, and SILENT
+    # turns the refusal into a warning.
+    caplog.set_level(logging.WARNING, logger=evaluate.__name__)
+    query = f"""
+    SELECT ?kept ?var WHERE {{
+        BIND("kept" AS ?kept)
+        SERVICE SILENT <{function_httpmock.url}> {{
+            SELECT ?var WHERE {{ VALUES ?var {{ "x" }} }}
+        }}
+    }}
+    """
+
+    with context_urlopener(refusing_opener(function_httpmock.url)):
+        bindings = Graph().query(query).bindings
+
+    assert bindings == [{Variable("kept"): Literal("kept")}]
+    assert function_httpmock.call_count == 0
+    (record,) = [r for r in caplog.records if r.name == evaluate.__name__]
+    assert record.levelno == logging.WARNING
+
+
+def test_service_refused_by_opener_raises(
+    function_httpmock: ServedBaseHTTPServerMock,
+) -> None:
+    query = f"""
+    SELECT ?var WHERE {{
+        SERVICE <{function_httpmock.url}> {{
+            SELECT ?var WHERE {{ VALUES ?var {{ "x" }} }}
+        }}
+    }}
+    """
+
+    with context_urlopener(refusing_opener(function_httpmock.url)):
         with pytest.raises(PermissionError, match="Permission denied for URL"):
             Graph().query(query).bindings
     assert function_httpmock.call_count == 0
