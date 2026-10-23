@@ -42,3 +42,41 @@ def test_valid_result_equality_is_unchanged(result_type: str) -> None:
 
 def test_different_result_types_are_unequal() -> None:
     assert Result("ASK") != Result("SELECT")
+
+
+@pytest.mark.parametrize(
+    "query",
+    [
+        "ASK {}",
+        "SELECT * WHERE {}",
+        "CONSTRUCT {} WHERE {}",
+        "DESCRIBE <urn:example>",
+    ],
+    ids=["ASK", "SELECT", "CONSTRUCT", "DESCRIBE"],
+)
+@pytest.mark.parametrize(
+    "other", [None, 1, "result", object()], ids=["none", "int", "str", "object"]
+)
+def test_result_equality_with_unrelated_objects(query: str, other: object) -> None:
+    result = Graph().query(query)
+
+    assert not (result == other)
+    assert not (other == result)
+    assert result != other
+    assert other != result
+    assert result in [other, result]
+    assert other not in [result]
+
+
+def test_result_equality_defers_to_other_operand() -> None:
+    class Comparable:
+        def __eq__(self, other: object) -> bool:
+            return isinstance(other, Result)
+
+    result = Result("ASK")
+    other = Comparable()
+
+    assert result == other
+    assert other == result
+    assert not (result != other)
+    assert not (other != result)
