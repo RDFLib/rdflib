@@ -1238,14 +1238,16 @@ class _AlgebraTranslator:
                     if agg_func.distinct:
                         distinct = agg_func.distinct + " "
                     if agg_func_name == "GroupConcat":
+                        separator = ""
+                        if agg_func.separator is not None:
+                            separator = ";SEPARATOR=" + agg_func.separator.n3()
                         self._replace(
                             identifier,
                             "GROUP_CONCAT"
                             + "("
                             + distinct
-                            + agg_func.vars.n3()
-                            + ";SEPARATOR="
-                            + agg_func.separator.n3()
+                            + self.convert_node_arg(agg_func.vars)
+                            + separator
                             + ")",
                         )
                     else:

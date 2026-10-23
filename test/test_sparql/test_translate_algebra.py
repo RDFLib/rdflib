@@ -629,6 +629,19 @@ _RESULTS_DATA = """
             """,
             id="not_in",
         ),
+        pytest.param(
+            """
+            SELECT ?x (GROUP_CONCAT(STR(?v); separator="|") AS ?c) WHERE { ?x :p ?v }
+            GROUP BY ?x
+            """,
+            id="group_concat_of_expression",
+        ),
+        pytest.param(
+            """
+            SELECT ?x (GROUP_CONCAT(DISTINCT ?v) AS ?c) WHERE { ?x :p ?v } GROUP BY ?x
+            """,
+            id="group_concat_without_separator",
+        ),
     ],
 )
 def test_translation_returns_same_results(query: str) -> None:
