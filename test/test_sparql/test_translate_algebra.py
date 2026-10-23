@@ -691,24 +691,47 @@ def test_group_by_stays_on_its_subquery_after_service() -> None:
     assert query_from_algebra.index("GROUP BY") > query_from_algebra.index("COUNT(")
 
 
-def test_translation_leaves_service_algebra_unchanged() -> None:
-    """Translating a query with SERVICE leaves its algebra as it was."""
-    query = algebra.translateQuery(
-        parser.parseQuery(
+@pytest.mark.parametrize(
+    "where",
+    [
+        pytest.param(
             """
-            PREFIX : <http://example.org/>
-            SELECT * WHERE {
-              ?s :name ?name
+            ?s :name ?name
+            SERVICE <http://example.org/sparql> {
+              ?s :p ?o FILTER(?o > 1)
+              OPTIONAL { ?s :q ?w } MINUS { ?s :r ?x }
+              { SELECT ?s (COUNT(?y) AS ?n) WHERE { ?s :p ?y } GROUP BY ?s }
               SERVICE <http://example.org/sparql> {
-                ?s :p ?o FILTER(?o > 1)
-                OPTIONAL { ?s :q ?w } MINUS { ?s :r ?x }
-                { SELECT ?s (COUNT(?y) AS ?n) WHERE { ?s :p ?y } GROUP BY ?s }
-                SERVICE <http://example.org/sparql> {
-                  ?s :q ?w FILTER EXISTS { ?s :r ?z }
-                }
+                ?s :q ?w FILTER EXISTS { ?s :r ?z }
               }
             }
+            """,
+            id="service",
+        ),
+        pytest.param(
+            "?s :p ?o FILTER EXISTS { ?s :q ?w FILTER NOT EXISTS { ?s :r ?w } }",
+            id="filter_exists",
+        ),
+        pytest.param(
+            "?s :p ?o BIND(EXISTS { ?s :q ?w } AS ?e) ?s :r ?x", id="bind_exists"
+        ),
+        pytest.param(
             """
+            { SELECT ?s (EXISTS { ?s :q ?w OPTIONAL { ?s :r ?x } MINUS { ?s :t ?w } }
+              AS ?e) WHERE { ?s :p ?o } }
+            """,
+            id="exists_in_select_expression",
+        ),
+    ],
+)
+def test_translation_leaves_algebra_unchanged(where: str) -> None:
+    """
+    Translating a query leaves its algebra as it was, and the translation stays
+    the same over a second parse and translate cycle.
+    """
+    query = algebra.translateQuery(
+        parser.parseQuery(
+            f"PREFIX : <http://example.org/> SELECT * WHERE {{ {where} }}"
         )
     )
     algebra_text = repr(query.algebra)
@@ -717,6 +740,10 @@ def test_translation_leaves_service_algebra_unchanged() -> None:
 
     assert repr(query.algebra) == algebra_text
     assert translateAlgebra(query) == query_from_algebra
+    assert (
+        translateAlgebra(algebra.translateQuery(parser.parseQuery(query_from_algebra)))
+        == query_from_algebra
+    )
 
 
 class _OKResponse(BytesIO):

@@ -1471,26 +1471,19 @@ class _AlgebraTranslator:
                     + ", ".join(self.convert_node_arg(arg) for arg in node.arg)
                     + ")",
                 )
-            elif node.name.endswith("Builtin_EXISTS"):
-                # The node's name which we get with node.graph.name returns "Join" instead of GroupGraphPatternSub
-                # According to https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rExistsFunc
-                # ExistsFunc can only have a GroupGraphPattern as parameter. However, when we print the query algebra
-                # we get a GroupGraphPatternSub
+            elif node.name in ("Builtin_EXISTS", "Builtin_NOTEXISTS"):
+                # The algebra keeps the graph pattern of an EXISTS outside a
+                # FILTER or BIND as it was parsed. Convert a copy of it to
+                # algebra, as converting changes the parse tree.
+                graph = node.graph
+                if graph.name in ("GroupGraphPatternSub", "SubSelect"):
+                    graph = translateGroupGraphPattern(_copy_parse_tree(graph))
+                keyword = "EXISTS" if node.name == "Builtin_EXISTS" else "NOT EXISTS"
                 self._replace(
-                    "{Builtin_EXISTS}", "EXISTS " + "{{" + node.graph.name + "}}"
+                    "{" + node.name + "}", keyword + " {{" + graph.name + "}}"
                 )
-                traverse(node.graph, visitPre=self.sparql_query_text)
-                return node.graph
-            elif node.name.endswith("Builtin_NOTEXISTS"):
-                # The node's name which we get with node.graph.name returns "Join" instead of GroupGraphPatternSub
-                # According to https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rNotExistsFunc
-                # NotExistsFunc can only have a GroupGraphPattern as parameter. However, when we print the query algebra
-                # we get a GroupGraphPatternSub
-                self._replace(
-                    "{Builtin_NOTEXISTS}", "NOT EXISTS " + "{{" + node.graph.name + "}}"
-                )
-                traverse(node.graph, visitPre=self.sparql_query_text)
-                return node.graph
+                traverse(graph, visitPre=self.sparql_query_text)
+                return node
             # # # # 17.4.1.5 logical-or: Covered in "RelationalExpression"
             # # # # 17.4.1.6 logical-and: Covered in "RelationalExpression"
             # # # # 17.4.1.7 RDFterm-equal: Covered in "RelationalExpression"
