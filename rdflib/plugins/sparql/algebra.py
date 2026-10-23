@@ -1714,6 +1714,7 @@ class _AlgebraTranslator:
                 self._replace(
                     "{ServiceGraphPattern}",
                     "SERVICE "
+                    + ("SILENT " if node.silent else "")
                     + self.convert_node_arg(node.term)
                     + "{{"
                     + graph.name

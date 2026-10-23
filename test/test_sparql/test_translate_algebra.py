@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from io import BytesIO, StringIO
 from pathlib import Path
 from typing import Union, cast
+from urllib.error import URLError
 from urllib.parse import parse_qs, urlsplit
 from urllib.request import BaseHandler, OpenerDirector, Request
 
@@ -719,6 +720,28 @@ def test_service_keeps_its_clauses(body: str, clause: str) -> None:
 
     (service,) = parser.parseQuery(query_from_algebra)[1].where.part
     assert clause in service.service_string
+
+
+class UnreachableEndpointHandler(BaseHandler):
+    """Fail every SERVICE call, as an endpoint that cannot be reached would."""
+
+    def http_open(self, req: Request) -> None:
+        raise URLError("unreachable")
+
+
+def test_service_silent_translation_ignores_failed_call() -> None:
+    """A SERVICE SILENT pattern stays silent, so a failed call gives one empty row."""
+    query = _service_query("?s ?p ?o").replace("SERVICE", "SERVICE SILENT")
+    opener = OpenerDirector()
+    opener.add_handler(UnreachableEndpointHandler())
+
+    query_from_algebra = translateAlgebra(
+        algebra.translateQuery(parser.parseQuery(query))
+    )
+
+    with context_urlopener(opener):
+        assert _rows(Graph().query(query)) == Counter([frozenset()])
+        assert _rows(Graph().query(query_from_algebra)) == Counter([frozenset()])
 
 
 def test_service_binds_after_select_expressions() -> None:
