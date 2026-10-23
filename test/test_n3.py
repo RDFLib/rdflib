@@ -4,6 +4,7 @@ from urllib.error import URLError
 
 import pytest
 
+from rdflib.compare import isomorphic
 from rdflib.graph import Dataset, Graph
 from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax, join
 from rdflib.term import Literal, URIRef
@@ -520,3 +521,47 @@ def test_parse_base_and_prefix_against_base_query(format: str) -> None:
     assert set(dataset.triples((None, None, None))) == {
         (URIRef("http://a/s"), URIRef("http://a/vocab/p"), URIRef("http://a/vocab/o"))
     }
+
+
+@pytest.mark.parametrize(
+    "base, reference, expected",
+    [
+        ("http://a/b/c/d;p?q", "g/../h", "http://a/b/c/h"),
+        ("http://a/b/c/d;p?q", "/./g", "http://a/g"),
+        ("http://a/b/c/d;p?q", "/../g", "http://a/g"),
+        ("http://a/b/c/d;p?q", "./g/.", "http://a/b/c/g/"),
+        ("http://a/b/c/d;p?q", "g/./h", "http://a/b/c/g/h"),
+        ("http://a/b/c/d;p?q", "g;x=1/./y", "http://a/b/c/g;x=1/y"),
+        ("http://a/b/c/d;p?q", "g;x=1/../y", "http://a/b/c/y"),
+        ("http://a/b/c/d;p?q", "g/../../../../h", "http://a/h"),
+        ("http://a/b/c/d;p?q", "g/..", "http://a/b/c/"),
+        ("http://a/b?q/x", "g/../h?y/../z#s/./t", "http://a/h?y/../z#s/./t"),
+        ("http://a/b", "g/..?", "http://a/?"),
+        ("http://a/b", "g/..#", "http://a/#"),
+        ("http://a/b", "//other/a/../g?y/./z", "http://other/g?y/./z"),
+        ("http://a/b", "//other?y/../z", "http://other?y/../z"),
+        ("local:/a/b", "g/../h", "local:/a/h"),
+        ("http://a/b/../c/d", "g", "http://a/c/g"),
+        ("http://a/b", "g//h/../i", "http://a/g//i"),
+        ("http://a/b", "g//../h", "http://a/g/h"),
+        ("http://a/b", "g/%2E/%2e%2e/h", "http://a/g/%2E/%2e%2e/h"),
+        ("http://a/b", "caf\u00e9/../h", "http://a/h"),
+        ("http://a/b", "g?y/../z", "http://a/g?y/../z"),
+        ("http://a/b", "g#s/../t", "http://a/g#s/../t"),
+    ],
+)
+def test_join_dot_segments(base: str, reference: str, expected: str) -> None:
+    """Remove dot segments from the resolved path, not its query or fragment."""
+    assert join(base, reference) == expected
+
+
+@pytest.mark.parametrize("format", ["turtle", "trig", "n3"])
+@pytest.mark.parametrize("case", ["01", "02", "07", "08"])
+def test_parse_dot_segments_w3c(format: str, case: str) -> None:
+    """Run proposed IRI-resolution cases skipped by the manifest loader."""
+    path = os.path.join(
+        TEST_DIR, "data", "suites", "w3c", "n3", "TurtleTests", f"IRI-resolution-{case}"
+    )
+    actual = Graph().parse(path + ".ttl", format=format)
+    expected = Graph().parse(path + ".nt", format="nt")
+    assert isomorphic(actual, expected)
