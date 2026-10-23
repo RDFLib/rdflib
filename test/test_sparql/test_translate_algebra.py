@@ -527,6 +527,18 @@ _RESULTS_DATA = """
             """,
             id="select_expression_named_as_prefix_of_variable",
         ),
+        pytest.param(
+            """
+            SELECT ?x ?v ?w WHERE { ?x :p ?v OPTIONAL { ?x :q ?w FILTER(?w > 20) } }
+            """,
+            id="optional_with_filter",
+        ),
+        pytest.param(
+            """
+            SELECT ?x ?v ?w WHERE { ?x :p ?v OPTIONAL { ?x :q ?w FILTER(?v > 3) } }
+            """,
+            id="optional_with_filter_on_outer_variable",
+        ),
     ],
 )
 def test_translation_returns_same_results(query: str) -> None:
@@ -649,6 +661,9 @@ _SERVICE_BODIES = [
     pytest.param(
         "?s :p ?o OPTIONAL { ?s :q ?w } MINUS { ?s :r :c }",
         id="optional_and_minus",
+    ),
+    pytest.param(
+        "?s :p ?o OPTIONAL { ?s :q ?w FILTER(?o > 1) }", id="optional_with_filter"
     ),
     pytest.param("?s :p ?o FILTER(?o > 1)", id="filter"),
     pytest.param("?s :p ?o FILTER EXISTS { ?s :q ?w }", id="filter_exists"),

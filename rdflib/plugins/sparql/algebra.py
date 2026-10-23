@@ -1071,9 +1071,21 @@ class _AlgebraTranslator:
                     "{Join}", self._group_part(node.p1) + self._group_part(node.p2)
                 )
             elif node.name == "LeftJoin":
+                # The FILTER of an OPTIONAL group becomes the LeftJoin's expr.
+                condition = ""
+                if not (
+                    isinstance(node.expr, CompValue) and node.expr.name == "TrueFilter"
+                ):
+                    condition = " FILTER(" + self.convert_node_arg(node.expr) + ")"
                 self._replace(
                     "{LeftJoin}",
-                    "{" + node.p1.name + "}OPTIONAL{{" + node.p2.name + "}}",
+                    "{"
+                    + node.p1.name
+                    + "}OPTIONAL{{"
+                    + node.p2.name
+                    + "}"
+                    + condition
+                    + "}",
                 )
             elif node.name == "Filter":
                 if isinstance(node.expr, CompValue):
