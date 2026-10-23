@@ -29,12 +29,13 @@ from typing import (
 from urllib.parse import urlencode, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
-from pyparsing import ParseException
+from pyparsing import ParseException, ParseResults
 
 from rdflib import __version__
 from rdflib.graph import Graph
 from rdflib.plugins.sparql import CUSTOM_EVALS, parser
 from rdflib.plugins.sparql.aggregates import Aggregator
+from rdflib.plugins.sparql.algebra import traverse
 from rdflib.plugins.sparql.evalutils import (
     _ebv,
     _eval,
@@ -48,6 +49,7 @@ from rdflib.plugins.sparql.sparql import (
     AlreadyBound,
     FrozenBindings,
     FrozenDict,
+    Prologue,
     Query,
     QueryContext,
     SPARQLError,
@@ -447,26 +449,20 @@ def _callService(
 """
     Build a query string to be used by the service call.
     It is supposed to pass in the existing bound solutions.
-    Re-adds prefixes if added and sets the base.
+    Adds the prefixes and base it uses.
     Wraps it in select if needed.
 """
 
 
 def _buildQueryStringForServiceCall(ctx: QueryContext, service_query: str) -> str:
     try:
-        parser.parseQuery(service_query)
+        parse = parser.parseQuery(service_query)
     except ParseException:
         # This could be because we don't have a select around the service call.
         service_query = "SELECT REDUCED * WHERE {" + service_query + "}"
-        # type error: Item "None" of "Optional[Prologue]" has no attribute "namespace_manager"
-        for p in ctx.prologue.namespace_manager.store.namespaces():  # type: ignore[union-attr]
-            service_query = "PREFIX " + p[0] + ":" + p[1].n3() + " " + service_query
-        # re add the base if one was defined
-        # type error: Item "None" of "Optional[Prologue]" has no attribute "base"
-        base = ctx.prologue.base  # type: ignore[union-attr]
-        if base is not None and len(base) > 0:
-            # base can be a URIRef, which would make the whole query one
-            service_query = "BASE <" + str(base) + "> " + service_query
+        parse = parser.parseQuery(service_query)
+    if ctx.prologue is not None:
+        service_query = _serviceQueryPrologue(ctx.prologue, parse) + service_query
     sol = [v for v in ctx.solution() if isinstance(v, Variable)]
     if len(sol) > 0:
         variables = " ".join([v.n3() for v in sol])
@@ -475,6 +471,29 @@ def _buildQueryStringForServiceCall(ctx: QueryContext, service_query: str) -> st
             service_query + "VALUES (" + variables + ") {(" + variables_bound + ")}"
         )
     return service_query
+
+
+def _serviceQueryPrologue(prologue: Prologue, parse: ParseResults) -> str:
+    """Declare the base and prefixes that a query for an endpoint uses, so that
+    its IRIs resolve there as they do here. Declaring only those keeps short
+    queries short enough for GET."""
+    prefixes: set[str] = set()
+    relative = False
+
+    def visit(node: Any) -> None:
+        nonlocal relative
+        if isinstance(node, CompValue) and node.name == "pname":
+            prefixes.add(node.prefix or "")
+        elif isinstance(node, URIRef) and prologue.absolutize(node) != node:
+            relative = True
+
+    traverse(parse, visitPost=visit)
+    declarations = [f"BASE <{prologue.base}> "] if relative else []
+    for prefix in sorted(prefixes):
+        namespace = prologue.namespace_manager.store.namespace(prefix)
+        if namespace is not None:
+            declarations.append(f"PREFIX {prefix}: {namespace.n3()} ")
+    return "".join(declarations)
 
 
 def _yieldBindingsFromServiceCallResult(

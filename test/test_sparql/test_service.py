@@ -611,28 +611,71 @@ def test_service_endpoint_parameters(
         assert parse_qs(request.body.decode()) == service_params
 
 
-def test_service_with_base(
-    function_httpmock: ServedBaseHTTPServerMock, caplog: pytest.LogCaptureFixture
+FOAF_PREFIX = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>"
+
+
+@pytest.mark.parametrize(
+    ("prologue", "pattern", "service_query"),
+    [
+        pytest.param(
+            FOAF_PREFIX,
+            " SELECT ?var WHERE { ?s foaf:name ?var } ",
+            f"{FOAF_PREFIX}  SELECT ?var WHERE {{ ?s foaf:name ?var }} ",
+            id="sub-select-prefix",
+        ),
+        pytest.param(
+            "BASE <http://example.org/>",
+            " SELECT ?var WHERE { <s> <p> ?var } ",
+            "BASE <http://example.org/>  SELECT ?var WHERE { <s> <p> ?var } ",
+            id="sub-select-base",
+        ),
+        pytest.param(
+            # rdflib binds the owl and xsd prefixes without a declaration.
+            "",
+            ' SELECT ?var WHERE { ?s owl:sameAs ?var FILTER(?var != "y"^^xsd:string) } ',
+            "PREFIX owl: <http://www.w3.org/2002/07/owl#>"
+            " PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> "
+            ' SELECT ?var WHERE { ?s owl:sameAs ?var FILTER(?var != "y"^^xsd:string) } ',
+            id="sub-select-bound-prefixes",
+        ),
+        pytest.param(
+            f"BASE <http://example.org/> {FOAF_PREFIX}",
+            " <s> foaf:name ?var ",
+            f"BASE <http://example.org/> {FOAF_PREFIX}"
+            " SELECT REDUCED * WHERE { <s> foaf:name ?var }",
+            id="bare-pattern",
+        ),
+        pytest.param(
+            f"BASE <http://example.org/> {FOAF_PREFIX}",
+            ' SELECT ?var WHERE { VALUES ?var { "x" } } ',
+            ' SELECT ?var WHERE { VALUES ?var { "x" } } ',
+            id="nothing-used",
+        ),
+    ],
+)
+def test_service_query_declares_prefixes_and_base(
+    function_httpmock: ServedBaseHTTPServerMock,
+    caplog: pytest.LogCaptureFixture,
+    prologue: str,
+    pattern: str,
+    service_query: str,
 ) -> None:
-    # The BASE added to the query for a bare pattern must not make the query an
-    # IRI, which logged warnings holding the whole query. The PREFIX lines also
-    # added make the query long enough to be POSTed.
+    # The endpoint gets the prefixes and base the pattern uses, so that its
+    # IRIs resolve there as they do here, see
+    # https://www.w3.org/TR/sparql11-federated-query/#defn_evalService
+    # Declaring only those keeps short queries short enough for GET. The BASE
+    # must not make the query an IRI, which logged warnings holding the query.
     caplog.set_level(logging.WARNING)
-    query = f"""
-    BASE <http://example.org/>
-    SELECT ?var WHERE {{
-        SERVICE <{function_httpmock.url}/sparql> {{ VALUES ?var {{ "x" }} }}
-    }}
+    query = f"""{prologue}
+    SELECT ?var WHERE {{ SERVICE <{function_httpmock.url}/sparql> {{{pattern}}} }}
     """
-    function_httpmock.responses[MethodName.POST].append(
+    function_httpmock.responses[MethodName.GET].append(
         make_select_response({"var": "x"})
     )
 
     assert Graph().query(query).bindings == [{Variable("var"): Literal("x")}]
-    (request,) = function_httpmock.requests[MethodName.POST]
-    assert request.body is not None
-    (service_query,) = parse_qs(request.body.decode())["query"]
-    assert service_query.startswith("BASE <http://example.org/> ")
+    (request,) = function_httpmock.requests[MethodName.GET]
+    assert request.path_query["query"] == [service_query]
     assert [record.getMessage() for record in caplog.records] == []
 
 
