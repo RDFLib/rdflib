@@ -972,6 +972,19 @@ def test_service_with_algebra_body_raises() -> None:
         translateAlgebra(query)
 
 
+def test_filter_without_pattern_raises() -> None:
+    """A Filter with no graph pattern under it raises, as no query gives one."""
+    query = algebra.translateQuery(
+        parser.parseQuery("SELECT * WHERE { ?s ?p ?o FILTER(?o > 1) }")
+    )
+    filter_ = query.algebra.p.p
+    assert filter_.name == "Filter"
+    filter_["p"] = None
+
+    with pytest.raises(algebra.ExpressionNotCoveredException):
+        translateAlgebra(query)
+
+
 def test_service_binds_after_select_expressions() -> None:
     """
     BINDs in SERVICE patterns stay after SELECT expressions in earlier ones. A

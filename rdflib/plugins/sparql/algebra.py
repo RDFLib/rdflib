@@ -1158,24 +1158,25 @@ class _AlgebraTranslator:
                 )
             elif node.name == "Filter":
                 expr = self.convert_node_arg(node.expr)
-                if node.p:
-                    # Filter with p=AggregateJoin = Having. Each projected group variable
-                    # puts an Extend between them.
-                    below = node.p
-                    while below.name == "Extend":
-                        below = below.p
-                    if below.name == "AggregateJoin":
-                        self._replace("{Filter}", "{" + node.p.name + "}")
-                        self._replace(
-                            self._clause_placeholder("Having"),
-                            "HAVING(" + expr + ")",
-                        )
-                    else:
-                        self._replace(
-                            "{Filter}", "FILTER(" + expr + ") {" + node.p.name + "}"
-                        )
+                if not node.p:
+                    raise ExpressionNotCoveredException(
+                        "A Filter with no graph pattern might not be covered yet."
+                    )
+                # Filter with p=AggregateJoin = Having. Each projected group variable
+                # puts an Extend between them.
+                below = node.p
+                while below.name == "Extend":
+                    below = below.p
+                if below.name == "AggregateJoin":
+                    self._replace("{Filter}", "{" + node.p.name + "}")
+                    self._replace(
+                        self._clause_placeholder("Having"),
+                        "HAVING(" + expr + ")",
+                    )
                 else:
-                    self._replace("{Filter}", "FILTER(" + expr + ")")
+                    self._replace(
+                        "{Filter}", "FILTER(" + expr + ") {" + node.p.name + "}"
+                    )
 
             elif node.name == "Union":
                 self._replace(
