@@ -971,6 +971,27 @@ def _select_expressions(project: CompValue) -> list[CompValue]:
     return extends
 
 
+def _is_values_clause_of_group(join: CompValue) -> bool:
+    """
+    Whether a Join is the VALUES clause of a grouped SELECT, which joins its
+    values to the groups.
+    """
+    values = join.p2
+    if not (
+        isinstance(values, CompValue)
+        and values.name == "ToMultiSet"
+        and isinstance(values.p, CompValue)
+        and values.p.name == "values"
+    ):
+        return False
+    # Between the groups and the VALUES clause are HAVING and the Extends that
+    # name the aggregates.
+    below = join.p1
+    while below.name in ("Extend", "Filter"):
+        below = below.p
+    return below.name == "AggregateJoin"
+
+
 def _copy_parse_tree(tree: Any) -> Any:
     """
     Copy the CompValues and lists of a parse tree, so that translating the copy
@@ -1032,6 +1053,43 @@ class _AlgebraTranslator:
             return "{{" + node.name + "}}"
         return "{" + node.name + "}"
 
+    def _values_placeholder(self, select: CompValue) -> str:
+        """
+        Placeholder for the VALUES clause of a SELECT, given the node at its top.
+        It follows all the other clauses, LIMIT and OFFSET among them.
+        """
+        while select.name != "Project":
+            select = select.p
+        return "{Values_%d}" % id(select)
+
+    def _values_clause(self, values: CompValue) -> str:
+        columns = []
+        for key in values.res[0].keys():
+            if isinstance(key, Identifier):
+                columns.append(key.n3())
+            else:
+                raise ExpressionNotCoveredException(
+                    "The expression {0} might not be covered yet.".format(key)
+                )
+
+        rows = ""
+        for elem in values.res:
+            row = []
+            for term in elem.values():
+                if isinstance(term, Identifier):
+                    row.append(
+                        term.n3()
+                    )  # n3() is not part of Identifier class but every subclass has it
+                elif isinstance(term, str):
+                    row.append(term)
+                else:
+                    raise ExpressionNotCoveredException(
+                        "The expression {0} might not be covered yet.".format(term)
+                    )
+            rows += "(" + " ".join(row) + ")"
+
+        return "VALUES (" + " ".join(columns) + "){" + rows + "}"
+
     def _replace(self, old: str, new: str, count: int = 1):
         self._alg_translation = self._alg_translation.replace(old, new, count)
 
@@ -1055,7 +1113,9 @@ class _AlgebraTranslator:
         if isinstance(node, CompValue):
             # 18.2 Query Forms
             if node.name == "SelectQuery":
-                self._alg_translation = "SELECT {" + node.p.name + "}"
+                self._alg_translation = (
+                    "SELECT {" + node.p.name + "}" + self._values_placeholder(node.p)
+                )
 
             # 18.2 Graph Patterns
             elif node.name == "BGP":
@@ -1067,6 +1127,16 @@ class _AlgebraTranslator:
                 )
                 self._replace("{BGP}", triples)
             elif node.name == "Join":
+                if _is_values_clause_of_group(node):
+                    # It is joined after GROUP BY and HAVING, so it cannot go
+                    # into the WHERE clause.
+                    self._replace("{Join}", "{" + node.p1.name + "}")
+                    self._replace(
+                        self._clause_placeholder("Values"),
+                        " " + self._values_clause(node.p2.p),
+                    )
+                    traverse(node.p1, visitPre=self.sparql_query_text)
+                    return node
                 self._replace(
                     "{Join}", self._group_part(node.p1) + self._group_part(node.p2)
                 )
@@ -1308,9 +1378,11 @@ class _AlgebraTranslator:
                     (id(extend), extend) for extend in select_expressions
                 )
                 traverse(node.p, visitPre=self.sparql_query_text)
-                # Without a GROUP BY or HAVING, this SELECT's placeholders are still there.
+                # Without a GROUP BY, HAVING or VALUES, this SELECT's placeholders
+                # are still there.
                 self._replace(self._clause_placeholder("GroupBy"), "")
                 self._replace(self._clause_placeholder("Having"), "")
+                self._replace(self._clause_placeholder("Values"), "")
                 self._select_ids.pop()
                 return node
             elif node.name == "Distinct":
@@ -1324,7 +1396,14 @@ class _AlgebraTranslator:
                 if node.p.name == "values":
                     self._replace("{ToMultiSet}", "{{" + node.p.name + "}}")
                 else:
-                    self._replace("{ToMultiSet}", "{SELECT {" + node.p.name + "}}")
+                    self._replace(
+                        "{ToMultiSet}",
+                        "{SELECT {"
+                        + node.p.name
+                        + "}"
+                        + self._values_placeholder(node.p)
+                        + "}",
+                    )
 
             # 18.2 Property Path
 
@@ -1688,35 +1767,7 @@ class _AlgebraTranslator:
 
             # Other
             elif node.name == "values":
-                columns = []
-                for key in node.res[0].keys():
-                    if isinstance(key, Identifier):
-                        columns.append(key.n3())
-                    else:
-                        raise ExpressionNotCoveredException(
-                            "The expression {0} might not be covered yet.".format(key)
-                        )
-                values = "VALUES (" + " ".join(columns) + ")"
-
-                rows = ""
-                for elem in node.res:
-                    row = []
-                    for term in elem.values():
-                        if isinstance(term, Identifier):
-                            row.append(
-                                term.n3()
-                            )  # n3() is not part of Identifier class but every subclass has it
-                        elif isinstance(term, str):
-                            row.append(term)
-                        else:
-                            raise ExpressionNotCoveredException(
-                                "The expression {0} might not be covered yet.".format(
-                                    term
-                                )
-                            )
-                    rows += "(" + " ".join(row) + ")"
-
-                self._replace("values", values + "{" + rows + "}")
+                self._replace("values", self._values_clause(node))
             elif node.name == "ServiceGraphPattern":
                 # The algebra keeps the body of a SERVICE pattern as it was
                 # parsed. Convert a copy of it to algebra, as converting changes

@@ -555,6 +555,35 @@ _RESULTS_DATA = """
             """,
             id="filtered_group_before_minus",
         ),
+        pytest.param(
+            """
+            SELECT ?x (COUNT(?y) AS ?n) WHERE { ?x :p ?y } GROUP BY ?x VALUES ?z { 1 2 }
+            """,
+            id="values_clause_after_group_by",
+        ),
+        pytest.param(
+            """
+            SELECT ?x (COUNT(?y) AS ?n) WHERE { ?x :p ?y }
+            GROUP BY ?x HAVING (COUNT(?y) > 1) VALUES ?z { 1 2 }
+            """,
+            id="values_clause_after_having",
+        ),
+        pytest.param(
+            """
+            SELECT ?x (COUNT(?y) AS ?n) WHERE { ?x :p ?y }
+            GROUP BY ?x ORDER BY ?x LIMIT 2 VALUES ?z { 1 2 }
+            """,
+            id="values_clause_after_limit",
+        ),
+        pytest.param(
+            """
+            SELECT ?x ?n WHERE {
+              { SELECT ?x (COUNT(?y) AS ?n) WHERE { ?x :p ?y }
+                GROUP BY ?x VALUES ?z { 1 2 } }
+            }
+            """,
+            id="values_clause_of_grouped_subquery",
+        ),
     ],
 )
 def test_translation_returns_same_results(query: str) -> None:
