@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import builtins
+import codecs
 import enum
 import itertools
 import logging
@@ -38,6 +39,8 @@ from rdflib.parser import (
     URLInputSource,
     create_input_source,
 )
+from rdflib.plugins.parsers import hext
+from rdflib.plugins.shared.jsonld import util as jsonld_util
 from rdflib.term import Literal, URIRef
 from test.utils import GraphHelper
 from test.utils.httpfileserver import (
@@ -89,23 +92,83 @@ def test_parse_temporary_file(argument, kind, mode, public_id):
         assert not stream.closed
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=TypeError,
-    reason="a text-mode SpooledTemporaryFile is not a TextIOBase, so"
-    " FileInputSource passes it to the parser as a byte stream",
+@pytest.mark.parametrize("rolled", [False, True])
+@pytest.mark.parametrize("mode", ["w+b", "w+"])
+@pytest.mark.parametrize(
+    ("format", "data"),
+    [
+        ("nt", '<urn:subject> <urn:predicate> "café"@fr .\n'),
+        ("nquads", '<urn:subject> <urn:predicate> "café"@fr .\n'),
+        (
+            "json-ld",
+            '{"@id": "urn:subject", "urn:predicate": '
+            '{"@value": "café", "@language": "fr"}}',
+        ),
+        (
+            "hext",
+            '["urn:subject", "urn:predicate", "café", '
+            '"http://www.w3.org/1999/02/22-rdf-syntax-ns#langString", "fr", null]\n',
+        ),
+    ],
 )
-def test_parse_text_spooled_file_ntriples():
-    data = '<urn:subject> <urn:predicate> "value" .\n'
-    with SpooledTemporaryFile(mode="w+") as stream:
-        stream.write(data)
+def test_parse_spooled_file(format, data, mode, rolled, request):
+    with SpooledTemporaryFile(
+        mode=mode, encoding="utf-8" if "b" not in mode else None
+    ) as stream:
+        stream.write(data.encode("utf-8") if "b" in mode else data)
         stream.seek(0)
+        if rolled:
+            stream.rollover()
 
-        graph = Graph().parse(file=stream, format="nt")
+        if (
+            mode == "w+b"
+            and not hasattr(stream, "readable")
+            and (
+                (format == "json-ld" and not jsonld_util._HAS_ORJSON)
+                or (format == "hext" and not hext._HAS_ORJSON)
+            )
+        ):
+            request.applymarker(
+                pytest.mark.xfail(
+                    strict=True,
+                    raises=AttributeError,
+                    reason="Before Python 3.11, binary SpooledTemporaryFile lacks"
+                    " readable(), required by these parsers' TextIOWrapper path",
+                )
+            )
+
+        graph = Graph().parse(file=stream, format=format)
 
         assert set(graph) == {
-            (URIRef("urn:subject"), URIRef("urn:predicate"), Literal("value"))
+            (URIRef("urn:subject"), URIRef("urn:predicate"), Literal("café", lang="fr"))
         }
+
+
+@pytest.mark.parametrize("encoding", ["utf-8", "latin-1"])
+@pytest.mark.parametrize("format", ["turtle", "nt"])
+def test_parse_codec_reader(encoding, format):
+    data = '<urn:subject> <urn:predicate> "café"@fr .\n'
+    with codecs.getreader(encoding)(BytesIO(data.encode(encoding))) as stream:
+        graph = Graph().parse(file=stream, format=format)
+        assert set(graph) == {
+            (URIRef("urn:subject"), URIRef("urn:predicate"), Literal("café", lang="fr"))
+        }
+
+
+def test_parse_text_stream_without_encoding():
+    class TextStream:
+        def __init__(self, text):
+            self.stream = StringIO(text)
+
+        def __getattr__(self, name):
+            return getattr(self.stream, name)
+
+    data = '<urn:subject> <urn:predicate> "café"@fr .\n'
+    stream = TextStream(data)
+    graph = Graph().parse(file=stream, format="turtle")
+    assert set(graph) == {
+        (URIRef("urn:subject"), URIRef("urn:predicate"), Literal("café", lang="fr"))
+    }
 
 
 @pytest.mark.parametrize("argument", ["source", "file"])
@@ -811,6 +874,29 @@ def test_create_input_source(
             )
 
     logging.debug("input_source = %s, catcher = %s", input_source, catcher)
+
+
+@pytest.mark.parametrize("rolled", [False, True])
+@pytest.mark.parametrize("encoding", ["utf-8", "latin-1"])
+def test_spooled_file_byte_stream(rolled, encoding):
+    text = "café\n"
+    with SpooledTemporaryFile(mode="w+", encoding=encoding) as stream:
+        stream.write(text)
+        stream.seek(0)
+        if rolled:
+            stream.rollover()
+        source = FileInputSource(stream)
+        assert source.getCharacterStream() is stream
+        assert source.getEncoding() == encoding
+        wrapper = source.getByteStream()
+        assert wrapper is not None
+        assert wrapper.read(0) == b""
+        assert stream.tell() == 0
+        assert wrapper.read(4) == text.encode(encoding)[:4]
+        assert wrapper.read() == text.encode(encoding)[4:]
+        assert wrapper.read() == b""
+        wrapper.seek(0)
+        assert list(wrapper) == [text.encode(encoding)]
 
 
 def test_bytesio_wrapper():

@@ -73,7 +73,7 @@ def source_to_json(
         original_string: Optional[str] = None
         json_dict: Union[dict, list[dict]]
         if isinstance(b_stream, BytesIOWrapper):
-            wrapped_inner = cast(Union[str, StringIO, TextIOBase], b_stream.wrapped)
+            wrapped_inner = cast(Union[str, TextIO, TextIOBase], b_stream.wrapped)
             if isinstance(wrapped_inner, str):
                 original_string = wrapped_inner
             elif isinstance(wrapped_inner, StringIO):
