@@ -14,7 +14,7 @@ from io import BytesIO
 from typing import Any, Optional, Union
 from urllib.error import HTTPError, URLError
 from urllib.parse import parse_qs
-from urllib.request import BaseHandler, HTTPHandler, OpenerDirector, Request
+from urllib.request import BaseHandler, HTTPHandler, OpenerDirector, Request, urlopen
 from urllib.response import addinfourl
 
 import pytest
@@ -1195,6 +1195,47 @@ def test_service_endpoint_failure_raises(
     with pytest.raises(error, match=match):
         Graph().query(query).bindings
     assert function_httpmock.call_count == 1
+
+
+@pytest.mark.parametrize(
+    "failure",
+    [None, *(failure for failure in ENDPOINT_FAILURES if failure != "http-error")],
+)
+def test_service_closes_response(
+    function_httpmock: ServedBaseHTTPServerMock,
+    monkeypatch: pytest.MonkeyPatch,
+    failure: Optional[str],
+) -> None:
+    # The response is closed whether or not the call succeeds. urllib raises
+    # an HTTP error status itself, so rdflib never gets that response.
+    opened = []
+
+    def recording_urlopen(request: Request) -> HTTPResponse:
+        response = urlopen(request)
+        opened.append(response)
+        return response
+
+    monkeypatch.setattr(evaluate, "urlopen", recording_urlopen)
+    query = f"""
+    SELECT ?var WHERE {{
+        SERVICE <{function_httpmock.url}> {{
+            SELECT ?var WHERE {{ VALUES ?var {{ "x" }} }}
+        }}
+    }}
+    """
+    if failure is None:
+        function_httpmock.responses[MethodName.GET].append(
+            make_select_response({"var": "x"})
+        )
+        assert Graph().query(query).bindings == [{Variable("var"): Literal("x")}]
+    else:
+        response, error, match = ENDPOINT_FAILURES[failure]
+        function_httpmock.responses[MethodName.GET].append(response)
+        with pytest.raises(error, match=match):
+            Graph().query(query).bindings
+
+    (response,) = opened
+    assert response.closed
 
 
 @pytest.mark.parametrize("silent", ["", "SILENT"])

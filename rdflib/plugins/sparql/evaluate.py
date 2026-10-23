@@ -419,28 +419,26 @@ def _callService(
         # drop it rather than put the query in it.
         parts = urlsplit(service_url)
         query = "&".join(filter(None, [parts.query, urlencode(query_settings)]))
-        response = urlopen(
-            Request(
-                urlunsplit(parts._replace(query=query, fragment="")), headers=headers
-            )
+        request = Request(
+            urlunsplit(parts._replace(query=query, fragment="")), headers=headers
         )
     else:
-        response = urlopen(
-            Request(
-                service_url,
-                data=urlencode(query_settings).encode(),
-                headers=headers,
+        request = Request(
+            service_url,
+            data=urlencode(query_settings).encode(),
+            headers=headers,
+        )
+    with urlopen(request) as response:
+        if response.status != 200:
+            raise Exception(
+                f"Service: {_endpointWithoutSecrets(service_url)}"
+                f" responded with code: {response.status}"
             )
-        )
-    if response.status != 200:
-        raise Exception(
-            f"Service: {_endpointWithoutSecrets(service_url)}"
-            f" responded with code: {response.status}"
-        )
+        body = response.read()
     if _HAS_ORJSON:
-        json_dict = orjson.loads(response.read())
+        json_dict = orjson.loads(body)
     else:
-        json_dict = json.loads(response.read())
+        json_dict = json.loads(body)
     variables = json_dict["head"]["vars"]
     for r in json_dict["results"]["bindings"]:
         yield from _yieldBindingsFromServiceCallResult(ctx, r, variables)
