@@ -330,6 +330,228 @@ def test_group_by_stays_on_its_subquery(data_path: Path) -> None:
     assert sorted(graph.query(query_from_algebra)) == sorted(graph.query(query_text))
 
 
+_RESULTS_DATA = """
+@prefix : <http://example.org/> .
+:a :p 1 , 2 , 3 ; :q 10 ; :name "x" , "" .
+:b :p 4 ; :q 30 .
+:c :p 5 , 6 .
+"""
+
+
+@pytest.mark.parametrize(
+    "query",
+    [
+        pytest.param(
+            """
+            SELECT ?k ?n WHERE {
+              { SELECT ?k WHERE { VALUES ?k { 1 1 2 } } }
+              {
+                SELECT (COUNT(?v) AS ?n)
+                WHERE { VALUES (?x ?v) { (:a 1) (:a 2) (:b 3) } }
+                GROUP BY ?x
+              }
+            }
+            """,
+            id="group_by_after_values_only_subquery",
+        ),
+        pytest.param(
+            """
+            SELECT ?k ?n WHERE {
+              { SELECT ?k WHERE { VALUES ?k { 1 1 2 } } }
+              {
+                SELECT (COUNT(?v) AS ?n)
+                WHERE { VALUES (?x ?v) { (:a 1) (:a 2) (:b 3) } }
+                GROUP BY ?x HAVING (COUNT(?v) > 1)
+              }
+            }
+            """,
+            id="having_after_values_only_subquery",
+        ),
+        pytest.param(
+            """
+            SELECT ?x (COUNT(?y) AS ?n) WHERE { ?x :p ?y }
+            GROUP BY ?x HAVING (COUNT(?y) > 1)
+            """,
+            id="having_with_group_variable_projected",
+        ),
+        pytest.param(
+            """
+            SELECT ?x (SUM(?y) AS ?n) WHERE { ?x :p ?y }
+            GROUP BY ?x HAVING (SUM(?y) > 5)
+            """,
+            id="having_sum_with_group_variable_projected",
+        ),
+        pytest.param(
+            """
+            SELECT ?x (COUNT(?y) AS ?n) WHERE { ?x :p ?y }
+            GROUP BY ?x HAVING (MAX(?y) > 4)
+            """,
+            id="having_on_aggregate_not_projected",
+        ),
+        pytest.param(
+            """
+            SELECT ?x (COUNT(?y) AS ?n) WHERE { ?x :p ?y }
+            GROUP BY ?x HAVING (?x = :a)
+            """,
+            id="having_on_group_variable",
+        ),
+        pytest.param(
+            """
+            SELECT ?x WHERE { ?x :p ?y } GROUP BY ?x HAVING (COUNT(?y) > 1)
+            """,
+            id="having_with_only_group_variable_projected",
+        ),
+        pytest.param(
+            """
+            SELECT ?x ?x (COUNT(?y) AS ?n) WHERE { ?x :p ?y } GROUP BY ?x
+            """,
+            id="group_variable_projected_twice",
+        ),
+        pytest.param(
+            """
+            SELECT ?x ?x (COUNT(?y) AS ?n) WHERE { ?x :p ?y }
+            GROUP BY ?x HAVING (COUNT(?y) > 1)
+            """,
+            id="group_variable_projected_twice_with_having",
+        ),
+        pytest.param(
+            """
+            SELECT ?x (COUNT(?y) AS ?n) WHERE { ?x :p ?y }
+            GROUP BY ?x HAVING (COUNT(?y) > 1) VALUES ?x { :a :b }
+            """,
+            id="having_with_values_clause",
+        ),
+        pytest.param(
+            """
+            SELECT ?x (COUNT(?y) AS ?n) WHERE { ?x :p ?y }
+            GROUP BY ?x HAVING (COUNT(?y) > 1) ORDER BY ?x
+            """,
+            id="having_with_order_by",
+        ),
+        pytest.param(
+            """
+            SELECT ?n ?m WHERE {
+              { SELECT (COUNT(?y) AS ?n) WHERE { ?x :p ?y } }
+              { SELECT (COUNT(?z) AS ?m) WHERE { ?w :q ?z } }
+            }
+            """,
+            id="aggregate_in_sibling_subqueries",
+        ),
+        pytest.param(
+            """
+            SELECT (SUM(?n) AS ?t) WHERE {
+              { SELECT ?k (COUNT(?v) AS ?n) WHERE { ?k :p ?v } GROUP BY ?k }
+            }
+            """,
+            id="aggregate_in_nested_subquery",
+        ),
+        pytest.param(
+            """
+            SELECT ?k (SUM(?v) + 1 AS ?y) WHERE { ?k :p ?v } GROUP BY ?k
+            """,
+            id="aggregate_inside_select_expression",
+        ),
+        pytest.param(
+            """
+            SELECT ?s (STR(?o) AS ?b) WHERE { ?s :name ?o FILTER(STR(?s) != "") }
+            """,
+            id="select_expression_and_filter_with_same_function",
+        ),
+        pytest.param(
+            """
+            SELECT ?s ?b WHERE { ?s :name ?o BIND(STR(?o) AS ?b) FILTER(?b != "") }
+            """,
+            id="bind_used_by_filter",
+        ),
+        pytest.param(
+            """
+            SELECT ?s WHERE { ?s :name ?o BIND(STR(?o) AS ?b) FILTER(?b != "") }
+            """,
+            id="bind_not_projected",
+        ),
+        pytest.param(
+            """
+            SELECT ?s ?c WHERE {
+              ?s :name ?o BIND(STR(?o) AS ?b) BIND(CONCAT(?b, "!") AS ?c)
+            }
+            """,
+            id="chained_binds",
+        ),
+        pytest.param(
+            """
+            SELECT ?c ?b WHERE {
+              ?s :name ?o BIND(STR(?o) AS ?b) BIND(CONCAT(?b, "!") AS ?c)
+            }
+            """,
+            id="chained_binds_projected_in_other_order",
+        ),
+        pytest.param(
+            """
+            SELECT ?s ?o WHERE { BIND(:a AS ?s) ?s :p ?o }
+            """,
+            id="leading_bind",
+        ),
+        pytest.param(
+            """
+            SELECT ?x ?one WHERE { ?x :p ?v OPTIONAL { ?x :q ?w BIND(1 AS ?one) } }
+            """,
+            id="bind_in_optional",
+        ),
+        pytest.param(
+            """
+            SELECT ?s ?o WHERE { { ?s :name ?o FILTER(!BOUND(?b)) } BIND(STR(?o) AS ?b) }
+            """,
+            id="bind_after_group_with_filter",
+        ),
+        pytest.param(
+            """
+            SELECT ?s ?v ?z WHERE { BIND(4 AS ?z) { ?s :p ?v FILTER(?v = ?z) } }
+            """,
+            id="bind_before_group_with_filter",
+        ),
+        pytest.param(
+            """
+            SELECT ?k (COUNT(?v) AS ?n) WHERE { ?x :p ?v } GROUP BY (STR(?x) AS ?k)
+            """,
+            id="group_by_expression",
+        ),
+        pytest.param(
+            """
+            SELECT ?ss (STR(?o) AS ?s) WHERE { ?ss :name ?o }
+            """,
+            id="select_expression_named_as_prefix_of_variable",
+        ),
+    ],
+)
+def test_translation_returns_same_results(query: str) -> None:
+    """The query translated from the algebra returns the same rows as the original."""
+    query = "PREFIX : <http://example.org/>\n" + query
+    graph = Graph().parse(format="turtle", data=_RESULTS_DATA)
+
+    query_from_algebra = translateAlgebra(
+        algebra.translateQuery(parser.parseQuery(query))
+    )
+
+    assert sorted(graph.query(query_from_algebra)) == sorted(graph.query(query))
+
+
+def test_group_by_stays_on_its_subquery_after_service() -> None:
+    """A GROUP BY must not move to an earlier sibling subquery that only has a SERVICE."""
+    query = """
+    PREFIX : <http://example.org/>
+    SELECT ?k ?n WHERE {
+      { SELECT ?k WHERE { SERVICE <http://example.org/sparql> { ?k :p ?v } } }
+      { SELECT (COUNT(?v) AS ?n) WHERE { ?x :p ?v } GROUP BY ?x }
+    }
+    """
+
+    query_from_algebra = translateAlgebra(
+        algebra.translateQuery(parser.parseQuery(query))
+    )
+
+    assert query_from_algebra.index("GROUP BY") > query_from_algebra.index("COUNT(")
+
+
 def test_sparql_group_concat():
     """Tests if GROUP_CONCAT correctly uses the separator keyword"""
     query = """
