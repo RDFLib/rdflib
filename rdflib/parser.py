@@ -726,7 +726,12 @@ def create_input_source(
                 if f is sys.stdin:
                     input_source.setSystemId("file:///dev/stdin")
                 elif name is not None:
-                    input_source.setSystemId(name)
+                    # Use a file URI, as FileInputSource does, so relative
+                    # IRIs resolve the same way for source= and file=.
+                    base = pathlib.Path.cwd().as_uri()
+                    input_source.setSystemId(
+                        URIRef(pathlib.Path(name).absolute().as_uri(), base=base)
+                    )
             else:
                 raise Exception(
                     "Unexpected type '%s' for source '%s'" % (type(source), source)
