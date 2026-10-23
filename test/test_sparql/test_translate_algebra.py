@@ -423,6 +423,13 @@ _RESULTS_DATA = """
         ),
         pytest.param(
             """
+            SELECT ?x (COUNT(?y) AS ?n) WHERE { ?x :p ?y }
+            GROUP BY ?x HAVING (COUNT(?y) > 1) ORDER BY ?x
+            """,
+            id="having_with_order_by",
+        ),
+        pytest.param(
+            """
             SELECT ?n ?m WHERE {
               { SELECT (COUNT(?y) AS ?n) WHERE { ?x :p ?y } }
               { SELECT (COUNT(?z) AS ?m) WHERE { ?w :q ?z } }

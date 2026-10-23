@@ -1263,8 +1263,8 @@ class _AlgebraTranslator:
                     + node.p.name
                     + "}}"
                     + self._clause_placeholder("GroupBy")
-                    + order_by_pattern
-                    + self._clause_placeholder("Having"),
+                    + self._clause_placeholder("Having")
+                    + order_by_pattern,
                 )
                 # The expressions come before node.p in the text, so render them
                 # first. Otherwise node.p could fill their placeholders, and the
