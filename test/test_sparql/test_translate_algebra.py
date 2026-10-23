@@ -957,6 +957,21 @@ def test_service_silent_translation_ignores_failed_call() -> None:
         assert _rows(Graph().query(query_from_algebra)) == Counter([frozenset()])
 
 
+def test_service_with_algebra_body_raises() -> None:
+    """A SERVICE body that is already algebra raises, rather than coming out empty."""
+    query = algebra.translateQuery(
+        parser.parseQuery(
+            "SELECT * WHERE { SERVICE <http://example.org/sparql> { ?s ?p ?o } }"
+        )
+    )
+    service = query.algebra.p.p
+    assert service.name == "ServiceGraphPattern"
+    service["graph"] = algebra.BGP([(Variable("s"), Variable("p"), Variable("o"))])
+
+    with pytest.raises(algebra.ExpressionNotCoveredException):
+        translateAlgebra(query)
+
+
 def test_service_binds_after_select_expressions() -> None:
     """
     BINDs in SERVICE patterns stay after SELECT expressions in earlier ones. A

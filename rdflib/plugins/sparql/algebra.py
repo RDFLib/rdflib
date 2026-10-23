@@ -1727,6 +1727,12 @@ class _AlgebraTranslator:
                 # The algebra keeps the body of a SERVICE pattern as it was
                 # parsed. Convert a copy of it to algebra, as converting changes
                 # the parse tree.
+                if node.graph.name not in ("GroupGraphPatternSub", "SubSelect"):
+                    raise ExpressionNotCoveredException(
+                        "The SERVICE body {0} might not be covered yet.".format(
+                            node.graph.name
+                        )
+                    )
                 graph = translateGroupGraphPattern(_copy_parse_tree(node.graph))
                 # A subquery writes its own braces. In another pair, the endpoint
                 # would get it inside SELECT REDUCED, which can drop rows.
