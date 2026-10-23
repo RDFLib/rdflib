@@ -798,8 +798,9 @@ def _rows(result: Result) -> Counter[frozenset]:
     return Counter(frozenset(row.items()) for row in result.bindings)
 
 
-# The endpoint gets most SERVICE bodies inside SELECT REDUCED, which may drop a
-# row that repeats the one before it, so none of these give repeated rows.
+# The endpoint gets a SERVICE body other than a lone subquery inside SELECT
+# REDUCED, which may drop a row that repeats the one before it, so only the lone
+# subqueries give repeated rows.
 _SERVICE_BODIES = [
     pytest.param("{ ?s :p ?o } UNION { ?s :q ?o }", id="union"),
     pytest.param("GRAPH :g { ?s ?p ?o }", id="graph"),
@@ -811,6 +812,12 @@ _SERVICE_BODIES = [
         "SELECT ?s (COUNT(?o) AS ?n) WHERE { ?s :p ?o }"
         " GROUP BY ?s HAVING (COUNT(?o) > 1)",
         id="grouped_subquery",
+    ),
+    pytest.param("SELECT ?s WHERE { ?s :p ?o }", id="subquery_with_repeated_rows"),
+    pytest.param(
+        "SELECT ?s (COUNT(?o) AS ?n) WHERE { ?s :p ?o }"
+        " GROUP BY ?s ORDER BY ?s OFFSET 0 VALUES ?z { 1 2 }",
+        id="grouped_subquery_with_values_clause",
     ),
     pytest.param(
         "?s :p ?o OPTIONAL { ?s :q ?w } MINUS { ?s :r :c }",

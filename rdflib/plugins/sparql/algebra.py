@@ -1723,14 +1723,18 @@ class _AlgebraTranslator:
                 # parsed. Convert a copy of it to algebra, as converting changes
                 # the parse tree.
                 graph = translateGroupGraphPattern(_copy_parse_tree(node.graph))
+                # A subquery writes its own braces. In another pair, the endpoint
+                # would get it inside SELECT REDUCED, which can drop rows.
+                if node.graph.name == "SubSelect":
+                    body = "{" + graph.name + "}"
+                else:
+                    body = "{{" + graph.name + "}}"
                 self._replace(
                     "{ServiceGraphPattern}",
                     "SERVICE "
                     + ("SILENT " if node.silent else "")
                     + self.convert_node_arg(node.term)
-                    + "{{"
-                    + graph.name
-                    + "}}",
+                    + body,
                 )
                 traverse(graph, visitPre=self.sparql_query_text)
                 return node
