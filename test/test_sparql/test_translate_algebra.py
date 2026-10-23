@@ -541,6 +541,12 @@ _RESULTS_DATA = """
         ),
         pytest.param(
             """
+            SELECT * WHERE { ?x :p ?v OPTIONAL { { ?x :q ?w FILTER(?v > 3) } } }
+            """,
+            id="optional_of_filtered_group",
+        ),
+        pytest.param(
+            """
             SELECT ?x ?w WHERE {
               { ?x :p ?v FILTER(!BOUND(?w)) } OPTIONAL { ?x :q ?w }
             }

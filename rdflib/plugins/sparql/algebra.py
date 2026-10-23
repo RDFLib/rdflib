@@ -1150,9 +1150,8 @@ class _AlgebraTranslator:
                 self._replace(
                     "{LeftJoin}",
                     self._group_part(node.p1)
-                    + "OPTIONAL{{"
-                    + node.p2.name
-                    + "}"
+                    + "OPTIONAL{"
+                    + self._group_part(node.p2)
                     + condition
                     + "}",
                 )
