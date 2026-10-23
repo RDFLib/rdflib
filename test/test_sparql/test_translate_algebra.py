@@ -511,7 +511,7 @@ _RESULTS_DATA = """
         ),
         pytest.param(
             """
-            SELECT ?s ?v ?z WHERE { BIND(4 AS ?z) { ?s :p ?v FILTER(?v = ?z) } }
+            SELECT ?s ?v ?z WHERE { BIND(4 AS ?z) { ?s :p ?v FILTER(COALESCE(?z, 0) < ?v) } }
             """,
             id="bind_before_group_with_filter",
         ),
@@ -677,7 +677,9 @@ def test_translation_returns_same_results(query: str) -> None:
         algebra.translateQuery(parser.parseQuery(query))
     )
 
-    assert sorted(graph.query(query_from_algebra)) == sorted(graph.query(query))
+    expected = _rows(graph.query(query))
+    assert _rows(graph.query(query_from_algebra)) == expected
+    assert expected
 
 
 def test_group_by_stays_on_its_subquery_after_service() -> None:
