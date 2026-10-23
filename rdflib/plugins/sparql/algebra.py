@@ -1357,7 +1357,8 @@ class _AlgebraTranslator:
                 self._select_ids.append(id(node))
                 self._replace(
                     "{Project}",
-                    " ".join(project_variables)
+                    # SELECT * with no variables in scope projects none.
+                    (" ".join(project_variables) or "*")
                     + "{{"
                     + node.p.name
                     + "}}"

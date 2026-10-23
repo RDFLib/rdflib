@@ -654,6 +654,12 @@ _RESULTS_DATA = """
             """,
             id="filter_on_constant",
         ),
+        pytest.param(
+            """
+            SELECT * WHERE { :a :p 1 }
+            """,
+            id="select_all_without_variables",
+        ),
     ],
 )
 def test_translation_returns_same_results(query: str) -> None:
@@ -788,6 +794,7 @@ _SERVICE_BODIES = [
         id="nested_service",
     ),
     pytest.param("?s :r/:p ?o", id="property_path"),
+    pytest.param("", id="empty"),
 ]
 
 
