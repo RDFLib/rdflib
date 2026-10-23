@@ -1408,12 +1408,14 @@ class _AlgebraTranslator:
                 for operator, operand in zip(node.op, node.other):
                     operation += " " + operator + " " + self.convert_node_arg(operand)
                 self._replace("{" + node.name + "}", "(" + operation + ")")
-            elif node.name == "UnaryNot":
-                self._replace("{UnaryNot}", "!" + self.convert_node_arg(node.expr))
-            elif node.name == "UnaryMinus":
-                self._replace("{UnaryMinus}", "-" + self.convert_node_arg(node.expr))
-            elif node.name == "UnaryPlus":
-                self._replace("{UnaryPlus}", "+" + self.convert_node_arg(node.expr))
+            elif node.name in ("UnaryNot", "UnaryMinus", "UnaryPlus"):
+                # In brackets, as only a bracketed expression can follow another
+                # unary operator.
+                operator = {"UnaryNot": "!", "UnaryMinus": "-", "UnaryPlus": "+"}
+                self._replace(
+                    "{" + node.name + "}",
+                    "(" + operator[node.name] + self.convert_node_arg(node.expr) + ")",
+                )
 
             # # 17.4 Function Definitions
             # # # 17.4.1 Functional Forms

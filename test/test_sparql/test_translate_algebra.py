@@ -625,6 +625,20 @@ _RESULTS_DATA = """
         ),
         pytest.param(
             """
+            SELECT ?x ?a ?b ?c WHERE {
+              ?x :p ?v BIND(-(-?v) AS ?a) BIND(-(+?v) AS ?b) BIND(-(-1) AS ?c)
+            }
+            """,
+            id="unary_minus_of_unary_operator",
+        ),
+        pytest.param(
+            """
+            SELECT ?x ?v WHERE { ?x :p ?v FILTER(!(!(?v = 1))) }
+            """,
+            id="double_negation",
+        ),
+        pytest.param(
+            """
             SELECT ?x ?v WHERE { ?x :p ?v FILTER(?v IN (1, STR(5), 6)) }
             """,
             id="in",
