@@ -10,15 +10,7 @@ import codecs
 import typing
 from typing import IO, Union
 
-from pyparsing import (
-    FollowedBy,
-    LineEnd,
-    Literal,
-    Optional,
-    ParserElement,
-    Suppress,
-    ZeroOrMore,
-)
+from pyparsing import Literal, Optional, Regex, Suppress, ZeroOrMore
 
 from rdflib.plugins.sparql.parser import (
     BLANK_NODE_LABEL,
@@ -35,9 +27,6 @@ from rdflib.query import Result, ResultParser
 from rdflib.term import BNode, Identifier, URIRef
 from rdflib.term import Literal as RDFLiteral
 
-ParserElement.set_default_whitespace_chars(" \n")
-
-
 String = STRING_LITERAL1 | STRING_LITERAL2
 
 RDFLITERAL = Comp(
@@ -50,17 +39,27 @@ RDFLITERAL = Comp(
     ),
 )
 
+# Tab separates the columns, so the elements that find the cells must not skip it as
+# whitespace. Set that on them, not as pyparsing's default whitespace, which every
+# grammar in the process shares. ROW and the ZeroOrMore parts copy it from their
+# first element. TERM is only tried where EMPTY fails, so not at a tab, but its
+# elements are shared with the SPARQL parser and keep the default whitespace.
+TAB = Suppress("\t").set_whitespace_chars(" \n")
+
 NONE_VALUE = object()
 
-EMPTY = FollowedBy(LineEnd()) | FollowedBy("\t")
+# An empty cell: nothing but spaces before the next tab or the end of the line.
+EMPTY = Regex(r"(?=\t|$)").set_whitespace_chars(" \n")
 EMPTY.set_parse_action(lambda x: NONE_VALUE)
 
 TERM = RDFLITERAL | IRIREF | BLANK_NODE_LABEL | NumericLiteral | BooleanLiteral
 
-ROW = (EMPTY | TERM) + ZeroOrMore(Suppress("\t") + (EMPTY | TERM))
+CELL = (EMPTY | TERM).set_whitespace_chars(" \n")
+
+ROW = CELL + ZeroOrMore(TAB + CELL)
 ROW.parse_with_tabs()
 
-HEADER = Var + ZeroOrMore(Suppress("\t") + Var)
+HEADER = Var + ZeroOrMore(TAB + Var)
 HEADER.parse_with_tabs()
 
 
@@ -84,7 +83,7 @@ class TSVResultParser(ResultParser):
             line = source.readline()
             if not line:
                 break
-            line = line.strip("\n")
+            line = line.rstrip("\r\n")
             if line == "":
                 continue
 

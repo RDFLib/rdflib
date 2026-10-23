@@ -40,8 +40,6 @@ from pyparsing import ParserElement, ParseResults, TokenConverter
 
 from rdflib.term import BNode, Identifier, Variable
 
-from .pyparsing_compat import original_text_for
-
 if TYPE_CHECKING:
     from rdflib.plugins.sparql.sparql import FrozenBindings
 
@@ -240,6 +238,18 @@ class Comp(TokenConverter):
         self.set_name(name)
         self.evalfn: Optional[Callable[[Any, Any], Any]] = None
 
+    def parseImpl(
+        self, instring: str, loc: int = 0, do_actions: bool = True
+    ) -> tuple[int, ParseResults]:
+        if self.name == "ServiceGraphPattern":
+            # Embed the start position as a named key in the ParseResults so
+            # postParse can extract the original SERVICE text, avoiding
+            # RecursionError with nested SERVICE).
+            new_loc, results = super().parseImpl(instring, loc, do_actions)
+            results["_service_start"] = loc
+            return new_loc, results
+        return super().parseImpl(instring, loc, do_actions)
+
     def postParse(
         self, instring: str, loc: int, tokenList: ParseResults
     ) -> Union[Expr, CompValue]:
@@ -250,12 +260,8 @@ class Comp(TokenConverter):
         else:
             res = CompValue(self.name)
             if self.name == "ServiceGraphPattern":
-                # Then this must be a service graph pattern and have
-                # already matched.
-                # lets assume there is one, for now, then test for two later.
-                sgp = original_text_for(self.expr)
-                service_string = sgp.search_string(instring)[0][0]
-                res["service_string"] = service_string
+                start = tokenList["_service_start"]
+                res["service_string"] = instring[start:loc]
 
         for t in tokenList:
             if isinstance(t, ParamValue):

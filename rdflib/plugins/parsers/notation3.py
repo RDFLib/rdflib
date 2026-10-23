@@ -156,6 +156,14 @@ def join(here: str, there: str) -> str:
 
     ```
 
+    A query-only reference keeps the base path (RFC 3986, section 5.2.2).
+
+    ```python
+    >>> join('http://a/b/c/d;p?q', '?y')
+    'http://a/b/c/d;p?y'
+
+    ```
+
     We grok IRIs
 
     ```python
@@ -171,17 +179,20 @@ def join(here: str, there: str) -> str:
     # RFC 3986, section 5.2.2, never uses the base's fragment.
     here = splitFragP(here)[0]
 
-    slashl = there.find("/")
     colonl = there.find(":")
 
-    # join(base, 'foo:/') -- absolute
-    if colonl >= 0 and (slashl < 0 or colonl < slashl):
+    # join(base, 'foo:/') -- absolute: a scheme's ":" precedes any "/", "?" or "#".
+    if colonl >= 0 and not any(0 <= there.find(c) < colonl for c in "/?#"):
         return there
 
     bcolonl = here.find(":")
     assert bcolonl >= 0, (
         "Base uri '%s' is not absolute" % here
     )  # else it's not absolute
+
+    # RFC 3986, section 5.2.2: an empty reference path keeps the base path.
+    if there.startswith("?"):
+        return here.split("?", 1)[0] + there
 
     path, frag = splitFragP(there)
     if not path:
@@ -1776,6 +1787,9 @@ class BadSyntax(SyntaxError):  # noqa: N818
         self._why = why
         self.lines = lines
         self._uri = uri
+        # SyntaxError tracebacks read msg. Without it they report
+        # "<no detail available>" instead of this diagnostic.
+        self.msg = str(self)
 
     def __str__(self) -> str:
         argstr = self._str
