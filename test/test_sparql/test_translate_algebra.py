@@ -539,6 +539,22 @@ _RESULTS_DATA = """
             """,
             id="optional_with_filter_on_outer_variable",
         ),
+        pytest.param(
+            """
+            SELECT ?x ?w WHERE {
+              { ?x :p ?v FILTER(!BOUND(?w)) } OPTIONAL { ?x :q ?w }
+            }
+            """,
+            id="filtered_group_before_optional",
+        ),
+        pytest.param(
+            """
+            SELECT ?x ?w WHERE {
+              { ?x :p ?v FILTER(!BOUND(?w)) } MINUS { ?x :name "" } ?x :q ?w
+            }
+            """,
+            id="filtered_group_before_minus",
+        ),
     ],
 )
 def test_translation_returns_same_results(query: str) -> None:

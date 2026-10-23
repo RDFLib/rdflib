@@ -1079,9 +1079,8 @@ class _AlgebraTranslator:
                     condition = " FILTER(" + self.convert_node_arg(node.expr) + ")"
                 self._replace(
                     "{LeftJoin}",
-                    "{"
-                    + node.p1.name
-                    + "}OPTIONAL{{"
+                    self._group_part(node.p1)
+                    + "OPTIONAL{{"
                     + node.p2.name
                     + "}"
                     + condition
@@ -1136,7 +1135,7 @@ class _AlgebraTranslator:
                     + ")",
                 )
             elif node.name == "Minus":
-                expr = "{" + node.p1.name + "}MINUS{{" + node.p2.name + "}}"
+                expr = self._group_part(node.p1) + "MINUS{{" + node.p2.name + "}}"
                 self._replace("{Minus}", expr)
             elif node.name == "Group":
                 group_by_vars = []
