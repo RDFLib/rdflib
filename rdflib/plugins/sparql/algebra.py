@@ -971,6 +971,26 @@ def _select_expressions(project: CompValue) -> list[CompValue]:
     return extends
 
 
+def _copy_parse_tree(tree: Any) -> Any:
+    """
+    Copy the CompValues and lists of a parse tree, so that translating the copy
+    leaves the tree as it was. The terms are shared.
+    """
+    if isinstance(tree, (list, ParseResults)):
+        return [_copy_parse_tree(part) for part in tree]
+    if isinstance(tree, Expr):
+        copied: CompValue = Expr(
+            tree.name, tree._evalfn.__func__ if tree._evalfn else None
+        )
+    elif isinstance(tree, CompValue):
+        copied = CompValue(tree.name)
+    else:
+        return tree
+    for key, value in tree.items():
+        copied[key] = _copy_parse_tree(value)
+    return copied
+
+
 class _AlgebraTranslator:
     """Translator of a Query's algebra to its equivalent SPARQL (string).
 
@@ -1686,16 +1706,19 @@ class _AlgebraTranslator:
 
                 self._replace("values", values + "{" + rows + "}")
             elif node.name == "ServiceGraphPattern":
+                # The algebra keeps the body of a SERVICE pattern as it was
+                # parsed. Translate a copy, as the handlers replace parts of it.
+                graph = _copy_parse_tree(node.graph)
                 self._replace(
                     "{ServiceGraphPattern}",
                     "SERVICE "
                     + self.convert_node_arg(node.term)
                     + "{"
-                    + node.graph.name
+                    + graph.name
                     + "}",
                 )
-                traverse(node.graph, visitPre=self.sparql_query_text)
-                return node.graph
+                traverse(graph, visitPre=self.sparql_query_text)
+                return node
             # else:
             #     raise ExpressionNotCoveredException("The expression {0} might not be covered yet.".format(node.name))
 

@@ -552,6 +552,34 @@ def test_group_by_stays_on_its_subquery_after_service() -> None:
     assert query_from_algebra.index("GROUP BY") > query_from_algebra.index("COUNT(")
 
 
+def test_translation_leaves_service_algebra_unchanged() -> None:
+    """Translating a query with SERVICE leaves its algebra as it was."""
+    query = algebra.translateQuery(
+        parser.parseQuery(
+            """
+            PREFIX : <http://example.org/>
+            SELECT * WHERE {
+              ?s :name ?name
+              SERVICE <http://example.org/sparql> {
+                ?s :p ?o FILTER(?o > 1)
+                OPTIONAL { ?s :q ?w } MINUS { ?s :r ?x }
+                { SELECT ?s (COUNT(?y) AS ?n) WHERE { ?s :p ?y } GROUP BY ?s }
+                SERVICE <http://example.org/sparql> {
+                  ?s :q ?w FILTER EXISTS { ?s :r ?z }
+                }
+              }
+            }
+            """
+        )
+    )
+    algebra_text = repr(query.algebra)
+
+    query_from_algebra = translateAlgebra(query)
+
+    assert repr(query.algebra) == algebra_text
+    assert translateAlgebra(query) == query_from_algebra
+
+
 def test_sparql_group_concat():
     """Tests if GROUP_CONCAT correctly uses the separator keyword"""
     query = """
