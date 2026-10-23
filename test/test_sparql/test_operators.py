@@ -51,9 +51,7 @@ def test_datetime_cast_type_error():
 def test_logical_connectives_error_tolerance(expression, expected):
     # SPARQL 1.1 section 17.2: || and && use three-valued logic, so an error on
     # one operand does not poison the result when the other operand decides it.
-    query = (
-        "SELECT ?r WHERE { BIND(2 AS ?o) BIND(%s AS ?r) }" % expression
-    )
+    query = "SELECT ?r WHERE { BIND(2 AS ?o) BIND(%s AS ?r) }" % expression
     (row,) = rdflib.Graph().query(query)
     assert row[0] is not None
     assert row[0].toPython() is expected
@@ -71,8 +69,6 @@ def test_logical_connectives_error_tolerance(expression, expected):
 def test_logical_connectives_propagate_error(expression):
     # An error that is not overridden by the other operand must stay an error,
     # leaving the bound variable unbound.
-    query = (
-        "SELECT ?o ?r WHERE { BIND(2 AS ?o) BIND(%s AS ?r) }" % expression
-    )
+    query = "SELECT ?o ?r WHERE { BIND(2 AS ?o) BIND(%s AS ?r) }" % expression
     (row,) = rdflib.Graph().query(query)
     assert row[1] is None
