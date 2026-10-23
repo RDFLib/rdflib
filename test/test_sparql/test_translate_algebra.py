@@ -584,6 +584,12 @@ _RESULTS_DATA = """
             """,
             id="values_clause_of_grouped_subquery",
         ),
+        pytest.param(
+            """
+            SELECT ?values WHERE { ?x :p ?values VALUES ?values { 1 2 } }
+            """,
+            id="variable_named_values",
+        ),
     ],
 )
 def test_translation_returns_same_results(query: str) -> None:

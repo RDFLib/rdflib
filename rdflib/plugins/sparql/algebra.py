@@ -1767,7 +1767,7 @@ class _AlgebraTranslator:
 
             # Other
             elif node.name == "values":
-                self._replace("values", self._values_clause(node))
+                self._replace("{values}", self._values_clause(node))
             elif node.name == "ServiceGraphPattern":
                 # The algebra keeps the body of a SERVICE pattern as it was
                 # parsed. Convert a copy of it to algebra, as converting changes
