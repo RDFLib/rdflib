@@ -1264,43 +1264,6 @@ class _AlgebraTranslator:
                         ),
                         self.convert_node_arg(agg_func.vars),
                     )
-            # Raw parse nodes. They appear in the graph pattern of an EXISTS
-            # outside a FILTER or BIND, which the algebra keeps as it was parsed.
-            elif node.name == "GroupGraphPatternSub":
-                self._replace(
-                    "GroupGraphPatternSub",
-                    " ".join([self.convert_node_arg(pattern) for pattern in node.part]),
-                )
-            elif node.name == "OptionalGraphPattern":
-                # Raw parse node (not yet translated to algebra LeftJoin)
-                self._replace(
-                    "{OptionalGraphPattern}",
-                    "OPTIONAL {" + node.graph.name + "}",
-                )
-                traverse(node.graph, visitPre=self.sparql_query_text)
-                return node.graph
-            elif node.name == "MinusGraphPattern":
-                # Raw parse node (not yet translated to algebra Minus)
-                self._replace(
-                    "{MinusGraphPattern}",
-                    "MINUS {" + node.graph.name + "}",
-                )
-                traverse(node.graph, visitPre=self.sparql_query_text)
-                return node.graph
-            elif node.name == "TriplesBlock":
-                self._replace(
-                    "{TriplesBlock}",
-                    "".join(
-                        triple[0].n3()
-                        + " "
-                        + triple[1].n3()
-                        + " "
-                        + triple[2].n3()
-                        + "."
-                        for triple in node.triples
-                    ),
-                )
-
             # 18.2 Solution modifiers
             elif node.name == "ToList":
                 raise ExpressionNotCoveredException(
