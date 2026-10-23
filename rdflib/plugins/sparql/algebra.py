@@ -20,6 +20,7 @@ from typing import (
 
 from pyparsing import ParseResults
 
+from rdflib.namespace import RDF
 from rdflib.paths import (
     AlternativePath,
     InvPath,
@@ -971,6 +972,47 @@ def _select_expressions(project: CompValue) -> list[CompValue]:
     return extends
 
 
+def _is_values_clause_of_group(join: CompValue) -> bool:
+    """
+    Whether a Join is the VALUES clause of a grouped SELECT, which joins its
+    values to the groups.
+    """
+    values = join.p2
+    if not (
+        isinstance(values, CompValue)
+        and values.name == "ToMultiSet"
+        and isinstance(values.p, CompValue)
+        and values.p.name == "values"
+    ):
+        return False
+    # Between the groups and the VALUES clause are HAVING and the Extends that
+    # name the aggregates.
+    below = join.p1
+    while below.name in ("Extend", "Filter"):
+        below = below.p
+    return below.name == "AggregateJoin"
+
+
+def _copy_parse_tree(tree: Any) -> Any:
+    """
+    Copy the CompValues and lists of a parse tree, so that translating the copy
+    leaves the tree as it was. The terms are shared.
+    """
+    if isinstance(tree, (list, ParseResults)):
+        return [_copy_parse_tree(part) for part in tree]
+    if isinstance(tree, Expr):
+        copied: CompValue = Expr(
+            tree.name, tree._evalfn.__func__ if tree._evalfn else None
+        )
+    elif isinstance(tree, CompValue):
+        copied = CompValue(tree.name)
+    else:
+        return tree
+    for key, value in tree.items():
+        copied[key] = _copy_parse_tree(value)
+    return copied
+
+
 class _AlgebraTranslator:
     """Translator of a Query's algebra to its equivalent SPARQL (string).
 
@@ -995,8 +1037,9 @@ class _AlgebraTranslator:
         # HAVING fills the placeholder of its own SELECT (see Project below).
         self._select_ids: list[int] = []
         # The Extends that a Project rendered into its SELECT clause, by id. Every
-        # other Extend is a BIND.
-        self._select_expression_ids: set[int] = set()
+        # other Extend is a BIND. Holding them keeps their ids from going to the
+        # nodes of a SERVICE body converted later.
+        self._select_expressions_by_id: dict[int, CompValue] = {}
 
     def _clause_placeholder(self, clause: str) -> str:
         """Placeholder for a clause, such as GroupBy, of the innermost SELECT."""
@@ -1010,6 +1053,43 @@ class _AlgebraTranslator:
         if node.name == "Filter":
             return "{{" + node.name + "}}"
         return "{" + node.name + "}"
+
+    def _values_placeholder(self, select: CompValue) -> str:
+        """
+        Placeholder for the VALUES clause of a SELECT, given the node at its top.
+        It follows all the other clauses, LIMIT and OFFSET among them.
+        """
+        while select.name != "Project":
+            select = select.p
+        return "{Values_%d}" % id(select)
+
+    def _values_clause(self, values: CompValue) -> str:
+        columns = []
+        for key in values.res[0].keys():
+            if isinstance(key, Identifier):
+                columns.append(key.n3())
+            else:
+                raise ExpressionNotCoveredException(
+                    "The expression {0} might not be covered yet.".format(key)
+                )
+
+        rows = ""
+        for elem in values.res:
+            row = []
+            for term in elem.values():
+                if isinstance(term, Identifier):
+                    row.append(
+                        term.n3()
+                    )  # n3() is not part of Identifier class but every subclass has it
+                elif isinstance(term, str):
+                    row.append(term)
+                else:
+                    raise ExpressionNotCoveredException(
+                        "The expression {0} might not be covered yet.".format(term)
+                    )
+            rows += "(" + " ".join(row) + ")"
+
+        return "VALUES (" + " ".join(columns) + "){" + rows + "}"
 
     def _replace(self, old: str, new: str, count: int = 1):
         self._alg_translation = self._alg_translation.replace(old, new, count)
@@ -1034,7 +1114,9 @@ class _AlgebraTranslator:
         if isinstance(node, CompValue):
             # 18.2 Query Forms
             if node.name == "SelectQuery":
-                self._alg_translation = "SELECT {" + node.p.name + "}"
+                self._alg_translation = (
+                    "SELECT {" + node.p.name + "}" + self._values_placeholder(node.p)
+                )
 
             # 18.2 Graph Patterns
             elif node.name == "BGP":
@@ -1046,39 +1128,55 @@ class _AlgebraTranslator:
                 )
                 self._replace("{BGP}", triples)
             elif node.name == "Join":
+                if _is_values_clause_of_group(node):
+                    # It is joined after GROUP BY and HAVING, so it cannot go
+                    # into the WHERE clause.
+                    self._replace("{Join}", "{" + node.p1.name + "}")
+                    self._replace(
+                        self._clause_placeholder("Values"),
+                        " " + self._values_clause(node.p2.p),
+                    )
+                    traverse(node.p1, visitPre=self.sparql_query_text)
+                    return node
                 self._replace(
                     "{Join}", self._group_part(node.p1) + self._group_part(node.p2)
                 )
             elif node.name == "LeftJoin":
+                # The FILTER of an OPTIONAL group becomes the LeftJoin's expr.
+                condition = ""
+                if not (
+                    isinstance(node.expr, CompValue) and node.expr.name == "TrueFilter"
+                ):
+                    condition = " FILTER(" + self.convert_node_arg(node.expr) + ")"
                 self._replace(
                     "{LeftJoin}",
-                    "{" + node.p1.name + "}OPTIONAL{{" + node.p2.name + "}}",
+                    self._group_part(node.p1)
+                    + "OPTIONAL{"
+                    + self._group_part(node.p2)
+                    + condition
+                    + "}",
                 )
             elif node.name == "Filter":
-                if isinstance(node.expr, CompValue):
-                    expr = node.expr.name
-                else:
+                expr = self.convert_node_arg(node.expr)
+                if not node.p:
                     raise ExpressionNotCoveredException(
-                        "This expression might not be covered yet."
+                        "A Filter with no graph pattern might not be covered yet."
                     )
-                if node.p:
-                    # Filter with p=AggregateJoin = Having. Each projected group variable
-                    # puts an Extend between them.
-                    below = node.p
-                    while below.name == "Extend":
-                        below = below.p
-                    if below.name == "AggregateJoin":
-                        self._replace("{Filter}", "{" + node.p.name + "}")
-                        self._replace(
-                            self._clause_placeholder("Having"),
-                            "HAVING({" + expr + "})",
-                        )
-                    else:
-                        self._replace(
-                            "{Filter}", "FILTER({" + expr + "}) {" + node.p.name + "}"
-                        )
+                # Filter with p=AggregateJoin = Having. Each projected group variable
+                # puts an Extend between them.
+                below = node.p
+                while below.name == "Extend":
+                    below = below.p
+                if below.name == "AggregateJoin":
+                    self._replace("{Filter}", "{" + node.p.name + "}")
+                    self._replace(
+                        self._clause_placeholder("Having"),
+                        "HAVING(" + expr + ")",
+                    )
                 else:
-                    self._replace("{Filter}", "FILTER({" + expr + "})")
+                    self._replace(
+                        "{Filter}", "FILTER(" + expr + ") {" + node.p.name + "}"
+                    )
 
             elif node.name == "Union":
                 self._replace(
@@ -1088,7 +1186,7 @@ class _AlgebraTranslator:
                 expr = "GRAPH " + node.term.n3() + " {{" + node.p.name + "}}"
                 self._replace("{Graph}", expr)
             elif node.name == "Extend":
-                if id(node) in self._select_expression_ids:
+                if id(node) in self._select_expressions_by_id:
                     # The Project handler has already rendered the expression.
                     self._replace("{Extend}", "{" + node.p.name + "}")
                     traverse(node.p, visitPre=self.sparql_query_text)
@@ -1103,7 +1201,7 @@ class _AlgebraTranslator:
                     + ")",
                 )
             elif node.name == "Minus":
-                expr = "{" + node.p1.name + "}MINUS{{" + node.p2.name + "}}"
+                expr = self._group_part(node.p1) + "MINUS{{" + node.p2.name + "}}"
                 self._replace("{Minus}", expr)
             elif node.name == "Group":
                 group_by_vars = []
@@ -1136,14 +1234,16 @@ class _AlgebraTranslator:
                     if agg_func.distinct:
                         distinct = agg_func.distinct + " "
                     if agg_func_name == "GroupConcat":
+                        separator = ""
+                        if agg_func.separator is not None:
+                            separator = ";SEPARATOR=" + agg_func.separator.n3()
                         self._replace(
                             identifier,
                             "GROUP_CONCAT"
                             + "("
                             + distinct
-                            + agg_func.vars.n3()
-                            + ";SEPARATOR="
-                            + agg_func.separator.n3()
+                            + self.convert_node_arg(agg_func.vars)
+                            + separator
                             + ")",
                         )
                     else:
@@ -1165,43 +1265,6 @@ class _AlgebraTranslator:
                         ),
                         self.convert_node_arg(agg_func.vars),
                     )
-            elif node.name == "GroupGraphPatternSub":
-                self._replace(
-                    "GroupGraphPatternSub",
-                    " ".join([self.convert_node_arg(pattern) for pattern in node.part]),
-                )
-            elif node.name == "OptionalGraphPattern":
-                # Raw parse node (not yet translated to algebra LeftJoin)
-                # Appears inside SERVICE graph patterns where inner content is
-                # kept in raw parse form
-                self._replace(
-                    "{OptionalGraphPattern}",
-                    "OPTIONAL {" + node.graph.name + "}",
-                )
-                traverse(node.graph, visitPre=self.sparql_query_text)
-                return node.graph
-            elif node.name == "MinusGraphPattern":
-                # Raw parse node (not yet translated to algebra Minus)
-                self._replace(
-                    "{MinusGraphPattern}",
-                    "MINUS {" + node.graph.name + "}",
-                )
-                traverse(node.graph, visitPre=self.sparql_query_text)
-                return node.graph
-            elif node.name == "TriplesBlock":
-                self._replace(
-                    "{TriplesBlock}",
-                    "".join(
-                        triple[0].n3()
-                        + " "
-                        + triple[1].n3()
-                        + " "
-                        + triple[2].n3()
-                        + "."
-                        for triple in node.triples
-                    ),
-                )
-
             # 18.2 Solution modifiers
             elif node.name == "ToList":
                 raise ExpressionNotCoveredException(
@@ -1258,7 +1321,8 @@ class _AlgebraTranslator:
                 self._select_ids.append(id(node))
                 self._replace(
                     "{Project}",
-                    " ".join(project_variables)
+                    # SELECT * with no variables in scope projects none.
+                    (" ".join(project_variables) or "*")
                     + "{{"
                     + node.p.name
                     + "}}"
@@ -1272,13 +1336,15 @@ class _AlgebraTranslator:
                 # expressions had put them in the text.
                 for expr in expressions:
                     traverse(expr, visitPre=self.sparql_query_text)
-                self._select_expression_ids.update(
-                    id(extend) for extend in select_expressions
+                self._select_expressions_by_id.update(
+                    (id(extend), extend) for extend in select_expressions
                 )
                 traverse(node.p, visitPre=self.sparql_query_text)
-                # Without a GROUP BY or HAVING, this SELECT's placeholders are still there.
+                # Without a GROUP BY, HAVING or VALUES, this SELECT's placeholders
+                # are still there.
                 self._replace(self._clause_placeholder("GroupBy"), "")
                 self._replace(self._clause_placeholder("Having"), "")
+                self._replace(self._clause_placeholder("Values"), "")
                 self._select_ids.pop()
                 return node
             elif node.name == "Distinct":
@@ -1286,13 +1352,22 @@ class _AlgebraTranslator:
             elif node.name == "Reduced":
                 self._replace("{Reduced}", "REDUCED {" + node.p.name + "}")
             elif node.name == "Slice":
-                slice = "OFFSET " + str(node.start) + " LIMIT " + str(node.length)
+                slice = "OFFSET " + str(node.start)
+                if node.length is not None:
+                    slice += " LIMIT " + str(node.length)
                 self._replace("{Slice}", "{" + node.p.name + "}" + slice)
             elif node.name == "ToMultiSet":
                 if node.p.name == "values":
                     self._replace("{ToMultiSet}", "{{" + node.p.name + "}}")
                 else:
-                    self._replace("{ToMultiSet}", "{SELECT {" + node.p.name + "}}")
+                    self._replace(
+                        "{ToMultiSet}",
+                        "{SELECT {"
+                        + node.p.name
+                        + "}"
+                        + self._values_placeholder(node.p)
+                        + "}",
+                    )
 
             # 18.2 Property Path
 
@@ -1301,15 +1376,18 @@ class _AlgebraTranslator:
             elif node.name == "RelationalExpression":
                 expr = self.convert_node_arg(node.expr)
                 op = node.op
-                if isinstance(list, type(node.other)):
+                if isinstance(node.other, list):
                     other = (
                         "("
                         + ", ".join(self.convert_node_arg(expr) for expr in node.other)
                         + ")"
                     )
+                elif op in ("IN", "NOT IN") and node.other == RDF.nil:
+                    # The parser gives an empty list as rdf:nil.
+                    other = "()"
                 else:
                     other = self.convert_node_arg(node.other)
-                condition = "{left} {operator} {right}".format(
+                condition = "({left} {operator} {right})".format(
                     left=expr, operator=op, right=other
                 )
                 self._replace("{RelationalExpression}", condition)
@@ -1319,7 +1397,7 @@ class _AlgebraTranslator:
                 )
                 self._replace(
                     "{ConditionalAndExpression}",
-                    self.convert_node_arg(node.expr) + " && " + inner_nodes,
+                    "(" + self.convert_node_arg(node.expr) + " && " + inner_nodes + ")",
                 )
             elif node.name == "ConditionalOrExpression":
                 inner_nodes = " || ".join(
@@ -1329,24 +1407,20 @@ class _AlgebraTranslator:
                     "{ConditionalOrExpression}",
                     "(" + self.convert_node_arg(node.expr) + " || " + inner_nodes + ")",
                 )
-            elif node.name == "MultiplicativeExpression":
-                left_side = self.convert_node_arg(node.expr)
-                multiplication = left_side
-                for i, operator in enumerate(node.op):
-                    multiplication += (
-                        operator + " " + self.convert_node_arg(node.other[i]) + " "
-                    )
-                self._replace("{MultiplicativeExpression}", multiplication)
-            elif node.name == "AdditiveExpression":
-                left_side = self.convert_node_arg(node.expr)
-                addition = left_side
-                for i, operator in enumerate(node.op):
-                    addition += (
-                        operator + " " + self.convert_node_arg(node.other[i]) + " "
-                    )
-                self._replace("{AdditiveExpression}", addition)
-            elif node.name == "UnaryNot":
-                self._replace("{UnaryNot}", "!" + self.convert_node_arg(node.expr))
+            elif node.name in ("MultiplicativeExpression", "AdditiveExpression"):
+                # In brackets, as an operand of a tighter operator needs them.
+                operation = self.convert_node_arg(node.expr)
+                for operator, operand in zip(node.op, node.other):
+                    operation += " " + operator + " " + self.convert_node_arg(operand)
+                self._replace("{" + node.name + "}", "(" + operation + ")")
+            elif node.name in ("UnaryNot", "UnaryMinus", "UnaryPlus"):
+                # In brackets, as only a bracketed expression can follow another
+                # unary operator.
+                operator = {"UnaryNot": "!", "UnaryMinus": "-", "UnaryPlus": "+"}
+                self._replace(
+                    "{" + node.name + "}",
+                    "(" + operator[node.name] + self.convert_node_arg(node.expr) + ")",
+                )
 
             # # 17.4 Function Definitions
             # # # 17.4.1 Functional Forms
@@ -1368,26 +1442,19 @@ class _AlgebraTranslator:
                     + ", ".join(self.convert_node_arg(arg) for arg in node.arg)
                     + ")",
                 )
-            elif node.name.endswith("Builtin_EXISTS"):
-                # The node's name which we get with node.graph.name returns "Join" instead of GroupGraphPatternSub
-                # According to https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rExistsFunc
-                # ExistsFunc can only have a GroupGraphPattern as parameter. However, when we print the query algebra
-                # we get a GroupGraphPatternSub
+            elif node.name in ("Builtin_EXISTS", "Builtin_NOTEXISTS"):
+                # The algebra keeps the graph pattern of an EXISTS outside a
+                # FILTER or BIND as it was parsed. Convert a copy of it to
+                # algebra, as converting changes the parse tree.
+                graph = node.graph
+                if graph.name in ("GroupGraphPatternSub", "SubSelect"):
+                    graph = translateGroupGraphPattern(_copy_parse_tree(graph))
+                keyword = "EXISTS" if node.name == "Builtin_EXISTS" else "NOT EXISTS"
                 self._replace(
-                    "{Builtin_EXISTS}", "EXISTS " + "{{" + node.graph.name + "}}"
+                    "{" + node.name + "}", keyword + " {{" + graph.name + "}}"
                 )
-                traverse(node.graph, visitPre=self.sparql_query_text)
-                return node.graph
-            elif node.name.endswith("Builtin_NOTEXISTS"):
-                # The node's name which we get with node.graph.name returns "Join" instead of GroupGraphPatternSub
-                # According to https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rNotExistsFunc
-                # NotExistsFunc can only have a GroupGraphPattern as parameter. However, when we print the query algebra
-                # we get a GroupGraphPatternSub
-                self._replace(
-                    "{Builtin_NOTEXISTS}", "NOT EXISTS " + "{{" + node.graph.name + "}}"
-                )
-                traverse(node.graph, visitPre=self.sparql_query_text)
-                return node.graph
+                traverse(graph, visitPre=self.sparql_query_text)
+                return node
             # # # # 17.4.1.5 logical-or: Covered in "RelationalExpression"
             # # # # 17.4.1.6 logical-and: Covered in "RelationalExpression"
             # # # # 17.4.1.7 RDFterm-equal: Covered in "RelationalExpression"
@@ -1656,46 +1723,33 @@ class _AlgebraTranslator:
 
             # Other
             elif node.name == "values":
-                columns = []
-                for key in node.res[0].keys():
-                    if isinstance(key, Identifier):
-                        columns.append(key.n3())
-                    else:
-                        raise ExpressionNotCoveredException(
-                            "The expression {0} might not be covered yet.".format(key)
-                        )
-                values = "VALUES (" + " ".join(columns) + ")"
-
-                rows = ""
-                for elem in node.res:
-                    row = []
-                    for term in elem.values():
-                        if isinstance(term, Identifier):
-                            row.append(
-                                term.n3()
-                            )  # n3() is not part of Identifier class but every subclass has it
-                        elif isinstance(term, str):
-                            row.append(term)
-                        else:
-                            raise ExpressionNotCoveredException(
-                                "The expression {0} might not be covered yet.".format(
-                                    term
-                                )
-                            )
-                    rows += "(" + " ".join(row) + ")"
-
-                self._replace("values", values + "{" + rows + "}")
+                self._replace("{values}", self._values_clause(node))
             elif node.name == "ServiceGraphPattern":
+                # The algebra keeps the body of a SERVICE pattern as it was
+                # parsed. Convert a copy of it to algebra, as converting changes
+                # the parse tree.
+                if node.graph.name not in ("GroupGraphPatternSub", "SubSelect"):
+                    raise ExpressionNotCoveredException(
+                        "The SERVICE body {0} might not be covered yet.".format(
+                            node.graph.name
+                        )
+                    )
+                graph = translateGroupGraphPattern(_copy_parse_tree(node.graph))
+                # A subquery writes its own braces. In another pair, the endpoint
+                # would get it inside SELECT REDUCED, which can drop rows.
+                if node.graph.name == "SubSelect":
+                    body = "{" + graph.name + "}"
+                else:
+                    body = "{{" + graph.name + "}}"
                 self._replace(
                     "{ServiceGraphPattern}",
                     "SERVICE "
+                    + ("SILENT " if node.silent else "")
                     + self.convert_node_arg(node.term)
-                    + "{"
-                    + node.graph.name
-                    + "}",
+                    + body,
                 )
-                traverse(node.graph, visitPre=self.sparql_query_text)
-                return node.graph
+                traverse(graph, visitPre=self.sparql_query_text)
+                return node
             # else:
             #     raise ExpressionNotCoveredException("The expression {0} might not be covered yet.".format(node.name))
 
