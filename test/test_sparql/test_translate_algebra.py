@@ -403,6 +403,19 @@ _RESULTS_DATA = """
         ),
         pytest.param(
             """
+            SELECT ?x ?x (COUNT(?y) AS ?n) WHERE { ?x :p ?y } GROUP BY ?x
+            """,
+            id="group_variable_projected_twice",
+        ),
+        pytest.param(
+            """
+            SELECT ?x ?x (COUNT(?y) AS ?n) WHERE { ?x :p ?y }
+            GROUP BY ?x HAVING (COUNT(?y) > 1)
+            """,
+            id="group_variable_projected_twice_with_having",
+        ),
+        pytest.param(
+            """
             SELECT ?n ?m WHERE {
               { SELECT (COUNT(?y) AS ?n) WHERE { ?x :p ?y } }
               { SELECT (COUNT(?z) AS ?m) WHERE { ?w :q ?z } }

@@ -942,9 +942,9 @@ class ExpressionNotCoveredException(Exception):  # noqa: N818
     pass
 
 
-def _select_expressions(project: CompValue) -> dict[Identifier, CompValue]:
+def _select_expressions(project: CompValue) -> list[CompValue]:
     """
-    Find the Extends that come from the SELECT clause of a Project, by variable.
+    Find the Extends that come from the SELECT clause of a Project, top first.
     The other Extends below it are BINDs or GROUP BY expressions.
     """
     node = project.p
@@ -968,7 +968,7 @@ def _select_expressions(project: CompValue) -> dict[Identifier, CompValue]:
             position = project.PV.index(node.var)
             extends.append(node)
             node = node.p
-    return {extend.var: extend for extend in extends}
+    return extends
 
 
 class _AlgebraTranslator:
@@ -1225,11 +1225,18 @@ class _AlgebraTranslator:
                 self._replace("{OrderConditions}", " ".join(order_conditions) + " ")
             elif node.name == "Project":
                 select_expressions = _select_expressions(node)
+                # A grouped variable projected twice has an Extend for each
+                # occurrence. The first one renders it, and the rest are plain.
+                select_expression_of: dict[Identifier, CompValue] = {}
+                for select_expression in select_expressions:
+                    select_expression_of.setdefault(
+                        select_expression.var, select_expression
+                    )
                 project_variables = []
                 expressions = []
                 for var in node.PV:
                     if isinstance(var, Identifier):
-                        extend = select_expressions.get(var)
+                        extend = select_expression_of.pop(var, None)
                         if extend is None:
                             project_variables.append(var.n3())
                         else:
@@ -1266,7 +1273,7 @@ class _AlgebraTranslator:
                 for expr in expressions:
                     traverse(expr, visitPre=self.sparql_query_text)
                 self._select_expression_ids.update(
-                    id(extend) for extend in select_expressions.values()
+                    id(extend) for extend in select_expressions
                 )
                 traverse(node.p, visitPre=self.sparql_query_text)
                 # Without a GROUP BY or HAVING, this SELECT's placeholders are still there.
