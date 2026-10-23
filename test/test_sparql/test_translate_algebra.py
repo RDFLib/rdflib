@@ -651,6 +651,20 @@ _RESULTS_DATA = """
         ),
         pytest.param(
             """
+            SELECT ?x ?v WHERE { ?x :p ?v FILTER(?v NOT IN ()) }
+            """,
+            id="not_in_empty_list",
+        ),
+        pytest.param(
+            """
+            SELECT ?x ?a ?b WHERE {
+              ?x :p ?v BIND(?v IN () AS ?a) BIND(?v NOT IN () AS ?b)
+            }
+            """,
+            id="in_empty_list",
+        ),
+        pytest.param(
+            """
             SELECT ?x (GROUP_CONCAT(STR(?v); separator="|") AS ?c) WHERE { ?x :p ?v }
             GROUP BY ?x
             """,

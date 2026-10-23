@@ -20,6 +20,7 @@ from typing import (
 
 from pyparsing import ParseResults
 
+from rdflib.namespace import RDF
 from rdflib.paths import (
     AlternativePath,
     InvPath,
@@ -1380,6 +1381,9 @@ class _AlgebraTranslator:
                         + ", ".join(self.convert_node_arg(expr) for expr in node.other)
                         + ")"
                     )
+                elif op in ("IN", "NOT IN") and node.other == RDF.nil:
+                    # The parser gives an empty list as rdf:nil.
+                    other = "()"
                 else:
                     other = self.convert_node_arg(node.other)
                 condition = "({left} {operator} {right})".format(
