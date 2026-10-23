@@ -75,12 +75,10 @@ known_bugs: tuple[str, ...] = (
     "toRdf/e089-in",
     "toRdf/e090-in",
     "toRdf/e091-in",
-    "toRdf/e110-in",
     "toRdf/e129-in",
     "toRdf/e130-in",
     # TODO: Just broken expansion...
     "toRdf/e080-in",
-    "toRdf/e092-in",
     "toRdf/e093-in",
     "toRdf/e094-in",
     "toRdf/e104-in",
@@ -90,19 +88,17 @@ known_bugs: tuple[str, ...] = (
     "toRdf/e107-in",
     # no expandContent option?
     "toRdf/e077-in",
-    # TODO: Investigate:
+    # The "#fragment-works" property expands to an IRI with two "#", which
+    # should be dropped as it isn't a valid IRI
     "toRdf/e111-in",
     "toRdf/e112-in",
+    # TODO: Investigate:
     "toRdf/e119-in",
     "toRdf/e120-in",
     "toRdf/e122-in",
     # RDFLib cannot keep a colon on the end of a prefix uri
     "toRdf/e117-in",
     "toRdf/e118-in",
-    # <ex:ns/> doesn't expand to <http://example.org/ns/>
-    "toRdf/e124-in",
-    # Similar to above?
-    "toRdf/e125-in",
     # Recursive Inclusion triggered!
     "toRdf/e128-in",
     # JSON-native double representation

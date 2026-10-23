@@ -511,22 +511,41 @@ class Context:
             imported.update(source)
             source = imported
 
-        self.vocab = source.get(VOCAB, self.vocab)
         self.version = source.get(VERSION, self.version)
+        # @base goes first, since a relative @vocab can depend on it.
+        if BASE in source and not source_url and not imports:
+            self.base = source[BASE]
+        if VOCAB in source:
+            vocab = source[VOCAB]
+            self.vocab = None if vocab is None else self._expand_vocab(vocab)
         protected = source.get(PROTECTED, False)
 
         for key, value in source.items():
-            if key in {VOCAB, VERSION, IMPORT, PROTECTED}:
+            if key in {VOCAB, VERSION, IMPORT, PROTECTED, BASE}:
                 continue
             elif key == PROPAGATE and isinstance(value, bool):
                 self.propagate = value
             elif key == LANG:
                 self.language = value
-            elif key == BASE:
-                if not source_url and not imports:
-                    self.base = value
             else:
                 self._read_term(source, key, value, protected)
+
+    def _expand_vocab(self, vocab: str) -> str:
+        """
+        Expands the value of `@vocab` like JSON-LD 1.1 does. A term or compact
+        IRI is expanded, and a relative IRI reference is appended to the
+        current vocabulary mapping, or resolved against the base IRI if there
+        is no vocabulary mapping yet. So `"@vocab": ""` means the base IRI.
+
+        See https://www.w3.org/TR/json-ld11/#default-vocabulary and
+        https://www.w3.org/TR/json-ld11/#document-relative-vocabulary-mapping
+        """
+        iri = self.expand(vocab)
+        if iri is None:
+            # A relative IRI reference and no vocabulary mapping in scope.
+            # Without a base IRI it's kept as is.
+            return self.resolve_iri(vocab) if self._base else vocab
+        return iri
 
     def _read_term(
         self,

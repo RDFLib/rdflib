@@ -7,12 +7,14 @@ from __future__ import annotations
 import json
 from functools import wraps
 from pathlib import Path
-from typing import Any, Literal, Union
+from typing import Any, Literal, Optional, Union
 
 import pytest
 from typing_extensions import assert_type
 
-from rdflib.namespace import PROV, XSD, Namespace
+from rdflib import Graph, URIRef
+from rdflib import Literal as RDFLiteral
+from rdflib.namespace import PROV, RDF, XSD, Namespace
 from rdflib.plugins.shared.jsonld import context, errors
 from rdflib.plugins.shared.jsonld.context import UNDEF, Context, Defined
 
@@ -315,3 +317,101 @@ def test_undef_identity_narrowing(value: Union[str, Defined], is_undef: bool) ->
     else:
         assert_type(value, str)
         assert not is_undef
+
+
+@pytest.mark.parametrize(
+    ("source", "base", "expected_vocab"),
+    [
+        pytest.param(
+            [{"@vocab": "http://example.com/"}, {"@vocab": "vocab/"}],
+            None,
+            "http://example.com/vocab/",
+            id="relative-to-previous-vocab",
+        ),
+        pytest.param(
+            {"@base": "http://example/document", "@vocab": "#"},
+            None,
+            "http://example/document#",
+            id="relative-to-base-in-same-context",
+        ),
+        pytest.param(
+            {"@vocab": "#"},
+            "http://example/document",
+            "http://example/document#",
+            id="relative-to-document-base",
+        ),
+        pytest.param(
+            {"@base": "http://example.com/dir/file", "@vocab": "/relative"},
+            None,
+            "http://example.com/relative",
+            id="absolute-path",
+        ),
+        pytest.param(
+            {"@base": "http://example.com/dir/", "@vocab": ""},
+            None,
+            "http://example.com/dir/",
+            id="empty-is-base",
+        ),
+        pytest.param(
+            [{"ex": "http://example.org/"}, {"@vocab": "ex"}],
+            None,
+            "http://example.org/",
+            id="term",
+        ),
+        pytest.param(
+            [{"ex": "http://example.org/"}, {"@vocab": "ex:ns/"}],
+            None,
+            "http://example.org/ns/",
+            id="compact-iri",
+        ),
+        pytest.param(
+            {"@vocab": "http://example.org/ns/"},
+            "http://example/document",
+            "http://example.org/ns/",
+            id="absolute-iri-unchanged",
+        ),
+        pytest.param({"@vocab": "#"}, None, "#", id="no-base-unchanged"),
+        pytest.param(
+            [{"@vocab": "http://example.com/"}, {"@vocab": None}],
+            None,
+            None,
+            id="null-clears",
+        ),
+    ],
+)
+def test_relative_vocab(source: Any, base: Optional[str], expected_vocab: Any) -> None:
+    """
+    A relative `@vocab` is resolved against the current vocabulary mapping, or
+    against the base IRI if there is no vocabulary mapping.
+    """
+    ctx = Context(source, base=base)
+    assert ctx.vocab == expected_vocab
+    if expected_vocab is not None:
+        assert ctx.expand("name") == f"{expected_vocab}name"
+
+
+def test_relative_vocab_in_document() -> None:
+    """
+    The resolved `@vocab` is used for properties and types, and for terms
+    defined in the same context.
+    """
+    data = {
+        "@context": {
+            "@version": 1.1,
+            "@base": "http://example/document",
+            "@vocab": "#",
+            "knows": {"@type": "@id"},
+        },
+        "@id": "BrewEats",
+        "@type": "Restaurant",
+        "name": "Brew Eats",
+        "knows": "Other",
+    }
+    graph = Graph().parse(data=json.dumps(data), format="json-ld")
+    doc = Namespace("http://example/document#")
+    subject = URIRef("http://example/BrewEats")
+    assert set(graph) == {
+        (subject, RDF.type, doc.Restaurant),
+        (subject, doc.name, RDFLiteral("Brew Eats")),
+        (subject, doc.knows, URIRef("http://example/Other")),
+    }
