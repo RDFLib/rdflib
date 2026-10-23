@@ -75,7 +75,7 @@ docs = [
     "mkdocstrings[python]>=1.0.6; python_version >= '3.11'",
     "httpx>=0.28.1,<0.29.0",
 ]
-lint = ["ruff==0.17.0"]
+lint = ["ruff==0.17.1"]
 
 [tool.uv]
 # Install the tests and lint groups too, so `uv run pytest`, `uv run ruff` and
