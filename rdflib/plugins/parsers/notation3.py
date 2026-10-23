@@ -1787,6 +1787,9 @@ class BadSyntax(SyntaxError):  # noqa: N818
         self._why = why
         self.lines = lines
         self._uri = uri
+        # SyntaxError tracebacks read msg. Without it they report
+        # "<no detail available>" instead of this diagnostic.
+        self.msg = str(self)
 
     def __str__(self) -> str:
         argstr = self._str
