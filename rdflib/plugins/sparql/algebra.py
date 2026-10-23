@@ -1015,8 +1015,9 @@ class _AlgebraTranslator:
         # HAVING fills the placeholder of its own SELECT (see Project below).
         self._select_ids: list[int] = []
         # The Extends that a Project rendered into its SELECT clause, by id. Every
-        # other Extend is a BIND.
-        self._select_expression_ids: set[int] = set()
+        # other Extend is a BIND. Holding them keeps their ids from going to the
+        # nodes of a SERVICE body converted later.
+        self._select_expressions_by_id: dict[int, CompValue] = {}
 
     def _clause_placeholder(self, clause: str) -> str:
         """Placeholder for a clause, such as GroupBy, of the innermost SELECT."""
@@ -1108,7 +1109,7 @@ class _AlgebraTranslator:
                 expr = "GRAPH " + node.term.n3() + " {{" + node.p.name + "}}"
                 self._replace("{Graph}", expr)
             elif node.name == "Extend":
-                if id(node) in self._select_expression_ids:
+                if id(node) in self._select_expressions_by_id:
                     # The Project handler has already rendered the expression.
                     self._replace("{Extend}", "{" + node.p.name + "}")
                     traverse(node.p, visitPre=self.sparql_query_text)
@@ -1185,6 +1186,8 @@ class _AlgebraTranslator:
                         ),
                         self.convert_node_arg(agg_func.vars),
                     )
+            # Raw parse nodes. They appear in the graph pattern of an EXISTS
+            # outside a FILTER or BIND, which the algebra keeps as it was parsed.
             elif node.name == "GroupGraphPatternSub":
                 self._replace(
                     "GroupGraphPatternSub",
@@ -1192,8 +1195,6 @@ class _AlgebraTranslator:
                 )
             elif node.name == "OptionalGraphPattern":
                 # Raw parse node (not yet translated to algebra LeftJoin)
-                # Appears inside SERVICE graph patterns where inner content is
-                # kept in raw parse form
                 self._replace(
                     "{OptionalGraphPattern}",
                     "OPTIONAL {" + node.graph.name + "}",
@@ -1292,8 +1293,8 @@ class _AlgebraTranslator:
                 # expressions had put them in the text.
                 for expr in expressions:
                     traverse(expr, visitPre=self.sparql_query_text)
-                self._select_expression_ids.update(
-                    id(extend) for extend in select_expressions
+                self._select_expressions_by_id.update(
+                    (id(extend), extend) for extend in select_expressions
                 )
                 traverse(node.p, visitPre=self.sparql_query_text)
                 # Without a GROUP BY or HAVING, this SELECT's placeholders are still there.
@@ -1707,15 +1708,16 @@ class _AlgebraTranslator:
                 self._replace("values", values + "{" + rows + "}")
             elif node.name == "ServiceGraphPattern":
                 # The algebra keeps the body of a SERVICE pattern as it was
-                # parsed. Translate a copy, as the handlers replace parts of it.
-                graph = _copy_parse_tree(node.graph)
+                # parsed. Convert a copy of it to algebra, as converting changes
+                # the parse tree.
+                graph = translateGroupGraphPattern(_copy_parse_tree(node.graph))
                 self._replace(
                     "{ServiceGraphPattern}",
                     "SERVICE "
                     + self.convert_node_arg(node.term)
-                    + "{"
+                    + "{{"
                     + graph.name
-                    + "}",
+                    + "}}",
                 )
                 traverse(graph, visitPre=self.sparql_query_text)
                 return node

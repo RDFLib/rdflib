@@ -1,20 +1,25 @@
 from __future__ import annotations
 
 import logging
+from collections import Counter
 from collections.abc import Collection
 from dataclasses import dataclass, field
-from io import StringIO
+from io import BytesIO, StringIO
 from pathlib import Path
 from typing import Union, cast
+from urllib.parse import parse_qs, urlsplit
+from urllib.request import BaseHandler, OpenerDirector, Request
 
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib.plugins.sparql.algebra as algebra
 import rdflib.plugins.sparql.parser as parser
-from rdflib import Graph, Literal, URIRef, Variable
+from rdflib import Dataset, Graph, Literal, URIRef, Variable
 from rdflib.plugins.sparql.algebra import translateAlgebra
+from rdflib.query import Result
 from test.data import TEST_DATA_DIR
+from test.utils.urlopen import context_urlopener
 
 
 @pytest.fixture
@@ -578,6 +583,166 @@ def test_translation_leaves_service_algebra_unchanged() -> None:
 
     assert repr(query.algebra) == algebra_text
     assert translateAlgebra(query) == query_from_algebra
+
+
+class _OKResponse(BytesIO):
+    """The parts of an HTTP response that a SERVICE call reads."""
+
+    status = 200
+
+
+class LocalEndpointHandler(BaseHandler):
+    """Answer every SERVICE call by running its query on a local dataset."""
+
+    def __init__(self, dataset: Dataset) -> None:
+        self.dataset = dataset
+
+    def http_open(self, req: Request) -> _OKResponse:
+        if isinstance(req.data, bytes):
+            form = req.data.decode()
+        else:
+            form = urlsplit(req.get_full_url()).query
+        (query,) = parse_qs(form)["query"]
+        results = self.dataset.query(query).serialize(format="json")
+        assert results is not None
+        return _OKResponse(results)
+
+
+_SERVICE_DATA = """
+@prefix : <http://example.org/> .
+:a :p 1 , 2 ; :q 10 ; :r :b .
+:b :p 3 ; :r :c .
+:c :q 30 .
+"""
+_SERVICE_GRAPH_DATA = """
+@prefix : <http://example.org/> .
+:a :p 4 .
+"""
+
+
+def _service_query(body: str) -> str:
+    return f"""
+    PREFIX : <http://example.org/>
+    SELECT * WHERE {{ SERVICE <http://example.org/sparql> {{ {body} }} }}
+    """
+
+
+def _rows(result: Result) -> Counter[frozenset]:
+    return Counter(frozenset(row.items()) for row in result.bindings)
+
+
+# The endpoint gets most SERVICE bodies inside SELECT REDUCED, which may drop a
+# row that repeats the one before it, so none of these give repeated rows.
+_SERVICE_BODIES = [
+    pytest.param("{ ?s :p ?o } UNION { ?s :q ?o }", id="union"),
+    pytest.param("GRAPH :g { ?s ?p ?o }", id="graph"),
+    pytest.param("?s :p ?o BIND(STR(?o) AS ?b)", id="bind"),
+    pytest.param("VALUES ?s { :a } ?s :p ?o", id="values"),
+    pytest.param("{ SELECT ?o WHERE { ?s :p ?o } }", id="group_with_subquery"),
+    pytest.param("SELECT ?o WHERE { ?s :p ?o }", id="subquery"),
+    pytest.param(
+        "SELECT ?s (COUNT(?o) AS ?n) WHERE { ?s :p ?o }"
+        " GROUP BY ?s HAVING (COUNT(?o) > 1)",
+        id="grouped_subquery",
+    ),
+    pytest.param(
+        "?s :p ?o OPTIONAL { ?s :q ?w } MINUS { ?s :r :c }",
+        id="optional_and_minus",
+    ),
+    pytest.param("?s :p ?o FILTER(?o > 1)", id="filter"),
+    pytest.param("?s :p ?o FILTER EXISTS { ?s :q ?w }", id="filter_exists"),
+    pytest.param("?s :p ?o FILTER NOT EXISTS { ?s :q ?w }", id="filter_not_exists"),
+    pytest.param(
+        "?s :p ?o SERVICE <http://example.org/sparql> { ?s :q ?w }",
+        id="nested_service",
+    ),
+    pytest.param("?s :r/:p ?o", id="property_path"),
+]
+
+
+@pytest.mark.parametrize("body", _SERVICE_BODIES)
+def test_service_roundtrip(body: str) -> None:
+    """A SERVICE pattern remains the same over two successive parse and translate cycles."""
+    query_from_algebra = translateAlgebra(
+        algebra.translateQuery(parser.parseQuery(_service_query(body)))
+    )
+
+    assert (
+        translateAlgebra(algebra.translateQuery(parser.parseQuery(query_from_algebra)))
+        == query_from_algebra
+    )
+
+
+@pytest.mark.parametrize("body", _SERVICE_BODIES)
+def test_service_translation_returns_same_results(body: str) -> None:
+    """The query translated from the algebra gets the same rows from the endpoint."""
+    query = _service_query(body)
+    dataset = Dataset()
+    dataset.parse(format="turtle", data=_SERVICE_DATA)
+    dataset.graph(URIRef("http://example.org/g")).parse(
+        format="turtle", data=_SERVICE_GRAPH_DATA
+    )
+    opener = OpenerDirector()
+    opener.add_handler(LocalEndpointHandler(dataset))
+
+    query_from_algebra = translateAlgebra(
+        algebra.translateQuery(parser.parseQuery(query))
+    )
+
+    with context_urlopener(opener):
+        expected = _rows(Graph().query(query))
+        assert _rows(Graph().query(query_from_algebra)) == expected
+    assert expected
+
+
+@pytest.mark.parametrize(
+    ("body", "clause"),
+    [
+        pytest.param("?s :p ?o BIND(STR(?o) AS ?b)", "BIND(", id="bind"),
+        pytest.param(
+            "SELECT ?s (COUNT(?o) AS ?n) WHERE { ?s :p ?o } GROUP BY ?s",
+            "GROUP BY",
+            id="group_by",
+        ),
+        pytest.param(
+            "SELECT ?s WHERE { ?s :p ?o } GROUP BY ?s HAVING (COUNT(?o) > 1)",
+            "HAVING",
+            id="having",
+        ),
+    ],
+)
+def test_service_keeps_its_clauses(body: str, clause: str) -> None:
+    """A clause in a SERVICE pattern stays there, for its endpoint to evaluate."""
+    query_from_algebra = translateAlgebra(
+        algebra.translateQuery(parser.parseQuery(_service_query(body)))
+    )
+
+    (service,) = parser.parseQuery(query_from_algebra)[1].where.part
+    assert clause in service.service_string
+
+
+def test_service_binds_after_select_expressions() -> None:
+    """
+    BINDs in SERVICE patterns stay after SELECT expressions in earlier ones. A
+    BIND must not be taken for a SELECT expression whose node has been freed.
+    """
+    subqueries = " ".join(
+        "SERVICE <http://example.org/sparql> {"
+        f" SELECT ?s (STR(?o) AS ?b{index}) WHERE {{ ?s ?p ?o }} }}"
+        for index in range(10)
+    )
+    binds = " ".join(
+        f"SERVICE <http://example.org/sparql> {{ ?s ?p ?o BIND(STR(?o) AS ?c{index}) }}"
+        for index in range(5)
+    )
+
+    query_from_algebra = translateAlgebra(
+        algebra.translateQuery(
+            parser.parseQuery(f"SELECT * WHERE {{ {subqueries} {binds} }}")
+        )
+    )
+
+    assert query_from_algebra.count("BIND(") == 5
 
 
 def test_sparql_group_concat():
