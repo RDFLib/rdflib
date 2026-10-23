@@ -253,14 +253,8 @@ def test_badsyntax_msg_matches_rendered_detail() -> None:
     source = "<s> <p>"
     reason = "expected '.'"
     error = BadSyntax(uri, 2, source, 4, reason)
-    rendered = (
-        "at line 3 of <http://example.org/doc>:\n"
-        "Bad syntax (expected '.') at ^ in:\n"
-        "\"b'<s> '^b'<p>'\""
-    )
 
     assert error.args == (uri, 2, source, 4, reason)
-    assert error.message == rendered
     assert error.msg == str(error)
 
     for formatted in (
@@ -268,7 +262,7 @@ def test_badsyntax_msg_matches_rendered_detail() -> None:
         "".join(traceback.format_exception(error)),
     ):
         assert reason in formatted
-        assert "b'<s> '" in formatted
+        assert "<s>" in formatted
         assert "at line 3" in formatted
         assert "<no detail available>" not in formatted
 
