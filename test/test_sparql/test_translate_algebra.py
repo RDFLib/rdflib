@@ -590,6 +590,27 @@ _RESULTS_DATA = """
             """,
             id="variable_named_values",
         ),
+        pytest.param(
+            """
+            SELECT ?x ?a ?b ?c WHERE {
+              ?x :p ?v
+              BIND((?v + 1) * 2 AS ?a) BIND(?v - (1 - 2) AS ?b) BIND(?v / (2 * 3) AS ?c)
+            }
+            """,
+            id="arithmetic_in_brackets",
+        ),
+        pytest.param(
+            """
+            SELECT ?x ?v WHERE { ?x :p ?v FILTER(!(?v = 1)) }
+            """,
+            id="negated_comparison",
+        ),
+        pytest.param(
+            """
+            SELECT ?x ?v WHERE { ?x :p ?v FILTER(!(?v > 1 && ?v < 5)) }
+            """,
+            id="negated_conjunction",
+        ),
     ],
 )
 def test_translation_returns_same_results(query: str) -> None:

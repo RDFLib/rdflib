@@ -1420,7 +1420,7 @@ class _AlgebraTranslator:
                     )
                 else:
                     other = self.convert_node_arg(node.other)
-                condition = "{left} {operator} {right}".format(
+                condition = "({left} {operator} {right})".format(
                     left=expr, operator=op, right=other
                 )
                 self._replace("{RelationalExpression}", condition)
@@ -1430,7 +1430,7 @@ class _AlgebraTranslator:
                 )
                 self._replace(
                     "{ConditionalAndExpression}",
-                    self.convert_node_arg(node.expr) + " && " + inner_nodes,
+                    "(" + self.convert_node_arg(node.expr) + " && " + inner_nodes + ")",
                 )
             elif node.name == "ConditionalOrExpression":
                 inner_nodes = " || ".join(
@@ -1440,22 +1440,12 @@ class _AlgebraTranslator:
                     "{ConditionalOrExpression}",
                     "(" + self.convert_node_arg(node.expr) + " || " + inner_nodes + ")",
                 )
-            elif node.name == "MultiplicativeExpression":
-                left_side = self.convert_node_arg(node.expr)
-                multiplication = left_side
-                for i, operator in enumerate(node.op):
-                    multiplication += (
-                        operator + " " + self.convert_node_arg(node.other[i]) + " "
-                    )
-                self._replace("{MultiplicativeExpression}", multiplication)
-            elif node.name == "AdditiveExpression":
-                left_side = self.convert_node_arg(node.expr)
-                addition = left_side
-                for i, operator in enumerate(node.op):
-                    addition += (
-                        operator + " " + self.convert_node_arg(node.other[i]) + " "
-                    )
-                self._replace("{AdditiveExpression}", addition)
+            elif node.name in ("MultiplicativeExpression", "AdditiveExpression"):
+                # In brackets, as an operand of a tighter operator needs them.
+                operation = self.convert_node_arg(node.expr)
+                for operator, operand in zip(node.op, node.other):
+                    operation += " " + operator + " " + self.convert_node_arg(operand)
+                self._replace("{" + node.name + "}", "(" + operation + ")")
             elif node.name == "UnaryNot":
                 self._replace("{UnaryNot}", "!" + self.convert_node_arg(node.expr))
 
