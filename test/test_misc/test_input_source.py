@@ -7,7 +7,6 @@ import logging
 import os
 import pathlib
 import re
-import sys
 from collections.abc import Collection, Generator, Iterable
 from contextlib import AbstractContextManager, ExitStack, contextmanager
 from dataclasses import dataclass
@@ -134,26 +133,10 @@ def test_input_source_path_like_name(argument, tmp_path):
 
     input_source = create_input_source(**{argument: stream})
 
-    expected = f"{path}" if argument == "source" else URIRef(path.absolute().as_uri())
-    assert input_source.getSystemId() == expected
+    assert input_source.getSystemId() == URIRef(path.absolute().as_uri())
 
 
-@pytest.mark.parametrize(
-    "argument",
-    [
-        pytest.param(
-            "source",
-            marks=pytest.mark.xfail(
-                sys.platform == "win32",
-                raises=ValueError,
-                strict=True,
-                reason="source= uses the raw Windows path as the base, and"
-                " relative IRIs cannot be resolved against it",
-            ),
-        ),
-        "file",
-    ],
-)
+@pytest.mark.parametrize("argument", ["source", "file"])
 def test_parse_file_opened_with_bytes_path(argument, tmp_path):
     path = tmp_path / "sub" / "input.ttl"
     path.parent.mkdir()
@@ -166,6 +149,24 @@ def test_parse_file_opened_with_bytes_path(argument, tmp_path):
 
     assert set(bytes_graph.subjects()) == {URIRef(path.parent.as_uri() + "/s")}
     assert set(bytes_graph) == set(str_graph)
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        pytest.param(r"C:\data\doc.ttl", id="windows-path"),
+        pytest.param("a b/doc.ttl", id="needs-percent-encoding"),
+    ],
+)
+def test_source_and_file_streams_resolve_relative_iris_alike(name):
+    graphs = []
+    for argument in ("source", "file"):
+        stream = BytesIO(b"<s> <p> <o> .")
+        stream.name = name
+        graphs.append(Graph().parse(**{argument: stream}, format="turtle"))
+    source_graph, file_graph = graphs
+
+    assert set(source_graph) == set(file_graph)
 
 
 @pytest.mark.parametrize("kind", ["bytes", "path_like"])
@@ -758,11 +759,6 @@ def test_create_input_source(
 
         if expected_result.system_id is None:
             if param in (
-                SourceParam.BINARY_IO,
-                SourceParam.TEXT_IO,
-            ):
-                expected_result.system_id = f"{input_path}"
-            elif param in (
                 SourceParam.INPUT_SOURCE,
                 SourceParam.BYTES,
                 DataParam.STRING,
@@ -773,6 +769,8 @@ def test_create_input_source(
                 SourceParam.PATH,
                 SourceParam.PATH_STRING,
                 SourceParam.FILE_URI,
+                SourceParam.BINARY_IO,
+                SourceParam.TEXT_IO,
                 LocationParam.FILE_URI,
                 FileParam.BINARY_IO,
                 FileParam.TEXT_IO,
