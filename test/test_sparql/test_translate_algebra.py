@@ -660,6 +660,12 @@ _RESULTS_DATA = """
             """,
             id="select_all_without_variables",
         ),
+        pytest.param(
+            """
+            SELECT ?x ?v WHERE { ?x :p ?v } ORDER BY ?v OFFSET 4
+            """,
+            id="offset_without_limit",
+        ),
     ],
 )
 def test_translation_returns_same_results(query: str) -> None:

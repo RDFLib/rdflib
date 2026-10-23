@@ -1351,7 +1351,9 @@ class _AlgebraTranslator:
             elif node.name == "Reduced":
                 self._replace("{Reduced}", "REDUCED {" + node.p.name + "}")
             elif node.name == "Slice":
-                slice = "OFFSET " + str(node.start) + " LIMIT " + str(node.length)
+                slice = "OFFSET " + str(node.start)
+                if node.length is not None:
+                    slice += " LIMIT " + str(node.length)
                 self._replace("{Slice}", "{" + node.p.name + "}" + slice)
             elif node.name == "ToMultiSet":
                 if node.p.name == "values":
