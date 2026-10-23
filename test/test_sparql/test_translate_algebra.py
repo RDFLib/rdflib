@@ -611,6 +611,12 @@ _RESULTS_DATA = """
             """,
             id="negated_conjunction",
         ),
+        pytest.param(
+            """
+            SELECT ?x ?a ?b WHERE { ?x :p ?v BIND(-(?v + 1) AS ?a) BIND(+?v AS ?b) }
+            """,
+            id="unary_minus_and_plus",
+        ),
     ],
 )
 def test_translation_returns_same_results(query: str) -> None:

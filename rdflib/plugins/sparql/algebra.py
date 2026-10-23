@@ -1448,6 +1448,10 @@ class _AlgebraTranslator:
                 self._replace("{" + node.name + "}", "(" + operation + ")")
             elif node.name == "UnaryNot":
                 self._replace("{UnaryNot}", "!" + self.convert_node_arg(node.expr))
+            elif node.name == "UnaryMinus":
+                self._replace("{UnaryMinus}", "-" + self.convert_node_arg(node.expr))
+            elif node.name == "UnaryPlus":
+                self._replace("{UnaryPlus}", "+" + self.convert_node_arg(node.expr))
 
             # # 17.4 Function Definitions
             # # # 17.4.1 Functional Forms
