@@ -1412,7 +1412,7 @@ class _AlgebraTranslator:
             elif node.name == "RelationalExpression":
                 expr = self.convert_node_arg(node.expr)
                 op = node.op
-                if isinstance(list, type(node.other)):
+                if isinstance(node.other, list):
                     other = (
                         "("
                         + ", ".join(self.convert_node_arg(expr) for expr in node.other)

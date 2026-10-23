@@ -617,6 +617,18 @@ _RESULTS_DATA = """
             """,
             id="unary_minus_and_plus",
         ),
+        pytest.param(
+            """
+            SELECT ?x ?v WHERE { ?x :p ?v FILTER(?v IN (1, STR(5), 6)) }
+            """,
+            id="in",
+        ),
+        pytest.param(
+            """
+            SELECT ?x ?v WHERE { ?x :p ?v FILTER(?v NOT IN (1, 6)) }
+            """,
+            id="not_in",
+        ),
     ],
 )
 def test_translation_returns_same_results(query: str) -> None:
