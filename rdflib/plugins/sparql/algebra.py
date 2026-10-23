@@ -1157,12 +1157,7 @@ class _AlgebraTranslator:
                     + "}",
                 )
             elif node.name == "Filter":
-                if isinstance(node.expr, CompValue):
-                    expr = node.expr.name
-                else:
-                    raise ExpressionNotCoveredException(
-                        "This expression might not be covered yet."
-                    )
+                expr = self.convert_node_arg(node.expr)
                 if node.p:
                     # Filter with p=AggregateJoin = Having. Each projected group variable
                     # puts an Extend between them.
@@ -1173,14 +1168,14 @@ class _AlgebraTranslator:
                         self._replace("{Filter}", "{" + node.p.name + "}")
                         self._replace(
                             self._clause_placeholder("Having"),
-                            "HAVING({" + expr + "})",
+                            "HAVING(" + expr + ")",
                         )
                     else:
                         self._replace(
-                            "{Filter}", "FILTER({" + expr + "}) {" + node.p.name + "}"
+                            "{Filter}", "FILTER(" + expr + ") {" + node.p.name + "}"
                         )
                 else:
-                    self._replace("{Filter}", "FILTER({" + expr + "})")
+                    self._replace("{Filter}", "FILTER(" + expr + ")")
 
             elif node.name == "Union":
                 self._replace(

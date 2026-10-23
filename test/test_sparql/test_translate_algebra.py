@@ -642,6 +642,18 @@ _RESULTS_DATA = """
             """,
             id="group_concat_without_separator",
         ),
+        pytest.param(
+            """
+            SELECT ?x ?b WHERE { ?x :p ?v BIND(?v > 2 AS ?b) FILTER(?b) }
+            """,
+            id="filter_on_variable",
+        ),
+        pytest.param(
+            """
+            SELECT ?x ?v WHERE { ?x :p ?v FILTER(true) }
+            """,
+            id="filter_on_constant",
+        ),
     ],
 )
 def test_translation_returns_same_results(query: str) -> None:
