@@ -312,6 +312,27 @@ class TestLiteral:
 
             assert case_passed, "Case " + str(case[0]) + " failed"
 
+    def test_serialize_lone_surrogate_is_escaped(self):
+        # https://github.com/RDFLib/rdflib/issues/2590
+        lit = Literal("\uDEAD")
+        n3 = lit.n3()
+        assert "\\uDEAD" in n3
+        assert "\uDEAD" not in n3
+
+    def test_serialize_surrogate_single_and_triple_quoted(self):
+        # single-quoted path
+        assert Literal("\uDEAD").n3() == '"\\uDEAD"'
+        # triple-quoted path (literal contains a newline)
+        assert Literal("a\n\uDEAD").n3() == '"""a\n\\uDEAD"""'
+
+    def test_serialize_plain_literal_unchanged(self):
+        # regression guard: ordinary literals are unchanged
+        assert Literal("plain").n3() == '"plain"'
+        # existing escapes still work
+        assert Literal("a\nb").n3() == '"""a\nb"""'
+        assert Literal("a\\b").n3() == '"a\\\\b"'
+        assert Literal('a"b').n3() == '"a\\"b"'
+
 
 class TestValidityFunctions:
     def test_is_valid_unicode(self):
