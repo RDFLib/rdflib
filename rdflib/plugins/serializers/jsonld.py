@@ -37,6 +37,7 @@ Example:
 from __future__ import annotations
 
 import warnings
+from collections import Counter
 from typing import IO, Any, Optional
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph, _ObjectType
@@ -155,6 +156,8 @@ class Converter:
         self.context = context
         self.use_native_types = context.active or use_native_types
         self.use_rdf_type = use_rdf_type
+        # Statements per blank-node object, across every graph being converted.
+        self._bnode_usages: Optional[Counter[Identifier]] = None
 
     def convert(self, graph: Graph):
         # TODO: bug in rdflib dataset parsing (nquads et al):
@@ -186,6 +189,10 @@ class Converter:
         else:
             graphs = [graph]
             default_graph_id = graph.identifier
+
+        self._bnode_usages = Counter(
+            o for g in graphs for o in g.objects() if isinstance(o, BNode)
+        )
 
         context = self.context
 
@@ -270,12 +277,16 @@ class Converter:
     ):
         context = self.context
 
+        collection = None
         if isinstance(o, Literal):
             datatype = str(o.datatype) if o.datatype else None
             language = o.language
             term = context.find_term(str(p), datatype, language=language)
         else:
-            containers = [LIST, None] if graph.value(o, RDF.first) else [None]
+            # Only offer an @list term for a chain that can be written as @list.
+            if graph.value(o, RDF.first):
+                collection = self.to_collection(graph, o)
+            containers = [LIST, None] if collection is not None else [None]
             for container in containers:
                 for coercion in (ID, VOCAB, UNDEF):
                     # type error: Argument 2 to "find_term" of "Context" has incompatible type "object"; expected "Union[str, Defined, None]"
@@ -305,11 +316,11 @@ class Converter:
             ):
                 node = str(o)
 
-            if LIST in term.container:
+            if LIST in term.container and collection is not None:
                 node = [
                     self.type_coerce(v, term.type)
                     or self.to_raw_value(graph, s, v, nodemap)
-                    for v in self.to_collection(graph, o)
+                    for v in collection
                 ]
             elif LANG in term.container and language:
                 value = s_node.setdefault(p_key, {})
@@ -416,7 +427,28 @@ class Converter:
             else:
                 return v
 
+    def _usages(self, graph: Graph, node: Identifier) -> int:
+        """Count the statements whose object is `node`.
+
+        Inside `convert` this covers every graph being converted; called on
+        its own, `graph` is taken to be the whole input.
+        """
+        if self._bnode_usages is None:
+            return len(list(graph.subject_predicates(node)))
+        return self._bnode_usages[node]
+
     def to_collection(self, graph: Graph, l_: Identifier):
+        """Return the members of the `rdf:List` headed by `l_`, or None.
+
+        None means the chain must not be written as `@list`. Besides a
+        malformed or cyclic chain, that includes a chain any of whose cells,
+        the head included, is the object of more than one statement in any of
+        the graphs being converted. `@list` inlines the cells at a single
+        reference and writes them nowhere else, so another reference would be
+        left pointing at a node the output never defines. This is the
+        "referenced once" condition of the Serialize RDF as JSON-LD Algorithm
+        (JSON-LD 1.1 Processing Algorithms and API, section 8.4).
+        """
         if l_ != RDF.nil and not graph.value(l_, RDF.first):
             return None
         list_nodes: list[Optional[_ObjectType]] = []
@@ -425,6 +457,8 @@ class Converter:
             if l_ == RDF.nil:
                 return list_nodes
             if isinstance(l_, URIRef):
+                return None
+            if self._usages(graph, l_) != 1:
                 return None
             first, rest = None, None
             for p, o in graph.predicate_objects(l_):
