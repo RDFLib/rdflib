@@ -244,6 +244,35 @@ def test_literals(
     assert expected_literal == identifier
 
 
+@pytest.mark.parametrize(
+    ["format_name", "pname", "local_name"],
+    [
+        (format.name, pname, local_name)
+        for format in FORMATS
+        if FormatTrait.prefixes in format.traits
+        for pname, local_name in [
+            ("eg:a\\.", "a."),
+            ("eg:a.\\.", "a.."),
+            ("eg:\\..\\.", "..."),
+            ("eg:a\\.b", "a.b"),
+        ]
+    ],
+)
+def test_prefixed_name_with_escaped_dot(
+    format_name: str, pname: str, local_name: str
+) -> None:
+    """
+    A prefixed name can end with an escaped dot, which is part of the local
+    name, unlike an unescaped one.
+    """
+    g = Graph()
+    g.parse(
+        data=f"@prefix eg: <{EGDC}> .\n{pname} <{EGDC.predicate}> {pname} .",
+        format=format_name,
+    )
+    assert list(g) == [(EGDC[local_name], EGDC.predicate, EGDC[local_name])]
+
+
 def test_badsyntax_msg_matches_rendered_detail() -> None:
     """SyntaxError.msg keeps the diagnostic BadSyntax already renders.
 
