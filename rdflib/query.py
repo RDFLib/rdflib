@@ -401,18 +401,24 @@ class Result:
         else:
             raise AttributeError("'%s' object has no attribute '%s'" % (self, name))
 
-    def __eq__(self, other: Any) -> bool:
-        try:
-            if self.type != other.type:
-                return False
-            if self.type == "ASK":
-                return self.askAnswer == other.askAnswer
-            elif self.type == "SELECT":
-                return self.vars == other.vars and self.bindings == other.bindings
-            else:
-                return self.graph == other.graph
-        except Exception:
+    def __eq__(self, other: object) -> bool:
+        """Compare results without hiding errors encountered during evaluation.
+
+        Return NotImplemented for objects that are not query results.
+
+        In particular, evaluating lazy SELECT bindings may raise an exception;
+        such a failure does not establish that two results are unequal.
+        """
+        if not isinstance(other, Result):
+            return NotImplemented
+        if self.type != other.type:
             return False
+        if self.type == "ASK":
+            return self.askAnswer == other.askAnswer
+        elif self.type == "SELECT":
+            return self.vars == other.vars and self.bindings == other.bindings
+        else:
+            return self.graph == other.graph
 
 
 class ResultParser:
