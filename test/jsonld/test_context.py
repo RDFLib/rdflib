@@ -520,3 +520,26 @@ def test_relative_vocab_preserves_base_in_document(
         (subject, RDF.type, URIRef(f"{expected_vocab}Person")),
         (subject, URIRef(f"{expected_vocab}name"), RDFLiteral("Name")),
     }
+
+
+def test_property_scoped_context_overrides_protected_term() -> None:
+    """
+    Only a property-scoped context can redefine a protected term, see
+    https://www.w3.org/TR/json-ld11/#protected-term-definitions
+    """
+    redefine = {"bar": "http://example.org/other"}
+    ctx = Context(
+        {
+            "@protected": True,
+            "bar": "http://ignored.org/bar",
+            "foo": {"@id": "http://example.org/foo", "@context": redefine},
+            "Foo": {"@id": "http://example.org/Foo", "@context": redefine},
+        }
+    )
+    property_scoped = ctx.get_context_for_term(ctx.terms["foo"])
+    assert property_scoped.expand("bar") == "http://example.org/other"
+    # Embedded and type-scoped contexts keep the protected definition.
+    assert ctx.subcontext(redefine).expand("bar") == "http://ignored.org/bar"
+    type_scoped = ctx.get_context_for_type({"@type": "Foo"})
+    assert type_scoped is not None
+    assert type_scoped.expand("bar") == "http://ignored.org/bar"
