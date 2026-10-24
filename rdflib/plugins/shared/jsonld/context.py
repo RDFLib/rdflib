@@ -5,13 +5,16 @@ Implementation of the JSON-LD Context structure. See: http://json-ld.org/
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/context.py
 from __future__ import annotations
 
-from collections import namedtuple
-from collections.abc import Collection, Generator
+from collections.abc import Generator, Set
 from enum import Enum
 from typing import (
     TYPE_CHECKING,
     Any,
+    Literal,
+    NamedTuple,
     Optional,
+    TypeAlias,
+    TypedDict,
     Union,
 )
 from urllib.parse import urljoin, urlsplit
@@ -71,6 +74,33 @@ _ContextSourceType = Union[
     list[Union[dict[str, Any], str, None]], dict[str, Any], str, None
 ]
 
+#: A single @container keyword.
+#: See https://www.w3.org/TR/json-ld11/#expanded-term-definition (§9.15.1)
+ContainerLiteral: TypeAlias = Literal[
+    "@list", "@set", "@language", "@index", "@id", "@graph", "@type"
+]
+#: The value of @container in an expanded term definition: a keyword, an array
+#: of keywords, or null (§9.15.1).
+ContainerType: TypeAlias = list[ContainerLiteral] | ContainerLiteral | None
+
+#: An expanded term definition.
+#: See https://www.w3.org/TR/json-ld11/#expanded-term-definition (§9.15.1)
+ExpandedTermDict = TypedDict(
+    "ExpandedTermDict",
+    {
+        "@id": str | None,
+        "@type": str | None,
+        "@container": ContainerType,
+        "@language": str | None,
+        "@reverse": str,
+    },
+    total=False,
+)
+
+#: Anything that is a valid JSON-LD term definition.
+#: See https://www.w3.org/TR/json-ld11/#context-definitions (§9.15)
+TermSerialization: TypeAlias = ExpandedTermDict | str | None
+
 
 class Context:
     def __init__(
@@ -89,7 +119,7 @@ class Context:
         # _alias maps NODE_KEY to list of aliases
         self._alias: dict[str, list[str]] = {}
         self._lookup: dict[tuple[str, Any, Union[Defined, str], bool], Term] = {}
-        self._prefixes: dict[str, Any] = {}
+        self._prefixes: dict[str, str] = {}
         self.active = False
         self.parent: Optional[Context] = None
         self.propagate = True
@@ -228,7 +258,7 @@ class Context:
         name: str,
         idref: str,
         coercion: Union[Defined, str] = UNDEF,
-        container: Union[Collection[Any], str, Defined] = UNDEF,
+        container: ContainerType | Defined = UNDEF,
         index: Optional[Union[str, Defined]] = None,
         language: Optional[Union[str, Defined]] = UNDEF,
         reverse: bool = False,
@@ -247,18 +277,20 @@ class Context:
             if existing and existing.protected:
                 return
 
+        container_set: set[ContainerLiteral]
         if isinstance(container, (list, set, tuple)):
-            container = set(container)
-        elif container is not UNDEF:
-            container = set([container])
+            container_set = set(container)
+        elif container is not UNDEF and container is not None:
+            container_set = {container}
         else:
-            container = set()
+            # "@container": null is the same as no container (§9.15.1)
+            container_set = set()
 
         term = Term(
             idref,
             name,
             coercion,
-            container,
+            container_set,
             index,
             language,
             reverse,
@@ -271,7 +303,7 @@ class Context:
 
         container_key: Union[Defined, str]
         for container_key in (LIST, LANG, SET):  # , INDEX, ID, GRAPH):
-            if container_key in container:
+            if container_key in container_set:
                 break
         else:
             container_key = UNDEF
@@ -655,20 +687,31 @@ class Context:
             term = term.get(ID)
         return term
 
-    def _term_dict(self, term: Term) -> Union[dict[str, Any], str]:
-        tdict: dict[str, Any] = {}
-        if term.type != UNDEF:
-            tdict[TYPE] = self.shrink_iri(term.type)
+    def _term_dict(self, term: Term) -> TermSerialization:
+        """
+        Converts a Term object into a term definition suitable for JSON-LD
+        (§9.15, §9.15.1).
+
+        If the term only has an ID, a simple term definition (the bare IRI) is
+        returned instead of an expanded term definition.
+        """
+        tdict: ExpandedTermDict = {}
+        if term.type is None:
+            tdict["@type"] = None
+        elif term.type != UNDEF:
+            tdict["@type"] = self.shrink_iri(term.type)
         if term.container:
-            tdict[CONTAINER] = list(term.container)
+            tdict["@container"] = list(term.container)
         if term.language != UNDEF:
-            tdict[LANG] = term.language
-        if term.reverse:
-            tdict[REV] = term.id
+            tdict["@language"] = term.language
+        # @reverse cannot be null (§9.15.1), so a null id is always written as @id
+        if term.reverse and term.id is not None:
+            tdict["@reverse"] = term.id
         else:
-            tdict[ID] = term.id
-        if tdict.keys() == {ID}:
-            return tdict[ID]
+            tdict["@id"] = term.id
+        if tdict.keys() == {"@id"} and "@id" in tdict:
+            # Return a simplified representation if the term only has an ID
+            return tdict["@id"]
         return tdict
 
     def to_dict(self) -> dict[str, Any]:
@@ -679,7 +722,7 @@ class Context:
         Returns:
             a dictionary representation of the context.
         """
-        r = {v: k for (k, v) in self._prefixes.items()}
+        r: dict[str, TermSerialization] = {v: k for (k, v) in self._prefixes.items()}
         r.update({term.name: self._term_dict(term) for term in self._lookup.values()})
         if self.base:
             r[BASE] = self.base
@@ -688,9 +731,50 @@ class Context:
         return r
 
 
-Term = namedtuple(
-    "Term",
-    "id, name, type, container, index, language, reverse, context," "prefix, protected",
-)
+class Term(NamedTuple):
+    """
+    Describes how a JSON key should be interpreted when parsed as RDF.
 
-Term.__new__.__defaults__ = (UNDEF, UNDEF, UNDEF, UNDEF, False, UNDEF, False, False)
+    This is the parsed form of a term definition.
+    See https://www.w3.org/TR/json-ld11/#context-definitions (§9.15)
+    """
+
+    #: Typically the expanded IRI of the term.
+    #: Can also be a keyword if the term is a keyword alias (§4.1.6),
+    #: or None if the term was defined as null to decouple it from @vocab (§9.15).
+    id: str | None
+    #: The name of the term, ie the JSON key that is an alias for the id.
+    name: str
+    #: The type coercion of values of this term: an IRI, or one of @id, @json,
+    #: @none or @vocab. None if @type was explicitly null.
+    #: See https://www.w3.org/TR/json-ld11/#type-coercion (§4.2.3)
+    type: Defined | str | None = UNDEF
+    #: The container type(s): any of @graph, @id, @index, @language, @list, @set or @type. See:
+    #: https://www.w3.org/TR/json-ld11/#syntax-tokens-and-keywords (§1.7) and the sections it references
+    container: Set[ContainerLiteral] = frozenset()
+    #: A predicate IRI that should be used to interpret keys of this object,
+    #: when used alongside `@container: @index`.
+    #: See https://www.w3.org/TR/json-ld11/#property-based-data-indexing (§4.6.1.1)
+    #: Ideally this wouldn't be called 'index' as it overrides the tuple's builtin index() method
+    #: Hence the type ignore comment
+    index: str | Defined | None = None  # type: ignore[assignment]
+    #: The language of string values of this term.
+    #: None if @language was explicitly null, ie the values have no language.
+    #: See https://www.w3.org/TR/json-ld11/#string-internationalization (§4.2.4)
+    language: str | Defined | None = UNDEF
+    #: Indicates that this term is a reverse property (defined with @reverse
+    #: instead of @id), so subject and object are swapped.
+    #: See https://www.w3.org/TR/json-ld11/#reverse-properties (§4.8)
+    reverse: bool = False
+    #: A scoped context used inside values that use this term.
+    #: See https://www.w3.org/TR/json-ld11/#scoped-contexts (§4.1.8)
+    context: Any = UNDEF
+    #: If true, this term may be used as the prefix of a compact IRI when
+    #: expanding or compacting. If false, it may not, although it can still be
+    #: used as a term in its own right.
+    #: See https://www.w3.org/TR/json-ld11/#compact-iris (§4.1.5)
+    prefix: bool | None = None
+    #: If true, marks the term as protected, meaning a later context cannot
+    #: redefine it unless the new definition is identical.
+    #: See https://www.w3.org/TR/json-ld11/#protected-term-definitions (§4.1.11)
+    protected: bool = False
