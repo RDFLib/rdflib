@@ -951,31 +951,37 @@ def RelationalExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> L
 def ConditionalAndExpression(
     e: Expr, ctx: Union[QueryContext, FrozenBindings]
 ) -> Literal:
-    # TODO: handle returned errors
-
-    expr = e.expr
-    other = e.other
+    expr = e.get("expr", errors=True)
 
     # because of the way the add-expr production handled operator precedence
     # we sometimes have nothing to do
-    if other is None:
+    if "other" not in e:
         return expr
+    other = e.get("other", errors=True)
 
-    return Literal(all(EBV(x) for x in [expr] + other))
+    error = None
+    for x in [expr] + other:
+        try:
+            if not EBV(x):
+                return Literal(False)
+        except SPARQLError as err:
+            error = err
+    if error:
+        raise error
+    return Literal(True)
 
 
 def ConditionalOrExpression(
     e: Expr, ctx: Union[QueryContext, FrozenBindings]
 ) -> Literal:
-    # TODO: handle errors
-
-    expr = e.expr
-    other = e.other
+    expr = e.get("expr", errors=True)
 
     # because of the way the add-expr production handled operator precedence
     # we sometimes have nothing to do
-    if other is None:
+    if "other" not in e:
         return expr
+    other = e.get("other", errors=True)
+
     # A logical-or that encounters an error on only one branch
     # will return TRUE if the other branch is TRUE and an error
     # if the other branch is FALSE.
@@ -984,8 +990,8 @@ def ConditionalOrExpression(
         try:
             if EBV(x):
                 return Literal(True)
-        except SPARQLError as e:
-            error = e
+        except SPARQLError as err:
+            error = err
     if error:
         raise error
     return Literal(False)
