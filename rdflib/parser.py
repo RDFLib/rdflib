@@ -82,13 +82,13 @@ class BytesIOWrapper(BufferedIOBase):
         "_text_bytes_offset",
     )
 
-    def __init__(self, wrapped: Union[str, StringIO, TextIOBase], encoding="utf-8"):
+    def __init__(self, wrapped: Union[str, TextIO, TextIOBase], encoding="utf-8"):
         super(BytesIOWrapper, self).__init__()
         self.wrapped = wrapped
         self.encoding = encoding
         self.encoder = codecs.getencoder(self.encoding)
         self.enc_str: Optional[Union[BytesIO, BufferedIOBase]] = None
-        self.text_str: Optional[Union[StringIO, TextIOBase]] = None
+        self.text_str: Optional[Union[TextIO, TextIOBase]] = None
         self.has_read1: Optional[bool] = None
         self.has_seek: Optional[bool] = None
         self._name: Optional[str] = None
@@ -135,9 +135,11 @@ class BytesIOWrapper(BufferedIOBase):
                 )
             else:
                 self.enc_str = cast(BufferedIOBase, inner)
-        elif isinstance(self.wrapped, (TextIOBase, StringIO)):
+        elif isinstance(self.wrapped, TextIOBase) or isinstance(
+            self.wrapped.read(0), str
+        ):
             self.text_str = self.wrapped
-        use_stream: Union[BytesIO, StringIO, BufferedIOBase, TextIOBase]
+        use_stream: Union[BytesIO, TextIO, BufferedIOBase, TextIOBase]
         if self.enc_str is not None:
             use_stream = self.enc_str
         elif self.text_str is not None:
@@ -158,7 +160,7 @@ class BytesIOWrapper(BufferedIOBase):
         self._name = name
 
     def _check_fileno(self):
-        use_stream: Union[BytesIO, StringIO, BufferedIOBase, TextIOBase]
+        use_stream: Union[BytesIO, TextIO, BufferedIOBase, TextIOBase]
         if self.enc_str is None and self.text_str is None:
             self._init()
         if self.enc_str is not None:
@@ -173,7 +175,7 @@ class BytesIOWrapper(BufferedIOBase):
             self._fileno = -1
 
     def _check_isatty(self):
-        use_stream: Union[BytesIO, StringIO, BufferedIOBase, TextIOBase]
+        use_stream: Union[BytesIO, TextIO, BufferedIOBase, TextIOBase]
         if self.enc_str is None and self.text_str is None:
             self._init()
         if self.enc_str is not None:
@@ -504,10 +506,7 @@ class StringInputSource(InputSource):
             self.setEncoding(c_stream.encoding)
 
 
-headers = {
-    "User-agent": "rdflib-%s (https://rdflib.github.io/; eikeon@eikeon.com)"
-    % __version__
-}
+headers = {"User-agent": f"rdflib/{__version__}"}
 
 
 class URLInputSource(InputSource):
@@ -612,6 +611,19 @@ class URLInputSource(InputSource):
         return self.url  # type: ignore[return-value]
 
 
+def _stream_name(stream: object) -> Optional[str]:
+    """
+    Return the path a stream was opened with, or None if it has none.
+
+    Temporary files can have an integer or None name, wrappers such as
+    GzipFile can have an empty one, and in-memory streams have no name at all.
+    """
+    name = getattr(stream, "name", None)
+    if isinstance(name, (str, bytes, os.PathLike)):
+        return os.fsdecode(name) or None
+    return None
+
+
 class FileInputSource(InputSource):
     def __init__(
         self,
@@ -619,18 +631,24 @@ class FileInputSource(InputSource):
         /,
         encoding: Optional[str] = None,
     ):
-        base = pathlib.Path.cwd().as_uri()
-        system_id = URIRef(pathlib.Path(file.name).absolute().as_uri(), base=base)  # type: ignore[union-attr]
+        system_id = None
+        name = _stream_name(file)
+        if name is not None:
+            base = pathlib.Path.cwd().as_uri()
+            system_id = URIRef(pathlib.Path(name).absolute().as_uri(), base=base)
         super(FileInputSource, self).__init__(system_id)
         self.file = file
-        if isinstance(file, TextIOBase):  # Python3 unicode fp
+        if isinstance(file, TextIOBase) or isinstance(file.read(0), str):
+            file = cast(TextIO, file)
+            # Decoded text streams may not declare an encoding.
+            encoding = getattr(file, "encoding", None) or encoding or "utf-8"
             self.setCharacterStream(file)
-            self.setEncoding(file.encoding)
+            self.setEncoding(encoding)
             try:
-                b = file.buffer  # type: ignore[attr-defined]
+                b = file.buffer
                 self.setByteStream(b)
             except (AttributeError, LookupError):
-                self.setByteStream(BytesIOWrapper(file, encoding=file.encoding))
+                self.setByteStream(BytesIOWrapper(file, encoding=encoding))
         else:
             if TYPE_CHECKING:
                 assert isinstance(file, BufferedReader)
@@ -704,10 +722,16 @@ def create_input_source(
                         input_source.setByteStream(source)  # type: ignore[arg-type]
                 else:
                     input_source.setByteStream(f)  # type: ignore[arg-type]
+                name = _stream_name(f)
                 if f is sys.stdin:
                     input_source.setSystemId("file:///dev/stdin")
-                elif hasattr(f, "name"):
-                    input_source.setSystemId(f.name)
+                elif name is not None:
+                    # Use a file URI, as FileInputSource does, so relative
+                    # IRIs resolve the same way for source= and file=.
+                    base = pathlib.Path.cwd().as_uri()
+                    input_source.setSystemId(
+                        URIRef(pathlib.Path(name).absolute().as_uri(), base=base)
+                    )
             else:
                 raise Exception(
                     "Unexpected type '%s' for source '%s'" % (type(source), source)

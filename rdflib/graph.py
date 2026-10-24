@@ -298,7 +298,7 @@ import rdflib.util  # avoid circular dependency
 from rdflib.collection import Collection
 from rdflib.exceptions import ParserError
 from rdflib.namespace import RDF, Namespace, NamespaceManager
-from rdflib.parser import InputSource, Parser, create_input_source
+from rdflib.parser import InputSource, Parser, _stream_name, create_input_source
 from rdflib.paths import Path
 from rdflib.resource import Resource
 from rdflib.serializer import Serializer
@@ -1626,12 +1626,9 @@ class Graph(Node):
             format = source.content_type
         could_not_guess_format = False
         if format is None:
-            if (
-                hasattr(source, "file")
-                and getattr(source.file, "name", None)
-                and isinstance(source.file.name, str)
-            ):
-                format = rdflib.util.guess_format(source.file.name)
+            file_name = _stream_name(getattr(source, "file", None))
+            if file_name is not None:
+                format = rdflib.util.guess_format(file_name)
             if format is None:
                 format = "turtle"
                 could_not_guess_format = True

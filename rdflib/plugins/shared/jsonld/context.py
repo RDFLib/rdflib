@@ -150,7 +150,9 @@ class Context:
         # type error: Item "None" of "Optional[Context]" has no attribute "_subcontext"
         return parent._subcontext(source, propagate)  # type: ignore[union-attr]
 
-    def _subcontext(self, source: Any, propagate: bool) -> Context:
+    def _subcontext(
+        self, source: Any, propagate: bool, override_protected: bool = False
+    ) -> Context:
         ctx = Context(version=self.version)
         ctx.propagate = propagate
         ctx.parent = self
@@ -163,7 +165,7 @@ class Context:
         ctx._lookup = self._lookup.copy()
         ctx._prefixes = self._prefixes.copy()
         ctx._context_cache = self._context_cache
-        ctx.load(source)
+        ctx.load(source, override_protected=override_protected)
         return ctx
 
     def _clear(self) -> None:
@@ -178,7 +180,10 @@ class Context:
 
     def get_context_for_term(self, term: Optional[Term]) -> Context:
         if term and term.context is not UNDEF:
-            return self._subcontext(term.context, propagate=True)
+            # A property-scoped context may redefine protected terms.
+            return self._subcontext(
+                term.context, propagate=True, override_protected=True
+            )
         return self
 
     def get_context_for_type(self, node: Any) -> Optional[Context]:
@@ -265,6 +270,7 @@ class Context:
         context: Any = UNDEF,
         prefix: Optional[bool] = None,
         protected: bool = False,
+        override_protected: bool = False,
     ):
         if self.version < 1.1 or prefix is None:
             prefix = isinstance(idref, str) and idref.endswith(URI_GEN_DELIMS)
@@ -272,7 +278,7 @@ class Context:
         if not self._accept_term(name):
             return
 
-        if self.version >= 1.1:
+        if self.version >= 1.1 and not override_protected:
             existing = self.terms.get(name)
             if existing and existing.protected:
                 return
@@ -431,6 +437,7 @@ class Context:
         source: _ContextSourceType,
         base: Optional[str] = None,
         referenced_contexts: set[Any] = None,
+        override_protected: bool = False,
     ):
         self.active = True
         sources: list[tuple[Optional[str], Union[dict[str, Any], str, None]]] = []
@@ -444,7 +451,7 @@ class Context:
                 self._clear()
             else:
                 # type error: Argument 1 to "_read_source" of "Context" has incompatible type "Union[dict[str, Any], str]"; expected "dict[str, Any]"
-                self._read_source(source, source_url, referenced_contexts)  # type: ignore[arg-type]
+                self._read_source(source, source_url, referenced_contexts, override_protected)  # type: ignore[arg-type]
 
     def _accept_term(self, key: str) -> bool:
         if self.version < 1.1:
@@ -527,6 +534,7 @@ class Context:
         source: dict[str, Any],
         source_url: Optional[str] = None,
         referenced_contexts: Optional[set[str]] = None,
+        override_protected: bool = False,
     ):
         imports = source.get(IMPORT)
         if imports:
@@ -543,22 +551,41 @@ class Context:
             imported.update(source)
             source = imported
 
-        self.vocab = source.get(VOCAB, self.vocab)
         self.version = source.get(VERSION, self.version)
+        # @base goes first, since a relative @vocab can depend on it.
+        if BASE in source and not source_url and not imports:
+            self.base = source[BASE]
+        if VOCAB in source:
+            vocab = source[VOCAB]
+            self.vocab = None if vocab is None else self._expand_vocab(vocab)
         protected = source.get(PROTECTED, False)
 
         for key, value in source.items():
-            if key in {VOCAB, VERSION, IMPORT, PROTECTED}:
+            if key in {VOCAB, VERSION, IMPORT, PROTECTED, BASE}:
                 continue
             elif key == PROPAGATE and isinstance(value, bool):
                 self.propagate = value
             elif key == LANG:
                 self.language = value
-            elif key == BASE:
-                if not source_url and not imports:
-                    self.base = value
             else:
-                self._read_term(source, key, value, protected)
+                self._read_term(source, key, value, protected, override_protected)
+
+    def _expand_vocab(self, vocab: str) -> str:
+        """
+        Expands the value of `@vocab` like JSON-LD 1.1 does. A term or compact
+        IRI is expanded, and a relative IRI reference is appended to the
+        current vocabulary mapping, or resolved against the base IRI if there
+        is no vocabulary mapping yet. So `"@vocab": ""` means the base IRI.
+
+        See https://www.w3.org/TR/json-ld11/#default-vocabulary and
+        https://www.w3.org/TR/json-ld11/#document-relative-vocabulary-mapping
+        """
+        iri = self.expand(vocab)
+        if iri is None:
+            # A relative IRI reference and no vocabulary mapping in scope.
+            # Without a base IRI it's kept as is.
+            return self.resolve_iri(vocab) if self._base else vocab
+        return iri
 
     def _read_term(
         self,
@@ -566,6 +593,7 @@ class Context:
         name: str,
         dfn: Union[dict[str, Any], str],
         protected: bool = False,
+        override_protected: bool = False,
     ) -> None:
         idref = None
         if isinstance(dfn, dict):
@@ -601,6 +629,7 @@ class Context:
                 context,
                 dfn.get(PREFIX),
                 protected=protected,
+                override_protected=override_protected,
             )
         else:
             if isinstance(dfn, str):
@@ -608,7 +637,12 @@ class Context:
                     return
                 idref = self._rec_expand(source, dfn)
             # type error: Argument 2 to "add_term" of "Context" has incompatible type "Optional[str]"; expected "str"
-            self.add_term(name, idref, protected=protected)  # type: ignore[arg-type]
+            self.add_term(
+                name,
+                idref,  # type: ignore[arg-type]
+                protected=protected,
+                override_protected=override_protected,
+            )
 
         if idref in NODE_KEYS:
             self._alias.setdefault(idref, []).append(name)

@@ -148,6 +148,30 @@ def join(here: str, there: str) -> str:
 
     ```
 
+    The fragment of `here` is not part of the base (RFC 3986, section 5.1).
+
+    ```python
+    >>> join('http://example/doc#', '#a')
+    'http://example/doc#a'
+
+    ```
+
+    A query-only reference keeps the base path (RFC 3986, section 5.2.2).
+
+    ```python
+    >>> join('http://a/b/c/d;p?q', '?y')
+    'http://a/b/c/d;p?y'
+
+    ```
+
+    A path reference discards the base query before merging paths.
+
+    ```python
+    >>> join('http://a/b?q/x', 'g')
+    'http://a/g'
+
+    ```
+
     We grok IRIs
 
     ```python
@@ -160,20 +184,23 @@ def join(here: str, there: str) -> str:
     ```
     """
 
-    #    assert(here.find("#") < 0), \
-    #        "Base may not contain hash: '%s'" % here  # why must caller splitFrag?
+    # RFC 3986, section 5.2.2, never uses the base's fragment.
+    here = splitFragP(here)[0]
 
-    slashl = there.find("/")
     colonl = there.find(":")
 
-    # join(base, 'foo:/') -- absolute
-    if colonl >= 0 and (slashl < 0 or colonl < slashl):
+    # join(base, 'foo:/') -- absolute: a scheme's ":" precedes any "/", "?" or "#".
+    if colonl >= 0 and not any(0 <= there.find(c) < colonl for c in "/?#"):
         return there
 
     bcolonl = here.find(":")
     assert bcolonl >= 0, (
         "Base uri '%s' is not absolute" % here
     )  # else it's not absolute
+
+    # RFC 3986, section 5.2.2: an empty reference path keeps the base path.
+    if there.startswith("?"):
+        return here.split("?", 1)[0] + there
 
     path, frag = splitFragP(there)
     if not path:
@@ -185,6 +212,9 @@ def join(here: str, there: str) -> str:
             "Base <%s> has no slash after "
             "colon - with relative '%s'." % (here, there)
         )
+
+    # RFC 3986, section 5.2.2, takes the query from a non-empty-path reference.
+    here = here.split("?", 1)[0]
 
     if here[bcolonl + 1 : bcolonl + 3] == "//":
         bpath = here.find("/", bcolonl + 3)
@@ -1768,6 +1798,9 @@ class BadSyntax(SyntaxError):  # noqa: N818
         self._why = why
         self.lines = lines
         self._uri = uri
+        # SyntaxError tracebacks read msg. Without it they report
+        # "<no detail available>" instead of this diagnostic.
+        self.msg = str(self)
 
     def __str__(self) -> str:
         argstr = self._str

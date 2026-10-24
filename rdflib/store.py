@@ -160,9 +160,9 @@ class Store:
         """Initialize the Store.
 
         Args:
-            identifier: URIRef of the Store. Defaults to CWD
             configuration: String containing information open can use to
                 connect to datastore.
+            identifier: URIRef of the Store. Defaults to CWD
         """
         self.__node_pickler: Optional[NodePickler] = None
         self.dispatcher = Dispatcher()

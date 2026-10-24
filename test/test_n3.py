@@ -5,7 +5,7 @@ from urllib.error import URLError
 import pytest
 
 from rdflib.graph import Dataset, Graph
-from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax
+from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax, join
 from rdflib.term import Literal, URIRef
 from test import TEST_DIR
 
@@ -325,3 +325,198 @@ class TestRegularExpressions:
         invalid = (".e1",)
         for expstring in invalid:
             assert not exponent_syntax.match(expstring)
+
+
+@pytest.mark.parametrize(
+    "base, reference, expected",
+    [
+        ("http://example.org/doc#", "#a", "http://example.org/doc#a"),
+        ("http://example.org/doc#x", "#a", "http://example.org/doc#a"),
+        ("http://example.org/doc#", "#", "http://example.org/doc#"),
+        ("http://example.org/doc#x", "", "http://example.org/doc"),
+        ("http://example.org/a/b#x/y", "c", "http://example.org/a/c"),
+        ("http://example.org/a/b/c#x/y", "../d", "http://example.org/a/d"),
+    ],
+)
+def test_join_ignores_base_fragment(base: str, reference: str, expected: str) -> None:
+    """RFC 3986, section 5.2.2, resolves a reference without the base's fragment."""
+    assert join(base, reference) == expected
+
+
+@pytest.mark.parametrize("format", ["turtle", "trig", "n3"])
+def test_parse_resolves_against_base_with_fragment(format: str) -> None:
+    """A fragment-only reference replaces the fragment of the base IRI."""
+    data = '@base <http://example.org/doc#> . <#a> <http://example.org/p> "v" .'
+    dataset = Dataset()
+    dataset.parse(data=data, format=format)
+    assert {s for s, _, _, _ in dataset.quads()} == {URIRef("http://example.org/doc#a")}
+
+
+@pytest.mark.parametrize(
+    "base, reference, expected",
+    [
+        ("http://a/b/c/d;p?q", "?y", "http://a/b/c/d;p?y"),
+        ("http://a/b/c/d;p?q", "?", "http://a/b/c/d;p?"),
+        ("http://a/b/c/d;p?q", "?y#s", "http://a/b/c/d;p?y#s"),
+        ("http://a/b/c/d;p?q", "?y:z", "http://a/b/c/d;p?y:z"),
+        ("http://a/b/c/d;p?q", "?y/../z", "http://a/b/c/d;p?y/../z"),
+        ("http://a/b/c/d;p?q", "?y?z", "http://a/b/c/d;p?y?z"),
+        ("http://a/b/c/d;p?q", "?#s", "http://a/b/c/d;p?#s"),
+        ("http://a/b/c/d;p?q/x#s/t", "?y", "http://a/b/c/d;p?y"),
+        ("http://a/b#f?g", "?y", "http://a/b?y"),
+        ("http://a/b?q?r", "?y", "http://a/b?y"),
+        ("http://a", "?y", "http://a?y"),
+        ("http://a?old/path", "?y", "http://a?y"),
+        ("http://a/b/", "?y", "http://a/b/?y"),
+        ("http://a/caf\u00e9/%3F?q", "?x=%2F", "http://a/caf\u00e9/%3F?x=%2F"),
+        ("local:/a/b?old", "?y", "local:/a/b?y"),
+        ("urn:isbn:123?old#f", "?y#g", "urn:isbn:123?y#g"),
+    ],
+)
+def test_join_query_only_reference(base: str, reference: str, expected: str) -> None:
+    """RFC 3986, section 5.2.2, keeps the base path for a query-only reference."""
+    assert join(base, reference) == expected
+
+
+@pytest.mark.parametrize("format", ["turtle", "trig", "n3"])
+@pytest.mark.parametrize("reference", ["?y", "?", "?y:z", "?y/../z", "?y#s"])
+def test_parse_query_only_reference(format: str, reference: str) -> None:
+    """Resolve query-only references in every position of a triple."""
+    data = (
+        "@base <http://a/b/c/d;p?q/x#s/t> . "
+        f"<{reference}> <{reference}> <{reference}> ."
+    )
+    dataset = Dataset()
+    dataset.parse(data=data, format=format)
+    expected = URIRef("http://a/b/c/d;p" + reference)
+    assert set(dataset.triples((None, None, None))) == {(expected, expected, expected)}
+
+
+@pytest.mark.parametrize(
+    "reference, expected",
+    [
+        ("#s:t", "http://a/b/c/d;p?q#s:t"),
+        ("g?y:z", "http://a/b/c/g?y:z"),
+        ("g#s:t", "http://a/b/c/g#s:t"),
+        ("./a:b", "http://a/b/c/a:b"),
+    ],
+)
+def test_join_reference_with_colon_after_delimiter(
+    reference: str, expected: str
+) -> None:
+    """A colon after "/", "?" or "#" does not make a reference absolute."""
+    assert join("http://a/b/c/d;p?q", reference) == expected
+
+
+@pytest.mark.parametrize("format", ["turtle", "trig", "n3"])
+@pytest.mark.parametrize(
+    "reference, expected",
+    [
+        ("#s:t", "http://a/b/c/d;p?q#s:t"),
+        ("g?y:z", "http://a/b/c/g?y:z"),
+    ],
+)
+def test_parse_reference_with_colon_after_delimiter(
+    format: str, reference: str, expected: str
+) -> None:
+    """A colon after "/", "?" or "#" does not make a reference absolute."""
+    data = f"@base <http://a/b/c/d;p?q> . <{reference}> <{reference}> <{reference}> ."
+    dataset = Dataset()
+    dataset.parse(data=data, format=format)
+    iri = URIRef(expected)
+    assert set(dataset.triples((None, None, None))) == {(iri, iri, iri)}
+
+
+@pytest.mark.parametrize("format", ["turtle", "trig", "n3"])
+def test_parse_query_only_base_and_prefix(format: str) -> None:
+    """Base and prefix declarations use the same query-only resolution."""
+    data = """
+        @base <http://a/b/c/d;p?q/x> .
+        @base <?y:z> .
+        @prefix e: <?term=> .
+        <#s> e:p e:o .
+    """
+    dataset = Dataset()
+    dataset.parse(data=data, format=format)
+    assert set(dataset.triples((None, None, None))) == {
+        (
+            URIRef("http://a/b/c/d;p?y:z#s"),
+            URIRef("http://a/b/c/d;p?term=p"),
+            URIRef("http://a/b/c/d;p?term=o"),
+        )
+    }
+
+
+@pytest.mark.parametrize(
+    "reference, expected",
+    [
+        ("", "http://a/b/c/d;p?q"),
+        ("#s", "http://a/b/c/d;p?q#s"),
+        ("https://other/path?q", "https://other/path?q"),
+    ],
+)
+def test_join_non_query_reference(reference: str, expected: str) -> None:
+    """Resolve references that are not query-only, even if they contain a query."""
+    assert join("http://a/b/c/d;p?q#old", reference) == expected
+
+
+def test_join_query_requires_absolute_base() -> None:
+    with pytest.raises(AssertionError, match="is not absolute"):
+        join("relative/path", "?y:z")
+
+
+def test_join_rejects_relative_path_with_opaque_base() -> None:
+    with pytest.raises(ValueError, match="no slash after colon"):
+        join("urn:isbn:123", "g?y:z")
+
+
+@pytest.mark.parametrize(
+    "base, reference, expected",
+    [
+        ("http://a/b?q/x", "g", "http://a/g"),
+        ("http://a?q/x", "/g", "http://a/g"),
+        ("http://a?q", "g", "http://a/g"),
+        ("http://a?q", "/g", "http://a/g"),
+        ("http://a?q/x", "g", "http://a/g"),
+        ("http://a/b/?q/x", "g", "http://a/b/g"),
+        ("http://a/b/c?q/x/y", "../g", "http://a/g"),
+        ("http://a/b?q/x", "g?y/z#s", "http://a/g?y/z#s"),
+        ("http://a?first?second/path", "g", "http://a/g"),
+        ("http://a?", "g", "http://a/g"),
+        ("http://a/caf\u00e9/%3F?q/x", "g", "http://a/caf\u00e9/g"),
+        ("local:/a/b?q/x", "g", "local:/a/g"),
+        ("http://a/b?q/x#old", "", "http://a/b?q/x"),
+        ("http://a/b?q/x#old", "#s", "http://a/b?q/x#s"),
+        ("http://a/b?q/x", "?y/z", "http://a/b?y/z"),
+        ("http://a?q/x", "//other/g?y/z", "http://other/g?y/z"),
+    ],
+)
+def test_join_base_query(base: str, reference: str, expected: str) -> None:
+    """RFC 3986 merges paths without treating the base's query as a path."""
+    assert join(base, reference) == expected
+
+
+@pytest.mark.parametrize("format", ["turtle", "trig", "n3"])
+@pytest.mark.parametrize("base", ["http://a/b?q/x", "http://a?q/x"])
+def test_parse_path_against_base_query(format: str, base: str) -> None:
+    data = f"@base <{base}> . <g> </p> <o?y/z#s> ."
+    dataset = Dataset()
+    dataset.parse(data=data, format=format)
+    assert set(dataset.triples((None, None, None))) == {
+        (URIRef("http://a/g"), URIRef("http://a/p"), URIRef("http://a/o?y/z#s"))
+    }
+
+
+@pytest.mark.parametrize("format", ["turtle", "trig", "n3"])
+def test_parse_base_and_prefix_against_base_query(format: str) -> None:
+    data = """
+        @base <http://a/b?q/x> .
+        @base <c?y/z> .
+        @prefix e: <vocab/> .
+        <s> e:p e:o .
+    """
+    dataset = Dataset()
+    dataset.parse(data=data, format=format)
+    assert set(dataset.triples((None, None, None))) == {
+        (URIRef("http://a/s"), URIRef("http://a/vocab/p"), URIRef("http://a/vocab/o"))
+    }
