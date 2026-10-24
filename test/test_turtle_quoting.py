@@ -71,6 +71,35 @@ def make_unquote_correctness_pairs() -> list[tuple[str, str]]:
 UNQUOTE_CORRECTNESS_PAIRS = make_unquote_correctness_pairs()
 
 
+@pytest.mark.parametrize(
+    "serialize_format, parse_format",
+    [("turtle", "turtle"), ("n3", "n3"), ("longturtle", "turtle")],
+)
+@pytest.mark.parametrize(
+    "value",
+    [
+        "\ud800",
+        "\udead",
+        "\udfff",
+        "\ud800\udfff",
+        "\ud7ff\ud800\udfff\ue000",
+        "a\n\udead",
+        '\\uDEAD\udead\r"\\',
+        'a\n\\uDEAD\udead\r"\\',
+    ],
+)
+def test_surrogate_literal_round_trip(
+    serialize_format: str, parse_format: str, value: str
+) -> None:
+    graph = Graph()
+    graph.add((EGDC.subject, EGDC.predicate, Literal(value)))
+
+    serialized = graph.serialize(format=serialize_format, encoding="utf-8")
+    parsed = Graph().parse(data=serialized, format=parse_format)
+
+    assert set(parsed) == set(graph)
+
+
 def ntriples_unquote_validate(input: str) -> str:
     """
     This function wraps `ntriples.unquote` in a way that ensures that `ntriples.validate` is always `True` when it runs.

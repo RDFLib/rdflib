@@ -1760,11 +1760,14 @@ class Literal(Identifier):
             # TODO: Replace usage of %s here with fstrings
             # when we have ability to escape \r and \n inside
             # f-string inline function calls
-            return '"""%s"""' % encoded.replace("\r", "\\r")
+            return '"""%s"""' % _escape_surrogates(encoded.replace("\r", "\\r"))
         else:
-            return '"%s"' % self.replace("\n", "\\n").replace("\\", "\\\\").replace(
-                '"', '\\"'
-            ).replace("\r", "\\r")
+            return '"%s"' % _escape_surrogates(
+                self.replace("\n", "\\n")
+                .replace("\\", "\\\\")
+                .replace('"', '\\"')
+                .replace("\r", "\\r")
+            )
 
     def __repr__(self) -> str:
         args = [str.__repr__(self)]
@@ -1786,6 +1789,16 @@ class Literal(Identifier):
         if self.value is not None:
             return self.value
         return self
+
+
+_surrogate_regex = compile("[\ud800-\udfff]")
+
+
+def _escape_surrogates(value: str) -> str:
+    """Escape surrogate code points as \\uXXXX, since they cannot be encoded as UTF-8."""
+    if value.isascii():
+        return value
+    return _surrogate_regex.sub(lambda match: f"\\u{ord(match[0]):04X}", value)
 
 
 def _parseXML(xmlstring: str) -> xml.dom.minidom.Document:  # noqa: N802
