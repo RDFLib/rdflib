@@ -1763,9 +1763,10 @@ class Literal(Identifier):
             return '"""%s"""' % _escape_surrogates(encoded.replace("\r", "\\r"))
         else:
             return '"%s"' % _escape_surrogates(
-                self.replace("\n", "\\n").replace("\\", "\\\\").replace(
-                    '"', '\\"'
-                ).replace("\r", "\\r")
+                self.replace("\n", "\\n")
+                .replace("\\", "\\\\")
+                .replace('"', '\\"')
+                .replace("\r", "\\r")
             )
 
     def __repr__(self) -> str:
@@ -1790,14 +1791,14 @@ class Literal(Identifier):
         return self
 
 
+_surrogate_regex = compile("[\ud800-\udfff]")
+
+
 def _escape_surrogates(value: str) -> str:
     """Escape surrogate code points as \\uXXXX, since they cannot be encoded as UTF-8."""
-    if not any("\ud800" <= char <= "\udfff" for char in value):
+    if value.isascii():
         return value
-    return "".join(
-        f"\\u{ord(char):04X}" if "\ud800" <= char <= "\udfff" else char
-        for char in value
-    )
+    return _surrogate_regex.sub(lambda match: f"\\u{ord(match[0]):04X}", value)
 
 
 def _parseXML(xmlstring: str) -> xml.dom.minidom.Document:  # noqa: N802
