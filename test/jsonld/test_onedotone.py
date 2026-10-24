@@ -84,10 +84,6 @@ known_bugs: tuple[str, ...] = (
     "toRdf/e093-in",
     "toRdf/e094-in",
     "toRdf/e104-in",
-    "toRdf/e108-in",
-    # TODO: Odd result in list expansion
-    "toRdf/e105-in",
-    "toRdf/e107-in",
     # no expandContent option?
     "toRdf/e077-in",
     # TODO: Investigate:
