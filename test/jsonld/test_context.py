@@ -353,6 +353,30 @@ def test_undef_identity_narrowing(value: Union[str, Defined], is_undef: bool) ->
             id="empty-is-base",
         ),
         pytest.param(
+            {"@base": "http://example.com", "@vocab": ""},
+            None,
+            "http://example.com",
+            id="empty-is-base-without-path",
+        ),
+        pytest.param(
+            {"@base": "http://example.com", "@vocab": "#"},
+            None,
+            "http://example.com#",
+            id="fragment-is-base-without-path",
+        ),
+        pytest.param(
+            {"@vocab": ""},
+            "urn:example:document",
+            "urn:example:document",
+            id="empty-is-urn-base",
+        ),
+        pytest.param(
+            {"@vocab": "#"},
+            "urn:example:document",
+            "urn:example:document#",
+            id="fragment-is-urn-base",
+        ),
+        pytest.param(
             [{"ex": "http://example.org/"}, {"@vocab": "ex"}],
             None,
             "http://example.org/",
@@ -414,4 +438,85 @@ def test_relative_vocab_in_document() -> None:
         (subject, RDF.type, doc.Restaurant),
         (subject, doc.name, RDFLiteral("Brew Eats")),
         (subject, doc.knows, URIRef("http://example/Other")),
+    }
+
+
+@pytest.mark.parametrize(
+    ("base", "vocab", "expected_vocab"),
+    [
+        pytest.param(
+            "http://example.com",
+            "",
+            "http://example.com",
+            id="empty-without-path",
+        ),
+        pytest.param(
+            "http://example.com",
+            "#",
+            "http://example.com#",
+            id="fragment-without-path",
+        ),
+        pytest.param(
+            "http://example.com",
+            "#terms-",
+            "http://example.com#terms-",
+            id="named-fragment-without-path",
+        ),
+        pytest.param(
+            "http://example.com",
+            "#http://terms/",
+            "http://example.com#http://terms/",
+            id="fragment-containing-scheme",
+        ),
+        pytest.param(
+            "http://example.com?version=1",
+            "",
+            "http://example.com?version=1",
+            id="empty-preserves-query",
+        ),
+        pytest.param(
+            "http://example.com?version=1",
+            "#",
+            "http://example.com?version=1#",
+            id="fragment-preserves-query",
+        ),
+        pytest.param(
+            "urn:example:document",
+            "",
+            "urn:example:document",
+            id="empty-urn",
+        ),
+        pytest.param(
+            "urn:example:document",
+            "#",
+            "urn:example:document#",
+            id="fragment-urn",
+        ),
+        pytest.param(
+            "urn:example:document",
+            "#terms-",
+            "urn:example:document#terms-",
+            id="named-fragment-urn",
+        ),
+    ],
+)
+@pytest.mark.parametrize("base_in_context", [False, True])
+def test_relative_vocab_preserves_base_in_document(
+    base: str, vocab: str, expected_vocab: str, base_in_context: bool
+) -> None:
+    """Empty and fragment-only vocabularies leave the base path unchanged."""
+    source = {"@vocab": vocab}
+    if base_in_context:
+        source["@base"] = base
+    data = {
+        "@context": source,
+        "@id": "urn:example:subject",
+        "@type": "Person",
+        "name": "Name",
+    }
+    graph = Graph().parse(data=json.dumps(data), format="json-ld", publicID=base)
+    subject = URIRef("urn:example:subject")
+    assert set(graph) == {
+        (subject, RDF.type, URIRef(f"{expected_vocab}Person")),
+        (subject, URIRef(f"{expected_vocab}name"), RDFLiteral("Name")),
     }

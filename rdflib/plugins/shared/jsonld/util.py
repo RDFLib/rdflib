@@ -224,6 +224,10 @@ def norm_url(base: str, url: str) -> str:
 
     ```
     """
+    # Same-document references must not change the base path.
+    if not url or url.startswith("#"):
+        return (base or "").split("#", 1)[0] + url
+
     if "://" in url:
         return url
 
