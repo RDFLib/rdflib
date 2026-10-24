@@ -164,6 +164,14 @@ def join(here: str, there: str) -> str:
 
     ```
 
+    A path reference discards the base query before merging paths.
+
+    ```python
+    >>> join('http://a/b?q/x', 'g')
+    'http://a/g'
+
+    ```
+
     We grok IRIs
 
     ```python
@@ -204,6 +212,9 @@ def join(here: str, there: str) -> str:
             "Base <%s> has no slash after "
             "colon - with relative '%s'." % (here, there)
         )
+
+    # RFC 3986, section 5.2.2, takes the query from a non-empty-path reference.
+    here = here.split("?", 1)[0]
 
     if here[bcolonl + 1 : bcolonl + 3] == "//":
         bpath = here.find("/", bcolonl + 3)

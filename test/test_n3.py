@@ -468,3 +468,55 @@ def test_join_query_requires_absolute_base() -> None:
 def test_join_rejects_relative_path_with_opaque_base() -> None:
     with pytest.raises(ValueError, match="no slash after colon"):
         join("urn:isbn:123", "g?y:z")
+
+
+@pytest.mark.parametrize(
+    "base, reference, expected",
+    [
+        ("http://a/b?q/x", "g", "http://a/g"),
+        ("http://a?q/x", "/g", "http://a/g"),
+        ("http://a?q", "g", "http://a/g"),
+        ("http://a?q", "/g", "http://a/g"),
+        ("http://a?q/x", "g", "http://a/g"),
+        ("http://a/b/?q/x", "g", "http://a/b/g"),
+        ("http://a/b/c?q/x/y", "../g", "http://a/g"),
+        ("http://a/b?q/x", "g?y/z#s", "http://a/g?y/z#s"),
+        ("http://a?first?second/path", "g", "http://a/g"),
+        ("http://a?", "g", "http://a/g"),
+        ("http://a/caf\u00e9/%3F?q/x", "g", "http://a/caf\u00e9/g"),
+        ("local:/a/b?q/x", "g", "local:/a/g"),
+        ("http://a/b?q/x#old", "", "http://a/b?q/x"),
+        ("http://a/b?q/x#old", "#s", "http://a/b?q/x#s"),
+        ("http://a/b?q/x", "?y/z", "http://a/b?y/z"),
+        ("http://a?q/x", "//other/g?y/z", "http://other/g?y/z"),
+    ],
+)
+def test_join_base_query(base: str, reference: str, expected: str) -> None:
+    """RFC 3986 merges paths without treating the base's query as a path."""
+    assert join(base, reference) == expected
+
+
+@pytest.mark.parametrize("format", ["turtle", "trig", "n3"])
+@pytest.mark.parametrize("base", ["http://a/b?q/x", "http://a?q/x"])
+def test_parse_path_against_base_query(format: str, base: str) -> None:
+    data = f"@base <{base}> . <g> </p> <o?y/z#s> ."
+    dataset = Dataset()
+    dataset.parse(data=data, format=format)
+    assert set(dataset.triples((None, None, None))) == {
+        (URIRef("http://a/g"), URIRef("http://a/p"), URIRef("http://a/o?y/z#s"))
+    }
+
+
+@pytest.mark.parametrize("format", ["turtle", "trig", "n3"])
+def test_parse_base_and_prefix_against_base_query(format: str) -> None:
+    data = """
+        @base <http://a/b?q/x> .
+        @base <c?y/z> .
+        @prefix e: <vocab/> .
+        <s> e:p e:o .
+    """
+    dataset = Dataset()
+    dataset.parse(data=data, format=format)
+    assert set(dataset.triples((None, None, None))) == {
+        (URIRef("http://a/s"), URIRef("http://a/vocab/p"), URIRef("http://a/vocab/o"))
+    }

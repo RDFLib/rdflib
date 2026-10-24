@@ -1,6 +1,8 @@
 import logging
 from datetime import datetime, timezone
 
+import pytest
+
 from rdflib.namespace import XSD
 from rdflib.term import Literal, URIRef
 from rdflib.xsd_datetime import XSDDate, xsd_datetime_isoformat
@@ -81,6 +83,33 @@ class TestRelativeBase:
         assert lit.ill_typed is False
         assert lit.value == XSDDate(-2, 4, 12)
         assert lit.toPython() == XSDDate(-2, 4, 12)
+        assert not any(
+            "Failed to convert Literal lexical form" in r.message
+            for r in caplog.records
+        )
+
+    @pytest.mark.parametrize(
+        "lexical",
+        [
+            "-0001",
+            "-0500",
+            "-12000",
+            # Year zero is a valid xsd:gYear in XML Schema 1.1.
+            "0000",
+        ],
+    )
+    def test_bce_xsd_gyear(self, lexical, caplog):
+        """
+        xsd:gYear literals for BCE years and year zero are not ill-typed.
+
+        See https://github.com/RDFLib/rdflib/issues/2321.
+        """
+        caplog.set_level(logging.WARNING, logger="rdflib.term")
+
+        lit = Literal(lexical, datatype=XSD.gYear)
+
+        assert str(lit) == lexical
+        assert lit.ill_typed is not True
         assert not any(
             "Failed to convert Literal lexical form" in r.message
             for r in caplog.records
