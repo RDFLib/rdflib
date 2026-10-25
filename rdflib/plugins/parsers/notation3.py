@@ -116,6 +116,20 @@ def splitFragP(uriref: str, punc: int = 0) -> tuple[str, str]:
 _StrT = TypeVar("_StrT", bound=str)
 
 
+def _remove_dot_segments(path: str) -> str:
+    """Remove dot segments from an absolute path (RFC 3986, section 5.2.4)."""
+    segments: list[str] = []
+    for segment in path.split("/"):
+        if segment == "..":
+            if len(segments) > 1:
+                segments.pop()
+        elif segment != ".":
+            segments.append(segment)
+    if path.endswith(("/.", "/..")):
+        segments.append("")
+    return "/".join(segments)
+
+
 def join(here: str, there: str) -> str:
     """join an absolute URI and URI reference
     (non-ascii characters are supported/doctested;
@@ -169,6 +183,9 @@ def join(here: str, there: str) -> str:
     ```python
     >>> join('http://a/b?q/x', 'g')
     'http://a/g'
+
+    >>> join('http://a/b/c/d;p?q', 'g/../h')
+    'http://a/b/c/h'
 
     ```
 
@@ -226,31 +243,28 @@ def join(here: str, there: str) -> str:
         bpath = len(here)
         here = here + "/"
 
+    path, query_sep, query = path.partition("?")
+    suffix = query_sep + query + frag
+
     # join('http://xyz/', '//abc') => 'http://abc'
     if there[:2] == "//":
-        return here[: bcolonl + 1] + there
+        authority_end = path.find("/", 2)
+        if authority_end < 0:
+            return here[: bcolonl + 1] + there
+        return (
+            here[: bcolonl + 1]
+            + path[:authority_end]
+            + _remove_dot_segments(path[authority_end:])
+            + suffix
+        )
 
     # join('http://xyz/', '/abc') => 'http://xyz/abc'
     if there[:1] == "/":
-        return here[:bpath] + there
+        return here[:bpath] + _remove_dot_segments(path) + suffix
 
     slashr = here.rfind("/")
-
-    while 1:
-        if path[:2] == "./":
-            path = path[2:]
-        if path == ".":
-            path = ""
-        elif path[:3] == "../" or path == "..":
-            path = path[3:]
-            i = here.rfind("/", bpath, slashr)
-            if i >= 0:
-                here = here[: i + 1]
-                slashr = i
-        else:
-            break
-
-    return here[: slashr + 1] + path + frag
+    path = here[bpath : slashr + 1] + path
+    return here[:bpath] + _remove_dot_segments(path) + suffix
 
 
 def base() -> str:
