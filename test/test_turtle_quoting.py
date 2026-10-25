@@ -143,7 +143,8 @@ def make_unquote_correctness_tests(
 
 
 @pytest.mark.parametrize(
-    "unquoter_key, quoted, unquoted", make_unquote_correctness_tests(unquoters.keys())
+    "unquoter_key, quoted, unquoted",
+    list(make_unquote_correctness_tests(unquoters.keys())),
 )
 def test_unquote_correctness(
     unquoter_key: str,
@@ -162,7 +163,7 @@ QUAD_FORMATS = {"nquads"}
 
 @pytest.mark.parametrize(
     "format, quoted, unquoted",
-    make_unquote_correctness_tests(["turtle", "ntriples", "nquads"]),
+    list(make_unquote_correctness_tests(["turtle", "ntriples", "nquads"])),
 )
 def test_parse_correctness(
     format: str,
@@ -229,7 +230,7 @@ PN_LOCAL_ESC_CHARS = r"_~.-!$&'()*+,;=/?#@"
 
 @pytest.mark.parametrize(
     "format, char",
-    itertools.product(["turtle", "ntriples"], "A2c" + PN_LOCAL_ESC_CHARS),
+    list(itertools.product(["turtle", "ntriples"], "A2c" + PN_LOCAL_ESC_CHARS)),
 )
 def test_serialize_roundtrip(format: str, char: str) -> None:
     graph = Graph()

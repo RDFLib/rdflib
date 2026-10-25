@@ -194,10 +194,12 @@ def make_graph_store_bind_cases(
 
 @pytest.mark.parametrize(
     ["graph_factory", "ops", "expected_bindings"],
-    itertools.chain(
-        make_graph_store_bind_cases(),
-        make_graph_store_bind_cases(store_type=MemoryWithoutBindOverride),
-        make_graph_store_bind_cases(graph_type=GraphWithoutBindOverrideFix),
+    list(
+        itertools.chain(
+            make_graph_store_bind_cases(),
+            make_graph_store_bind_cases(store_type=MemoryWithoutBindOverride),
+            make_graph_store_bind_cases(graph_type=GraphWithoutBindOverrideFix),
+        )
     ),
 )
 def test_graph_store_bind(

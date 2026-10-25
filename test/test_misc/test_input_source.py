@@ -775,7 +775,7 @@ def generate_create_input_source_cases() -> Iterable[ParameterSet]:
 
 @pytest.mark.parametrize(
     ["test_params"],
-    generate_create_input_source_cases(),
+    list(generate_create_input_source_cases()),
 )
 def test_create_input_source(
     test_params: CreateInputSourceTestParams,

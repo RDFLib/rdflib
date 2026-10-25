@@ -155,12 +155,14 @@ MARK_DICT = {
 
 @pytest.mark.parametrize(
     ["manifest_entry"],
-    params_from_sources(
-        MAPPER,
-        ManifestEntry,
-        LOCAL_BASE_DIR / "manifest.ttl",
-        mark_dict=MARK_DICT,
-        report_prefix="rdflib_w3c_turtle",
+    list(
+        params_from_sources(
+            MAPPER,
+            ManifestEntry,
+            LOCAL_BASE_DIR / "manifest.ttl",
+            mark_dict=MARK_DICT,
+            report_prefix="rdflib_w3c_turtle",
+        )
     ),
 )
 def test_entry(manifest_entry: ManifestEntry) -> None:

@@ -422,7 +422,7 @@ SerializeResultType = Union[bytes, str, Graph]
 
 @pytest.mark.parametrize(
     ["args"],
-    make_serialize_parse_tests(),
+    list(make_serialize_parse_tests()),
 )
 def test_serialize_parse(
     tmp_path: Path,
@@ -627,7 +627,7 @@ def make_test_serialize_to_strdest_tests() -> Generator[ParameterSet, None, None
 
 @pytest.mark.parametrize(
     ["destination_type", "name_prefix"],
-    make_test_serialize_to_strdest_tests(),
+    list(make_test_serialize_to_strdest_tests()),
 )
 def test_serialize_to_strdest(
     tmp_path: Path,

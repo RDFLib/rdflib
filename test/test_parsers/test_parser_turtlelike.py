@@ -229,7 +229,7 @@ def make_literal_tests() -> Iterator[ParameterSet]:
 
 @pytest.mark.parametrize(
     ["format_name", "expected_literal", "literal_string", "parse_function"],
-    make_literal_tests(),
+    list(make_literal_tests()),
 )
 def test_literals(
     format_name: str,

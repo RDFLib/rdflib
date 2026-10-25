@@ -196,7 +196,7 @@ def make_select_result_serialize_parse_tests() -> Iterator[ParameterSet]:
 
 @pytest.mark.parametrize(
     ["test_args"],
-    make_select_result_serialize_parse_tests(),
+    list(make_select_result_serialize_parse_tests()),
 )
 def test_select_result_serialize_parse(
     tmp_path: Path,
@@ -276,7 +276,7 @@ def make_select_result_parse_serialized_tests() -> Iterator[ParameterSet]:
 
 @pytest.mark.parametrize(
     ["test_args"],
-    make_select_result_parse_serialized_tests(),
+    list(make_select_result_parse_serialized_tests()),
 )
 def test_select_result_parse_serialized(
     tmp_path: Path,
@@ -340,7 +340,7 @@ def make_test_serialize_to_strdest_tests() -> Iterator[ParameterSet]:
 
 @pytest.mark.parametrize(
     ["destination_type", "name_prefix"],
-    make_test_serialize_to_strdest_tests(),
+    list(make_test_serialize_to_strdest_tests()),
 )
 def test_serialize_to_strdest(
     tmp_path: Path,
