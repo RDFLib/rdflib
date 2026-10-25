@@ -244,6 +244,52 @@ def test_literals(
     assert expected_literal == identifier
 
 
+@pytest.mark.parametrize(
+    ["format_name", "pname", "local_name"],
+    [
+        (format.name, pname, local_name)
+        for format in FORMATS
+        if FormatTrait.prefixes in format.traits
+        for pname, local_name in [
+            ("eg:a\\.", "a."),
+            ("eg:a.\\.", "a.."),
+            ("eg:\\..\\.", "..."),
+            ("eg:a\\.b", "a.b"),
+        ]
+    ],
+)
+def test_prefixed_name_with_escaped_dot(
+    format_name: str, pname: str, local_name: str
+) -> None:
+    """
+    A prefixed name can end with an escaped dot, which is part of the local
+    name, unlike an unescaped one.
+    """
+    g = Graph()
+    g.parse(
+        data=f"@prefix eg: <{EGDC}> .\n{pname} <{EGDC.predicate}> {pname} .",
+        format=format_name,
+    )
+    assert list(g) == [(EGDC[local_name], EGDC.predicate, EGDC[local_name])]
+
+
+@pytest.mark.parametrize("format_name", ["turtle", "trig"])
+@pytest.mark.parametrize(
+    "data",
+    [
+        r"_:a\. <urn:p> <urn:o> .",
+        r"<urn:s> <urn:p> _:a\. .",
+    ],
+    ids=["subject", "object"],
+)
+def test_blank_node_label_with_escaped_trailing_dot(
+    format_name: str, data: str
+) -> None:
+    """Blank-node labels cannot end in a dot, even if escaped."""
+    with pytest.raises(BadSyntax):
+        Graph().parse(data=data, format=format_name)
+
+
 def test_badsyntax_msg_matches_rendered_detail() -> None:
     """SyntaxError.msg keeps the diagnostic BadSyntax already renders.
 
