@@ -10,7 +10,7 @@ from typing import Any
 
 import pytest
 
-from rdflib import RDF, Dataset, Literal, Namespace
+from rdflib import RDF, BNode, Dataset, Literal, Namespace
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID as DEFAULT
 
 EX = Namespace("http://example.org/")
@@ -24,6 +24,7 @@ CONTEXT = {
     "members": {"@id": "ex:members", "@container": "@type"},
     "byId": {"@id": "ex:byId", "@container": "@id"},
     "graphsById": {"@id": "ex:graphsById", "@container": ["@graph", "@id"]},
+    "graphsByIndex": {"@id": "ex:graphsByIndex", "@container": ["@graph", "@index"]},
 }
 
 ALICE = {"@id": "ex:alice", "name": "Alice"}
@@ -93,3 +94,60 @@ def _parse_jsonld(data: dict[str, Any]) -> Dataset:
 )
 def test_map_value_array(data: dict[str, Any], expected: set[tuple]) -> None:
     assert set(_parse_jsonld(data).quads()) == expected
+
+
+@pytest.mark.parametrize(
+    ["term", "key"],
+    [
+        pytest.param("graphsByIndex", "g", id="graph-index"),
+        pytest.param("graphsByIndex", "@none", id="graph-index-none"),
+        pytest.param("graphsById", "@none", id="graph-id-none"),
+    ],
+)
+@pytest.mark.parametrize(
+    "values",
+    [
+        pytest.param([ALICE], id="node"),
+        pytest.param([ALICE, None], id="trailing-null"),
+        pytest.param([None, ALICE], id="leading-null"),
+        pytest.param([None, ALICE, None], id="surrounding-nulls"),
+        pytest.param([None], id="only-null"),
+        pytest.param([], id="empty"),
+    ],
+)
+def test_graph_map_null_array_items(
+    term: str, key: str, values: list[dict[str, str] | None]
+) -> None:
+    ds = _parse_jsonld({"@id": "ex:team", term: {key: values}})
+    if ALICE not in values:
+        assert set(ds.quads()) == set()
+        return
+
+    (graph_id,) = ds.default_graph.objects(EX.team, EX[term])
+    assert isinstance(graph_id, BNode)
+    assert set(ds.quads()) == {
+        (EX.team, EX[term], graph_id, DEFAULT),
+        (EX.alice, EX.name, Literal("Alice"), graph_id),
+    }
+
+
+@pytest.mark.parametrize("key", ["g", "@none"])
+@pytest.mark.parametrize("include_null", [False, True])
+def test_graph_index_array_items_have_separate_graphs(
+    key: str, include_null: bool
+) -> None:
+    values = [ALICE, None, BOB] if include_null else [ALICE, BOB]
+    ds = _parse_jsonld({"@id": "ex:team", "graphsByIndex": {key: values}})
+    (alice_quad,) = ds.quads((EX.alice, EX.name, Literal("Alice"), None))
+    (bob_quad,) = ds.quads((EX.bob, EX.name, Literal("Bob"), None))
+    alice_graph = alice_quad[3]
+    bob_graph = bob_quad[3]
+    assert isinstance(alice_graph, BNode)
+    assert isinstance(bob_graph, BNode)
+    assert alice_graph != bob_graph
+    assert set(ds.quads()) == {
+        (EX.team, EX.graphsByIndex, alice_graph, DEFAULT),
+        (EX.team, EX.graphsByIndex, bob_graph, DEFAULT),
+        (EX.alice, EX.name, Literal("Alice"), alice_graph),
+        (EX.bob, EX.name, Literal("Bob"), bob_graph),
+    }

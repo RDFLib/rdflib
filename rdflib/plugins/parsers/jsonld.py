@@ -498,22 +498,26 @@ class Parser:
 
         v11 = context.version >= 1.1
 
+        # Anonymous graph-map entries need an ID to keep their contents in
+        # a named graph instead of the default graph.
         if v11 and GRAPH in term.container and ID in term.container:
             return [
                 (
-                    dict({GRAPH: o})
+                    dict({ID: BNode().n3(), GRAPH: o})
                     if k in context.get_keys(NONE)
                     else dict({ID: k, GRAPH: o}) if isinstance(o, dict) else o
                 )
                 for k, values in obj.items()
                 for o in (values if isinstance(values, list) else [values])
+                if o is not None
             ]
 
         elif v11 and GRAPH in term.container and INDEX in term.container:
             return [
-                dict({GRAPH: o})
+                dict({ID: BNode().n3(), GRAPH: o})
                 for values in obj.values()
                 for o in (values if isinstance(values, list) else [values])
+                if o is not None
             ]
 
         elif v11 and GRAPH in term.container:
