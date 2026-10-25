@@ -123,7 +123,6 @@ class SPARQLStore(SPARQLConnector, Store):
     ...     "http://dbpedia.org/sparql",
     ...     node_to_sparql=my_bnode_ext
     ... )
-    ```
 
     ```
 
@@ -141,6 +140,7 @@ class SPARQLStore(SPARQLConnector, Store):
 
     ```python
     >>> store = SPARQLStore('...my endpoint ...', auth=('user','pass'))
+
     ```
     """
 
