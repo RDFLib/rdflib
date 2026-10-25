@@ -436,7 +436,7 @@ class Context:
         self,
         source: _ContextSourceType,
         base: str | None = None,
-        referenced_contexts: set[Any] = None,
+        referenced_contexts: set[Any] | None = None,
         override_protected: bool = False,
     ):
         self.active = True
