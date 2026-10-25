@@ -6,11 +6,16 @@ contributors to keep it alive and relevant.
 
 ## Which branch should I target?
 
-The `main` branch targets RDFLib v8. Bug fixes, documentation updates, dependency
-updates, new features, and agreed breaking changes for v8 should target `main`.
+Most pull requests should target `main`, the current major release branch.
+Backwards-compatible bug fixes, documentation updates, dependency updates, and
+new features should usually target `main`.
 
-The `next` branch is reserved for future major-release work identified by the
-maintainers.
+The `next` branch is reserved for work toward the next major release. Target
+`next` only for breaking changes or other work that maintainers have identified
+as next-major work.
+
+Maintainers periodically merge `main` forward into `next`, so changes accepted
+on `main` will be carried into next-major development when `next` catches up.
 
 If you are unsure which branch to use, open the pull request against `main` and
 ask for maintainer guidance.
