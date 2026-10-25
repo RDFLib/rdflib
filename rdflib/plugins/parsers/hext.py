@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import warnings
 from io import TextIOWrapper
-from typing import TYPE_CHECKING, Any, BinaryIO, Callable, Optional, TextIO, Union, cast
+from typing import TYPE_CHECKING, Any, BinaryIO, Callable, TextIO, Union, cast
 
 from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from rdflib.parser import InputSource, Parser
@@ -36,7 +36,7 @@ class HextuplesParser(Parser):
 
     def __init__(self):
         super(HextuplesParser, self).__init__()
-        self.default_context: Optional[Graph] = None
+        self.default_context: Graph | None = None
         self.skolemize = False
 
     def _parse_hextuple(

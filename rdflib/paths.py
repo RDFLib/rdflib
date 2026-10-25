@@ -201,9 +201,7 @@ OneOrMore = "+"
 ZeroOrOne = "?"
 
 
-def _n3(
-    arg: Union[URIRef, Path], namespace_manager: Optional[NamespaceManager] = None
-) -> str:
+def _n3(arg: URIRef | Path, namespace_manager: NamespaceManager | None = None) -> str:
     if isinstance(arg, (SequencePath, AlternativePath)) and len(arg.args) > 1:
         return "(%s)" % arg.n3(namespace_manager)
     return arg.n3(namespace_manager)
@@ -213,10 +211,10 @@ def _n3(
 class Path(ABC):
     """Base class for all property paths."""
 
-    __or__: Callable[[Path, Union[URIRef, Path]], AlternativePath]
+    __or__: Callable[[Path, URIRef | Path], AlternativePath]
     __invert__: Callable[[Path], InvPath]
     __neg__: Callable[[Path], NegatedPath]
-    __truediv__: Callable[[Path, Union[URIRef, Path]], SequencePath]
+    __truediv__: Callable[[Path, URIRef | Path], SequencePath]
     __mul__: Callable[[Path, str], MulPath]
 
     @abstractmethod
@@ -228,7 +226,7 @@ class Path(ABC):
     ) -> Iterator[tuple[_SubjectType, _ObjectType]]: ...
 
     @abstractmethod
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str: ...
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str: ...
 
     def __hash__(self):
         return hash(repr(self))
@@ -245,7 +243,7 @@ class Path(ABC):
 
 
 class InvPath(Path):
-    def __init__(self, arg: Union[Path, URIRef]):
+    def __init__(self, arg: Path | URIRef):
         self.arg = arg
 
     def eval(
@@ -260,13 +258,13 @@ class InvPath(Path):
     def __repr__(self) -> str:
         return "Path(~%s)" % (self.arg,)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         return "^%s" % _n3(self.arg, namespace_manager)
 
 
 class SequencePath(Path):
-    def __init__(self, *args: Union[Path, URIRef]):
-        self.args: list[Union[Path, URIRef]] = []
+    def __init__(self, *args: Path | URIRef):
+        self.args: list[Path | URIRef] = []
         for a in args:
             if isinstance(a, SequencePath):
                 self.args += a.args
@@ -280,7 +278,7 @@ class SequencePath(Path):
         obj: Optional[_ObjectType] = None,
     ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
         def _eval_seq(
-            paths: list[Union[Path, URIRef]],
+            paths: list[Path | URIRef],
             subj: Optional[_SubjectType],
             obj: Optional[_ObjectType],
         ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
@@ -294,7 +292,7 @@ class SequencePath(Path):
                     yield s, o
 
         def _eval_seq_bw(
-            paths: list[Union[Path, URIRef]],
+            paths: list[Path | URIRef],
             subj: Optional[_SubjectType],
             obj: _ObjectType,
         ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
@@ -317,13 +315,13 @@ class SequencePath(Path):
     def __repr__(self) -> str:
         return "Path(%s)" % " / ".join(str(x) for x in self.args)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         return "/".join(_n3(a, namespace_manager) for a in self.args)
 
 
 class AlternativePath(Path):
-    def __init__(self, *args: Union[Path, URIRef]):
-        self.args: list[Union[Path, URIRef]] = []
+    def __init__(self, *args: Path | URIRef):
+        self.args: list[Path | URIRef] = []
         for a in args:
             if isinstance(a, AlternativePath):
                 self.args += a.args
@@ -343,12 +341,12 @@ class AlternativePath(Path):
     def __repr__(self) -> str:
         return "Path(%s)" % " | ".join(str(x) for x in self.args)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         return "|".join(_n3(a, namespace_manager) for a in self.args)
 
 
 class MulPath(Path):
-    def __init__(self, path: Union[Path, URIRef], mod: _MulPathMod):
+    def __init__(self, path: Path | URIRef, mod: _MulPathMod):
         self.path = path
         self.mod = mod
 
@@ -467,13 +465,13 @@ class MulPath(Path):
     def __repr__(self) -> str:
         return "Path(%s%s)" % (self.path, self.mod)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         return "%s%s" % (_n3(self.path, namespace_manager), self.mod)
 
 
 class NegatedPath(Path):
-    def __init__(self, arg: Union[AlternativePath, InvPath, URIRef]):
-        self.args: list[Union[URIRef, Path]]
+    def __init__(self, arg: AlternativePath | InvPath | URIRef):
+        self.args: list[URIRef | Path]
         if isinstance(arg, (URIRef, InvPath)):
             self.args = [arg]
         elif isinstance(arg, AlternativePath):
@@ -501,7 +499,7 @@ class NegatedPath(Path):
     def __repr__(self) -> str:
         return "Path(! %s)" % ",".join(str(x) for x in self.args)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         return "!(%s)" % ("|".join(_n3(arg, namespace_manager) for arg in self.args))
 
 
@@ -509,7 +507,7 @@ class PathList(list):
     pass
 
 
-def path_alternative(self: Union[URIRef, Path], other: Union[URIRef, Path]):
+def path_alternative(self: URIRef | Path, other: URIRef | Path):
     """
     alternative path
     """
@@ -518,7 +516,7 @@ def path_alternative(self: Union[URIRef, Path], other: Union[URIRef, Path]):
     return AlternativePath(self, other)
 
 
-def path_sequence(self: Union[URIRef, Path], other: Union[URIRef, Path]):
+def path_sequence(self: URIRef | Path, other: URIRef | Path):
     """
     sequence path
     """
@@ -556,21 +554,21 @@ def eval_path(
     return ((s, o) for s, p, o in graph.triples(t))
 
 
-def mul_path(p: Union[URIRef, Path], mul: _MulPathMod) -> MulPath:
+def mul_path(p: URIRef | Path, mul: _MulPathMod) -> MulPath:
     """
     cardinality path
     """
     return MulPath(p, mul)
 
 
-def inv_path(p: Union[URIRef, Path]) -> InvPath:
+def inv_path(p: URIRef | Path) -> InvPath:
     """
     inverse path
     """
     return InvPath(p)
 
 
-def neg_path(p: Union[URIRef, AlternativePath, InvPath]) -> NegatedPath:
+def neg_path(p: URIRef | AlternativePath | InvPath) -> NegatedPath:
     """
     negated path
     """

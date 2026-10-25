@@ -21,9 +21,9 @@ class RDFTest(NamedTuple):
     name: str
     comment: str
     data: Identifier
-    graphdata: Optional[GraphDataType]
+    graphdata: GraphDataType | None
     action: Identifier
-    result: Optional[ResultType]
+    result: ResultType | None
     syntax: bool
 
 
@@ -75,8 +75,8 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[tuple[Node, Node, RDFT
                 name = g.value(e, MF.name)
                 comment = g.value(e, RDFS.comment)
                 data = None
-                graphdata: Optional[GraphDataType] = None
-                res: Optional[ResultType] = None
+                graphdata: GraphDataType | None = None
+                res: ResultType | None = None
                 syntax = True
 
                 if _type in (MF.QueryEvaluationTest, MF.CSVResultFormatTest):
@@ -100,8 +100,8 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[tuple[Node, Node, RDFT
                         )
 
                     r = g.value(e, MF.result)
-                    resdata: Optional[Node] = g.value(r, UT.data)
-                    resgraphdata: list[tuple[Optional[Node], Optional[Node]]] = []
+                    resdata: Node | None = g.value(r, UT.data)
+                    resgraphdata: list[tuple[Node | None, Node | None]] = []
                     for gd in g.objects(r, UT.graphData):
                         resgraphdata.append(
                             (g.value(gd, UT.graph), g.value(gd, RDFS.label))

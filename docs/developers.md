@@ -134,6 +134,19 @@ uv sync --group tests
 uv run pytest
 ```
 
+By default, tests of `SPARQLStore` against remote public endpoints are skipped.
+To enable them, add the flag:
+
+```bash
+uv run pytest --public-endpoints
+```
+
+To run only the public endpoint tests:
+
+```bash
+uv run pytest test/test_store/test_store_sparqlstore_public.py --public-endpoints
+```
+
 Specific tests can be run by file name. For example:
 
 ```bash

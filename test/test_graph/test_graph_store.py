@@ -91,7 +91,7 @@ def make_graph_store_bind_cases(
             dict[tuple[type[Graph], type[Store]], NamespaceBindings]
         ] = None,
         *,
-        id: Optional[str] = None,
+        id: str | None = None,
     ):
         if expected_bindings_overrides is not None:
             expected_bindings = expected_bindings_overrides.get(
