@@ -5,12 +5,17 @@
   "shutdownAction": "stopCompose",
   "settings": {
     "python.linting.mypyEnabled": true,
-    "python.linting.flake8Enabled": true,
-    "python.linting.pylintEnabled": false,
-    "python.formatting.provider": "black"
+    "[python]": {
+      "editor.defaultFormatter": "charliermarsh.ruff",
+      "editor.codeActionsOnSave": {
+        "source.fixAll.ruff": "explicit",
+        "source.organizeImports.ruff": "explicit"
+      }
+    }
   },
   "extensions": [
     "ms-python.python",
+    "charliermarsh.ruff",
     "redhat.vscode-yaml",
     "redhat.vscode-xml",
     "stardog-union.stardog-rdf-grammars",

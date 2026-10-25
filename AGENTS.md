@@ -23,7 +23,7 @@ gh pr list --repo RDFLib/rdflib --state open --limit 300 --json number,title,fil
     `test_sparql_rdflib.py`.
   - Parsers and serializers: `test/test_parsers`, `test/test_serializers` and
     the matching `test/test_w3c_spec/test_*_w3c.py`.
-- Static checks: `task validate:static` (black, ruff and mypy), then
+- Static checks: `task validate:static` (Ruff linting and formatting, and mypy), then
   `uv lock --check`.
 - Test runs rewrite the tracked EARL reports in `test_reports/*-HEAD.ttl`, and
   a partial run leaves a partial report. Restore them with

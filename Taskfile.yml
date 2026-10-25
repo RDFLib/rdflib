@@ -110,17 +110,13 @@ tasks:
     cmds:
       - '{{.TEST_HARNESS}}{{.RUN_PREFIX}} pytest {{if (mustFromJson .WITH_COVERAGE)}}--cov --cov-report={{end}} {{.CLI_ARGS}}'
   ruff:
-    desc: Run ruff
+    desc: Lint Python and sort imports with Ruff
     cmds:
       - '{{.RUN_PREFIX}} ruff check {{if (mustFromJson (.FIX | default "false"))}}--fix {{end}}{{.CLI_ARGS | default "."}}'
-  black:
-    desc: Run black
+  ruff:format:
+    desc: Format Python with Ruff
     cmds:
-      - '{{.VENV_PYTHON}} -m black {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
-  isort:
-    desc: Run isort
-    cmds:
-      - '{{.VENV_PYTHON}} -m isort {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
+      - '{{.RUN_PREFIX}} ruff format {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
   mypy:
     desc: Run mypy
     cmds:
@@ -138,14 +134,14 @@ tasks:
     cmds:
       - task: ruff
         vars: { FIX: "true" }
-      - task: black
+      - task: ruff:format
 
   lint:
     desc: Perform linting
     cmds:
-      - task: black
-        vars: { CHECK: "true" }
       - task: ruff
+      - task: ruff:format
+        vars: { CHECK: "true" }
 
   validate:static:
     desc: Perform static validation
@@ -254,7 +250,7 @@ tasks:
     desc: GitHub Actions lint workflow
     cmds:
     - "{{.UV}} sync --locked --only-group lint --no-install-project"
-    - task: ruff
+    - task: lint
 
   cmd:rdfpipe:
     desc: Run rdfpipe

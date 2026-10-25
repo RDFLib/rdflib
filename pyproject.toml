@@ -49,8 +49,6 @@ graphdb = ["httpx>=0.28.1,<0.29.0"]
 
 [dependency-groups]
 dev = [
-    "black==24.8.0",
-    "isort>=5.13.2,<6.0.0",
     "mypy==2.4.0",
     "lxml-stubs>=0.4,<0.6",
     "pip-tools>=7.4.1,<8.0.0",
@@ -90,10 +88,24 @@ build-backend = "setuptools.build_meta"
 include = ["rdflib*"]
 
 [tool.ruff]
-# https://beta.ruff.rs/docs/configuration/
+# https://docs.astral.sh/ruff/configuration/
 target-version = "py310"
-# Same as Black.
 line-length = 88
+extend-exclude = [
+    ".poetry",
+    ".var",
+    ".github",
+    "site",
+    "htmlcov",
+    "benchmarks",
+    "test_reports",
+    "rdflib.egg-info",
+    "buck-out",
+]
+
+[tool.ruff.format]
+# Keep formatting limited to Python source files.
+exclude = ["*.md", "*.ipynb"]
 
 [tool.ruff.lint]
 select = [
@@ -131,8 +143,7 @@ select = [
 
 ignore = [
     "E501", # line too long:
-    # Disabled based on black recommendations
-    # https://black.readthedocs.io/en/stable/faq.html#why-are-flake8-s-e203-and-w503-violated
+    # The formatter handles whitespace.
     "E203", # whitespace before ':'
     "E231", # missing whitespace after ','
 ]
@@ -169,37 +180,6 @@ ignore = [
     "E402", # Module level import not at top of file
 ]
 
-[tool.black]
-line-length = 88
-target-version = ['py310']
-required-version = "24.8.0"
-include = '\.pyi?$'
-exclude = '''
-(
-  /(
-      \.eggs         # exclude a few common directories in the
-    | \.git          # root of the project
-    | \.hg
-    | \.mypy_cache
-    | \.pytest_cache
-    | \.tox
-    | \.venv
-    | \.poetry
-    | \.var
-    | \.github
-    | site
-    | htmlcov
-    | benchmarks
-    | test_reports
-    | rdflib.egg-info
-    | buck-out
-    | build
-    | dist
-    | venv
-  )/
-)
-'''
-
 [tool.pytest.ini_options]
 addopts = [
     "--doctest-modules",
@@ -228,33 +208,6 @@ log_format = "%(asctime)s.%(msecs)03d %(levelname)-8s %(name)-12s %(filename)s:%
 log_date_format = "%Y-%m-%dT%H:%M:%S"
 log_cli_format = "%(asctime)s.%(msecs)03d %(levelname)-8s %(name)-12s %(filename)s:%(lineno)s:%(funcName)s %(message)s"
 log_cli_date_format = "%Y-%m-%dT%H:%M:%S"
-
-[tool.isort]
-profile = "black"
-py_version = 310
-line_length = 88
-src_paths= ["rdflib", "test", "devtools", "examples"]
-supported_extensions = ["pyw", "pyi", "py"]
-skip = [
-    '.eggs',         # exclude a few common directories in the
-    '.git',          # root of the project
-    '.hg',
-    '.mypy_cache',
-    '.pytest_cache',
-    '.tox',
-    '.venv',
-    '.var',
-    '.github',
-    'site',
-    'htmlcov',
-    'benchmarks',
-    'test_reports',
-    'rdflib.egg-info',
-    'buck-out',
-    'build',
-    'dist',
-    'venv',
-]
 
 [tool.mypy]
 files = ['rdflib', 'test', 'devtools', 'examples']
