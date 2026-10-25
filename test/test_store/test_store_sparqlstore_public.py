@@ -1,4 +1,5 @@
 import json
+from urllib.error import HTTPError
 
 import pytest
 
@@ -199,10 +200,16 @@ def test_query_invalid(endpoint, return_format, method):
     query = "SELECT ?s ?p ?o WHERE { ?s } LIMIT 5"
     try:
         res = query_sparql(query, endpoint, return_format, method)
-        # NOTE: some endpoints return a tuple with error, others will throw an error
-        if "HTTP Error 400" in res[1]:
-            assert True
-        else:
-            assert False, f"Unexpected results for invalid query: {res}"
-    except ValueError:
-        assert True
+    except ValueError as error:
+        # GET wraps request errors, while POST methods return an error tuple.
+        response_error = error.__context__
+        assert isinstance(
+            response_error, HTTPError
+        ), f"Expected HTTP 400, got {response_error!r}"
+        assert (
+            response_error.code == 400
+        ), f"Expected HTTP 400, got HTTP {response_error.code}"
+    else:
+        assert (
+            isinstance(res, tuple) and res[0] == 400
+        ), f"Expected HTTP 400, got {res!r}"

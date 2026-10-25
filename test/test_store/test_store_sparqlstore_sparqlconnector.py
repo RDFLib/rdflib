@@ -2,11 +2,17 @@ from __future__ import annotations
 
 import json
 import logging
+from email.message import Message
+from unittest.mock import patch
+from urllib.error import HTTPError, URLError
 
 import pytest
 
 from rdflib.graph import Graph
 from rdflib.plugins.stores.sparqlstore import SPARQLStore, SPARQLUpdateStore
+from test.test_store.test_store_sparqlstore_public import (
+    test_query_invalid as check_public_invalid_query,
+)
 from test.utils.http import MethodName, MockHTTPResponse
 from test.utils.httpservermock import ServedBaseHTTPServerMock
 
@@ -138,3 +144,35 @@ def test_update_endpoint_with_query_string(
     request = function_httpmock.requests[MethodName.POST].pop()
     assert request.parsed_path.path == "/update"
     assert request.path_query == {"repository": ["default"]}
+
+
+@pytest.mark.parametrize("method", ["GET", "POST", "POST_FORM"])
+def test_public_invalid_query_accepts_bad_request(method: str) -> None:
+    endpoint = "https://example.com/sparql"
+    error = HTTPError(endpoint, 400, "Bad Request", Message(), None)
+    with patch("rdflib.plugins.stores.sparqlconnector.urlopen", side_effect=error):
+        check_public_invalid_query(endpoint, "json", method)
+
+
+@pytest.mark.parametrize(
+    "error",
+    [
+        pytest.param(URLError("simulated DNS failure"), id="transport-error"),
+        pytest.param(
+            HTTPError(
+                "https://example.com/sparql",
+                500,
+                "Internal Server Error",
+                Message(),
+                None,
+            ),
+            id="server-error",
+        ),
+    ],
+)
+def test_public_invalid_query_rejects_other_errors(error: URLError) -> None:
+    with (
+        patch("rdflib.plugins.stores.sparqlconnector.urlopen", side_effect=error),
+        pytest.raises(AssertionError, match="Expected HTTP 400"),
+    ):
+        check_public_invalid_query("https://example.com/sparql", "json", "GET")
