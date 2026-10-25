@@ -14,7 +14,6 @@ from re import Pattern
 from typing import (
     IO,
     BinaryIO,
-    Optional,
     TextIO,
     Union,
 )
@@ -197,7 +196,7 @@ def make_select_result_serialize_parse_tests() -> Iterator[ParameterSet]:
 
 @pytest.mark.parametrize(
     ["test_args"],
-    make_select_result_serialize_parse_tests(),
+    list(make_select_result_serialize_parse_tests()),
 )
 def test_select_result_serialize_parse(
     tmp_path: Path,
@@ -247,7 +246,7 @@ def serialize_select(select_result: Result, format: str, encoding: str) -> bytes
 
 
 def make_select_result_parse_serialized_tests() -> Iterator[ParameterSet]:
-    xfails: dict[tuple[str, Optional[SourceType], str], Union[MarkDecorator, Mark]] = {}
+    xfails: dict[tuple[str, SourceType | None, str], MarkDecorator | Mark] = {}
     format_infos = [
         format_info
         for format_info in ResultFormat.info_set()
@@ -277,7 +276,7 @@ def make_select_result_parse_serialized_tests() -> Iterator[ParameterSet]:
 
 @pytest.mark.parametrize(
     ["test_args"],
-    make_select_result_parse_serialized_tests(),
+    list(make_select_result_parse_serialized_tests()),
 )
 def test_select_result_parse_serialized(
     tmp_path: Path,
@@ -341,7 +340,7 @@ def make_test_serialize_to_strdest_tests() -> Iterator[ParameterSet]:
 
 @pytest.mark.parametrize(
     ["destination_type", "name_prefix"],
-    make_test_serialize_to_strdest_tests(),
+    list(make_test_serialize_to_strdest_tests()),
 )
 def test_serialize_to_strdest(
     tmp_path: Path,
@@ -357,7 +356,7 @@ def test_serialize_to_strdest(
     encoding = "utf-8"
 
     def path_factory(
-        tmp_path: Path, type: DestinationType, encoding: Optional[str]
+        tmp_path: Path, type: DestinationType, encoding: str | None
     ) -> Path:
         return tmp_path / f"{name_prefix}file-{type.name}-{encoding}"
 

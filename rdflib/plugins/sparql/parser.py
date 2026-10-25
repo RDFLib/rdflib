@@ -211,9 +211,8 @@ PNAME_NS = Optional(Param("prefix", PN_PREFIX)) + Suppress(":").leave_whitespace
 
 # [173] PN_LOCAL_ESC ::= '\' ( '_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%' )
 
-PN_LOCAL_ESC_re = "\\\\[_~\\.\\-!$&\"'()*+,;=/?#@%]"
-# PN_LOCAL_ESC = Regex(PN_LOCAL_ESC_re) # regex'd
-# PN_LOCAL_ESC.set_parse_action(lambda x: x[0][1:])
+PN_LOCAL_ESC_re = "\\\\[_~\\.\\-!$&'()*+,;=/?#@%]"
+# PN_LOCAL_ESC = Regex(PN_LOCAL_ESC_re) # regex'd, unescaped by PN_LOCAL
 
 # [172] HEX ::= [0-9] | [A-F] | [a-f]
 # HEX = Regex('[0-9A-Fa-f]') # not needed
@@ -237,6 +236,8 @@ PN_LOCAL = Regex(
     % dict(PN_CHARS_U=PN_CHARS_U_re, PN_CHARS=PN_CHARS_re, PLX=PLX_re),
     flags=re.X | re.UNICODE,
 )
+# Drop the backslash of each PN_LOCAL_ESC, as in Turtle. PERCENT is kept as is.
+PN_LOCAL.set_parse_action(lambda x: re.sub(r"\\(.)", r"\1", x[0]))
 
 
 # [141] PNAME_LN ::= PNAME_NS PN_LOCAL
@@ -1288,7 +1289,6 @@ ValuesClause = Optional(
     Param("valuesClause", Comp("ValuesClause", Keyword("VALUES") + DataBlock))
 )
 
-
 # [74] ConstructTriples ::= TriplesSameSubject ( '.' Optional(ConstructTriples) )?
 ConstructTriples = Forward()
 ConstructTriples <<= ParamList("template", TriplesSameSubject) + Optional(
@@ -1523,6 +1523,11 @@ QueryUnit = Query
 
 QueryUnit.ignore("#" + rest_of_line)
 UpdateUnit.ignore("#" + rest_of_line)
+
+# pyparsing expands tabs to spaces by default, which changes string literals
+# that contain a raw tab
+QueryUnit.parse_with_tabs()
+UpdateUnit.parse_with_tabs()
 
 
 expandUnicodeEscapes_re: re.Pattern = re.compile(

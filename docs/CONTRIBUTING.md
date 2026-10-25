@@ -20,6 +20,48 @@ on `main` will be carried into next-major development when `next` catches up.
 If you are unsure which branch to use, open the pull request against `main` and
 ask for maintainer guidance.
 
+## Charter
+
+### Vision
+
+The RDFLib community wishes to provide a free and open source toolkit for the manipulation
+of RDF data.
+
+This provision is for the community and by the community with contributors giving
+their time and skills freely and asking for nothing in return, other than acknowledgements
+of them as contributors.
+
+The toolkit is released for use under the [BSD 3-Clause License](https://opensource.org/license/bsd-3-clause)
+to be as permissible as possibly: users can do what they wish with the toolkit.
+
+### Scope
+
+The community implements what it perceives to be core RDF manipulation functions within the RDFLib main
+library. It also implements specifications related to RDF, such as the SPARQL Query Language,
+SHACL the Shapes Validation Language, RDFS and OWL reasoning and the parsing and
+serialisation of RDF file formats. Some of these related implementations are modules
+within RDFLib, others are stand-alone repositories within the RDFLib family. See <https://rdflib.dev>
+for a listing.
+
+The community encourages implementers of other RDFLib-related libraries to communicate them to us.
+
+### Membership
+
+There are no restrictions on users of, and contributors to RDFLib, therefore there is no strict
+membership category. We ask only that contributors contribute according to the various technical
+protocols in the [Developers guide](./developers.md) and the [Documentation guide](./docs.md).
+
+### Governance
+
+RDFLib had been governed by an evolving set of core developers over its 20+ year lifetime. There are
+no strict rules as to who is or isn't a core developer and the recent practice for organisation has been
+for the most involved developers to contact the mailing list and recent contributors directly to discuss
+major releases and other issues.
+
+If you would like to be involved in core development and/or governance, please just create an Issue in
+the issue tracker about this, or contact the most active developers and/or the mailing list.
+
+
 ## Ways to contribute
 
 Some ways in which you can contribute to RDFLib are:
