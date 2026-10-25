@@ -1,6 +1,6 @@
 [project]
 name = "rdflib"
-version = "7.7.0a0"
+version = "8.0.0a0"
 description = """RDFLib is a Python library for working with RDF, \
 a simple yet powerful language for representing information."""
 authors = [{ name = "Daniel 'eikeon' Krech", email = "eikeon@eikeon.com" }]
@@ -42,7 +42,7 @@ sparqlquery = 'rdflib.tools.sparqlquery:main'
 berkeleydb = ["berkeleydb>=18.1.0,<19.0.0"]
 networkx = ["networkx>=2.8.8,<4"]
 html = ["html5rdf>=1.2,<2"]
-lxml = ["lxml>=4.6.5,<6.0"]
+lxml = ["lxml>=4.6.5,<7.0"]
 orjson = ["orjson>=3.9.14,<4"]
 rdf4j = ["httpx>=0.28.1,<0.29.0"]
 graphdb = ["httpx>=0.28.1,<0.29.0"]
@@ -51,7 +51,7 @@ graphdb = ["httpx>=0.28.1,<0.29.0"]
 dev = [
     "black==24.8.0",
     "isort>=5.13.2,<6.0.0",
-    "mypy==2.3.1",
+    "mypy==2.4.0",
     "lxml-stubs>=0.4,<0.6",
     "pip-tools>=7.4.1,<8.0.0",
 ]

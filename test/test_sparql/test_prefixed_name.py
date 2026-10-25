@@ -9,6 +9,8 @@ import pytest
 import rdflib
 from rdflib import Graph
 from rdflib.namespace import Namespace
+from rdflib.plugins.sparql.algebra import translateAlgebra
+from rdflib.plugins.sparql.processor import prepareQuery
 from rdflib.term import Node, URIRef
 from test.utils.outcome import OutcomeChecker, OutcomePrimitive
 
@@ -34,6 +36,10 @@ RESERVED_PCHARS = [
     "%5B",
     "%5D",
 ]
+
+# Characters that can follow a backslash in a local name, see
+# https://www.w3.org/TR/sparql11-query/#rPN_LOCAL_ESC
+PN_LOCAL_ESC_CHARS = "_~.-!$&'()*+,;=/?#@%"
 
 
 @pytest.mark.parametrize(
@@ -96,6 +102,19 @@ def blank_graph() -> Graph:
                 ("", f":aaa{pchar}zzz", PNAME_PREFIX[f"aaa{pchar}zzz"])
                 for pchar in RESERVED_PCHARS
             ),
+            (
+                ("", f":aaa\\{char}zzz", PNAME_PREFIX[f"aaa{char}zzz"])
+                for char in PN_LOCAL_ESC_CHARS
+            ),
+            [
+                ("", ":\\#start", PNAME_PREFIX["#start"]),
+                ("", ":end\\.", PNAME_PREFIX["end."]),
+                ("", ":\\-", PNAME_PREFIX["-"]),
+                ("", ":a%20\\#b", PNAME_PREFIX["a%20#b"]),
+                ("", ":a\\%20b", PNAME_PREFIX["a%20b"]),
+                ("", ':a\\"b', pyparsing.ParseException),
+                ("", ':\\"', pyparsing.ParseException),
+            ],
         )
     ),
 )
@@ -127,3 +146,60 @@ def test_pnames(
         result = triple[2]
         logging.debug("result = %s", result)
         checker.check(result)
+
+
+def test_pname_escapes_in_update() -> None:
+    """
+    SPARQL Update drops the backslash of escaped characters in local names.
+    """
+    graph = Graph()
+    graph.update(
+        f"""\
+        PREFIX eg: <{PNAME_PREFIX}>
+        INSERT DATA {{ eg:\\#s eg:p\\/q eg:o\\. }}
+        """
+    )
+    assert set(graph) == {(PNAME_PREFIX["#s"], PNAME_PREFIX["p/q"], PNAME_PREFIX["o."])}
+
+
+def test_pname_escaped_quote_in_update() -> None:
+    """
+    SPARQL Update rejects an escaped double quote in a local name.
+    """
+    with pytest.raises(pyparsing.ParseException):
+        Graph().update(
+            f"""\
+            PREFIX eg: <{PNAME_PREFIX}>
+            INSERT DATA {{ eg:s eg:p eg:a\\"b }}
+            """
+        )
+
+
+def test_pname_escape_matches_data() -> None:
+    """
+    A local name with an escaped character matches the unescaped IRI in the
+    data.
+    """
+    graph = Graph()
+    graph.add((PNAME_PREFIX["a#b"], PNAME_PREFIX.p, PNAME_PREFIX["c/d"]))
+    result = graph.query(
+        f"""\
+        PREFIX eg: <{PNAME_PREFIX}>
+        SELECT ?o WHERE {{ eg:a\\#b eg:p ?o }}
+        """
+    )
+    assert list(result) == [(PNAME_PREFIX["c/d"],)]
+
+
+def test_pname_escape_translate_algebra() -> None:
+    """
+    `translateAlgebra` writes a local name with an escaped character as the
+    unescaped IRI.
+    """
+    query = prepareQuery(
+        f"""\
+        PREFIX eg: <{PNAME_PREFIX}>
+        SELECT ?o WHERE {{ eg:a\\#b eg:p ?o }}
+        """
+    )
+    assert f"<{PNAME_PREFIX}a#b>" in translateAlgebra(query)

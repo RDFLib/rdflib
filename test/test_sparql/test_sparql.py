@@ -1216,3 +1216,39 @@ def test_compvalue_preserves_list_errors() -> None:
     with pytest.raises(NotBoundError):
         comp["arg"]
     assert comp.get("arg", variables=True) == [node, Literal(2)]
+
+
+@pytest.mark.parametrize(
+    "expression",
+    [
+        "?o = ?u",
+        "?o + ?u",
+        "1 / (?o - 2)",
+        "?o IN (1, 1/0)",
+        # A bare unbound variable already sorted as no value before #3602.
+        "?u",
+    ],
+)
+@pytest.mark.parametrize("direction, expected", [("ASC", [2, 1]), ("DESC", [1, 2])])
+def test_order_by_erroring_expression(
+    expression: str, direction: str, expected: list[int]
+) -> None:
+    """An ORDER BY expression that errors sorts as no value instead of raising.
+
+    SPARQL 1.1 section 15.1 orders "no value" below every RDF term. The key errors
+    for `?o = 2` only, so that solution comes first ascending and last descending.
+    """
+    query = (
+        "SELECT ?o WHERE { VALUES (?o ?u) { (1 1) (2 UNDEF) } } "
+        f"ORDER BY {direction}({expression})"
+    )
+    rows = [row for row in Graph().query(query)]
+    assert rows == [(Literal(o),) for o in expected]
+
+
+@pytest.mark.parametrize("order_by", ["(1/0)", "DESC(1/0)"])
+def test_order_by_expression_erroring_for_every_solution(order_by: str) -> None:
+    """When the key errors for every solution, all solutions are still returned."""
+    query = f"SELECT ?o WHERE {{ VALUES ?o {{ 1 2 }} }} ORDER BY {order_by}"
+    rows = [row for row in Graph().query(query)]
+    assert sorted(rows) == [(Literal(1),), (Literal(2),)]

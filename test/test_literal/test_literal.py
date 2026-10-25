@@ -6,7 +6,7 @@ import logging
 import operator
 from collections.abc import Callable, Generator
 from decimal import Decimal, localcontext
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 from rdflib.xsd_datetime import Duration
 from test.utils import affix_tuples
@@ -159,8 +159,8 @@ def test_cant_pass_invalid_lang(
 )
 def test_ill_typed_literals(
     lexical: Union[bytes, str],
-    datatype: Optional[URIRef],
-    is_ill_typed: Optional[bool],
+    datatype: URIRef | None,
+    is_ill_typed: bool | None,
 ) -> None:
     """
     ill_typed has the correct value.
@@ -948,7 +948,7 @@ def test_specific_binding(clear_bindings: None) -> None:
     ],
 )
 def test_literal_construction_value_class(
-    lexical: str, literal_type: URIRef, value_cls: Optional[type]
+    lexical: str, literal_type: URIRef, value_cls: type | None
 ) -> None:
     literal = Literal(lexical, datatype=literal_type)
     if value_cls is not None:

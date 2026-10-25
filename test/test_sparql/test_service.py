@@ -13,7 +13,8 @@ from http.client import (
 from io import BytesIO
 from typing import Any, Optional, Union
 from urllib.error import HTTPError, URLError
-from urllib.request import BaseHandler, HTTPHandler, OpenerDirector, Request
+from urllib.parse import parse_qs
+from urllib.request import BaseHandler, HTTPHandler, OpenerDirector, Request, urlopen
 from urllib.response import addinfourl
 
 import pytest
@@ -562,6 +563,122 @@ def test_service_endpoint_forms(
     ]
 
 
+@pytest.mark.parametrize(
+    ("method", "value"),
+    [(MethodName.GET, "x"), (MethodName.POST, "x" * 700)],
+    ids=["GET", "POST"],
+)
+@pytest.mark.parametrize(
+    ("endpoint", "endpoint_params"),
+    [
+        pytest.param("/sparql", {}, id="plain"),
+        pytest.param("/sparql?", {}, id="empty-query-string"),
+        pytest.param(
+            "/sparql?default-graph-uri=http%3A%2F%2Fg",
+            {"default-graph-uri": ["http://g"]},
+            id="query-string",
+        ),
+        pytest.param("/sparql#frag", {}, id="fragment"),
+        pytest.param("/sparql?a=b#frag", {"a": ["b"]}, id="query-string-and-fragment"),
+    ],
+)
+def test_service_endpoint_parameters(
+    function_httpmock: ServedBaseHTTPServerMock,
+    method: MethodName,
+    value: str,
+    endpoint: str,
+    endpoint_params: dict[str, list[str]],
+) -> None:
+    # The endpoint's own parameters are kept, and its fragment is dropped as
+    # fragments are never sent over HTTP. The long literal forces POST.
+    service_query = f' SELECT ?var WHERE {{ VALUES ?var {{ "{value}" }} }} '
+    query = f"""
+    SELECT ?var WHERE {{
+        SERVICE <{function_httpmock.url}{endpoint}> {{{service_query}}}
+    }}
+    """
+    function_httpmock.responses[method].append(make_select_response({"var": value}))
+
+    assert Graph().query(query).bindings == [{Variable("var"): Literal(value)}]
+    service_params = {"query": [service_query], "output": ["json"]}
+    (request,) = function_httpmock.requests[method]
+    assert request.parsed_path.path == "/sparql"
+    if method == MethodName.GET:
+        assert request.path_query == {**endpoint_params, **service_params}
+    else:
+        assert request.path_query == endpoint_params
+        assert request.body is not None
+        assert parse_qs(request.body.decode()) == service_params
+
+
+FOAF_PREFIX = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>"
+
+
+@pytest.mark.parametrize(
+    ("prologue", "pattern", "service_query"),
+    [
+        pytest.param(
+            FOAF_PREFIX,
+            " SELECT ?var WHERE { ?s foaf:name ?var } ",
+            f"{FOAF_PREFIX}  SELECT ?var WHERE {{ ?s foaf:name ?var }} ",
+            id="sub-select-prefix",
+        ),
+        pytest.param(
+            "BASE <http://example.org/>",
+            " SELECT ?var WHERE { <s> <p> ?var } ",
+            "BASE <http://example.org/>  SELECT ?var WHERE { <s> <p> ?var } ",
+            id="sub-select-base",
+        ),
+        pytest.param(
+            # rdflib binds the owl and xsd prefixes without a declaration.
+            "",
+            ' SELECT ?var WHERE { ?s owl:sameAs ?var FILTER(?var != "y"^^xsd:string) } ',
+            "PREFIX owl: <http://www.w3.org/2002/07/owl#>"
+            " PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> "
+            ' SELECT ?var WHERE { ?s owl:sameAs ?var FILTER(?var != "y"^^xsd:string) } ',
+            id="sub-select-bound-prefixes",
+        ),
+        pytest.param(
+            f"BASE <http://example.org/> {FOAF_PREFIX}",
+            " <s> foaf:name ?var ",
+            f"BASE <http://example.org/> {FOAF_PREFIX}"
+            " SELECT REDUCED * WHERE { <s> foaf:name ?var }",
+            id="bare-pattern",
+        ),
+        pytest.param(
+            f"BASE <http://example.org/> {FOAF_PREFIX}",
+            ' SELECT ?var WHERE { VALUES ?var { "x" } } ',
+            ' SELECT ?var WHERE { VALUES ?var { "x" } } ',
+            id="nothing-used",
+        ),
+    ],
+)
+def test_service_query_declares_prefixes_and_base(
+    function_httpmock: ServedBaseHTTPServerMock,
+    caplog: pytest.LogCaptureFixture,
+    prologue: str,
+    pattern: str,
+    service_query: str,
+) -> None:
+    # The endpoint gets the prefixes and base the pattern uses, so that its
+    # IRIs resolve there as they do here, see
+    # https://www.w3.org/TR/sparql11-federated-query/#defn_evalService
+    # Declaring only those keeps short queries short enough for GET. The BASE
+    # must not make the query an IRI, which logged warnings holding the query.
+    caplog.set_level(logging.WARNING)
+    query = f"""{prologue}
+    SELECT ?var WHERE {{ SERVICE <{function_httpmock.url}/sparql> {{{pattern}}} }}
+    """
+    function_httpmock.responses[MethodName.GET].append(
+        make_select_response({"var": "x"})
+    )
+
+    assert Graph().query(query).bindings == [{Variable("var"): Literal("x")}]
+    (request,) = function_httpmock.requests[MethodName.GET]
+    assert request.path_query["query"] == [service_query]
+    assert [record.getMessage() for record in caplog.records] == []
+
+
 def find_service_patterns(query: str) -> list[CompValue]:
     """Get the SERVICE patterns in the algebra of a query."""
     patterns: list[CompValue] = []
@@ -946,7 +1063,7 @@ def test_service_silent_warning_hides_secrets(
 
     # The request itself is unchanged.
     (url,) = requested
-    assert url.startswith(endpoint + "?query=")
+    assert url.startswith(endpoint + "&query=")
     (record,) = [r for r in caplog.records if r.name == evaluate.__name__]
     assert record.getMessage() == (
         f"Ignoring failed SERVICE SILENT call to http://{host}/sparql: PermissionError"
@@ -1078,6 +1195,47 @@ def test_service_endpoint_failure_raises(
     with pytest.raises(error, match=match):
         Graph().query(query).bindings
     assert function_httpmock.call_count == 1
+
+
+@pytest.mark.parametrize(
+    "failure",
+    [None, *(failure for failure in ENDPOINT_FAILURES if failure != "http-error")],
+)
+def test_service_closes_response(
+    function_httpmock: ServedBaseHTTPServerMock,
+    monkeypatch: pytest.MonkeyPatch,
+    failure: Optional[str],
+) -> None:
+    # The response is closed whether or not the call succeeds. urllib raises
+    # an HTTP error status itself, so rdflib never gets that response.
+    opened = []
+
+    def recording_urlopen(request: Request) -> HTTPResponse:
+        response = urlopen(request)
+        opened.append(response)
+        return response
+
+    monkeypatch.setattr(evaluate, "urlopen", recording_urlopen)
+    query = f"""
+    SELECT ?var WHERE {{
+        SERVICE <{function_httpmock.url}> {{
+            SELECT ?var WHERE {{ VALUES ?var {{ "x" }} }}
+        }}
+    }}
+    """
+    if failure is None:
+        function_httpmock.responses[MethodName.GET].append(
+            make_select_response({"var": "x"})
+        )
+        assert Graph().query(query).bindings == [{Variable("var"): Literal("x")}]
+    else:
+        response, error, match = ENDPOINT_FAILURES[failure]
+        function_httpmock.responses[MethodName.GET].append(response)
+        with pytest.raises(error, match=match):
+            Graph().query(query).bindings
+
+    (response,) = opened
+    assert response.closed
 
 
 @pytest.mark.parametrize("silent", ["", "SILENT"])

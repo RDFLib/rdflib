@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 from contextlib import ExitStack
 from copy import deepcopy
-from typing import Any, Optional, TypeVar, Union
+from typing import Any, TypeVar, Union
 from urllib.error import HTTPError
 from urllib.request import HTTPRedirectHandler, Request
 
@@ -196,8 +196,8 @@ def test_make_redirect_request(
     """
     `_make_redirect_request` correctly handles redirects.
     """
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
-    result: Optional[Request] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
+    result: Request | None = None
     with ExitStack() as stack:
         if isinstance(expected_result, ExceptionChecker):
             catcher = stack.enter_context(expected_result.context())

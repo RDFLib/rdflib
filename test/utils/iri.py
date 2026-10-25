@@ -12,7 +12,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from nturl2path import url2pathname as nt_url2pathname
 from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
-from typing import Optional, TypeVar, Union
+from typing import TypeVar, Union
 from urllib.parse import quote, unquote, urljoin, urlparse, urlsplit, urlunsplit
 from urllib.request import BaseHandler, OpenerDirector, Request
 from urllib.response import addinfourl
@@ -27,7 +27,7 @@ PurePathT = TypeVar("PurePathT", bound=PurePath)
 def file_uri_to_path(
     file_uri: str,
     path_class: type[PurePathT] = PurePath,  # type: ignore[assignment]
-    url2pathname: Optional[Callable[[str], str]] = None,
+    url2pathname: Callable[[str], str] | None = None,
 ) -> PurePathT:
     """
     This function returns a pathlib.PurePath object for the supplied file URI.
@@ -132,7 +132,7 @@ class URIMapper:
         return self._map(local, to_local=False)
 
     def _map(self, value: Union[str, PurePath], to_local: bool = True) -> str:
-        error: Optional[ValueError] = None
+        error: ValueError | None = None
         mapping: URIMapping
         uri = value.as_uri() if isinstance(value, PurePath) else value
         for mapping in self.mappings:

@@ -15,7 +15,6 @@ from typing import (
     Any,
     Optional,
     TypeVar,
-    Union,
 )
 
 from rdflib.exceptions import Error
@@ -46,7 +45,7 @@ class RecursiveSerializer(Serializer):
 
     def __init__(self, store: Graph):
         super(RecursiveSerializer, self).__init__(store)
-        self.stream: Optional[IO[bytes]] = None
+        self.stream: IO[bytes] | None = None
         self.reset()
 
     def addNamespace(self, prefix: str, uri: URIRef) -> None:
@@ -178,7 +177,7 @@ class RecursiveSerializer(Serializer):
         # type error: Item "None" of "Optional[IO[bytes]]" has no attribute "write"
         self.stream.write(text.encode(self.encoding, "replace"))  # type: ignore[union-attr]
 
-    def relativize(self, uri: _StrT) -> Union[_StrT, URIRef]:
+    def relativize(self, uri: _StrT) -> _StrT | URIRef:
         base = self.base
         if (
             base is not None
@@ -251,9 +250,9 @@ class TurtleSerializer(RecursiveSerializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
-        spacious: Optional[bool] = None,
+        base: str | None = None,
+        encoding: str | None = None,
+        spacious: bool | None = None,
         **kwargs: Any,
     ) -> None:
         self.reset()
@@ -272,13 +271,10 @@ class TurtleSerializer(RecursiveSerializer):
 
         self.startDocument()
 
-        firstTime = True
         for subject in subjects_list:
             if self.isDone(subject):
                 continue
-            if firstTime:
-                firstTime = False
-            if self.statement(subject) and not firstTime:
+            if self.statement(subject):
                 self.write("\n")
 
         self.endDocument()
@@ -347,7 +343,7 @@ class TurtleSerializer(RecursiveSerializer):
 
         return "%s:%s" % (prefix, local)
 
-    def getQName(self, uri: Node, gen_prefix: bool = True) -> Optional[str]:
+    def getQName(self, uri: Node, gen_prefix: bool = True) -> str | None:
         warnings.warn(
             "TurtleSerializer.getQName is deprecated, use TurtleSerializer.get_pname instead.",
             DeprecationWarning,

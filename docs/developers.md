@@ -6,8 +6,8 @@ This document describes the process and conventions to follow when
 developing RDFLib code.
 
 * Please be as Pythonic as possible ([PEP 8](https://www.python.org/dev/peps/pep-0008/)).
-* Code should be formatted using [black](https://github.com/psf/black), and we use Black v23.1.0, with the black config in `pyproject.toml`.
-* Code should also pass [flake8](https://flake8.pycqa.org/en/latest/) linting
+* Code should be formatted using [black](https://github.com/psf/black), using the version and config pinned in `pyproject.toml`.
+* Code should also pass [ruff](https://docs.astral.sh/ruff/) linting
   and [mypy](http://mypy-lang.org/) type checking.
 * You must supply tests for new code.
 * RDFLib uses [uv](https://docs.astral.sh/uv/) for dependency management and packaging.
@@ -134,6 +134,19 @@ uv sync --group tests
 uv run pytest
 ```
 
+By default, tests of `SPARQLStore` against remote public endpoints are skipped.
+To enable them, add the flag:
+
+```bash
+uv run pytest --public-endpoints
+```
+
+To run only the public endpoint tests:
+
+```bash
+uv run pytest test/test_store/test_store_sparqlstore_public.py --public-endpoints
+```
+
 Specific tests can be run by file name. For example:
 
 ```bash
@@ -159,8 +172,8 @@ Test should go into the `test/` directory, either into an existing test file wit
 
 ## Running static checks
 
-Check formatting with [black](https://github.com/psf/black), making sure you use
-our black.toml config file:
+Check formatting with [black](https://github.com/psf/black), which reads its
+config from `pyproject.toml`:
 
 ```bash
 uv run black .
@@ -228,7 +241,7 @@ RDFLib has a [tox](https://tox.wiki/en/latest/index.html) config file that makes
 pip install tox
 
 # List the tox environments that run by default.
-tox -e
+tox list -d
 
 # Run the default environments.
 tox

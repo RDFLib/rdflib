@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import IO, Any, Optional
+from typing import IO, Any
 
 from rdflib import Dataset
 from rdflib.plugins.serializers.nquads import _nq_row
@@ -29,8 +29,8 @@ class PatchSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
+        base: str | None = None,
+        encoding: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Serialize the store to the given stream.
