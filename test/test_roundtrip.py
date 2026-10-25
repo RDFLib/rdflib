@@ -368,13 +368,13 @@ def test_formats() -> None:
 
 
 @pytest.mark.parametrize(
-    "checker, args", make_cases(collect_files(NT_DATA_DIR, INVALID_NT_FILES))
+    "checker, args", list(make_cases(collect_files(NT_DATA_DIR, INVALID_NT_FILES)))
 )
 def test_nt(checker: Callable[[str, str, Path], None], args: tuple[str, str, Path]):
     checker(*args)
 
 
-@pytest.mark.parametrize("checker, args", make_cases(collect_files(N3_DATA_DIR)))
+@pytest.mark.parametrize("checker, args", list(make_cases(collect_files(N3_DATA_DIR))))
 def test_n3(checker: Callable[[str, str, Path], None], args: tuple[str, str, Path]):
     checker(*args)
 
@@ -502,13 +502,15 @@ N3_W3C_SUITE_FILES = [
 
 @pytest.mark.parametrize(
     "checker, args",
-    make_cases(
-        N3_W3C_SUITE_FILES,
-        formats={"n3"},
-        # NOTE: Isomomorphic check does not work on Quoted Graphs
-        checks={Check.SET_EQUALS_WITHOUT_BLANKS},
-        graph_type=Graph,
-        same_public_id=True,
+    list(
+        make_cases(
+            N3_W3C_SUITE_FILES,
+            formats={"n3"},
+            # NOTE: Isomomorphic check does not work on Quoted Graphs
+            checks={Check.SET_EQUALS_WITHOUT_BLANKS},
+            graph_type=Graph,
+            same_public_id=True,
+        )
     ),
 )
 def test_n3_suite(
@@ -533,7 +535,7 @@ EXTRA_FILES = [
 ]
 
 
-@pytest.mark.parametrize("checker, args", make_cases(EXTRA_FILES, hext_okay=True))
+@pytest.mark.parametrize("checker, args", list(make_cases(EXTRA_FILES, hext_okay=True)))
 def test_extra(checker: Callable[[str, str, Path], None], args: tuple[str, str, Path]):
     """
     Round tripping works correctly for selected extra files.

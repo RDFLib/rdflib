@@ -78,7 +78,7 @@ def make_test_query_construct_format_cases() -> Iterable[ParameterSet]:
         "response_body",
         "response_headers",
     ],
-    make_test_query_construct_format_cases(),
+    list(make_test_query_construct_format_cases()),
 )
 def test_query_construct_format(
     function_httpmock: ServedBaseHTTPServerMock,

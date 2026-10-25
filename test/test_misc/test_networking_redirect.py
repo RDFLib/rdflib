@@ -185,7 +185,7 @@ def generate_make_redirect_request_cases() -> Iterable[ParameterSet]:
 
 @pytest.mark.parametrize(
     ("http_request", "http_error", "expected_result", "expected_redirect_dict"),
-    generate_make_redirect_request_cases(),
+    list(generate_make_redirect_request_cases()),
 )
 def test_make_redirect_request(
     http_request: Request,

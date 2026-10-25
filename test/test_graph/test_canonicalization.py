@@ -176,7 +176,7 @@ def negative_graph_match_test():
         yield fn, inputs[0], inputs[1], inputs[2]
 
 
-@pytest.mark.parametrize("fn, rdf1, rdf2, identical", negative_graph_match_test())
+@pytest.mark.parametrize("fn, rdf1, rdf2, identical", list(negative_graph_match_test()))
 def test_negative_graph_match(fn, rdf1, rdf2, identical):
     fn(rdf1, rdf2, identical)
 

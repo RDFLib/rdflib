@@ -74,27 +74,29 @@ def blank_graph() -> Graph:
 
 @pytest.mark.parametrize(
     ["pname_ns", "pname", "expected_result"],
-    itertools.chain(
-        [
-            ("eg", "invalid/PN_PREFIX", pyparsing.ParseException),
-            ("", "eg:a", Exception),
-            ("", ":invalid PN_LOCAL", pyparsing.ParseException),
-            ("", ":invalid/PN_LOCAL", pyparsing.ParseException),
-            ("", ":a:b:c", PNAME_PREFIX["a:b:c"]),
-            ("", ":", URIRef(f"{PNAME_PREFIX}")),
-            ("", ":a", PNAME_PREFIX.a),
-            ("eg", " eg:obj ", PNAME_PREFIX.obj),
-            ("", "  :obj  ", PNAME_PREFIX.obj),
-            ("eg", " \t eg:obj \t ", PNAME_PREFIX.obj),
-            ("", " \n :obj \n ", PNAME_PREFIX.obj),
-            ("eg", "eg:", URIRef(f"{PNAME_PREFIX}")),
-            ("eg", "eg:a", PNAME_PREFIX.a),
-            ("", ":transcript%20data", PNAME_PREFIX["transcript%20data"]),
-        ],
-        (
-            ("", f":aaa{pchar}zzz", PNAME_PREFIX[f"aaa{pchar}zzz"])
-            for pchar in RESERVED_PCHARS
-        ),
+    list(
+        itertools.chain(
+            [
+                ("eg", "invalid/PN_PREFIX", pyparsing.ParseException),
+                ("", "eg:a", Exception),
+                ("", ":invalid PN_LOCAL", pyparsing.ParseException),
+                ("", ":invalid/PN_LOCAL", pyparsing.ParseException),
+                ("", ":a:b:c", PNAME_PREFIX["a:b:c"]),
+                ("", ":", URIRef(f"{PNAME_PREFIX}")),
+                ("", ":a", PNAME_PREFIX.a),
+                ("eg", " eg:obj ", PNAME_PREFIX.obj),
+                ("", "  :obj  ", PNAME_PREFIX.obj),
+                ("eg", " \t eg:obj \t ", PNAME_PREFIX.obj),
+                ("", " \n :obj \n ", PNAME_PREFIX.obj),
+                ("eg", "eg:", URIRef(f"{PNAME_PREFIX}")),
+                ("eg", "eg:a", PNAME_PREFIX.a),
+                ("", ":transcript%20data", PNAME_PREFIX["transcript%20data"]),
+            ],
+            (
+                ("", f":aaa{pchar}zzz", PNAME_PREFIX[f"aaa{pchar}zzz"])
+                for pchar in RESERVED_PCHARS
+            ),
+        )
     ),
 )
 def test_pnames(

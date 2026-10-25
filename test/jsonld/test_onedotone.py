@@ -243,7 +243,7 @@ def global_state():
 # require the web, but making it narrower requires more refactoring.
 @pytest.mark.parametrize(
     "rdf_test_uri, func, suite_base, cat, num, inputpath, expectedpath, context, options",
-    get_test_suite_cases(),
+    list(get_test_suite_cases()),
 )
 def test_suite(
     rdf_test_uri: URIRef,

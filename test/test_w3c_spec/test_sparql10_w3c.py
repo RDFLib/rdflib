@@ -113,20 +113,22 @@ def configure_rdflib() -> Generator[None, None, None]:
 
 @pytest.mark.parametrize(
     ["manifest_entry"],
-    params_from_sources(
-        MAPPER,
-        SPARQLEntry,
-        LOCAL_BASE_DIR / "manifest-evaluation.ttl",
-        LOCAL_BASE_DIR / "manifest-syntax.ttl",
-        mark_dict=MARK_DICT,
-        markers=(
-            lambda entry: (
-                pytest.mark.skip(reason="tester not implemented")
-                if entry.type in SKIP_TYPES
-                else None
+    list(
+        params_from_sources(
+            MAPPER,
+            SPARQLEntry,
+            LOCAL_BASE_DIR / "manifest-evaluation.ttl",
+            LOCAL_BASE_DIR / "manifest-syntax.ttl",
+            mark_dict=MARK_DICT,
+            markers=(
+                lambda entry: (
+                    pytest.mark.skip(reason="tester not implemented")
+                    if entry.type in SKIP_TYPES
+                    else None
+                ),
             ),
-        ),
-        report_prefix="rdflib_w3c_sparql10",
+            report_prefix="rdflib_w3c_sparql10",
+        )
     ),
 )
 def test_entry_sparql10(
