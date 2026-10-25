@@ -273,6 +273,23 @@ def test_prefixed_name_with_escaped_dot(
     assert list(g) == [(EGDC[local_name], EGDC.predicate, EGDC[local_name])]
 
 
+@pytest.mark.parametrize("format_name", ["turtle", "trig"])
+@pytest.mark.parametrize(
+    "data",
+    [
+        r"_:a\. <urn:p> <urn:o> .",
+        r"<urn:s> <urn:p> _:a\. .",
+    ],
+    ids=["subject", "object"],
+)
+def test_blank_node_label_with_escaped_trailing_dot(
+    format_name: str, data: str
+) -> None:
+    """Blank-node labels cannot end in a dot, even if escaped."""
+    with pytest.raises(BadSyntax):
+        Graph().parse(data=data, format=format_name)
+
+
 def test_badsyntax_msg_matches_rendered_detail() -> None:
     """SyntaxError.msg keeps the diagnostic BadSyntax already renders.
 

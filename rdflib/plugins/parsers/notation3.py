@@ -1509,8 +1509,8 @@ class SinkParser:
                     self._thisDoc, self.lines, argstr, i, "qname cannot end with \\"
                 )
 
-            if argstr[i - 1] == "." and argstr[i - 2] != "\\":
-                # localname cannot end in an unescaped .
+            if argstr[i - 1] == "." and (pfx == "_" or argstr[i - 2] != "\\"):
+                # Only prefixed names allow an escaped final dot.
                 if len(ln) == 0 and start == i:
                     return -1
                 i -= 1
