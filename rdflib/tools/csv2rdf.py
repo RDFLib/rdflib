@@ -466,7 +466,7 @@ def main():
             "delim=",
             "propbase=",
             "class=",
-            "default=" "ident=",
+            "default=ident=",
             "label=",
             "skip=",
             "defineclass",

@@ -194,7 +194,8 @@ class AuditableStore(Store):
                 if op == "add":
                     # type error: Argument 2 to "Graph" has incompatible type "Optional[Node]"; expected "Union[IdentifiedNode, str, None]"
                     self.store.add(
-                        (subject, predicate, obj), Graph(self.store, context)  # type: ignore[arg-type]
+                        (subject, predicate, obj),  # type: ignore[arg-type]
+                        Graph(self.store, context),
                     )
                 else:
                     self.store.remove(

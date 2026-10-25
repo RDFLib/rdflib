@@ -328,7 +328,6 @@ class HTMLJSONParser(HTMLParser):
         # script element containing application/ld+json
 
         if self.contains_json is True and self.fragment_id_does_not_match is False:
-
             if not self.extract_all_scripts and self.script_count > 0:
                 return
 

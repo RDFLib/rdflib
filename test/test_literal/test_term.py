@@ -314,16 +314,16 @@ class TestLiteral:
 
     def test_serialize_lone_surrogate_is_escaped(self):
         # https://github.com/RDFLib/rdflib/issues/2590
-        lit = Literal("\uDEAD")
+        lit = Literal("\udead")
         n3 = lit.n3()
         assert "\\uDEAD" in n3
-        assert "\uDEAD" not in n3
+        assert "\udead" not in n3
 
     def test_serialize_surrogate_single_and_triple_quoted(self):
         # single-quoted path
-        assert Literal("\uDEAD").n3() == '"\\uDEAD"'
+        assert Literal("\udead").n3() == '"\\uDEAD"'
         # triple-quoted path (literal contains a newline)
-        assert Literal("a\n\uDEAD").n3() == '"""a\n\\uDEAD"""'
+        assert Literal("a\n\udead").n3() == '"""a\n\\uDEAD"""'
 
     def test_serialize_plain_literal_unchanged(self):
         # regression guard: ordinary literals are unchanged

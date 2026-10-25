@@ -304,9 +304,9 @@ def test_roundtrip(test_spec: AlgebraTest, data_path: Path) -> None:
         "query_from_query_from_algebra = \n%s",
         query_from_query_from_algebra,
     )
-    assert (
-        query_from_algebra == query_from_query_from_algebra
-    ), f"failed expectation: {test_spec.description}"
+    assert query_from_algebra == query_from_query_from_algebra, (
+        f"failed expectation: {test_spec.description}"
+    )
 
     # TODO: Execute the raw query (query_text) and the reconstituted query
     # (query_from_query_from_algebra) against a well defined graph and ensure

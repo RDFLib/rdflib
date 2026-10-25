@@ -49,9 +49,9 @@ class TestSPARQLStoreGraph:
             call(graph)
         pattern_str = r"read.*only"
         msg = f"{ctx.value}"
-        assert (
-            re.search(pattern_str, msg, re.IGNORECASE) is not None
-        ), f"exception text {msg!r} does not match regex {pattern_str!r}"
+        assert re.search(pattern_str, msg, re.IGNORECASE) is not None, (
+            f"exception text {msg!r} does not match regex {pattern_str!r}"
+        )
 
 
 class TestSPARQLStoreFakeDBPedia:

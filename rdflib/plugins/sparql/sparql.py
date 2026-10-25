@@ -461,7 +461,9 @@ class Prologue:
             if iri.name == "literal":
                 # type error: Argument "datatype" to "Literal" has incompatible type "Union[CompValue, Identifier, None]"; expected "Optional[str]"
                 return Literal(
-                    iri.string, lang=iri.lang, datatype=self.absolutize(iri.datatype)  # type: ignore[arg-type]
+                    iri.string,
+                    lang=iri.lang,
+                    datatype=self.absolutize(iri.datatype),  # type: ignore[arg-type]
                 )
         elif isinstance(iri, URIRef) and not ":" in iri:  # noqa: E713
             return URIRef(iri, base=self.base)

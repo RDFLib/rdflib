@@ -265,7 +265,9 @@ class Result:
 
         # type error: Argument 1 to "parse" of "ResultParser" has incompatible type "Optional[IO[Any]]"; expected "IO[Any]"
         return parser.parse(
-            source, content_type=content_type, **kwargs  # type:ignore[arg-type]
+            source,  # type: ignore[arg-type]
+            content_type=content_type,
+            **kwargs,
         )
 
     def serialize(

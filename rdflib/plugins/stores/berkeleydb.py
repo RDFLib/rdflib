@@ -112,7 +112,9 @@ class BerkeleyDB(Store):
     identifier = property(__get_identifier)
 
     def _init_db_environment(
-        self, homeDir: str, create: bool = True  # noqa: N803
+        self,
+        homeDir: str,  # noqa: N803
+        create: bool = True,
     ) -> db.DBEnv:
         if not exists(homeDir):
             if create is True:

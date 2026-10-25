@@ -76,7 +76,7 @@ def test_sparqleval(tmp_path: Path, no_cover: None) -> None:
         cleaners = stack.enter_context(ctx_cleaners())
 
         ep_name = "example.rdflib.plugin.sparqleval"
-        ep_ns = f'{ep_name.replace(".", ":")}:'
+        ep_ns = f"{ep_name.replace('.', ':')}:"
         plugin_module = importlib.import_module(ep_name)
         assert plugin_module.namespace == ep_ns
 
@@ -113,7 +113,7 @@ def test_parser(tmp_path: Path, no_cover: None) -> None:
         cleaners = stack.enter_context(ctx_cleaners())
 
         ep_name = "example.rdflib.plugin.parser"
-        ep_ns = f'{ep_name.replace(".", ":")}:'
+        ep_ns = f"{ep_name.replace('.', ':')}:"
         plugin_module = importlib.import_module(ep_name)
         assert plugin_module.ExampleParser.namespace() == ep_ns
 

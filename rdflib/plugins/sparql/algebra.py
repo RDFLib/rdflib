@@ -63,7 +63,7 @@ def Graph(term: Identifier, graph: CompValue) -> CompValue:
 
 
 def BGP(
-    triples: list[tuple[Identifier, Identifier, Identifier]] | None = None
+    triples: list[tuple[Identifier, Identifier, Identifier]] | None = None,
 ) -> CompValue:
     return CompValue("BGP", triples=triples or [])
 
@@ -113,7 +113,7 @@ def _knownTerms(
 
 
 def reorderTriples(
-    l_: Iterable[tuple[Identifier, Identifier, Identifier]]
+    l_: Iterable[tuple[Identifier, Identifier, Identifier]],
 ) -> list[tuple[Identifier, Identifier, Identifier]]:
     """
     Reorder triple patterns so that we execute the
@@ -164,7 +164,7 @@ def reorderTriples(
 def triples(
     l: typing.Union[  # noqa: E741
         list[list[Identifier]], list[tuple[Identifier, Identifier, Identifier]]
-    ]
+    ],
 ) -> list[tuple[Identifier, Identifier, Identifier]]:
     _l = reduce(lambda x, y: x + y, l)
     if (len(_l) % 3) != 0:
@@ -186,7 +186,9 @@ def translatePName(  # type: ignore[return]
         if p.name == "literal":
             # type error: Argument "datatype" to "Literal" has incompatible type "Union[CompValue, str, None]"; expected "Optional[str]"
             return Literal(
-                p.string, lang=p.lang, datatype=prologue.absolutize(p.datatype)  # type: ignore[arg-type]
+                p.string,
+                lang=p.lang,
+                datatype=prologue.absolutize(p.datatype),  # type: ignore[arg-type]
             )
     elif isinstance(p, URIRef):
         # type error: Incompatible return value type (got "Union[CompValue, str, None]", expected "Optional[Identifier]")
@@ -248,7 +250,7 @@ def translatePath(p: typing.Union[CompValue, URIRef]) -> Path | None:  # type: i
 
 
 def translateExists(
-    e: typing.Union[Expr, Literal, Variable, URIRef]
+    e: typing.Union[Expr, Literal, Variable, URIRef],
 ) -> typing.Union[Expr, Literal, Variable, URIRef]:
     """
     Translate the graph pattern used by EXISTS and NOT EXISTS
@@ -541,7 +543,10 @@ def _addVars(x, children: list[set[Variable]]) -> set[Variable]:
 
 
 # type error: Missing return statement
-def _sample(e: typing.Union[CompValue, list[Expr], Expr, list[str], Variable], v: Variable | None = None) -> CompValue | None:  # type: ignore[return]
+def _sample(  # type: ignore[return]
+    e: typing.Union[CompValue, list[Expr], Expr, list[str], Variable],
+    v: Variable | None = None,
+) -> CompValue | None:
     """
     For each unaggregated variable V in expr
     Replace V with Sample(V)

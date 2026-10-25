@@ -37,9 +37,9 @@ class LiteralChecker(NoExceptionChecker[Literal]):
         if self.lexical is not Ellipsis:
             assert self.lexical == f"{actual}", "Literal lexical form does not match"
         if self.ill_typed is not Ellipsis:
-            assert (
-                self.ill_typed == actual.ill_typed
-            ), "Literal ill_typed flag does not match"
+            assert self.ill_typed == actual.ill_typed, (
+                "Literal ill_typed flag does not match"
+            )
         if self.language is not Ellipsis:
             assert self.language == actual.language, "Literal language does not match"
         if self.datatype is not Ellipsis:

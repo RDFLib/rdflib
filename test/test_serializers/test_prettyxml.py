@@ -133,9 +133,9 @@ class TestPrettyXmlSerializer(SerializerTestBase):
             )
             in rdf_xml
         )
-        assert (
-            '<BNode rdf:nodeID="'.encode("latin-1") in rdf_xml
-        ), "expected one identified bnode in serialized graph"
+        assert '<BNode rdf:nodeID="'.encode("latin-1") in rdf_xml, (
+            "expected one identified bnode in serialized graph"
+        )
         # onlyBNodesMsg = "expected only inlined subClassOf-bnodes in serialized graph"
         # assert '<rdfs:subClassOf>' in rdf_xml, onlyBNodesMsg
         # assert not '<rdfs:subClassOf ' in rdf_xml, onlyBNodesMsg
@@ -158,9 +158,9 @@ class TestPrettyXmlSerializer(SerializerTestBase):
             )
             in rdf_xml
         )
-        assert (
-            '<BNode rdf:nodeID="'.encode("latin-1") in rdf_xml
-        ), "expected one identified bnode in serialized graph"
+        assert '<BNode rdf:nodeID="'.encode("latin-1") in rdf_xml, (
+            "expected one identified bnode in serialized graph"
+        )
 
     def test_subclass_of_objects(self):
         reparsed_graph = serialize_and_load(self.source_graph, self.serializer)
@@ -206,6 +206,6 @@ def _assert_expected_object_types_for_predicates(graph, predicates, types):
     for s, p, o, c in graph:
         if p in predicates:
             some_true = [isinstance(o, t) for t in types]
-            assert (
-                True in some_true
-            ), "Bad type %s for object when predicate is <%s>." % (type(o), p)
+            assert True in some_true, (
+                "Bad type %s for object when predicate is <%s>." % (type(o), p)
+            )
