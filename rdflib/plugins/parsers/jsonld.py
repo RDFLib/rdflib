@@ -488,18 +488,27 @@ class Parser:
 
         v11 = context.version >= 1.1
 
+        # Anonymous graph-map entries need an ID to keep their contents in
+        # a named graph instead of the default graph.
         if v11 and GRAPH in term.container and ID in term.container:
             return [
                 (
-                    dict({GRAPH: o})
+                    dict({ID: BNode().n3(), GRAPH: o})
                     if k in context.get_keys(NONE)
                     else dict({ID: k, GRAPH: o}) if isinstance(o, dict) else o
                 )
-                for k, o in obj.items()
+                for k, values in obj.items()
+                for o in (values if isinstance(values, list) else [values])
+                if o is not None
             ]
 
         elif v11 and GRAPH in term.container and INDEX in term.container:
-            return [dict({GRAPH: o}) for k, o in obj.items()]
+            return [
+                dict({ID: BNode().n3(), GRAPH: o})
+                for values in obj.values()
+                for o in (values if isinstance(values, list) else [values])
+                if o is not None
+            ]
 
         elif v11 and GRAPH in term.container:
             return [dict({GRAPH: obj})]
@@ -511,7 +520,8 @@ class Parser:
                     if isinstance(o, dict) and k not in context.get_keys(NONE)
                     else o
                 )
-                for k, o in obj.items()
+                for k, values in obj.items()
+                for o in (values if isinstance(values, list) else [values])
             ]
 
         elif v11 and TYPE in term.container:
@@ -529,7 +539,8 @@ class Parser:
                     if isinstance(o, (dict, str)) and k not in context.get_keys(NONE)
                     else o
                 )
-                for k, o in obj.items()
+                for k, values in obj.items()
+                for o in (values if isinstance(values, list) else [values])
             ]
 
         elif INDEX in term.container:
