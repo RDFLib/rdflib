@@ -71,8 +71,9 @@ from .xsd_datetime import (  # type: ignore[attr-defined]
 )
 
 if TYPE_CHECKING:
+    import rdflib.paths
+
     from .namespace import NamespaceManager
-    from .paths import AlternativePath, InvPath, NegatedPath, Path, SequencePath
 
 _HAS_HTML5RDF = False
 
@@ -271,10 +272,13 @@ class URIRef(IdentifiedNode):
 
     __slots__ = ()
 
-    __or__: Callable[[URIRef, URIRef | Path], AlternativePath]
-    __invert__: Callable[[URIRef], InvPath]
-    __neg__: Callable[[URIRef], NegatedPath]
-    __truediv__: Callable[[URIRef, URIRef | Path], SequencePath]
+    # Resolve path types through the package after its circular imports complete.
+    __or__: Callable[[URIRef, URIRef | rdflib.paths.Path], rdflib.paths.AlternativePath]
+    __invert__: Callable[[URIRef], rdflib.paths.InvPath]
+    __neg__: Callable[[URIRef], rdflib.paths.NegatedPath]
+    __truediv__: Callable[
+        [URIRef, URIRef | rdflib.paths.Path], rdflib.paths.SequencePath
+    ]
 
     def __new__(cls, value: str, base: str | None = None):
         if base is not None:
@@ -1028,6 +1032,11 @@ class Literal(Identifier):
             -Literal(10.5)
             # rdflib.term.Literal('-10.5', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#double'))
 
+            # Negating a decimal Literal
+            from decimal import Decimal
+            -Literal(Decimal("2.5"))
+            # rdflib.term.Literal('-2.5', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#decimal'))
+
             # Using a string with a datatype
             from rdflib.namespace import XSD
             -Literal("1", datatype=XSD.integer)
@@ -1039,7 +1048,11 @@ class Literal(Identifier):
             ```
         """
 
-        if isinstance(self.value, (int, long_type, float)):
+        if isinstance(self.value, Decimal):
+            # unlike Decimal.__neg__, copy_negate() is exact: it ignores the
+            # decimal context's precision and never signals
+            return Literal(self.value.copy_negate())
+        elif isinstance(self.value, (int, long_type, float)):
             return Literal(self.value.__neg__())
         else:
             raise TypeError(f"Not a number; {self!r}")
@@ -1067,7 +1080,10 @@ class Literal(Identifier):
             # TypeError: Not a number; rdflib.term.Literal('1')
             ```
         """
-        if isinstance(self.value, (int, long_type, float)):
+        if isinstance(self.value, Decimal):
+            # Decimal.__pos__ would round to the decimal context's precision
+            return Literal(self.value)
+        elif isinstance(self.value, (int, long_type, float)):
             return Literal(self.value.__pos__())
         else:
             raise TypeError(f"Not a number; {self!r}")
@@ -1091,7 +1107,11 @@ class Literal(Identifier):
             # TypeError: Not a number; rdflib.term.Literal('1')
             ```
         """
-        if isinstance(self.value, (int, long_type, float)):
+        if isinstance(self.value, Decimal):
+            # unlike Decimal.__abs__, copy_abs() is exact: it ignores the
+            # decimal context's precision and never signals
+            return Literal(self.value.copy_abs())
+        elif isinstance(self.value, (int, long_type, float)):
             return Literal(self.value.__abs__())
         else:
             raise TypeError(f"Not a number; {self!r}")
@@ -1736,11 +1756,14 @@ class Literal(Identifier):
             # TODO: Replace usage of %s here with fstrings
             # when we have ability to escape \r and \n inside
             # f-string inline function calls
-            return '"""%s"""' % encoded.replace("\r", "\\r")
+            return '"""%s"""' % _escape_surrogates(encoded.replace("\r", "\\r"))
         else:
-            return '"%s"' % self.replace("\n", "\\n").replace("\\", "\\\\").replace(
-                '"', '\\"'
-            ).replace("\r", "\\r")
+            return '"%s"' % _escape_surrogates(
+                self.replace("\n", "\\n")
+                .replace("\\", "\\\\")
+                .replace('"', '\\"')
+                .replace("\r", "\\r")
+            )
 
     def __repr__(self) -> str:
         args = [str.__repr__(self)]
@@ -1762,6 +1785,16 @@ class Literal(Identifier):
         if self.value is not None:
             return self.value
         return self
+
+
+_surrogate_regex = compile("[\ud800-\udfff]")
+
+
+def _escape_surrogates(value: str) -> str:
+    """Escape surrogate code points as \\uXXXX, since they cannot be encoded as UTF-8."""
+    if value.isascii():
+        return value
+    return _surrogate_regex.sub(lambda match: f"\\u{ord(match[0]):04X}", value)
 
 
 def _parseXML(xmlstring: str) -> xml.dom.minidom.Document:  # noqa: N802

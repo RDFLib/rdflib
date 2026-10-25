@@ -3,8 +3,9 @@ from __future__ import annotations
 import builtins
 import datetime
 import logging
+import operator
 from collections.abc import Callable, Generator
-from decimal import Decimal
+from decimal import Decimal, localcontext
 from typing import Any, Union
 
 from rdflib.xsd_datetime import Duration
@@ -678,6 +679,60 @@ def test_numeric_literals(
     result = b - a
     expected = Literal(result_value, datatype=datatype)
     assert result == expected, repr(result)
+
+
+_DECIMAL_40_DIGITS = "1.234567890123456789012345678901234567890"
+
+
+@pytest.mark.parametrize(
+    "op, value, expected",
+    [
+        pytest.param(operator.neg, "2.5", "-2.5", id="neg"),
+        pytest.param(operator.pos, "-2.5", "-2.5", id="pos"),
+        pytest.param(abs, "-2.5", "2.5", id="abs"),
+        pytest.param(
+            operator.neg, _DECIMAL_40_DIGITS, f"-{_DECIMAL_40_DIGITS}", id="neg-40"
+        ),
+        pytest.param(
+            operator.pos,
+            f"-{_DECIMAL_40_DIGITS}",
+            f"-{_DECIMAL_40_DIGITS}",
+            id="pos-40",
+        ),
+        pytest.param(abs, f"-{_DECIMAL_40_DIGITS}", _DECIMAL_40_DIGITS, id="abs-40"),
+        pytest.param(operator.neg, "0.0", "-0.0", id="neg-zero"),
+        pytest.param(abs, "-0.0", "0.0", id="abs-negative-zero"),
+        pytest.param(operator.neg, "sNaN", "-sNaN", id="neg-snan"),
+    ],
+)
+def test_decimal_unary_operators(
+    op: Callable[[Literal], Literal], value: str, expected: str
+) -> None:
+    result = op(Literal(value, datatype=XSD.decimal))
+    assert result == Literal(expected, datatype=XSD.decimal)
+
+
+@pytest.mark.parametrize(
+    "op, expected",
+    [
+        pytest.param(operator.neg, "3.14159", id="neg"),
+        pytest.param(operator.pos, "-3.14159", id="pos"),
+        pytest.param(abs, "3.14159", id="abs"),
+    ],
+)
+def test_decimal_unary_operators_ignore_decimal_context(
+    op: Callable[[Literal], Literal], expected: str
+) -> None:
+    literal = Literal("-3.14159", datatype=XSD.decimal)
+    with localcontext() as context:
+        context.prec = 3
+        result = op(literal)
+    assert result == Literal(expected, datatype=XSD.decimal)
+
+
+def test_decimal_invert_raises() -> None:
+    with pytest.raises(TypeError, match="Not a number"):
+        ~Literal("2.5", datatype=XSD.decimal)
 
 
 def test_cant_pass_lang_and_datatype() -> None:

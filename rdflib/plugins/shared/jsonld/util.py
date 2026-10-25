@@ -71,7 +71,7 @@ def source_to_json(
         original_string: str | None = None
         json_dict: dict | list[dict]
         if isinstance(b_stream, BytesIOWrapper):
-            wrapped_inner = cast(Union[str, StringIO, TextIOBase], b_stream.wrapped)
+            wrapped_inner = cast(Union[str, TextIO, TextIOBase], b_stream.wrapped)
             if isinstance(wrapped_inner, str):
                 original_string = wrapped_inner
             elif isinstance(wrapped_inner, StringIO):
@@ -222,6 +222,10 @@ def norm_url(base: str, url: str) -> str:
 
     ```
     """
+    # Same-document references must not change the base path.
+    if not url or url.startswith("#"):
+        return (base or "").split("#", 1)[0] + url
+
     if "://" in url:
         return url
 
