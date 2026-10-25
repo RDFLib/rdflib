@@ -5,6 +5,7 @@ JSON-LD Context Spec
 from __future__ import annotations
 
 import json
+from collections.abc import Set
 from functools import wraps
 from pathlib import Path
 from typing import Any, Literal, Optional, Union
@@ -16,7 +17,16 @@ from rdflib import Graph, URIRef
 from rdflib import Literal as RDFLiteral
 from rdflib.namespace import PROV, RDF, XSD, Namespace
 from rdflib.plugins.shared.jsonld import context, errors
-from rdflib.plugins.shared.jsonld.context import UNDEF, Context, Defined
+from rdflib.plugins.shared.jsonld.context import (
+    UNDEF,
+    ContainerLiteral,
+    ContainerType,
+    Context,
+    Defined,
+    ExpandedTermDict,
+    Term,
+    TermSerialization,
+)
 
 
 # exception utility (see also nose.tools.raises)
@@ -293,6 +303,116 @@ def test_to_dict() -> None:
     result = ctx.to_dict()
     result["graphMap"]["@container"] = sorted(result["graphMap"]["@container"])
     assert DIVERSE_CONTEXT["@context"] == result
+
+
+@pytest.mark.parametrize("container", [UNDEF, None], ids=["omitted", "null"])
+def test_to_dict_without_container(container: ContainerType | Defined) -> None:
+    definition: dict[str, Any] = {"@id": f"{EG.p}"}
+    if container is not UNDEF:
+        definition["@container"] = container
+    ctx = Context({"p": definition})
+
+    assert ctx.terms["p"].container == set()
+    assert ctx.to_dict() == {"p": f"{EG.p}"}
+
+
+@pytest.mark.parametrize(
+    ("container", "expected_container"),
+    [
+        ("@set", ["@set"]),
+        (["@set"], ["@set"]),
+        (["@graph", "@id"], ["@graph", "@id"]),
+    ],
+    ids=["keyword", "array", "combined"],
+)
+def test_to_dict_with_container(
+    container: ContainerType, expected_container: list[ContainerLiteral]
+) -> None:
+    ctx = Context({"p": {"@id": f"{EG.p}", "@container": container}})
+
+    assert ctx.terms["p"].container == set(expected_container)
+    result = ctx._term_dict(ctx.terms["p"])
+    assert_type(result, TermSerialization)
+    assert isinstance(result, dict)
+    assert_type(result, ExpandedTermDict)
+    assert_type(result["@container"], ContainerType)
+    assert isinstance(result["@container"], list)
+    assert result.keys() == {"@id", "@container"}
+    assert result["@id"] == f"{EG.p}"
+    assert sorted(result["@container"]) == expected_container
+    assert ctx.to_dict() == {"p": result}
+
+
+@pytest.mark.parametrize("base", [None, f"{EG.document}"], ids=["no-base", "base"])
+@pytest.mark.parametrize(
+    ("coercion", "expected"),
+    [
+        (UNDEF, f"{EG.p}"),
+        (None, {"@id": f"{EG.p}", "@type": None}),
+    ],
+    ids=["omitted", "null"],
+)
+def test_to_dict_type_coercion(
+    base: str | None, coercion: Defined | str | None, expected: TermSerialization
+) -> None:
+    definition: dict[str, Any] = {"@id": f"{EG.p}"}
+    if coercion is not UNDEF:
+        definition["@type"] = coercion
+    ctx = Context({"p": definition}, base=base)
+
+    assert ctx.terms["p"].type is coercion
+    expected_context: dict[str, TermSerialization] = {"p": expected}
+    if base is not None:
+        expected_context["@base"] = base
+    assert ctx.to_dict() == expected_context
+
+
+def test_term_defaults() -> None:
+    term = Term(f"{EG.p}", "p")
+
+    assert_type(term.id, str | None)
+    assert_type(term.name, str)
+    assert_type(term.type, Defined | str | None)
+    assert_type(term.container, Set[ContainerLiteral])
+    assert_type(term.index, str | Defined | None)
+    assert_type(term.prefix, bool | None)
+
+    assert term.type is UNDEF
+    assert isinstance(term.container, frozenset)
+    assert not term.container
+    assert term.index is None
+    assert term.language is UNDEF
+    assert term.reverse is False
+    assert term.context is UNDEF
+    assert term.prefix is None
+    assert term.protected is False
+
+
+def test_term_positional_arguments() -> None:
+    scoped_context = {"label": f"{EG.label}"}
+    term = Term(
+        f"{EG.p}",
+        "p",
+        "@id",
+        {"@set"},
+        f"{EG.byKey}",
+        "en",
+        True,
+        scoped_context,
+        False,
+        True,
+    )
+
+    assert term.id == f"{EG.p}"
+    assert term.name == "p"
+    assert term.type == "@id"
+    assert term.container == {"@set"}
+    assert term.index == f"{EG.byKey}"
+    assert term.language == "en"
+    assert term.reverse is True
+    assert term.context == scoped_context
+    assert term.prefix is False
+    assert term.protected is True
 
 
 def test_undef_is_falsy() -> None:
