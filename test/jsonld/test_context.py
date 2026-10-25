@@ -19,13 +19,13 @@ from rdflib.namespace import PROV, RDF, XSD, Namespace
 from rdflib.plugins.shared.jsonld import context, errors
 from rdflib.plugins.shared.jsonld.context import (
     UNDEF,
-    ContainerLiteral,
-    ContainerType,
     Context,
     Defined,
-    ExpandedTermDict,
     Term,
-    TermSerialization,
+    _ContainerLiteral,
+    _ContainerType,
+    _ExpandedTermDict,
+    _TermSerialization,
 )
 
 
@@ -306,7 +306,7 @@ def test_to_dict() -> None:
 
 
 @pytest.mark.parametrize("container", [UNDEF, None], ids=["omitted", "null"])
-def test_to_dict_without_container(container: ContainerType | Defined) -> None:
+def test_to_dict_without_container(container: _ContainerType | Defined) -> None:
     definition: dict[str, Any] = {"@id": f"{EG.p}"}
     if container is not UNDEF:
         definition["@container"] = container
@@ -326,16 +326,16 @@ def test_to_dict_without_container(container: ContainerType | Defined) -> None:
     ids=["keyword", "array", "combined"],
 )
 def test_to_dict_with_container(
-    container: ContainerType, expected_container: list[ContainerLiteral]
+    container: _ContainerType, expected_container: list[_ContainerLiteral]
 ) -> None:
     ctx = Context({"p": {"@id": f"{EG.p}", "@container": container}})
 
     assert ctx.terms["p"].container == set(expected_container)
     result = ctx._term_dict(ctx.terms["p"])
-    assert_type(result, TermSerialization)
+    assert_type(result, _TermSerialization)
     assert isinstance(result, dict)
-    assert_type(result, ExpandedTermDict)
-    assert_type(result["@container"], ContainerType)
+    assert_type(result, _ExpandedTermDict)
+    assert_type(result["@container"], _ContainerType)
     assert isinstance(result["@container"], list)
     assert result.keys() == {"@id", "@container"}
     assert result["@id"] == f"{EG.p}"
@@ -353,7 +353,7 @@ def test_to_dict_with_container(
     ids=["omitted", "null"],
 )
 def test_to_dict_type_coercion(
-    base: str | None, coercion: Defined | str | None, expected: TermSerialization
+    base: str | None, coercion: Defined | str | None, expected: _TermSerialization
 ) -> None:
     definition: dict[str, Any] = {"@id": f"{EG.p}"}
     if coercion is not UNDEF:
@@ -361,7 +361,7 @@ def test_to_dict_type_coercion(
     ctx = Context({"p": definition}, base=base)
 
     assert ctx.terms["p"].type is coercion
-    expected_context: dict[str, TermSerialization] = {"p": expected}
+    expected_context: dict[str, _TermSerialization] = {"p": expected}
     if base is not None:
         expected_context["@base"] = base
     assert ctx.to_dict() == expected_context
@@ -373,7 +373,7 @@ def test_term_defaults() -> None:
     assert_type(term.id, str | None)
     assert_type(term.name, str)
     assert_type(term.type, Defined | str | None)
-    assert_type(term.container, Set[ContainerLiteral])
+    assert_type(term.container, Set[_ContainerLiteral])
     assert_type(term.index, str | Defined | None)
     assert_type(term.prefix, bool | None)
 
