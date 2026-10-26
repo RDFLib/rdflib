@@ -1,6 +1,9 @@
 from io import BytesIO
 
-from rdflib.graph import Dataset, Graph
+import pytest
+
+from rdflib.graph import Dataset, Graph, ReadOnlyGraphAggregate
+from rdflib.namespace import Namespace
 from rdflib.term import Literal, URIRef
 
 
@@ -44,6 +47,32 @@ def test_serialize():
             tg = g.default_context
 
         assert q[0:3] in tg
+
+
+@pytest.mark.parametrize("shared_store", [False, True], ids=["independent", "shared"])
+def test_serialize_aggregate(shared_store: bool) -> None:
+    """Only the aggregate's selected triples should appear in its TriX output."""
+    ex = Namespace("http://example.org/")
+    dataset = Dataset()
+    if shared_store:
+        graphs = [dataset.graph(ex.graph1), dataset.graph(ex.graph2)]
+    else:
+        graphs = [Graph(), Graph()]
+    triple1 = (ex.subject1, ex.predicate, Literal("selected 1"))
+    triple2 = (ex.subject2, ex.predicate, Literal("selected 2"))
+    graphs[0].add(triple1)
+    graphs[1].add(triple2)
+    dataset.graph(ex.excluded).add((ex.excluded, ex.predicate, Literal("excluded")))
+
+    if shared_store:
+        aggregate = ReadOnlyGraphAggregate(graphs, store=dataset.store)
+    else:
+        aggregate = ReadOnlyGraphAggregate(graphs)
+    data = aggregate.serialize(format="trix")
+    parsed = Dataset()
+    parsed.parse(data=data, format="trix")
+
+    assert {triple[:3] for triple in parsed.quads()} == {triple1, triple2}
 
 
 def test_issue_250():

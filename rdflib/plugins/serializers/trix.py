@@ -40,7 +40,8 @@ class TriXSerializer(Serializer):
             self.writer.attribute("http://www.w3.org/XML/1998/namespacebase", base)
         self.writer.namespaces()
 
-        if isinstance(self.store, ConjunctiveGraph):
+        # Non-context-aware aggregates must use their own triple iteration.
+        if self.store.context_aware and isinstance(self.store, ConjunctiveGraph):
             for subgraph in self.store.contexts():
                 self._writeGraph(subgraph)
         elif isinstance(self.store, Graph):
