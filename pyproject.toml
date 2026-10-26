@@ -22,6 +22,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "pyparsing>=3.1.0,<4",
+    "pyjelly>=0.9.0,<1",
 ]
 
 [project.urls]
@@ -71,6 +72,9 @@ docs = [
     "httpx2>=2.15.1,<3",
 ]
 lint = ["ruff==0.17.2"]
+
+[tool.uv.sources]
+pyjelly = { path = "../../jelly/pyjelly", editable = true }
 
 [tool.uv]
 # Install the tests and lint groups too, so `uv run pytest`, `uv run ruff` and

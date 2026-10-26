@@ -35,7 +35,7 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib
 import rdflib.compare
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from rdflib.namespace import XSD
 from rdflib.parser import Parser, create_input_source
 from rdflib.plugins.parsers.notation3 import BadSyntax
@@ -203,6 +203,29 @@ XFAILS = {
     ),
 }
 
+# Formats whose serialization is binary, so it is kept as bytes
+BINARY_FORMATS = {"jelly"}
+
+# Formats that can't serialize a ConjunctiveGraph, so a Dataset over the same
+# store is serialized instead. pyjelly writes a ConjunctiveGraph as the triples of
+# its default graph only, see test/test_serializers/test_serializer_jelly.py.
+DATASET_FORMATS = {"jelly"}
+
+# Formats that write "x"^^xsd:string as "x", which RDF 1.1 makes the same term.
+# rdflib's Literal tells them apart, so both graphs are compared with "x".
+SIMPLE_STRING_FORMATS = {"jelly"}
+
+
+def to_simple_literals(graph: Graph) -> None:
+    """Replace each "x"^^xsd:string in the graph with "x", the same RDF term."""
+    contexts = graph.contexts() if isinstance(graph, ConjunctiveGraph) else [graph]
+    for context in list(contexts):
+        for s, p, o in list(context.triples((None, None, None))):
+            if type(o) is rdflib.Literal and o.datatype == XSD.string:
+                context.remove((s, p, o))
+                context.add((s, p, rdflib.Literal(str(o))))
+
+
 # This is for files which can only be represented properly in one format
 CONSTRAINED_FORMAT_MAP = {
     "example-lots_of_graphs.n3": {"n3"}  # only n3 can serialize QuotedGraph
@@ -247,7 +270,15 @@ def roundtrip(
     else:
         g1.parse(source, format=infmt)
 
-    s = g1.serialize(format=testfmt)
+    source_graph = g1
+    if testfmt in DATASET_FORMATS and type(g1) is ConjunctiveGraph:
+        source_graph = Dataset(store=g1.store)
+    s: str | bytes
+    if testfmt in BINARY_FORMATS:
+        # Graph.serialize returns str unless an encoding is given
+        s = source_graph.serialize(format=testfmt, encoding="utf-8")
+    else:
+        s = source_graph.serialize(format=testfmt)
 
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(
@@ -278,6 +309,10 @@ def roundtrip(
                     c.remove((s, p, o))  # type: ignore[arg-type]
                     # type error: Argument 1 to "add" of "Graph" has incompatible type "tuple[str, Node, Literal]"; expected "tuple[Node, Node, Node]"
                     c.add((s, p, rdflib.Literal(str(o))))  # type: ignore[arg-type]
+
+    if testfmt in SIMPLE_STRING_FORMATS:
+        to_simple_literals(g1)
+        to_simple_literals(g2)
 
     if logger.isEnabledFor(logging.DEBUG):
         both, first, second = rdflib.compare.graph_diff(g1, g2)

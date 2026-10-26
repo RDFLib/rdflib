@@ -8,6 +8,7 @@ import pytest
 from _pytest.mark.structures import ParameterSet
 
 from rdflib.graph import Graph
+from rdflib.plugins.stores.sparqlstore import SPARQLStore
 from test.utils import GraphHelper
 from test.utils.http import MethodName, MockHTTPResponse
 from test.utils.httpservermock import ServedBaseHTTPServerMock
@@ -127,3 +128,53 @@ def test_query_construct_format(
     logging.debug("request = %s", request)
     logging.debug("request.headers = %s", request.headers.as_string())
     assert request.path_query["query"][0] == query
+
+
+def test_query_jelly(function_httpmock: ServedBaseHTTPServerMock) -> None:
+    """
+    With returnFormat="jelly", the store asks for Jelly-SPARQL and Jelly-RDF,
+    and reads the results of SELECT and CONSTRUCT queries in them.
+    """
+    expected_graph = Graph().parse(
+        format="turtle",
+        data="""
+        @prefix egdc: <http://example.com/> .
+        egdc:s0 egdc:p0 egdc:o0 , "o1" , _:o2 .
+        """,
+    )
+    select_body = expected_graph.query("SELECT * { ?s ?p ?o }").serialize(
+        format="jelly"
+    )
+    assert select_body is not None
+    construct_body = expected_graph.serialize(format="jelly", encoding="utf-8")
+    function_httpmock.responses[MethodName.GET].extend(
+        [
+            MockHTTPResponse(
+                200,
+                "OK",
+                select_body,
+                {"Content-Type": ["application/x-jelly-sparql"]},
+            ),
+            MockHTTPResponse(
+                200,
+                "OK",
+                construct_body,
+                {"Content-Type": ["application/x-jelly-rdf"]},
+            ),
+        ]
+    )
+
+    store = SPARQLStore(f"{function_httpmock.url}/query", returnFormat="jelly")
+    graph = Graph(store, identifier="http://example.com")
+
+    select_result = graph.query("SELECT * { ?s ?p ?o }")
+    assert select_result.type == "SELECT"
+    assert len(select_result) == 3
+    request = function_httpmock.requests[MethodName.GET].pop()
+    accept = {item.strip() for item in request.headers["Accept"].split(",")}
+    assert accept == {"application/x-jelly-sparql", "application/x-jelly-rdf"}
+
+    construct_result = graph.query("CONSTRUCT WHERE { ?s ?p ?o }")
+    assert construct_result.type == "CONSTRUCT"
+    assert construct_result.graph is not None
+    GraphHelper.assert_isomorphic(expected_graph, construct_result.graph)

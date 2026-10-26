@@ -90,6 +90,7 @@ If you are not sure what format your file will be, you can use [`guess_format()`
 |---------|---------------------------------------------------------------|
 | json-ld | [`JsonLDParser`][rdflib.plugins.parsers.jsonld.JsonLDParser]  |
 | hext    | [`HextuplesParser`][rdflib.plugins.parsers.hext.HextuplesParser] |
+| jelly   | `RDFLibJellyParser`, from [pyjelly](https://w3id.org/jelly/pyjelly) |
 | n3      | [`N3Parser`][rdflib.plugins.parsers.notation3.N3Parser]       |
 | nquads  | [`NQuadsParser`][rdflib.plugins.parsers.nquads.NQuadsParser]  |
 | patch   | [`RDFPatchParser`][rdflib.plugins.parsers.patch.RDFPatchParser] |
@@ -135,6 +136,7 @@ graph.serialize(my_url, format='application/rdf+xml')
 | nquads     | [`NQuadsSerializer`][rdflib.plugins.serializers.nquads.NQuadsSerializer]             |
 | nt         | [`NTSerializer`][rdflib.plugins.serializers.nt.NTSerializer]                         |
 | hext       | [`HextuplesSerializer`][rdflib.plugins.serializers.hext.HextuplesSerializer]         |
+| jelly      | `RDFLibJellySerializer`, from [pyjelly](https://w3id.org/jelly/pyjelly)              |
 | patch      | [`PatchSerializer`][rdflib.plugins.serializers.patch.PatchSerializer]                |
 | pretty-xml | [`PrettyXMLSerializer`][rdflib.plugins.serializers.rdfxml.PrettyXMLSerializer]       |
 | trig       | [`TrigSerializer`][rdflib.plugins.serializers.trig.TrigSerializer]                   |
@@ -160,6 +162,58 @@ For serialization of non-context-aware data sources, e.g. a single `Graph`, the 
 
 For context-aware (multi-graph) serialization, the 'graph' field of the default graph will be an empty string and the values for other graphs will be Blank Node IDs or IRIs.
 
+### Jelly
+
+[Jelly](https://w3id.org/jelly) is a binary format for streams of RDF triples
+or quads, based on Protocol Buffers. It is fast to read and write and compact.
+RDFLib reads and writes it with [pyjelly](https://w3id.org/jelly/pyjelly),
+which is installed with RDFLib. The format name is `jelly`, the media type is
+`application/x-jelly-rdf`, and files end in `.jelly`.
+
+```python
+from rdflib import Dataset
+
+d = Dataset()
+d.parse("data.trig")
+d.serialize(destination="data.jelly", format="jelly")
+d2 = Dataset().parse("data.jelly")
+```
+
+As Jelly is binary, `serialize()` can't return it as a `str`. Give it a
+`destination`, or an `encoding` to get `bytes`, which Jelly ignores:
+`g.serialize(format="jelly", encoding="utf-8")`.
+
+A `Dataset` is written as quads and a `Graph` as triples. Read into a `Graph`,
+a stream of quads gives the triples of its default graph only, as with N-Quads.
+Read into a `Dataset`, a stream of triples goes into the default graph.
+
+Some things to know:
+
+* In RDF, `"x"^^xsd:string` and `"x"` are the same term, and Jelly writes both as
+  `"x"`. RDFLib reads that as `Literal("x")`, which
+  [`Literal`][rdflib.term.Literal]'s `==` tells apart from
+  `Literal("x", datatype=XSD.string)` (its `eq()` method doesn't). To compare
+  graphs after a round trip, write string literals without a datatype.
+* Namespace prefixes are not written by default. pyjelly's options turn them on,
+  and other options, like the size of the lookup tables, are set the same way:
+
+    ```python
+    from pyjelly.options import StreamParameters
+    from pyjelly.serialize.streams import SerializerOptions
+
+    options = SerializerOptions(params=StreamParameters(namespace_declarations=True))
+    g.serialize(destination="data.jelly", format="jelly", options=options)
+    ```
+
+* A [`ConjunctiveGraph`][rdflib.graph.ConjunctiveGraph] can't be written in Jelly
+  yet. Use a [`Dataset`][rdflib.graph.Dataset] instead.
+
+SPARQL query results can be written in Jelly too, see
+[Jelly-SPARQL](#jelly-sparql).
+
+See the [pyjelly documentation](https://w3id.org/jelly/pyjelly) for more, such
+as writing and reading streams of many graphs.
+
 ### Longturtle
 
 The `longturtle` format name remains available as an alias of the default `turtle`
@@ -178,6 +232,7 @@ Plugins for reading and writing of (SPARQL) [`Result`][rdflib.query.Result] - pa
 | Name | Class |
 | ---- | ----- |
 | csv  | [`CSVResultParser`][rdflib.plugins.sparql.results.csvresults.CSVResultParser] |
+| jelly | `RDFLibJellySparqlParser`, from [pyjelly](https://w3id.org/jelly/pyjelly) |
 | json | [`JSONResultParser`][rdflib.plugins.sparql.results.jsonresults.JSONResultParser] |
 | tsv  | [`TSVResultParser`][rdflib.plugins.sparql.results.tsvresults.TSVResultParser] |
 | xml  | [`XMLResultParser`][rdflib.plugins.sparql.results.xmlresults.XMLResultParser] |
@@ -187,6 +242,35 @@ Plugins for reading and writing of (SPARQL) [`Result`][rdflib.query.Result] - pa
 | Name | Class |
 | ---- | ----- |
 | csv  | [`CSVResultSerializer`][rdflib.plugins.sparql.results.csvresults.CSVResultSerializer] |
+| jelly | `RDFLibJellySparqlSerializer`, from [pyjelly](https://w3id.org/jelly/pyjelly) |
 | json | [`JSONResultSerializer`][rdflib.plugins.sparql.results.jsonresults.JSONResultSerializer] |
 | txt  | [`TXTResultSerializer`][rdflib.plugins.sparql.results.txtresults.TXTResultSerializer] |
 | xml  | [`XMLResultSerializer`][rdflib.plugins.sparql.results.xmlresults.XMLResultSerializer] |
+
+### Jelly-SPARQL
+
+[Jelly-SPARQL](https://w3id.org/jelly) is the binary Jelly format for the
+results of SELECT and ASK queries. Its format name is `jelly` (or `jellys`),
+its media type is `application/x-jelly-sparql`, and files end in `.jellys`.
+
+```python
+from io import BytesIO
+from rdflib.query import Result
+
+result = graph.query("SELECT ?s ?o WHERE { ?s ?p ?o }")
+data = result.serialize(format="jelly")  # bytes
+result = Result.parse(BytesIO(data), format="jelly")
+```
+
+The results of CONSTRUCT and DESCRIBE queries are graphs, so
+`result.serialize(format="jelly")` writes them in [Jelly](#jelly). To read
+them back as a result, give the media type of Jelly, as `format="jelly"` means
+Jelly-SPARQL here:
+`Result.parse(source, content_type="application/x-jelly-rdf")`.
+
+As with Jelly, results are read from and written to binary streams only, and
+`"x"^^xsd:string` is read as `Literal("x")`, the same RDF term.
+
+A [`SPARQLStore`][rdflib.plugins.stores.sparqlstore.SPARQLStore] made with
+`returnFormat="jelly"` asks the endpoint for Jelly-SPARQL and Jelly, and reads
+either.
