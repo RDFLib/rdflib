@@ -1,6 +1,8 @@
+from collections import Counter
+
 import pytest
 
-from rdflib import RDF, Graph, Namespace
+from rdflib import RDF, Graph, Literal, Namespace
 
 EX = Namespace("http://example.org/gmark/")
 
@@ -21,12 +23,14 @@ def test_negated_property_set_with_forward_and_reverse_paths() -> None:
         """
     )
 
-    assert set(results) == {
-        (EX.A, EX.B),
-        (EX.B, EX.A),
-        (EX.C, EX.B),
-        (EX.C, EX.D),
-    }
+    assert Counter(results) == Counter(
+        {
+            (EX.A, EX.B),
+            (EX.B, EX.A),
+            (EX.C, EX.B),
+            (EX.C, EX.D),
+        }
+    )
 
 
 def test_negated_property_set_with_only_reverse_path() -> None:
@@ -45,10 +49,12 @@ def test_negated_property_set_with_only_reverse_path() -> None:
         """
     )
 
-    assert set(results) == {
-        (EX.B, EX.A),
-        (EX.C, EX.B),
-    }
+    assert Counter(results) == Counter(
+        {
+            (EX.B, EX.A),
+            (EX.C, EX.B),
+        }
+    )
 
 
 @pytest.mark.parametrize(
@@ -69,7 +75,7 @@ def test_negated_property_set_with_bound_endpoints(bindings, expected) -> None:
         "SELECT ?x1 ?x2 WHERE { ?x1 !(<%s>|^<%s>) ?x2 }" % (EX.p1, EX.p2),
         initBindings=bindings,
     )
-    assert set(results) == expected
+    assert Counter(results) == Counter(expected)
 
 
 def test_inverse_negated_property_set_in_sequence() -> None:
@@ -80,7 +86,7 @@ def test_inverse_negated_property_set_in_sequence() -> None:
     results = graph.query(
         "SELECT ?x1 ?x2 WHERE { ?x1 (!^<%s>)/<%s> ?x2 }" % (EX.p2, EX.p0)
     )
-    assert set(results) == {(EX.B, EX.B)}
+    assert Counter(results) == Counter({(EX.B, EX.B)})
 
 
 def test_inverse_negated_rdf_type_shorthand() -> None:
@@ -88,4 +94,23 @@ def test_inverse_negated_rdf_type_shorthand() -> None:
     graph.add((EX.A, RDF.type, EX.Class))
     graph.add((EX.B, EX.p1, EX.C))
     results = graph.query("SELECT ?x1 ?x2 WHERE { ?x1 !^a ?x2 }")
-    assert set(results) == {(EX.C, EX.B)}
+    assert Counter(results) == Counter({(EX.C, EX.B)})
+
+
+@pytest.mark.parametrize(
+    "path, multiplicity",
+    [("!:p0", 1), ("!^:p0", 1), ("^(!:p0)", 1), ("!(:p0|^:p0)", 2)],
+)
+def test_negated_property_set_cardinality(path: str, multiplicity: int) -> None:
+    graph = Graph()
+    pairs = [(EX.A, EX.B), (EX.B, EX.A), (EX.A, EX.A)]
+    for subject, object_ in pairs:
+        for predicate in (EX.p0, EX.p1, EX.p2):
+            graph.add((subject, predicate, object_))
+
+    pattern = f"WHERE {{ ?x1 {path} ?x2 }}"
+    results = graph.query(f"PREFIX : <{EX}> SELECT ?x1 ?x2 {pattern}")
+    assert Counter(results) == Counter({pair: multiplicity for pair in pairs})
+
+    counts = graph.query(f"PREFIX : <{EX}> SELECT (COUNT(*) AS ?count) {pattern}")
+    assert list(counts) == [(Literal(len(pairs) * multiplicity),)]

@@ -497,19 +497,20 @@ class NegatedPath(Path):
         forward = {a for a in self.args if isinstance(a, URIRef)}
         inverse = {a.arg for a in self.args if isinstance(a, InvPath)}
 
-        if forward:
+        seen: Set[Tuple[Node, Node]] = set()
+        if forward or not inverse:
             for s, p, o in graph.triples((subj, None, obj)):
-                if p not in forward:
+                if p not in forward and (s, o) not in seen:
+                    seen.add((s, o))
                     yield s, o
 
         if inverse:
+            # Mixed sets are alternatives: deduplicate within each direction only.
+            seen.clear()
             for o, p, s in graph.triples((obj, None, subj)):
-                if p not in inverse:
+                if p not in inverse and (s, o) not in seen:
+                    seen.add((s, o))
                     yield s, o
-
-        if not forward and not inverse:
-            for s, _, o in graph.triples((subj, None, obj)):
-                yield s, o
 
     def __repr__(self) -> str:
         return "Path(! %s)" % ",".join(str(x) for x in self.args)
