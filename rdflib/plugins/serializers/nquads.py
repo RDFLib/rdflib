@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import IO, TYPE_CHECKING, Any, Optional
+from typing import IO, TYPE_CHECKING, Any
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Graph
 from rdflib.plugins.serializers.nt import _nt_row, _quoteLiteral
@@ -26,8 +26,8 @@ class NQuadsSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
+        base: str | None = None,
+        encoding: str | None = None,
         **kwargs: Any,
     ) -> None:
         if base is not None:
@@ -54,18 +54,10 @@ class NQuadsSerializer(Serializer):
 
 
 def _nq_row(triple, context):
-    graph_name = context.n3() if context and context != DATASET_DEFAULT_GRAPH_ID else ""
+    graph_name = (
+        context.n3() + " " if context and context != DATASET_DEFAULT_GRAPH_ID else ""
+    )
     if isinstance(triple[2], Literal):
-        return "%s %s %s %s .\n" % (
-            triple[0].n3(),
-            triple[1].n3(),
-            _quoteLiteral(triple[2]),
-            graph_name,
-        )
+        return f"{triple[0].n3()} {triple[1].n3()} {_quoteLiteral(triple[2])} {graph_name}.\n"
     else:
-        return "%s %s %s %s .\n" % (
-            triple[0].n3(),
-            triple[1].n3(),
-            triple[2].n3(),
-            graph_name,
-        )
+        return f"{triple[0].n3()} {triple[1].n3()} {triple[2].n3()} {graph_name}.\n"

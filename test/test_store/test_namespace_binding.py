@@ -3,9 +3,10 @@ from __future__ import annotations
 import enum
 import itertools
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Dict, Set, Union
+from typing import Any, Union
 
 import pytest
 
@@ -25,7 +26,7 @@ class StoreTrait(enum.Enum):
 @dataclass
 class StoreInfo:
     name: str
-    traits: Set[StoreTrait] = field(default_factory=set)
+    traits: set[StoreTrait] = field(default_factory=set)
 
     def make_graph(
         self, tmp_path: Path, identifier: Union[IdentifiedNode, str, None] = None
@@ -39,7 +40,7 @@ class StoreInfo:
         return graph
 
 
-def make_store_info_dict(*result_format: StoreInfo) -> Dict[str, StoreInfo]:
+def make_store_info_dict(*result_format: StoreInfo) -> dict[str, StoreInfo]:
     result = {}
     for item in result_format:
         result[item.name] = item
@@ -71,7 +72,7 @@ EGNSSUB_V0 = EGNSSUB["v0"]
 EGNSSUB_V1 = EGNSSUB["v1"]
 EGNSSUB_V2 = EGNSSUB["v2"]
 
-NamespaceBindings = Dict[str, URIRef]
+NamespaceBindings = dict[str, URIRef]
 
 
 def make_graph(tmp_path: Path, store_name: str) -> Graph:
@@ -93,7 +94,7 @@ def check_ns(graph: Graph, expected_bindings: NamespaceBindings) -> None:
 
 
 @pytest.mark.parametrize(
-    ["override", "replace"], itertools.product([True, False], [True, False])
+    ["override", "replace"], list(itertools.product([True, False], [True, False]))
 )
 def test_simple_bind(
     tmp_path: Path, store_name: str, override: bool, replace: bool
@@ -107,7 +108,7 @@ def test_simple_bind(
 
 
 @pytest.mark.parametrize(
-    ["override", "replace"], itertools.product([True, False], [True, False])
+    ["override", "replace"], list(itertools.product([True, False], [True, False]))
 )
 def test_bind_two_bind(
     tmp_path: Path, store_name: str, override: bool, replace: bool
@@ -146,30 +147,32 @@ def test_rebind_uri_no_override(tmp_path: Path, store_name: str, replace: bool) 
 
 @pytest.mark.parametrize(
     ["store_name", "override"],
-    pytest_mark_filter(
-        itertools.product(store_info_dict.keys(), [True, False]),
-        {
-            ("SPARQLStore", False): (
-                pytest.mark.xfail(
-                    raises=AssertionError,
-                    reason="""
+    list(
+        pytest_mark_filter(
+            itertools.product(store_info_dict.keys(), [True, False]),
+            {
+                ("SPARQLStore", False): (
+                    pytest.mark.xfail(
+                        raises=AssertionError,
+                        reason="""
     SPARQLStore's namespace bindings work on a fundementally different way than
     the other stores, which is both simpler, but requires some additional work
     to make it behave like the other stores.
     """,
+                    ),
                 ),
-            ),
-            ("SPARQLUpdateStore", False): (
-                pytest.mark.xfail(
-                    raises=AssertionError,
-                    reason="""
+                ("SPARQLUpdateStore", False): (
+                    pytest.mark.xfail(
+                        raises=AssertionError,
+                        reason="""
     SPARQLStore's namespace bindings work on a fundementally different way than
     the other stores, which is both simpler, but requires some additional work
     to make it behave like the other stores.
     """,
+                    ),
                 ),
-            ),
-        },
+            },
+        )
     ),
 )
 def test_rebind_prefix_replace(tmp_path: Path, store_name: str, override: bool) -> None:
@@ -195,7 +198,8 @@ def test_rebind_prefix_replace(tmp_path: Path, store_name: str, override: bool) 
 
 
 @pytest.mark.parametrize(
-    ["reuse_override", "reuse_replace"], itertools.product([True, False], [True, False])
+    ["reuse_override", "reuse_replace"],
+    list(itertools.product([True, False], [True, False])),
 )
 def test_rebind_prefix_reuse_uri_replace(
     tmp_path: Path, store_name: str, reuse_override: bool, reuse_replace: bool

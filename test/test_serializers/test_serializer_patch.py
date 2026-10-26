@@ -165,6 +165,20 @@ def test_header_id():
     assert """H id <uuid:123>""" in result
 
 
+def test_no_header_id_omits_id_header():
+    ds = Dataset()
+    ds.add(
+        (
+            URIRef("http://example.org/subject1"),
+            URIRef("http://example.org/predicate2"),
+            Literal("object2"),
+        )
+    )
+    result = ds.serialize(format="patch", operation="add")
+    assert "H id" not in result
+    assert "TX ." in result
+
+
 def test_prev_header():
     ds = Dataset()
     ds.add(
@@ -175,4 +189,4 @@ def test_prev_header():
         )
     )
     result = ds.serialize(format="patch", operation="add", header_prev="uuid:123")
-    assert """H prev <uuid:123>""" in result
+    assert """H prev <uuid:123> .""" in result
