@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import itertools
 import logging
 from collections.abc import Iterable
 from typing import Union
@@ -7,14 +8,20 @@ from typing import Union
 import pytest
 from _pytest.mark.structures import ParameterSet
 
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset
-from rdflib.term import URIRef
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset
+from rdflib.term import BNode, URIRef
 from test.data import TEST_DATA_DIR
 
 
 def make_load_default_and_named() -> Iterable[ParameterSet]:
-    for file_extension in ("trig", "nq", "jsonld"):
-        yield pytest.param(file_extension, id=file_extension)
+    for container_type, file_extension in itertools.product(
+        (Dataset, ConjunctiveGraph), ("trig", "nq", "jsonld")
+    ):
+        yield pytest.param(
+            container_type,
+            file_extension,
+            id=f"{container_type.__name__}-{file_extension}",
+        )
 
 
 EXTENSION_FORMATS = {
