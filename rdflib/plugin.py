@@ -273,6 +273,12 @@ register(
     "TurtleSerializer",
 )
 register(
+    "longturtle",
+    Serializer,
+    "rdflib.plugins.serializers.turtle",
+    "TurtleSerializer",
+)
+register(
     "origturtle",
     Serializer,
     "rdflib.plugins.serializers.origturtle",

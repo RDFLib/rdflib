@@ -786,3 +786,4 @@ def test_default_serializer():
     assert g.serialize(format="origturtle").strip() == original_turtle
 
     assert g.serialize().strip() == default_turtle
+    assert g.serialize(format="longturtle").strip() == default_turtle
