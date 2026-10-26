@@ -63,7 +63,7 @@ def Graph(term: Identifier, graph: CompValue) -> CompValue:
 
 
 def BGP(
-    triples: Optional[list[tuple[Identifier, Identifier, Identifier]]] = None
+    triples: Optional[list[tuple[Identifier, Identifier, Identifier]]] = None,
 ) -> CompValue:
     return CompValue("BGP", triples=triples or [])
 
@@ -113,7 +113,7 @@ def _knownTerms(
 
 
 def reorderTriples(
-    l_: Iterable[tuple[Identifier, Identifier, Identifier]]
+    l_: Iterable[tuple[Identifier, Identifier, Identifier]],
 ) -> list[tuple[Identifier, Identifier, Identifier]]:
     """
     Reorder triple patterns so that we execute the
@@ -164,7 +164,7 @@ def reorderTriples(
 def triples(
     l: typing.Union[  # noqa: E741
         list[list[Identifier]], list[tuple[Identifier, Identifier, Identifier]]
-    ]
+    ],
 ) -> list[tuple[Identifier, Identifier, Identifier]]:
     _l = reduce(lambda x, y: x + y, l)
     if (len(_l) % 3) != 0:

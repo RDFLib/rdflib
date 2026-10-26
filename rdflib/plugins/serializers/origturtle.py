@@ -84,7 +84,7 @@ class RecursiveSerializer(Serializer):
         for class_uri in self.top_classes:
             members = list(self.store.subjects(RDF.type, class_uri))
             # type error: All overload variants of "sort" of "list" require at least one argument
-            members.sort()  # type: ignore[call-overload]
+            members.sort()  # type: ignore[call-arg]
 
             subjects.extend(members)
             for member in members:
@@ -152,7 +152,7 @@ class RecursiveSerializer(Serializer):
         # Sort object lists
         for prop, objects in properties.items():
             # type error: All overload variants of "sort" of "list" require at least one argument
-            objects.sort()  # type: ignore[call-overload]
+            objects.sort()  # type: ignore[call-arg]
 
         # Make sorted list of properties
         prop_list: List[_PredicateType] = []
@@ -163,7 +163,7 @@ class RecursiveSerializer(Serializer):
                 seen[prop] = True
         props = list(properties.keys())
         # type error: All overload variants of "sort" of "list" require at least one argument
-        props.sort()  # type: ignore[call-overload]
+        props.sort()  # type: ignore[call-arg]
         for prop in props:
             if prop not in seen:
                 prop_list.append(prop)

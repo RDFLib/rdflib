@@ -148,7 +148,7 @@ class AuditableStore(Store):
     def triples(
         self, triple: _TriplePatternType, context: Optional[_ContextType] = None
     ) -> Iterator[tuple[_TripleType, Iterator[Optional[_ContextType]]]]:
-        (su, pr, ob) = triple
+        su, pr, ob = triple
         context = (
             context.__class__(self.store, context.identifier)
             if context is not None

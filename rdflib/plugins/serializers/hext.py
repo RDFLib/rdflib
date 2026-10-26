@@ -55,7 +55,7 @@ class HextuplesSerializer(Serializer):
 
     def __init__(self, store: Union[Graph, Dataset, ConjunctiveGraph]):
         self.default_graph: Optional[Union[Graph, IdentifiedNode]]
-        self.graph_type: Union[Type[Graph], Type[Dataset], Type[ConjunctiveGraph]]
+        self.graph_type: Union[type[Graph], type[Dataset], type[ConjunctiveGraph]]
 
         if isinstance(store, (Dataset, ConjunctiveGraph)):
             self.graph_type = (
