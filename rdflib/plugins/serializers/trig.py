@@ -58,7 +58,7 @@ class TrigSerializer(TurtleSerializer):
 
     def reset(self) -> None:
         super(TrigSerializer, self).reset()
-        self._contexts: dict[
+        self._graphs: dict[
             _ContextType,
             tuple[list[_SubjectType], dict[_SubjectType, bool]],
         ] = {}
