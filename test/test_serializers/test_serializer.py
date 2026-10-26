@@ -33,6 +33,11 @@ from test.utils.destination import DestinationType, DestParmType, DestRef
 from test.utils.namespace import EGDC, EGSCHEME, EGURN
 
 
+@pytest.mark.parametrize("format", ["turtle", "ttl", "text/turtle", "n3", "trig"])
+def test_recursive_serializer_plugin_loads(format: str) -> None:
+    assert issubclass(rdflib.plugin.get(format, Serializer), Serializer)
+
+
 @pytest.mark.parametrize(
     "format, tuple_index, is_keyword",
     [
