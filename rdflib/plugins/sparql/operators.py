@@ -46,7 +46,7 @@ from rdflib.term import (
     URIRef,
     Variable,
 )
-from rdflib.xsd_datetime import Duration, parse_datetime  # type: ignore[attr-defined]
+from rdflib.xsd_datetime import Duration, parse_datetime
 
 
 def Builtin_IRI(expr: Expr, ctx: FrozenBindings) -> URIRef:

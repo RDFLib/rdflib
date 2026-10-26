@@ -256,13 +256,13 @@ tox
 tox -a
 
 # Run a specific environment.
-tox -e py310 # default environment with py310
+tox -e py311 # default environment with py311
 tox -e py311-extra # extra tests with py311
 
 # Override the test command.
 # the below command will run `pytest test/test_translate_algebra.py`
 # instead of the default pytest command.
-tox -e py310,py311 -- pytest test/test_translate_algebra.py
+tox -e py311,py312 -- pytest test/test_translate_algebra.py
 ```
 
 ## `go-task` and `Taskfile.yml`
@@ -289,8 +289,8 @@ task docs
 # Run live-preview on the docs
 task docs:live-server
 
-# Run the py310 tox environment
-task tox -- -e py310
+# Run the py311 tox environment
+task tox -- -e py311
 ```
 
 The [Taskfile usage documentation](https://taskfile.dev/#/usage) provides more information on how to work with taskfiles.
@@ -355,7 +355,7 @@ Please do *not* commit tests you know will fail, even if you're just pointing ou
 
 ## Compatibility
 
-RDFLib 8.0.0 release and later only support Python 3.10 and newer.
+RDFLib 8.0.0 release and later only support Python 3.11 and newer.
 
 RDFLib 7.0.0 release and later only support Python 3.8.1 and newer.
 
