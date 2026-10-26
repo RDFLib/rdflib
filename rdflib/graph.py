@@ -2726,12 +2726,22 @@ class Dataset(ConjunctiveGraph):
         return pattern % self.store.__class__.__name__
 
     def __len__(self) -> int:
-        """Number of quads in the dataset."""
+        """Number of asserted quads in the dataset.
+
+        Formula-aware stores require iterating over asserted quad memberships.
+        Other stores are counted using their per-graph lengths.
+        """
+        if self.store.formula_aware:
+            # Quoted and asserted graphs can share an identifier, so a graph's
+            # type and length cannot distinguish their statement memberships.
+            return sum(
+                1
+                for _, contexts in self.store.triples((None, None, None))
+                for _ in contexts
+            )
         count = 0
         default_graph_seen = False
         for graph in super().contexts():
-            if isinstance(graph, QuotedGraph):
-                continue
             count += self.store.__len__(graph)
             default_graph_seen |= graph.identifier == self.default_graph.identifier
         if not default_graph_seen:

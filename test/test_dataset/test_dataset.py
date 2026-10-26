@@ -9,7 +9,7 @@ from typing import Tuple
 import pytest
 
 from rdflib import BNode, Namespace, Node, URIRef, plugin
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph, QuotedGraph
 from rdflib.store import Store
 from test.data import CONTEXT1, LIKES, PIZZA, TAREK
 
@@ -209,6 +209,34 @@ def test_len_excludes_quoted_formulas() -> None:
     )
 
     assert len(dataset) == 1
+    assert sum(1 for _ in dataset.quads()) == 1
+
+
+@pytest.mark.parametrize("quoted_first", [True, False])
+@pytest.mark.parametrize(
+    "identifier",
+    [URIRef("urn:shared"), DATASET_DEFAULT_GRAPH_ID],
+    ids=["named", "default"],
+)
+def test_len_counts_asserted_memberships(
+    identifier: URIRef, quoted_first: bool
+) -> None:
+    dataset = Dataset()
+    additions = [
+        (
+            QuotedGraph(dataset.store, identifier),
+            (URIRef("urn:quoted"), LIKES, PIZZA),
+        ),
+        (
+            Graph(dataset.store, identifier),
+            (URIRef("urn:asserted"), LIKES, PIZZA),
+        ),
+    ]
+    for graph, triple in additions if quoted_first else reversed(additions):
+        graph.add(triple)
+
+    assert len(dataset) == 1
+    assert bool(dataset) is True
     assert sum(1 for _ in dataset.quads()) == 1
 
 
