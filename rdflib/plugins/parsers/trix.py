@@ -4,7 +4,7 @@ A TriX parser for RDFLib
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Tuple
+from typing import TYPE_CHECKING, Any, NoReturn
 from xml.sax import handler, make_parser
 from xml.sax.handler import ErrorHandler
 
@@ -17,7 +17,7 @@ from rdflib.term import BNode, Identifier, Literal, URIRef
 
 if TYPE_CHECKING:
     # from xml.sax.expatreader import ExpatLocator
-    from xml.sax.xmlreader import AttributesImpl, Locator, XMLReader
+    from xml.sax.xmlreader import AttributesNSImpl, Locator, XMLReader
 
 __all__ = ["create_parser", "TriXHandler", "TriXParser"]
 
@@ -29,8 +29,8 @@ XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
 class TriXHandler(handler.ContentHandler):
     """An Sax Handler for TriX. See http://sw.nokia.com/trix/"""
 
-    lang: Optional[str]
-    datatype: Optional[str]
+    lang: str | None
+    datatype: str | None
 
     def __init__(self, store: Store):
         self.store = store
@@ -38,9 +38,9 @@ class TriXHandler(handler.ContentHandler):
         self.reset()
 
     def reset(self) -> None:
-        self.bnode: Dict[str, BNode] = {}
-        self.graph: Optional[Graph] = None
-        self.triple: Optional[List[Identifier]] = None
+        self.bnode: dict[str, BNode] = {}
+        self.graph: Graph | None = None
+        self.triple: list[Identifier] | None = None
         self.state = 0
         self.lang = None
         self.datatype = None
@@ -53,14 +53,14 @@ class TriXHandler(handler.ContentHandler):
     def startDocument(self) -> None:
         pass
 
-    def startPrefixMapping(self, prefix: Optional[str], namespace: str) -> None:
+    def startPrefixMapping(self, prefix: str | None, namespace: str) -> None:
         pass
 
-    def endPrefixMapping(self, prefix: Optional[str]) -> None:
+    def endPrefixMapping(self, prefix: str | None) -> None:
         pass
 
     def startElementNS(
-        self, name: Tuple[Optional[str], str], qname, attrs: AttributesImpl
+        self, name: tuple[str | None, str], qname, attrs: AttributesNSImpl
     ) -> None:
         if name[0] != str(TRIXNS):
             self.error(
@@ -125,7 +125,7 @@ class TriXHandler(handler.ContentHandler):
                 self.lang = None
                 self.datatype = None
                 try:
-                    # type error: Argument 1 to "getValue" of "AttributesImpl" has incompatible type "Tuple[str, str]"; expected "str"
+                    # type error: Argument 1 to "getValue" of "AttributesImpl" has incompatible type "tuple[str, str]"; expected "str"
                     self.lang = attrs.getValue((str(XMLNS), "lang"))  # type: ignore[arg-type, unused-ignore]
                 except Exception:
                     # language not required - ignore
@@ -150,7 +150,7 @@ class TriXHandler(handler.ContentHandler):
 
         self.chars = ""
 
-    def endElementNS(self, name: Tuple[Optional[str], str], qname) -> None:
+    def endElementNS(self, name: tuple[str | None, str], qname) -> None:
         if TYPE_CHECKING:
             assert self.triple is not None
         if name[0] != str(TRIXNS):
@@ -206,7 +206,7 @@ class TriXHandler(handler.ContentHandler):
                         % (len(self.triple), self.triple)
                     )
                 # type error: Item "None" of "Optional[Graph]" has no attribute "add"
-                # type error: Argument 1 to "add" of "Graph" has incompatible type "List[Identifier]"; expected "Tuple[Node, Node, Node]"
+                # type error: Argument 1 to "add" of "Graph" has incompatible type "list[Identifier]"; expected "tuple[Node, Node, Node]"
                 self.graph.add(self.triple)  # type: ignore[union-attr, arg-type]
                 # self.store.store.add(self.triple,context=self.graph)
                 # self.store.addN([self.triple+[self.graph]])
@@ -280,9 +280,9 @@ class TriXParser(Parser):
         pass
 
     def parse(self, source: InputSource, sink: Graph, **args: Any) -> None:
-        assert (
-            sink.store.context_aware
-        ), "TriXParser must be given a context aware store."
+        assert sink.store.context_aware, (
+            "TriXParser must be given a context aware store."
+        )
 
         self._parser = create_parser(sink.store)
         content_handler = self._parser.getContentHandler()

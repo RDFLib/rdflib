@@ -35,7 +35,9 @@ def get_aggregates_tests():
     yield template_tst, "GROUP_CONCAT", Literal(""), Literal("42")
 
 
-@pytest.mark.parametrize("checker, agg_func, first, second", get_aggregates_tests())
+@pytest.mark.parametrize(
+    "checker, agg_func, first, second", list(get_aggregates_tests())
+)
 def test_aggregates(checker, agg_func, first, second) -> None:
     checker(agg_func, first, second)
 

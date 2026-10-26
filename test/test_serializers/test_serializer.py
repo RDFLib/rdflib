@@ -5,20 +5,14 @@ import itertools
 import logging
 import re
 import socket
+from collections.abc import Callable, Generator
 from contextlib import ExitStack
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path, PosixPath, PurePath
 from typing import (
     IO,
-    Callable,
-    Dict,
-    Generator,
-    List,
-    Optional,
-    Set,
     TextIO,
-    Tuple,
     Union,
     cast,
 )
@@ -58,8 +52,8 @@ def test_rdf_type(format: str, tuple_index: int, is_keyword: bool) -> None:
     graph.bind("eg", NS)
     nodes = [NS.subj, NS.pred, NS.obj, NS.graph]
     nodes[tuple_index] = RDF.type
-    quad = cast(Tuple[URIRef, URIRef, URIRef, URIRef], tuple(nodes))
-    # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "Tuple[URIRef, URIRef, URIRef, URIRef]"; expected "Union[Tuple[Node, Node, Node], Tuple[Node, Node, Node, Optional[Graph]]]"
+    quad = cast(tuple[URIRef, URIRef, URIRef, URIRef], tuple(nodes))
+    # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "tuple[URIRef, URIRef, URIRef, URIRef]"; expected "Union[tuple[Node, Node, Node], tuple[Node, Node, Node, Optional[Graph]]]"
     graph.add(quad)  # type: ignore[arg-type]
     data = graph.serialize(format=format)
     logging.info("data = %s", data)
@@ -237,19 +231,15 @@ class GraphFormat(str, enum.Enum):
             ),
             GraphFormatInfo(
                 GraphFormat.NQUADS,
-                # TODO FIXME: Currently nquads rejects requests to seralize
-                # non-context-aware stores, this does not make a lot of sense and
-                # should be fixed.
-                #
-                graph_types={GraphType.QUAD},
+                graph_types={GraphType.TRIPLE, GraphType.QUAD},
                 encodings={"utf-8"},
             ),
             GraphFormatInfo(
                 GraphFormat.TRIX,
-                # TODO FIXME: Currently trix rejects requests to seralize
-                # non-context-aware stores, this does not make a lot of sense and
-                # should be fixed.
-                #
+                # TriX can serialize a plain Graph (issue #1892), but parsing
+                # the result back into a non-context-aware Graph drops triples
+                # because they land in a named/unnamed dataset graph. Round-trip
+                # tests therefore stay Dataset-only.
                 graph_types={GraphType.QUAD},
                 encodings={"utf-8"},
             ),
@@ -298,23 +288,23 @@ class GraphFormat(str, enum.Enum):
 
     @classmethod
     @lru_cache(maxsize=None)
-    def set(cls) -> Set[GraphFormat]:
+    def set(cls) -> set[GraphFormat]:
         return set(*cls)
 
 
 @dataclass
 class GraphFormatInfo:
     name: GraphFormat
-    graph_types: Set[GraphType]
-    encodings: Set[str]
-    serializer_list: Optional[List[str]] = field(
+    graph_types: set[GraphType]
+    encodings: set[str]
+    serializer_list: list[str] | None = field(
         default=None, repr=False, hash=False, compare=False
     )
-    deserializer_list: Optional[List[str]] = field(
+    deserializer_list: list[str] | None = field(
         default=None, repr=False, hash=False, compare=False
     )
-    serializers: List[str] = field(default_factory=list, init=False)
-    deserializers: List[str] = field(default_factory=list, init=False)
+    serializers: list[str] = field(default_factory=list, init=False)
+    deserializers: list[str] = field(default_factory=list, init=False)
 
     def __post_init__(self) -> None:
         self.serializers = (
@@ -339,7 +329,7 @@ class GraphFormatInfo:
         return self.deserializer[0]
 
 
-class GraphFormatInfoDict(Dict[str, GraphFormatInfo]):
+class GraphFormatInfoDict(dict[str, GraphFormatInfo]):
     @classmethod
     def make(cls, *graph_format: GraphFormatInfo) -> GraphFormatInfoDict:
         result = cls()
@@ -347,9 +337,9 @@ class GraphFormatInfoDict(Dict[str, GraphFormatInfo]):
             result[item.name] = item
         return result
 
-    def serdes_dict(self) -> Tuple[Dict[str, GraphFormat], Dict[str, GraphFormat]]:
-        serializer_dict: Dict[str, GraphFormat] = {}
-        deserializer_dict: Dict[str, GraphFormat] = {}
+    def serdes_dict(self) -> tuple[dict[str, GraphFormat], dict[str, GraphFormat]]:
+        serializer_dict: dict[str, GraphFormat] = {}
+        deserializer_dict: dict[str, GraphFormat] = {}
         for format in self.values():
             for serializer in format.serializers:
                 serializer_dict[serializer] = format.name
@@ -365,24 +355,23 @@ def test_all_serializers_specified() -> None:
     plugins = get_unique_plugins(Serializer)
     for plugin_refs in plugins.values():
         names = {plugin_ref.name for plugin_ref in plugin_refs}
-        assert (
-            set(serializer_dict.keys()) != set()
-        ), f"serializers does not include any of {names}"
+        assert set(serializer_dict.keys()) != set(), (
+            f"serializers does not include any of {names}"
+        )
 
 
 def make_serialize_parse_tests() -> Generator[ParameterSet, None, None]:
     """
     This function generates test parameters for test_serialize_parse.
     """
-    xfails: Dict[
-        Tuple[str, GraphType, DestinationType, Optional[str]],
-        Union[MarkDecorator, Mark],
+    xfails: dict[
+        tuple[str, GraphType, DestinationType, str | None], Union[MarkDecorator, Mark]
     ] = {}
     for serializer_name, destination_type in itertools.product(
         serializer_dict.keys(), DESTINATION_TYPES
     ):
         format = serializer_dict[serializer_name]
-        encodings: Set[Optional[str]] = {*format.info.encodings, None}
+        encodings: set[str | None] = {*format.info.encodings, None}
         for encoding, graph_type in itertools.product(
             encodings, format.info.graph_types
         ):
@@ -429,13 +418,13 @@ SerializeResultType = Union[bytes, str, Graph]
 
 @pytest.mark.parametrize(
     ["args"],
-    make_serialize_parse_tests(),
+    list(make_serialize_parse_tests()),
 )
 def test_serialize_parse(
     tmp_path: Path,
     simple_graph: Graph,
     simple_dataset: Dataset,
-    args: Tuple[str, GraphType, DestinationType, Optional[str]],
+    args: tuple[str, GraphType, DestinationType, str | None],
 ) -> None:
     """
     Serialization works correctly with the given arguments and generates output
@@ -494,7 +483,7 @@ def check_serialized(format: GraphFormat, graph: Graph, data: str) -> None:
 @dataclass
 class SerializeArgs:
     format: str
-    opt_dest_ref: Optional[DestRef]
+    opt_dest_ref: DestRef | None
 
     @property
     def dest_ref(self) -> DestRef:
@@ -515,7 +504,7 @@ BytesSerializeFunctionType = Callable[[Graph, SerializeArgs], bytes]
 FileSerializeFunctionType = Callable[[Graph, SerializeArgs], Graph]
 
 
-str_serialize_functions: List[StrSerializeFunctionType] = [
+str_serialize_functions: list[StrSerializeFunctionType] = [
     lambda graph, args: graph.serialize(),
     lambda graph, args: graph.serialize(None),
     lambda graph, args: graph.serialize(None, args.format),
@@ -526,7 +515,7 @@ str_serialize_functions: List[StrSerializeFunctionType] = [
 ]
 
 
-bytes_serialize_functions: List[BytesSerializeFunctionType] = [
+bytes_serialize_functions: list[BytesSerializeFunctionType] = [
     lambda graph, args: graph.serialize(encoding="utf-8"),
     lambda graph, args: graph.serialize(None, args.format, encoding="utf-8"),
     lambda graph, args: graph.serialize(None, args.format, None, "utf-8"),
@@ -536,7 +525,7 @@ bytes_serialize_functions: List[BytesSerializeFunctionType] = [
 ]
 
 
-file_serialize_functions: List[FileSerializeFunctionType] = [
+file_serialize_functions: list[FileSerializeFunctionType] = [
     lambda graph, args: graph.serialize(args.dest_param),
     lambda graph, args: graph.serialize(args.dest_param, encoding=None),
     lambda graph, args: graph.serialize(args.dest_param, encoding="utf-8"),
@@ -600,7 +589,7 @@ def test_serialize_overloads(
 
 
 def make_test_serialize_to_strdest_tests() -> Generator[ParameterSet, None, None]:
-    destination_types: Set[DestinationType] = {
+    destination_types: set[DestinationType] = {
         DestinationType.FILE_URI,
         DestinationType.STR_PATH,
     }
@@ -634,7 +623,7 @@ def make_test_serialize_to_strdest_tests() -> Generator[ParameterSet, None, None
 
 @pytest.mark.parametrize(
     ["destination_type", "name_prefix"],
-    make_test_serialize_to_strdest_tests(),
+    list(make_test_serialize_to_strdest_tests()),
 )
 def test_serialize_to_strdest(
     tmp_path: Path,
@@ -650,7 +639,7 @@ def test_serialize_to_strdest(
     encoding = "utf-8"
 
     def path_factory(
-        tmp_path: Path, type: DestinationType, encoding: Optional[str]
+        tmp_path: Path, type: DestinationType, encoding: str | None
     ) -> Path:
         return tmp_path / f"{name_prefix}file-{type.name}-{encoding}"
 

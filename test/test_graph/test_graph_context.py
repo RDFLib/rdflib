@@ -5,7 +5,6 @@ import shutil
 import sys
 import unittest
 from tempfile import mkdtemp, mkstemp
-from typing import Optional
 
 import pytest
 
@@ -16,7 +15,7 @@ from rdflib.store import Store
 class ContextTestCase(unittest.TestCase):
     store = "default"
     slow = True
-    tmppath: Optional[str] = None
+    tmppath: str | None = None
 
     def setUp(self):
         try:

@@ -36,10 +36,10 @@ def test_issue859():
 
 def test_issue78():
     g = Graph()
-    g.add((URIRef("foo"), URIRef("foo"), Literal("R\u00E4ksm\u00F6rg\u00E5s")))
+    g.add((URIRef("foo"), URIRef("foo"), Literal("R\u00e4ksm\u00f6rg\u00e5s")))
     s = g.serialize(format="nt")
     assert type(s) == str  # noqa: E721
-    assert "R\u00E4ksm\u00F6rg\u00E5s" in s
+    assert "R\u00e4ksm\u00f6rg\u00e5s" in s
 
 
 def test_issue146():

@@ -6,7 +6,7 @@ import os
 import subprocess
 import sys
 import tempfile
-from typing import Dict, Iterable, List, Tuple
+from collections.abc import Iterable
 
 import pytest
 
@@ -39,14 +39,14 @@ EXAMPLE_SPARQL_EXISTS_QUERY_PATH = os.path.join(
 
 
 @pytest.fixture
-def get_berkeley_graph() -> Iterable[Tuple[str, Dataset]]:
+def get_berkeley_graph() -> Iterable[tuple[str, Dataset]]:
     path = tempfile.NamedTemporaryFile().name
     g = Dataset("BerkeleyDB")
     rt = g.open(path, create=True)
     assert rt == VALID_STORE, "The underlying store is corrupt"
-    assert (
-        len(g) == 0
-    ), "There must be zero triples in the graph just after store (file) creation"
+    assert len(g) == 0, (
+        "There must be zero triples in the graph just after store (file) creation"
+    )
 
     yield path, g
 
@@ -202,7 +202,7 @@ class TestSPARQLQUERY:
         logging.debug("opening %s", url)
         content_type = "json"
         encoding = "utf-8"
-        response_headers: Dict[str, List[str]] = {"Content-Type": [content_type]}
+        response_headers: dict[str, list[str]] = {"Content-Type": [content_type]}
         graph = Graph().parse(str(EXAMPLE_SPARQL_ADD1_PATH))
         query = "SELECT ?x WHERE {?x a foaf:Person. }"
         response_body = graph.query(query).serialize(
