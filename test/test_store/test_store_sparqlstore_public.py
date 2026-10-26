@@ -203,13 +203,13 @@ def test_query_invalid(endpoint, return_format, method):
     except ValueError as error:
         # GET wraps request errors, while POST methods return an error tuple.
         response_error = error.__context__
-        assert isinstance(
-            response_error, HTTPError
-        ), f"Expected HTTP 400, got {response_error!r}"
-        assert (
-            response_error.code == 400
-        ), f"Expected HTTP 400, got HTTP {response_error.code}"
+        assert isinstance(response_error, HTTPError), (
+            f"Expected HTTP 400, got {response_error!r}"
+        )
+        assert response_error.code == 400, (
+            f"Expected HTTP 400, got HTTP {response_error.code}"
+        )
     else:
-        assert (
-            isinstance(res, tuple) and res[0] == 400
-        ), f"Expected HTTP 400, got {res!r}"
+        assert isinstance(res, tuple) and res[0] == 400, (
+            f"Expected HTTP 400, got {res!r}"
+        )

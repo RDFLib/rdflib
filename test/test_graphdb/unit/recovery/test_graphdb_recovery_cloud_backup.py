@@ -236,7 +236,8 @@ def test_cloud_backup_raises_value_error_for_non_string_repository_ids(
 ):
     with pytest.raises(ValueError, match="repositories must be a list of strings"):
         client.recovery.cloud_backup(
-            "gs://bucket/backup", repositories=["repo1", 123]  # type: ignore[list-item]
+            "gs://bucket/backup",
+            repositories=["repo1", 123],  # type: ignore[list-item]
         )
 
 
@@ -264,7 +265,8 @@ def test_cloud_backup_raises_value_error_for_invalid_backup_system_data(
 def test_cloud_backup_validates_authentication_file_type(client: GraphDBClient):
     with pytest.raises(ValueError, match="authentication_file must be"):
         client.recovery.cloud_backup(
-            "gs://bucket/backup", authentication_file=object()  # type: ignore[arg-type]
+            "gs://bucket/backup",
+            authentication_file=object(),  # type: ignore[arg-type]
         )
 
 

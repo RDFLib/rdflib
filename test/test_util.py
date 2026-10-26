@@ -284,13 +284,14 @@ class TestUtilTermConvert:
             '"""multi\n"line"\nstring"""@en',
         ):
             res, exp = util.from_n3(n3), parse_n3(n3)
-            assert (
-                res == exp
-            ), "from_n3(%(n3e)r): %(res)r != parser.notation3: %(exp)r" % {
-                "res": res,
-                "exp": exp,
-                "n3e": n3,
-            }
+            assert res == exp, (
+                "from_n3(%(n3e)r): %(res)r != parser.notation3: %(exp)r"
+                % {
+                    "res": res,
+                    "exp": exp,
+                    "n3e": n3,
+                }
+            )
 
     def test_util_from_n3_expectquotedgraph(self):
         s = "{<http://example.com/schema>}"

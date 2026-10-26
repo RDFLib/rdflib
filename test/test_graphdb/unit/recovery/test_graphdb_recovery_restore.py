@@ -229,7 +229,8 @@ def test_restore_validates_remove_stale_repositories_type(
         ValueError, match="remove_stale_repositories must be a bool or None"
     ):
         client.recovery.restore(
-            b"tar", remove_stale_repositories="nope"  # type: ignore[arg-type]
+            b"tar",
+            remove_stale_repositories="nope",  # type: ignore[arg-type]
         )
 
 

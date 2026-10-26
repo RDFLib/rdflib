@@ -328,8 +328,7 @@ class PrettyXMLSerializer(Serializer):
                 writer.text(object)
 
         elif (
-            object in self.__serialized
-            or not (object, None, None) in store  # noqa: E713
+            object in self.__serialized or not (object, None, None) in store  # noqa: E713
         ):
             if isinstance(object, BNode):
                 if more_than(store.triples((None, None, object)), 0):

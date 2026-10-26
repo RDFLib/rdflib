@@ -170,13 +170,17 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[tuple[Node, Node, RDFT
 
                 assert isinstance(e, URIRef)
 
-                yield e, _type, RDFTest(
+                yield (
                     e,
-                    _str(name),
-                    _str(comment),
-                    _str(data),
-                    graphdata,
-                    _str(query),
-                    res,
-                    syntax,
+                    _type,
+                    RDFTest(
+                        e,
+                        _str(name),
+                        _str(comment),
+                        _str(data),
+                        graphdata,
+                        _str(query),
+                        res,
+                        syntax,
+                    ),
                 )

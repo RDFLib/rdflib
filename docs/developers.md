@@ -6,8 +6,8 @@ This document describes the process and conventions to follow when
 developing RDFLib code.
 
 * Please be as Pythonic as possible ([PEP 8](https://www.python.org/dev/peps/pep-0008/)).
-* Code should be formatted using [black](https://github.com/psf/black), using the version and config pinned in `pyproject.toml`.
-* Code should also pass [ruff](https://docs.astral.sh/ruff/) linting
+* Code should be formatted using [Ruff](https://docs.astral.sh/ruff/formatter/), using the version and config pinned in `pyproject.toml`.
+* Code should also pass [Ruff](https://docs.astral.sh/ruff/) linting and import sorting
   and [mypy](http://mypy-lang.org/) type checking.
 * You must supply tests for new code.
 * RDFLib uses [uv](https://docs.astral.sh/uv/) for dependency management and packaging.
@@ -172,14 +172,20 @@ Test should go into the `test/` directory, either into an existing test file wit
 
 ## Running static checks
 
-Check formatting with [black](https://github.com/psf/black), which reads its
+Check formatting with [Ruff](https://docs.astral.sh/ruff/formatter/), which reads its
 config from `pyproject.toml`:
 
 ```bash
-uv run black .
+uv run ruff format --check .
 ```
 
-Check style and conventions with [ruff](https://docs.astral.sh/ruff/linter/):
+Apply formatting with:
+
+```bash
+uv run ruff format .
+```
+
+Check style, conventions and import order with [Ruff](https://docs.astral.sh/ruff/linter/):
 
 ```bash
 uv run ruff check
@@ -199,7 +205,7 @@ uv run mypy --show-error-context --show-error-codes
 
 ## pre-commit and pre-commit ci
 
-We have [pre-commit](https://pre-commit.com/) configured with [black](https://github.com/psf/black) for formatting code.
+We have [pre-commit](https://pre-commit.com/) configured with [Ruff](https://docs.astral.sh/ruff/) for linting, import sorting and formatting code. Lint fixes run before formatting.
 
 Some useful commands for using pre-commit:
 

@@ -64,7 +64,7 @@ class RDFPatchParser(NQuadsParser):
                 instances. See `.W3CNTriplesParser.parse`
         """
         assert sink.store.context_aware, (
-            "RDFPatchParser must be given" " a context aware store."
+            "RDFPatchParser must be given a context aware store."
         )
         # type error: Incompatible types in assignment (expression has type "ConjunctiveGraph", base class "W3CNTriplesParser" defined the type as "Union[DummySink, NTGraphSink]")
         self.sink: Dataset = Dataset(store=sink.store)

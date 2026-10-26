@@ -359,9 +359,9 @@ def test_all_serializers_specified() -> None:
     plugins = get_unique_plugins(Serializer)
     for plugin_refs in plugins.values():
         names = {plugin_ref.name for plugin_ref in plugin_refs}
-        assert (
-            set(serializer_dict.keys()) != set()
-        ), f"serializers does not include any of {names}"
+        assert set(serializer_dict.keys()) != set(), (
+            f"serializers does not include any of {names}"
+        )
 
 
 def make_serialize_parse_tests() -> Generator[ParameterSet, None, None]:

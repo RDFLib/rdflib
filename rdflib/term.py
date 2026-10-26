@@ -875,9 +875,7 @@ class Literal(Identifier):
                 Decimal(
                     f"{round(Decimal(self.toPython()) + Decimal(val.toPython()), 15):f}".rstrip(
                         "0"
-                    ).rstrip(
-                        "."
-                    )
+                    ).rstrip(".")
                 ),
                 datatype=_XSD_DECIMAL,
             )
@@ -998,9 +996,7 @@ class Literal(Identifier):
                 Decimal(
                     f"{round(Decimal(self.toPython()) - Decimal(val.toPython()), 15):f}".rstrip(
                         "0"
-                    ).rstrip(
-                        "."
-                    )
+                    ).rstrip(".")
                 ),
                 datatype=_XSD_DECIMAL,
             )

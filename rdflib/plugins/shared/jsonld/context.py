@@ -419,7 +419,12 @@ class Context:
                 self._clear()
             else:
                 # type error: Argument 1 to "_read_source" of "Context" has incompatible type "Union[dict[str, Any], str]"; expected "dict[str, Any]"
-                self._read_source(source, source_url, referenced_contexts, override_protected)  # type: ignore[arg-type]
+                self._read_source(
+                    source,  # type: ignore[arg-type]
+                    source_url,
+                    referenced_contexts,
+                    override_protected,
+                )
 
     def _accept_term(self, key: str) -> bool:
         if self.version < 1.1:
@@ -705,7 +710,7 @@ class Context:
 
 Term = namedtuple(
     "Term",
-    "id, name, type, container, index, language, reverse, context," "prefix, protected",
+    "id, name, type, container, index, language, reverse, context,prefix, protected",
 )
 
 Term.__new__.__defaults__ = (UNDEF, UNDEF, UNDEF, UNDEF, False, UNDEF, False, False)

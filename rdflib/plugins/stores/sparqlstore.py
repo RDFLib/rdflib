@@ -174,7 +174,9 @@ class SPARQLStore(SPARQLConnector, Store):
         self._queries = 0
 
     # type error: Missing return statement
-    def open(self, configuration: Union[str, tuple[str, str]], create: bool = False) -> int | None:  # type: ignore[return]
+    def open(  # type: ignore[return]
+        self, configuration: Union[str, tuple[str, str]], create: bool = False
+    ) -> int | None:
         """This method is included so that calls to this Store via Graph, e.g. Graph("SPARQLStore"),
         can set the required parameters
         """
@@ -383,11 +385,14 @@ class SPARQLStore(SPARQLConnector, Store):
                     # the query will be a SELECT query.
                     assert isinstance(row, ResultRow)
                 yield (
-                    # type error: No overload variant of "get" of "ResultRow" matches argument types "Node", "Node"
-                    row.get(s, s),  # type: ignore[call-overload]
-                    row.get(p, p),  # type: ignore[call-overload]
-                    row.get(o, o),  # type: ignore[call-overload]
-                ), None  # why is the context here not the passed in graph 'context'?
+                    (
+                        # type error: No overload variant of "get" of "ResultRow" matches argument types "Node", "Node"
+                        row.get(s, s),  # type: ignore[call-overload]
+                        row.get(p, p),  # type: ignore[call-overload]
+                        row.get(o, o),  # type: ignore[call-overload]
+                    ),
+                    None,
+                )  # why is the context here not the passed in graph 'context'?
         else:
             if result.askAnswer:
                 yield (s, p, o), None

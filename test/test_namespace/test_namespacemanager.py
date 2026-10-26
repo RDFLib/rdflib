@@ -293,9 +293,9 @@ def test_bound_namespaces_subset(
     bound_namespaces = dict(
         (key, str(value)) for key, value in graph.namespace_manager.namespaces()
     )
-    assert (
-        expected_bindings.items() <= bound_namespaces.items()
-    ), f"missing items {expected_bindings.items() - bound_namespaces.items()}"
+    assert expected_bindings.items() <= bound_namespaces.items(), (
+        f"missing items {expected_bindings.items() - bound_namespaces.items()}"
+    )
     empty_graph = Graph(bind_namespaces="none")
     if selector is not None:
         nman = NamespaceManager(empty_graph, bind_namespaces=selector)

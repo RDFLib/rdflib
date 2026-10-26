@@ -246,7 +246,7 @@ def test_service_with_implicit_select_and_allcaps():
 
 
 def freeze_bindings(
-    bindings: Sequence[Mapping[Variable, Identifier]]
+    bindings: Sequence[Mapping[Variable, Identifier]],
 ) -> frozenset[frozenset[tuple[Variable, Identifier]]]:
     result = []
     for binding in bindings:

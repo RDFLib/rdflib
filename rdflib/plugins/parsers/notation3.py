@@ -226,8 +226,7 @@ def join(here: str, there: str) -> str:
     # join('mid:foo@example', '../foo') bzzt
     if here[bcolonl + 1 : bcolonl + 2] != "/":
         raise ValueError(
-            "Base <%s> has no slash after "
-            "colon - with relative '%s'." % (here, there)
+            "Base <%s> has no slash after colon - with relative '%s'." % (here, there)
         )
 
     # RFC 3986, section 5.2.2, takes the query from a non-empty-path reference.
@@ -1319,9 +1318,9 @@ class SinkParser:
                 if self._baseURI:
                     uref = join(self._baseURI, uref)  # was: uripath.join
                 else:
-                    assert (
-                        ":" in uref
-                    ), "With no base URI, cannot deal with relative URIs"
+                    assert ":" in uref, (
+                        "With no base URI, cannot deal with relative URIs"
+                    )
                 if argstr[i - 1] == "#" and not uref[-1:] == "#":
                     uref += "#"  # She meant it! Weirdness in urlparse?
                 symb = self._store.newSymbol(uref)
@@ -1829,14 +1828,17 @@ class BadSyntax(SyntaxError):  # noqa: N818
             post = ""
 
         # type error: On Python 3 formatting "b'abc'" with "%s" produces "b'abc'", not "abc"; use "%r" if this is desired behavior
-        return 'at line %i of <%s>:\nBad syntax (%s) at ^ in:\n"%s%s^%s%s"' % (
-            self.lines + 1,  # type: ignore[str-bytes-safe]
-            self._uri,
-            self._why,
-            pre,
-            argstr[st:i],
-            argstr[i : i + 60],
-            post,
+        return (
+            'at line %i of <%s>:\nBad syntax (%s) at ^ in:\n"%s%s^%s%s"'
+            % (
+                self.lines + 1,  # type: ignore[str-bytes-safe]
+                self._uri,
+                self._why,
+                pre,
+                argstr[st:i],
+                argstr[i : i + 60],
+                post,
+            )
         )
 
     @property

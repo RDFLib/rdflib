@@ -46,7 +46,6 @@ _BNodeContextType = MutableMapping[str, BNode]
 
 
 class NQuadsParser(W3CNTriplesParser):
-
     # type error: Signature of "parse" incompatible with supertype "W3CNTriplesParser"
     def parse(  # type: ignore[override]
         self,
@@ -73,9 +72,9 @@ class NQuadsParser(W3CNTriplesParser):
             AssertionError: If the sink store is not context-aware.
             ParseError: If the input is not a file-like object or contains invalid lines.
         """
-        assert (
-            sink.store.context_aware
-        ), "NQuadsParser must be given a context-aware store."
+        assert sink.store.context_aware, (
+            "NQuadsParser must be given a context-aware store."
+        )
         # Set default_union to True to mimic ConjunctiveGraph behavior
         ds = Dataset(store=sink.store, default_union=True)
         ds_default = ds.default_context  # the DEFAULT_DATASET_GRAPH_ID

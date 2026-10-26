@@ -256,17 +256,17 @@ class TestNamespacePrefix:
         """Tests for Namespace.__contains__() methods."""
 
         ref = URIRef("http://www.w3.org/ns/shacl#Info")
-        assert (
-            type(SH) is DefinedNamespaceMeta
-        ), f"SH no longer a DefinedNamespaceMeta (instead it is now {type(SH)}, update test."
+        assert type(SH) is DefinedNamespaceMeta, (
+            f"SH no longer a DefinedNamespaceMeta (instead it is now {type(SH)}, update test."
+        )
         assert ref in SH, "sh:Info not in SH"
 
         ref = URIRef("http://www.w3.org/2000/01/rdf-schema#label")
         assert ref in RDFS, "ClosedNamespace(RDFS) does not include rdfs:label"
         ref = URIRef("http://www.w3.org/2000/01/rdf-schema#example")
-        assert (
-            ref not in RDFS
-        ), "ClosedNamespace(RDFS) includes out-of-ns member rdfs:example"
+        assert ref not in RDFS, (
+            "ClosedNamespace(RDFS) includes out-of-ns member rdfs:example"
+        )
 
         ref = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
         assert ref in RDF, "RDF does not include rdf:type"
