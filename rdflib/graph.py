@@ -1709,7 +1709,7 @@ class Graph(Node):
 
         if self.default_union:
             query_graph = "__UNION__"
-        elif isinstance(self, Dataset):
+        elif isinstance(self, ConjunctiveGraph):
             query_graph = self.default_graph.identifier
         else:
             query_graph = self.identifier
@@ -1769,7 +1769,7 @@ class Graph(Node):
 
         if self.default_union:
             query_graph = "__UNION__"
-        elif isinstance(self, Dataset):
+        elif isinstance(self, ConjunctiveGraph):
             query_graph = self.default_graph.identifier
         else:
             query_graph = self.identifier
