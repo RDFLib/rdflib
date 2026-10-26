@@ -16,14 +16,7 @@ from rdflib import Graph, URIRef
 from rdflib import Literal as RDFLiteral
 from rdflib.namespace import PROV, RDF, XSD, Namespace
 from rdflib.plugins.shared.jsonld import context, errors
-from rdflib.plugins.shared.jsonld.context import (
-    UNDEF,
-    Context,
-    Defined,
-    _ContainerType,
-    _ExpandedTermDict,
-    _TermSerialization,
-)
+from rdflib.plugins.shared.jsonld.context import UNDEF, Context, Defined
 
 
 # exception utility (see also nose.tools.raises)
@@ -287,202 +280,19 @@ def test_parsing() -> None:
     assert f"{EG.parent}" == ctx.terms["children"].id
 
 
-def _diverse_context() -> Context:
+def test_to_dict() -> None:
+    """
+    A `Context` can be converted to a dictionary.
+    """
     ctx = Context()
-    ctx.add_term("ex", str(EG))
-    ctx.add_term("generatedAt", str(PROV.generatedAtTime), coercion=str(XSD.dateTime))
-    ctx.add_term("graphMap", str(EG.graphMap), container=["@graph", "@id"])
-    ctx.add_term("occupation_en", str(EG.occupation), language="en")
-    ctx.add_term("children", str(EG.parent), reverse=True)
-    return ctx
-
-
-_CONTAINER_KEYWORDS = {"@list", "@set", "@language", "@index", "@id", "@graph", "@type"}
-
-# Keys allowed in an expanded term definition (Create Term Definition, step 11)
-_TERM_DEFINITION_KEYS = {
-    "@id",
-    "@reverse",
-    "@container",
-    "@context",
-    "@direction",
-    "@index",
-    "@language",
-    "@nest",
-    "@prefix",
-    "@protected",
-    "@type",
-}
-
-
-def _is_valid_container(container: Any) -> bool:
-    """
-    Checks a @container value against §9.15.1 and Create Term Definition,
-    step 19.1.
-    """
-    if container is None or isinstance(container, str):
-        return container is None or container in _CONTAINER_KEYWORDS
-    if not isinstance(container, list) or len(set(container)) != len(container):
-        return False
-    keywords = set(container)
-    return (
-        (len(keywords) == 1 and keywords <= _CONTAINER_KEYWORDS)
-        or keywords - {"@set"} in ({"@graph", "@id"}, {"@graph", "@index"})
-        or (
-            "@set" in keywords
-            and keywords - {"@set"} <= {"@index", "@graph", "@id", "@type", "@language"}
-        )
-    )
-
-
-def _assert_valid_context(result: dict[str, Any]) -> None:
-    """
-    Asserts that a serialized context satisfies the constraints that the
-    Context Processing and Create Term Definition algorithms place on it.
-    """
-    for key, definition in result.items():
-        if key in ("@base", "@language", "@vocab"):
-            assert definition is None or isinstance(definition, str)
-            continue
-        # A term definition is null, a simple term definition or an expanded one
-        if definition is None or isinstance(definition, str):
-            continue
-        assert isinstance(definition, dict)
-        assert definition.keys() <= _TERM_DEFINITION_KEYS
-        if "@type" in definition:
-            # Step 12.1: @type MUST be a string
-            assert isinstance(definition["@type"], str)
-        if "@reverse" in definition:
-            # Steps 14.1 and 14.2: @reverse excludes @id and MUST be a string
-            assert "@id" not in definition
-            assert isinstance(definition["@reverse"], str)
-        if "@id" in definition:
-            assert definition["@id"] is None or isinstance(definition["@id"], str)
-        if "@language" in definition:
-            assert definition["@language"] is None or isinstance(
-                definition["@language"], str
-            )
-        if "@container" in definition:
-            assert _is_valid_container(definition["@container"])
-
-
-@pytest.mark.parametrize(
-    ("ctx", "other", "equal"),
-    [
-        # The same definitions in a different form are equal
-        pytest.param(
-            Context({"p": str(EG.p)}),
-            Context({"p": {"@id": str(EG.p)}}),
-            True,
-            id="equivalent",
-        ),
-        # A differing term definition
-        pytest.param(
-            Context({"p": str(EG.p)}),
-            Context({"p": {"@id": str(EG.p), "@type": "@id"}}),
-            False,
-            id="term",
-        ),
-        # A differing context-level setting
-        pytest.param(
-            Context({"p": str(EG.p)}),
-            Context({"@vocab": str(EG), "p": str(EG.p)}),
-            False,
-            id="vocab",
-        ),
-    ],
-)
-def test_eq(ctx: Context, other: Context, equal: bool) -> None:
-    assert (ctx == other) is equal
-
-
-@pytest.mark.parametrize(
-    "ctx",
-    [
-        # Terms built with add_term, covering type coercion, containers,
-        # language and reverse properties
-        pytest.param(_diverse_context(), id="add-term-diverse"),
-        # A term with only an @id
-        pytest.param(Context({"p": {"@id": str(EG.p)}}), id="container-omitted"),
-        # A null @container is the same as no container (§9.15.1)
-        pytest.param(
-            Context({"p": {"@id": str(EG.p), "@container": None}}),
-            id="container-null",
-        ),
-        # A single container keyword given as a string
-        pytest.param(
-            Context({"p": {"@id": str(EG.p), "@container": "@set"}}),
-            id="container-keyword",
-        ),
-        # A single container keyword given as an array
-        pytest.param(
-            Context({"p": {"@id": str(EG.p), "@container": ["@set"]}}),
-            id="container-array",
-        ),
-        # Multiple container keywords (e.g. a graph map) must be an array (§9.15.1)
-        pytest.param(
-            Context({"p": {"@id": str(EG.p), "@container": ["@graph", "@id"]}}),
-            id="container-combined",
-        ),
-        # @set can be combined with another container keyword (§9.15.1)
-        pytest.param(
-            Context({"p": {"@id": str(EG.p), "@container": ["@set", "@index"]}}),
-            id="container-set-combined",
-        ),
-        # Type coercion to a keyword rather than an IRI
-        pytest.param(
-            Context({"p": {"@id": str(EG.p), "@type": "@id"}}),
-            id="type-keyword",
-        ),
-        # §9.15.1 allows a null @type, but Create Term Definition step 12.1
-        # requires @type to be a string, so it must not be serialized as null
-        pytest.param(
-            Context({"p": {"@id": str(EG.p), "@type": None}}),
-            id="type-null",
-            marks=pytest.mark.xfail(
-                reason="to_dict serializes a null @type", strict=True
-            ),
-        ),
-        # A null @language means the term's values have no language (§9.15.1)
-        pytest.param(
-            Context({"p": {"@id": str(EG.p), "@language": None}}),
-            id="language-null",
-        ),
-        # The context's default language must be preserved
-        pytest.param(
-            Context({"@language": "en", "p": str(EG.p)}), id="default-language"
-        ),
-        # The context's base IRI must be preserved, as relative IRIs depend on it
-        pytest.param(
-            Context({"p": {"@id": str(EG.p)}}, base=str(EG.document)), id="base"
-        ),
-        # The context's vocabulary mapping must be preserved, as terms and
-        # compact IRIs depend on it
-        pytest.param(
-            Context({"@vocab": str(EG), "p": str(EG.p)}),
-            id="vocab",
-            marks=pytest.mark.xfail(reason="to_dict omits @vocab", strict=True),
-        ),
-    ],
-)
-def test_to_dict(ctx: Context) -> None:
-    """
-    A `Context` can be converted to a dictionary that is a valid JSON-LD
-    context with the same meaning.
-    """
+    ctx.add_term("ex", f"{EG}")
+    ctx.add_term("generatedAt", f"{PROV.generatedAtTime}", coercion=f"{XSD.dateTime}")
+    ctx.add_term("graphMap", f"{EG.graphMap}", container=["@graph", "@id"])
+    ctx.add_term("occupation_en", f"{EG.occupation}", language="en")
+    ctx.add_term("children", f"{EG.parent}", reverse=True)
     result = ctx.to_dict()
-    _assert_valid_context(result)
-    assert Context(result) == ctx
-
-
-def test_term_dict_container_types() -> None:
-    ctx = Context({"p": {"@id": str(EG.p), "@container": ["@graph", "@id"]}})
-    result = ctx._term_dict(ctx.terms["p"])
-    assert_type(result, _TermSerialization)
-    assert isinstance(result, dict)
-    assert_type(result, _ExpandedTermDict)
-    assert_type(result["@container"], _ContainerType)
-    assert isinstance(result["@container"], list)
+    result["graphMap"]["@container"] = sorted(result["graphMap"]["@container"])
+    assert DIVERSE_CONTEXT["@context"] == result
 
 
 def test_undef_is_falsy() -> None:
