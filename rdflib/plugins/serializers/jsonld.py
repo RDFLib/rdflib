@@ -158,6 +158,9 @@ class Converter:
         self.use_rdf_type = use_rdf_type
         # Statements per blank-node object, across every graph being converted.
         self._bnode_usages: Optional[Counter[Identifier]] = None
+        self._pending_nodes: list[BNode] = []
+        # Rejected prefixes are reusable only during a single graph conversion.
+        self._rejected_lists: Optional[set[Identifier]] = None
 
     def convert(self, graph: Graph):
         # TODO: bug in rdflib dataset parsing (nquads et al):
@@ -232,15 +235,25 @@ class Converter:
 
     def from_graph(self, graph: Graph):
         nodemap: dict[Any, Any] = {}
+        self._pending_nodes = []
+        self._rejected_lists = set()
 
-        for s in set(graph.subjects()):
-            ## only iri:s and unreferenced (rest will be promoted to top if needed)
-            if isinstance(s, URIRef) or (
-                isinstance(s, BNode) and not any(graph.subjects(None, s))
-            ):
-                self.process_subject(graph, s, nodemap)
+        try:
+            for s in set(graph.subjects()):
+                ## only iri:s and unreferenced (rest will be promoted to top if needed)
+                if isinstance(s, URIRef) or (
+                    isinstance(s, BNode) and not any(graph.subjects(None, s))
+                ):
+                    self.process_subject(graph, s, nodemap)
 
-        return list(nodemap.values())
+            # Explicit blank-node chains can be arbitrarily long. Process their
+            # descriptions iteratively instead of recursing through each reference.
+            while self._pending_nodes:
+                self.process_subject(graph, self._pending_nodes.pop(), nodemap)
+
+            return list(nodemap.values())
+        finally:
+            self._rejected_lists = None
 
     def process_subject(self, graph: Graph, s: IdentifiedNode, nodemap):
         if isinstance(s, URIRef):
@@ -322,6 +335,12 @@ class Converter:
                     or self.to_raw_value(graph, s, v, nodemap)
                     for v in collection
                 ]
+                if term.type == ID:
+                    self._pending_nodes.extend(
+                        v
+                        for v in collection
+                        if isinstance(v, BNode) and any(graph.predicate_objects(v))
+                    )
             elif LANG in term.container and language:
                 value = s_node.setdefault(p_key, {})
                 values = value.get(language)
@@ -353,6 +372,10 @@ class Converter:
 
         if node is None:
             node = self.to_raw_value(graph, s, o, nodemap)
+        elif isinstance(o, BNode) and term and LIST not in term.container:
+            # Coercion emits only the reference; preserve its description too.
+            if any(graph.predicate_objects(o)):
+                self._pending_nodes.append(o)
 
         value = s_node.get(p_key)
         if value:
@@ -392,15 +415,7 @@ class Converter:
             ]
             return {context.list_key: coll}
         elif isinstance(o, BNode):
-            embed = (
-                False  # TODO: self.context.active or using startnode and only one ref
-            )
-            onode = self.process_subject(graph, o, nodemap)
-            if onode:
-                if embed and not any(s2 for s2 in graph.subjects(None, o) if s2 != s):
-                    return onode
-                else:
-                    nodemap[onode[context.id_key]] = onode
+            self._pending_nodes.append(o)
             return {context.id_key: o.n3()}
         elif isinstance(o, URIRef):
             # TODO: embed if o != startnode (else reverse)
@@ -449,17 +464,26 @@ class Converter:
         "referenced once" condition of the Serialize RDF as JSON-LD Algorithm
         (JSON-LD 1.1 Processing Algorithms and API, section 8.4).
         """
+        rejected = self._rejected_lists
+        if rejected is None:
+            rejected = set()
+        if l_ in rejected:
+            return None
         if l_ != RDF.nil and not graph.value(l_, RDF.first):
             return None
         list_nodes: list[Optional[_ObjectType]] = []
-        chain = set([l_])
+        chain: set[Identifier] = set()
         while l_:
             if l_ == RDF.nil:
                 return list_nodes
-            if isinstance(l_, URIRef):
-                return None
-            if self._usages(graph, l_) != 1:
-                return None
+            if (
+                l_ in chain
+                or l_ in rejected
+                or isinstance(l_, URIRef)
+                or self._usages(graph, l_) != 1
+            ):
+                break
+            chain.add(l_)
             first, rest = None, None
             for p, o in graph.predicate_objects(l_):
                 if not first and p == RDF.first:
@@ -467,10 +491,13 @@ class Converter:
                 elif not rest and p == RDF.rest:
                     rest = o
                 elif p != RDF.type or o != RDF.List:
+                    rejected.update(chain)
                     return None
             list_nodes.append(first)
             # type error: Incompatible types in assignment (expression has type "Optional[Node]", variable has type "Identifier")
             l_ = rest  # type: ignore[assignment]
-            if l_ in chain:
-                return None
-            chain.add(l_)
+
+        # Every visited prefix reaches the same invalid suffix. Remember only
+        # these rejections, so explicit cells do not repeatedly scan that suffix.
+        rejected.update(chain)
+        return None

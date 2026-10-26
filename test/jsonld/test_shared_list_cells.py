@@ -1,5 +1,6 @@
 import json
 from typing import Any
+from unittest.mock import patch
 
 import pytest
 
@@ -11,6 +12,10 @@ from rdflib.plugins.shared.jsonld.context import Context
 NS = Namespace("http://example.org/ns/")
 # A context whose term for ns:p writes every value of ns:p as a list.
 LIST_CONTEXT = {"p": {"@id": str(NS.p), "@container": "@list"}}
+COERCING_LIST_CONTEXT = {
+    "p": {"@id": str(NS.p), "@container": "@list", "@type": "@id"},
+    "ref": {"@id": str(NS.p), "@type": "@id"},
+}
 
 
 def _shared_tail_graph():
@@ -25,6 +30,17 @@ def _shared_tail_graph():
     g.add((NS.s1, NS.p, head))
     g.add((NS.s2, NS.p, tail))
     return g, head, tail
+
+
+def _long_shared_tail_graph(length: int) -> Graph:
+    g = Graph()
+    cells = [BNode() for _ in range(length)]
+    for index, cell in enumerate(cells):
+        g.add((cell, RDF.first, Literal(index)))
+        g.add((cell, RDF.rest, cells[index + 1] if index + 1 < length else RDF.nil))
+    g.add((NS.s1, NS.p, cells[0]))
+    g.add((NS.s2, NS.p, cells[-1]))
+    return g
 
 
 def _shared_head_graph():
@@ -186,7 +202,8 @@ def test_a_privately_owned_list_still_uses_a_list_container_term():
     assert isomorphic(g, g2)
 
 
-def test_a_list_cell_shared_across_named_graphs_round_trips():
+@pytest.mark.parametrize("context", [None, LIST_CONTEXT, COERCING_LIST_CONTEXT])
+def test_a_list_cell_shared_across_named_graphs_round_trips(context):
     """References are counted across the whole dataset, not per graph.
 
     The Serialize RDF as JSON-LD Algorithm (JSON-LD 1.1 Processing Algorithms
@@ -202,7 +219,7 @@ def test_a_list_cell_shared_across_named_graphs_round_trips():
     g1.add((NS.s1, NS.p, cell))
     g2.add((NS.s2, NS.p, cell))
 
-    data = ds.serialize(format="json-ld")
+    data = ds.serialize(format="json-ld", context=context)
     ds2 = Dataset()
     ds2.parse(data=data, format="json-ld")
 
@@ -226,3 +243,94 @@ def test_lists_in_separate_named_graphs_are_still_written_as_lists():
     data = ds.serialize(format="json-ld")
 
     assert len(_non_empty_lists(data)) == 2
+
+
+@pytest.mark.parametrize("auto_compact", [False, True])
+@pytest.mark.parametrize(
+    "build",
+    [_shared_tail_graph, _shared_head_graph, _annotated_cell_graph],
+    ids=["shared-tail", "shared-head", "annotated-cell"],
+)
+def test_rejected_list_with_a_coercing_fallback_round_trips(build, auto_compact):
+    """An @id fallback must emit the cells as well as references to them."""
+    g, _head, _tail = build()
+
+    data = g.serialize(
+        format="json-ld", context=COERCING_LIST_CONTEXT, auto_compact=auto_compact
+    )
+    g2 = Graph().parse(data=data, format="json-ld")
+
+    assert len(g2) == len(g)
+    assert isomorphic(g, g2)
+
+
+@pytest.mark.parametrize("context", [None, LIST_CONTEXT, COERCING_LIST_CONTEXT])
+def test_long_list_with_a_shared_tail_round_trips(context):
+    """Explicit list cells must not consume stack proportional to length."""
+    g = _long_shared_tail_graph(500)
+
+    data = g.serialize(format="json-ld", context=context)
+    g2 = Graph().parse(data=data, format="json-ld")
+
+    assert len(g2) == len(g)
+    assert isomorphic(g, g2)
+
+
+@pytest.mark.parametrize("length", [50, 100, 200])
+def test_shared_tail_list_serialization_has_linear_traversal_work(length):
+    """Rejecting @list must not rescan the remaining chain for every cell."""
+    g = _long_shared_tail_graph(length)
+
+    with patch.object(g, "predicate_objects", wraps=g.predicate_objects) as traversal:
+        data = g.serialize(format="json-ld")
+
+    # Allow several passes, but reject the repeated suffix walks that made
+    # even a 2,000-cell list take seconds. Operation counts avoid timing flakes.
+    assert traversal.call_count <= 10 * length
+    g2 = Graph().parse(data=data, format="json-ld")
+    assert len(g2) == len(g)
+    assert isomorphic(g, g2)
+
+
+def test_a_rejected_prefix_does_not_reject_a_private_suffix():
+    g, head, tail = _shared_tail_graph()
+    g.remove((NS.s2, NS.p, tail))
+    g.add((head, RDFS.label, Literal("annotated cell")))
+
+    data = g.serialize(format="json-ld")
+    g2 = Graph().parse(data=data, format="json-ld")
+
+    assert len(_non_empty_lists(data)) == 1
+    assert isomorphic(g, g2)
+
+
+def test_rejected_lists_are_reconsidered_on_the_next_conversion():
+    g, _head, tail = _shared_tail_graph()
+    converter = Converter(Context(), False, False)
+    first = json.dumps(converter.convert(g))
+    assert _non_empty_lists(first) == []
+
+    # Reuse the converter after the list becomes private. Graph-local rejection
+    # decisions must not survive into another conversion of the same nodes.
+    g.remove((NS.s2, NS.p, tail))
+    second = json.dumps(converter.convert(g))
+    g2 = Graph().parse(data=second, format="json-ld")
+
+    assert len(_non_empty_lists(second)) == 1
+    assert isomorphic(g, g2)
+
+
+def test_coerced_list_member_keeps_its_description():
+    """Coercing list members to references must preserve their properties."""
+    g = Graph()
+    head, member = BNode(), BNode()
+    g.add((NS.s, NS.p, head))
+    g.add((head, RDF.first, member))
+    g.add((head, RDF.rest, RDF.nil))
+    g.add((member, RDFS.label, Literal("list member")))
+
+    data = g.serialize(format="json-ld", context=COERCING_LIST_CONTEXT)
+    g2 = Graph().parse(data=data, format="json-ld")
+
+    assert len(g2) == len(g)
+    assert isomorphic(g, g2)
