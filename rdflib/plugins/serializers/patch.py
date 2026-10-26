@@ -71,10 +71,8 @@ class PatchSerializer(Serializer):
                 stream.write(f"H prev <{header_prev}>\n".encode(encoding, "replace"))
             stream.write("TX .\n".encode(encoding, "replace"))
 
-        def write_triples(graphs, op_code, use_passed_graphs=False):
+        def write_triples(graphs, op_code):
             for graph in graphs:
-                if not use_passed_graphs:
-                    graph = self.store.get_graph(graph.identifier)
                 for triple in graph:
                     stream.write(
                         self._patch_row(triple, graph.identifier, op_code).encode(
@@ -94,8 +92,8 @@ class PatchSerializer(Serializer):
             write_triples(self.store.graphs(), operation_code)
         elif target:
             to_add, to_remove = self._diff(target)
-            write_triples(to_add.contexts(), "A", use_passed_graphs=True)
-            write_triples(to_remove.contexts(), "D", use_passed_graphs=True)
+            write_triples(to_add.contexts(), "A")
+            write_triples(to_remove.contexts(), "D")
 
         stream.write("TC .\n".encode(encoding, "replace"))
 
