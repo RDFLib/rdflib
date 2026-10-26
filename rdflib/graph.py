@@ -3267,7 +3267,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         context: Optional[_ContextType] = None,
     ) -> Generator[_TripleType, None, None]:
         subject, predicate, object_ = triple
-        for graph in self.graphs:
+        for graph in self._graphs:
             # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "tuple[Union[list[Node], Node], Union[Node, list[Node]], Union[Node, list[Node]]]"; expected "Union[tuple[list[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
             # type error note: unpacking discards type info
             choices = graph.triples_choices((subject, predicate, object_))  # type: ignore[arg-type]
