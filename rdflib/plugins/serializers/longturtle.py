@@ -93,7 +93,11 @@ class LongTurtleSerializer(RecursiveSerializer):
             return
 
         namespace_manager = self.store.namespace_manager
-        store = to_canonical_graph(self.store)
+        # The triples written without canon. A Dataset iterates quads, which
+        # the canonicalizer does not accept.
+        triples = Graph()
+        triples += self.store.triples((None, None, None))
+        store = to_canonical_graph(triples)
         content = store.serialize(format="application/n-triples")
         lines = content.split("\n")
         lines.sort()
@@ -137,13 +141,10 @@ class LongTurtleSerializer(RecursiveSerializer):
 
         self.startDocument()
 
-        firstTime = True
         for subject in subjects_list:
             if self.isDone(subject):
                 continue
-            if firstTime:
-                firstTime = False
-            if self.statement(subject) and not firstTime:
+            if self.statement(subject):
                 self.write("\n")
 
         self.endDocument()

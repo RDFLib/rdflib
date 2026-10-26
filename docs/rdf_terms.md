@@ -71,7 +71,7 @@ name = Literal("Nicholas", lang="en")  # the name 'Nicholas', as an English stri
 imie = Literal("Mikołaj", lang="pl")  # the Polish version of the name 'Nicholas'
 ```
 
-Special literal types indicated by use of a custom IRI for a literal's `datatype` value, for example the [GeoSPARQL RDF standard](https://opengeospatial.github.io/ogc-geosparql/geosparql11/spec.html#_geometry_serializations) invents a custom datatype, `geoJSONLiteral` to indicate [GeoJSON geometry serlializations](https://opengeospatial.github.io/ogc-geosparql/geosparql11/spec.html#_rdfs_datatype_geogeojsonliteral) like this:
+Special literal types indicated by use of a custom IRI for a literal's `datatype` value, for example the [GeoSPARQL RDF standard](https://docs.ogc.org/is/22-047r1/22-047r1.html#_877a702f-f4d3-464c-81e9-d8a1f37a13f5) invents a custom datatype, `geoJSONLiteral` to indicate [GeoJSON geometry serlializations](https://docs.ogc.org/is/22-047r1/22-047r1.html#_rdfs_datatype_geogeojsonliteral) like this:
 
 ```python
 GEO = Namespace("http://www.opengis.net/ont/geosparql#")

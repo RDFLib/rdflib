@@ -53,11 +53,11 @@ print(len(g))
 # prints: 86
 ```
 
-[`parse()`][rdflib.Graph.parse] can process local files, remote data via a URL, as in this example, or RDF data in a string (using the `data` parameter).
+[`parse()`][rdflib.graph.Graph.parse] can process local files, remote data via a URL, as in this example, or RDF data in a string (using the `data` parameter).
 
 ## Saving RDF
 
-To store a graph in a file, use the [`serialize()`][rdflib.Graph.serialize] function:
+To store a graph in a file, use the [`serialize()`][rdflib.graph.Graph.serialize] function:
 
 ```python
 from rdflib import Graph

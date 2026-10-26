@@ -44,9 +44,9 @@ def get_berkeley_graph() -> Iterable[tuple[str, Dataset]]:
     g = Dataset("BerkeleyDB")
     rt = g.open(path, create=True)
     assert rt == VALID_STORE, "The underlying store is corrupt"
-    assert (
-        len(g) == 0
-    ), "There must be zero triples in the graph just after store (file) creation"
+    assert len(g) == 0, (
+        "There must be zero triples in the graph just after store (file) creation"
+    )
 
     yield path, g
 

@@ -15,12 +15,14 @@ from test.utils.namespace import EGDO
 
 @pytest.mark.parametrize(
     ("graph_factory", "source"),
-    itertools.product(
-        [Graph, ConjunctiveGraph, Dataset],
-        GraphSource.from_paths(
-            TEST_DATA_DIR / "variants" / "simple_triple.ttl",
-            TEST_DATA_DIR / "variants" / "relative_triple.ttl",
-        ),
+    list(
+        itertools.product(
+            [Graph, ConjunctiveGraph, Dataset],
+            GraphSource.from_paths(
+                TEST_DATA_DIR / "variants" / "simple_triple.ttl",
+                TEST_DATA_DIR / "variants" / "relative_triple.ttl",
+            ),
+        )
     ),
     ids=GraphSource.idfn,
 )
@@ -57,12 +59,14 @@ def test_load_into_default(
 
 @pytest.mark.parametrize(
     ("graph_factory", "source"),
-    itertools.product(
-        [ConjunctiveGraph, Dataset],
-        GraphSource.from_paths(
-            TEST_DATA_DIR / "variants" / "simple_triple.ttl",
-            TEST_DATA_DIR / "variants" / "relative_triple.ttl",
-        ),
+    list(
+        itertools.product(
+            [ConjunctiveGraph, Dataset],
+            GraphSource.from_paths(
+                TEST_DATA_DIR / "variants" / "simple_triple.ttl",
+                TEST_DATA_DIR / "variants" / "relative_triple.ttl",
+            ),
+        )
     ),
     ids=GraphSource.idfn,
 )

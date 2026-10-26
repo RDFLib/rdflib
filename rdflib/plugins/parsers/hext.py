@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import warnings
 from io import TextIOWrapper
-from typing import TYPE_CHECKING, Any, BinaryIO, Callable, Optional, TextIO, Union, cast
+from typing import TYPE_CHECKING, Any, BinaryIO, Callable, TextIO, Union, cast
 
 from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from rdflib.parser import InputSource, Parser
@@ -36,7 +36,7 @@ class HextuplesParser(Parser):
 
     def __init__(self):
         super(HextuplesParser, self).__init__()
-        self.default_context: Optional[Graph] = None
+        self.default_context: Graph | None = None
         self.skolemize = False
 
     def _parse_hextuple(
@@ -93,7 +93,9 @@ class HextuplesParser(Parser):
             raise Exception("No context to parse into!")
 
     # type error: Signature of "parse" incompatible with supertype "Parser"
-    def parse(self, source: InputSource, graph: Graph, skolemize: bool = False, **kwargs: Any) -> None:  # type: ignore[override]
+    def parse(  # type: ignore[override]
+        self, source: InputSource, graph: Graph, skolemize: bool = False, **kwargs: Any
+    ) -> None:
         if kwargs.get("encoding") not in [None, "utf-8"]:
             warnings.warn(
                 f"Hextuples files are always utf-8 encoded, "
@@ -101,9 +103,9 @@ class HextuplesParser(Parser):
                 "but I'm still going to use utf-8"
             )
 
-        assert (
-            graph.store.context_aware
-        ), "Hextuples Parser needs a context-aware store!"
+        assert graph.store.context_aware, (
+            "Hextuples Parser needs a context-aware store!"
+        )
 
         self.skolemize = skolemize
         # Set default_union to True to mimic ConjunctiveGraph behavior

@@ -211,12 +211,12 @@ class Result:
 
         self.type = type_
         #: variables contained in the result.
-        self.vars: Optional[list[Variable]] = None
+        self.vars: list[Variable] | None = None
         """a list of variables contained in the result"""
         self._bindings: MutableSequence[Mapping[Variable, Identifier]] = None  # type: ignore[assignment]
         self._genbindings: Optional[Iterator[Mapping[Variable, Identifier]]] = None
-        self.askAnswer: Optional[bool] = None
-        self.graph: Optional[Graph] = None
+        self.askAnswer: bool | None = None
+        self.graph: Graph | None = None
 
     @property
     def bindings(self) -> MutableSequence[Mapping[Variable, Identifier]]:
@@ -246,9 +246,9 @@ class Result:
 
     @staticmethod
     def parse(
-        source: Optional[IO] = None,
-        format: Optional[str] = None,
-        content_type: Optional[str] = None,
+        source: IO | None = None,
+        format: str | None = None,
+        content_type: str | None = None,
         **kwargs: Any,
     ) -> Result:
         """Parse a query result from a source."""
@@ -265,16 +265,18 @@ class Result:
 
         # type error: Argument 1 to "parse" of "ResultParser" has incompatible type "Optional[IO[Any]]"; expected "IO[Any]"
         return parser.parse(
-            source, content_type=content_type, **kwargs  # type:ignore[arg-type]
+            source,  # type: ignore[arg-type]
+            content_type=content_type,
+            **kwargs,
         )
 
     def serialize(
         self,
-        destination: Optional[Union[str, IO]] = None,
+        destination: str | IO | None = None,
         encoding: str = "utf-8",
         format: str = "xml",
         **args: Any,
-    ) -> Optional[bytes]:
+    ) -> bytes | None:
         """
         Serialize the query result.
 

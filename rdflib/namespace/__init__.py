@@ -91,7 +91,7 @@ except ImportError:  # pragma: no cover
 from collections.abc import Iterable
 from functools import lru_cache
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any
 from unicodedata import category
 from urllib.parse import urldefrag, urljoin
 
@@ -161,7 +161,7 @@ class Namespace(str):
     ```
     """
 
-    def __new__(cls, value: Union[str, bytes]) -> Namespace:
+    def __new__(cls, value: str | bytes) -> Namespace:
         try:
             rt = str.__new__(cls, value)
         except UnicodeDecodeError:
@@ -224,7 +224,7 @@ class URIPattern(str):
     ```
     """
 
-    def __new__(cls, value: Union[str, bytes]) -> URIPattern:
+    def __new__(cls, value: str | bytes) -> URIPattern:
         try:
             rt = str.__new__(cls, value)
         except UnicodeDecodeError:
@@ -604,7 +604,7 @@ class NamespaceManager:
             return ":".join([qNameParts[0], qNameParts[-1]])
 
     def compute_qname(self, uri: str, generate: bool = True) -> tuple[str, URIRef, str]:
-        prefix: Optional[str]
+        prefix: str | None
         if uri not in self.__cache:
             if not _is_valid_uri(uri):
                 raise ValueError(
@@ -655,7 +655,7 @@ class NamespaceManager:
         # if output needs to be strict (e.g. for xml) then
         # only the strict output should bear the overhead
         namespace: str
-        prefix: Optional[str]
+        prefix: str | None
         prefix, namespace, name = self.compute_qname(uri, generate)
         if is_ncname(str(name)):
             return prefix, namespace, name
@@ -733,7 +733,7 @@ class NamespaceManager:
             return URIRef(f"{str(ns)}{parts[1]}")
         else:
             raise ValueError(
-                f"Prefix \"{curie.split(':')[0]}\" not bound to any namespace."
+                f'Prefix "{curie.split(":")[0]}" not bound to any namespace.'
             )
 
     def _store_bind(self, prefix: str, namespace: URIRef, override: bool) -> None:
@@ -754,7 +754,7 @@ class NamespaceManager:
 
     def bind(
         self,
-        prefix: Optional[str],
+        prefix: str | None,
         namespace: Any,
         override: bool = True,
         replace: bool = False,
@@ -871,7 +871,7 @@ class NamespaceManager:
 NAME_START_CATEGORIES = ["Ll", "Lu", "Lo", "Lt", "Nl"]
 SPLIT_START_CATEGORIES = NAME_START_CATEGORIES + ["Nd"]
 NAME_CATEGORIES = NAME_START_CATEGORIES + ["Mc", "Me", "Mn", "Lm", "Nd"]
-ALLOWED_NAME_CHARS = ["\u00B7", "\u0387", "-", ".", "_", "%", "(", ")"]
+ALLOWED_NAME_CHARS = ["\u00b7", "\u0387", "-", ".", "_", "%", "(", ")"]
 
 
 # http://www.w3.org/TR/REC-xml-names/#NT-NCName
@@ -958,7 +958,7 @@ def insert_strie(strie: dict[str, Any], trie: dict[str, Any], value: str) -> Non
         strie[value] = insert_trie(trie, value)
 
 
-def get_longest_namespace(trie: dict[str, Any], value: str) -> Optional[str]:
+def get_longest_namespace(trie: dict[str, Any], value: str) -> str | None:
     for key in trie:
         if value.startswith(key):
             out = get_longest_namespace(trie[key], value)
