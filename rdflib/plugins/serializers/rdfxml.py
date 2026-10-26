@@ -10,7 +10,7 @@ from rdflib.graph import Graph
 from rdflib.namespace import RDF, RDFS, Namespace, NamespaceManager  # , split_uri
 from rdflib.plugins.parsers.RDFVOC import RDFVOC
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
-from rdflib.serializer import Serializer, _check_rdf1_1_term
+from rdflib.serializer import Serializer, _check_rdf1_1_term, _check_rdf1_1_triple
 from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, Node, URIRef
 from rdflib.util import first, more_than
 
@@ -205,6 +205,10 @@ class PrettyXMLSerializer(Serializer):
     ) -> None:
         self.__serialized: dict[Identifier, int] = {}
         store = self.store
+        # Collection rendering can skip assertions on list nodes.
+        for triple in store:
+            _check_rdf1_1_triple(triple)
+
         # if base is given here, use that, if not and a base is set for the graph use that
         if base is not None:
             self.base = base

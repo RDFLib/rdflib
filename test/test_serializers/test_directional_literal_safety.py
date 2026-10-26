@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from io import BytesIO
+
 import pytest
 
-from rdflib import RDF, Dataset, Graph, Literal, Namespace
+from rdflib import RDF, BNode, Dataset, Graph, Literal, Namespace
 from rdflib.exceptions import Error
 
 EX = Namespace("https://example.org/")
@@ -96,6 +98,24 @@ def test_rdfxml_rejects_directional_rdf_type_object(
 
     with pytest.raises(Error, match=ERROR_PATTERN):
         graph.serialize(format=format_name)
+
+
+@pytest.mark.parametrize("direction", ["ltr", "rtl"])
+def test_prettyxml_rejects_directional_collection_annotation_before_writing(
+    direction: str,
+) -> None:
+    graph = Graph()
+    head = BNode()
+    graph.add((EX.subject, EX.items, head))
+    graph.add((head, RDF.first, EX.item))
+    graph.add((head, RDF.rest, RDF.nil))
+    graph.add((head, EX.label, Literal("hello", lang="en", direction=direction)))
+    stream = BytesIO()
+
+    with pytest.raises(Error, match=ERROR_PATTERN):
+        graph.serialize(destination=stream, format="pretty-xml")
+
+    assert stream.getvalue() == b""
 
 
 @pytest.mark.parametrize("format_name", ["nquads", "trix", "trig", "patch"])
