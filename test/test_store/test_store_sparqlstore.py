@@ -3,9 +3,10 @@ from __future__ import annotations
 import logging
 import re
 import socket
+from collections.abc import Callable
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
-from typing import Callable, ClassVar, Type
+from typing import ClassVar
 from unittest.mock import patch
 
 import pytest
@@ -37,7 +38,7 @@ class TestSPARQLStoreGraph:
         ],
     )
     def test_graph_modify_fails(
-        self, call: Callable[[Graph], None], exception_type: Type[Exception]
+        self, call: Callable[[Graph], None], exception_type: type[Exception]
     ) -> None:
         """
         Methods that modify the Graph fail.
@@ -48,9 +49,9 @@ class TestSPARQLStoreGraph:
             call(graph)
         pattern_str = r"read.*only"
         msg = f"{ctx.value}"
-        assert (
-            re.search(pattern_str, msg, re.IGNORECASE) is not None
-        ), f"exception text {msg!r} does not match regex {pattern_str!r}"
+        assert re.search(pattern_str, msg, re.IGNORECASE) is not None, (
+            f"exception text {msg!r} does not match regex {pattern_str!r}"
+        )
 
 
 class TestSPARQLStoreFakeDBPedia:

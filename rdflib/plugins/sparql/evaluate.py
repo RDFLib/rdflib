@@ -17,28 +17,24 @@ from __future__ import annotations
 
 import collections
 import itertools
+import logging
 import re
+from collections.abc import Generator, Iterable, Mapping
 from typing import (
     TYPE_CHECKING,
     Any,
-    Deque,
-    Dict,
-    Generator,
-    Iterable,
-    List,
-    Mapping,
-    Optional,
-    Tuple,
     Union,
 )
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
-from pyparsing import ParseException
+from pyparsing import ParseException, ParseResults
 
+from rdflib import __version__
 from rdflib.graph import Graph
 from rdflib.plugins.sparql import CUSTOM_EVALS, parser
 from rdflib.plugins.sparql.aggregates import Aggregator
+from rdflib.plugins.sparql.algebra import traverse
 from rdflib.plugins.sparql.evalutils import (
     _ebv,
     _eval,
@@ -52,6 +48,7 @@ from rdflib.plugins.sparql.sparql import (
     AlreadyBound,
     FrozenBindings,
     FrozenDict,
+    Prologue,
     Query,
     QueryContext,
     SPARQLError,
@@ -71,11 +68,13 @@ except ImportError:
     orjson = None  # type: ignore[assignment, unused-ignore]
     _HAS_ORJSON = False
 
-_Triple = Tuple[Identifier, Identifier, Identifier]
+_Triple = tuple[Identifier, Identifier, Identifier]
+
+logger = logging.getLogger(__name__)
 
 
 def evalBGP(
-    ctx: QueryContext, bgp: List[_Triple]
+    ctx: QueryContext, bgp: list[_Triple]
 ) -> Generator[FrozenBindings, None, None]:
     """
     A basic graph pattern
@@ -92,7 +91,7 @@ def evalBGP(
     _o = ctx[o]
 
     # type error: Item "None" of "Optional[Graph]" has no attribute "triples"
-    # type Argument 1 to "triples" of "Graph" has incompatible type "Tuple[Union[str, Path, None], Union[str, Path, None], Union[str, Path, None]]"; expected "Tuple[Optional[Node], Optional[Node], Optional[Node]]"
+    # type Argument 1 to "triples" of "Graph" has incompatible type "tuple[Union[str, Path, None], Union[str, Path, None], Union[str, Path, None]]"; expected "tuple[Optional[Node], Optional[Node], Optional[Node]]"
     for ss, sp, so in ctx.graph.triples((_s, _p, _o)):  # type: ignore[union-attr, arg-type]
         if None in (_s, _p, _o):
             c = ctx.push()
@@ -165,7 +164,7 @@ def evalJoin(ctx: QueryContext, join: CompValue) -> Generator[FrozenDict, None, 
         return _join(a, b)
 
 
-def evalUnion(ctx: QueryContext, union: CompValue) -> List[Any]:
+def evalUnion(ctx: QueryContext, union: CompValue) -> list[Any]:
     branch1_branch2 = []
     for x in evalPart(ctx, union.p1):
         branch1_branch2.append(x)
@@ -340,78 +339,127 @@ def evalPart(ctx: QueryContext, part: CompValue) -> Any:
         raise Exception("I dont know: %s" % part.name)
 
 
+# Everything in the text of a SERVICE pattern before its group graph pattern:
+# the keywords, the endpoint, whitespace and comments. There, only a comment
+# can hold a "{", and only an IRI, an escaped character in a prefixed name or a
+# comment can hold a "#". A comment runs to the end of its line, which also
+# stops the pattern backtracking through a run of comments.
+_SERVICE_HEAD = re.compile(r"(?:<[^>]*>|\\.|#[^\n]*(?![^\n])|[^<\\#{])*{")
+
+
+def _serviceGraphPatternText(part: CompValue) -> str:
+    """Get the text inside the braces of a SERVICE pattern's group graph pattern."""
+    service_string = part.service_string
+    head = None
+    if isinstance(service_string, str):
+        service_string = service_string.rstrip()
+        head = _SERVICE_HEAD.match(service_string)
+    if head is None or not service_string.endswith("}"):
+        raise ValueError(
+            f"SERVICE pattern has no usable service_string: {service_string!r}"
+        )
+    return service_string[head.end() : -1]
+
+
 def evalServiceQuery(ctx: QueryContext, part: CompValue):
-    res = {}
-    match = re.match(
-        "^service <(.*)>[ \n]*{(.*)}[ \n]*$",
-        # type error: Argument 2 to "get" of "CompValue" has incompatible type "str"; expected "bool"  [arg-type]
-        part.get("service_string", ""),  # type: ignore[arg-type]
-        re.DOTALL | re.I,
-    )
+    if not isinstance(part.term, URIRef):
+        raise ValueError(
+            f"SERVICE {part.term.n3()} is not supported, the endpoint must be an IRI"
+        )
+    service_url = str(part.term)
+    service_query = _buildQueryStringForServiceCall(ctx, _serviceGraphPatternText(part))
 
-    if match:
-        service_url = match.group(1)
-        service_query = _buildQueryStringForServiceCall(ctx, match.group(2))
+    if not part.silent:
+        yield from _callService(ctx, service_url, service_query)
+        return
+    try:
+        # Convert every row before yielding any, so that a failure part way
+        # through gives only the one solution below.
+        solutions = list(_callService(ctx, service_url, service_query))
+    except Exception as error:
+        # The endpoint's userinfo and query, and the error's message, can hold
+        # secrets, so the warning leaves them out. A failing endpoint can also
+        # fail once for each solution it is joined with, so give the message
+        # and traceback only when debugging.
+        logger.warning(
+            "Ignoring failed SERVICE SILENT call to %s: %s",
+            _endpointWithoutSecrets(service_url),
+            type(error).__name__,
+            exc_info=logger.isEnabledFor(logging.DEBUG),
+        )
+        # A failed SERVICE SILENT pattern gives one solution with no bindings,
+        # see https://www.w3.org/TR/sparql11-federated-query/#serviceFailure
+        solutions = [FrozenBindings(ctx)]
+    yield from solutions
 
-        query_settings = {"query": service_query, "output": "json"}
-        headers = {
-            "accept": "application/sparql-results+json",
-            "user-agent": "rdflibForAnUser",
-        }
-        # GET is easier to cache so prefer that if the query is not to long
-        if len(service_query) < 600:
-            response = urlopen(
-                Request(service_url + "?" + urlencode(query_settings), headers=headers)
-            )
-        else:
-            response = urlopen(
-                Request(
-                    service_url,
-                    data=urlencode(query_settings).encode(),
-                    headers=headers,
-                )
-            )
-        if response.status == 200:
-            if _HAS_ORJSON:
-                json_dict = orjson.loads(response.read())
-            else:
-                json_dict = json.loads(response.read())
-            variables = res["vars_"] = json_dict["head"]["vars"]
-            # or just return the bindings?
-            res = json_dict["results"]["bindings"]
-            if len(res) > 0:
-                for r in res:
-                    # type error: Argument 2 to "_yieldBindingsFromServiceCallResult" has incompatible type "str"; expected "Dict[str, Dict[str, str]]"
-                    for bound in _yieldBindingsFromServiceCallResult(ctx, r, variables):  # type: ignore[arg-type]
-                        yield bound
-        else:
+
+def _endpointWithoutSecrets(service_url: str) -> str:
+    """Get an endpoint without its userinfo, query and fragment, which can hold
+    secrets, for use in log and error messages."""
+    try:
+        parts = urlsplit(service_url)
+    except ValueError:
+        return "an endpoint with an invalid IRI"
+    host = parts.netloc.rpartition("@")[2]
+    return urlunsplit((parts.scheme, host, parts.path, "", ""))
+
+
+def _callService(
+    ctx: QueryContext, service_url: str, service_query: str
+) -> Generator[FrozenBindings, None, None]:
+    query_settings = {"query": service_query, "output": "json"}
+    headers = {
+        "accept": "application/sparql-results+json",
+        "user-agent": f"rdflib/{__version__}",
+    }
+    # GET is easier to cache so prefer that if the query is not to long
+    if len(service_query) < 600:
+        # Keep the endpoint's own query string. A fragment is never sent, so
+        # drop it rather than put the query in it.
+        parts = urlsplit(service_url)
+        query = "&".join(filter(None, [parts.query, urlencode(query_settings)]))
+        request = Request(
+            urlunsplit(parts._replace(query=query, fragment="")), headers=headers
+        )
+    else:
+        request = Request(
+            service_url,
+            data=urlencode(query_settings).encode(),
+            headers=headers,
+        )
+    with urlopen(request) as response:
+        if response.status != 200:
             raise Exception(
-                "Service: %s responded with code: %s", service_url, response.status
+                f"Service: {_endpointWithoutSecrets(service_url)}"
+                f" responded with code: {response.status}"
             )
+        body = response.read()
+    if _HAS_ORJSON:
+        json_dict = orjson.loads(body)
+    else:
+        json_dict = json.loads(body)
+    variables = json_dict["head"]["vars"]
+    for r in json_dict["results"]["bindings"]:
+        yield from _yieldBindingsFromServiceCallResult(ctx, r, variables)
 
 
 """
     Build a query string to be used by the service call.
     It is supposed to pass in the existing bound solutions.
-    Re-adds prefixes if added and sets the base.
+    Adds the prefixes and base it uses.
     Wraps it in select if needed.
 """
 
 
 def _buildQueryStringForServiceCall(ctx: QueryContext, service_query: str) -> str:
     try:
-        parser.parseQuery(service_query)
+        parse = parser.parseQuery(service_query)
     except ParseException:
         # This could be because we don't have a select around the service call.
         service_query = "SELECT REDUCED * WHERE {" + service_query + "}"
-        # type error: Item "None" of "Optional[Prologue]" has no attribute "namespace_manager"
-        for p in ctx.prologue.namespace_manager.store.namespaces():  # type: ignore[union-attr]
-            service_query = "PREFIX " + p[0] + ":" + p[1].n3() + " " + service_query
-        # re add the base if one was defined
-        # type error: Item "None" of "Optional[Prologue]" has no attribute "base"
-        base = ctx.prologue.base  # type: ignore[union-attr]
-        if base is not None and len(base) > 0:
-            service_query = "BASE <" + base + "> " + service_query
+        parse = parser.parseQuery(service_query)
+    if ctx.prologue is not None:
+        service_query = _serviceQueryPrologue(ctx.prologue, parse) + service_query
     sol = [v for v in ctx.solution() if isinstance(v, Variable)]
     if len(sol) > 0:
         variables = " ".join([v.n3() for v in sol])
@@ -422,10 +470,33 @@ def _buildQueryStringForServiceCall(ctx: QueryContext, service_query: str) -> st
     return service_query
 
 
+def _serviceQueryPrologue(prologue: Prologue, parse: ParseResults) -> str:
+    """Declare the base and prefixes that a query for an endpoint uses, so that
+    its IRIs resolve there as they do here. Declaring only those keeps short
+    queries short enough for GET."""
+    prefixes: set[str] = set()
+    relative = False
+
+    def visit(node: Any) -> None:
+        nonlocal relative
+        if isinstance(node, CompValue) and node.name == "pname":
+            prefixes.add(node.prefix or "")
+        elif isinstance(node, URIRef) and prologue.absolutize(node) != node:
+            relative = True
+
+    traverse(parse, visitPost=visit)
+    declarations = [f"BASE <{prologue.base}> "] if relative else []
+    for prefix in sorted(prefixes):
+        namespace = prologue.namespace_manager.store.namespace(prefix)
+        if namespace is not None:
+            declarations.append(f"PREFIX {prefix}: {namespace.n3()} ")
+    return "".join(declarations)
+
+
 def _yieldBindingsFromServiceCallResult(
-    ctx: QueryContext, r: Dict[str, Dict[str, str]], variables: List[str]
+    ctx: QueryContext, r: dict[str, dict[str, str]], variables: list[str]
 ) -> Generator[FrozenBindings, None, None]:
-    res_dict: Dict[Variable, Identifier] = {}
+    res_dict: dict[Variable, Identifier] = {}
     for var in variables:
         if var in r and r[var]:
             var_binding = r[var]
@@ -467,7 +538,7 @@ def evalAggregateJoin(
     # p is always a Group, we always get a dict back
 
     group_expr = agg.p.expr
-    res: Dict[Any, Any] = collections.defaultdict(
+    res: dict[Any, Any] = collections.defaultdict(
         lambda: Aggregator(aggregations=agg.A)
     )
 
@@ -492,6 +563,18 @@ def evalAggregateJoin(
         yield FrozenBindings(ctx)
 
 
+def _order_key(v: Any) -> tuple[Any, ...]:
+    """Sort key for an ORDER BY condition.
+
+    An expression that errors has no value, which SPARQL 1.1 section 15.1 orders
+    lowest. `(0,)` sorts before every key from `_val`, so errors come first in
+    ascending order and last with DESC.
+    """
+    if isinstance(v, SPARQLError):
+        return (0,)
+    return _val(v)
+
+
 def evalOrderBy(
     ctx: QueryContext, part: CompValue
 ) -> Generator[FrozenBindings, None, None]:
@@ -500,7 +583,9 @@ def evalOrderBy(
     for e in reversed(part.expr):
         reverse = bool(e.order and e.order == "DESC")
         res = sorted(
-            res, key=lambda x: _val(value(x, e.expr, variables=True)), reverse=reverse
+            res,
+            key=lambda x: _order_key(value(x, e.expr, variables=True)),
+            reverse=reverse,
         )
 
     return res
@@ -539,7 +624,7 @@ def evalReduced(
 
     # mixed data structure: set for lookup, deque for append/pop/remove
     mru_set = set()
-    mru_queue: Deque[Any] = collections.deque()
+    mru_queue: collections.deque[Any] = collections.deque()
 
     for row in evalPart(ctx, part.p):
         if row in mru_set:
@@ -575,8 +660,8 @@ def evalProject(ctx: QueryContext, project: CompValue):
 
 def evalSelectQuery(
     ctx: QueryContext, query: CompValue
-) -> Mapping[str, Union[str, List[Variable], Iterable[FrozenDict]]]:
-    res: Dict[str, Union[str, List[Variable], Iterable[FrozenDict]]] = {}
+) -> Mapping[str, Union[str, list[Variable], Iterable[FrozenDict]]]:
+    res: dict[str, Union[str, list[Variable], Iterable[FrozenDict]]] = {}
     res["type_"] = "SELECT"
     res["bindings"] = evalPart(ctx, query.p)
     res["vars_"] = query.PV
@@ -584,7 +669,7 @@ def evalSelectQuery(
 
 
 def evalAskQuery(ctx: QueryContext, query: CompValue) -> Mapping[str, Union[str, bool]]:
-    res: Dict[str, Union[bool, str]] = {}
+    res: dict[str, Union[bool, str]] = {}
     res["type_"] = "ASK"
     res["askAnswer"] = False
     for x in evalPart(ctx, query.p):
@@ -608,14 +693,14 @@ def evalConstructQuery(
     for c in evalPart(ctx, query.p):
         graph += _fillTemplate(template, c)
 
-    res: Dict[str, Union[str, Graph]] = {}
+    res: dict[str, Union[str, Graph]] = {}
     res["type_"] = "CONSTRUCT"
     res["graph"] = graph
 
     return res
 
 
-def evalDescribeQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
+def evalDescribeQuery(ctx: QueryContext, query) -> dict[str, Union[str, Graph]]:
     # Create a result graph and bind namespaces from the graph being queried
     graph = Graph()
     # type error: Item "None" of "Optional[Graph]" has no attribute "namespaces"
@@ -643,7 +728,7 @@ def evalDescribeQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
         # type error: Item "None" of "Optional[Graph]" has no attribute "cbd"
         ctx.graph.cbd(resource, target_graph=graph)  # type: ignore[union-attr]
 
-    res: Dict[str, Union[str, Graph]] = {}
+    res: dict[str, Union[str, Graph]] = {}
     res["type_"] = "DESCRIBE"
     res["graph"] = graph
 
@@ -653,8 +738,8 @@ def evalDescribeQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
 def evalQuery(
     graph: Graph,
     query: Query,
-    initBindings: Optional[Mapping[str, Identifier]] = None,
-    base: Optional[str] = None,
+    initBindings: Mapping[str, Identifier] | None = None,
+    base: str | None = None,
 ) -> Mapping[Any, Any]:
     """Evaluate a SPARQL query against a graph.
 

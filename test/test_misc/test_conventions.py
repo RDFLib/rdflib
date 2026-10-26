@@ -20,9 +20,9 @@ class TestA:
             names = set()
 
             # TODO: handle cases where len(path) is not 1
-            assert (
-                len(path) == 1
-            ), "We're assuming the path has exactly one item in it for now"
+            assert len(path) == 1, (
+                "We're assuming the path has exactly one item in it for now"
+            )
             path = path[0]
 
         for importer, name, ispkg in pkgutil.iter_modules([path]):

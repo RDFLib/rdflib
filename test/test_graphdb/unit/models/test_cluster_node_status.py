@@ -63,7 +63,7 @@ def test_topology_status_invalid_primary_tags_type(primary_tags):
     [
         {123: "value"},  # Non-string key
         {None: "value"},  # None key
-        {("tuple",): "value"},  # Tuple key
+        {("tuple",): "value"},  # tuple key
     ],
 )
 def test_topology_status_invalid_primary_tags_keys(primary_tags):
