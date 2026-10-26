@@ -116,6 +116,12 @@ def get_dataset(request):
                 pass
 
 
+@pytest.mark.parametrize("store", ["Memory", "SPARQLStore"])
+def test_repr_without_store_access(store: str) -> None:
+    dataset = Dataset(store=store)
+    assert "Dataset" in repr(dataset)
+
+
 def test_graph_aware(get_dataset):
     store, dataset = get_dataset
 

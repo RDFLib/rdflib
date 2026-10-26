@@ -2569,7 +2569,7 @@ class Dataset(ConjunctiveGraph):
     ...     URIRef("http://www.example.org/b"),
     ...     Literal("foo")
     ... ))  # doctest: +ELLIPSIS
-    <Dataset: 1 graphs>
+    <Dataset store=Memory>
 
     >>> # Create a graph in the dataset, if the graph name has already been
     >>> # used, the corresponding graph will be returned
@@ -2590,7 +2590,7 @@ class Dataset(ConjunctiveGraph):
     ...     Literal("foo-bar"),
     ...     g
     ... )) # doctest: +ELLIPSIS
-    <Dataset: 2 graphs>
+    <Dataset store=Memory>
 
     >>> # querying triples return them all regardless of the graph
     >>> for t in ds.triples((None,None,None)):  # doctest: +SKIP
@@ -2760,7 +2760,7 @@ class Dataset(ConjunctiveGraph):
         return self
 
     def __repr__(self) -> str:
-        return "<Dataset: %s graphs>" % len(list(self.graphs()))
+        return "<Dataset store=%s>" % self.store.__class__.__name__
 
     def graph(
         self,
