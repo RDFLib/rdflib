@@ -2732,10 +2732,10 @@ class Dataset(ConjunctiveGraph):
         for graph in super().contexts():
             if isinstance(graph, QuotedGraph):
                 continue
-            count += len(graph)
+            count += self.store.__len__(graph)
             default_graph_seen |= graph.identifier == self.default_graph.identifier
         if not default_graph_seen:
-            count += len(self.default_graph)
+            count += self.store.__len__(self.default_graph)
         return count
 
     # type error: Return type "tuple[type[Dataset], tuple[Store, bool]]" of "__reduce__" incompatible with return type "tuple[type[Graph], tuple[Store, IdentifiedNode]]" in supertype "ConjunctiveGraph"

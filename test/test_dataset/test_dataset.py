@@ -212,6 +212,22 @@ def test_len_excludes_quoted_formulas() -> None:
     assert sum(1 for _ in dataset.quads()) == 1
 
 
+@pytest.mark.parametrize("context_kind", ["self", "shared-store", "separate-store"])
+def test_len_counts_dataset_context(context_kind: str) -> None:
+    dataset = Dataset()
+    if context_kind == "self":
+        context = dataset
+    elif context_kind == "shared-store":
+        context = Dataset(store=dataset.store)
+    else:
+        context = Dataset()
+    dataset.add((TAREK, LIKES, PIZZA, context))
+    dataset.graph(URIRef("urn:other")).add((TAREK, LIKES, PIZZA))
+
+    assert len(dataset) == 2
+    assert sum(1 for _ in dataset.quads()) == 2
+
+
 def test_dataset_default_context_public_access_warns() -> None:
     dataset = Dataset()
 
