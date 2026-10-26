@@ -69,9 +69,9 @@ class TestCSV2RDF:
         # convert() runs only in the CLI child, never during test collection.
         source, first_line = inspect.getsourcelines(csv2rdf.CSV2RDF.convert)
         body_lines = range(first_line + 1, first_line + len(source))
-        assert set(measured["executed_lines"]).intersection(
-            body_lines
-        ), "Coverage did not measure csv2rdf's subprocess execution"
+        assert set(measured["executed_lines"]).intersection(body_lines), (
+            "Coverage did not measure csv2rdf's subprocess execution"
+        )
 
     def test_csv2rdf_cli_fileout(self):
         fh, fname = mkstemp()
