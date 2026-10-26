@@ -1,11 +1,25 @@
 import difflib
+from io import BytesIO
 from pathlib import Path
 from textwrap import dedent
+
+import pytest
 
 from rdflib import RDF, BNode, Graph, Literal, Namespace
 from rdflib.compare import isomorphic
 from rdflib.namespace import GEO, SDO
 from rdflib.plugins.serializers.turtle import TurtleSerializer
+
+
+@pytest.mark.parametrize("canon", [False, True])
+def test_turtle_serializer_construction(canon: bool) -> None:
+    graph = Graph()
+    graph.add((BNode(), RDF.type, SDO.Person))
+    serializer = TurtleSerializer(graph)
+    stream = BytesIO()
+    serializer.serialize(stream, canon=canon)
+    parsed = Graph().parse(data=stream.getvalue(), format="turtle")
+    assert isomorphic(graph, parsed)
 
 
 def test_longturtle():

@@ -43,6 +43,7 @@ class TurtleSerializer(RecursiveSerializer):
     indent_string = "    "
 
     def __init__(self, store: Graph):
+        self._canon = False
         self._ns_rewrite: dict[str, str] = {}
         super(TurtleSerializer, self).__init__(store)
         self.keywords: dict[Node, str] = {RDF.type: "a"}
