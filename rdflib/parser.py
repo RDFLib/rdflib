@@ -25,12 +25,11 @@ from typing import (
     cast,
 )
 from urllib.parse import urljoin
-from urllib.request import Request, url2pathname
+from urllib.request import Request, url2pathname, urlopen
 from xml.sax import xmlreader
 
 import rdflib.util
 from rdflib import __version__
-from rdflib._networking import _urlopen
 from rdflib.namespace import Namespace
 from rdflib.term import URIRef
 
@@ -584,7 +583,7 @@ class URLInputSource(InputSource):
 
         req = Request(system_id, None, myheaders)  # type: ignore[arg-type]
 
-        response: addinfourl = _urlopen(req)
+        response: addinfourl = urlopen(req)
         self.url = response.geturl()  # in case redirections took place
         self.links = self.get_links(response)
         if format in ("json-ld", "application/ld+json"):
@@ -592,7 +591,7 @@ class URLInputSource(InputSource):
             for link in alts:
                 full_link = urljoin(self.url, link)
                 if full_link != self.url and full_link != system_id:
-                    response = _urlopen(Request(full_link))
+                    response = urlopen(Request(full_link))
                     self.url = response.geturl()  # in case redirections took place
                     break
 

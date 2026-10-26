@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -62,7 +62,7 @@ class TestRelativeBase:
             dt, datatype=URIRef("http://www.w3.org/2001/XMLSchema#dateTime")
         )
 
-        utc_dt = l.toPython().astimezone(timezone.utc)
+        utc_dt = l.toPython().astimezone(UTC)
         assert xsd_datetime_isoformat(utc_dt) == "2010-02-10T09:36:00Z"
 
     def test_timezone_offset_millisecond(self):

@@ -61,7 +61,7 @@ import rdflib
 import rdflib.util
 from rdflib.compat import long_type
 
-from .xsd_datetime import (  # type: ignore[attr-defined]
+from .xsd_datetime import (
     Duration,
     duration_isoformat,
     parse_datetime,

@@ -23,23 +23,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
         os: [ubuntu-latest, macos-latest, windows-latest]
         # This is used for injecting additional tests for a specific python
         # version and OS.
         suffix: [""]
         include:
-          - python-version: "3.10"
+          - python-version: "3.11"
             os: ubuntu-latest
             extensive-tests: true
             suffix: "-extensive"
-          - python-version: "3.10"
+          - python-version: "3.11"
             os: ubuntu-latest
             extensive-tests: true
             PREPARATION: "sudo apt-get install -y libxml2-dev libxslt-dev"
             suffix: "-extensive-min"
             TOXENV_SUFFIX: "-min"
-          - python-version: "3.10"
+          - python-version: "3.11"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "ruff format --check --diff ./rdflib"
             suffix: "-lxml"
@@ -129,7 +129,7 @@ jobs:
       matrix:
         include:
           - task: "gha:lint"
-            python-version: "3.10"
+            python-version: "3.11"
     steps:
       - uses: actions/checkout@v7
       - name: Cache XDG_CACHE_HOME

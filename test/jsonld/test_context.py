@@ -7,10 +7,9 @@ from __future__ import annotations
 import json
 from functools import wraps
 from pathlib import Path
-from typing import Any, Literal, Optional, Union
+from typing import Any, Literal, Optional, Union, assert_type
 
 import pytest
-from typing_extensions import assert_type
 
 from rdflib import Graph, URIRef
 from rdflib import Literal as RDFLiteral
