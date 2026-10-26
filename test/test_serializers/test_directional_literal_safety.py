@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from rdflib import Dataset, Graph, Literal, Namespace
+from rdflib import RDF, Dataset, Graph, Literal, Namespace
 from rdflib.exceptions import Error
 
 EX = Namespace("https://example.org/")
@@ -21,6 +21,7 @@ ERROR_PATTERN = (
         "longturtle",
         "nt",
         "nt11",
+        "nquads",
         "json-ld",
         "hext",
     ],
@@ -69,6 +70,7 @@ def test_rdf11_dataset_serializers_reject_directional_literal(
         "longturtle",
         "nt",
         "nt11",
+        "nquads",
         "json-ld",
         "hext",
     ],
@@ -82,6 +84,18 @@ def test_rdf11_graph_serializers_still_accept_ordinary_language_literal(
     result = graph.serialize(format=format_name)
 
     assert result
+
+
+@pytest.mark.parametrize("format_name", ["xml", "pretty-xml"])
+@pytest.mark.parametrize("direction", ["ltr", "rtl"])
+def test_rdfxml_rejects_directional_rdf_type_object(
+    format_name: str, direction: str
+) -> None:
+    graph = Graph()
+    graph.add((EX.subject, RDF.type, Literal("hello", lang="en", direction=direction)))
+
+    with pytest.raises(Error, match=ERROR_PATTERN):
+        graph.serialize(format=format_name)
 
 
 @pytest.mark.parametrize("format_name", ["nquads", "trix", "trig", "patch"])

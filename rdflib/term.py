@@ -532,7 +532,7 @@ class Literal(Identifier):
     * a lexical form, being a Unicode string, which SHOULD be in Normal Form C
     * a datatype IRI, being an IRI identifying a datatype that determines how the lexical form maps to a literal value, and
     * if and only if the datatype IRI is `http://www.w3.org/1999/02/22-rdf-syntax-ns#langString`, a non-empty language tag. The language tag MUST be well-formed according to section 2.2.9 of `Tags for identifying languages <http://tools.ietf.org/html/bcp47>`_.
-    * if the datatype IRI is `http://www.w3.org/1999/02/22-rdf-syntax-ns#dirLangString`, a base direction of `ltr` or `rtl`; this also requires a non-empty language tag.
+    * an optional base direction of `ltr` or `rtl`, which requires a non-empty language tag and sets the datatype to `rdf:dirLangString`.
 
     A literal is a language-tagged string if the third element is present. Lexical representations of language tags MAY be converted to lower case. The value space of language tags is always in lower case.
 
@@ -722,14 +722,11 @@ class Literal(Identifier):
                 raise ValueError("Literal direction requires a non-empty language tag")
             if datatype is not None and datatype != _RDF_DIR_LANG_STRING:
                 raise TypeError(
-                    "A directional language-tagged Literal must use "
-                    "rdf:dirLangString"
+                    "A directional language-tagged Literal must use rdf:dirLangString"
                 )
             datatype = _RDF_DIR_LANG_STRING
             value = None
             ill_typed = None
-        elif datatype == _RDF_DIR_LANG_STRING:
-            raise TypeError("rdf:dirLangString requires a language tag and direction")
 
         if isinstance(lexical_or_value, bytes):
             lexical_or_value = lexical_or_value.decode("utf-8")
@@ -1559,7 +1556,11 @@ class Literal(Identifier):
                 # string/plain literals, compare on lexical form
                 return str.__eq__(self, other)
 
-            if dtself == _RDF_DIR_LANG_STRING and dtother == _RDF_DIR_LANG_STRING:
+            if (
+                self.direction is not None
+                and dtself == _RDF_DIR_LANG_STRING
+                and dtother == _RDF_DIR_LANG_STRING
+            ):
                 return str.__eq__(self, other)
 
             # XML can be compared to HTML, only if html5rdf is enabled

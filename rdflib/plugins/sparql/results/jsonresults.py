@@ -15,6 +15,7 @@ from collections.abc import Mapping, MutableSequence
 from typing import IO, Any, Optional
 
 from rdflib.query import Result, ResultException, ResultParser, ResultSerializer
+from rdflib.serializer import _check_rdf1_1_term
 from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
 try:
@@ -155,6 +156,7 @@ def termToJSON(
     if isinstance(term, URIRef):
         return {"type": "uri", "value": str(term)}
     elif isinstance(term, Literal):
+        _check_rdf1_1_term(term)
         r = {"type": "literal", "value": str(term)}
 
         if term.datatype is not None:

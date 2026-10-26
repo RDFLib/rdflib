@@ -28,6 +28,7 @@ from xml.sax.saxutils import XMLGenerator
 from xml.sax.xmlreader import AttributesNSImpl
 
 from rdflib.query import Result, ResultException, ResultParser, ResultSerializer
+from rdflib.serializer import _check_rdf1_1_term
 from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
 try:
@@ -271,6 +272,7 @@ class SPARQLXMLWriter:
             self.writer.characters(val)
             self.writer.endElementNS((SPARQL_XML_NAMESPACE, "bnode"), "bnode")
         elif isinstance(val, Literal):
+            _check_rdf1_1_term(val)
             attr_vals = {}
             attr_qnames = {}
             if val.language:

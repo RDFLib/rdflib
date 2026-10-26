@@ -88,7 +88,6 @@ def test_explicit_dir_lang_string_is_allowed_with_complete_metadata() -> None:
 @pytest.mark.parametrize(
     "kwargs",
     [
-        {"datatype": RDF.dirLangString},
         {"lang": "en", "datatype": RDF.dirLangString},
         {"datatype": RDF.dirLangString, "direction": "ltr"},
     ],
@@ -112,6 +111,44 @@ def test_direction_rejects_conflicting_datatype(datatype: URIRef) -> None:
 def test_existing_language_and_datatype_restriction_is_unchanged() -> None:
     with pytest.raises(TypeError, match="only have one of lang or datatype"):
         Literal("hello", lang="en", datatype=RDF.langString)
+
+
+def test_dir_lang_string_without_direction_remains_an_opaque_typed_literal() -> None:
+    literal = Literal("hello", datatype=RDF.dirLangString)
+
+    assert literal.language is None
+    assert literal.direction is None
+    assert literal.datatype == RDF.dirLangString
+    assert literal.value is None
+    assert literal.ill_typed is None
+    assert literal.toPython() is literal
+    assert literal.n3() == f'"hello"^^<{RDF.dirLangString}>'
+
+    for restored in (
+        Literal(literal),
+        literal.normalize(),
+        copy.copy(literal),
+        copy.deepcopy(literal),
+        pickle.loads(pickle.dumps(literal)),
+        eval(repr(literal), {"rdflib": rdflib}),
+    ):
+        assert restored == literal
+        assert restored.direction is None
+        assert restored.language is None
+        assert restored.datatype == RDF.dirLangString
+
+
+@pytest.mark.parametrize("datatype", [RDF.dirLangString, EX.unknownDatatype])
+def test_opaque_typed_literal_value_comparison_is_unchanged(datatype: URIRef) -> None:
+    literal = Literal("hello", datatype=datatype)
+
+    assert literal.eq(Literal("hello", datatype=datatype)) is True
+    with pytest.raises(TypeError, match="cannot know"):
+        literal.eq(Literal("goodbye", datatype=datatype))
+
+    directional = Literal("hello", lang="en", direction="ltr")
+    assert literal.eq(directional) is False
+    assert directional.eq(literal) is False
 
 
 def test_ordinary_language_literal_is_unchanged() -> None:

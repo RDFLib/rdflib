@@ -31,8 +31,7 @@ _StrT = TypeVar("_StrT", bound=str)
 def _check_rdf1_1_term(term: Node) -> None:
     if isinstance(term, Literal) and term.direction is not None:
         raise Error(
-            "Directional language-tagged Literal requires an RDF 1.2-capable "
-            "serializer"
+            "Directional language-tagged Literal requires an RDF 1.2-capable serializer"
         )
 
 

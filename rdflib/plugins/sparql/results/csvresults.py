@@ -14,6 +14,7 @@ from typing import IO, Union, cast
 
 from rdflib.plugins.sparql.processor import SPARQLResult
 from rdflib.query import Result, ResultParser, ResultSerializer
+from rdflib.serializer import _check_rdf1_1_term
 from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
 
@@ -103,4 +104,6 @@ class CSVResultSerializer(ResultSerializer):
         elif isinstance(term, BNode):
             return f"_:{term}"
         else:
+            if isinstance(term, Literal):
+                _check_rdf1_1_term(term)
             return term

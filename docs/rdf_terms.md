@@ -85,6 +85,12 @@ assert greeting.n3() == '"hello"@en--ltr'
 Direction is part of literal identity, comparison, and hashing. Existing RDF
 1.1 serializers reject directional literals rather than dropping this metadata;
 RDF 1.2 syntax plugin support is outside this core change.
+XML, JSON, and CSV query-result serializers also reject directional literals;
+text result tables display their direction.
+
+For RDF 1.1 compatibility, supplying `datatype=RDF.dirLangString` without a
+direction continues to create an opaque typed literal. It has no language tag
+or direction and retains the existing behavior for unrecognized datatypes.
 
 Special literal types indicated by use of a custom IRI for a literal's `datatype` value, for example the [GeoSPARQL RDF standard](https://docs.ogc.org/is/22-047r1/22-047r1.html#_877a702f-f4d3-464c-81e9-d8a1f37a13f5) invents a custom datatype, `geoJSONLiteral` to indicate [GeoJSON geometry serlializations](https://docs.ogc.org/is/22-047r1/22-047r1.html#_rdfs_datatype_geogeojsonliteral) like this:
 
