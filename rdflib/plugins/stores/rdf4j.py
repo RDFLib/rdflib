@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Generator, Iterable, Iterator, Mapping
 from textwrap import dedent
-from typing import Any, Generator, Iterable, Iterator, Mapping, Optional, Tuple
+from typing import Any, Optional
 
 from rdflib import Graph
 from rdflib.contrib.rdf4j import has_httpx
@@ -160,7 +161,7 @@ class RDF4JStore(Store):
         self,
         triple_pattern: _TriplePatternType,
         context: Optional[_ContextType] = None,
-    ) -> Iterator[Tuple[_TripleType, Iterator[Optional[_ContextType]]]]:
+    ) -> Iterator[tuple[_TripleType, Iterator[Optional[_ContextType]]]]:
         s, p, o = triple_pattern
         graph_name = context.identifier if context is not None else None
         result_graph = self.repo.get(s, p, o, graph_name)
@@ -207,7 +208,7 @@ class RDF4JStore(Store):
         result = self.repo.namespaces.get(prefix)
         return URIRef(result) if result is not None else None
 
-    def namespaces(self) -> Iterator[Tuple[str, URIRef]]:
+    def namespaces(self) -> Iterator[tuple[str, URIRef]]:
         for result in self.repo.namespaces.list():
             yield result.prefix, URIRef(result.namespace)
 

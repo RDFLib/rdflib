@@ -13,4 +13,3 @@ WHERE
         }
     }
 }
-# Error message: maximum recursion depth exceeded in comparison

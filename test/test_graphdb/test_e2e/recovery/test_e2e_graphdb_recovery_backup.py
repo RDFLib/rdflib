@@ -232,12 +232,12 @@ def test_backup_bytes_and_stream_produce_same_structure(
 
     def _assert_contains_expected_repo_structure(members: set[str]) -> None:
         assert any("snapshot-metadata" in m for m in members)
-        assert any(
-            m.startswith(f"repositories/{repo_id}/") for m in members
-        ), f"Expected repositories/{repo_id}/ entries in archive"
-        assert any(
-            f"{repo_id}-repository-metadata" in m for m in members
-        ), "Expected repository metadata in archive"
+        assert any(m.startswith(f"repositories/{repo_id}/") for m in members), (
+            f"Expected repositories/{repo_id}/ entries in archive"
+        )
+        assert any(f"{repo_id}-repository-metadata" in m for m in members), (
+            "Expected repository metadata in archive"
+        )
 
     _assert_contains_expected_repo_structure(bytes_members)
     _assert_contains_expected_repo_structure(stream_members)

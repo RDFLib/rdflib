@@ -1,16 +1,11 @@
 from __future__ import annotations
 
+import builtins
 import logging
+from collections.abc import Callable, Collection, Generator, Iterable, Mapping
 from dataclasses import dataclass, field
 from typing import (
-    Callable,
-    Collection,
-    Generator,
-    Iterable,
-    Mapping,
     Optional,
-    Tuple,
-    Type,
     TypeVar,
     Union,
 )
@@ -27,7 +22,7 @@ from test.utils.graph import GraphSource, GraphSourceType
 from test.utils.iri import URIMapper
 from test.utils.namespace import MF
 
-POFilterType = Tuple[Optional[URIRef], Optional[URIRef]]
+POFilterType = tuple[Optional[URIRef], Optional[URIRef]]
 POFiltersType = Iterable[POFilterType]
 
 MarkType = Union[MarkDecorator, Collection[Union[MarkDecorator, Mark]]]
@@ -43,9 +38,9 @@ class ManifestEntry:
     manifest: Manifest
     identifier: URIRef
     type: IdentifiedNode = field(init=False)
-    action: Optional[IdentifiedNode] = field(init=False)
-    result: Optional[IdentifiedNode] = field(init=False)
-    result_cardinality: Optional[URIRef] = field(init=False)
+    action: IdentifiedNode | None = field(init=False)
+    result: IdentifiedNode | None = field(init=False)
+    result_cardinality: URIRef | None = field(init=False)
 
     def __post_init__(self) -> None:
         type = self.value(RDF.type, IdentifiedNode)
@@ -68,8 +63,8 @@ class ManifestEntry:
 
     def param(
         self,
-        mark_dict: Optional[MarksDictType] = None,
-        markers: Optional[Iterable[ManifestEntryMarkerType]] = None,
+        mark_dict: MarksDictType | None = None,
+        markers: Iterable[ManifestEntryMarkerType] | None = None,
     ) -> ParameterSet:
         id = f"{self.identifier}"
         marks: MarkListType = []
@@ -84,8 +79,8 @@ class ManifestEntry:
         return pytest.param(self, id=f"{self.identifier}", marks=marks)
 
     def value(
-        self, predicate: Identifier, value_type: Type[IdentifierT]
-    ) -> Optional[IdentifierT]:
+        self, predicate: Identifier, value_type: builtins.type[IdentifierT]
+    ) -> IdentifierT | None:
         value = self.graph.value(self.identifier, predicate)
         if value is not None:
             assert isinstance(value, value_type)
@@ -103,14 +98,14 @@ class Manifest:
     uri_mapper: URIMapper
     graph: Graph
     identifier: IdentifiedNode
-    report_prefix: Optional[str] = None
+    report_prefix: str | None = None
 
     @classmethod
     def from_graph(
         cls,
         uri_mapper: URIMapper,
         graph: Graph,
-        report_prefix: Optional[str] = None,
+        report_prefix: str | None = None,
     ) -> Generator[Manifest, None, None]:
         for identifier in graph.subjects(RDF.type, MF.Manifest):
             assert isinstance(identifier, IdentifiedNode)
@@ -128,7 +123,7 @@ class Manifest:
         cls,
         uri_mapper: URIMapper,
         *sources: GraphSourceType,
-        report_prefix: Optional[str] = None,
+        report_prefix: str | None = None,
     ) -> Generator[Manifest, None, None]:
         for source in sources:
             logging.debug("source(%s) = %r", id(source), source)
@@ -163,9 +158,9 @@ class Manifest:
 
     def entires(
         self,
-        entry_type: Type[ManifestEntryT],
-        exclude: Optional[POFiltersType] = None,
-        include: Optional[POFiltersType] = None,
+        entry_type: type[ManifestEntryT],
+        exclude: POFiltersType | None = None,
+        include: POFiltersType | None = None,
     ) -> Generator[ManifestEntryT, None, None]:
         for entries in self.graph.objects(self.identifier, MF.entries):
             for entry_iri in self.graph.items(entries):
@@ -179,11 +174,11 @@ class Manifest:
 
     def params(
         self,
-        entry_type: Type[ManifestEntryT],
-        exclude: Optional[POFiltersType] = None,
-        include: Optional[POFiltersType] = None,
-        mark_dict: Optional[MarksDictType] = None,
-        markers: Optional[Iterable[ManifestEntryMarkerType]] = None,
+        entry_type: type[ManifestEntryT],
+        exclude: POFiltersType | None = None,
+        include: POFiltersType | None = None,
+        mark_dict: MarksDictType | None = None,
+        markers: Iterable[ManifestEntryMarkerType] | None = None,
     ) -> Generator[ParameterSet, None, None]:
         for entry in self.entires(entry_type, exclude, include):
             yield entry.param(mark_dict, markers)
@@ -191,13 +186,13 @@ class Manifest:
 
 def params_from_sources(
     uri_mapper: URIMapper,
-    entry_type: Type[ManifestEntryT],
+    entry_type: type[ManifestEntryT],
     *sources: GraphSourceType,
-    exclude: Optional[POFiltersType] = None,
-    include: Optional[POFiltersType] = None,
-    mark_dict: Optional[MarksDictType] = None,
-    markers: Optional[Iterable[ManifestEntryMarkerType]] = None,
-    report_prefix: Optional[str] = None,
+    exclude: POFiltersType | None = None,
+    include: POFiltersType | None = None,
+    mark_dict: MarksDictType | None = None,
+    markers: Iterable[ManifestEntryMarkerType] | None = None,
+    report_prefix: str | None = None,
 ) -> Generator[ParameterSet, None, None]:
     for manifest in Manifest.from_sources(
         uri_mapper, *sources, report_prefix=report_prefix

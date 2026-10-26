@@ -26,15 +26,11 @@ the resulting CompValue
 from __future__ import annotations
 
 from collections import OrderedDict
+from collections.abc import Callable, Mapping
 from types import MethodType
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
-    List,
-    Mapping,
-    Optional,
-    Tuple,
     TypeVar,
     Union,
 )
@@ -42,8 +38,6 @@ from typing import (
 from pyparsing import ParserElement, ParseResults, TokenConverter
 
 from rdflib.term import BNode, Identifier, Variable
-
-from .pyparsing_compat import original_text_for
 
 if TYPE_CHECKING:
     from rdflib.plugins.sparql.sparql import FrozenBindings
@@ -88,6 +82,8 @@ def value(
         # not bound
         if variables:
             return val
+        elif errors:
+            return NotBoundError()
         else:
             raise NotBoundError
 
@@ -105,7 +101,7 @@ class ParamValue:
     """
 
     def __init__(
-        self, name: str, tokenList: Union[List[Any], ParseResults], isList: bool
+        self, name: str, tokenList: Union[list[Any], ParseResults], isList: bool
     ):
         self.isList = isList
         self.name = name
@@ -131,7 +127,7 @@ class Param(TokenConverter):
         self.set_name(name)
         self.add_parse_action(self.postParse2)
 
-    def postParse2(self, tokenList: Union[List[Any], ParseResults]) -> ParamValue:
+    def postParse2(self, tokenList: Union[list[Any], ParseResults]) -> ParamValue:
         return ParamValue(self.name, tokenList, self.isList)
 
 
@@ -172,7 +168,7 @@ class CompValue(OrderedDict):
         self, val: _ValT, variables: bool = False, errors: bool = False
     ) -> Union[_ValT, Any]:
         if self.ctx is not None:
-            return value(self.ctx, val, variables)
+            return value(self.ctx, val, variables, errors)
         else:
             return val
 
@@ -207,7 +203,7 @@ class Expr(CompValue):
     def __init__(
         self,
         name: str,
-        evalfn: Optional[Callable[[Any, Any], Any]] = None,
+        evalfn: Callable[[Any, Any], Any] | None = None,
         **values,
     ):
         super(Expr, self).__init__(name, **values)
@@ -218,7 +214,7 @@ class Expr(CompValue):
 
     def eval(self, ctx: Any = {}) -> Union[SPARQLError, Any]:
         try:
-            self.ctx: Optional[Union[Mapping, FrozenBindings]] = ctx
+            self.ctx: Union[Mapping, FrozenBindings] | None = ctx
             # type error: "None" not callable
             return self._evalfn(ctx)  # type: ignore[misc]
         except SPARQLError as e:
@@ -239,7 +235,19 @@ class Comp(TokenConverter):
         self.expr = expr
         TokenConverter.__init__(self, expr)
         self.set_name(name)
-        self.evalfn: Optional[Callable[[Any, Any], Any]] = None
+        self.evalfn: Callable[[Any, Any], Any] | None = None
+
+    def parseImpl(
+        self, instring: str, loc: int = 0, do_actions: bool = True
+    ) -> tuple[int, ParseResults]:
+        if self.name == "ServiceGraphPattern":
+            # Embed the start position as a named key in the ParseResults so
+            # postParse can extract the original SERVICE text, avoiding
+            # RecursionError with nested SERVICE).
+            new_loc, results = super().parseImpl(instring, loc, do_actions)
+            results["_service_start"] = loc
+            return new_loc, results
+        return super().parseImpl(instring, loc, do_actions)
 
     def postParse(
         self, instring: str, loc: int, tokenList: ParseResults
@@ -251,12 +259,8 @@ class Comp(TokenConverter):
         else:
             res = CompValue(self.name)
             if self.name == "ServiceGraphPattern":
-                # Then this must be a service graph pattern and have
-                # already matched.
-                # lets assume there is one, for now, then test for two later.
-                sgp = original_text_for(self.expr)
-                service_string = sgp.search_string(instring)[0][0]
-                res["service_string"] = service_string
+                start = tokenList["_service_start"]
+                res["service_string"] = instring[start:loc]
 
         for t in tokenList:
             if isinstance(t, ParamValue):
@@ -277,7 +281,7 @@ class Comp(TokenConverter):
 
 
 def prettify_parsetree(t: ParseResults, indent: str = "", depth: int = 0) -> str:
-    out: List[str] = []
+    out: list[str] = []
     for e in t.as_list():
         out.append(_prettify_sub_parsetree(e, indent, depth + 1))
     for k, v in sorted(t.items()):
@@ -287,11 +291,11 @@ def prettify_parsetree(t: ParseResults, indent: str = "", depth: int = 0) -> str
 
 
 def _prettify_sub_parsetree(
-    t: Union[Identifier, CompValue, set, list, dict, Tuple, bool, None],
+    t: Union[Identifier, CompValue, set, list, dict, tuple, bool, None],
     indent: str = "",
     depth: int = 0,
 ) -> str:
-    out: List[str] = []
+    out: list[str] = []
     if isinstance(t, CompValue):
         out.append("%s%s> %s:\n" % (indent, "  " * depth, t.name))
         for k, v in t.items():

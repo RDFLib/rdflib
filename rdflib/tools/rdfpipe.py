@@ -4,12 +4,13 @@
 A commandline tool for parsing RDF in different formats and serializing the
 resulting graph to a chosen format.
 """
+
 from __future__ import annotations
 
 import logging
 import sys
 from optparse import OptionParser
-from typing import BinaryIO, Optional
+from typing import BinaryIO
 
 import rdflib
 from rdflib import plugin
@@ -116,7 +117,8 @@ def make_option_parser():
         "--input-format",
         type=str,  # default=DEFAULT_INPUT_FORMAT,
         help="Format of the input document(s)."
-        " Available input formats are: %s." % parser_names
+        " Available input formats are: %s."
+        % parser_names
         + " If no format is given, it will be "
         + "guessed from the file name extension."
         + " Keywords to parser can be given after format like: %s." % kw_example,
@@ -129,7 +131,8 @@ def make_option_parser():
         type=str,
         default=DEFAULT_OUTPUT_FORMAT,
         help="Format of the graph serialization."
-        " Available output formats are: %s." % serializer_names
+        " Available output formats are: %s."
+        % serializer_names
         + " Default format is: '%default'."
         + " Keywords to serializer can be given after format like: %s." % kw_example,
         metavar="OUTPUT_FORMAT",
@@ -194,7 +197,7 @@ def main():
             pfx, uri = ns_kw.split("=")
             ns_bindings[pfx] = uri
 
-    outfile: Optional[BinaryIO] = sys.stdout.buffer
+    outfile: BinaryIO | None = sys.stdout.buffer
 
     if opts.no_out:
         outfile = None

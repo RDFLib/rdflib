@@ -29,7 +29,8 @@ graphs that can be used and queried. The store that backs the graph
 from __future__ import annotations
 
 from codecs import getreader
-from typing import Any, MutableMapping, Optional
+from collections.abc import MutableMapping
+from typing import IO, Any, cast
 
 from rdflib.exceptions import ParserError as ParseError
 from rdflib.graph import ConjunctiveGraph, Dataset, Graph
@@ -45,13 +46,12 @@ _BNodeContextType = MutableMapping[str, BNode]
 
 
 class NQuadsParser(W3CNTriplesParser):
-
     # type error: Signature of "parse" incompatible with supertype "W3CNTriplesParser"
     def parse(  # type: ignore[override]
         self,
         inputsource: InputSource,
         sink: Graph,
-        bnode_context: Optional[_BNodeContextType] = None,
+        bnode_context: _BNodeContextType | None = None,
         skolemize: bool = False,
         **kwargs: Any,
     ):
@@ -72,9 +72,9 @@ class NQuadsParser(W3CNTriplesParser):
             AssertionError: If the sink store is not context-aware.
             ParseError: If the input is not a file-like object or contains invalid lines.
         """
-        assert (
-            sink.store.context_aware
-        ), "NQuadsParser must be given a context-aware store."
+        assert sink.store.context_aware, (
+            "NQuadsParser must be given a context-aware store."
+        )
         # Set default_union to True to mimic ConjunctiveGraph behavior
         ds = Dataset(store=sink.store, default_union=True)
         ds_default = ds.default_context  # the DEFAULT_DATASET_GRAPH_ID
@@ -94,15 +94,15 @@ class NQuadsParser(W3CNTriplesParser):
         self.sink: Dataset = ds  # type: ignore[assignment]
         self.skolemize = skolemize
 
-        source = inputsource.getCharacterStream()
+        source: IO[str] | None = cast(IO[str], inputsource.getCharacterStream())
         if not source:
-            source = inputsource.getByteStream()
-            source = getreader("utf-8")(source)
+            byte_stream = cast(IO[bytes], inputsource.getByteStream())
+            source = cast(IO[str], getreader("utf-8")(byte_stream))
 
         if not hasattr(source, "read"):
             raise ParseError("Item to parse must be a file-like object.")
 
-        self.file = source
+        self.file = source  # type: ignore[assignment]
         self.buffer = ""
         while True:
             self.line = __line = self.readline()
@@ -115,7 +115,7 @@ class NQuadsParser(W3CNTriplesParser):
 
         return self.sink
 
-    def parseline(self, bnode_context: Optional[_BNodeContextType] = None) -> None:
+    def parseline(self, bnode_context: _BNodeContextType | None = None) -> None:
         self.eat(r_wspace)
         if (not self.line) or self.line.startswith("#"):
             return  # The line is empty or a comment
