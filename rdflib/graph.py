@@ -2730,6 +2730,8 @@ class Dataset(ConjunctiveGraph):
         count = 0
         default_graph_seen = False
         for graph in super().contexts():
+            if isinstance(graph, QuotedGraph):
+                continue
             count += len(graph)
             default_graph_seen |= graph.identifier == self.default_graph.identifier
         if not default_graph_seen:

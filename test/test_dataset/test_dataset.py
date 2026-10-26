@@ -202,6 +202,16 @@ def test_len_counts_quads() -> None:
     assert len(dataset) == 2
 
 
+def test_len_excludes_quoted_formulas() -> None:
+    dataset = Dataset().parse(
+        data="@prefix : <urn:test:> . { :a :b :c } => { :d :e :f } .",
+        format="n3",
+    )
+
+    assert len(dataset) == 1
+    assert sum(1 for _ in dataset.quads()) == 1
+
+
 def test_dataset_default_context_public_access_warns() -> None:
     dataset = Dataset()
 
