@@ -83,9 +83,9 @@ class _ContextAwareGraph(Graph):
 
     def __init__(self, sink: Graph):
         super().__init__(store=sink.store, identifier=sink.identifier)
-        assert (
-            self.store.context_aware
-        ), "JSON-LD named graphs require a context-aware store."
+        assert self.store.context_aware, (
+            "JSON-LD named graphs require a context-aware store."
+        )
         self.context_aware = True
         self.default_union = True
         self._default_context = Graph(
@@ -151,8 +151,7 @@ class JsonLDParser(rdflib.parser.Parser):
         """
         if encoding not in ("utf-8", "utf-16"):
             warnings.warn(
-                "JSON should be encoded as unicode. "
-                "Given encoding was: %s" % encoding
+                "JSON should be encoded as unicode. Given encoding was: %s" % encoding
             )
 
         if not base:
@@ -495,7 +494,9 @@ class Parser:
                 (
                     dict({ID: BNode().n3(), GRAPH: o})
                     if k in context.get_keys(NONE)
-                    else dict({ID: k, GRAPH: o}) if isinstance(o, dict) else o
+                    else dict({ID: k, GRAPH: o})
+                    if isinstance(o, dict)
+                    else o
                 )
                 for k, values in obj.items()
                 for o in (values if isinstance(values, list) else [values])

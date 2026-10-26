@@ -280,9 +280,9 @@ class TriXParser(Parser):
         pass
 
     def parse(self, source: InputSource, sink: Graph, **args: Any) -> None:
-        assert (
-            sink.store.context_aware
-        ), "TriXParser must be given a context aware store."
+        assert sink.store.context_aware, (
+            "TriXParser must be given a context aware store."
+        )
 
         self._parser = create_parser(sink.store)
         content_handler = self._parser.getContentHandler()

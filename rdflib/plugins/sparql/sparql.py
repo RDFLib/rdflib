@@ -293,7 +293,7 @@ class QueryContext:
     @property
     def now(self) -> datetime.datetime:
         if self._now is None:
-            self._now = datetime.datetime.now(datetime.timezone.utc)
+            self._now = datetime.datetime.now(datetime.UTC)
         return self._now
 
     def clone(
@@ -461,7 +461,9 @@ class Prologue:
             if iri.name == "literal":
                 # type error: Argument "datatype" to "Literal" has incompatible type "Union[CompValue, Identifier, None]"; expected "Optional[str]"
                 return Literal(
-                    iri.string, lang=iri.lang, datatype=self.absolutize(iri.datatype)  # type: ignore[arg-type]
+                    iri.string,
+                    lang=iri.lang,
+                    datatype=self.absolutize(iri.datatype),  # type: ignore[arg-type]
                 )
         elif isinstance(iri, URIRef) and not ":" in iri:  # noqa: E713
             return URIRef(iri, base=self.base)

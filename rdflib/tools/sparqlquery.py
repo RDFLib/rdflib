@@ -17,6 +17,7 @@ example usage:
 Tip: You can check the truth value for an ASK query, by regex in stdout for 'true'
 or 'false'.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -206,7 +207,7 @@ def parse_args():
         "--warn",
         action="store_true",
         default=False,
-        help="Output warnings to stderr " "(by default only critical errors).",
+        help="Output warnings to stderr (by default only critical errors).",
     )
     parser.add_argument(
         "-h",
@@ -214,8 +215,7 @@ def parse_args():
         # action="store_true",
         # default=False,
         action="help",
-        help="show help message and exit. "
-        "Also prints information about given format.",
+        help="show help message and exit. Also prints information about given format.",
     )
     parser.add_argument(
         "-u", "--username", type=str, help="Username used during authentication."
@@ -329,8 +329,7 @@ def _create_epilog_from_format(format_, construct) -> Optional[str]:
         available_keywords.pop(0)  # pop encoding
 
     epilog = (
-        f"For more customization for format '{format_}' "
-        f"use `pydoc {pydoc_target}`. "
+        f"For more customization for format '{format_}' use `pydoc {pydoc_target}`. "
     )
     if len(available_keywords) > 0:
         epilog += f"Known keywords are {available_keywords}."

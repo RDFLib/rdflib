@@ -333,9 +333,9 @@ class GraphHelper:
                 f"{preamle}in both:\n"
                 f"{cls.format_graph_set(in_both)}"
                 "\nonly in first:\n"
-                f"{cls.format_graph_set(in_lhs, sort = True)}"
+                f"{cls.format_graph_set(in_lhs, sort=True)}"
                 "\nonly in second:\n"
-                f"{cls.format_graph_set(in_rhs, sort = True)}"
+                f"{cls.format_graph_set(in_rhs, sort=True)}"
             )
 
         assert rdflib.compare.isomorphic(lhs, rhs), format_report(message)
@@ -370,9 +370,9 @@ class GraphHelper:
 
         lhs_contexts = get_contexts(lhs)
         rhs_contexts = get_contexts(rhs)
-        assert (
-            lhs_contexts.keys() == rhs_contexts.keys()
-        ), f"must have same context ids in LHS and RHS (exclude_bnodes={exclude_bnodes})"
+        assert lhs_contexts.keys() == rhs_contexts.keys(), (
+            f"must have same context ids in LHS and RHS (exclude_bnodes={exclude_bnodes})"
+        )
         for id, lhs_context in lhs_contexts.items():
             cls.assert_isomorphic(lhs_context, rhs_contexts[id], message)
 

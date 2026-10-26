@@ -276,9 +276,9 @@ foo-bar:Ex foo-bar:name "Test" . """
         g2 = Graph()
         g2.parse(data="@prefix : <#> . :a :b :c .", format="n3")
 
-        assert set(g1) == set(
-            g2
-        ), "Document with declared empty prefix must match default #"
+        assert set(g1) == set(g2), (
+            "Document with declared empty prefix must match default #"
+        )
 
     @pytest.mark.parametrize(
         "do_normalize_literal, expected_result",

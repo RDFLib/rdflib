@@ -176,7 +176,6 @@ def validate_no_bnodes(
         or isinstance(graph_name, BNode)
     ):
         raise ValueError(
-            "Subject, predicate, and object must not be a BNode: "
-            f"{subj}, {pred}, {obj}"
+            f"Subject, predicate, and object must not be a BNode: {subj}, {pred}, {obj}"
         )
     validate_graph_name(graph_name)

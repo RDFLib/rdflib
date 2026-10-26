@@ -51,11 +51,12 @@ def n3(test: RDFTest):
                     print(t)
                 raise Exception("Graphs do not match!")
 
-            assert isomorphic(
-                g, res
-            ), "graphs must be the same, expected\n%s\n, got\n%s" % (
-                g.serialize(),
-                res.serialize(),
+            assert isomorphic(g, res), (
+                "graphs must be the same, expected\n%s\n, got\n%s"
+                % (
+                    g.serialize(),
+                    res.serialize(),
+                )
             )
 
     except Exception:

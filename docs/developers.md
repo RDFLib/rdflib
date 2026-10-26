@@ -6,8 +6,8 @@ This document describes the process and conventions to follow when
 developing RDFLib code.
 
 * Please be as Pythonic as possible ([PEP 8](https://www.python.org/dev/peps/pep-0008/)).
-* Code should be formatted using [black](https://github.com/psf/black), using the version and config pinned in `pyproject.toml`.
-* Code should also pass [ruff](https://docs.astral.sh/ruff/) linting
+* Code should be formatted using [Ruff](https://docs.astral.sh/ruff/formatter/), using the version and config pinned in `pyproject.toml`.
+* Code should also pass [Ruff](https://docs.astral.sh/ruff/) linting and import sorting
   and [mypy](http://mypy-lang.org/) type checking.
 * You must supply tests for new code.
 * RDFLib uses [uv](https://docs.astral.sh/uv/) for dependency management and packaging.
@@ -172,14 +172,20 @@ Test should go into the `test/` directory, either into an existing test file wit
 
 ## Running static checks
 
-Check formatting with [black](https://github.com/psf/black), which reads its
+Check formatting with [Ruff](https://docs.astral.sh/ruff/formatter/), which reads its
 config from `pyproject.toml`:
 
 ```bash
-uv run black .
+uv run ruff format --check .
 ```
 
-Check style and conventions with [ruff](https://docs.astral.sh/ruff/linter/):
+Apply formatting with:
+
+```bash
+uv run ruff format .
+```
+
+Check style, conventions and import order with [Ruff](https://docs.astral.sh/ruff/linter/):
 
 ```bash
 uv run ruff check
@@ -199,7 +205,7 @@ uv run mypy --show-error-context --show-error-codes
 
 ## pre-commit and pre-commit ci
 
-We have [pre-commit](https://pre-commit.com/) configured with [black](https://github.com/psf/black) for formatting code.
+We have [pre-commit](https://pre-commit.com/) configured with [Ruff](https://docs.astral.sh/ruff/) for linting, import sorting and formatting code. Lint fixes run before formatting.
 
 Some useful commands for using pre-commit:
 
@@ -250,13 +256,13 @@ tox
 tox -a
 
 # Run a specific environment.
-tox -e py310 # default environment with py310
+tox -e py311 # default environment with py311
 tox -e py311-extra # extra tests with py311
 
 # Override the test command.
 # the below command will run `pytest test/test_translate_algebra.py`
 # instead of the default pytest command.
-tox -e py310,py311 -- pytest test/test_translate_algebra.py
+tox -e py311,py312 -- pytest test/test_translate_algebra.py
 ```
 
 ## `go-task` and `Taskfile.yml`
@@ -283,8 +289,8 @@ task docs
 # Run live-preview on the docs
 task docs:live-server
 
-# Run the py310 tox environment
-task tox -- -e py310
+# Run the py311 tox environment
+task tox -- -e py311
 ```
 
 The [Taskfile usage documentation](https://taskfile.dev/#/usage) provides more information on how to work with taskfiles.
@@ -349,7 +355,7 @@ Please do *not* commit tests you know will fail, even if you're just pointing ou
 
 ## Compatibility
 
-RDFLib 8.0.0 release and later only support Python 3.10 and newer.
+RDFLib 8.0.0 release and later only support Python 3.11 and newer.
 
 RDFLib 7.0.0 release and later only support Python 3.8.1 and newer.
 

@@ -51,19 +51,19 @@ class SimpleMemory(Store):
         self.identifier = identifier
 
         # indexed by [subject][predicate][object]
-        self.__spo: dict[_SubjectType, dict[_PredicateType, dict[_ObjectType, int]]] = (
-            {}
-        )
+        self.__spo: dict[
+            _SubjectType, dict[_PredicateType, dict[_ObjectType, int]]
+        ] = {}
 
         # indexed by [predicate][object][subject]
-        self.__pos: dict[_PredicateType, dict[_ObjectType, dict[_SubjectType, int]]] = (
-            {}
-        )
+        self.__pos: dict[
+            _PredicateType, dict[_ObjectType, dict[_SubjectType, int]]
+        ] = {}
 
         # indexed by [predicate][object][subject]
-        self.__osp: dict[_ObjectType, dict[_SubjectType, dict[_PredicateType, int]]] = (
-            {}
-        )
+        self.__osp: dict[
+            _ObjectType, dict[_SubjectType, dict[_PredicateType, int]]
+        ] = {}
 
         self.__namespace: dict[str, URIRef] = {}
         self.__prefix: dict[URIRef, str] = {}
@@ -279,19 +279,19 @@ class Memory(Store):
         self.identifier = identifier
 
         # indexed by [subject][predicate][object]
-        self.__spo: dict[_SubjectType, dict[_PredicateType, dict[_ObjectType, int]]] = (
-            {}
-        )
+        self.__spo: dict[
+            _SubjectType, dict[_PredicateType, dict[_ObjectType, int]]
+        ] = {}
 
         # indexed by [predicate][object][subject]
-        self.__pos: dict[_PredicateType, dict[_ObjectType, dict[_SubjectType, int]]] = (
-            {}
-        )
+        self.__pos: dict[
+            _PredicateType, dict[_ObjectType, dict[_SubjectType, int]]
+        ] = {}
 
         # indexed by [predicate][object][subject]
-        self.__osp: dict[_ObjectType, dict[_SubjectType, dict[_PredicateType, int]]] = (
-            {}
-        )
+        self.__osp: dict[
+            _ObjectType, dict[_SubjectType, dict[_PredicateType, int]]
+        ] = {}
 
         self.__namespace: dict[str, URIRef] = {}
         self.__prefix: dict[URIRef, str] = {}
@@ -633,7 +633,9 @@ class Memory(Store):
             del self.__tripleContexts[triple]
 
     def __get_context_for_triple(
-        self, triple: _TripleType, skipQuoted: bool = False  # noqa: N803
+        self,
+        triple: _TripleType,
+        skipQuoted: bool = False,  # noqa: N803
     ) -> Collection[str | None]:
         """return a list of contexts (str) for the triple, skipping
         quoted contexts if skipQuoted==True"""

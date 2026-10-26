@@ -61,7 +61,7 @@ import rdflib
 import rdflib.util
 from rdflib.compat import long_type
 
-from .xsd_datetime import (  # type: ignore[attr-defined]
+from .xsd_datetime import (
     Duration,
     duration_isoformat,
     parse_datetime,
@@ -875,9 +875,7 @@ class Literal(Identifier):
                 Decimal(
                     f"{round(Decimal(self.toPython()) + Decimal(val.toPython()), 15):f}".rstrip(
                         "0"
-                    ).rstrip(
-                        "."
-                    )
+                    ).rstrip(".")
                 ),
                 datatype=_XSD_DECIMAL,
             )
@@ -998,9 +996,7 @@ class Literal(Identifier):
                 Decimal(
                     f"{round(Decimal(self.toPython()) - Decimal(val.toPython()), 15):f}".rstrip(
                         "0"
-                    ).rstrip(
-                        "."
-                    )
+                    ).rstrip(".")
                 ),
                 datatype=_XSD_DECIMAL,
             )
