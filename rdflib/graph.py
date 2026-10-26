@@ -2727,7 +2727,14 @@ class Dataset(ConjunctiveGraph):
 
     def __len__(self) -> int:
         """Number of quads in the dataset."""
-        return sum(len(graph) for graph in self.graphs())
+        count = 0
+        default_graph_seen = False
+        for graph in super().contexts():
+            count += len(graph)
+            default_graph_seen |= graph.identifier == self.default_graph.identifier
+        if not default_graph_seen:
+            count += len(self.default_graph)
+        return count
 
     # type error: Return type "tuple[type[Dataset], tuple[Store, bool]]" of "__reduce__" incompatible with return type "tuple[type[Graph], tuple[Store, IdentifiedNode]]" in supertype "ConjunctiveGraph"
     # type error: Return type "tuple[type[Dataset], tuple[Store, bool]]" of "__reduce__" incompatible with return type "tuple[type[Graph], tuple[Store, IdentifiedNode]]" in supertype "Graph"
