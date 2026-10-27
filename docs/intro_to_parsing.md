@@ -90,7 +90,7 @@ The following table lists the RDF formats you can serialize data to with rdflib,
 | Notation-3 | n3 | N3 is a superset of Turtle that also caters for rules and a few other things |
 | Trig | trig | Turtle-like format for RDF triples + context (RDF quads) and thus multiple graphs |
 | Trix | trix | RDF/XML-like format for RDF quads |
-| N-Quads | nquads | N-Triples-like format for RDF quads |
+| N-Quads | nquads or nq | N-Triples-like format for RDF quads |
 
 ## Working with multi-graphs
 
