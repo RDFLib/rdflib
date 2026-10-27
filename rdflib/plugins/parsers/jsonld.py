@@ -73,7 +73,7 @@ from ..shared.jsonld.util import (
 
 __all__ = ["JsonLDParser", "to_rdf"]
 
-TYPE_TERM = Term(str(RDF.type), TYPE, VOCAB)  # type: ignore[call-arg]
+TYPE_TERM = Term(str(RDF.type), TYPE, VOCAB)
 
 ALLOW_LISTS_OF_LISTS = True  # NOTE: Not allowed in JSON-LD 1.0
 
