@@ -296,22 +296,18 @@ class Converter:
             language = o.language
             term = context.find_term(str(p), datatype, language=language)
         else:
-            containers = [LIST, None] if graph.value(o, RDF.first) else [None]
-            for container in containers:
-                for coercion in (ID, VOCAB, UNDEF):
-                    # type error: Argument 2 to "find_term" of "Context" has incompatible type "object"; expected "Union[str, Defined, None]"
-                    # type error: Argument 3 to "find_term" of "Context" has incompatible type "Optional[str]"; expected "Union[Defined, str]"
-                    term = context.find_term(str(p), coercion, container)  # type: ignore[arg-type]
-                    if term:
-                        break
-                # find_term may return a non-list fallback. Only walk the chain
-                # when the selected term would actually write an @list value.
-                if term and LIST in term.container:
+            term = self._find_node_term(p, None)
+            if graph.value(o, RDF.first):
+                # find_term ranks terms differently for LIST: it can return an
+                # @list term, and it skips @set terms. That choice applies only
+                # to a chain that can be written as @list. Walk the chain only
+                # when the choice differs, so explicitly written cells do not
+                # rescan their suffixes.
+                list_term = self._find_node_term(p, LIST)
+                if list_term is not None and list_term is not term:
                     collection = self.to_collection(graph, o)
-                    if collection is None:
-                        term = None
-                if term:
-                    break
+                    if collection is not None:
+                        term = list_term
 
         node = None
         use_set = not context.active
@@ -390,6 +386,16 @@ class Converter:
         else:
             value = node
         s_node[p_key] = value
+
+    def _find_node_term(self, p: IdentifiedNode, container: Optional[str]):
+        """Return the context term for `p` with a node object, or None."""
+        for coercion in (ID, VOCAB, UNDEF):
+            # type error: Argument 2 to "find_term" of "Context" has incompatible type "object"; expected "Union[str, Defined, None]"
+            # type error: Argument 3 to "find_term" of "Context" has incompatible type "Optional[str]"; expected "Union[Defined, str]"
+            term = self.context.find_term(str(p), coercion, container)  # type: ignore[arg-type]
+            if term:
+                return term
+        return None
 
     def type_coerce(self, o: Identifier, coerce_type: str):
         if coerce_type == ID:

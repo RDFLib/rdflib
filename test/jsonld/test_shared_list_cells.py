@@ -264,6 +264,59 @@ def test_rejected_list_with_a_coercing_fallback_round_trips(build, auto_compact)
     assert isomorphic(g, g2)
 
 
+@pytest.mark.parametrize(
+    "other",
+    [{"@id": str(NS.p)}, {"@id": str(NS.p), "@type": "@vocab"}],
+    ids=["plain", "vocab"],
+)
+@pytest.mark.parametrize(
+    "build",
+    [_shared_tail_graph, _shared_head_graph, _annotated_cell_graph],
+    ids=["shared-tail", "shared-head", "annotated-cell"],
+)
+def test_a_rejected_list_keeps_the_term_for_node_references(build, other):
+    """Only a chain written as ``@list`` may use the term the list pass finds.
+
+    For a node reference, JSON-LD 1.1 term selection prefers an ``@id`` term
+    with an ``@set`` container to a plain or ``@vocab`` term; pyld agrees.
+    ``find_term`` skips ``@set`` terms when asked for an ``@list`` term, so its
+    fallback must not be used for a chain that is written explicitly.
+    """
+    g, _head, _tail = build()
+    context = {
+        "other": other,
+        "refs": {"@id": str(NS.p), "@type": "@id", "@container": "@set"},
+    }
+
+    data = g.serialize(format="json-ld", context=context)
+    nodes = json.loads(data)["@graph"]
+
+    assert [node for node in nodes if "other" in node] == []
+    references = sum(len(node.get("refs", [])) for node in nodes)
+    assert references == len(list(g.triples((None, NS.p, None))))
+    assert isomorphic(g, Graph().parse(data=data, format="json-ld"))
+
+
+def test_a_privately_owned_list_keeps_the_term_the_list_pass_finds():
+    """A chain that is written as ``@list`` still uses that term."""
+    g = Graph()
+    head, second = BNode(), BNode()
+    g.add((head, RDF.first, Literal("a")))
+    g.add((head, RDF.rest, second))
+    g.add((second, RDF.first, Literal("b")))
+    g.add((second, RDF.rest, RDF.nil))
+    g.add((NS.s, NS.p, head))
+    context = {
+        "other": {"@id": str(NS.p)},
+        "refs": {"@id": str(NS.p), "@type": "@id", "@container": "@set"},
+    }
+
+    data = g.serialize(format="json-ld", context=context)
+
+    assert json.loads(data)["other"] == {"@list": ["a", "b"]}
+    assert isomorphic(g, Graph().parse(data=data, format="json-ld"))
+
+
 @pytest.mark.parametrize("context", [None, LIST_CONTEXT, COERCING_LIST_CONTEXT])
 def test_long_list_with_a_shared_tail_round_trips(context):
     """Explicit list cells must not consume stack proportional to length."""
@@ -318,6 +371,35 @@ def test_shared_head_list_with_coerced_references_has_linear_traversal_work(
     assert len(g2) == len(g)
     assert isomorphic(g, g2)
     assert _non_empty_lists(data) == []
+
+
+@pytest.mark.parametrize("length", [50, 100, 200])
+@pytest.mark.parametrize("shared", ["head", "tail"])
+def test_choosing_between_rest_terms_has_linear_traversal_work(length, shared):
+    """Walking a chain to choose between two terms must not rescan it.
+
+    The plain term is the one found for ``@list`` and the ``@id`` term with an
+    ``@set`` container the one found without a container, so the choice for
+    each ``rdf:rest`` depends on whether the rest of the chain is a list.
+    """
+    g = _long_shared_tail_graph(length)
+    if shared == "head":
+        head = g.value(NS.s1, NS.p)
+        assert isinstance(head, BNode)
+        g.set((NS.s2, NS.p, head))
+    context = {
+        "p": {"@id": str(NS.p), "@type": "@id"},
+        "rest": {"@id": str(RDF.rest)},
+        "rests": {"@id": str(RDF.rest), "@type": "@id", "@container": "@set"},
+    }
+
+    with patch.object(g, "predicate_objects", wraps=g.predicate_objects) as traversal:
+        data = g.serialize(format="json-ld", context=context)
+
+    assert traversal.call_count <= 10 * length
+    g2 = Graph().parse(data=data, format="json-ld")
+    assert len(g2) == len(g)
+    assert isomorphic(g, g2)
 
 
 def test_a_rejected_prefix_does_not_reject_a_private_suffix():
