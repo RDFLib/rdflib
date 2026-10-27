@@ -296,10 +296,7 @@ class Converter:
             language = o.language
             term = context.find_term(str(p), datatype, language=language)
         else:
-            # Only offer an @list term for a chain that can be written as @list.
-            if graph.value(o, RDF.first):
-                collection = self.to_collection(graph, o)
-            containers = [LIST, None] if collection is not None else [None]
+            containers = [LIST, None] if graph.value(o, RDF.first) else [None]
             for container in containers:
                 for coercion in (ID, VOCAB, UNDEF):
                     # type error: Argument 2 to "find_term" of "Context" has incompatible type "object"; expected "Union[str, Defined, None]"
@@ -307,6 +304,12 @@ class Converter:
                     term = context.find_term(str(p), coercion, container)  # type: ignore[arg-type]
                     if term:
                         break
+                # find_term may return a non-list fallback. Only walk the chain
+                # when the selected term would actually write an @list value.
+                if term and LIST in term.container:
+                    collection = self.to_collection(graph, o)
+                    if collection is None:
+                        term = None
                 if term:
                     break
 

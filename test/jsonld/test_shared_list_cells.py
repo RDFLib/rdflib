@@ -292,6 +292,34 @@ def test_shared_tail_list_serialization_has_linear_traversal_work(length):
     assert isomorphic(g, g2)
 
 
+@pytest.mark.parametrize("length", [50, 100, 200])
+@pytest.mark.parametrize(
+    "context",
+    [{"p": {"@id": str(NS.p), "@type": "@id"}}, COERCING_LIST_CONTEXT],
+    ids=["id-terms", "list-container-with-id-fallback"],
+)
+def test_shared_head_list_with_coerced_references_has_linear_traversal_work(
+    length, context
+):
+    """Explicit references must not probe every otherwise valid list suffix."""
+    g = _long_shared_tail_graph(length)
+    head = g.value(NS.s1, NS.p)
+    assert isinstance(head, BNode)
+    g.set((NS.s2, NS.p, head))
+    context = {**context, "rest": {"@id": str(RDF.rest), "@type": "@id"}}
+
+    with patch.object(g, "predicate_objects", wraps=g.predicate_objects) as traversal:
+        data = g.serialize(format="json-ld", context=context)
+
+    # Each cell is emitted explicitly, so rescanning successful suffixes would
+    # make traversal quadratic even though no @list value is written.
+    assert traversal.call_count <= 10 * length
+    g2 = Graph().parse(data=data, format="json-ld")
+    assert len(g2) == len(g)
+    assert isomorphic(g, g2)
+    assert _non_empty_lists(data) == []
+
+
 def test_a_rejected_prefix_does_not_reject_a_private_suffix():
     g, head, tail = _shared_tail_graph()
     g.remove((NS.s2, NS.p, tail))
