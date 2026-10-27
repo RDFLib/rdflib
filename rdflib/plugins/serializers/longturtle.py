@@ -158,14 +158,8 @@ class LongTurtleSerializer(RecursiveSerializer):
                 if node in self.keywords:
                     # predicate is a keyword
                     continue
-                if (
-                    self.base is not None
-                    and isinstance(node, URIRef)
-                    and node.startswith(self.base)
-                    and "#" not in node.replace(self.base, "")
-                    and "/" not in node.replace(self.base, "")
-                ):
-                    # predicate corresponds to base namespace
+                if isinstance(node, URIRef) and str(self.relativize(node)) != str(node):
+                    # The predicate will be written as a relative IRI.
                     continue
             # Don't use generated prefixes for subjects and objects
             self.get_pname(node, gen_prefix=(i == VERB))
