@@ -46,6 +46,7 @@ class RDF(DefinedNamespace):
     JSON: URIRef  # The datatype of RDF literals storing JSON content.
     PlainLiteral: URIRef  # The class of plain (i.e. untyped) literal values, as used in RIF and OWL 2
     XMLLiteral: URIRef  # The datatype of XML literal values.
+    dirLangString: URIRef  # The datatype of directional language-tagged string values.
     langString: URIRef  # The datatype of language-tagged string values
 
     _NS = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")

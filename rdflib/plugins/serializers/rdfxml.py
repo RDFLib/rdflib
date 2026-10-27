@@ -10,7 +10,7 @@ from rdflib.graph import Graph
 from rdflib.namespace import RDF, RDFS, Namespace, NamespaceManager  # , split_uri
 from rdflib.plugins.parsers.RDFVOC import RDFVOC
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
-from rdflib.serializer import Serializer
+from rdflib.serializer import Serializer, _check_rdf1_1_term, _check_rdf1_1_triple
 from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, Node, URIRef
 from rdflib.util import first, more_than
 
@@ -49,6 +49,7 @@ class XMLSerializer(Serializer):
         bindings: dict[str, URIRef] = {}
 
         for predicate in set(store.predicates()):
+            _check_rdf1_1_term(predicate)
             prefix, namespace, name = _compute_qname_strict_for_term(nm, predicate)
             bindings[prefix] = URIRef(namespace)
 
@@ -116,6 +117,7 @@ class XMLSerializer(Serializer):
         del self.__serialized
 
     def subject(self, subject: Identifier, depth: int = 1) -> None:
+        _check_rdf1_1_term(subject)
         if subject not in self.__serialized:
             self.__serialized[subject] = 1
 
@@ -145,6 +147,7 @@ class XMLSerializer(Serializer):
     def predicate(
         self, predicate: Identifier, object: Identifier, depth: int = 1
     ) -> None:
+        _check_rdf1_1_term(object)
         write = self.write
         indent = "  " * depth
         qname = self.store.namespace_manager.qname_strict(predicate)
@@ -202,6 +205,10 @@ class PrettyXMLSerializer(Serializer):
     ) -> None:
         self.__serialized: dict[Identifier, int] = {}
         store = self.store
+        # Collection rendering can skip assertions on list nodes.
+        for triple in store:
+            _check_rdf1_1_triple(triple)
+
         # if base is given here, use that, if not and a base is set for the graph use that
         if base is not None:
             self.base = base
@@ -215,6 +222,7 @@ class PrettyXMLSerializer(Serializer):
         namespaces = {}
 
         for predicate in set(store.predicates()):
+            _check_rdf1_1_term(predicate)
             prefix, namespace, local = _compute_qname_strict_for_term(nm, predicate)
             namespaces[prefix] = namespace
 
@@ -223,6 +231,7 @@ class PrettyXMLSerializer(Serializer):
         # rdf:Description element (see `subject`), so failing to shorten one
         # is not an error.
         for type_ in store.objects(None, RDF.type):
+            _check_rdf1_1_term(type_)
             try:
                 # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
                 prefix, namespace, local = nm.compute_qname_strict(type_)  # type: ignore[arg-type]
@@ -274,6 +283,7 @@ class PrettyXMLSerializer(Serializer):
         self.__serialized = None  # type: ignore[assignment]
 
     def subject(self, subject: Identifier, depth: int = 1):
+        _check_rdf1_1_term(subject)
         store = self.store
         writer = self.writer
 
@@ -332,6 +342,7 @@ class PrettyXMLSerializer(Serializer):
     def predicate(
         self, predicate: Identifier, object: Identifier, depth: int = 1
     ) -> None:
+        _check_rdf1_1_term(object)
         writer = self.writer
         store = self.store
         writer.push(predicate)

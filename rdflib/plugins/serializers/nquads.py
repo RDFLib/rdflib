@@ -5,7 +5,7 @@ from typing import IO, TYPE_CHECKING, Any
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Graph
 from rdflib.plugins.serializers.nt import _nt_row, _quoteLiteral
-from rdflib.serializer import Serializer
+from rdflib.serializer import Serializer, _check_rdf1_1_triple
 from rdflib.term import Literal
 
 __all__ = ["NQuadsSerializer"]
@@ -54,6 +54,7 @@ class NQuadsSerializer(Serializer):
 
 
 def _nq_row(triple, context):
+    _check_rdf1_1_triple(triple)
     graph_name = (
         context.n3() + " " if context and context != DATASET_DEFAULT_GRAPH_ID else ""
     )

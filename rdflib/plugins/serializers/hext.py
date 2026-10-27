@@ -12,7 +12,7 @@ from typing import IO, Any, Union, cast
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset, Graph
 from rdflib.namespace import RDF, XSD
-from rdflib.serializer import Serializer
+from rdflib.serializer import Serializer, _check_rdf1_1_triple
 from rdflib.term import BNode, IdentifiedNode, Literal, URIRef
 
 try:
@@ -120,6 +120,7 @@ class HextuplesSerializer(Serializer):
                     stream.write(hl if _HAS_ORJSON else hl.encode())
 
     def _hex_line(self, triple, context_str: bytes | str):
+        _check_rdf1_1_triple(triple)
         if isinstance(
             triple[0], (URIRef, BNode)
         ):  # exclude QuotedGraph and other objects

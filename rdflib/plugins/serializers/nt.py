@@ -6,7 +6,7 @@ from typing import IO, TYPE_CHECKING, Any
 
 from rdflib.compare import to_canonical_graph
 from rdflib.graph import Graph
-from rdflib.serializer import Serializer
+from rdflib.serializer import Serializer, _check_rdf1_1_triple
 from rdflib.term import Literal
 
 if TYPE_CHECKING:
@@ -86,6 +86,7 @@ class NT11Serializer(NTSerializer):
 
 
 def _nt_row(triple: _TripleType) -> str:
+    _check_rdf1_1_triple(triple)
     if isinstance(triple[2], Literal):
         return f"{triple[0].n3()} {triple[1].n3()} {_quoteLiteral(triple[2])} .\n"
     else:
