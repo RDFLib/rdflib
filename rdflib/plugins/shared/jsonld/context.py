@@ -144,23 +144,6 @@ class Context:
         )
         self._basedomain = "%s://%s" % urlsplit(base)[0:2] if base else None
 
-    def __eq__(self, other: object) -> bool:
-        """
-        Two contexts are equal if they define the same terms and context-level
-        settings. Processing state, such as the parent context and the document
-        base, is ignored.
-        """
-        if not isinstance(other, Context):
-            return NotImplemented
-        return (
-            self.version == other.version
-            and self.base == other.base
-            and self.vocab == other.vocab
-            and self.language == other.language
-            and self.propagate == other.propagate
-            and self.terms == other.terms
-        )
-
     def subcontext(self, source: Any, propagate: bool = True) -> Context:
         # IMPROVE: to optimize, implement SubContext with parent fallback support
         parent = self.parent if self.propagate is False else self
