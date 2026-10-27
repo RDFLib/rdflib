@@ -63,15 +63,15 @@ class JsonLDSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
+        base: str | None = None,
+        encoding: str | None = None,
         **kwargs: Any,
     ) -> None:
         # TODO: docstring w. args and return value
         encoding = encoding or "utf-8"
         if encoding not in ("utf-8", "utf-16"):
             warnings.warn(
-                "JSON should be encoded as unicode. " f"Given encoding was: {encoding}"
+                f"JSON should be encoded as unicode. Given encoding was: {encoding}"
             )
 
         context_data = kwargs.get("context")
