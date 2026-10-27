@@ -91,15 +91,7 @@ The following table lists the RDF formats you can serialize data to with rdflib,
 | Trig | trig | Turtle-like format for RDF triples + context (RDF quads) and thus multiple graphs |
 | Trix | trix | RDF/XML-like format for RDF quads |
 | N-Quads | nquads or nq | N-Triples-like format for RDF quads |
-| Jelly | jelly | Binary format for RDF triples or quads, see [Jelly](plugins.md#jelly) |
-
-Jelly is a binary format, so `serialize()` can't return it as a `str`. Give it a
-`destination`, or an `encoding` to get `bytes`:
-
-```python
-g.serialize(destination="tbl.jelly", format="jelly")
-data = g.serialize(format="jelly", encoding="utf-8")  # bytes, the encoding is ignored
-```
+| Jelly | jelly | Fast binary format for RDF triples or quads, see [Jelly](plugins.md#jelly) |
 
 ## Working with multi-graphs
 

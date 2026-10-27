@@ -1,4 +1,4 @@
-"""Tests for SPARQL query results in Jelly-SPARQL, which pyjelly provides."""
+"""Tests for the Jelly-SPARQL format, provided by pyjelly."""
 
 from __future__ import annotations
 
@@ -80,7 +80,6 @@ def test_select_roundtrip(
     assert parsed.type == "SELECT"
     assert parsed.vars == select_result.vars
     assert len(parsed) == 6
-    # The blank node gets a new label, so it is compared apart
     rows = [_without_bnodes(row) for row in parsed.bindings]
     assert rows == [_without_bnodes(row) for row in select_result.bindings]
     assert all(Variable("unbound") not in row for row in parsed.bindings)

@@ -164,52 +164,12 @@ For context-aware (multi-graph) serialization, the 'graph' field of the default 
 
 ### Jelly
 
-[Jelly](https://w3id.org/jelly) is a binary format for streams of RDF triples
-or quads, based on Protocol Buffers. It is fast to read and write and compact.
-RDFLib reads and writes it with [pyjelly](https://w3id.org/jelly/pyjelly),
-which is installed with RDFLib. The format name is `jelly`, the media type is
+[Jelly](https://w3id.org/jelly) is a fast and compact binary format for streams of RDF triples
+or quads, based on Protocol Buffers. RDFLib reads and writes it with [pyjelly](https://w3id.org/jelly/pyjelly),
+which is installed with RDFLib. The format name is `jelly`, the media type is 
 `application/x-jelly-rdf`, and files end in `.jelly`.
 
-```python
-from rdflib import Dataset
-
-d = Dataset()
-d.parse("data.trig")
-d.serialize(destination="data.jelly", format="jelly")
-d2 = Dataset().parse("data.jelly")
-```
-
-As Jelly is binary, `serialize()` can't return it as a `str`. Give it a
-`destination`, or an `encoding` to get `bytes`, which Jelly ignores:
-`g.serialize(format="jelly", encoding="utf-8")`.
-
-A `Dataset` is written as quads and a `Graph` as triples. Read into a `Graph`,
-a stream of quads gives the triples of its default graph only, as with N-Quads.
-Read into a `Dataset`, a stream of triples goes into the default graph.
-
-Some things to know:
-
-* In RDF, `"x"^^xsd:string` and `"x"` are the same term, and Jelly writes both as
-  `"x"`. RDFLib reads that as `Literal("x")`, which
-  [`Literal`][rdflib.term.Literal]'s `==` tells apart from
-  `Literal("x", datatype=XSD.string)` (its `eq()` method doesn't). To compare
-  graphs after a round trip, write string literals without a datatype.
-* Namespace prefixes are not written by default. pyjelly's options turn them on,
-  and other options, like the size of the lookup tables, are set the same way:
-
-    ```python
-    from pyjelly.options import StreamParameters
-    from pyjelly.serialize.streams import SerializerOptions
-
-    options = SerializerOptions(params=StreamParameters(namespace_declarations=True))
-    g.serialize(destination="data.jelly", format="jelly", options=options)
-    ```
-
-SPARQL query results can be written in Jelly too, see
-[Jelly-SPARQL](#jelly-sparql).
-
-See the [pyjelly documentation](https://w3id.org/jelly/pyjelly) for more, such
-as writing and reading streams of many graphs.
+See the [pyjelly documentation](https://w3id.org/jelly/pyjelly) for more, such as writing and reading streams of many graphs.
 
 ### Longturtle
 
@@ -249,25 +209,3 @@ Plugins for reading and writing of (SPARQL) [`Result`][rdflib.query.Result] - pa
 [Jelly-SPARQL](https://w3id.org/jelly) is the binary Jelly format for the
 results of SELECT and ASK queries. Its format name is `jelly` (or `jellys`),
 its media type is `application/x-jelly-sparql`, and files end in `.jellys`.
-
-```python
-from io import BytesIO
-from rdflib.query import Result
-
-result = graph.query("SELECT ?s ?o WHERE { ?s ?p ?o }")
-data = result.serialize(format="jelly")  # bytes
-result = Result.parse(BytesIO(data), format="jelly")
-```
-
-The results of CONSTRUCT and DESCRIBE queries are graphs, so
-`result.serialize(format="jelly")` writes them in [Jelly](#jelly). To read
-them back as a result, give the media type of Jelly, as `format="jelly"` means
-Jelly-SPARQL here:
-`Result.parse(source, content_type="application/x-jelly-rdf")`.
-
-As with Jelly, results are read from and written to binary streams only, and
-`"x"^^xsd:string` is read as `Literal("x")`, the same RDF term.
-
-A [`SPARQLStore`][rdflib.plugins.stores.sparqlstore.SPARQLStore] made with
-`returnFormat="jelly"` asks the endpoint for Jelly-SPARQL and Jelly, and reads
-either.

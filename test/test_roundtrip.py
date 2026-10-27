@@ -203,11 +203,11 @@ XFAILS = {
     ),
 }
 
-# Formats whose serialization is binary, so it is kept as bytes
+# Formats whose serialization is binary
 BINARY_FORMATS = {"jelly"}
 
-# Formats that write "x"^^xsd:string as "x", which RDF 1.1 makes the same term.
-# rdflib's Literal tells them apart, so both graphs are compared with "x".
+# Formats that write "x"^^xsd:string as "x", which in RDF 1.1 is the same
+# term. We apply extra normalization for them in literal comparisons.
 SIMPLE_STRING_FORMATS = {"jelly"}
 
 

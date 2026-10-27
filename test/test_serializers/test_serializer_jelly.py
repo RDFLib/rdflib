@@ -1,4 +1,4 @@
-"""Tests for the Jelly-RDF format, which pyjelly provides."""
+"""Tests for the Jelly-RDF format, provided by pyjelly."""
 
 from __future__ import annotations
 
@@ -61,7 +61,6 @@ def dataset() -> Dataset:
     ],
 )
 def test_plugins(kind: type, names: list[str], class_name: str) -> None:
-    """The format names and the media type all give pyjelly's plugin."""
     for name in names:
         assert rdflib.plugin.get(name, kind).__name__ == class_name
 
@@ -179,8 +178,8 @@ def test_namespaces() -> None:
 
 def test_xsd_string() -> None:
     """
-    RDF 1.1 makes "x"^^xsd:string and "x" the same term, and Jelly writes both as
-    "x". rdflib reads that as Literal("x"), which its == tells apart from
+    In RDF 1.1 "x"^^xsd:string and "x" are the same term, and Jelly writes both as
+    "x". rdflib reads that as Literal("x"), which its == distinguishes from
     Literal("x", datatype=XSD.string), though Literal.eq() doesn't.
     """
     original = Literal("x", datatype=XSD.string)
