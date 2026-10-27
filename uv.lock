@@ -94,9 +94,9 @@ wheels = [
 
 [[package]]
 name = "berkeleydb"
-version = "18.1.15"
+version = "18.1.16"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e1/55/b3d95a49173c769df8d5def6f9c44e58df2fe63dba9e9141693333cdbd99/berkeleydb-18.1.15.tar.gz", hash = "sha256:7afa53143d754c6bb2c85656c1325ebae518adcfcd1b59e13cc2abb88ddf758e", size = 188446, upload-time = "2025-10-12T23:46:32.766Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b6/f8/ea5e26298ef5d9dba78eace1f029a7e0e11f8fe0250ac31468d63938b329/berkeleydb-18.1.16.tar.gz", hash = "sha256:782b1a13308f36375f3f4460237b7356d99be5c4c68c585c546d70db514a2add", size = 188890, upload-time = "2026-10-16T18:26:45.883Z" }
 
 [[package]]
 name = "build"
