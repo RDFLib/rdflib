@@ -91,6 +91,27 @@ xmlns:foo="http://example.org/foo#">
     assert a == b
 
 
+@pytest.mark.parametrize(
+    "value",
+    [
+        'x\n"',
+        'x\n""',
+        'x\n\\"',
+        'x\n\\\\"',
+        'x\n\\"""',
+        "x\n\\",
+    ],
+)
+def test_n3_long_literal_ending_in_quote(value: str) -> None:
+    """
+    A multi-line literal is written in triple quotes, so a quote at the end
+    has to be escaped, also when a backslash comes right before it.
+    """
+    literal = rdflib.Literal(value)
+    result = rdflib.Graph().query(f"SELECT ?x WHERE {{ BIND({literal.n3()} AS ?x) }}")
+    assert [row[0] for row in result] == [literal]
+
+
 def test_literal_from_bool() -> None:
     _l = rdflib.Literal(True)
     assert _l.datatype == rdflib.XSD["boolean"]
