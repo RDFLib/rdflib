@@ -193,18 +193,15 @@ def test_xsd_string() -> None:
     assert isinstance(literal, Literal) and literal.eq(original)
 
 
-@pytest.mark.xfail(
-    reason="pyjelly writes a ConjunctiveGraph as the triples of its default graph",
-    raises=AssertionError,
-    strict=True,
-)
-def test_conjunctive_graph() -> None:
+def test_conjunctive_graph(dataset: Dataset) -> None:
+    """A ConjunctiveGraph is written as quads, with all its graphs."""
     with pytest.warns(DeprecationWarning):
         graph = ConjunctiveGraph()
     graph.parse(data=TRIG_DATA, format="trig")
     data = graph.serialize(format="jelly", encoding="utf-8")
     parsed = Dataset().parse(data=data, format="jelly")
-    assert len(parsed) == len(graph)
+    GraphHelper.assert_cgraph_isomorphic(dataset, parsed, exclude_bnodes=True)
+    assert len(parsed.graph(URIRef(f"{EG}g0"))) == 3
 
 
 def test_language_tag_case() -> None:

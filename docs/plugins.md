@@ -205,9 +205,6 @@ Some things to know:
     g.serialize(destination="data.jelly", format="jelly", options=options)
     ```
 
-* A [`ConjunctiveGraph`][rdflib.graph.ConjunctiveGraph] can't be written in Jelly
-  yet. Use a [`Dataset`][rdflib.graph.Dataset] instead.
-
 SPARQL query results can be written in Jelly too, see
 [Jelly-SPARQL](#jelly-sparql).
 
