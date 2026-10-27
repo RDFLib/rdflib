@@ -13,6 +13,7 @@ under [`rdflib.plugins.serializers`][rdflib.plugins.serializers].
 
 from __future__ import annotations
 
+import re
 from typing import IO, TYPE_CHECKING, Any, TypeVar, Union
 from urllib.parse import urljoin
 
@@ -63,6 +64,10 @@ class Serializer:
         base = self.base
         if base is not None and uri.startswith(base):
             relative = uri[len(base) :]
+            # RFC 3986 forbids colons in the first relative path segment,
+            # even when urljoin does not recognize it as a scheme.
+            if re.match(r"[^/?#]*:", relative):
+                return uri
             # A shared string prefix need not be a valid relative reference.
             # Fragments are not part of the base used for IRI resolution.
             try:

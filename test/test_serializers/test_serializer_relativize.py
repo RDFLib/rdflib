@@ -40,6 +40,16 @@ from rdflib.serializer import Serializer
             "http://example.org/dir/a:b",
         ),
         (
+            "http://example.org/dir/",
+            "http://example.org/dir/1:a",
+            "http://example.org/dir/1:a",
+        ),
+        (
+            "http://example.org/dir/",
+            "http://example.org/dir/é:a",
+            "http://example.org/dir/é:a",
+        ),
+        (
             "http://example.org",
             "http://example.org.other/a",
             "http://example.org.other/a",
@@ -56,6 +66,7 @@ from rdflib.serializer import Serializer
         ),
         ("http://example.org/dir/", "http://example.org/dir/%2e", "%2e"),
         ("http://example.org/dir/", "http://example.org/dir/café", "café"),
+        ("http://example.org/dir/", "http://example.org/dir/a?b:c", "a?b:c"),
         ("local:/dir/", "local:/dir/a", "local:/dir/a"),
         ("urn:example:", "urn:example:a", "urn:example:a"),
         ("http://[invalid/", "http://[invalid/a", "http://[invalid/a"),
@@ -88,7 +99,7 @@ def test_relativize_keeps_original_term(
     assert serializer.relativize(uri) is uri
 
 
-@pytest.mark.parametrize("relative", ["a/b", "a#fragment"])
+@pytest.mark.parametrize("relative", ["a/b", "a#fragment", "a/b:c", "a#b:c"])
 def test_recursive_relativize_keeps_path_and_fragment_restrictions(
     relative: str,
 ) -> None:
@@ -111,6 +122,8 @@ def test_recursive_relativize_keeps_path_and_fragment_restrictions(
         ("http://example.org/doc#", "http://example.org/doc#a"),
         ("http://example.org/a/b", "http://example.org/a/bc"),
         ("http://example.org/dir/", "http://example.org/dir/a:b"),
+        ("http://example.org/dir/", "http://example.org/dir/1:a"),
+        ("http://example.org/dir/", "http://example.org/dir/é:a"),
         ("http://example.org/doc?q=", "http://example.org/doc?q=a"),
         ("http://example.org/dir/", "http://example.org/dir/a"),
         ("http://example.org/dir/", "http://example.org/dir/%2e"),
