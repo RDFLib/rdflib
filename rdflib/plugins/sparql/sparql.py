@@ -293,7 +293,7 @@ class QueryContext:
     @property
     def now(self) -> datetime.datetime:
         if self._now is None:
-            self._now = datetime.datetime.now(datetime.timezone.utc)
+            self._now = datetime.datetime.now(datetime.UTC)
         return self._now
 
     def clone(

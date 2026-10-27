@@ -5,4 +5,8 @@
 
 ## Python version
 
-RDFLib 8 requires Python 3.10 or later.
+RDFLib 8 requires Python 3.11 or later. Python 3.10 reached end of life on
+1 October 2026. Users who need Python 3.10 must remain on RDFLib 7.x.
+
+The optional `lxml` dependency now requires version 4.9.1 or later for
+Python 3.11 compatibility.
