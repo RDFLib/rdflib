@@ -12,12 +12,10 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from nturl2path import url2pathname as nt_url2pathname
 from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
-from typing import TypeVar, Union
+from typing import Self, TypeVar, Union
 from urllib.parse import quote, unquote, urljoin, urlparse, urlsplit, urlunsplit
 from urllib.request import BaseHandler, OpenerDirector, Request
 from urllib.response import addinfourl
-
-from typing_extensions import Self
 
 from test.utils import ensure_suffix
 

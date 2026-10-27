@@ -1,5 +1,6 @@
 """Generate the code reference pages."""
 
+import ast
 import importlib
 import pkgutil
 from pathlib import Path
@@ -34,44 +35,6 @@ def generate_module_docs(module_path, output_path, nav, indent=0):
                     fd.write("    options:\n")
                     fd.write("        show_source: false\n")
                     fd.write("        show_if_no_docstring: false\n\n")
-                if module_path.startswith("examples."):
-                    # Special handling for examples: show top docstring and rest of source code
-                    file_path = module.__file__
-                    if file_path:
-                        with open(file_path, "r", encoding="utf-8") as f:
-                            content = f.read()
-                        docstring = module.__doc__ or ""
-                        # Remove the docstring from the code content
-                        code = content
-                        if docstring:
-                            for quote in ['"""', "'''"]:
-                                doc_quoted = quote + docstring + quote
-                                start = code.find(doc_quoted)
-                                if start != -1:
-                                    end = start + len(doc_quoted)
-                                    code = code[:start] + code[end:]
-                                    break
-                        # Mkdocstrings options: https://mkdocstrings.github.io/python/reference/api/#mkdocstrings_handlers.python.PythonInputOptions
-                        with open_generated(doc_path) as fd:
-                            fd.write("    options:\n")
-                            fd.write("        show_source: false\n")
-                            fd.write("        show_docstring_attributes: false\n")
-                            fd.write("        show_docstring_functions: false\n")
-                            fd.write("        show_docstring_modules: false\n")
-                            fd.write("        show_docstring_classes: false\n")
-                            fd.write("        show_signature: false\n")
-                            fd.write("        show_signature_annotations: false\n")
-                            fd.write("        show_signature_type_parameters: false\n")
-                            fd.write("        show_docstring_other_parameters: false\n")
-                            fd.write("        show_docstring_parameters: false\n")
-                            fd.write("        show_docstring_raises: false\n")
-                            fd.write("        show_docstring_receives: false\n")
-                            fd.write("        show_docstring_returns: false\n")
-                            fd.write("        summary: false\n")
-                            fd.write("        show_if_no_docstring: false\n\n")
-                            fd.write("```python\n")
-                            fd.write(code)
-                            fd.write("\n```\n")
 
             # Add to navigation - convert path to tuple of parts for nav
             # parts = tuple(doc_path.with_suffix("").parts)
@@ -91,8 +54,33 @@ def generate_module_docs(module_path, output_path, nav, indent=0):
         print(f"Error processing {module_path}: {e}")
 
 
+def generate_example_docs(examples_dir: Path) -> None:
+    """Document examples without importing or executing their code."""
+    package = ast.parse((examples_dir / "__init__.py").read_text(encoding="utf-8"))
+    with open_generated(Path("apidocs/examples.md")) as index:
+        index.write(f"# Examples\n\n{ast.get_docstring(package) or ''}\n\n")
+        for source_path in sorted(examples_dir.glob("*.py")):
+            if source_path.name == "__init__.py":
+                continue
+            module_path = f"examples.{source_path.stem}"
+            doc_path = Path(f"apidocs/{module_path}.md")
+            index.write(f"- [{source_path.stem}]({doc_path.name})\n")
+            source = source_path.read_text(encoding="utf-8")
+            module = ast.parse(source)
+            docstring = ast.get_docstring(module)
+            lines = source.splitlines(keepends=True)
+            if docstring is not None:
+                del lines[module.body[0].lineno - 1 : module.body[0].end_lineno]
+            with open_generated(doc_path) as page:
+                page.write(f"# {source_path.stem} {{ #{module_path} }}\n\n")
+                if docstring:
+                    page.write(f"{docstring}\n\n")
+                code = "".join(lines).strip("\n")
+                page.write(f"```python\n{code}\n```\n")
+
+
 nav = None
 
 # Generate all docs
 generate_module_docs("rdflib", Path("apidocs/_index.md"), nav)
-generate_module_docs("examples", Path("apidocs/examples.md"), nav)
+generate_example_docs(DOCS_DIR.parent / "examples")

@@ -328,6 +328,12 @@ register(
     "NQuadsSerializer",
 )
 register(
+    "nq",
+    Serializer,
+    "rdflib.plugins.serializers.nquads",
+    "NQuadsSerializer",
+)
+register(
     "application/trix",
     Serializer,
     "rdflib.plugins.serializers.trix",
@@ -453,6 +459,12 @@ register(
 )
 register(
     "nquads",
+    Parser,
+    "rdflib.plugins.parsers.nquads",
+    "NQuadsParser",
+)
+register(
+    "nq",
     Parser,
     "rdflib.plugins.parsers.nquads",
     "NQuadsParser",
