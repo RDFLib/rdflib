@@ -294,6 +294,26 @@ def test_to_dict() -> None:
     assert DIVERSE_CONTEXT["@context"] == result
 
 
+def test_null_container_to_dict() -> None:
+    """A null container is empty and omitted from the serialized definition."""
+    ctx = Context({"term": {"@id": "http://example.org/term", "@container": None}})
+
+    assert ctx.terms["term"].container == set()
+    assert ctx.to_dict() == {"term": "http://example.org/term"}
+
+
+@pytest.mark.parametrize(
+    "base", [None, "http://example.org/"], ids=["without-base", "with-base"]
+)
+def test_null_type_to_dict(base: str | None) -> None:
+    """An explicit null type survives serialization, including with a base IRI."""
+    source = {"term": {"@id": "http://example.org/term", "@type": None}}
+    ctx = Context(source, base=base)
+
+    assert ctx.terms["term"].type is None
+    assert ctx.to_dict()["term"] == source["term"]
+
+
 def test_undef_is_falsy() -> None:
     assert not UNDEF
 
