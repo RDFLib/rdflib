@@ -7,13 +7,16 @@ from __future__ import annotations
 
 import enum
 import itertools
+import traceback
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field
-from typing import Callable, Dict, Iterator, List, Set, Tuple, Union
+from typing import Union
 
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 from rdflib import XSD, Graph, Literal
+from rdflib.plugins.parsers.notation3 import BadSyntax
 from rdflib.term import Identifier
 from rdflib.util import from_n3
 from test.utils.namespace import EGDC
@@ -28,7 +31,7 @@ class FormatTrait(enum.Enum):
 @dataclass
 class Format:
     name: str
-    traits: Set[FormatTrait]
+    traits: set[FormatTrait]
 
 
 FORMATS = [
@@ -90,9 +93,9 @@ def make_literal_tests() -> Iterator[ParameterSet]:
     @dataclass
     class Case:
         expected_literal: Literal
-        quoted_strings: List[str]
-        shorthand_strings: List[str] = field(default_factory=list)
-        xquoted_strings: List[str] = field(
+        quoted_strings: list[str]
+        shorthand_strings: list[str] = field(default_factory=list)
+        xquoted_strings: list[str] = field(
             default_factory=list
         )  # strings using extended quoting styles
 
@@ -150,7 +153,7 @@ def make_literal_tests() -> Iterator[ParameterSet]:
         ),
     ]
 
-    escapes: Dict[str, str] = {
+    escapes: dict[str, str] = {
         "\t": "\\t",
         "\b": "\\b",
         "\n": "\\n",
@@ -175,8 +178,8 @@ def make_literal_tests() -> Iterator[ParameterSet]:
             )
         )
 
-    xfails: Dict[
-        Tuple[str, Literal, str, Callable[[str, str], Identifier]],
+    xfails: dict[
+        tuple[str, Literal, str, Callable[[str, str], Identifier]],
         Union[MarkDecorator, Mark],
     ] = {
         (
@@ -195,7 +198,7 @@ def make_literal_tests() -> Iterator[ParameterSet]:
 
     for case in cases:
         for format in FORMATS:
-            parse_functions: List[ParseFunction] = [parse_identifier]
+            parse_functions: list[ParseFunction] = [parse_identifier]
             literal_strings = [*case.quoted_strings]
             if FormatTrait.shorthand_literals in format.traits:
                 literal_strings.extend(case.shorthand_strings)
@@ -226,7 +229,7 @@ def make_literal_tests() -> Iterator[ParameterSet]:
 
 @pytest.mark.parametrize(
     ["format_name", "expected_literal", "literal_string", "parse_function"],
-    make_literal_tests(),
+    list(make_literal_tests()),
 )
 def test_literals(
     format_name: str,
@@ -239,3 +242,133 @@ def test_literals(
     """
     identifier = parse_function(literal_string, format_name)
     assert expected_literal == identifier
+
+
+@pytest.mark.parametrize(
+    ["format_name", "pname", "local_name"],
+    [
+        (format.name, pname, local_name)
+        for format in FORMATS
+        if FormatTrait.prefixes in format.traits
+        for pname, local_name in [
+            ("eg:a\\.", "a."),
+            ("eg:a.\\.", "a.."),
+            ("eg:\\..\\.", "..."),
+            ("eg:a\\.b", "a.b"),
+        ]
+    ],
+)
+def test_prefixed_name_with_escaped_dot(
+    format_name: str, pname: str, local_name: str
+) -> None:
+    """
+    A prefixed name can end with an escaped dot, which is part of the local
+    name, unlike an unescaped one.
+    """
+    g = Graph()
+    g.parse(
+        data=f"@prefix eg: <{EGDC}> .\n{pname} <{EGDC.predicate}> {pname} .",
+        format=format_name,
+    )
+    assert list(g) == [(EGDC[local_name], EGDC.predicate, EGDC[local_name])]
+
+
+@pytest.mark.parametrize("format_name", ["turtle", "trig"])
+@pytest.mark.parametrize(
+    "data",
+    [
+        r"_:a\. <urn:p> <urn:o> .",
+        r"<urn:s> <urn:p> _:a\. .",
+    ],
+    ids=["subject", "object"],
+)
+def test_blank_node_label_with_escaped_trailing_dot(
+    format_name: str, data: str
+) -> None:
+    """Blank-node labels cannot end in a dot, even if escaped."""
+    with pytest.raises(BadSyntax):
+        Graph().parse(data=data, format=format_name)
+
+
+def test_badsyntax_msg_matches_rendered_detail() -> None:
+    """SyntaxError.msg keeps the diagnostic BadSyntax already renders.
+
+    Regression for https://github.com/RDFLib/rdflib/issues/3540.
+    """
+    uri = "http://example.org/doc"
+    source = "<s> <p>"
+    reason = "expected '.'"
+    error = BadSyntax(uri, 2, source, 4, reason)
+
+    assert error.args == (uri, 2, source, 4, reason)
+    assert error.msg == str(error)
+
+    for formatted in (
+        "".join(traceback.format_exception_only(error)),
+        "".join(traceback.format_exception(error)),
+    ):
+        assert reason in formatted
+        assert "<s>" in formatted
+        assert "at line 3" in formatted
+        assert "<no detail available>" not in formatted
+
+
+@pytest.mark.parametrize(
+    ("format_name", "data", "reason", "source_context"),
+    [
+        pytest.param(
+            "turtle",
+            "<http://example.org/s> <http://example.org/p> <http://example.org/o> "
+            "<http://example.org/s2> <http://example.org/p2> <http://example.org/o2> .",
+            "expected '.' or '}' or ']' at end of statement",
+            "<http://example.org/o>",
+            id="turtle-missing-dot",
+        ),
+        pytest.param(
+            "turtle",
+            "<http://example.org/s> <http://example.org/p> .",
+            "objectList expected",
+            "<http://example.org/p>",
+            id="turtle-missing-object",
+        ),
+        pytest.param(
+            "n3",
+            "<http://example.org/s> <http://example.org/p> <http://example.org/o> "
+            "<http://example.org/s2> <http://example.org/p2> <http://example.org/o2> .",
+            "expected '.' or '}' or ']' at end of statement",
+            "<http://example.org/o>",
+            id="n3-missing-dot",
+        ),
+        pytest.param(
+            "trig",
+            "<http://example.org/s> <http://example.org/p> [",
+            "EOF after '['",
+            "<http://example.org/p>",
+            id="trig-eof",
+        ),
+    ],
+)
+def test_parse_badsyntax_traceback_includes_details(
+    format_name: str,
+    data: str,
+    reason: str,
+    source_context: str,
+) -> None:
+    """Malformed Turtle-family input keeps its syntax reason in tracebacks."""
+    graph = Graph()
+    with pytest.raises(BadSyntax) as caught:
+        graph.parse(
+            data=data,
+            format=format_name,
+            publicID="http://example.org/doc",
+        )
+
+    error = caught.value
+    for formatted in (
+        "".join(traceback.format_exception_only(error)),
+        "".join(traceback.format_exception(error)),
+    ):
+        assert reason in formatted
+        assert source_context in formatted
+        assert "at line 1" in formatted
+        assert "<no detail available>" not in formatted

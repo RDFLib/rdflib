@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import xml.dom.minidom
-from typing import IO, Any, Dict, Generator, Optional, Set, Tuple
+from collections.abc import Generator
+from typing import IO, Any
 from xml.sax.saxutils import escape, quoteattr
 
 from rdflib.collection import Collection
 from rdflib.graph import Graph
-from rdflib.namespace import RDF, RDFS, Namespace  # , split_uri
+from rdflib.namespace import RDF, RDFS, Namespace, NamespaceManager  # , split_uri
 from rdflib.plugins.parsers.RDFVOC import RDFVOC
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
 from rdflib.serializer import Serializer
@@ -18,20 +19,37 @@ from .xmlwriter import ESCAPE_ENTITIES
 __all__ = ["fix", "XMLSerializer", "PrettyXMLSerializer"]
 
 
+def _compute_qname_strict_for_term(
+    nm: NamespaceManager, term: Node
+) -> tuple[str, str, str]:
+    """Compute the strict qname for predicate ``term``, raising a clear
+    error if it cannot be split into a namespace and a valid XML local
+    name (and therefore cannot be represented in RDF/XML).
+    """
+    try:
+        # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
+        return nm.compute_qname_strict(term)  # type: ignore[arg-type]
+    except ValueError as e:
+        raise ValueError(
+            f"Cannot serialize predicate {term} to RDF/XML: it cannot be "
+            "split into a namespace and a valid XML local name, so it "
+            "cannot be written as an XML element name."
+        ) from e
+
+
 class XMLSerializer(Serializer):
     """RDF/XML RDF graph serializer."""
 
     def __init__(self, store: Graph):
         super(XMLSerializer, self).__init__(store)
 
-    def __bindings(self) -> Generator[Tuple[str, URIRef], None, None]:
+    def __bindings(self) -> Generator[tuple[str, URIRef], None, None]:
         store = self.store
         nm = store.namespace_manager
-        bindings: Dict[str, URIRef] = {}
+        bindings: dict[str, URIRef] = {}
 
         for predicate in set(store.predicates()):
-            # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
-            prefix, namespace, name = nm.compute_qname_strict(predicate)  # type: ignore[arg-type]
+            prefix, namespace, name = _compute_qname_strict_for_term(nm, predicate)
             bindings[prefix] = URIRef(namespace)
 
         RDFNS = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#")  # noqa: N806
@@ -47,8 +65,8 @@ class XMLSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
+        base: str | None = None,
+        encoding: str | None = None,
         **kwargs: Any,
     ) -> None:
         # if base is given here, use that, if not and a base is set for the graph use that
@@ -57,7 +75,7 @@ class XMLSerializer(Serializer):
         elif self.store.base is not None:
             self.base = self.store.base
         self.__stream = stream
-        self.__serialized: Dict[Identifier, int] = {}
+        self.__serialized: dict[Identifier, int] = {}
         encoding = self.encoding
         self.write = write = lambda uni: stream.write(uni.encode(encoding, "replace"))
 
@@ -173,16 +191,16 @@ class PrettyXMLSerializer(Serializer):
 
     def __init__(self, store: Graph, max_depth=3):
         super(PrettyXMLSerializer, self).__init__(store)
-        self.forceRDFAbout: Set[URIRef] = set()
+        self.forceRDFAbout: set[URIRef] = set()
 
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
+        base: str | None = None,
+        encoding: str | None = None,
         **kwargs: Any,
     ) -> None:
-        self.__serialized: Dict[Identifier, int] = {}
+        self.__serialized: dict[Identifier, int] = {}
         store = self.store
         # if base is given here, use that, if not and a base is set for the graph use that
         if base is not None:
@@ -196,13 +214,20 @@ class PrettyXMLSerializer(Serializer):
         self.writer = writer = XMLWriter(stream, nm, encoding)
         namespaces = {}
 
-        possible: Set[Node] = set(store.predicates()).union(
-            store.objects(None, RDF.type)
-        )
+        for predicate in set(store.predicates()):
+            prefix, namespace, local = _compute_qname_strict_for_term(nm, predicate)
+            namespaces[prefix] = namespace
 
-        for predicate in possible:
-            # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
-            prefix, namespace, local = nm.compute_qname_strict(predicate)  # type: ignore[arg-type]
+        # rdf:type objects are only used as element names when they can be
+        # shortened; the others are written as rdf:type properties of an
+        # rdf:Description element (see `subject`), so failing to shorten one
+        # is not an error.
+        for type_ in store.objects(None, RDF.type):
+            try:
+                # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
+                prefix, namespace, local = nm.compute_qname_strict(type_)  # type: ignore[arg-type]
+            except ValueError:
+                continue
             namespaces[prefix] = namespace
 
         namespaces["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -263,8 +288,8 @@ class PrettyXMLSerializer(Serializer):
             type = first(store.objects(subject, RDF.type))
 
             try:
-                # type error: Argument 1 to "qname" of "NamespaceManager" has incompatible type "Optional[Node]"; expected "str"
-                self.nm.qname(type)  # type: ignore[arg-type]
+                # type error: Argument 1 to "qname_strict" of "NamespaceManager" has incompatible type "Optional[Node]"; expected "str"
+                self.nm.qname_strict(type)  # type: ignore[arg-type]
             except Exception:
                 type = None
 
@@ -327,8 +352,7 @@ class PrettyXMLSerializer(Serializer):
                 writer.text(object)
 
         elif (
-            object in self.__serialized
-            or not (object, None, None) in store  # noqa: E713
+            object in self.__serialized or not (object, None, None) in store  # noqa: E713
         ):
             if isinstance(object, BNode):
                 if more_than(store.triples((None, None, object)), 0):
@@ -363,12 +387,12 @@ class PrettyXMLSerializer(Serializer):
                     self.subject(item)  # type: ignore[arg-type]
 
                     if not isinstance(item, URIRef):
-                        # type error: Invalid index type "Node" for "Dict[Identifier, int]"; expected type "Identifier"
+                        # type error: Invalid index type "Node" for "dict[Identifier, int]"; expected type "Identifier"
                         self.__serialized[item] = 1  # type: ignore[index]
             else:
                 if first(
                     store.triples_choices(
-                        # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Identifier, URIRef, List[URIRef]]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
+                        # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "tuple[Identifier, URIRef, list[URIRef]]"; expected "Union[tuple[list[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
                         (object, RDF.type, [OWL_NS.Class, RDFS.Class])  # type: ignore[arg-type]
                     )
                 ) and isinstance(object, URIRef):

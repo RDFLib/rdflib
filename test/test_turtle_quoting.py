@@ -8,7 +8,7 @@ from __future__ import annotations
 import itertools
 import logging
 import re
-from typing import Callable, Dict, Iterable, List, Tuple
+from collections.abc import Callable, Iterable
 
 import pytest
 
@@ -32,7 +32,7 @@ string_escape_map = {
 }
 
 
-def make_unquote_correctness_pairs() -> List[Tuple[str, str]]:
+def make_unquote_correctness_pairs() -> list[tuple[str, str]]:
     """
     Creates pairs of quoted and unquoted strings.
     """
@@ -71,6 +71,35 @@ def make_unquote_correctness_pairs() -> List[Tuple[str, str]]:
 UNQUOTE_CORRECTNESS_PAIRS = make_unquote_correctness_pairs()
 
 
+@pytest.mark.parametrize(
+    "serialize_format, parse_format",
+    [("turtle", "turtle"), ("n3", "n3"), ("longturtle", "turtle")],
+)
+@pytest.mark.parametrize(
+    "value",
+    [
+        "\ud800",
+        "\udead",
+        "\udfff",
+        "\ud800\udfff",
+        "\ud7ff\ud800\udfff\ue000",
+        "a\n\udead",
+        '\\uDEAD\udead\r"\\',
+        'a\n\\uDEAD\udead\r"\\',
+    ],
+)
+def test_surrogate_literal_round_trip(
+    serialize_format: str, parse_format: str, value: str
+) -> None:
+    graph = Graph()
+    graph.add((EGDC.subject, EGDC.predicate, Literal(value)))
+
+    serialized = graph.serialize(format=serialize_format, encoding="utf-8")
+    parsed = Graph().parse(data=serialized, format=parse_format)
+
+    assert set(parsed) == set(graph)
+
+
 def ntriples_unquote_validate(input: str) -> str:
     """
     This function wraps `ntriples.unquote` in a way that ensures that `ntriples.validate` is always `True` when it runs.
@@ -95,7 +124,7 @@ def ntriples_unquote(input: str) -> str:
         ntriples.validate = old_validate
 
 
-unquoters: Dict[str, Callable[[str], str]] = {
+unquoters: dict[str, Callable[[str], str]] = {
     "ntriples_unquote": ntriples_unquote,
     "ntriples_unquote_validate": ntriples_unquote_validate,
 }
@@ -103,7 +132,7 @@ unquoters: Dict[str, Callable[[str], str]] = {
 
 def make_unquote_correctness_tests(
     selectors: Iterable[str],
-) -> Iterable[Tuple[str, str, str]]:
+) -> Iterable[tuple[str, str, str]]:
     """
     This function creates a cartesian product of the selectors and
     `CORRECTNESS_PAIRS` that is suitable for use as pytest parameters.
@@ -114,7 +143,8 @@ def make_unquote_correctness_tests(
 
 
 @pytest.mark.parametrize(
-    "unquoter_key, quoted, unquoted", make_unquote_correctness_tests(unquoters.keys())
+    "unquoter_key, quoted, unquoted",
+    list(make_unquote_correctness_tests(unquoters.keys())),
 )
 def test_unquote_correctness(
     unquoter_key: str,
@@ -133,7 +163,7 @@ QUAD_FORMATS = {"nquads"}
 
 @pytest.mark.parametrize(
     "format, quoted, unquoted",
-    make_unquote_correctness_tests(["turtle", "ntriples", "nquads"]),
+    list(make_unquote_correctness_tests(["turtle", "ntriples", "nquads"])),
 )
 def test_parse_correctness(
     format: str,
@@ -200,7 +230,7 @@ PN_LOCAL_ESC_CHARS = r"_~.-!$&'()*+,;=/?#@"
 
 @pytest.mark.parametrize(
     "format, char",
-    itertools.product(["turtle", "ntriples"], "A2c" + PN_LOCAL_ESC_CHARS),
+    list(itertools.product(["turtle", "ntriples"], "A2c" + PN_LOCAL_ESC_CHARS)),
 )
 def test_serialize_roundtrip(format: str, char: str) -> None:
     graph = Graph()

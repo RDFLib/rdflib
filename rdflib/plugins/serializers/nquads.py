@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import warnings
-from typing import IO, Any, Optional
+from typing import IO, TYPE_CHECKING, Any
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Graph
-from rdflib.plugins.serializers.nt import _quoteLiteral
+from rdflib.plugins.serializers.nt import _nt_row, _quoteLiteral
 from rdflib.serializer import Serializer
 from rdflib.term import Literal
 
@@ -12,22 +12,22 @@ __all__ = ["NQuadsSerializer"]
 
 
 class NQuadsSerializer(Serializer):
-    """NQuads RDF graph serializer."""
+    """NQuads RDF graph serializer.
+
+    Context-aware stores (Dataset / ConjunctiveGraph) are written as quads.
+    A plain Graph is written as N-Triples-shaped N-Quads (no graph label),
+    which is valid N-Quads.
+    """
 
     def __init__(self, store: Graph):
-        if not store.context_aware:
-            raise Exception(
-                "NQuads serialization only makes " "sense for context-aware stores!"
-            )
-
         super(NQuadsSerializer, self).__init__(store)
-        self.store: ConjunctiveGraph
+        self.store: Graph
 
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
+        base: str | None = None,
+        encoding: str | None = None,
         **kwargs: Any,
     ) -> None:
         if base is not None:
@@ -38,27 +38,26 @@ class NQuadsSerializer(Serializer):
                 f"Given encoding was: {encoding}"
             )
         encoding = self.encoding
-        for context in self.store.contexts():
-            for triple in context:
-                stream.write(
-                    _nq_row(triple, context.identifier).encode(encoding, "replace")
-                )
+        if self.store.context_aware:
+            store = self.store
+            if TYPE_CHECKING:
+                assert isinstance(store, ConjunctiveGraph)
+            for context in store.contexts():
+                for triple in context:
+                    stream.write(
+                        _nq_row(triple, context.identifier).encode(encoding, "replace")
+                    )
+        else:
+            for triple in self.store:
+                stream.write(_nt_row(triple).encode(encoding, "replace"))
         stream.write("\n".encode("latin-1"))
 
 
 def _nq_row(triple, context):
-    graph_name = context.n3() if context and context != DATASET_DEFAULT_GRAPH_ID else ""
+    graph_name = (
+        context.n3() + " " if context and context != DATASET_DEFAULT_GRAPH_ID else ""
+    )
     if isinstance(triple[2], Literal):
-        return "%s %s %s %s .\n" % (
-            triple[0].n3(),
-            triple[1].n3(),
-            _quoteLiteral(triple[2]),
-            graph_name,
-        )
+        return f"{triple[0].n3()} {triple[1].n3()} {_quoteLiteral(triple[2])} {graph_name}.\n"
     else:
-        return "%s %s %s %s .\n" % (
-            triple[0].n3(),
-            triple[1].n3(),
-            triple[2].n3(),
-            graph_name,
-        )
+        return f"{triple[0].n3()} {triple[1].n3()} {triple[2].n3()} {graph_name}.\n"

@@ -3,8 +3,10 @@ from __future__ import annotations
 import builtins
 import datetime
 import logging
-from decimal import Decimal
-from typing import Any, Callable, Generator, Optional, Type, Union
+import operator
+from collections.abc import Callable, Generator
+from decimal import Decimal, localcontext
+from typing import Any, Union
 
 from rdflib.xsd_datetime import Duration
 from test.utils import affix_tuples
@@ -107,7 +109,7 @@ def test_literal_from_bool() -> None:
 )
 def test_cant_pass_invalid_lang(
     lang: Any,
-    exception_type: Type[Exception],
+    exception_type: type[Exception],
 ) -> None:
     """
     Construction of Literal fails if the language tag is invalid.
@@ -157,8 +159,8 @@ def test_cant_pass_invalid_lang(
 )
 def test_ill_typed_literals(
     lexical: Union[bytes, str],
-    datatype: Optional[URIRef],
-    is_ill_typed: Optional[bool],
+    datatype: URIRef | None,
+    is_ill_typed: bool | None,
 ) -> None:
     """
     ill_typed has the correct value.
@@ -679,6 +681,60 @@ def test_numeric_literals(
     assert result == expected, repr(result)
 
 
+_DECIMAL_40_DIGITS = "1.234567890123456789012345678901234567890"
+
+
+@pytest.mark.parametrize(
+    "op, value, expected",
+    [
+        pytest.param(operator.neg, "2.5", "-2.5", id="neg"),
+        pytest.param(operator.pos, "-2.5", "-2.5", id="pos"),
+        pytest.param(abs, "-2.5", "2.5", id="abs"),
+        pytest.param(
+            operator.neg, _DECIMAL_40_DIGITS, f"-{_DECIMAL_40_DIGITS}", id="neg-40"
+        ),
+        pytest.param(
+            operator.pos,
+            f"-{_DECIMAL_40_DIGITS}",
+            f"-{_DECIMAL_40_DIGITS}",
+            id="pos-40",
+        ),
+        pytest.param(abs, f"-{_DECIMAL_40_DIGITS}", _DECIMAL_40_DIGITS, id="abs-40"),
+        pytest.param(operator.neg, "0.0", "-0.0", id="neg-zero"),
+        pytest.param(abs, "-0.0", "0.0", id="abs-negative-zero"),
+        pytest.param(operator.neg, "sNaN", "-sNaN", id="neg-snan"),
+    ],
+)
+def test_decimal_unary_operators(
+    op: Callable[[Literal], Literal], value: str, expected: str
+) -> None:
+    result = op(Literal(value, datatype=XSD.decimal))
+    assert result == Literal(expected, datatype=XSD.decimal)
+
+
+@pytest.mark.parametrize(
+    "op, expected",
+    [
+        pytest.param(operator.neg, "3.14159", id="neg"),
+        pytest.param(operator.pos, "-3.14159", id="pos"),
+        pytest.param(abs, "3.14159", id="abs"),
+    ],
+)
+def test_decimal_unary_operators_ignore_decimal_context(
+    op: Callable[[Literal], Literal], expected: str
+) -> None:
+    literal = Literal("-3.14159", datatype=XSD.decimal)
+    with localcontext() as context:
+        context.prec = 3
+        result = op(literal)
+    assert result == Literal(expected, datatype=XSD.decimal)
+
+
+def test_decimal_invert_raises() -> None:
+    with pytest.raises(TypeError, match="Not a number"):
+        ~Literal("2.5", datatype=XSD.decimal)
+
+
 def test_cant_pass_lang_and_datatype() -> None:
     with pytest.raises(TypeError):
         Literal("foo", lang="en", datatype=URIRef("http://example.com/"))
@@ -892,7 +948,7 @@ def test_specific_binding(clear_bindings: None) -> None:
     ],
 )
 def test_literal_construction_value_class(
-    lexical: str, literal_type: URIRef, value_cls: Optional[type]
+    lexical: str, literal_type: URIRef, value_cls: type | None
 ) -> None:
     literal = Literal(lexical, datatype=literal_type)
     if value_cls is not None:

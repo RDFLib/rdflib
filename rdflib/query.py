@@ -3,19 +3,14 @@ from __future__ import annotations
 import itertools
 import types
 import warnings
+from collections.abc import Iterator, Mapping, MutableSequence
 from io import BytesIO
 from typing import (
     IO,
     TYPE_CHECKING,
     Any,
     BinaryIO,
-    Dict,
-    Iterator,
-    List,
-    Mapping,
-    MutableSequence,
     Optional,
-    Tuple,
     Union,
     cast,
     overload,
@@ -108,7 +103,7 @@ class EncodeOnlyUnicode:
         return getattr(self.__stream, name)
 
 
-class ResultRow(Tuple[rdflib.term.Identifier, ...]):
+class ResultRow(tuple[rdflib.term.Identifier, ...]):
     """A single result row allows accessing bindings as attributes or with []
 
     ```python
@@ -146,7 +141,7 @@ class ResultRow(Tuple[rdflib.term.Identifier, ...]):
 
     labels: Mapping[str, int]
 
-    def __new__(cls, values: Mapping[Variable, Identifier], labels: List[Variable]):
+    def __new__(cls, values: Mapping[Variable, Identifier], labels: list[Variable]):
         # type error: Value of type variable "Self" of "__new__" of "tuple" cannot be "ResultRow"  [type-var]
         # type error: Generator has incompatible item type "Optional[Identifier]"; expected "_T_co"  [misc]
         instance = super(ResultRow, cls).__new__(cls, (values.get(v) for v in labels))  # type: ignore[type-var, misc, unused-ignore]
@@ -188,7 +183,7 @@ class ResultRow(Tuple[rdflib.term.Identifier, ...]):
         except KeyError:
             return default
 
-    def asdict(self) -> Dict[str, Identifier]:
+    def asdict(self) -> dict[str, Identifier]:
         return dict((v, self[v]) for v in self.labels if self[v] is not None)
 
 
@@ -216,12 +211,12 @@ class Result:
 
         self.type = type_
         #: variables contained in the result.
-        self.vars: Optional[List[Variable]] = None
+        self.vars: list[Variable] | None = None
         """a list of variables contained in the result"""
         self._bindings: MutableSequence[Mapping[Variable, Identifier]] = None  # type: ignore[assignment]
         self._genbindings: Optional[Iterator[Mapping[Variable, Identifier]]] = None
-        self.askAnswer: Optional[bool] = None
-        self.graph: Optional[Graph] = None
+        self.askAnswer: bool | None = None
+        self.graph: Graph | None = None
 
     @property
     def bindings(self) -> MutableSequence[Mapping[Variable, Identifier]]:
@@ -251,9 +246,9 @@ class Result:
 
     @staticmethod
     def parse(
-        source: Optional[IO] = None,
-        format: Optional[str] = None,
-        content_type: Optional[str] = None,
+        source: IO | None = None,
+        format: str | None = None,
+        content_type: str | None = None,
         **kwargs: Any,
     ) -> Result:
         """Parse a query result from a source."""
@@ -270,16 +265,18 @@ class Result:
 
         # type error: Argument 1 to "parse" of "ResultParser" has incompatible type "Optional[IO[Any]]"; expected "IO[Any]"
         return parser.parse(
-            source, content_type=content_type, **kwargs  # type:ignore[arg-type]
+            source,  # type: ignore[arg-type]
+            content_type=content_type,
+            **kwargs,
         )
 
     def serialize(
         self,
-        destination: Optional[Union[str, IO]] = None,
+        destination: str | IO | None = None,
         encoding: str = "utf-8",
         format: str = "xml",
         **args: Any,
-    ) -> Optional[bytes]:
+    ) -> bytes | None:
         """
         Serialize the query result.
 
@@ -363,7 +360,7 @@ class Result:
             for t in self.graph:  # type: ignore[union-attr]
                 yield t
         elif self.type == "ASK":
-            # type error: Incompatible types in "yield" (actual type "Optional[bool]", expected type "Union[Tuple[Identifier, Identifier, Identifier], bool, ResultRow]")  [misc]
+            # type error: Incompatible types in "yield" (actual type "Optional[bool]", expected type "Union[tuple[Identifier, Identifier, Identifier], bool, ResultRow]")  [misc]
             yield self.askAnswer  # type: ignore[misc]
         elif self.type == "SELECT":
             # this iterates over ResultRows of variable bindings
@@ -372,13 +369,13 @@ class Result:
                 for b in self._genbindings:
                     if b:  # don't add a result row in case of empty binding {}
                         self._bindings.append(b)
-                        # type error: Argument 2 to "ResultRow" has incompatible type "Optional[List[Variable]]"; expected "List[Variable]"
+                        # type error: Argument 2 to "ResultRow" has incompatible type "Optional[list[Variable]]"; expected "list[Variable]"
                         yield ResultRow(b, self.vars)  # type: ignore[arg-type]
                 self._genbindings = None
             else:
                 for b in self._bindings:
                     if b:  # don't add a result row in case of empty binding {}
-                        # type error: Argument 2 to "ResultRow" has incompatible type "Optional[List[Variable]]"; expected "List[Variable]"
+                        # type error: Argument 2 to "ResultRow" has incompatible type "Optional[list[Variable]]"; expected "list[Variable]"
                         yield ResultRow(b, self.vars)  # type: ignore[arg-type]
 
     def __getattr__(self, name: str) -> Any:
@@ -393,7 +390,7 @@ class Result:
                 stacklevel=2,
             )
             # copied from __iter__, above
-            # type error: Item "None" of "Optional[List[Variable]]" has no attribute "__iter__" (not iterable)
+            # type error: Item "None" of "Optional[list[Variable]]" has no attribute "__iter__" (not iterable)
             return [(tuple(b[v] for v in self.vars)) for b in self.bindings]  # type: ignore[union-attr]
         else:
             raise AttributeError("'%s' object has no attribute '%s'" % (self, name))

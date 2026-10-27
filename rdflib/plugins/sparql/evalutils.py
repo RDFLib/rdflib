@@ -1,14 +1,9 @@
 from __future__ import annotations
 
 import collections
+from collections.abc import Generator, Iterable, Mapping
 from typing import (
     Any,
-    DefaultDict,
-    Generator,
-    Iterable,
-    Mapping,
-    Set,
-    Tuple,
     TypeVar,
     Union,
     overload,
@@ -31,7 +26,7 @@ _FrozenDictT = TypeVar("_FrozenDictT", bound=FrozenDict)
 
 def _diff(
     a: Iterable[_FrozenDictT], b: Iterable[_FrozenDictT], expr
-) -> Set[_FrozenDictT]:
+) -> set[_FrozenDictT]:
     res = set()
 
     for x in a:
@@ -147,16 +142,16 @@ def _filter(
 
 
 def _fillTemplate(
-    template: Iterable[Tuple[Identifier, Identifier, Identifier]],
+    template: Iterable[tuple[Identifier, Identifier, Identifier]],
     solution: _ContextType,
-) -> Generator[Tuple[Identifier, Identifier, Identifier], None, None]:
+) -> Generator[tuple[Identifier, Identifier, Identifier], None, None]:
     """
     For construct/deleteWhere and friends
 
     Fill a triple template with instantiated variables
     """
 
-    bnodeMap: DefaultDict[BNode, BNode] = collections.defaultdict(BNode)
+    bnodeMap: collections.defaultdict[BNode, BNode] = collections.defaultdict(BNode)
     for t in template:
         s, p, o = t
 
@@ -176,7 +171,7 @@ def _fillTemplate(
 _ValueT = TypeVar("_ValueT", Variable, BNode, URIRef, Literal)
 
 
-def _val(v: _ValueT) -> Tuple[int, _ValueT]:
+def _val(v: _ValueT) -> tuple[int, _ValueT]:
     """utilitity for ordering things"""
     if isinstance(v, Variable):
         return (0, v)

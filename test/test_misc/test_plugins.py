@@ -6,22 +6,26 @@ import shutil
 import subprocess
 import sys
 import warnings
+from collections.abc import Callable, Generator
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
-from typing import Any, Callable, Dict, Generator, List, cast
+from typing import Any, cast
+
+import pytest
 
 import rdflib.plugin
 import rdflib.plugins.sparql
 import rdflib.plugins.sparql.evaluate
-from rdflib import Graph
+from rdflib import Dataset, Graph, Literal, URIRef
 from rdflib.parser import Parser
 from rdflib.query import ResultRow
+from rdflib.serializer import Serializer
 
 TEST_DIR = Path(__file__).parent.parent
 TEST_PLUGINS_DIR = TEST_DIR / "plugins"
 
 
-def del_key(d: Dict[Any, Any], key: Any) -> None:
+def del_key(d: dict[Any, Any], key: Any) -> None:
     del d[key]
 
 
@@ -59,8 +63,8 @@ def ctx_plugin(tmp_path: Path, plugin_src: Path) -> Generator[None, None, None]:
 
 
 @contextmanager
-def ctx_cleaners() -> Generator[List[Callable[[], None]], None, None]:
-    cleaners: List[Callable[[], None]] = []
+def ctx_cleaners() -> Generator[list[Callable[[], None]], None, None]:
+    cleaners: list[Callable[[], None]] = []
     yield cleaners
     for cleaner in cleaners:
         logging.debug("running cleaner %s", cleaner)
@@ -75,7 +79,7 @@ def test_sparqleval(tmp_path: Path, no_cover: None) -> None:
         cleaners = stack.enter_context(ctx_cleaners())
 
         ep_name = "example.rdflib.plugin.sparqleval"
-        ep_ns = f'{ep_name.replace(".", ":")}:'
+        ep_ns = f"{ep_name.replace('.', ':')}:"
         plugin_module = importlib.import_module(ep_name)
         assert plugin_module.namespace == ep_ns
 
@@ -96,7 +100,7 @@ def test_sparqleval(tmp_path: Path, no_cover: None) -> None:
         logging.debug("query_string = %s", query_string)
         result = graph.query(query_string)
         assert result.type == "SELECT"
-        rows = cast(List[ResultRow], list(result))
+        rows = cast(list[ResultRow], list(result))
         logging.debug("rows = %s", rows)
         assert len(rows) == 1
         assert len(rows[0]) == 1
@@ -112,7 +116,7 @@ def test_parser(tmp_path: Path, no_cover: None) -> None:
         cleaners = stack.enter_context(ctx_cleaners())
 
         ep_name = "example.rdflib.plugin.parser"
-        ep_ns = f'{ep_name.replace(".", ":")}:'
+        ep_ns = f"{ep_name.replace('.', ':')}:"
         plugin_module = importlib.import_module(ep_name)
         assert plugin_module.ExampleParser.namespace() == ep_ns
 
@@ -128,3 +132,26 @@ def test_parser(tmp_path: Path, no_cover: None) -> None:
         logging.debug("triples = %s", triples)
         assert triples == plugin_module.ExampleParser.constant_output()
         assert [str(msg) for msg in warnings_record] == []
+
+
+@pytest.mark.parametrize("kind", [Parser, Serializer])
+@pytest.mark.parametrize("name", ["nq", "application/n-quads"])
+def test_nquads_aliases(name: str, kind: type[Parser] | type[Serializer]) -> None:
+    """The short and media type names resolve to the same plugin as `nquads`."""
+    assert rdflib.plugin.get(name, kind) is rdflib.plugin.get("nquads", kind)
+
+
+def test_nq_format_parse_and_serialize() -> None:
+    """`nq` can be used as a format name to both serialize and parse N-Quads."""
+    dataset = Dataset()
+    dataset.graph(URIRef("urn:example:graph")).add(
+        (URIRef("urn:example:s"), URIRef("urn:example:p"), Literal("o"))
+    )
+
+    data = dataset.serialize(format="nq")
+    assert data == dataset.serialize(format="nquads")
+
+    parsed = Dataset()
+    parsed.parse(data=data, format="nq")
+    assert set(parsed.quads()) == set(dataset.quads())
+    assert len(set(parsed.quads())) == 1

@@ -11,7 +11,7 @@ build:
     - pip install uv
     post_install:
     # RDF4J is needed to document rdflib.contrib.rdf4j
-      - uv export --frozen --no-dev --group docs --extra rdf4j --no-emit-project -o requirements.txt
+      - uv export --frozen --no-default-groups --group docs --extra rdf4j --no-emit-project -o requirements.txt
       - uv pip install --system --no-cache -r requirements.txt
       - uv pip install --system --no-deps .
     build:

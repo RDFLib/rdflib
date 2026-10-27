@@ -32,6 +32,6 @@ def test_binding_with_optional_clause() -> None:
     assert len(result.bindings) == 1
     (first,) = result.bindings
     assert first.get(Variable("car")) == URIRef("https://www.example.org/someCar")
-    assert first.get(Variable("subject")) == Literal(
-        "Nice cars"
-    ), "optional clause didnt bind"
+    assert first.get(Variable("subject")) == Literal("Nice cars"), (
+        "optional clause didnt bind"
+    )
