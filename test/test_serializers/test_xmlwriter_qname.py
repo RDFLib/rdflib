@@ -1,5 +1,6 @@
 import tempfile
 from io import BytesIO
+from xml.etree import ElementTree
 
 import pytest
 
@@ -153,3 +154,27 @@ def test_xmlwriter_explicit_empty_namespaces(namespaces):
     writer.namespaces(namespaces)
 
     assert stream.getvalue() == b'\n  xmlns:ex="https://example.org/ns/"\n'
+
+
+def test_xmlwriter_conflicting_namespace_prefix():
+    graph = rdflib.Graph(bind_namespaces="none")
+    graph.bind("ex", EXNS)
+    writer = XMLWriter(BytesIO(), graph.namespace_manager, extra_ns={"ex": TRIXNS})
+
+    with pytest.raises(ValueError, match="Namespace prefix 'ex' is bound to both"):
+        writer.namespaces()
+
+
+def test_xmlwriter_matching_namespace_prefix():
+    graph = rdflib.Graph(bind_namespaces="none")
+    graph.bind("ex", EXNS)
+    stream = BytesIO()
+    writer = XMLWriter(stream, graph.namespace_manager, extra_ns={"ex": EXNS})
+
+    writer.push(EXNS.root)
+    writer.namespaces()
+    writer.pop()
+
+    assert (
+        ElementTree.fromstring(stream.getvalue()).tag == "{https://example.org/ns/}root"
+    )

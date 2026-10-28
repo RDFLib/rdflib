@@ -228,6 +228,22 @@ def test_pretty_xml_bind_namespaces_none():
     assert isomorphic(graph, Graph().parse(data=result, format="xml"))
 
 
+@pytest.mark.parametrize("bind_namespaces", ["rdflib", "none"])
+@pytest.mark.parametrize("term_role", ["predicate", "type"])
+def test_pretty_xml_conflicting_rdf_prefix(bind_namespaces, term_role):
+    graph = Graph(bind_namespaces=bind_namespaces)
+    graph.bind("rdf", "http://example.org/", replace=True)
+    subject = URIRef("http://example.org/subject")
+    term = URIRef("http://example.org/term")
+    if term_role == "predicate":
+        graph.add((subject, term, Literal("value")))
+    else:
+        graph.add((subject, RDF.type, term))
+
+    with pytest.raises(ValueError, match="Namespace prefix 'rdf' is bound to both"):
+        graph.serialize(format="pretty-xml")
+
+
 @pytest.mark.parametrize("namespace", [str(RDF), XMLNS])
 @pytest.mark.parametrize("suffix", ["nested/value", "/value", "123value"])
 @pytest.mark.parametrize("term_role", ["predicate", "type"])

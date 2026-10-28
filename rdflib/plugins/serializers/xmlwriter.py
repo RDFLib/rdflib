@@ -107,8 +107,13 @@ class XMLWriter:
         write = self.stream.write
         write("\n")
         for prefix, namespace in namespaces:
-            # Allow user-provided namespace bindings to prevail
             if prefix in self.extra_ns:
+                if prefix and str(namespace) != str(self.extra_ns[prefix]):
+                    raise ValueError(
+                        f"Namespace prefix {prefix!r} is bound to both "
+                        f"{str(namespace)!r} and {str(self.extra_ns[prefix])!r}"
+                    )
+                # Extra default namespaces take precedence, as required by TriX.
                 continue
             if prefix:
                 write('  xmlns:%s="%s"\n' % (prefix, namespace))
