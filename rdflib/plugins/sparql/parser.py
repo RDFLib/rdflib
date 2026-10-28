@@ -473,7 +473,9 @@ GraphNodePath = VarOrTerm | TriplesNodePath
 PathMod = Literal("?") | "*" | "+"
 
 # [96] PathOneInPropertySet ::= iri | A | '^' ( iri | A )
-PathOneInPropertySet = iri | A | Comp("InversePath", "^" + (iri | A))
+PathOneInPropertySet = (
+    iri | A | Suppress("^") + Comp("PathEltOrInverse", Param("part", iri | A))
+)
 
 Path = Forward()
 
