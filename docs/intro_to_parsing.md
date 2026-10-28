@@ -91,6 +91,7 @@ The following table lists the RDF formats you can serialize data to with rdflib,
 | Trig | trig | Turtle-like format for RDF triples + context (RDF quads) and thus multiple graphs |
 | Trix | trix | RDF/XML-like format for RDF quads |
 | N-Quads | nquads or nq | N-Triples-like format for RDF quads |
+| Jelly | jelly | Fast binary format for RDF triples or quads, see [Jelly](plugins.md#jelly) |
 
 ## Working with multi-graphs
 

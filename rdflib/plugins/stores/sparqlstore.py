@@ -129,7 +129,8 @@ class SPARQLStore(SPARQLConnector, Store):
     You can request a particular result serialization with the
     `returnFormat` parameter. This is a string that must have a
     matching plugin registered. Built in is support for `xml`,
-    `json`, `csv`, `tsv` and `application/rdf+xml`.
+    `json`, `csv`, `tsv`, `application/rdf+xml` and `jelly`
+    (Jelly-SPARQL and Jelly-RDF).
 
     The underlying SPARQLConnector uses the urllib library.
     Any extra kwargs passed to the SPARQLStore connector are passed to

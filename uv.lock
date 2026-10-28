@@ -1138,12 +1138,76 @@ wheels = [
 ]
 
 [[package]]
+name = "protobuf"
+version = "7.36.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d9/89/5b8517baa72f84a67b8a307ba953c91057af618bf40bf676f3c03551f8f0/protobuf-7.36.2.tar.gz", hash = "sha256:497d0463ff3316681da6c0b9e8d06cb465d61abce00b613ab42226175644d1bb", size = 512737, upload-time = "2026-09-17T20:07:59.326Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/32/72/98342feb672507c8f3a69e34b4fa8961f608edba5c1a48a6f47156d92cb5/protobuf-7.36.2-cp310-abi3-macosx_10_9_universal2.whl", hash = "sha256:cbc70b17ee27e28894c7fee8bb04be1abead49e936bc70eb60052531eee2079e", size = 456039, upload-time = "2026-09-17T20:07:51.542Z" },
+    { url = "https://files.pythonhosted.org/packages/b6/ea/91fdf7c2b8bbd49cde056f00a9df6773532987e1c00fe2830b895af95c7e/protobuf-7.36.2-cp310-abi3-manylinux2014_aarch64.whl", hash = "sha256:e11e1f0180583a2af89db6a2ecd9e8dc40aa6d2988ca175bfd0e6d12ea72d74e", size = 344219, upload-time = "2026-09-17T20:07:52.914Z" },
+    { url = "https://files.pythonhosted.org/packages/17/ab/5fd5f8ece73fad885c5a09aa849b32d70472f954ba3a92d3bb5974ea953b/protobuf-7.36.2-cp310-abi3-manylinux2014_s390x.whl", hash = "sha256:f4fee11ec330d238b34a05c9b675f693c20415d1c5bd7d5320cc2f8a798eb9cf", size = 357223, upload-time = "2026-09-17T20:07:53.985Z" },
+    { url = "https://files.pythonhosted.org/packages/db/f3/3996583dd2906297a637af12114deddf7658af6e683fedb83be061983fb5/protobuf-7.36.2-cp310-abi3-manylinux2014_x86_64.whl", hash = "sha256:89f23aa53c24553a2416fd4fd1ec06f74fa42b14b546d8883128813f775bbfd2", size = 343223, upload-time = "2026-09-17T20:07:54.931Z" },
+    { url = "https://files.pythonhosted.org/packages/fc/1b/dcc64f358fcb51811b58ae40b3d28f820725f116d86487cc20bd4b130701/protobuf-7.36.2-cp310-abi3-win32.whl", hash = "sha256:912c1221170e16c08d1f086762f563dd61ff83c18b5fa6652952dfaded66f728", size = 442998, upload-time = "2026-09-17T20:07:55.826Z" },
+    { url = "https://files.pythonhosted.org/packages/8a/55/b77bda4e5e5f5971fb51b07663694690e9afdb9402136c16a522bd621cad/protobuf-7.36.2-cp310-abi3-win_amd64.whl", hash = "sha256:a300819d441e078a5608c0d3c709796bb548136058fda017ae51d425b44fd353", size = 456514, upload-time = "2026-09-17T20:07:57.188Z" },
+    { url = "https://files.pythonhosted.org/packages/e4/04/d52c7016b04b6c5108f26691f9d33ec82a9b65d041f1a9c771137693d618/protobuf-7.36.2-py3-none-any.whl", hash = "sha256:bdb3a345d48db958e6ce1f18e508beb0cc981d64f24088427549c866cd039f1e", size = 179806, upload-time = "2026-09-17T20:07:58.211Z" },
+]
+
+[[package]]
 name = "pygments"
 version = "2.20.0"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/c3/b2/bc9c9196916376152d655522fdcebac55e66de6603a76a02bca1b6414f6c/pygments-2.20.0.tar.gz", hash = "sha256:6757cd03768053ff99f3039c1a36d6c0aa0b263438fcab17520b30a303a82b5f", size = 4955991, upload-time = "2026-03-29T13:29:33.898Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f4/7e/a72dd26f3b0f4f2bf1dd8923c85f7ceb43172af56d63c7383eb62b332364/pygments-2.20.0-py3-none-any.whl", hash = "sha256:81a9e26dd42fd28a23a2d169d86d7ac03b46e2f8b59ed4698fb4785f946d0176", size = 1231151, upload-time = "2026-03-29T13:29:30.038Z" },
+]
+
+[[package]]
+name = "pyjelly"
+version = "0.9.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "mypy-extensions" },
+    { name = "protobuf" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/df/fb/af0e2f564b889d4285f12b0fd9d8c99f3a8108b56514d2d826d9257be13a/pyjelly-0.9.0.tar.gz", hash = "sha256:bbc935bccfad94f10557870dcb788ff28670f4f8b3d464efa2a54cc6b7493993", size = 96589, upload-time = "2026-10-27T13:42:51.404Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d3/8a/bc6dc1da400d1f88452533ca04296161c3ba27c911a4effdc2a5dc7f2d4f/pyjelly-0.9.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:93715aba585dcf956ad680a7662ab0c9e1dc2afa98bd847293dffde49d7dde72", size = 879614, upload-time = "2026-10-27T13:41:52.347Z" },
+    { url = "https://files.pythonhosted.org/packages/f9/5c/344ce56859bfc91cac7792b0bc63716771acbea2271dc36a35c1b4968bda/pyjelly-0.9.0-cp311-cp311-macosx_11_0_x86_64.whl", hash = "sha256:eb26d01acc566199415cb808652d8e767631b72cb41e7e05a15413c3ce3c0c6a", size = 903168, upload-time = "2026-10-27T13:41:54.1Z" },
+    { url = "https://files.pythonhosted.org/packages/8c/21/93532c74e5fd6d746d7c64859cc1cffa1f52ae7b374dea2b7c05b9bbeab2/pyjelly-0.9.0-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:5e5d2210aae4c8096168262c08d0280b593606bdd4295455bede79b137983d79", size = 1375710, upload-time = "2026-10-27T13:41:56.195Z" },
+    { url = "https://files.pythonhosted.org/packages/27/eb/96f01354a834470376bb809198e3e2b2626425f33f8cce56350d3e21d662/pyjelly-0.9.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:6fd293cf95e15d36e34ab92930f54c0a8ab8032ee16e4d0a95ad3f51a7b5a3ad", size = 1410323, upload-time = "2026-10-27T13:41:58.043Z" },
+    { url = "https://files.pythonhosted.org/packages/98/3a/65bb19d885f9f1db9bca3adb75e0571cdc90d5c8c33968451b11ced5f04d/pyjelly-0.9.0-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:5c6cd1c98e5491b7ed5d910356cf0fdd62c4600035abe4aaa64b55d2f0a0648e", size = 1405133, upload-time = "2026-10-27T13:42:00.048Z" },
+    { url = "https://files.pythonhosted.org/packages/f4/1c/c43d6bf0d5b369460db46976d8562db4f59609a4f5525238ad3b4fc3b43c/pyjelly-0.9.0-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:1a78662adb024415e85553f6aaf5abaeeaa18535b8e1509aaa3168603bbf11c3", size = 1389834, upload-time = "2026-10-27T13:42:01.537Z" },
+    { url = "https://files.pythonhosted.org/packages/e4/d5/e54c8d0140d1f40ffae5bcb0b9773d1bebb24ff73c8c779d38e2765dd6f8/pyjelly-0.9.0-cp311-cp311-win_amd64.whl", hash = "sha256:ac6ec56b1dea77eeb1ee104552a5e0fff7c7b9a5b42840d2c76d56233852d5e6", size = 630780, upload-time = "2026-10-27T13:42:03.019Z" },
+    { url = "https://files.pythonhosted.org/packages/fa/e4/63d451e4bae7b479f8f40acc8f3d93414163d217d0ca62ee8bba91062844/pyjelly-0.9.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:cc57f5997139f8405e40fe55ca883d824eba06add81e8526d394ea7e95a3a2c5", size = 886109, upload-time = "2026-10-27T13:42:04.366Z" },
+    { url = "https://files.pythonhosted.org/packages/c5/f1/b5c8697905692782ba9b8be313a7bdf87d4b3e4a4ed4bfcfab34da7b405b/pyjelly-0.9.0-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:492cd87c7ee0ba9953493ad6f44da4e5f8740cb8bd199f58061232e44e43ac82", size = 911791, upload-time = "2026-10-27T13:42:06.147Z" },
+    { url = "https://files.pythonhosted.org/packages/2e/ab/469e1b4f04ea842ae6712fc7b4bffaa6a1f3649e3670ba094b9fe4006a95/pyjelly-0.9.0-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:e6207b7e17cc309ed1054c4786909da5af22b971b6ea04c4457acd1254c0b963", size = 1406336, upload-time = "2026-10-27T13:42:07.854Z" },
+    { url = "https://files.pythonhosted.org/packages/c3/4e/3b522ff5baf7e55efd0ef49cc3d3d28a3d111cb9343b6b8c04cd6800a8a0/pyjelly-0.9.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:a8288e7c140c117b634805a694de217885ef081c6bde5b8fd1875239a986ea60", size = 1459298, upload-time = "2026-10-27T13:42:09.615Z" },
+    { url = "https://files.pythonhosted.org/packages/3d/ab/d2b7048e5619b8e696fedcc98b53dbd0e26fb785f2b78883b74ce05c79bc/pyjelly-0.9.0-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:eef903064b2ab7f17e51164668b9c1a6e67e816dd3d225f731d14ade1f3f318d", size = 1435266, upload-time = "2026-10-27T13:42:11.09Z" },
+    { url = "https://files.pythonhosted.org/packages/b8/2a/f59546f3cfd55fe4690fa56eb425f6c09ec68b126328ddd82088dc376e2a/pyjelly-0.9.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:a89f4a92fabcd6691da882a943d7baba9a5abce2387fbb6eac3fc2964579e409", size = 1438973, upload-time = "2026-10-27T13:42:12.952Z" },
+    { url = "https://files.pythonhosted.org/packages/3e/76/0df265af3266624e2e1860646771d5df768e9df161b76d465036c420287e/pyjelly-0.9.0-cp312-cp312-win_amd64.whl", hash = "sha256:0ce939dda4ef6047066bdf3f0b2e99b531d5fb93171913986146e306e40a876d", size = 634445, upload-time = "2026-10-27T13:42:14.294Z" },
+    { url = "https://files.pythonhosted.org/packages/40/88/0af573a78e1cd58e78ba168157fd28f169fa486cf158a2a645fda9f9a629/pyjelly-0.9.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:2754269e081007237703b8d4a175fd81e291aea637a16a9f7d5d04e5d7dd9069", size = 861308, upload-time = "2026-10-27T13:42:15.931Z" },
+    { url = "https://files.pythonhosted.org/packages/90/b2/cc9ffdbf5fd62224ab47fc69f8d17af175efdbead91593c9ebaf271fe33a/pyjelly-0.9.0-cp313-cp313-macosx_11_0_x86_64.whl", hash = "sha256:7b3378c50fb9d7ef0c7a5598af3f725cdc39d594cd43406665b6e74a429e8ae2", size = 889697, upload-time = "2026-10-27T13:42:17.417Z" },
+    { url = "https://files.pythonhosted.org/packages/0e/7d/6860b822675358c4ad5564476f43c3edb6b62947cd55fcf536c89bae23e6/pyjelly-0.9.0-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:0780e365a1d4234a297aa2404dc923dcef9dd7f02432d90129e0efcaf6b2c178", size = 1400904, upload-time = "2026-10-27T13:42:18.913Z" },
+    { url = "https://files.pythonhosted.org/packages/31/1b/5e9096cd59560a6b0cd2b98210cddb7b390353072d565e2072ae38005685/pyjelly-0.9.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:939b4ed17ee36de6847e94343b1f45c5aea19099f8291c405afaf78bc0720b2a", size = 1452536, upload-time = "2026-10-27T13:42:20.447Z" },
+    { url = "https://files.pythonhosted.org/packages/9e/e4/76a9ecdc946bc257dec6d31ab1aede9a572be717e3f7339db4a87ea67350/pyjelly-0.9.0-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:823313cb573320218782c0182358cbc178e574b52959ac61fc1e91800965c8bf", size = 1430223, upload-time = "2026-10-27T13:42:22.137Z" },
+    { url = "https://files.pythonhosted.org/packages/4c/26/8e21d513a7dc3e29162391d4e37d800f6b962285145dc9f15c00a69c1aae/pyjelly-0.9.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:491ddf5a015757709a67db92a4b14b81d6f02a5385c3aad1f17ffcbaad1253d0", size = 1435023, upload-time = "2026-10-27T13:42:23.956Z" },
+    { url = "https://files.pythonhosted.org/packages/8f/f5/de8aa53be642f54756ca25c59027ab68f743fd13034050f007fc0f34676b/pyjelly-0.9.0-cp313-cp313-win_amd64.whl", hash = "sha256:d51621283643aac868379d1b8a112fdbbd0277d3d3dbe994d0fa9179613d4a69", size = 638527, upload-time = "2026-10-27T13:42:25.792Z" },
+    { url = "https://files.pythonhosted.org/packages/26/59/cf0ef10bd0beff09400a0dd18ed3d005445916a1ce7542a780331412bdbd/pyjelly-0.9.0-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:0baac15066bc6ad25e9ea639513e94e2c6984453a0440dc79e110574e437a9c4", size = 861084, upload-time = "2026-10-27T13:42:27.349Z" },
+    { url = "https://files.pythonhosted.org/packages/34/bb/5f832c12b026601e4675c088c35deeffdaebeef332a4ecec4927da95ec12/pyjelly-0.9.0-cp314-cp314-macosx_11_0_x86_64.whl", hash = "sha256:457dac3b1db19febf6403137fcc66c5130fdc2cf4a99138f2f0f683d8bdbcea1", size = 888213, upload-time = "2026-10-27T13:42:29.1Z" },
+    { url = "https://files.pythonhosted.org/packages/bf/bd/49973e788ca45748cb1b7b2d99386ae676fe33ec078f131fd11bc52967ad/pyjelly-0.9.0-cp314-cp314-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:d182a96003556a9b6caea781f3a058d55ca6b9c5278ded72d5fb49ca301635a0", size = 1415956, upload-time = "2026-10-27T13:42:30.591Z" },
+    { url = "https://files.pythonhosted.org/packages/43/dc/fddcf38d16d43afca4ba21d46752f6ebacf7e5773d1e075c7099728f2e28/pyjelly-0.9.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:0150a5c24ca027a995595a52f775ed18d25f1d72f1b3a6998cfbe6b7ff04eb6d", size = 1463044, upload-time = "2026-10-27T13:42:32.362Z" },
+    { url = "https://files.pythonhosted.org/packages/80/36/3d926faa64861beedfd1253705f9e7c440db6fc344b5062a6938ae60b9b0/pyjelly-0.9.0-cp314-cp314-musllinux_1_2_aarch64.whl", hash = "sha256:78a1a02cb66d4bbfcad3e5beeea442f3f779e0eaf6b7e73bb3f3da923e8786b8", size = 1445595, upload-time = "2026-10-27T13:42:33.86Z" },
+    { url = "https://files.pythonhosted.org/packages/4a/12/1f56945477128460d3f231c4a6893c37d3582f5718bbab545c6c56b5f65f/pyjelly-0.9.0-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:eec7025d46a30c52dc3a2affe3d91b86eebce812b610033184fae9c1264091fb", size = 1446977, upload-time = "2026-10-27T13:42:35.478Z" },
+    { url = "https://files.pythonhosted.org/packages/ec/1b/c28ee2df7eb1a33c055d4ed6c92be8f847014ee1b5bc1f9a9791774cf897/pyjelly-0.9.0-cp314-cp314-win_amd64.whl", hash = "sha256:dd9751f1e047479d7c24bc443983a593f36d12df2553217ba4a5c3697b8fdec4", size = 646381, upload-time = "2026-10-27T13:42:37.007Z" },
+    { url = "https://files.pythonhosted.org/packages/70/ef/677c565e0659f84421c065e52caa629766b7ddf0d385bc01e5c824d41459/pyjelly-0.9.0-cp315-cp315-macosx_11_0_arm64.whl", hash = "sha256:6b065123fa1da852b2ca85cfe9e4ba8e0f44cc26d56f5e5ab507cfab15de98a7", size = 859925, upload-time = "2026-10-27T13:42:38.45Z" },
+    { url = "https://files.pythonhosted.org/packages/4e/75/0341c215010d513d8a64e4e92bd1ee2eceaca69f1e16fd9cc36ca483ca54/pyjelly-0.9.0-cp315-cp315-macosx_11_0_x86_64.whl", hash = "sha256:e53c44225f72eada5581455a2bd698a878f8570534bb5d0d4e11afb979a42fc7", size = 888257, upload-time = "2026-10-27T13:42:40.041Z" },
+    { url = "https://files.pythonhosted.org/packages/4c/dd/7c2e0961bde560d4b5713628865f1224d03c9cb413f5479e8bbbcedfdbe6/pyjelly-0.9.0-cp315-cp315-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:1552238ed673aebb41b8a364809b27113d50946586de9fb2bed211dce52e3e41", size = 1418951, upload-time = "2026-10-27T13:42:41.851Z" },
+    { url = "https://files.pythonhosted.org/packages/89/b6/77c49da28cbe2ab9e33dd93a2a60616d5f25a8bfde5a932c003afdc8f573/pyjelly-0.9.0-cp315-cp315-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:77cd036f7822c7db02ed3279e25735639ea6cd95f04d96ef49a54c51354a6ec9", size = 1476913, upload-time = "2026-10-27T13:42:43.625Z" },
+    { url = "https://files.pythonhosted.org/packages/c0/be/6bbac5012f1e7aaad1db8000116b5d9e144d70d08d6781f6e95d1fe26bee/pyjelly-0.9.0-cp315-cp315-musllinux_1_2_aarch64.whl", hash = "sha256:cde1786c4ed08f0a58d1dd223863d7ec1e66077a8abce35c86ebe5c0f93dfeef", size = 1448587, upload-time = "2026-10-27T13:42:45.335Z" },
+    { url = "https://files.pythonhosted.org/packages/c8/6e/850270e91bdc76f39dd210832ab1ae328510fa101eadddc8979ae6ddefb7/pyjelly-0.9.0-cp315-cp315-musllinux_1_2_x86_64.whl", hash = "sha256:145466ace28c3eea06be43f8221000cea84f3deb7f16928c3daab2571224f616", size = 1458445, upload-time = "2026-10-27T13:42:47.075Z" },
+    { url = "https://files.pythonhosted.org/packages/3c/f6/d74533be5fc86aa411a695afdb1b1af815eb5f1e19e794d4fe29747c9fd6/pyjelly-0.9.0-cp315-cp315-win_amd64.whl", hash = "sha256:cd6406e4e7bd104a02ead184b02290b65773dd2e5fa391b1d3ec6993380b2f9f", size = 646295, upload-time = "2026-10-27T13:42:48.68Z" },
+    { url = "https://files.pythonhosted.org/packages/07/21/efba8d6d83eac600de7438a2bfc4782904e5a700de6f7eabbe4a47f859b9/pyjelly-0.9.0-py3-none-any.whl", hash = "sha256:265bee55a07b903b2137062b3ea4e8b71e1e79fde37c53cc2a8fbb50501d21db", size = 180352, upload-time = "2026-10-27T13:42:50.078Z" },
 ]
 
 [[package]]
@@ -1323,6 +1387,7 @@ version = "8.0.0a0"
 source = { editable = "." }
 default-groups = ["dev", "lint", "tests"]
 dependencies = [
+    { name = "pyjelly" },
     { name = "pyparsing" },
 ]
 
@@ -1387,6 +1452,7 @@ requires-dist = [
     { name = "lxml", marker = "extra == 'lxml'", specifier = ">=4.9.1,<7.0" },
     { name = "networkx", marker = "extra == 'networkx'", specifier = ">=2.8.8,<4" },
     { name = "orjson", marker = "extra == 'orjson'", specifier = ">=3.9.14,<4" },
+    { name = "pyjelly", specifier = ">=0.9.0,<0.10.0" },
     { name = "pyparsing", specifier = ">=3.1.0,<4" },
 ]
 provides-extras = ["berkeleydb", "networkx", "html", "lxml", "orjson", "rdf4j", "graphdb"]
