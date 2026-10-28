@@ -1,6 +1,25 @@
-from rdflib import Graph
+from rdflib import Dataset, Graph, URIRef
 from rdflib.namespace import NamespaceManager
 from rdflib.store import NodePickler, Store
+
+
+def test_quad_count_counts_graph_memberships() -> None:
+    dataset = Dataset()
+    triple = (URIRef("urn:s"), URIRef("urn:p"), URIRef("urn:o"))
+    dataset.add(triple)
+    dataset.graph(URIRef("urn:named")).add(triple)
+
+    assert dataset.store.quad_count() == 2
+    assert len(dataset.store) == 1
+
+
+def test_quad_count_context_unaware_store() -> None:
+    graph = Graph(store="SimpleMemory")
+    assert graph.store.quad_count() == 0
+    graph.add((URIRef("urn:s"), URIRef("urn:p"), URIRef("urn:o")))
+
+    assert graph.store.quad_count() == 1
+    assert len(graph) == 1
 
 
 def test_namespaces() -> None:
