@@ -274,8 +274,14 @@ register(
 register(
     "longturtle",
     Serializer,
-    "rdflib.plugins.serializers.longturtle",
-    "LongTurtleSerializer",
+    "rdflib.plugins.serializers.turtle",
+    "TurtleSerializer",
+)
+register(
+    "origturtle",
+    Serializer,
+    "rdflib.plugins.serializers.origturtle",
+    "OrigTurtleSerializer",
 )
 register(
     "application/n-triples",

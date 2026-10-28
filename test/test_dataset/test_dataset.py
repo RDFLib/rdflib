@@ -119,6 +119,12 @@ def get_dataset(request):
                 pass
 
 
+@pytest.mark.parametrize("store", ["Memory", "SPARQLStore"])
+def test_repr_without_store_access(store: str) -> None:
+    dataset = Dataset(store=store)
+    assert "Dataset" in repr(dataset)
+
+
 def test_graph_aware(get_dataset):
     store, dataset = get_dataset
 
@@ -183,7 +189,7 @@ def test_default_graph(get_dataset):
     dataset.add((TAREK, LIKES, PIZZA))
     assert len(dataset) == 1
     # only default exists
-    assert list(dataset.graphs()) == [dataset.default_context]
+    assert list(dataset.graphs()) == [dataset.default_graph]
 
     # removing default graph removes triples but not actual graph
     dataset.remove_graph(DATASET_DEFAULT_GRAPH_ID)
@@ -191,7 +197,7 @@ def test_default_graph(get_dataset):
     assert len(dataset) == 0
 
     # default still exists
-    assert set(dataset.graphs()) == set([dataset.default_context])
+    assert set(dataset.graphs()) == set([dataset.default_graph])
 
 
 def test_dataset_default_context_public_access_warns() -> None:

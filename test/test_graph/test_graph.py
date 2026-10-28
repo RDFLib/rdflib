@@ -4,13 +4,12 @@ import logging
 import os
 from collections.abc import Callable
 from pathlib import Path
-from urllib.error import HTTPError, URLError
 
 import pytest
 
 from rdflib import Graph, URIRef
 from rdflib.exceptions import ParserError
-from rdflib.namespace import Namespace, NamespaceManager
+from rdflib.namespace import OWL, RDF, Namespace, NamespaceManager
 from rdflib.plugin import PluginException
 from rdflib.store import Store
 from rdflib.term import BNode
@@ -344,12 +343,15 @@ def test_guess_format_for_parse(
     # only getting HTML
     with pytest.raises(PluginException):
         graph.parse(location=file_info.request_url)
-    try:
-        # persistent Australian Government online RDF resource without a file-like ending
-        graph.parse(location="https://linked.data.gov.au/def/agrif?_format=text/turtle")
-    except (URLError, HTTPError):
-        # this endpoint is currently not available, ignore this test.
-        pass
+    # An RDF resource without a file extension uses its HTTP content type.
+    file_info = http_file_server.add_file_with_caching(
+        ProtoFileResource(
+            (("Content-Type", "text/turtle"),),
+            TEST_DATA_DIR / "defined_namespaces/adms.ttl",
+        ),
+    )
+    graph.parse(location=file_info.request_url)
+    assert (URIRef("http://www.w3.org/ns/adms#Asset"), RDF.type, OWL.Class) in graph
 
 
 @pytest.mark.parametrize(

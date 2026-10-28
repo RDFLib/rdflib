@@ -42,7 +42,7 @@ class TriXSerializer(Serializer):
 
         # Non-context-aware aggregates must use their own triple iteration.
         if self.store.context_aware and isinstance(self.store, ConjunctiveGraph):
-            for subgraph in self.store.contexts():
+            for subgraph in self.store.graphs():
                 self._writeGraph(subgraph)
         elif isinstance(self.store, Graph):
             self._writeGraph(self.store)

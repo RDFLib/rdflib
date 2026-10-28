@@ -11,16 +11,14 @@ from rdflib.util import guess_format
 
 
 def _help():
-    sys.stderr.write(
-        """
+    sys.stderr.write("""
 program.py [-f <format>] [-o <output>] [files...]
 Read RDF files given on STDOUT - does something to the resulting graph
 If no files are given, read from stdin
 -o specifies file for output, if not given stdout is used
 -f specifies parser to use, if not given it is guessed from extension
 
-"""
-    )
+""")
 
 
 def main(target, _help=_help, options="", stdin=True):
