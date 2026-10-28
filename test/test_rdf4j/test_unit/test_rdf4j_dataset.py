@@ -19,7 +19,10 @@ if has_httpx:
 
 @pytest.mark.parametrize("measure", [len, bool], ids=["length", "truth"])
 def test_dataset_size_with_blank_node_graph(measure: Callable[[Dataset], int]) -> None:
+    requests: list[httpx.Request] = []
+
     def respond(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
         if request.url.path == "/protocol":
             return httpx.Response(200, text="12")
         if request.url.path == "/repositories/test-repo":
@@ -47,6 +50,11 @@ def test_dataset_size_with_blank_node_graph(measure: Callable[[Dataset], int]) -
     )
     try:
         dataset = Dataset(store)
+        requests.clear()
         assert measure(dataset) == (6 if measure is len else True)
+        assert len(requests) == 1
+        assert requests[0].method == "GET"
+        assert requests[0].url.path == "/repositories/test-repo/size"
+        assert not requests[0].url.params
     finally:
         store.close()

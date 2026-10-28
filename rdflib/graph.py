@@ -2728,25 +2728,13 @@ class Dataset(ConjunctiveGraph):
     def __len__(self) -> int:
         """Number of asserted quads in the dataset.
 
-        Formula-aware stores require iterating over asserted quad memberships.
-        Other stores are counted using their per-graph lengths.
+        Delegates to [`Store.quad_count()`][rdflib.store.Store.quad_count].
+        The cost depends on the store: Memory scans asserted memberships,
+        while RDF4JStore uses one repository-wide size request. Other stores
+        may enumerate graphs and request each graph's length separately.
+        Truth testing also calls this method, and results are not cached.
         """
-        if self.store.formula_aware:
-            # Quoted and asserted graphs can share an identifier, so a graph's
-            # type and length cannot distinguish their statement memberships.
-            return sum(
-                1
-                for _, contexts in self.store.triples((None, None, None))
-                for _ in contexts
-            )
-        count = 0
-        default_graph_seen = False
-        for graph in super().contexts():
-            count += self.store.__len__(graph)
-            default_graph_seen |= graph.identifier == self.default_graph.identifier
-        if not default_graph_seen:
-            count += self.store.__len__(self.default_graph)
-        return count
+        return self.store.quad_count()
 
     # type error: Return type "tuple[type[Dataset], tuple[Store, bool]]" of "__reduce__" incompatible with return type "tuple[type[Graph], tuple[Store, IdentifiedNode]]" in supertype "ConjunctiveGraph"
     # type error: Return type "tuple[type[Dataset], tuple[Store, bool]]" of "__reduce__" incompatible with return type "tuple[type[Graph], tuple[Store, IdentifiedNode]]" in supertype "Graph"

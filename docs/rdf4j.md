@@ -76,6 +76,21 @@ ds = Dataset(store=store)
 
 For more information on how to use RDFLib Graphs and Datasets, see the subsections under [Usage](index.md).
 
+### Dataset counting performance
+
+`len(ds)` delegates to
+[`RDF4JStore.quad_count()`][rdflib.plugins.stores.rdf4j.RDF4JStore.quad_count],
+which makes one repository-wide size request without listing graphs. This
+also applies when RDF4JStore connects to GraphDB through its RDF4J-compatible
+interface. Counts include explicit statements in the default and named graphs,
+including blank-node graph names, and count a repeated triple once per graph.
+Inferred statements are excluded by the repository size operation, so a query
+that includes inference can return more statements.
+
+`bool(ds)` and `if ds:` make the same size request. Results are not cached;
+each check makes another request. A single request reduces network round trips
+but does not guarantee constant-time work on the server.
+
 ### Namespaces
 
 When connecting to an RDF4J repository, RDFLib automatically registers a set of built-in namespace prefixes. To disable this behavior, assign a new RDFLib [`NamespaceManager`][rdflib.namespace.NamespaceManager] instance with `bind_namespaces` set to the string `"none"`.
