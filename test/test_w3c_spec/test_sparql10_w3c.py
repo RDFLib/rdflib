@@ -56,9 +56,6 @@ MARK_DICT: MarksDictType = {
     f"{REMOTE_BASE_IRI}syntax-sparql1/manifest#syntax-lit-08": pytest.mark.skip(
         reason="bad test, positive syntax has invalid syntax."
     ),
-    f"{REMOTE_BASE_IRI}syntax-sparql2/manifest#syntax-general-08": pytest.mark.xfail(
-        reason="Not parsing with no spaces."
-    ),
     f"{REMOTE_BASE_IRI}syntax-sparql2/manifest#syntax-lists-04": pytest.mark.xfail(
         reason="Not handling lists in query."
     ),
@@ -116,20 +113,22 @@ def configure_rdflib() -> Generator[None, None, None]:
 
 @pytest.mark.parametrize(
     ["manifest_entry"],
-    params_from_sources(
-        MAPPER,
-        SPARQLEntry,
-        LOCAL_BASE_DIR / "manifest-evaluation.ttl",
-        LOCAL_BASE_DIR / "manifest-syntax.ttl",
-        mark_dict=MARK_DICT,
-        markers=(
-            lambda entry: (
-                pytest.mark.skip(reason="tester not implemented")
-                if entry.type in SKIP_TYPES
-                else None
+    list(
+        params_from_sources(
+            MAPPER,
+            SPARQLEntry,
+            LOCAL_BASE_DIR / "manifest-evaluation.ttl",
+            LOCAL_BASE_DIR / "manifest-syntax.ttl",
+            mark_dict=MARK_DICT,
+            markers=(
+                lambda entry: (
+                    pytest.mark.skip(reason="tester not implemented")
+                    if entry.type in SKIP_TYPES
+                    else None
+                ),
             ),
-        ),
-        report_prefix="rdflib_w3c_sparql10",
+            report_prefix="rdflib_w3c_sparql10",
+        )
     ),
 )
 def test_entry_sparql10(

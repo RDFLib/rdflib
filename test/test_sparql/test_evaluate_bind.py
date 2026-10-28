@@ -14,9 +14,12 @@ def get_bind_tests():
     g.add((URIRef(base + "thing"), URIRef(base + "ns#comment"), Literal("anything")))
 
     def check(expr, var, obj):
-        r = g.query("""
+        r = g.query(
+            """
                 prefix : <http://example.org/ns#>
-                select * where { ?s ?p ?o . %s } """ % expr)
+                select * where { ?s ?p ?o . %s } """
+            % expr
+        )
         assert r.bindings[0][Variable(var)] == obj
 
     yield (check, 'bind("thing" as ?name)', "name", Literal("thing"))
@@ -36,6 +39,6 @@ def get_bind_tests():
     )
 
 
-@pytest.mark.parametrize("checker, expr, var, obj", get_bind_tests())
+@pytest.mark.parametrize("checker, expr, var, obj", list(get_bind_tests()))
 def test_bind(checker, expr, var, obj) -> None:
     checker(expr, var, obj)

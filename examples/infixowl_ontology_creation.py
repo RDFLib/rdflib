@@ -48,8 +48,10 @@ def infixowl_example():
     representationOf = Property(  # noqa: N806
         CPR["representation-of"],
         inverseOf=Property(CPR["represented-by"]),
-        comment=[Literal("""Patient records stand in the cpr:representation-of relation
-                   with patients""")],
+        comment=[
+            Literal("""Patient records stand in the cpr:representation-of relation
+                   with patients""")
+        ],
     )
     representedBy = Property(  # noqa: F841, N806
         CPR["represented-by"], inverseOf=representationOf
@@ -57,23 +59,29 @@ def infixowl_example():
     # description-of
     descrOf = Property(  # noqa: N806
         CPR["description-of"],
-        comment=[Literal("""Clinical descriptions stand in the cpr:description-of
-                   relation with various clinical phenomenon""")],
+        comment=[
+            Literal("""Clinical descriptions stand in the cpr:description-of
+                   relation with various clinical phenomenon""")
+        ],
         domain=[Class(CPR["clinical-description"])],
     )
     # cpr:interpreted-by
     interpretedBy = Property(  # noqa: F841, N806
         CPR["interpreted-by"],
-        comment=[Literal("""Signs and symptoms are interpreted by rational physical
-                   objects (people)""")],
+        comment=[
+            Literal("""Signs and symptoms are interpreted by rational physical
+                   objects (people)""")
+        ],
         domain=[Class(CPR["medical-sign"]) | Class(CPR["symptom"])],
         range=[Class(CPR.person)],
     )
     # cpr:realized-by
     realizedBy = Property(  # noqa: N806
         CPR["realized-by"],
-        comment=[Literal("""The epistemological relation in which screening acts and
-                   the problems they realize stand to each other""")],
+        comment=[
+            Literal("""The epistemological relation in which screening acts and
+                   the problems they realize stand to each other""")
+        ],
         inverseOf=Property(CPR["realizes"]),
         domain=[Class(CPR["medical-problem"])],
         range=[Class(CPR["screening-act"])],
@@ -93,8 +101,10 @@ def infixowl_example():
 
     # cpr:patient
     patient = Class(CPR.patient)
-    patient.comment = [Literal("""A class which directly corresponds with the “Patient”
-               and “MedicalPatient” classes in GALEN / Cyc""")]
+    patient.comment = [
+        Literal("""A class which directly corresponds with the “Patient”
+               and “MedicalPatient” classes in GALEN / Cyc""")
+    ]
     # patient.equivalentClass = [Class(GALEN.Patient),Class(CYC.MedicalPatient)]
     patient.subClassOf = [CPR["represented-by"] @ some @ Class(CPR["patient-record"])]
     person += patient

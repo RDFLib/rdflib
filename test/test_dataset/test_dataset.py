@@ -1,14 +1,17 @@
+from __future__ import annotations
+
 import os
 import shutil
 import tempfile
 import warnings
+from typing import Tuple
 
 import pytest
 
-from rdflib import BNode, Namespace, URIRef, plugin
+from rdflib import BNode, Namespace, Node, URIRef, plugin
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
 from rdflib.store import Store
-from test.data import CONTEXT1, LIKES, PIZZA, TAREK
+from test.data import CHEESE, CONTEXT1, CONTEXT2, LIKES, PIZZA, TAREK
 
 # Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
 # available. This assumes SPARQL1.1 query/update endpoints running locally at
@@ -197,6 +200,89 @@ def test_default_graph(get_dataset):
     assert set(dataset.graphs()) == set([dataset.default_graph])
 
 
+def test_dataset_default_context_public_access_warns() -> None:
+    dataset = Dataset()
+
+    with pytest.warns(
+        DeprecationWarning,
+        match="Dataset.default_context is deprecated, use Dataset.default_graph instead.",
+    ):
+        assert dataset.default_context is dataset.default_graph
+
+
+def test_dataset_internal_default_graph_operations_do_not_warn() -> None:
+    dataset = Dataset()
+    triple: Tuple[Node, Node, Node] = (
+        URIRef("urn:s"),
+        URIRef("urn:p"),
+        URIRef("urn:o"),
+    )
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "error",
+            message="Dataset.default_context is deprecated, use Dataset.default_graph instead.",
+            category=DeprecationWarning,
+        )
+
+        dataset.add(triple)
+        assert list(dataset.triples((None, None, None))) == [triple]
+        assert list(dataset.quads((None, None, None, None))) == [
+            (*triple, DATASET_DEFAULT_GRAPH_ID)
+        ]
+        assert list(dataset.triples_choices(([triple[0]], triple[1], triple[2]))) == [
+            triple
+        ]
+        assert bool(dataset.query("ASK WHERE { <urn:s> <urn:p> <urn:o> }"))
+
+
+def test_dataset_parse_default_graph_does_not_warn() -> None:
+    dataset = Dataset()
+    triple: Tuple[Node, Node, Node] = (
+        URIRef("urn:s"),
+        URIRef("urn:p"),
+        URIRef("urn:o"),
+    )
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "error",
+            message=(
+                r"^Dataset\.default_context is deprecated, "
+                r"use Dataset\.default_graph instead\.$"
+            ),
+            category=DeprecationWarning,
+        )
+
+        dataset.parse(data="<urn:s> <urn:p> <urn:o> .", format="turtle")
+
+    assert triple in dataset.default_graph
+
+
+def test_dataset_update_default_graph_does_not_warn() -> None:
+    dataset = Dataset()
+    triple: Tuple[Node, Node, Node] = (
+        URIRef("urn:s"),
+        URIRef("urn:p"),
+        URIRef("urn:o"),
+    )
+    dataset.default_graph.add(triple)
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "error",
+            message=(
+                r"^Dataset\.default_context is deprecated, "
+                r"use Dataset\.default_graph instead\.$"
+            ),
+            category=DeprecationWarning,
+        )
+
+        dataset.update("DELETE DATA { <urn:s> <urn:p> <urn:o> }")
+
+    assert triple not in dataset.default_graph
+
+
 def test_not_union(get_dataset):
     store, dataset = get_dataset
     # Union depends on the SPARQL endpoint configuration
@@ -243,6 +329,44 @@ def test_iter(get_dataset):
         i_new += 1
 
     assert i_new == i_trad  # both should be 3
+
+
+@pytest.mark.parametrize(
+    "graph_name, expected_quads",
+    [
+        (
+            CONTEXT1,
+            {
+                (TAREK, LIKES, PIZZA, CONTEXT1),
+                (TAREK, LIKES, CHEESE, CONTEXT1),
+            },
+        ),
+        (
+            CONTEXT2,
+            {
+                (TAREK, LIKES, PIZZA, CONTEXT2),
+            },
+        ),
+        (
+            DATASET_DEFAULT_GRAPH_ID,
+            {
+                (TAREK, LIKES, CHEESE, DATASET_DEFAULT_GRAPH_ID),
+            },
+        ),
+    ],
+)
+def test_quads_restricted_to_requested_graph(get_dataset, graph_name, expected_quads):
+    """A quad shared by several graphs must only be reported for the graph asked for."""
+    store, d = get_dataset
+
+    d.add((TAREK, LIKES, PIZZA, CONTEXT1))
+    d.add((TAREK, LIKES, CHEESE, CONTEXT1))
+    d.add((TAREK, LIKES, PIZZA, CONTEXT2))
+    d.add((TAREK, LIKES, CHEESE))
+
+    quads = set(d.quads((None, None, None, graph_name)))
+
+    assert quads == expected_quads
 
 
 def test_graph_without_identifier() -> None:

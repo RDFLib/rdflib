@@ -10,7 +10,6 @@ import warnings
 from typing import (
     IO,
     Any,
-    Optional,
 )
 
 from rdflib.compare import to_canonical_graph
@@ -85,7 +84,10 @@ class TurtleSerializer(RecursiveSerializer):
             return
 
         namespace_manager = self.store.namespace_manager
-        store = to_canonical_graph(self.store)
+        # Canonicalize the same triples as non-canonical output; Dataset iterates quads.
+        triples = Graph()
+        triples += self.store.triples((None, None, None))
+        store = to_canonical_graph(triples)
         content = store.serialize(format="application/n-triples")
         lines = content.split("\n")
         lines.sort()
@@ -108,9 +110,9 @@ class TurtleSerializer(RecursiveSerializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
-        spacious: Optional[bool] = None,
+        base: str | None = None,
+        encoding: str | None = None,
+        spacious: bool | None = None,
         **kwargs: Any,
     ) -> None:
         self._canon = kwargs.get("canon", False)
@@ -130,13 +132,10 @@ class TurtleSerializer(RecursiveSerializer):
 
         self.start_document()
 
-        firstTime = True
         for subject in subjects_list:
             if self.is_done(subject):
                 continue
-            if firstTime:
-                firstTime = False
-            if self.statement(subject) and not firstTime:
+            if self.statement(subject):
                 self.write("\n")
 
         self.end_document()
@@ -150,14 +149,8 @@ class TurtleSerializer(RecursiveSerializer):
                 if node in self.keywords:
                     # predicate is a keyword
                     continue
-                if (
-                    self.base is not None
-                    and isinstance(node, URIRef)
-                    and node.startswith(self.base)
-                    and "#" not in node.replace(self.base, "")
-                    and "/" not in node.replace(self.base, "")
-                ):
-                    # predicate corresponds to base namespace
+                if isinstance(node, URIRef) and str(self.relativize(node)) != str(node):
+                    # The predicate will be written as a relative IRI.
                     continue
             # Don't use generated prefixes for subjects and objects
             self.get_pname(node, gen_prefix=(i == VERB))

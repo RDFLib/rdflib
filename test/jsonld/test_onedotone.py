@@ -75,34 +75,26 @@ known_bugs: tuple[str, ...] = (
     "toRdf/e089-in",
     "toRdf/e090-in",
     "toRdf/e091-in",
-    "toRdf/e110-in",
     "toRdf/e129-in",
     "toRdf/e130-in",
     # TODO: Just broken expansion...
     "toRdf/e080-in",
-    "toRdf/e092-in",
     "toRdf/e093-in",
     "toRdf/e094-in",
     "toRdf/e104-in",
-    "toRdf/e108-in",
-    # TODO: Odd result in list expansion
-    "toRdf/e105-in",
-    "toRdf/e107-in",
     # no expandContent option?
     "toRdf/e077-in",
-    # TODO: Investigate:
+    # The "#fragment-works" property expands to an IRI with two "#", which
+    # should be dropped as it isn't a valid IRI
     "toRdf/e111-in",
     "toRdf/e112-in",
+    # TODO: Investigate:
     "toRdf/e119-in",
     "toRdf/e120-in",
     "toRdf/e122-in",
     # RDFLib cannot keep a colon on the end of a prefix uri
     "toRdf/e117-in",
     "toRdf/e118-in",
-    # <ex:ns/> doesn't expand to <http://example.org/ns/>
-    "toRdf/e124-in",
-    # Similar to above?
-    "toRdf/e125-in",
     # Recursive Inclusion triggered!
     "toRdf/e128-in",
     # JSON-native double representation
@@ -128,7 +120,6 @@ known_bugs: tuple[str, ...] = (
     # Investigate property issues:
     "toRdf/pr38-in",
     "toRdf/pr39-in",
-    "toRdf/pr40-in",
     # Negative zero representation?
     "toRdf/rt01-in",
     # Property scope with @propagate not working
@@ -226,7 +217,17 @@ def get_test_suite_cases():
         else:  # fromRdf
             func = runner.do_test_serializer
         rdf_test_uri = URIRef("{0}{1}-manifest#t{2}".format(TC_BASE, cat, num))
-        yield rdf_test_uri, func, TC_BASE, cat, num, inputpath, expectedpath, context, options
+        yield (
+            rdf_test_uri,
+            func,
+            TC_BASE,
+            cat,
+            num,
+            inputpath,
+            expectedpath,
+            context,
+            options,
+        )
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -243,7 +244,7 @@ def global_state():
 # require the web, but making it narrower requires more refactoring.
 @pytest.mark.parametrize(
     "rdf_test_uri, func, suite_base, cat, num, inputpath, expectedpath, context, options",
-    get_test_suite_cases(),
+    list(get_test_suite_cases()),
 )
 def test_suite(
     rdf_test_uri: URIRef,

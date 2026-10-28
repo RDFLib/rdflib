@@ -51,11 +51,12 @@ def n3(test: RDFTest):
                     print(t)
                 raise Exception("Graphs do not match!")
 
-            assert isomorphic(
-                g, res
-            ), "graphs must be the same, expected\n%s\n, got\n%s" % (
-                g.serialize(),
-                res.serialize(),
+            assert isomorphic(g, res), (
+                "graphs must be the same, expected\n%s\n, got\n%s"
+                % (
+                    g.serialize(),
+                    res.serialize(),
+                )
             )
 
     except Exception:
@@ -126,17 +127,20 @@ for test in turtle_eval_skipped + turtle_positive_syntax_skipped:
 
 @pytest.mark.parametrize(
     "rdf_test_uri, type, rdf_test",
-    itertools.chain(
-        *(
-            read_manifest(
-                os.path.join(TEST_DATA_DIR, "suites", f"w3c/n3/{manifest}"), legacy=True
+    list(
+        itertools.chain(
+            *(
+                read_manifest(
+                    os.path.join(TEST_DATA_DIR, "suites", f"w3c/n3/{manifest}"),
+                    legacy=True,
+                )
+                for manifest in [
+                    "TurtleTests/manifest.ttl",
+                    "N3Tests/manifest-parser.ttl",
+                    "N3Tests/manifest-reasoner.ttl",
+                    "N3Tests/manifest-extended.ttl",
+                ]
             )
-            for manifest in [
-                "TurtleTests/manifest.ttl",
-                "N3Tests/manifest-parser.ttl",
-                "N3Tests/manifest-reasoner.ttl",
-                "N3Tests/manifest-extended.ttl",
-            ]
         )
     ),
 )

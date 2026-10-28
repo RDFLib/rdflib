@@ -92,7 +92,8 @@ del g
 
 # Load an RDF graph with some data - parsing Turtle input
 
-g = Graph().parse(data="""
+g = Graph().parse(
+    data="""
     PREFIX dcterms: <http://purl.org/dc/terms/>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -106,7 +107,8 @@ g = Graph().parse(data="""
         a dcterms:Agent , <https://schema.org/Organization> ;
         <https://schema.org/name> "KurrawongAI" ;
     .
-    """)
+    """
+)
 
 # 2.1 Basic JSON-LD serialization
 

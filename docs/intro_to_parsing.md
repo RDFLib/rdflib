@@ -53,11 +53,11 @@ print(len(g))
 # prints: 86
 ```
 
-[`parse()`][rdflib.Graph.parse] can process local files, remote data via a URL, as in this example, or RDF data in a string (using the `data` parameter).
+[`parse()`][rdflib.graph.Graph.parse] can process local files, remote data via a URL, as in this example, or RDF data in a string (using the `data` parameter).
 
 ## Saving RDF
 
-To store a graph in a file, use the [`serialize()`][rdflib.Graph.serialize] function:
+To store a graph in a file, use the [`serialize()`][rdflib.graph.Graph.serialize] function:
 
 ```python
 from rdflib import Graph
@@ -90,7 +90,7 @@ The following table lists the RDF formats you can serialize data to with rdflib,
 | Notation-3 | n3 | N3 is a superset of Turtle that also caters for rules and a few other things |
 | Trig | trig | Turtle-like format for RDF triples + context (RDF quads) and thus multiple graphs |
 | Trix | trix | RDF/XML-like format for RDF quads |
-| N-Quads | nquads | N-Triples-like format for RDF quads |
+| N-Quads | nquads or nq | N-Triples-like format for RDF quads |
 
 ## Working with multi-graphs
 

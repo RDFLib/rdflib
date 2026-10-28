@@ -7,11 +7,13 @@ def test_binding_with_optional_clause() -> None:
 
     See https://github.com/RDFLib/rdflib/issues/2957
     """
-    g = Graph().parse(data="""
+    g = Graph().parse(
+        data="""
         prefix ex:  <https://www.example.org/>
         ex:document ex:subject "Nice cars" .
         ex:someCar   ex:type "Car" .
-        """)
+        """
+    )
     result = g.query("""prefix ex:  <https://www.example.org/>
         select ?subject ?car
         where  {
@@ -28,6 +30,6 @@ def test_binding_with_optional_clause() -> None:
     assert len(result.bindings) == 1
     (first,) = result.bindings
     assert first.get(Variable("car")) == URIRef("https://www.example.org/someCar")
-    assert first.get(Variable("subject")) == Literal(
-        "Nice cars"
-    ), "optional clause didnt bind"
+    assert first.get(Variable("subject")) == Literal("Nice cars"), (
+        "optional clause didnt bind"
+    )

@@ -32,6 +32,7 @@ The following Stores are defined externally to rdflib's core package, so look to
 
 | Name | Repository | Notes |
 | --- | --- | --- |
+| Tentris | [repo](https://github.com/tentris/tentris) &#124; [PyPI](https://pypi.org/project/tentris/) &#124; [docs](https://docs.tentris.io/running_with_python.html) | Use the fast, in-memory [Tentris](https://tentris.io/) [WCOJ](https://en.wikipedia.org/wiki/Worst-case_optimal_join_algorithm) SPARQL engine as [native backend for rdflib's Graph](https://docs.tentris.io/running_with_python.html#native) or use rdflib's Graph to [connect to a running persistent Tentris instances via HTTP](https://docs.tentris.io/running_with_python.html#http). |
 | SQLAlchemy | [github.com/RDFLib/rdflib-sqlalchemy](https://github.com/RDFLib/rdflib-sqlalchemy) | An SQLAlchemy-backed, formula-aware RDFLib Store. Tested dialects are: SQLite, MySQL & PostgreSQL |
 | leveldb | [github.com/RDFLib/rdflib-leveldb](https://github.com/RDFLib/rdflib-leveldb) | An adaptation of RDFLib BerkeleyDB Store's key-value approach, using LevelDB as a back-end |
 | Kyoto Cabinet | [github.com/RDFLib/rdflib-kyotocabinet](https://github.com/RDFLib/rdflib-kyotocabinet) | An adaptation of RDFLib BerkeleyDB Store's key-value approach, using Kyoto Cabinet as a back-end |

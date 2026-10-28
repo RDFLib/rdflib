@@ -5,7 +5,7 @@ from textwrap import dedent
 
 import pytest
 
-from rdflib import RDF, BNode, Graph, Literal, Namespace
+from rdflib import RDF, BNode, Dataset, Graph, Literal, Namespace, URIRef
 from rdflib.compare import isomorphic
 from rdflib.namespace import GEO, SDO
 from rdflib.plugins.serializers.turtle import TurtleSerializer
@@ -259,3 +259,23 @@ def test_longturtle_shared_list_tail_round_trips():
     g2.parse(data=ttl_dump, format="turtle")
     assert len(g2) == len(g)
     assert isomorphic(g, g2)
+
+
+def test_longturtle_canon_works_for_a_dataset():
+    """
+    A ``Dataset`` iterates quads, which the canonicalizer does not accept, so
+    ``canon=True`` raised ``ValueError``. Like the output without ``canon``,
+    the canonical output holds the default graph only.
+    """
+    ns = Namespace("http://example.org/ns/")
+    ds = Dataset()
+    ds.add((ns.s, ns.p, BNode()))
+    ds.graph(URIRef("http://example.org/g")).add((ns.a, ns.b, ns.c))
+
+    ttl_dump = ds.serialize(format="longturtle", canon=True)
+    g = Graph()
+    g.parse(data=ttl_dump, format="turtle")
+    expected = Graph()
+    expected.parse(data=ds.serialize(format="longturtle"), format="turtle")
+    assert len(g) == 1
+    assert isomorphic(g, expected)

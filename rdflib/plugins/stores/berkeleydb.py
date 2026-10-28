@@ -94,8 +94,8 @@ class BerkeleyDB(Store):
 
     def __init__(
         self,
-        configuration: Optional[str] = None,
-        identifier: Optional[Identifier] = None,
+        configuration: str | None = None,
+        identifier: Identifier | None = None,
     ):
         if not has_bsddb:
             raise ImportError("Unable to import berkeleydb, store is unusable.")
@@ -106,13 +106,15 @@ class BerkeleyDB(Store):
         self._dumps = self.node_pickler.dumps
         self.__indicies_info: list[tuple[Any, _ToKeyFunc, _FromKeyFunc]]
 
-    def __get_identifier(self) -> Optional[Identifier]:
+    def __get_identifier(self) -> Identifier | None:
         return self.__identifier
 
     identifier = property(__get_identifier)
 
     def _init_db_environment(
-        self, homeDir: str, create: bool = True  # noqa: N803
+        self,
+        homeDir: str,  # noqa: N803
+        create: bool = True,
     ) -> db.DBEnv:
         if not exists(homeDir):
             if create is True:
@@ -133,7 +135,7 @@ class BerkeleyDB(Store):
 
     def open(
         self, configuration: Union[str, tuple[str, str]], create: bool = True
-    ) -> Optional[int]:
+    ) -> int | None:
         if not has_bsddb:
             return NO_STORE
 
@@ -212,7 +214,7 @@ class BerkeleyDB(Store):
 
             def get_prefix_func(start: int, end: int) -> _GetPrefixFunc:
                 def get_prefix(
-                    triple: tuple[str, str, str], context: Optional[str]
+                    triple: tuple[str, str, str], context: str | None
                 ) -> Generator[str, None, None]:
                     if context is None:
                         yield ""
@@ -313,7 +315,7 @@ class BerkeleyDB(Store):
         triple: _TripleType,
         context: _ContextType,
         quoted: bool = False,
-        txn: Optional[Any] = None,
+        txn: Any | None = None,
     ) -> None:
         """\
         Add a triple to the store of triples.
@@ -359,7 +361,7 @@ class BerkeleyDB(Store):
         spo: tuple[bytes, bytes, bytes],
         c: bytes,
         quoted: bool = False,
-        txn: Optional[Any] = None,
+        txn: Any | None = None,
     ) -> None:
         s, p, o = spo
         cspo, cpos, cosp = self.__indicies
@@ -393,8 +395,8 @@ class BerkeleyDB(Store):
     def remove(  # type: ignore[override]
         self,
         spo: _TriplePatternType,
-        context: Optional[_ContextType],
-        txn: Optional[Any] = None,
+        context: _ContextType | None,
+        txn: Any | None = None,
     ) -> None:
         subject, predicate, object = spo
         assert self.__open, "The Store must be open."
@@ -484,12 +486,10 @@ class BerkeleyDB(Store):
     def triples(
         self,
         spo: _TriplePatternType,
-        context: Optional[_ContextType] = None,
-        txn: Optional[Any] = None,
+        context: _ContextType | None = None,
+        txn: Any | None = None,
     ) -> Generator[
-        tuple[_TripleType, Generator[Optional[_ContextType], None, None]],
-        None,
-        None,
+        tuple[_TripleType, Generator[_ContextType | None, None, None]], None, None
     ]:
         """A generator over all the triples matching"""
         assert self.__open, "The Store must be open."
@@ -530,7 +530,7 @@ class BerkeleyDB(Store):
             else:
                 break
 
-    def __len__(self, context: Optional[_ContextType] = None) -> int:
+    def __len__(self, context: _ContextType | None = None) -> int:
         assert self.__open, "The Store must be open."
         if context is not None:
             if context == self:
@@ -576,7 +576,7 @@ class BerkeleyDB(Store):
             self.__prefix[bound_namespace or namespace] = bound_prefix or prefix
             self.__namespace[bound_prefix or prefix] = bound_namespace or namespace
 
-    def namespace(self, prefix: str) -> Optional[URIRef]:
+    def namespace(self, prefix: str) -> URIRef | None:
         # NOTE on type error: this is because the variable is reused with
         # another type.
         # type error: Incompatible types in assignment (expression has type "bytes", variable has type "str")
@@ -586,7 +586,7 @@ class BerkeleyDB(Store):
             return URIRef(ns.decode("utf-8"))
         return None
 
-    def prefix(self, namespace: URIRef) -> Optional[str]:
+    def prefix(self, namespace: URIRef) -> str | None:
         # NOTE on type error: this is because the variable is reused with
         # another type.
         # type error: Incompatible types in assignment (expression has type "bytes", variable has type "URIRef")
@@ -610,7 +610,7 @@ class BerkeleyDB(Store):
             yield prefix, URIRef(namespace)
 
     def contexts(
-        self, triple: Optional[_TripleType] = None
+        self, triple: _TripleType | None = None
     ) -> Generator[_ContextType, None, None]:
         _from_string = self._from_string
         _to_string = self._to_string
@@ -663,7 +663,7 @@ class BerkeleyDB(Store):
         k = self.__i2k.get(int(i))
         return self._loads(k)
 
-    def _to_string(self, term: Node, txn: Optional[Any] = None) -> str:
+    def _to_string(self, term: Node, txn: Any | None = None) -> str:
         k = self._dumps(term)
         i = self.__k2i.get(k, txn=txn)
         if i is None:
@@ -682,8 +682,8 @@ class BerkeleyDB(Store):
     def __lookup(
         self,
         spo: _TriplePatternType,
-        context: Optional[_ContextType],
-        txn: Optional[Any] = None,
+        context: _ContextType | None,
+        txn: Any | None = None,
     ) -> tuple[db.DB, bytes, _FromKeyFunc, _ResultsFromKeyFunc]:
         subject, predicate, object = spo
         _to_string = self._to_string
@@ -748,9 +748,9 @@ def results_from_key_func(
 ) -> _ResultsFromKeyFunc:
     def from_key(
         key: bytes,
-        subject: Optional[Node],
-        predicate: Optional[Node],
-        object: Optional[Node],
+        subject: Node | None,
+        predicate: Node | None,
+        object: Node | None,
         contexts_value: bytes,
     ) -> tuple[tuple[Node, Node, Node], Generator[Node, None, None]]:
         "Takes a key and subject, predicate, object; returns tuple for yield"

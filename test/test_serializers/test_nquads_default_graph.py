@@ -1,4 +1,4 @@
-from rdflib import Dataset
+from rdflib import Dataset, Graph, Literal, URIRef
 from rdflib.compare import isomorphic
 
 
@@ -37,3 +37,38 @@ def test_nquads_default_graph():
         assert isomorphic(graph, ds2.graph(graph.identifier)), print(
             f"{graph.identifier} not isomorphic"
         )
+
+
+def test_nquads_serializes_plain_graph():
+    """N-Quads must accept a non-context-aware Graph (issue #1892)."""
+    g = Graph()
+    g.add(
+        (
+            URIRef("http://example.org/s"),
+            URIRef("http://example.org/p"),
+            Literal("o"),
+        )
+    )
+    data = g.serialize(format="nquads")
+    assert "<http://example.org/s>" in data
+    assert '"o"' in data
+    parsed = Graph()
+    parsed.parse(data=data, format="nquads")
+    assert len(parsed) == 1
+
+
+def test_trix_serializes_plain_graph():
+    """TriX must accept a non-context-aware Graph (issue #1892)."""
+    g = Graph()
+    g.add(
+        (
+            URIRef("http://example.org/s"),
+            URIRef("http://example.org/p"),
+            Literal("o"),
+        )
+    )
+    data = g.serialize(format="trix")
+    assert "http://example.org/s" in data
+    parsed = Dataset()
+    parsed.parse(data=data, format="trix")
+    assert len(parsed) == 1

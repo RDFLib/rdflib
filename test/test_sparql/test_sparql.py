@@ -12,14 +12,19 @@ import rdflib.plugins.sparql.operators
 import rdflib.plugins.sparql.parser
 from rdflib import BNode, Dataset, Graph, Literal, URIRef
 from rdflib.compare import isomorphic
-from rdflib.namespace import RDF, RDFS, Namespace
+from rdflib.namespace import RDF, RDFS, XSD, Namespace
 from rdflib.plugins.sparql import prepareQuery, sparql
 from rdflib.plugins.sparql.algebra import translateQuery
 from rdflib.plugins.sparql.evaluate import evalPart
 from rdflib.plugins.sparql.evalutils import _eval
 from rdflib.plugins.sparql.parser import expandUnicodeEscapes, parseQuery
-from rdflib.plugins.sparql.parserutils import prettify_parsetree
-from rdflib.plugins.sparql.sparql import SPARQLError
+from rdflib.plugins.sparql.parserutils import CompValue, prettify_parsetree, value
+from rdflib.plugins.sparql.sparql import (
+    FrozenBindings,
+    NotBoundError,
+    QueryContext,
+    SPARQLError,
+)
 from rdflib.query import Result, ResultRow
 from rdflib.term import Identifier, Variable
 from test.utils import eq_
@@ -992,3 +997,252 @@ def test_expand_unicode_escapes(arg: str, expected_result: str, expected_valid: 
     else:
         with pytest.raises(ValueError, match="Invalid unicode code point"):
             _ = expandUnicodeEscapes(arg)
+
+
+# `IN` / `NOT IN` membership. SPARQL 1.1 17.4.1.9 defines `IN` as exactly
+# `(lhs = expr1) || (lhs = expr2) || ...` ("The test is done with `=` operator, which
+# tests for the same value"), and 17.4.1.10 defines `NOT IN` as its negation. So
+# membership must agree with `=`, and must follow the same error semantics: "Errors in
+# comparisons cause the IN expression to raise an error if the RDF term being tested is
+# not found elsewhere in the list". All six normative examples from those two sections
+# are covered by the parametrisations below.
+_EX = Namespace("urn:ex:")
+_IN_PREFIXES = "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> PREFIX ex: <urn:ex:> "
+
+
+def _in_count(stored: Identifier, filter_expr: str) -> int:
+    """Rows surviving ``filter_expr``, counted by ITERATING the result.
+
+    Deliberately not ``len(list(...))``: ``Result.__len__`` is consulted by
+    ``list()`` via ``PyObject_LengthHint``, which *clears* a ``TypeError`` raised
+    during evaluation, so a crashing filter would silently look like "no rows"
+    instead of failing the test.
+    """
+    g = Graph()
+    g.add((URIRef("urn:ex:s"), URIRef("urn:ex:p"), stored))
+    query = (
+        f"{_IN_PREFIXES}SELECT ?s WHERE {{ ?s <urn:ex:p> ?o . FILTER({filter_expr}) }}"
+    )
+    return sum(1 for _ in g.query(query))
+
+
+@pytest.mark.parametrize(
+    "stored, listed, in_matches",
+    [
+        # RDF 1.1: a simple literal and an xsd:string-typed literal are the SAME term.
+        (Literal("x"), '"x"', True),
+        (Literal("x", datatype=XSD.string), '"x"', True),
+        (Literal("x"), '"x"^^xsd:string', True),
+        (Literal("x", datatype=XSD.string), '"x"^^xsd:string', True),
+        # Numeric literals compare in value space across xsd types.
+        (Literal(1), "1.0", True),
+        (Literal(1.0), "1", True),
+        (Literal(1), "1", True),
+        (Literal(2), "1, 2, 3", True),
+        # Spec example (17.4.1.9): mixed IRI / string / numeric list.
+        (Literal(2), '<http://example/iri>, "str", 2.0', True),
+        # Non-literal terms: `Identifier.eq` falls back to `__eq__` for these.
+        (URIRef("urn:ex:x"), "<urn:ex:x>", True),
+        (URIRef("urn:ex:x"), "<urn:ex:y>", False),
+        (URIRef("urn:ex:x"), '"urn:ex:x"', False),
+        # Genuine non-matches must stay non-matches.
+        (Literal("x"), '"y"', False),
+        (Literal(1), "2", False),
+        # Different datatypes or language tags: no match, as with rdflib's `=`, which
+        # treats them as unequal unless rdflib.DAWG_LITERAL_COLLATION is set (see
+        # test_in_operator_follows_strict_literal_comparison).
+        (Literal("x"), "1", False),
+        (Literal(1), '"x"', False),
+        (Literal("x", lang="en"), '"x"', False),
+        # Language tags are case-insensitive (BCP 47); `=` already matches these.
+        (Literal("x", lang="en"), '"x"@EN', True),
+        (Literal("x"), '"x"@en', False),
+        (
+            Literal("2024-01-01", datatype=XSD.date),
+            '"2024-01-01T00:00:00"^^xsd:dateTime',
+            False,
+        ),
+        (Literal(True), "1", False),
+    ],
+)
+def test_in_operator_uses_value_equality(
+    stored: Identifier, listed: str, in_matches: bool
+) -> None:
+    """`IN` / `NOT IN` must compare in value space, exactly like `=` / `!=`.
+
+    The membership test previously used Python `==`, i.e. strict *term* equality, under
+    which `"x"` and `"x"^^xsd:string` -- identical terms in RDF 1.1 -- compared unequal
+    and `1` never matched `1.0`, while the equivalent `=` comparisons were correct.
+    """
+    assert _in_count(stored, f"?o IN ({listed})") == (1 if in_matches else 0)
+    assert _in_count(stored, f"?o NOT IN ({listed})") == (0 if in_matches else 1)
+    # The equivalence SPARQL 1.1 actually mandates, asserted directly.
+    assert _in_count(stored, f"?o IN ({listed})") == _in_count(
+        stored, " || ".join(f"?o = {item}" for item in listed.split(", "))
+    )
+
+
+@pytest.mark.parametrize(
+    "stored, listed, expected_rows",
+    [
+        # A match elsewhere in the list wins over an erroring entry, in either order.
+        # Spec: `2 IN (1/0, 2)` and `2 IN (2, 1/0)` are both true.
+        (Literal(2), "1/0, 2", 1),
+        (Literal(2), "2, 1/0", 1),
+        # An unbound variable is also only an error for that list entry (#3572).
+        (Literal(2), "?unbound, 2", 1),
+        (Literal(2), "2, ?unbound", 1),
+        # Two literals of the same unknown datatype, different lexical forms: rdflib
+        # raises TypeError here, which must be recorded as an error and NOT abort the
+        # scan, so the later genuine match still wins.
+        (Literal("x", datatype=_EX.custom), '"y"^^ex:custom, "x"^^ex:custom', 1),
+        # Ill-typed literal compared to a well-typed one of the same datatype.
+        (Literal("abc", datatype=XSD.integer), '1, "abc"^^xsd:integer', 1),
+        # An erroring entry with NO match must not match -- in particular it must not
+        # be evaluated in a boolean context, where `NotImplemented` is truthy (and is
+        # a TypeError on Python 3.14), which would make `IN` match everything.
+        (Literal(2), "1/0", 0),
+        (Literal(2), "3, 1/0", 0),
+        (Literal(2), "?unbound", 0),
+        (Literal(2), "3, ?unbound", 0),
+        (Literal(2), "?unbound, 3", 0),
+        # An erroring entry is an error for an IRI on the left as well.
+        (URIRef("urn:ex:x"), "1/0", 0),
+        (URIRef("urn:ex:x"), "1/0, <urn:ex:x>", 1),
+        (URIRef("urn:ex:x"), "?unbound, <urn:ex:x>", 1),
+        (URIRef("urn:ex:x"), "?unbound", 0),
+        # Empty list (the `RDF.nil` branch).
+        (Literal(2), "", 0),
+    ],
+)
+def test_in_operator_error_handling(
+    stored: Identifier, listed: str, expected_rows: int
+) -> None:
+    """An erroring list entry must not suppress a match elsewhere, nor fabricate one.
+
+    SPARQL 1.1 17.4.1.9: an error is only raised "if the RDF term being tested is not
+    found elsewhere in the list". The membership loop therefore has to record a failed
+    comparison and keep scanning -- a raised `TypeError` must not escape, and a
+    `NotImplemented` result must not be treated as a match.
+    """
+    assert _in_count(stored, f"?o IN ({listed})") == expected_rows
+    # `NOT IN` is the exact complement whenever a match was found; when every entry
+    # errored and none matched, both forms yield no rows (the error is propagated and
+    # the FILTER drops the row), so the two are still consistent.
+    not_in_rows = _in_count(stored, f"?o NOT IN ({listed})")
+    assert not_in_rows == (0 if expected_rows else (1 if listed == "" else 0))
+
+
+@pytest.mark.parametrize("operator", ["IN", "NOT IN"])
+@pytest.mark.parametrize("lhs", ["(1/0)", "?unbound"])
+def test_in_operator_with_an_erroring_left_hand_side(lhs: str, operator: str) -> None:
+    """Every comparison with an erroring left-hand side errs, so neither form holds."""
+    assert _in_count(Literal(2), f"{lhs} {operator} (2, 3)") == 0
+
+
+@pytest.mark.parametrize(
+    "listed, in_rows, not_in_rows",
+    [
+        # Literals of different datatypes are a type error under strict comparison,
+        # so neither form holds...
+        ("1", 0, 0),
+        # ...unless the term is found elsewhere in the list.
+        ('1, "x"', 1, 0),
+    ],
+)
+def test_in_operator_follows_strict_literal_comparison(
+    monkeypatch: pytest.MonkeyPatch, listed: str, in_rows: int, not_in_rows: int
+) -> None:
+    """With `rdflib.DAWG_LITERAL_COLLATION`, `=` raises a type error for literals that
+    are not the same term and have no common value space (RDFterm-equal, SPARQL 1.1
+    17.4.1.7). `IN` and `NOT IN` must do the same.
+    """
+    monkeypatch.setattr(rdflib, "DAWG_LITERAL_COLLATION", True)
+    assert _in_count(Literal("x"), f"?o IN ({listed})") == in_rows
+    assert _in_count(Literal("x"), f"?o NOT IN ({listed})") == not_in_rows
+
+
+@pytest.mark.parametrize("operator", ["IN", "NOT IN"])
+@pytest.mark.parametrize(
+    "listed, in_result, not_in_result",
+    [
+        ("?unbound, 2", True, False),
+        ("2, ?unbound", True, False),
+        ("?unbound, 2.0, ?also_unbound", True, False),
+        # No match: the error is the result, so `?result` is left unbound.
+        ("?unbound, 3", None, None),
+        ("3, ?unbound", None, None),
+        ("?unbound", None, None),
+    ],
+)
+def test_in_operator_unbound_entry_result(
+    operator: str, listed: str, in_result: bool | None, not_in_result: bool | None
+) -> None:
+    """Distinguish a false NOT IN result from an error hidden by FILTER."""
+    # Keep `?o` bound and selected: `Result.__iter__` skips solutions with no
+    # bindings, so with only `?result` selected an error would return no rows
+    # instead of one row with `?result` unbound.
+    query = f"SELECT ?o ?result WHERE {{ VALUES ?o {{ 2 }} BIND(?o {operator} ({listed}) AS ?result) }}"
+    rows = [row for row in Graph().query(query)]
+    expected = in_result if operator == "IN" else not_in_result
+    assert rows == [(Literal(2), None if expected is None else Literal(expected))]
+
+
+@pytest.mark.parametrize("node", [Variable("missing"), BNode("missing")])
+def test_value_unbound_error_flags(node: Variable | BNode) -> None:
+    """Returning errors is opt-in; variable-preserving callers keep their behavior."""
+    ctx = FrozenBindings(QueryContext(initBindings={}), {})
+    with pytest.raises(NotBoundError):
+        value(ctx, node)
+    assert isinstance(value(ctx, node, errors=True), NotBoundError)
+    assert value(ctx, node, variables=True) is node
+    assert value(ctx, node, variables=True, errors=True) is node
+
+
+def test_compvalue_preserves_list_errors() -> None:
+    """CompValue forwards error handling without changing ordinary item access."""
+    node = Variable("missing")
+    comp = CompValue("test", arg=[node, Literal(2)])
+    comp.ctx = FrozenBindings(QueryContext(initBindings={}), {})
+    result = comp.get("arg", errors=True)
+    assert isinstance(result[0], NotBoundError)
+    assert result[1] == Literal(2)
+    with pytest.raises(NotBoundError):
+        comp["arg"]
+    assert comp.get("arg", variables=True) == [node, Literal(2)]
+
+
+@pytest.mark.parametrize(
+    "expression",
+    [
+        "?o = ?u",
+        "?o + ?u",
+        "1 / (?o - 2)",
+        "?o IN (1, 1/0)",
+        # A bare unbound variable already sorted as no value before #3602.
+        "?u",
+    ],
+)
+@pytest.mark.parametrize("direction, expected", [("ASC", [2, 1]), ("DESC", [1, 2])])
+def test_order_by_erroring_expression(
+    expression: str, direction: str, expected: list[int]
+) -> None:
+    """An ORDER BY expression that errors sorts as no value instead of raising.
+
+    SPARQL 1.1 section 15.1 orders "no value" below every RDF term. The key errors
+    for `?o = 2` only, so that solution comes first ascending and last descending.
+    """
+    query = (
+        "SELECT ?o WHERE { VALUES (?o ?u) { (1 1) (2 UNDEF) } } "
+        f"ORDER BY {direction}({expression})"
+    )
+    rows = [row for row in Graph().query(query)]
+    assert rows == [(Literal(o),) for o in expected]
+
+
+@pytest.mark.parametrize("order_by", ["(1/0)", "DESC(1/0)"])
+def test_order_by_expression_erroring_for_every_solution(order_by: str) -> None:
+    """When the key errors for every solution, all solutions are still returned."""
+    query = f"SELECT ?o WHERE {{ VALUES ?o {{ 1 2 }} }} ORDER BY {order_by}"
+    rows = [row for row in Graph().query(query)]
+    assert sorted(rows) == [(Literal(1),), (Literal(2),)]

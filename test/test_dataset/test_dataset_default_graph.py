@@ -36,7 +36,7 @@ EXTENSION_FORMATS = {
 
 
 @pytest.mark.parametrize(
-    ["container_type", "file_extension"], make_load_default_and_named()
+    ["container_type", "file_extension"], list(make_load_default_and_named())
 )
 def test_load_default_and_named(
     container_type: Union[type[Dataset], type[ConjunctiveGraph]], file_extension: str
@@ -103,7 +103,7 @@ def make_load_default_only_cases() -> Iterable[ParameterSet]:
 
 
 @pytest.mark.parametrize(
-    ["container_type", "file_extension"], make_load_default_only_cases()
+    ["container_type", "file_extension"], list(make_load_default_only_cases())
 )
 def test_load_default_only(
     container_type: Union[type[Dataset], type[ConjunctiveGraph]], file_extension: str

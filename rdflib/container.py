@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from random import randint
-from typing import Iterable, Optional
+from typing import Iterable, Iterator, Optional
 
 from rdflib.graph import Graph
 from rdflib.namespace import RDF
@@ -174,6 +174,10 @@ class Container:
             else:
                 break
         return l_
+
+    def __iter__(self) -> Iterator[Optional[Node]]:
+        """Returns an iterator over the items in the container"""
+        return iter(self.items())
 
     def end(self):  #
         # find end index (1-based) of container

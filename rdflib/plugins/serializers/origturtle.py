@@ -191,8 +191,7 @@ class RecursiveSerializer(Serializer):
             and "#" not in uri.replace(base, "")
             and "/" not in uri.replace(base, "")
         ):
-            # type error: Incompatible types in assignment (expression has type "str", variable has type "Node")
-            uri = URIRef(uri.replace(base, "", 1))  # type: ignore[assignment]
+            return super().relativize(uri)
         return uri
 
 
@@ -298,14 +297,8 @@ class OrigTurtleSerializer(RecursiveSerializer):
                 if node in self.keywords:
                     # predicate is a keyword
                     continue
-                if (
-                    self.base is not None
-                    and isinstance(node, URIRef)
-                    and node.startswith(self.base)
-                    and "#" not in node.replace(self.base, "")
-                    and "/" not in node.replace(self.base, "")
-                ):
-                    # predicate corresponds to base namespace
+                if isinstance(node, URIRef) and str(self.relativize(node)) != str(node):
+                    # The predicate will be written as a relative IRI.
                     continue
             # Don't use generated prefixes for subjects and objects
             self.get_pname(node, gen_prefix=(i == VERB))

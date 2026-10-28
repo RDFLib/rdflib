@@ -12,12 +12,10 @@ import string
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
-from typing import Optional, TypeVar, Union
+from typing import Self, TypeVar, Union
 from urllib.parse import quote, unquote, urljoin, urlparse, urlsplit, urlunsplit
 from urllib.request import BaseHandler, OpenerDirector, Request
 from urllib.response import addinfourl
-
-from typing_extensions import Self
 
 from test.utils import ensure_suffix
 
@@ -48,7 +46,7 @@ def _windows_url2pathname(uri_path: str) -> str:
 def file_uri_to_path(
     file_uri: str,
     path_class: type[PurePathT] = PurePath,  # type: ignore[assignment]
-    url2pathname: Optional[Callable[[str], str]] = None,
+    url2pathname: Callable[[str], str] | None = None,
 ) -> PurePathT:
     """
     This function returns a pathlib.PurePath object for the supplied file URI.
@@ -150,7 +148,7 @@ class URIMapper:
         return self._map(local, to_local=False)
 
     def _map(self, value: Union[str, PurePath], to_local: bool = True) -> str:
-        error: Optional[ValueError] = None
+        error: ValueError | None = None
         mapping: URIMapping
         uri = value.as_uri() if isinstance(value, PurePath) else value
         for mapping in self.mappings:

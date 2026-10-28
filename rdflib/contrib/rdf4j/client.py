@@ -9,7 +9,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import Any, BinaryIO
 
-import httpx
+import httpx2 as httpx
 
 from rdflib import BNode
 from rdflib.contrib.rdf4j.exceptions import (
