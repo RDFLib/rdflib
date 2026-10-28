@@ -90,7 +90,7 @@ If you are not sure what format your file will be, you can use [`guess_format()`
 |---------|---------------------------------------------------------------|
 | json-ld | [`JsonLDParser`][rdflib.plugins.parsers.jsonld.JsonLDParser]  |
 | hext    | [`HextuplesParser`][rdflib.plugins.parsers.hext.HextuplesParser] |
-| jelly   | `RDFLibJellyParser`, from [pyjelly](https://w3id.org/jelly/pyjelly) |
+| jelly   | [`RDFLibJellyParser`](https://w3id.org/jelly/pyjelly/dev/api/#pyjelly.integrations.rdflib.parse.RDFLibJellyParser) |
 | n3      | [`N3Parser`][rdflib.plugins.parsers.notation3.N3Parser]       |
 | nquads  | [`NQuadsParser`][rdflib.plugins.parsers.nquads.NQuadsParser]  |
 | patch   | [`RDFPatchParser`][rdflib.plugins.parsers.patch.RDFPatchParser] |
@@ -136,7 +136,7 @@ graph.serialize(my_url, format='application/rdf+xml')
 | nquads     | [`NQuadsSerializer`][rdflib.plugins.serializers.nquads.NQuadsSerializer]             |
 | nt         | [`NTSerializer`][rdflib.plugins.serializers.nt.NTSerializer]                         |
 | hext       | [`HextuplesSerializer`][rdflib.plugins.serializers.hext.HextuplesSerializer]         |
-| jelly      | `RDFLibJellySerializer`, from [pyjelly](https://w3id.org/jelly/pyjelly)              |
+| jelly      | [`RDFLibJellySerializer`](https://w3id.org/jelly/pyjelly/dev/api/#pyjelly.integrations.rdflib.serialize.RDFLibJellySerializer) |
 | patch      | [`PatchSerializer`][rdflib.plugins.serializers.patch.PatchSerializer]                |
 | pretty-xml | [`PrettyXMLSerializer`][rdflib.plugins.serializers.rdfxml.PrettyXMLSerializer]       |
 | trig       | [`TrigSerializer`][rdflib.plugins.serializers.trig.TrigSerializer]                   |
