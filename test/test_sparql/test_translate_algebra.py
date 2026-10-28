@@ -1046,3 +1046,30 @@ def test_sparql_blank_node_comma():
     triples = parse_results[1]["where"].part[0].triples[0]
     s_count = sum(1 for i in range(0, len(triples), 3) if triples[i] == Variable("s"))
     assert s_count == 2, f"Found ?s as subject {s_count} times, expected 2"
+
+
+@pytest.mark.parametrize(
+    "query_text",
+    [
+        "SELECT (IF(?t, 1, 0) AS ?c) WHERE { :x :t ?t }",
+        "SELECT (SUBSTR(?s, STRLEN(?s) - 1) AS ?c) WHERE { :x :s ?s }",
+        "SELECT (SUBSTR(?s, 1, STRLEN(?s) - 1) AS ?c) WHERE { :x :s ?s }",
+    ],
+)
+def test_function_arguments(query_text: str) -> None:
+    """IF with a variable as condition and SUBSTR with expressions as start
+    and length are translated into the query text."""
+    graph = Graph().parse(
+        format="turtle",
+        data="""
+        @prefix : <http://example.org/> .
+        :x :t true ; :n 1 ; :s "abc" .
+        """,
+    )
+    query_text = "PREFIX : <http://example.org/>\n" + query_text
+
+    query_from_algebra = translateAlgebra(
+        algebra.translateQuery(parser.parseQuery(query_text))
+    )
+
+    assert list(graph.query(query_from_algebra)) == list(graph.query(query_text))
