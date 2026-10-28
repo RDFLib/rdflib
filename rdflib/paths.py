@@ -252,8 +252,9 @@ class InvPath(Path):
         subj: Optional[_SubjectType] = None,
         obj: Optional[_ObjectType] = None,
     ) -> Generator[tuple[_ObjectType, _SubjectType], None, None]:
-        for s, o in eval_path(graph, (obj, self.arg, subj)):
-            yield o, s
+        from rdflib._path import evaluate
+
+        return evaluate(self, graph, subj, obj, operator=InvPath)
 
     def __repr__(self) -> str:
         return "Path(~%s)" % (self.arg,)
@@ -277,40 +278,9 @@ class SequencePath(Path):
         subj: Optional[_SubjectType] = None,
         obj: Optional[_ObjectType] = None,
     ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
-        def _eval_seq(
-            paths: list[Path | URIRef],
-            subj: Optional[_SubjectType],
-            obj: Optional[_ObjectType],
-        ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
-            if paths[1:]:
-                for s, o in eval_path(graph, (subj, paths[0], None)):
-                    for r in _eval_seq(paths[1:], o, obj):
-                        yield s, r[1]
+        from rdflib._path import evaluate
 
-            else:
-                for s, o in eval_path(graph, (subj, paths[0], obj)):
-                    yield s, o
-
-        def _eval_seq_bw(
-            paths: list[Path | URIRef],
-            subj: Optional[_SubjectType],
-            obj: _ObjectType,
-        ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
-            if paths[:-1]:
-                for s, o in eval_path(graph, (None, paths[-1], obj)):
-                    for r in _eval_seq(paths[:-1], subj, s):
-                        yield r[0], o
-
-            else:
-                for s, o in eval_path(graph, (subj, paths[0], obj)):
-                    yield s, o
-
-        if subj:
-            return _eval_seq(self.args, subj, obj)
-        elif obj:
-            return _eval_seq_bw(self.args, subj, obj)
-        else:  # no vars bound, we can start anywhere
-            return _eval_seq(self.args, subj, obj)
+        return evaluate(self, graph, subj, obj, operator=SequencePath)
 
     def __repr__(self) -> str:
         return "Path(%s)" % " / ".join(str(x) for x in self.args)
@@ -334,9 +304,9 @@ class AlternativePath(Path):
         subj: Optional[_SubjectType] = None,
         obj: Optional[_ObjectType] = None,
     ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
-        for x in self.args:
-            for y in eval_path(graph, (subj, x, obj)):
-                yield y
+        from rdflib._path import evaluate
+
+        return evaluate(self, graph, subj, obj, operator=AlternativePath)
 
     def __repr__(self) -> str:
         return "Path(%s)" % " | ".join(str(x) for x in self.args)
@@ -369,98 +339,9 @@ class MulPath(Path):
         obj: Optional[_ObjectType] = None,
         first: bool = True,
     ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
-        if self.zero and first:
-            if subj and obj:
-                if subj == obj:
-                    yield subj, obj
-            elif subj:
-                yield subj, subj
-            elif obj:
-                yield obj, obj
+        from rdflib._path import evaluate
 
-        def _fwd(
-            subj: Optional[_SubjectType] = None,
-            obj: Optional[_ObjectType] = None,
-            seen: Optional[set[_SubjectType]] = None,
-        ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
-            # type error: Item "None" of "Optional[set[Node]]" has no attribute "add"
-            # type error: Argument 1 to "add" of "set" has incompatible type "Optional[Node]"; expected "Node"
-            seen.add(subj)  # type: ignore[union-attr, arg-type]
-
-            for s, o in eval_path(graph, (subj, self.path, None)):
-                if not obj or o == obj:
-                    yield s, o
-                if self.more:
-                    # type error: Unsupported right operand type for in ("Optional[set[Node]]")
-                    if o in seen:  # type: ignore[operator]
-                        continue
-                    for s2, o2 in _fwd(o, obj, seen):
-                        yield s, o2
-
-        def _bwd(
-            subj: Optional[_SubjectType] = None,
-            obj: Optional[_ObjectType] = None,
-            seen: Optional[set[_ObjectType]] = None,
-        ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
-            # type error: Item "None" of "Optional[set[Node]]" has no attribute "add"
-            # type error: Argument 1 to "add" of "set" has incompatible type "Optional[Node]"; expected "Node"
-            seen.add(obj)  # type: ignore[union-attr, arg-type]
-
-            for s, o in eval_path(graph, (None, self.path, obj)):
-                if not subj or subj == s:
-                    yield s, o
-                if self.more:
-                    # type error: Unsupported right operand type for in ("Optional[set[Node]]")
-                    if s in seen:  # type: ignore[operator]
-                        continue
-
-                    for s2, o2 in _bwd(None, s, seen):
-                        yield s2, o
-
-        def _all_fwd_paths() -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
-            if self.zero:
-                seen1 = set()
-                # According to the spec, ALL nodes are possible solutions
-                # (even literals)
-                # we cannot do this without going through ALL triples
-                # unless we keep an index of all terms somehow
-                # but let's just hope this query doesn't happen very often...
-                for s, o in graph.subject_objects(None):
-                    if s not in seen1:
-                        seen1.add(s)
-                        yield s, s
-                    if o not in seen1:
-                        seen1.add(o)
-                        yield o, o
-
-            seen = set()
-            for s, o in eval_path(graph, (None, self.path, None)):
-                if not self.more:
-                    yield s, o
-                else:
-                    if s not in seen:
-                        seen.add(s)
-                        f = list(_fwd(s, None, set()))
-                        for s1, o1 in f:
-                            assert s1 == s
-                            yield s1, o1
-
-        done = set()  # the spec does, by defn, not allow duplicates
-        if subj:
-            for x in _fwd(subj, obj, set()):
-                if x not in done:
-                    done.add(x)
-                    yield x
-        elif obj:
-            for x in _bwd(subj, obj, set()):
-                if x not in done:
-                    done.add(x)
-                    yield x
-        else:
-            for x in _all_fwd_paths():
-                if x not in done:
-                    done.add(x)
-                    yield x
+        return evaluate(self, graph, subj, obj, first, operator=MulPath)
 
     def __repr__(self) -> str:
         return "Path(%s%s)" % (self.path, self.mod)

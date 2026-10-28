@@ -176,9 +176,6 @@ MARK_DICT: MarksDictType = {
     f"{REMOTE_BASE_IRI}grouping/manifest#group07": pytest.mark.xfail(
         reason="Parses sucessfully instead of failing."
     ),
-    f"{REMOTE_BASE_IRI}property-path/manifest#pp37": pytest.mark.xfail(
-        reason="RDFLib produces one extra row"
-    ),
     f"{REMOTE_BASE_IRI}service/manifest#service1": pytest.mark.skip(
         reason="need custom handling"
     ),
