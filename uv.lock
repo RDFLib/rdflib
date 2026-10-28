@@ -4,7 +4,7 @@ requires-python = ">=3.11"
 resolution-markers = [
     "python_full_version >= '3.15'",
     "python_full_version >= '3.12' and python_full_version < '3.15' and sys_platform == 'emscripten'",
-    "(python_full_version < '3.15' and sys_platform != 'emscripten') or (python_full_version < '3.12' and sys_platform == 'emscripten')",
+    "python_full_version < '3.12' or (python_full_version >= '3.12' and python_full_version < '3.15' and sys_platform != 'emscripten')",
 ]
 
 [[package]]
@@ -95,9 +95,9 @@ wheels = [
 
 [[package]]
 name = "berkeleydb"
-version = "18.1.16"
+version = "18.1.17"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/b6/f8/ea5e26298ef5d9dba78eace1f029a7e0e11f8fe0250ac31468d63938b329/berkeleydb-18.1.16.tar.gz", hash = "sha256:782b1a13308f36375f3f4460237b7356d99be5c4c68c585c546d70db514a2add", size = 188890, upload-time = "2026-10-16T18:26:45.883Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/99/b8/9e8f3288b5dfd67d8c2265a27348a79db15919c81dcb08f9dddacfb323e2/berkeleydb-18.1.17.tar.gz", hash = "sha256:11e193bafccf87ba95e0d68af453b816af4c91763969331cddc63a58a75646d4", size = 191589, upload-time = "2026-10-24T18:47:59.477Z" }
 
 [[package]]
 name = "build"
