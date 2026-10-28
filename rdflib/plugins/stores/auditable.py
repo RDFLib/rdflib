@@ -82,7 +82,7 @@ class AuditableStore(Store):
     def add(
         self, triple: _TripleType, context: _ContextType, quoted: bool = False
     ) -> None:
-        (s, p, o) = triple
+        s, p, o = triple
         lock = destructiveOpLocks["add"]
         lock = lock if lock else threading.RLock()
         with lock:

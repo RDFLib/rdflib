@@ -128,20 +128,21 @@ It is also possible to pass a mime-type for the `format` parameter:
 graph.serialize(my_url, format='application/rdf+xml')
 ```
 
-| Name | Class |
-|------|-------|
-| json-ld | [`JsonLDSerializer`][rdflib.plugins.serializers.jsonld.JsonLDSerializer] |
-| n3 | [`N3Serializer`][rdflib.plugins.serializers.n3.N3Serializer] |
-| nquads | [`NQuadsSerializer`][rdflib.plugins.serializers.nquads.NQuadsSerializer] |
-| nt | [`NTSerializer`][rdflib.plugins.serializers.nt.NTSerializer] |
-| hext | [`HextuplesSerializer`][rdflib.plugins.serializers.hext.HextuplesSerializer] |
-| patch | [`PatchSerializer`][rdflib.plugins.serializers.patch.PatchSerializer] |
-| pretty-xml | [`PrettyXMLSerializer`][rdflib.plugins.serializers.rdfxml.PrettyXMLSerializer] |
-| trig | [`TrigSerializer`][rdflib.plugins.serializers.trig.TrigSerializer] |
-| trix | [`TriXSerializer`][rdflib.plugins.serializers.trix.TriXSerializer] |
-| turtle | [`TurtleSerializer`][rdflib.plugins.serializers.turtle.TurtleSerializer] |
-| longturtle | [`LongTurtleSerializer`][rdflib.plugins.serializers.longturtle.LongTurtleSerializer] |
-| xml | [`XMLSerializer`][rdflib.plugins.serializers.rdfxml.XMLSerializer] |
+| Name       | Class                                                                                |
+|------------|--------------------------------------------------------------------------------------|
+| json-ld    | [`JsonLDSerializer`][rdflib.plugins.serializers.jsonld.JsonLDSerializer]             |
+| n3         | [`N3Serializer`][rdflib.plugins.serializers.n3.N3Serializer]                         |
+| nquads     | [`NQuadsSerializer`][rdflib.plugins.serializers.nquads.NQuadsSerializer]             |
+| nt         | [`NTSerializer`][rdflib.plugins.serializers.nt.NTSerializer]                         |
+| hext       | [`HextuplesSerializer`][rdflib.plugins.serializers.hext.HextuplesSerializer]         |
+| patch      | [`PatchSerializer`][rdflib.plugins.serializers.patch.PatchSerializer]                |
+| pretty-xml | [`PrettyXMLSerializer`][rdflib.plugins.serializers.rdfxml.PrettyXMLSerializer]       |
+| trig       | [`TrigSerializer`][rdflib.plugins.serializers.trig.TrigSerializer]                   |
+| trix       | [`TriXSerializer`][rdflib.plugins.serializers.trix.TriXSerializer]                   |
+| turtle     | [`TurtleSerializer`][rdflib.plugins.serializers.turtle.TurtleSerializer]             |
+| longturtle | [`TurtleSerializer`][rdflib.plugins.serializers.turtle.TurtleSerializer]             |
+| origturtle | [`OrigTurtleSerializer`][rdflib.plugins.serializers.origturtle.OrigTurtleSerializer] |
+| xml        | [`XMLSerializer`][rdflib.plugins.serializers.rdfxml.XMLSerializer]                   |
 
 ### JSON-LD
 
@@ -160,6 +161,9 @@ For serialization of non-context-aware data sources, e.g. a single `Graph`, the 
 For context-aware (multi-graph) serialization, the 'graph' field of the default graph will be an empty string and the values for other graphs will be Blank Node IDs or IRIs.
 
 ### Longturtle
+
+The `longturtle` format name remains available as an alias of the default `turtle`
+serializer. Use `origturtle` for the previous compact formatting.
 
 Longturtle is just the turtle format with newlines preferred over compactness - multiple nodes on the same line to enhance the format's text file version control (think Git) friendliness - and more modern forms of prefix markers - PREFIX instead of @prefix - to make it as similar to SPARQL as possible.
 

@@ -36,5 +36,5 @@ def test_wgs_prefix_used_on_serialize():
         format="turtle",
     )
     ttl = g.serialize(format="turtle")
-    assert "@prefix wgs: <http://www.w3.org/2003/01/geo/wgs84_pos#>" in ttl
+    assert "PREFIX wgs: <http://www.w3.org/2003/01/geo/wgs84_pos#>" in ttl
     assert "wgs1:" not in ttl

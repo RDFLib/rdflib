@@ -11,7 +11,7 @@ import pytest
 from rdflib import BNode, Namespace, Node, URIRef, plugin
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph, QuotedGraph
 from rdflib.store import Store
-from test.data import CONTEXT1, LIKES, PIZZA, TAREK
+from test.data import CHEESE, CONTEXT1, CONTEXT2, LIKES, PIZZA, TAREK
 
 # Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
 # available. This assumes SPARQL1.1 query/update endpoints running locally at
@@ -119,6 +119,12 @@ def get_dataset(request):
                 pass
 
 
+@pytest.mark.parametrize("store", ["Memory", "SPARQLStore"])
+def test_repr_without_store_access(store: str) -> None:
+    dataset = Dataset(store=store)
+    assert "Dataset" in repr(dataset)
+
+
 def test_graph_aware(get_dataset):
     store, dataset = get_dataset
 
@@ -183,7 +189,7 @@ def test_default_graph(get_dataset):
     dataset.add((TAREK, LIKES, PIZZA))
     assert len(dataset) == 1
     # only default exists
-    assert list(dataset.graphs()) == [dataset.default_context]
+    assert list(dataset.graphs()) == [dataset.default_graph]
 
     # removing default graph removes triples but not actual graph
     dataset.remove_graph(DATASET_DEFAULT_GRAPH_ID)
@@ -191,7 +197,7 @@ def test_default_graph(get_dataset):
     assert len(dataset) == 0
 
     # default still exists
-    assert set(dataset.graphs()) == set([dataset.default_context])
+    assert set(dataset.graphs()) == set([dataset.default_graph])
 
 
 def test_len_counts_quads() -> None:
@@ -389,6 +395,44 @@ def test_iter(get_dataset):
 
     assert i_new == i_trad  # both should be 3
     assert len(d) == i_new
+
+
+@pytest.mark.parametrize(
+    "graph_name, expected_quads",
+    [
+        (
+            CONTEXT1,
+            {
+                (TAREK, LIKES, PIZZA, CONTEXT1),
+                (TAREK, LIKES, CHEESE, CONTEXT1),
+            },
+        ),
+        (
+            CONTEXT2,
+            {
+                (TAREK, LIKES, PIZZA, CONTEXT2),
+            },
+        ),
+        (
+            DATASET_DEFAULT_GRAPH_ID,
+            {
+                (TAREK, LIKES, CHEESE, DATASET_DEFAULT_GRAPH_ID),
+            },
+        ),
+    ],
+)
+def test_quads_restricted_to_requested_graph(get_dataset, graph_name, expected_quads):
+    """A quad shared by several graphs must only be reported for the graph asked for."""
+    store, d = get_dataset
+
+    d.add((TAREK, LIKES, PIZZA, CONTEXT1))
+    d.add((TAREK, LIKES, CHEESE, CONTEXT1))
+    d.add((TAREK, LIKES, PIZZA, CONTEXT2))
+    d.add((TAREK, LIKES, CHEESE))
+
+    quads = set(d.quads((None, None, None, graph_name)))
+
+    assert quads == expected_quads
 
 
 def test_graph_without_identifier() -> None:

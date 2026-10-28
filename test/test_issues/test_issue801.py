@@ -11,4 +11,6 @@ def test_issue_801():
     g.bind("", EGDO)
     node = BNode()
     g.add((node, EGDO["first%20name"], Literal("John")))
-    assert g.serialize(format="turtle").split("\n")[-3] == '[] :first%20name "John" .'
+    assert (
+        g.serialize(format="turtle").split("\n")[-3] == '[]    :first%20name "John" ;'
+    )

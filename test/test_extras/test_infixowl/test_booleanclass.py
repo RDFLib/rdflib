@@ -99,7 +99,7 @@ def test_booleanclass_serialize(graph):
 
     assert len(g1) > 0
 
-    assert g1.serialize(format="ttl") == (
+    assert g1.serialize(format="origturtle") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n"

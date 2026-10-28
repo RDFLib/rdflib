@@ -105,7 +105,7 @@ ex:graph-2 {
 
 
 # Print out one graph in the Dataset, using a standard Graph serialization format - longturtle
-print(d.get_graph(URIRef("http://example.com/graph-2")).serialize(format="longturtle"))
+print(d.get_graph(URIRef("http://example.com/graph-2")).serialize())
 
 # you should see something like this:
 """

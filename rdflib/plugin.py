@@ -274,8 +274,14 @@ register(
 register(
     "longturtle",
     Serializer,
-    "rdflib.plugins.serializers.longturtle",
-    "LongTurtleSerializer",
+    "rdflib.plugins.serializers.turtle",
+    "TurtleSerializer",
+)
+register(
+    "origturtle",
+    Serializer,
+    "rdflib.plugins.serializers.origturtle",
+    "OrigTurtleSerializer",
 )
 register(
     "application/n-triples",
@@ -323,6 +329,12 @@ register(
 )
 register(
     "nquads",
+    Serializer,
+    "rdflib.plugins.serializers.nquads",
+    "NQuadsSerializer",
+)
+register(
+    "nq",
     Serializer,
     "rdflib.plugins.serializers.nquads",
     "NQuadsSerializer",
@@ -453,6 +465,12 @@ register(
 )
 register(
     "nquads",
+    Parser,
+    "rdflib.plugins.parsers.nquads",
+    "NQuadsParser",
+)
+register(
+    "nq",
     Parser,
     "rdflib.plugins.parsers.nquads",
     "NQuadsParser",

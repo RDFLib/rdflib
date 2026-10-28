@@ -44,8 +44,7 @@ def test_sum_distinct():
 
 def test_avg_distinct():
     g = Graph()
-    results = g.query(
-        """
+    results = g.query("""
         SELECT ?x (MIN(?y_) as ?y) (AVG(DISTINCT ?z_) as ?z) {
           VALUES (?x ?y_ ?z_) {
             ("x1" 10 1)
@@ -54,8 +53,7 @@ def test_avg_distinct():
             ("x2" 20 2)
           }
        } GROUP BY ?x ORDER BY ?x
-    """
-    )
+    """)
     results = [[lit.toPython() for lit in line] for line in results]
 
     # this is the tricky part
@@ -93,29 +91,25 @@ def test_count_distinct():
     )
 
     # Query 1: people knowing someone younger
-    results = g.query(
-        """
+    results = g.query("""
     PREFIX : <http://example.org/>
 
     SELECT DISTINCT ?x {
       ?x :age ?ax ; :knows [ :age ?ay ].
       FILTER( ?ax > ?ay )
     }
-    """
-    )
+    """)
     assert len(results) == 2
 
     # nQuery 2: count people knowing someone younger
-    results = g.query(
-        """
+    results = g.query("""
     PREFIX : <http://example.org/>
 
     SELECT (COUNT(DISTINCT ?x) as ?cx) {
       ?x :age ?ax ; :knows [ :age ?ay ].
       FILTER( ?ax > ?ay )
     }
-    """
-    )
+    """)
     assert list(results)[0][0].toPython() == 2
 
 

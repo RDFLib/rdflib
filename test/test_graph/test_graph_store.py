@@ -217,11 +217,19 @@ def test_graph_store_bind(
     check_ns(graph, expected_bindings)
 
 
+def make_non_union_conjunctive_graph(store: Store) -> ConjunctiveGraph:
+    graph = ConjunctiveGraph(store=store, identifier=URIRef("urn:container"))
+    graph.default_context = Graph(store=store, identifier=URIRef("urn:chosen-default"))
+    graph.default_union = False
+    return graph
+
+
 @pytest.mark.parametrize(
     ("graph_factory", "query_graph"),
     [
         (Graph, lambda graph: graph.identifier),
         (ConjunctiveGraph, "__UNION__"),
+        (make_non_union_conjunctive_graph, URIRef("urn:chosen-default")),
         (Dataset, lambda graph: graph.default_context.identifier),
         (lambda store: Dataset(store=store, default_union=True), "__UNION__"),
     ],
@@ -280,6 +288,7 @@ def test_query_query_graph(
     [
         (Graph, lambda graph: graph.identifier),
         (ConjunctiveGraph, "__UNION__"),
+        (make_non_union_conjunctive_graph, URIRef("urn:chosen-default")),
         (Dataset, lambda graph: graph.default_context.identifier),
         (lambda store: Dataset(store=store, default_union=True), "__UNION__"),
     ],

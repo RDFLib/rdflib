@@ -42,7 +42,7 @@ class NQuadsSerializer(Serializer):
             store = self.store
             if TYPE_CHECKING:
                 assert isinstance(store, ConjunctiveGraph)
-            for context in store.contexts():
+            for context in store.graphs():
                 for triple in context:
                     stream.write(
                         _nq_row(triple, context.identifier).encode(encoding, "replace")
