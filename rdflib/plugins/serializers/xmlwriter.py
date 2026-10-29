@@ -41,7 +41,9 @@ class XMLWriter:
         encoding: str | None = None,
         decl: int = 1,
         extra_ns: dict[str, Namespace] | None = None,
+        canonical: bool = False,
     ):
+        self.canonical = canonical
         encoding = encoding or "utf-8"
         encoder, decoder, stream_reader, stream_writer = codecs.lookup(encoding)
         # NOTE on type ignores: this is mainly because the variable is being re-used.
@@ -116,15 +118,22 @@ class XMLWriter:
                 # Extra default namespaces take precedence, as required by TriX.
                 continue
             if prefix:
-                write('  xmlns:%s="%s"\n' % (prefix, namespace))
+                write(
+                    "  xmlns:%s=%s\n" % (prefix, self._namespace_attribute(namespace))
+                )
             else:
-                write('  xmlns="%s"\n' % namespace)
+                write("  xmlns=%s\n" % self._namespace_attribute(namespace))
 
         for prefix, namespace in self.extra_ns.items():
             if prefix:
-                write('  xmlns:%s="%s"\n' % (prefix, namespace))
+                write(
+                    "  xmlns:%s=%s\n" % (prefix, self._namespace_attribute(namespace))
+                )
             else:
-                write('  xmlns="%s"\n' % namespace)
+                write("  xmlns=%s\n" % self._namespace_attribute(namespace))
+
+    def _namespace_attribute(self, namespace: str) -> str:
+        return quoteattr(namespace) if self.canonical else '"%s"' % namespace
 
     def attribute(self, uri: str, value: str) -> None:
         write = self.stream.write
@@ -132,7 +141,12 @@ class XMLWriter:
 
     def text(self, text: str) -> None:
         self.__close_start_tag()
-        if "<" in text and ">" in text and "]]>" not in text:
+        if (
+            "<" in text
+            and ">" in text
+            and "]]>" not in text
+            and (not self.canonical or "\r" not in text)
+        ):
             self.stream.write("<![CDATA[")
             self.stream.write(text)
             self.stream.write("]]>")

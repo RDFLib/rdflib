@@ -1473,11 +1473,8 @@ class Graph(Node):
             self (i.e. the Graph instance) if `destination` is not None.
         """
 
-        # if base is not given as attribute use the base set for the graph
-        if base is None:
-            base = self.base
-
         serializer = plugin.get(format, Serializer)(self)
+        base = serializer._get_base(base, **args)
         stream: IO[bytes]
         if destination is None:
             stream = BytesIO()

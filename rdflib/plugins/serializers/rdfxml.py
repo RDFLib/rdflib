@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+import codecs
 import xml.dom.minidom
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 from typing import IO, Any
 from xml.sax.saxutils import escape, quoteattr
 
@@ -14,6 +15,16 @@ from rdflib.serializer import Serializer
 from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, Node, URIRef
 from rdflib.util import first, more_than
 
+from ._xmlsort import (
+    CanonicalSerializerStore,
+    canonical_option,
+    collection_cells,
+    first_ordered_object,
+    is_safe_collection,
+    ordered_predicate_objects,
+    ordered_subjects,
+    term_sort_key,
+)
 from .xmlwriter import ESCAPE_ENTITIES
 
 __all__ = ["fix", "XMLSerializer", "PrettyXMLSerializer"]
@@ -62,6 +73,14 @@ class XMLSerializer(Serializer):
         for prefix, namespace in bindings.items():
             yield prefix, namespace
 
+    def _relativize(self, uri: str) -> str:
+        return self.relativize(uri)
+
+    def _get_base(self, base: str | None, **args: Any) -> str | None:
+        if args.get("canon") is True:
+            return base
+        return super()._get_base(base, **args)
+
     def serialize(
         self,
         stream: IO[bytes],
@@ -69,27 +88,55 @@ class XMLSerializer(Serializer):
         encoding: str | None = None,
         **kwargs: Any,
     ) -> None:
-        # if base is given here, use that, if not and a base is set for the graph use that
-        if base is not None:
+        canonical = canonical_option(kwargs.pop("canon", False))
+        with CanonicalSerializerStore(self, canonical):
+            self._serialize(
+                stream,
+                base=base,
+                encoding=encoding,
+                canonical=canonical,
+                **kwargs,
+            )
+
+    def _serialize(
+        self,
+        stream: IO[bytes],
+        *,
+        base: str | None,
+        encoding: str | None,
+        canonical: bool,
+        **kwargs: Any,
+    ) -> None:
+        if canonical or base is not None:
             self.base = base
         elif self.store.base is not None:
             self.base = self.store.base
         self.__stream = stream
         self.__serialized: dict[Identifier, int] = {}
-        encoding = self.encoding
-        self.write = write = lambda uni: stream.write(uni.encode(encoding, "replace"))
+        self._canonical = canonical
+        encoding = (encoding or self.encoding) if canonical else self.encoding
+        self.write: Callable[[str], object]
+        write: Callable[[str], object]
+        if canonical:
+            if codecs.lookup(encoding).name == "utf-8":
+                encoding = "utf-8"
+            self.write = write = codecs.getwriter(encoding)(stream).write
+        else:
+            self.write = write = lambda uni: stream.write(
+                uni.encode(encoding, "replace")
+            )
 
         # startDocument
-        write('<?xml version="1.0" encoding="%s"?>\n' % self.encoding)
+        write('<?xml version="1.0" encoding="%s"?>\n' % encoding)
 
         # startRDF
         write("<rdf:RDF\n")
 
         # If provided, write xml:base attribute for the RDF
         if "xml_base" in kwargs:
-            write('   xml:base="%s"\n' % kwargs["xml_base"])
+            write("   xml:base=%s\n" % self._quoteattr(kwargs["xml_base"]))
         elif self.base:
-            write('   xml:base="%s"\n' % self.base)
+            write("   xml:base=%s\n" % self._quoteattr(self.base))
         # TODO:
         # assert(
         #    namespaces["http://www.w3.org/1999/02/22-rdf-syntax-ns#"]=='rdf')
@@ -98,13 +145,14 @@ class XMLSerializer(Serializer):
 
         for prefix, namespace in bindings:
             if prefix:
-                write('   xmlns:%s="%s"\n' % (prefix, namespace))
+                write("   xmlns:%s=%s\n" % (prefix, self._quoteattr(namespace)))
             else:
-                write('   xmlns="%s"\n' % namespace)
+                write("   xmlns=%s\n" % self._quoteattr(namespace))
         write(">\n")
 
         # write out triples by subject
-        for subject in self.store.subjects():
+        subjects = ordered_subjects(self.store) if canonical else self.store.subjects()
+        for subject in subjects:
             # type error: Argument 1 to "subject" of "XMLSerializer" has incompatible type "Node"; expected "Identifier"
             self.subject(subject, 1)  # type: ignore[arg-type]
 
@@ -114,6 +162,9 @@ class XMLSerializer(Serializer):
         # Set to None so that the memory can get garbage collected.
         # self.__serialized = None
         del self.__serialized
+
+    def _quoteattr(self, value: str) -> str:
+        return quoteattr(value) if self._canonical else '"%s"' % value
 
     def subject(self, subject: Identifier, depth: int = 1) -> None:
         if subject not in self.__serialized:
@@ -127,13 +178,18 @@ class XMLSerializer(Serializer):
                 if isinstance(subject, BNode):
                     write('%s<%s rdf:nodeID="%s"' % (indent, element_name, subject))
                 else:
-                    uri = quoteattr(self.relativize(subject))
+                    uri = quoteattr(self._relativize(subject))
                     write("%s<%s rdf:about=%s" % (indent, element_name, uri))
 
                 if (subject, None, None) in self.store:
                     write(">\n")
 
-                    for predicate, object in self.store.predicate_objects(subject):
+                    pairs = (
+                        ordered_predicate_objects(self.store, subject)
+                        if self._canonical
+                        else self.store.predicate_objects(subject)
+                    )
+                    for predicate, object in pairs:
                         # type error: Argument 1 to "predicate" of "XMLSerializer" has incompatible type "Node"; expected "Identifier"
                         # type error: Argument 2 to "predicate" of "XMLSerializer" has incompatible type "Node"; expected "Identifier"
                         self.predicate(predicate, object, depth + 1)  # type: ignore[arg-type]
@@ -153,14 +209,20 @@ class XMLSerializer(Serializer):
             attributes = ""
 
             if object.language:
-                attributes += ' xml:lang="%s"' % object.language
+                attributes += " xml:lang=%s" % self._quoteattr(object.language)
 
             if object.datatype:
-                attributes += ' rdf:datatype="%s"' % object.datatype
+                attributes += " rdf:datatype=%s" % self._quoteattr(object.datatype)
 
             write(
                 "%s<%s%s>%s</%s>\n"
-                % (indent, qname, attributes, escape(object, ESCAPE_ENTITIES), qname)
+                % (
+                    indent,
+                    qname,
+                    attributes,
+                    escape(object, ESCAPE_ENTITIES),
+                    qname,
+                )
             )
         else:
             if isinstance(object, BNode):
@@ -168,7 +230,7 @@ class XMLSerializer(Serializer):
             else:
                 write(
                     "%s<%s rdf:resource=%s/>\n"
-                    % (indent, qname, quoteattr(self.relativize(object)))
+                    % (indent, qname, quoteattr(self._relativize(object)))
                 )
 
 
@@ -193,6 +255,14 @@ class PrettyXMLSerializer(Serializer):
         super(PrettyXMLSerializer, self).__init__(store)
         self.forceRDFAbout: set[URIRef] = set()
 
+    def _relativize(self, uri: str) -> str:
+        return self.relativize(uri)
+
+    def _get_base(self, base: str | None, **args: Any) -> str | None:
+        if args.get("canon") is True:
+            return base
+        return super()._get_base(base, **args)
+
     def serialize(
         self,
         stream: IO[bytes],
@@ -200,10 +270,30 @@ class PrettyXMLSerializer(Serializer):
         encoding: str | None = None,
         **kwargs: Any,
     ) -> None:
+        canonical = canonical_option(kwargs.pop("canon", False))
+        with CanonicalSerializerStore(self, canonical):
+            self._serialize(
+                stream,
+                base=base,
+                encoding=encoding,
+                canonical=canonical,
+                **kwargs,
+            )
+
+    def _serialize(
+        self,
+        stream: IO[bytes],
+        *,
+        base: str | None,
+        encoding: str | None,
+        canonical: bool,
+        **kwargs: Any,
+    ) -> None:
         self.__serialized: dict[Identifier, int] = {}
+        self._canonical = canonical
         store = self.store
         # if base is given here, use that, if not and a base is set for the graph use that
-        if base is not None:
+        if canonical or base is not None:
             self.base = base
         elif store.base is not None:
             self.base = store.base
@@ -211,15 +301,22 @@ class PrettyXMLSerializer(Serializer):
         assert self.max_depth > 0, "max_depth must be greater than 0"
 
         self.nm = nm = store.namespace_manager
+        if canonical and codecs.lookup(encoding or self.encoding).name == "utf-8":
+            encoding = "utf-8"
         self.writer = writer = XMLWriter(
             stream,
             nm,
             encoding,
             extra_ns={"rdf": Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")},
+            canonical=canonical,
         )
         namespaces = {}
 
-        for predicate in set(store.predicates()):
+        predicates = set(store.predicates())
+        ordered_predicates = (
+            sorted(predicates, key=term_sort_key) if canonical else predicates
+        )
+        for predicate in ordered_predicates:
             prefix, namespace, local = _compute_qname_strict_for_term(nm, predicate)
             namespaces[prefix] = namespace
 
@@ -227,7 +324,11 @@ class PrettyXMLSerializer(Serializer):
         # shortened; the others are written as rdf:type properties of an
         # rdf:Description element (see `subject`), so failing to shorten one
         # is not an error.
-        for type_ in store.objects(None, RDF.type):
+        types = store.objects(None, RDF.type)
+        ordered_types = sorted(set(types), key=term_sort_key) if canonical else types
+        for type_ in ordered_types:
+            if canonical and not isinstance(type_, URIRef):
+                continue
             try:
                 # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
                 prefix, namespace, local = nm.compute_qname_strict(type_)  # type: ignore[arg-type]
@@ -242,12 +343,16 @@ class PrettyXMLSerializer(Serializer):
         elif self.base:
             writer.attribute(XMLBASE, self.base)
 
-        writer.namespaces(namespaces.items())
+        namespace_items = (
+            sorted(namespaces.items()) if canonical else namespaces.items()
+        )
+        writer.namespaces(namespace_items)
 
         subject: IdentifiedNode
         # Write out subjects that can not be inline
         # type error: Incompatible types in assignment (expression has type "Node", variable has type "IdentifiedNode")
-        for subject in store.subjects():  # type: ignore[assignment]
+        first_subjects = ordered_subjects(store) if canonical else store.subjects()
+        for subject in first_subjects:  # type: ignore[assignment]
             if (None, None, subject) in store:
                 if (subject, None, subject) in store:
                     self.subject(subject, 1)
@@ -259,19 +364,24 @@ class PrettyXMLSerializer(Serializer):
         bnodes = set()
 
         # type error: Incompatible types in assignment (expression has type "Node", variable has type "IdentifiedNode")
-        for subject in store.subjects():  # type: ignore[assignment]
+        remaining_subjects = ordered_subjects(store) if canonical else store.subjects()
+        for subject in remaining_subjects:  # type: ignore[assignment]
             if isinstance(subject, BNode):
                 bnodes.add(subject)
                 continue
             self.subject(subject, 1)
 
         # now serialize only those BNodes that have not been serialized yet
-        for bnode in bnodes:
+        final_bnodes = sorted(bnodes, key=term_sort_key) if canonical else bnodes
+        for bnode in final_bnodes:
             if bnode not in self.__serialized:
-                self.subject(subject, 1)
+                self.subject(bnode if canonical else subject, 1)
 
         writer.pop(RDFVOC.RDF)
-        stream.write("\n".encode("latin-1"))
+        if canonical:
+            writer.stream.write("\n")
+        else:
+            stream.write("\n".encode("latin-1"))
 
         # Set to None so that the memory can get garbage collected.
         self.__serialized = None  # type: ignore[assignment]
@@ -282,19 +392,32 @@ class PrettyXMLSerializer(Serializer):
 
         if subject in self.forceRDFAbout:
             writer.push(RDFVOC.Description)
-            writer.attribute(RDFVOC.about, self.relativize(subject))
+            writer.attribute(RDFVOC.about, self._relativize(subject))
             writer.pop(RDFVOC.Description)
             self.forceRDFAbout.remove(subject)  # type: ignore[arg-type]
 
         elif subject not in self.__serialized:
             self.__serialized[subject] = 1
-            type = first(store.objects(subject, RDF.type))
+            type = (
+                first_ordered_object(store, subject, RDF.type)
+                if self._canonical
+                else first(store.objects(subject, RDF.type))
+            )
 
-            try:
-                # type error: Argument 1 to "qname_strict" of "NamespaceManager" has incompatible type "Optional[Node]"; expected "str"
-                self.nm.qname_strict(type)  # type: ignore[arg-type]
-            except Exception:
-                type = None
+            if self._canonical:
+                if not isinstance(type, URIRef) or type.startswith(str(RDF)):
+                    type = None
+                else:
+                    try:
+                        self.nm.qname_strict(type)
+                    except ValueError:
+                        type = None
+            else:
+                try:
+                    # RDF types that cannot be shortened stay rdf:type properties.
+                    self.nm.qname_strict(type)  # type: ignore[arg-type]
+                except Exception:
+                    type = None
 
             element = type or RDFVOC.Description
             # type error: Argument 1 to "push" of "XMLWriter" has incompatible type "Node"; expected "str"
@@ -313,22 +436,27 @@ class PrettyXMLSerializer(Serializer):
                     writer.attribute(RDFVOC.nodeID, fix(subject))
 
             else:
-                writer.attribute(RDFVOC.about, self.relativize(subject))
+                writer.attribute(RDFVOC.about, self._relativize(subject))
 
             if (subject, None, None) in store:
-                for predicate, object in store.predicate_objects(subject):
+                pairs = (
+                    ordered_predicate_objects(store, subject)
+                    if self._canonical
+                    else store.predicate_objects(subject)
+                )
+                for predicate, object in pairs:
                     if not (predicate == RDF.type and object == type):
                         # type error: Argument 1 to "predicate" of "PrettyXMLSerializer" has incompatible type "Node"; expected "Identifier"
                         # type error: Argument 2 to "predicate" of "PrettyXMLSerializer" has incompatible type "Node"; expected "Identifier"
                         self.predicate(predicate, object, depth + 1)  # type: ignore[arg-type]
 
-            # type error: Argument 1 to "pop" of "XMLWriter" has incompatible type "Node"; expected "Optional[str]"
+            # type error: Argument 1 to "pop" of "XMLWriter" has incompatible type "Node"; expected "str | None"
             writer.pop(element)  # type: ignore[arg-type]
 
         elif subject in self.forceRDFAbout:
             # TODO FIXME?: this looks like a duplicate of first condition
             writer.push(RDFVOC.Description)
-            writer.attribute(RDFVOC.about, self.relativize(subject))
+            writer.attribute(RDFVOC.about, self._relativize(subject))
             writer.pop(RDFVOC.Description)
             self.forceRDFAbout.remove(subject)  # type: ignore[arg-type]
 
@@ -343,8 +471,10 @@ class PrettyXMLSerializer(Serializer):
             if object.language:
                 writer.attribute(XMLLANG, object.language)
 
-            if object.datatype == RDF.XMLLiteral and isinstance(
-                object.value, xml.dom.minidom.Document
+            if (
+                not self._canonical
+                and object.datatype == RDF.XMLLiteral
+                and isinstance(object.value, xml.dom.minidom.Document)
             ):
                 writer.attribute(RDFVOC.parseType, "Literal")
                 writer.text("")
@@ -361,10 +491,12 @@ class PrettyXMLSerializer(Serializer):
                 if more_than(store.triples((None, None, object)), 0):
                     writer.attribute(RDFVOC.nodeID, fix(object))
             else:
-                writer.attribute(RDFVOC.resource, self.relativize(object))
+                writer.attribute(RDFVOC.resource, self._relativize(object))
 
         else:
-            if first(store.objects(object, RDF.first)):  # may not have type
+            if first(store.objects(object, RDF.first)) and (
+                not self._canonical or is_safe_collection(store, object)
+            ):  # may not have type
                 # RDF.List
 
                 self.__serialized[object] = 1
@@ -373,13 +505,19 @@ class PrettyXMLSerializer(Serializer):
                 # RDF.first and RDF.rest are ignored... including RDF.List
                 import warnings
 
-                warnings.warn(
-                    "Assertions on %s other than RDF.first " % repr(object)
-                    + "and RDF.rest are ignored ... including RDF.List",
-                    UserWarning,
-                    stacklevel=2,
-                )
+                if not self._canonical:
+                    warnings.warn(
+                        "Assertions on %s other than RDF.first " % repr(object)
+                        + "and RDF.rest are ignored ... including RDF.List",
+                        UserWarning,
+                        stacklevel=2,
+                    )
                 writer.attribute(RDFVOC.parseType, "Collection")
+
+                if self._canonical:
+                    for cell in collection_cells(store, object):
+                        if isinstance(cell, Identifier):
+                            self.__serialized[cell] = 1
 
                 col = Collection(store, object)
 
@@ -399,7 +537,7 @@ class PrettyXMLSerializer(Serializer):
                         (object, RDF.type, [OWL_NS.Class, RDFS.Class])  # type: ignore[arg-type]
                     )
                 ) and isinstance(object, URIRef):
-                    writer.attribute(RDFVOC.resource, self.relativize(object))
+                    writer.attribute(RDFVOC.resource, self._relativize(object))
 
                 elif depth <= self.max_depth:
                     self.subject(object, depth + 1)
@@ -417,6 +555,6 @@ class PrettyXMLSerializer(Serializer):
                         writer.attribute(RDFVOC.nodeID, fix(object))
 
                 else:
-                    writer.attribute(RDFVOC.resource, self.relativize(object))
+                    writer.attribute(RDFVOC.resource, self._relativize(object))
 
         writer.pop(predicate)

@@ -92,6 +92,26 @@ The following table lists the RDF formats you can serialize data to with rdflib,
 | Trix | trix | RDF/XML-like format for RDF quads |
 | N-Quads | nquads or nq | N-Triples-like format for RDF quads |
 
+### Deterministic RDF/XML
+
+Use `canon=True` with `xml` or `pretty-xml` when you need reproducible output:
+
+```python
+document = g.serialize(format="xml", canon=True, encoding="utf-8")
+```
+
+For the same serialization options, isomorphic graphs produce identical output,
+including graphs with different blank-node labels, insertion orders, namespace
+bindings, or language-tag capitalization. The serializers work on a canonical
+copy, leaving the graph and its namespace bindings unchanged. Sorting and
+blank-node canonicalization cost additional time and memory, so the option is
+disabled by default.
+
+Canonical mode ignores `g.base`; pass `base=` explicitly when relative IRIs are
+desired. `pretty-xml` still honors `max_depth`. Choose the same format, encoding,
+base, and depth when comparing documents. This is deterministic RDF serialization,
+not the XML C14N algorithm.
+
 ## Working with multi-graphs
 
 To read and query multi-graphs, that is RDF data that is context-aware, you need to use rdflib's [`Dataset`][rdflib.Dataset] class. This an extension to [`Graph`][rdflib.Graph] that know all about quads (triples + graph IDs).

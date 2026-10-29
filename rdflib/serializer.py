@@ -40,6 +40,10 @@ class Serializer:
         self.encoding: str = "utf-8"
         self.base: str | None = None
 
+    def _get_base(self, base: str | None, **args: Any) -> str | None:
+        """Resolve the base passed from Graph.serialize."""
+        return self.store.base if base is None else base
+
     def serialize(
         self,
         stream: IO[bytes],
