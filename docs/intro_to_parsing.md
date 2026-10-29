@@ -55,6 +55,31 @@ print(len(g))
 
 [`parse()`][rdflib.graph.Graph.parse] can process local files, remote data via a URL, as in this example, or RDF data in a string (using the `data` parameter).
 
+## Detecting an unknown RDF format
+
+For a source with an unknown format, use `format="auto"`:
+
+```python
+from rdflib import Graph
+
+graph = Graph().parse(data="<urn:s> <urn:p> <urn:o> .", format="auto")
+```
+
+Responses labelled `application/octet-stream` or `application/octet-binary`
+also use content detection when no format is specified. Detection tries the
+built-in RDF/XML, TriX, JSON-LD, Hextuples, N-Quads, Turtle, TriG, N3 and
+N-Triples parsers in an order based on the content. Failed attempts leave the
+destination unchanged; a successful attempt copies its statements and namespace
+bindings into the destination. Use `Dataset` for sources containing named graphs.
+
+The input is buffered in memory and several parsers may run. If you know the
+format, specifying it is faster and avoids ambiguity between overlapping
+syntaxes. If every attempt fails, a `ParserError` summarizes the parser errors.
+
+Detection preserves the source URL and base information. Parsers can still
+follow external references, such as JSON-LD contexts, so the usual
+[security considerations](security_considerations.md) apply to untrusted data.
+
 ## Saving RDF
 
 To store a graph in a file, use the [`serialize()`][rdflib.graph.Graph.serialize] function:

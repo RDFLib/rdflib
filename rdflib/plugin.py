@@ -455,6 +455,24 @@ register(
     "rdflib.plugins.parsers.jsonld",
     "JsonLDParser",
 )
+register(
+    "auto",
+    Parser,
+    "rdflib.plugins.parsers.autodetect",
+    "AutoDetectParser",
+)
+register(
+    "application/octet-stream",
+    Parser,
+    "rdflib.plugins.parsers.autodetect",
+    "AutoDetectParser",
+)
+register(
+    "application/octet-binary",
+    Parser,
+    "rdflib.plugins.parsers.autodetect",
+    "AutoDetectParser",
+)
 
 # Register Quad Parsers
 register(
