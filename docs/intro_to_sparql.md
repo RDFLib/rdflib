@@ -41,6 +41,35 @@ As an alternative to using `SPARQL`'s `PREFIX`, namespace bindings can be passed
 
 Variables can also be pre-bound, using the `initBindings` kwarg which can pass in a `dict` of initial bindings. This is particularly useful for prepared queries, as described below.
 
+## Inspect query features
+
+[`extract_query_features()`][rdflib.plugins.sparql.extract_query_features]
+reports the syntax used by a query without executing it:
+
+```python
+from rdflib.plugins.sparql import extract_query_features
+
+features = extract_query_features("""
+    SELECT ?s WHERE {
+        GRAPH <urn:example> { ?s ?p ?value FILTER(?value < 10) }
+    } LIMIT 5
+""")
+assert features.query_form == "select"
+assert features.patterns == frozenset({"graph", "filter"})
+assert features.uses_all(["graph", "filter", "limit", "<"])
+```
+
+The immutable report contains patterns, solution modifiers, built-in and custom
+functions, aggregates, operators, variables, and dataset clauses. It includes
+features inside subqueries and reports presence rather than occurrence counts.
+`as_dict()` produces a deterministic JSON-compatible representation.
+
+The function also accepts unmodified `parseQuery()` output. Use `init_ns` to
+supply namespace bindings when the query omits a `PREFIX` declaration. Custom
+function IRIs are resolved against these bindings and the query prologue; their
+spelling remains case-sensitive. Invalid query syntax raises the parser's error.
+This is a syntax report, not a query authorization or cost check.
+
 ## Update Queries
 
 Update queries are performed just like reading queries but using the [`update()`][rdflib.graph.Graph.update] method. An example:

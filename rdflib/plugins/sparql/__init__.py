@@ -33,6 +33,7 @@ PLUGIN_ENTRY_POINT = "rdf.plugins.sparqleval"
 
 
 from . import operators, parser, parserutils
+from .features import QueryFeatures, extract_query_features
 from .processor import prepareQuery, prepareUpdate, processUpdate
 
 assert parser
@@ -59,4 +60,6 @@ __all__ = [
     "parser",
     "parserutils",
     "CUSTOM_EVALS",
+    "QueryFeatures",
+    "extract_query_features",
 ]
