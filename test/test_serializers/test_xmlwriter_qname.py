@@ -1,4 +1,6 @@
 import tempfile
+from io import BytesIO
+from xml.etree import ElementTree
 
 import pytest
 
@@ -72,3 +74,107 @@ def test_xmlwriter_qname(uri):
     xmlwr = XMLWriter(fp, g.namespace_manager, extra_ns={"": TRIXNS, "ex": EXNS})
 
     assert xmlwr.qname(uri[0]) == uri[1]
+
+
+@pytest.mark.parametrize(
+    "prefix, namespace",
+    [("rdf", rdflib.Namespace(str(rdflib.RDF))), ("", TRIXNS), ("ex", EXNS)],
+)
+@pytest.mark.parametrize("suffix", ["nested/value", "123value"])
+def test_xmlwriter_extra_namespace_invalid_local_name(prefix, namespace, suffix):
+    graph = rdflib.Graph(bind_namespaces="none")
+    graph.bind(prefix, namespace)
+    writer = XMLWriter(BytesIO(), graph.namespace_manager, extra_ns={prefix: namespace})
+
+    assert writer.qname(namespace[suffix]) == "ns1:value"
+
+
+@pytest.mark.parametrize(
+    "suffix, expected",
+    [
+        ("lang", "xml:lang"),
+        ("/value", "ns1:value"),
+        ("123value", "ns1:namespace123value"),
+    ],
+)
+def test_xmlwriter_xml_namespace_local_name(suffix, expected):
+    graph = rdflib.Graph(bind_namespaces="none")
+    writer = XMLWriter(BytesIO(), graph.namespace_manager)
+
+    assert writer.qname(rdflib.namespace.XMLNS + suffix) == expected
+
+
+@pytest.mark.parametrize(
+    "prefix, namespace",
+    [
+        ("rdf", rdflib.Namespace(str(rdflib.RDF))),
+        ("", TRIXNS),
+        ("ex", EXNS),
+        ("xml", rdflib.Namespace(rdflib.namespace.XMLNS)),
+    ],
+)
+@pytest.mark.parametrize(
+    "subnamespace", ["foo%20", "foo(", "foo)", "fooª", "fooµ", "fooº"]
+)
+def test_xmlwriter_longer_namespace_binding(prefix, namespace, subnamespace):
+    graph = rdflib.Graph(bind_namespaces="none")
+    graph.bind(prefix, namespace)
+    extended = rdflib.Namespace(str(namespace) + subnamespace)
+    graph.bind("extended", extended)
+    extra_ns = {} if prefix == "xml" else {prefix: namespace}
+    writer = XMLWriter(BytesIO(), graph.namespace_manager, extra_ns=extra_ns)
+
+    assert writer.qname(extended.value) == "extended:value"
+
+
+@pytest.mark.parametrize(
+    "namespace, prefix",
+    [(str(rdflib.RDF), "rdf"), (rdflib.namespace.XMLNS, "xml")],
+)
+@pytest.mark.parametrize(
+    "local_name", ["À", "Ö", "Ø", "ö", "ø", "Δelta", "名前", "a\u0301"]
+)
+def test_xmlwriter_valid_unicode_local_name(namespace, prefix, local_name):
+    graph = rdflib.Graph(bind_namespaces="none")
+    writer = XMLWriter(
+        BytesIO(),
+        graph.namespace_manager,
+        extra_ns={"rdf": rdflib.Namespace(str(rdflib.RDF))},
+    )
+
+    assert writer.qname(namespace + local_name) == prefix + ":" + local_name
+
+
+@pytest.mark.parametrize("namespaces", [[], (), {}.items()])
+def test_xmlwriter_explicit_empty_namespaces(namespaces):
+    graph = rdflib.Graph()
+    stream = BytesIO()
+    writer = XMLWriter(stream, graph.namespace_manager, decl=0, extra_ns={"ex": EXNS})
+
+    writer.namespaces(namespaces)
+
+    assert stream.getvalue() == b'\n  xmlns:ex="https://example.org/ns/"\n'
+
+
+def test_xmlwriter_conflicting_namespace_prefix():
+    graph = rdflib.Graph(bind_namespaces="none")
+    graph.bind("ex", EXNS)
+    writer = XMLWriter(BytesIO(), graph.namespace_manager, extra_ns={"ex": TRIXNS})
+
+    with pytest.raises(ValueError, match="Namespace prefix 'ex' is bound to both"):
+        writer.namespaces()
+
+
+def test_xmlwriter_matching_namespace_prefix():
+    graph = rdflib.Graph(bind_namespaces="none")
+    graph.bind("ex", EXNS)
+    stream = BytesIO()
+    writer = XMLWriter(stream, graph.namespace_manager, extra_ns={"ex": EXNS})
+
+    writer.push(EXNS.root)
+    writer.namespaces()
+    writer.pop()
+
+    assert (
+        ElementTree.fromstring(stream.getvalue()).tag == "{https://example.org/ns/}root"
+    )

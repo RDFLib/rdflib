@@ -360,6 +360,41 @@ class Store:
             context: a graph instance to query or None
         """
 
+    def quad_count(self) -> int:
+        """Return the number of non-quoted statement memberships in the store.
+
+        Count each graph occurrence separately, including the default graph.
+        Empty graphs contribute zero. This does not change the behavior of
+        [`Store.__len__()`][rdflib.store.Store.__len__].
+
+        Stores can override this operation with an equivalent native count.
+        The fallback scans asserted memberships for formula-aware stores and
+        otherwise enumerates contexts and sums their lengths. The latter may
+        require a remote request per graph, plus context enumeration.
+        """
+        if not self.context_aware:
+            return self.__len__()
+        if self.formula_aware:
+            # Quoted and asserted graphs can share an identifier, so a graph's
+            # type and length cannot distinguish their statement memberships.
+            return sum(
+                1 for _, contexts in self.triples((None, None, None)) for _ in contexts
+            )
+
+        from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph
+
+        count = 0
+        default_graph_seen = False
+        for context in self.contexts():
+            # Some stores return identifiers rather than Graph objects.
+            identifier = context.identifier if isinstance(context, Graph) else context
+            graph = Graph(self, identifier=identifier)
+            count += self.__len__(graph)
+            default_graph_seen |= graph.identifier == DATASET_DEFAULT_GRAPH_ID
+        if not default_graph_seen:
+            count += self.__len__(Graph(self, identifier=DATASET_DEFAULT_GRAPH_ID))
+        return count
+
     # type error: Missing return statement
     def contexts(  # type: ignore[empty-body]
         self, triple: _TripleType | None = None

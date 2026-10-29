@@ -2559,6 +2559,9 @@ class Dataset(ConjunctiveGraph):
     structure to include a graph identifier - archaically called Context - producing
     'quads' of s, p, o, g.
 
+    The length of a Dataset is the number of quads it contains. Identical triples
+    in different graphs are therefore counted separately.
+
     Triples, or quads, can be added to a Dataset. Triples, or quads with the graph
     identifer :code:`urn:x-rdflib:default` go into the default graph.
 
@@ -2744,6 +2747,17 @@ class Dataset(ConjunctiveGraph):
     def __str__(self) -> str:
         pattern = "[a rdflib:Dataset;rdflib:storage [a rdflib:Store;rdfs:label '%s']]"
         return pattern % self.store.__class__.__name__
+
+    def __len__(self) -> int:
+        """Number of asserted quads in the dataset.
+
+        Delegates to [`Store.quad_count()`][rdflib.store.Store.quad_count].
+        The cost depends on the store: Memory scans asserted memberships,
+        while RDF4JStore uses one repository-wide size request. Other stores
+        may enumerate graphs and request each graph's length separately.
+        Truth testing also calls this method, and results are not cached.
+        """
+        return self.store.quad_count()
 
     # type error: Return type "tuple[type[Dataset], tuple[Store, bool]]" of "__reduce__" incompatible with return type "tuple[type[Graph], tuple[Store, IdentifiedNode]]" in supertype "ConjunctiveGraph"
     # type error: Return type "tuple[type[Dataset], tuple[Store, bool]]" of "__reduce__" incompatible with return type "tuple[type[Graph], tuple[Store, IdentifiedNode]]" in supertype "Graph"

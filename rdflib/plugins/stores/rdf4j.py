@@ -220,3 +220,7 @@ class RDF4JStore(Store):
 
     def __len__(self, context: _ContextType | None = None) -> int:
         return self.repo.size(context if context is None else context.identifier)
+
+    def quad_count(self) -> int:
+        """Count explicit quads with one repository-wide size request."""
+        return self.repo.size()
