@@ -157,6 +157,17 @@ EG = Namespace("https://example.com/")
                 "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
             ),
         ),
+        (r"xsd:integer(1.9)", Literal(1)),
+        (r"xsd:integer(-1.9e0)", Literal(-1)),
+        (r"xsd:integer(true)", Literal(1)),
+        (r"xsd:decimal(1e3)", Literal(Decimal("1000.0"))),
+        (r"xsd:decimal(false)", Literal(Decimal("0"))),
+        (r"xsd:double(true)", Literal(1.0, datatype=XSD.double)),
+        (r"xsd:float(7)", Literal(7.0, datatype=XSD.float)),
+        (r"xsd:boolean(0.0)", Literal(False)),
+        (r"xsd:boolean(2)", Literal(True)),
+        (r'xsd:boolean("NaN"^^xsd:double)', Literal(False)),
+        (r'xsd:integer("INF"^^xsd:double)', None),
     ],
 )
 def test_function(expression: str, expected_result: Identifier | type) -> None:

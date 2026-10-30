@@ -704,6 +704,19 @@ def default_cast(e: Expr, ctx: FrozenBindings) -> Literal:  # type: ignore[retur
     if x.datatype == XSD.dateTime:
         raise SPARQLError("Cannot cast XSD.dateTime to %r" % e.iri)
 
+    # SPARQL 1.1 section 17.5: a numeric or boolean literal is cast by its
+    # value, so xsd:integer(1.9) is 1 and xsd:boolean(0.0) is false.
+    value: Any = None
+    if x.datatype == XSD.boolean and str(x) in ("true", "false", "1", "0"):
+        value = x.toPython()
+    elif x.datatype is not None and x.datatype != XSD.string:
+        try:
+            value = numeric(x)
+        except SPARQLTypeError:
+            pass
+    if isinstance(value, (bool, int, float, Decimal)):
+        return _cast_value(value, e.iri)
+
     if e.iri in (XSD.float, XSD.double):
         try:
             return Literal(float(x), datatype=e.iri)
@@ -734,6 +747,22 @@ def default_cast(e: Expr, ctx: FrozenBindings) -> Literal:  # type: ignore[retur
         if x.lower() in ("0", "false"):
             return Literal(False)
         raise SPARQLError("Cannot interpret '%r' as bool" % x)
+
+
+def _cast_value(value: bool | int | float | Decimal, iri: URIRef) -> Literal:
+    if iri in (XSD.float, XSD.double):
+        return Literal(float(value), datatype=iri)
+    if iri == XSD.boolean:
+        # NaN is false, like zero
+        return Literal(bool(value) and value == value)
+    if isinstance(value, float) and not math.isfinite(value):
+        raise SPARQLError("Cannot cast %r to %r" % (value, iri))
+    if iri == XSD.decimal:
+        return Literal(
+            Decimal(str(value)) if isinstance(value, float) else Decimal(value),
+            datatype=XSD.decimal,
+        )
+    return Literal(int(value), datatype=XSD.integer)
 
 
 def UnaryNot(expr: Expr, ctx: FrozenBindings) -> Literal:
