@@ -72,3 +72,24 @@ def test_logical_connectives_propagate_error(expression):
     query = "SELECT ?o ?r WHERE { BIND(2 AS ?o) BIND(%s AS ?r) }" % expression
     (row,) = rdflib.Graph().query(query)
     assert row[1] is None
+
+
+@pytest.mark.parametrize(
+    ("literal", "expected"),
+    [
+        ('"NaN"^^xsd:double', False),
+        ('"NaN"^^xsd:float', False),
+        ('"INF"^^xsd:double', True),
+        ('"1"^^xsd:integer', True),
+        ('"0.0"^^xsd:decimal', False),
+    ],
+)
+def test_ebv_nan(literal, expected):
+    # SPARQL 1.1 section 17.2.2: a numeric EBV is false for NaN.
+    query = (
+        "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> "
+        "SELECT ?r WHERE { VALUES ?v { %s } BIND(IF(?v, true, false) AS ?r) }" % literal
+    )
+    (row,) = rdflib.Graph().query(query)
+    assert row[0] is not None
+    assert row[0].toPython() is expected
