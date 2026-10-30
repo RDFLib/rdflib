@@ -1044,6 +1044,9 @@ class _AlgebraTranslator:
         # other Extend is a BIND. Holding them keeps their ids from going to the
         # nodes of a SERVICE body converted later.
         self._select_expressions_by_id: dict[int, CompValue] = {}
+        # The FROM and FROM NAMED clauses of the query, which only the outermost
+        # SELECT can have.
+        self._dataset_clause: str = ""
 
     def _clause_placeholder(self, clause: str) -> str:
         """Placeholder for a clause, such as GroupBy, of the innermost SELECT."""
@@ -1120,6 +1123,14 @@ class _AlgebraTranslator:
             if node.name == "SelectQuery":
                 self._alg_translation = (
                     "SELECT {" + node.p.name + "}" + self._values_placeholder(node.p)
+                )
+                self._dataset_clause = "".join(
+                    (
+                        " FROM NAMED " + clause.named.n3()
+                        if clause.named is not None
+                        else " FROM " + clause.default.n3()
+                    )
+                    for clause in node.datasetClause or []
                 )
 
             # 18.2 Graph Patterns
@@ -1322,11 +1333,14 @@ class _AlgebraTranslator:
                 order_by_pattern = ""
                 if node.p.name == "OrderBy":
                     order_by_pattern = "ORDER BY {OrderConditions}"
+                # A subquery cannot have a dataset clause.
+                dataset_clause = "" if self._select_ids else self._dataset_clause
                 self._select_ids.append(id(node))
                 self._replace(
                     "{Project}",
                     # SELECT * with no variables in scope projects none.
                     (" ".join(project_variables) or "*")
+                    + dataset_clause
                     + "{{"
                     + node.p.name
                     + "}}"
