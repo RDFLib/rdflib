@@ -1236,6 +1236,8 @@ def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> bool:
                     'Could not determine the EBV for : %r"
                     % rt
                 )
+            elif isinstance(pyRT, float) and math.isnan(pyRT):
+                return False
             else:
                 return bool(pyRT)
 
