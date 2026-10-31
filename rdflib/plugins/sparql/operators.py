@@ -715,7 +715,10 @@ def default_cast(e: Expr, ctx: FrozenBindings) -> Literal:  # type: ignore[retur
         except SPARQLTypeError:
             pass
     if isinstance(value, (bool, int, float, Decimal)):
-        return _cast_value(value, e.iri)
+        try:
+            return _cast_value(value, e.iri)
+        except (ArithmeticError, ValueError) as error:
+            raise SPARQLError("Cannot cast %r to %r" % (x, e.iri)) from error
 
     if e.iri in (XSD.float, XSD.double):
         try:
@@ -750,8 +753,14 @@ def default_cast(e: Expr, ctx: FrozenBindings) -> Literal:  # type: ignore[retur
 
 
 def _cast_value(value: bool | int | float | Decimal, iri: URIRef) -> Literal:
+    if isinstance(value, Decimal) and not value.is_finite():
+        raise SPARQLError("Cannot cast non-finite decimal %r to %r" % (value, iri))
     if iri in (XSD.float, XSD.double):
-        return Literal(float(value), datatype=iri)
+        try:
+            converted = float(value)
+        except OverflowError:
+            converted = -math.inf if value < 0 else math.inf
+        return Literal(converted, datatype=iri)
     if iri == XSD.boolean:
         # NaN is false, like zero
         return Literal(bool(value) and value == value)

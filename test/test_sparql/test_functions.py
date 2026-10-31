@@ -191,6 +191,52 @@ def test_function(expression: str, expected_result: Identifier | type) -> None:
         assert actual_result == expected_result
 
 
+@pytest.mark.parametrize("datatype", [XSD.float, XSD.double])
+@pytest.mark.parametrize(
+    ["value", "expected"],
+    [
+        pytest.param(10**400, "INF", id="positive"),
+        pytest.param(-(10**400), "-INF", id="negative"),
+    ],
+)
+def test_cast_large_integer(datatype: URIRef, value: int, expected: str) -> None:
+    result = Graph().query(
+        f"SELECT ({datatype.n3()}(?value) AS ?result) WHERE {{}}",
+        initBindings={"value": Literal(value)},
+    )
+    assert list(result) == [(Literal(expected, datatype=datatype),)]
+
+
+@pytest.mark.parametrize(
+    "datatype", [XSD.integer, XSD.decimal, XSD.float, XSD.double, XSD.boolean]
+)
+@pytest.mark.parametrize("value", ["NaN", "sNaN", "INF", "-INF"])
+def test_cast_non_finite_decimal(datatype: URIRef, value: str) -> None:
+    # Non-finite values are outside the xsd:decimal value space.
+    result = Graph().query(
+        f"""
+        PREFIX eg: <https://example.com/>
+        CONSTRUCT {{ eg:subject eg:cast ?cast ; eg:fallback ?fallback }}
+        WHERE {{
+            BIND({datatype.n3()}(?value) AS ?cast)
+            BIND(COALESCE({datatype.n3()}(?value), 42) AS ?fallback)
+        }}
+        """,
+        initBindings={"value": Literal(value, datatype=XSD.decimal, normalize=False)},
+    )
+    assert result.graph is not None
+    assert set(result.graph) == {(EG.subject, EG.fallback, Literal(42))}
+
+
+def test_cast_double_with_exponent_to_decimal() -> None:
+    result = Graph().query(
+        "SELECT (xsd:decimal(?value) AS ?result) WHERE {}",
+        initBindings={"value": Literal("1e3", datatype=XSD.double, normalize=False)},
+        initNs={"xsd": XSD},
+    )
+    assert list(result) == [(Literal(Decimal("1000.0")),)]
+
+
 @pytest.mark.parametrize(
     ["literal", "range", "expected_result"],
     [
