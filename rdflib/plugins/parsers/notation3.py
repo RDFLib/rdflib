@@ -1279,16 +1279,18 @@ class SinkParser:
                 assert 0, "not used?"
                 ns = self._baseURI + ADDED_HASH  # type: ignore[unreachable]
             else:
-                try:
+                # Look the prefix up before raising. BadSyntax from inside
+                # `except KeyError` keeps the KeyError on the traceback, which
+                # is what a user sees instead of the unbound-prefix message.
+                if pfx in self._bindings:
                     ns = self._bindings[pfx]
-                except KeyError:
-                    if pfx == "_":  # Magic prefix 2001/05/30, can be changed
-                        res.append(self.anonymousNode(ln))
-                        return j
-                    if not self.turtle and pfx == "":
-                        ns = join(self._baseURI or "", "#")
-                    else:
-                        self.BadSyntax(argstr, i, 'Prefix "%s:" not bound' % (pfx))
+                elif pfx == "_":  # Magic prefix 2001/05/30, can be changed
+                    res.append(self.anonymousNode(ln))
+                    return j
+                elif not self.turtle and pfx == "":
+                    ns = join(self._baseURI or "", "#")
+                else:
+                    self.BadSyntax(argstr, i, 'Prefix "%s:" not bound' % (pfx))
             symb = self._store.newSymbol(ns + ln)
             res.append(self._variables.get(symb, symb))
             return j

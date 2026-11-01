@@ -290,6 +290,25 @@ def test_blank_node_label_with_escaped_trailing_dot(
         Graph().parse(data=data, format=format_name)
 
 
+@pytest.mark.parametrize("format_name", ["turtle", "n3", "trig"])
+def test_unbound_prefix_is_a_syntax_error(format_name: str) -> None:
+    """An unknown prefix is reported as BadSyntax, not a KeyError.
+
+    Regression for https://github.com/RDFLib/rdflib/issues/3539.
+    """
+    data = "@prefix ex: <http://example.org/> .\nex:s pid:p ex:o .\n"
+    with pytest.raises(BadSyntax) as caught:
+        Graph().parse(data=data, format=format_name)
+
+    error = caught.value
+    formatted = "".join(traceback.format_exception(error))
+    only = "".join(traceback.format_exception_only(error))
+    assert 'Prefix "pid:" not bound' in only
+    assert 'Prefix "pid:" not bound' in formatted
+    assert "KeyError" not in formatted
+    assert "<no detail available>" not in formatted
+
+
 def test_badsyntax_msg_matches_rendered_detail() -> None:
     """SyntaxError.msg keeps the diagnostic BadSyntax already renders.
 
