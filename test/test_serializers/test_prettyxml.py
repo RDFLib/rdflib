@@ -4,7 +4,7 @@ import pytest
 
 from rdflib.compare import isomorphic
 from rdflib.graph import Dataset, Graph
-from rdflib.namespace import RDF, RDFS
+from rdflib.namespace import RDF, RDFS, XMLNS
 from rdflib.plugins.serializers.rdfxml import PrettyXMLSerializer
 from rdflib.term import BNode, Literal, URIRef
 
@@ -212,6 +212,110 @@ def _assert_expected_object_types_for_predicates(graph, predicates, types):
             assert True in some_true, (
                 "Bad type %s for object when predicate is <%s>." % (type(o), p)
             )
+
+
+def test_pretty_xml_bind_namespaces_none():
+    # https://github.com/RDFLib/rdflib/issues/2408
+    graph = Graph(bind_namespaces="none")
+    graph.parse(data='prefix ex: <http://example.org/> ex:a ex:b "test"@en .')
+
+    result = graph.serialize(format="pretty-xml")
+
+    assert "<rdf:RDF" in result
+    assert 'rdf:about="http://example.org/a"' in result
+    assert 'xml:lang="en"' in result
+    assert "ns1" not in result
+    assert isomorphic(graph, Graph().parse(data=result, format="xml"))
+
+
+@pytest.mark.parametrize("bind_namespaces", ["rdflib", "none"])
+@pytest.mark.parametrize("term_role", ["predicate", "type"])
+def test_pretty_xml_conflicting_rdf_prefix(bind_namespaces, term_role):
+    graph = Graph(bind_namespaces=bind_namespaces)
+    graph.bind("rdf", "http://example.org/", replace=True)
+    subject = URIRef("http://example.org/subject")
+    term = URIRef("http://example.org/term")
+    if term_role == "predicate":
+        graph.add((subject, term, Literal("value")))
+    else:
+        graph.add((subject, RDF.type, term))
+
+    with pytest.raises(ValueError, match="Namespace prefix 'rdf' is bound to both"):
+        graph.serialize(format="pretty-xml")
+
+
+@pytest.mark.parametrize("namespace", [str(RDF), XMLNS])
+@pytest.mark.parametrize("suffix", ["nested/value", "/value", "123value"])
+@pytest.mark.parametrize("term_role", ["predicate", "type"])
+@pytest.mark.parametrize("bind_namespaces", ["rdflib", "none"])
+def test_pretty_xml_invalid_fixed_namespace_local_name(
+    namespace, suffix, term_role, bind_namespaces
+):
+    graph = Graph(bind_namespaces=bind_namespaces)
+    subject = URIRef("http://example.org/subject")
+    term = URIRef(namespace + suffix)
+    if term_role == "predicate":
+        graph.add((subject, term, Literal("value")))
+    else:
+        graph.add((subject, RDF.type, term))
+
+    result = graph.serialize(format="pretty-xml")
+
+    assert isomorphic(graph, Graph().parse(data=result, format="xml"))
+
+
+@pytest.mark.parametrize("namespace", [str(RDF), XMLNS])
+@pytest.mark.parametrize(
+    "subnamespace", ["foo%20", "foo(", "foo)", "fooª", "fooµ", "fooº"]
+)
+@pytest.mark.parametrize("term_role", ["predicate", "type"])
+@pytest.mark.parametrize("bind_namespaces", ["rdflib", "none"])
+def test_pretty_xml_longer_namespace_binding(
+    namespace, subnamespace, term_role, bind_namespaces
+):
+    graph = Graph(bind_namespaces=bind_namespaces)
+    extended = namespace + subnamespace
+    graph.bind("extended", extended)
+    subject = URIRef("http://example.org/subject")
+    term = URIRef(extended + "value")
+    if term_role == "predicate":
+        graph.add((subject, term, Literal("value")))
+    else:
+        graph.add((subject, RDF.type, term))
+
+    result = graph.serialize(format="pretty-xml")
+
+    assert isomorphic(graph, Graph().parse(data=result, format="xml"))
+    assert "<extended:value" in result
+
+
+@pytest.mark.parametrize("namespace", [str(RDF), XMLNS])
+@pytest.mark.parametrize("local_name", ["éclair", "Δelta", "名前", "a\u0301"])
+@pytest.mark.parametrize("term_role", ["predicate", "type"])
+def test_pretty_xml_valid_unicode_local_name(namespace, local_name, term_role):
+    graph = Graph()
+    subject = URIRef("http://example.org/subject")
+    term = URIRef(namespace + local_name)
+    if term_role == "predicate":
+        graph.add((subject, term, Literal("value")))
+    else:
+        graph.add((subject, RDF.type, term))
+
+    result = graph.serialize(format="pretty-xml")
+
+    assert isomorphic(graph, Graph().parse(data=result, format="xml"))
+
+
+@pytest.mark.parametrize("bind_namespaces", ["rdflib", "none"])
+def test_pretty_xml_empty_graph_omits_unused_namespaces(bind_namespaces):
+    graph = Graph(bind_namespaces=bind_namespaces)
+    graph.bind("unused", "http://example.org/?a=1&b=")
+
+    result = graph.serialize(format="pretty-xml")
+
+    assert isomorphic(graph, Graph().parse(data=result, format="xml"))
+    assert result.count("xmlns:") == 1
+    assert 'xmlns:rdf="%s"' % RDF in result
 
 
 def test_unprefixable_predicate_raises_clear_error():

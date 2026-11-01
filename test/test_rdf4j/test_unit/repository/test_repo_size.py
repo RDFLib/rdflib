@@ -8,7 +8,7 @@ import pytest
 from rdflib.contrib.rdf4j import has_httpx
 from rdflib.contrib.rdf4j.exceptions import RepositoryResponseFormatError
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
-from rdflib.term import URIRef
+from rdflib.term import BNode, IdentifiedNode, URIRef
 
 pytestmark = pytest.mark.skipif(
     not has_httpx, reason="skipping rdf4j tests, httpx not available"
@@ -28,14 +28,16 @@ if has_httpx:
         [DATASET_DEFAULT_GRAPH_ID, "null"],
         ["http://example.com/graph", "<http://example.com/graph>"],
         [URIRef("http://example.com/graph"), "<http://example.com/graph>"],
+        [BNode("blank"), "_:blank"],
+        [[URIRef("urn:named"), BNode("blank")], ["<urn:named>", "_:blank"]],
         [None, None],
     ],
 )
 def test_repo_size_graph_name(
     repo: Repository,
     monkeypatch: pytest.MonkeyPatch,
-    graph_name: URIRef | t.Iterable[URIRef] | str | None,
-    expected_graph_name_param: str,
+    graph_name: IdentifiedNode | t.Iterable[IdentifiedNode] | str | None,
+    expected_graph_name_param: str | list[str] | None,
 ):
     """
     Test that graph_name is passed as a query parameter and correctly handles the
@@ -54,6 +56,26 @@ def test_repo_size_graph_name(
         params=params,
     )
     assert size == 0
+
+
+def test_repo_size_contexts_transport() -> None:
+    def respond(request: httpx.Request) -> httpx.Response:
+        assert request.url.path == "/repositories/test-repo/size"
+        assert request.url.params.get_list("context") == [
+            "<urn:named>",
+            "_:blank",
+            "null",
+        ]
+        return httpx.Response(200, text="6")
+
+    with httpx.Client(
+        base_url="http://rdf4j.invalid/", transport=httpx.MockTransport(respond)
+    ) as http_client:
+        repo = Repository("test-repo", http_client)
+        assert (
+            repo.size([URIRef("urn:named"), BNode("blank"), DATASET_DEFAULT_GRAPH_ID])
+            == 6
+        )
 
 
 @pytest.mark.parametrize(

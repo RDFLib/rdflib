@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import logging
 import re
 import socket
@@ -11,12 +12,71 @@ from unittest.mock import patch
 
 import pytest
 
-from rdflib import Graph, Literal, URIRef
+from rdflib import Dataset, Graph, Literal, URIRef
 from rdflib.namespace import FOAF, RDF, RDFS, XMLNS, XSD
 from rdflib.plugins.stores.sparqlconnector import SPARQLConnector
 from test.utils import helper
 from test.utils.http import MethodName, MockHTTPResponse
 from test.utils.httpservermock import ServedBaseHTTPServerMock
+
+
+@pytest.mark.parametrize("measure", [len, bool], ids=["length", "truth"])
+@pytest.mark.parametrize(
+    "default_count, named_counts, expected",
+    [
+        pytest.param(0, [], 0, id="empty"),
+        pytest.param(2, [], 2, id="default-only"),
+        pytest.param(0, [("urn:g1", 2), ("urn:g2", 3)], 5, id="named-only"),
+        pytest.param(1, [("urn:g1", 2), ("urn:g2", 3)], 6, id="mixed"),
+    ],
+)
+def test_dataset_len_read_only(
+    function_httpmock: ServedBaseHTTPServerMock,
+    default_count: int,
+    named_counts: list[tuple[str, int]],
+    expected: int,
+    measure: Callable[[Dataset], int],
+) -> None:
+    dataset = Dataset(store="SPARQLStore")
+    dataset.open(f"{function_httpmock.url}/sparql")
+    results = [
+        {
+            "head": {"vars": ["name"]},
+            "results": {
+                "bindings": [
+                    {"name": {"type": "uri", "value": name}} for name, _ in named_counts
+                ]
+            },
+        }
+    ]
+    for count in [count for _, count in named_counts] + [default_count]:
+        results.append(
+            {
+                "head": {"vars": ["c"]},
+                "results": {
+                    "bindings": [
+                        {
+                            "c": {
+                                "type": "literal",
+                                "datatype": str(XSD.integer),
+                                "value": str(count),
+                            }
+                        }
+                    ]
+                },
+            }
+        )
+    for result in results:
+        function_httpmock.responses[MethodName.GET].append(
+            MockHTTPResponse(
+                200,
+                "OK",
+                json.dumps(result).encode(),
+                {"Content-Type": ["application/sparql-results+json"]},
+            )
+        )
+
+    assert measure(dataset) == (expected if measure is len else bool(expected))
 
 
 class TestSPARQLStoreGraph:

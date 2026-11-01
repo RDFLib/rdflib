@@ -9,7 +9,7 @@ from typing import Tuple
 import pytest
 
 from rdflib import BNode, Namespace, Node, URIRef, plugin
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph, QuotedGraph
 from rdflib.store import Store
 from test.data import CHEESE, CONTEXT1, CONTEXT2, LIKES, PIZZA, TAREK
 
@@ -200,6 +200,68 @@ def test_default_graph(get_dataset):
     assert set(dataset.graphs()) == set([dataset.default_graph])
 
 
+def test_len_counts_quads() -> None:
+    dataset = Dataset()
+    dataset.graph(URIRef("https://example.com/g1")).add((TAREK, LIKES, PIZZA))
+    dataset.graph(URIRef("https://example.com/g2")).add((TAREK, LIKES, PIZZA))
+
+    assert len(dataset) == 2
+
+
+def test_len_excludes_quoted_formulas() -> None:
+    dataset = Dataset().parse(
+        data="@prefix : <urn:test:> . { :a :b :c } => { :d :e :f } .",
+        format="n3",
+    )
+
+    assert len(dataset) == 1
+    assert sum(1 for _ in dataset.quads()) == 1
+
+
+@pytest.mark.parametrize("quoted_first", [True, False])
+@pytest.mark.parametrize(
+    "identifier",
+    [URIRef("urn:shared"), DATASET_DEFAULT_GRAPH_ID],
+    ids=["named", "default"],
+)
+def test_len_counts_asserted_memberships(
+    identifier: URIRef, quoted_first: bool
+) -> None:
+    dataset = Dataset()
+    additions = [
+        (
+            QuotedGraph(dataset.store, identifier),
+            (URIRef("urn:quoted"), LIKES, PIZZA),
+        ),
+        (
+            Graph(dataset.store, identifier),
+            (URIRef("urn:asserted"), LIKES, PIZZA),
+        ),
+    ]
+    for graph, triple in additions if quoted_first else reversed(additions):
+        graph.add(triple)
+
+    assert len(dataset) == 1
+    assert bool(dataset) is True
+    assert sum(1 for _ in dataset.quads()) == 1
+
+
+@pytest.mark.parametrize("context_kind", ["self", "shared-store", "separate-store"])
+def test_len_counts_dataset_context(context_kind: str) -> None:
+    dataset = Dataset()
+    if context_kind == "self":
+        context = dataset
+    elif context_kind == "shared-store":
+        context = Dataset(store=dataset.store)
+    else:
+        context = Dataset()
+    dataset.add((TAREK, LIKES, PIZZA, context))
+    dataset.graph(URIRef("urn:other")).add((TAREK, LIKES, PIZZA))
+
+    assert len(dataset) == 2
+    assert sum(1 for _ in dataset.quads()) == 2
+
+
 def test_dataset_default_context_public_access_warns() -> None:
     dataset = Dataset()
 
@@ -302,6 +364,9 @@ def test_not_union(get_dataset):
 def test_iter(get_dataset):
     store, d = get_dataset
     """PR 1382: adds __iter__ to Dataset"""
+    if store == "SPARQLUpdateStore":
+        pytest.skip("SPARQLUpdateStore does not expose contexts through triples()")
+
     uri_a = URIRef("https://example.com/a")
     uri_b = URIRef("https://example.com/b")
     uri_c = URIRef("https://example.com/c")
@@ -329,6 +394,7 @@ def test_iter(get_dataset):
         i_new += 1
 
     assert i_new == i_trad  # both should be 3
+    assert len(d) == i_new
 
 
 @pytest.mark.parametrize(

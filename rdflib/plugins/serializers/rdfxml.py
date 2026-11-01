@@ -211,7 +211,12 @@ class PrettyXMLSerializer(Serializer):
         assert self.max_depth > 0, "max_depth must be greater than 0"
 
         self.nm = nm = store.namespace_manager
-        self.writer = writer = XMLWriter(stream, nm, encoding)
+        self.writer = writer = XMLWriter(
+            stream,
+            nm,
+            encoding,
+            extra_ns={"rdf": Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")},
+        )
         namespaces = {}
 
         for predicate in set(store.predicates()):
@@ -229,8 +234,6 @@ class PrettyXMLSerializer(Serializer):
             except ValueError:
                 continue
             namespaces[prefix] = namespace
-
-        namespaces["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 
         writer.push(RDFVOC.RDF)
 

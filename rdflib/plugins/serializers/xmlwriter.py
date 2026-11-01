@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import codecs
 from collections.abc import Iterable
+from functools import lru_cache
 from typing import IO, TYPE_CHECKING
+from xml.parsers import expat
 from xml.sax.saxutils import escape, quoteattr
 
+from rdflib.namespace import XMLNS, is_ncname
 from rdflib.term import URIRef
 
 if TYPE_CHECKING:
@@ -14,6 +17,18 @@ if TYPE_CHECKING:
 __all__ = ["XMLWriter"]
 
 ESCAPE_ENTITIES = {"\r": "&#13;"}
+
+
+@lru_cache(maxsize=512)
+def _is_xml_ncname(name: str) -> bool:
+    """Check local names against the XML parser used by RDFLib."""
+    if not is_ncname(name):
+        return False
+    try:
+        expat.ParserCreate(namespace_separator=" ").Parse(f"<{name}/>", True)
+    except expat.ExpatError:
+        return False
+    return True
 
 
 class XMLWriter:
@@ -85,17 +100,24 @@ class XMLWriter:
         self.text(content)
         self.pop()
 
-    def namespaces(self, namespaces: Iterable[tuple[str, str]] = None) -> None:
-        if not namespaces:
+    def namespaces(self, namespaces: Iterable[tuple[str, str]] | None = None) -> None:
+        if namespaces is None:
             namespaces = self.nm.namespaces()
 
         write = self.stream.write
         write("\n")
         for prefix, namespace in namespaces:
+            if prefix in self.extra_ns:
+                if prefix and str(namespace) != str(self.extra_ns[prefix]):
+                    raise ValueError(
+                        f"Namespace prefix {prefix!r} is bound to both "
+                        f"{str(namespace)!r} and {str(self.extra_ns[prefix])!r}"
+                    )
+                # Extra default namespaces take precedence, as required by TriX.
+                continue
             if prefix:
                 write('  xmlns:%s="%s"\n' % (prefix, namespace))
-            # Allow user-provided namespace bindings to prevail
-            elif prefix not in self.extra_ns:
+            else:
                 write('  xmlns="%s"\n' % namespace)
 
         for prefix, namespace in self.extra_ns.items():
@@ -122,10 +144,14 @@ class XMLWriter:
         or the given namespace manager"""
 
         for pre, ns in self.extra_ns.items():
-            if uri.startswith(ns):
+            if uri.startswith(ns) and _is_xml_ncname(uri[len(ns) :]):
                 if pre != "":
                     return ":".join([pre, uri[len(ns) :]])
                 else:
                     return uri[len(ns) :]
+
+        # The xml prefix is predefined and never declared
+        if uri.startswith(XMLNS) and _is_xml_ncname(uri[len(XMLNS) :]):
+            return "xml:" + uri[len(XMLNS) :]
 
         return self.nm.qname_strict(uri)
