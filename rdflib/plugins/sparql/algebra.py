@@ -930,7 +930,13 @@ def translateQuery(
     P, PV = translate(q[1])
     datasetClause = q[1].datasetClause
     if q[1].name == "ConstructQuery":
-        template = triples(q[1].template) if q[1].template else None
+        if q[1].template:
+            template = triples(q[1].template)
+        elif q[1].where is not None and q[1].where.name == "FakeGroupGraphPatten":
+            # CONSTRUCT WHERE: the template is the triples of the WHERE clause
+            template = triples([t for part in q[1].where.part for t in part.triples])
+        else:
+            template = []
 
         res = CompValue(q[1].name, p=P, template=template, datasetClause=datasetClause)
     else:

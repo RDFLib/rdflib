@@ -684,10 +684,6 @@ def evalConstructQuery(
 ) -> Mapping[str, Union[str, Graph]]:
     template = query.template
 
-    if not template:
-        # a construct-where query
-        template = query.p.p.triples  # query->project->bgp ...
-
     graph = Graph()
 
     for c in evalPart(ctx, query.p):
