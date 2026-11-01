@@ -19,8 +19,6 @@
 # mypy: warn_return_any, no_implicit_reexport, strict_equality
 from __future__ import annotations
 
-from typing import Set, Tuple
-
 import rdflib
 
 # TODO Bug - rdflib.plugins.sparql.prepareQuery() will run fine if this
@@ -59,8 +57,8 @@ def test_rdflib_query_exercise() -> None:
     graph.add((kb_https_uriref, predicate_q, literal_two))
     graph.add((kb_bnode, predicate_p, literal_one))
 
-    expected_nodes_using_predicate_q: Set[Node] = {kb_https_uriref}
-    computed_nodes_using_predicate_q: Set[Node] = set()
+    expected_nodes_using_predicate_q: set[Node] = {kb_https_uriref}
+    computed_nodes_using_predicate_q: set[Node] = set()
     for triple in graph.triples((None, predicate_q, None)):
         computed_nodes_using_predicate_q.add(triple[0])
     assert expected_nodes_using_predicate_q == computed_nodes_using_predicate_q
@@ -72,13 +70,13 @@ WHERE {
 }
 """
 
-    expected_one_usage: Set[rdflib.IdentifiedNode] = {
+    expected_one_usage: set[rdflib.IdentifiedNode] = {
         kb_bnode,
         kb_http_uriref,
         kb_https_uriref,
         kb_urn_uriref,
     }
-    computed_one_usage: Set[Identifier] = set()
+    computed_one_usage: set[Identifier] = set()
     for one_usage_result in graph.query(one_usage_query):
         assert isinstance(one_usage_result, ResultRow)
         computed_one_usage.add(one_usage_result[0])
@@ -96,11 +94,11 @@ WHERE {
 }
 """
 
-    expected_two_usage: Set[Tuple[Identifier, ...]] = {
+    expected_two_usage: set[tuple[Identifier, ...]] = {
         (kb_https_uriref, predicate_p),
         (kb_https_uriref, predicate_q),
     }
-    computed_two_usage: Set[Tuple[Identifier, ...]] = set()
+    computed_two_usage: set[tuple[Identifier, ...]] = set()
     for two_usage_result in graph.query(two_usage_query):
         assert isinstance(two_usage_result, ResultRow)
         computed_two_usage.add(two_usage_result)
@@ -111,7 +109,7 @@ WHERE {
     prepared_one_usage_query = rdflib.plugins.sparql.processor.prepareQuery(
         one_usage_query, initNs=nsdict
     )
-    computed_one_usage_from_prepared_query: Set[Identifier] = set()
+    computed_one_usage_from_prepared_query: set[Identifier] = set()
     for prepared_one_usage_result in graph.query(prepared_one_usage_query):
         assert isinstance(prepared_one_usage_result, ResultRow)
         computed_one_usage_from_prepared_query.add(prepared_one_usage_result[0])

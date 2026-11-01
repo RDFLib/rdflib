@@ -58,7 +58,7 @@ if __name__ == "__main__":
 
     print("Query the conjunction of all graphs:")
     xx = None
-    for x in g[mary : LOVE.loves / LOVE.hasCuteName]:  # type: ignore[misc]
+    for x in g[mary : LOVE.loves / LOVE.hasCuteName]:
         xx = x
     print("Q: Who does Mary love?")
     print("A: Mary loves {}".format(xx))

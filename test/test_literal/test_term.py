@@ -4,9 +4,16 @@ some more specific Literal tests are in test_literal.py
 
 import base64
 import random
+import subprocess
+import sys
+from collections.abc import Callable
+from typing import Union, get_type_hints
+
+import pytest
 
 from rdflib.graph import Graph, QuotedGraph
 from rdflib.namespace import XSD
+from rdflib.paths import AlternativePath, InvPath, NegatedPath, Path, SequencePath
 from rdflib.term import BNode, Literal, URIRef, _is_valid_unicode
 
 
@@ -18,6 +25,43 @@ class TestURIRefRepr:
     """
     see also test_literal.TestRepr
     """
+
+    def test_type_hints_resolve_path_types(self):
+        expected = {
+            "__or__": Callable[[URIRef, Union[URIRef, Path]], AlternativePath],
+            "__invert__": Callable[[URIRef], InvPath],
+            "__neg__": Callable[[URIRef], NegatedPath],
+            "__truediv__": Callable[[URIRef, Union[URIRef, Path]], SequencePath],
+        }
+        assert get_type_hints(URIRef) == expected
+
+        class CustomURIRef(URIRef):
+            pass
+
+        assert get_type_hints(CustomURIRef) == expected
+
+    @pytest.mark.parametrize("module", ["rdflib", "rdflib.term", "rdflib.paths"])
+    def test_type_hints_after_fresh_import(self, module):
+        subprocess.run(
+            [
+                sys.executable,
+                "-c",
+                "import importlib, sys; "
+                "importlib.import_module(sys.argv[1]); "
+                "from typing import get_type_hints; "
+                "from rdflib import URIRef; "
+                "from rdflib.paths import Path, InvPath; "
+                "from collections.abc import Callable; "
+                "assert get_type_hints(URIRef)['__invert__'] "
+                "== Callable[[URIRef], InvPath]; "
+                "assert get_type_hints(Path)['__invert__'] "
+                "== Callable[[Path], InvPath]",
+                module,
+            ],
+            check=True,
+            capture_output=True,
+            timeout=30,
+        )
 
     def test_subclass_name_appears_in_repr(self):
         class MyURIRef(URIRef):
@@ -267,6 +311,27 @@ class TestLiteral:
                 )
 
             assert case_passed, "Case " + str(case[0]) + " failed"
+
+    def test_serialize_lone_surrogate_is_escaped(self):
+        # https://github.com/RDFLib/rdflib/issues/2590
+        lit = Literal("\udead")
+        n3 = lit.n3()
+        assert "\\uDEAD" in n3
+        assert "\udead" not in n3
+
+    def test_serialize_surrogate_single_and_triple_quoted(self):
+        # single-quoted path
+        assert Literal("\udead").n3() == '"\\uDEAD"'
+        # triple-quoted path (literal contains a newline)
+        assert Literal("a\n\udead").n3() == '"""a\n\\uDEAD"""'
+
+    def test_serialize_plain_literal_unchanged(self):
+        # regression guard: ordinary literals are unchanged
+        assert Literal("plain").n3() == '"plain"'
+        # existing escapes still work
+        assert Literal("a\nb").n3() == '"""a\nb"""'
+        assert Literal("a\\b").n3() == '"a\\\\b"'
+        assert Literal('a"b').n3() == '"a\\"b"'
 
 
 class TestValidityFunctions:

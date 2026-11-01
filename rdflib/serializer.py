@@ -13,7 +13,9 @@ under [`rdflib.plugins.serializers`][rdflib.plugins.serializers].
 
 from __future__ import annotations
 
-from typing import IO, TYPE_CHECKING, Any, Optional, TypeVar, Union
+import re
+from typing import IO, TYPE_CHECKING, Any, TypeVar, Union
+from urllib.parse import urljoin
 
 from rdflib.term import URIRef
 
@@ -36,13 +38,13 @@ class Serializer:
     def __init__(self, store: Graph):
         self.store: Graph = store
         self.encoding: str = "utf-8"
-        self.base: Optional[str] = None
+        self.base: str | None = None
 
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
+        base: str | None = None,
+        encoding: str | None = None,
         **args: Any,
     ) -> None:
         """Abstract method. Print [Graph][rdflib.graph.Graph].
@@ -58,8 +60,20 @@ class Serializer:
         """
 
     def relativize(self, uri: _StrT) -> Union[_StrT, URIRef]:
+        """Shorten an IRI only if the reference resolves back to that IRI."""
         base = self.base
         if base is not None and uri.startswith(base):
-            # type error: Incompatible types in assignment (expression has type "str", variable has type "Node")
-            uri = URIRef(uri.replace(base, "", 1))  # type: ignore[assignment]
+            relative = uri[len(base) :]
+            # RFC 3986 forbids colons in the first relative path segment,
+            # even when urljoin does not recognize it as a scheme.
+            if re.match(r"[^/?#]*:", relative):
+                return uri
+            # A shared string prefix need not be a valid relative reference.
+            # Fragments are not part of the base used for IRI resolution.
+            try:
+                resolved = urljoin(base.split("#", 1)[0], relative)
+            except ValueError:
+                return uri
+            if resolved == str(uri):
+                return URIRef(relative)
         return uri

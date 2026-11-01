@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 from contextlib import ExitStack
-from typing import Optional
 
 import pytest
 
@@ -32,7 +31,7 @@ def check_entry(entry: ManifestEntry) -> None:
         logger.debug(
             "action = %s\n%s", action_path, action_path.read_text(encoding=ENCODING)
         )
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
     graph = Graph()
     with ExitStack() as xstack:
         if entry.type == RDFT.TestXMLNegativeSyntax:
@@ -55,11 +54,13 @@ def check_entry(entry: ManifestEntry) -> None:
 
 @pytest.mark.parametrize(
     ["manifest_entry"],
-    params_from_sources(
-        MAPPER,
-        ManifestEntry,
-        LOCAL_BASE_DIR / "manifest.ttl",
-        report_prefix="rdflib_w3c_rdfxml",
+    list(
+        params_from_sources(
+            MAPPER,
+            ManifestEntry,
+            LOCAL_BASE_DIR / "manifest.ttl",
+            report_prefix="rdflib_w3c_rdfxml",
+        )
     ),
 )
 def test_entry(manifest_entry: ManifestEntry) -> None:
@@ -75,11 +76,13 @@ NON_NORMATIVE_MAPPER = URIMapper.from_mappings(
 
 @pytest.mark.parametrize(
     ["manifest_entry"],
-    params_from_sources(
-        NON_NORMATIVE_MAPPER,
-        ManifestEntry,
-        NON_NORMATIVE_LOCAL_BASE_DIR / "manifest.ttl",
-        report_prefix="rdflib_w3c_rdfxml_non_normative",
+    list(
+        params_from_sources(
+            NON_NORMATIVE_MAPPER,
+            ManifestEntry,
+            NON_NORMATIVE_LOCAL_BASE_DIR / "manifest.ttl",
+            report_prefix="rdflib_w3c_rdfxml_non_normative",
+        )
     ),
 )
 def test_non_normative_entry(manifest_entry: ManifestEntry) -> None:

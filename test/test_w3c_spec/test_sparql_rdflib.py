@@ -2,8 +2,8 @@
 Runs the RDFLib SPARQL test suite.
 """
 
+from collections.abc import Generator
 from contextlib import ExitStack
-from typing import Generator
 
 import pytest
 from pytest import MonkeyPatch
@@ -51,19 +51,21 @@ def configure_rdflib() -> Generator[None, None, None]:
 
 @pytest.mark.parametrize(
     ["manifest_entry"],
-    params_from_sources(
-        MAPPER,
-        SPARQLEntry,
-        LOCAL_BASE_DIR / "manifest.ttl",
-        mark_dict=MARK_DICT,
-        markers=(
-            lambda entry: (
-                pytest.mark.skip(reason="tester not implemented")
-                if entry.type in SKIP_TYPES
-                else None
+    list(
+        params_from_sources(
+            MAPPER,
+            SPARQLEntry,
+            LOCAL_BASE_DIR / "manifest.ttl",
+            mark_dict=MARK_DICT,
+            markers=(
+                lambda entry: (
+                    pytest.mark.skip(reason="tester not implemented")
+                    if entry.type in SKIP_TYPES
+                    else None
+                ),
             ),
-        ),
-        report_prefix="rdflib_sparql",
+            report_prefix="rdflib_sparql",
+        )
     ),
 )
 def test_entry_rdflib(

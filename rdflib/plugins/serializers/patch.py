@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import IO, Any, Optional
-from uuid import uuid4
+from typing import IO, Any
 
 from rdflib import Dataset
 from rdflib.plugins.serializers.nquads import _nq_row
@@ -30,8 +29,8 @@ class PatchSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
+        base: str | None = None,
+        encoding: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Serialize the store to the given stream.
@@ -47,15 +46,16 @@ class PatchSerializer(Serializer):
         - operation: The operation to perform. Either 'add' or 'remove'.
         - target: The target Dataset to compare against.
         NB: Only one of 'operation' or 'target' should be provided.
-        - header_id: The header ID to use.
+        - header_id: The header ID to use. If omitted, no H id header is emitted.
+          Consumers producing RDF Patch Logs must supply an explicit globally
+          unique URI, as each log entry requires exactly one ID header.
         - header_prev: The previous header ID to use.
         """
         operation = kwargs.get("operation")
         target = kwargs.get("target")
         header_id = kwargs.get("header_id")
         header_prev = kwargs.get("header_prev")
-        if not header_id:
-            header_id = f"uuid:{uuid4()}"
+        # Only emit an id header when the caller provides one.
         encoding = self.encoding
         if base is not None:
             warnings.warn("PatchSerializer does not support base.")
@@ -66,18 +66,17 @@ class PatchSerializer(Serializer):
             )
 
         def write_header():
-            stream.write(f"H id <{header_id}> .\n".encode(encoding, "replace"))
+            if header_id:
+                stream.write(f"H id <{header_id}> .\n".encode(encoding, "replace"))
             if header_prev:
-                stream.write(f"H prev <{header_prev}>\n".encode(encoding, "replace"))
+                stream.write(f"H prev <{header_prev}> .\n".encode(encoding, "replace"))
             stream.write("TX .\n".encode(encoding, "replace"))
 
-        def write_triples(contexts, op_code, use_passed_contexts=False):
-            for context in contexts:
-                if not use_passed_contexts:
-                    context = self.store.get_context(context.identifier)
-                for triple in context:
+        def write_triples(graphs, op_code):
+            for graph in graphs:
+                for triple in graph:
                     stream.write(
-                        self._patch_row(triple, context.identifier, op_code).encode(
+                        self._patch_row(triple, graph.identifier, op_code).encode(
                             encoding, "replace"
                         )
                     )
@@ -91,11 +90,11 @@ class PatchSerializer(Serializer):
         write_header()
         if operation:
             operation_code = add_remove_methods.get(operation)
-            write_triples(self.store.contexts(), operation_code)
+            write_triples(self.store.graphs(), operation_code)
         elif target:
             to_add, to_remove = self._diff(target)
-            write_triples(to_add.contexts(), "A", use_passed_contexts=True)
-            write_triples(to_remove.contexts(), "D", use_passed_contexts=True)
+            write_triples(to_add.contexts(), "A")
+            write_triples(to_remove.contexts(), "D")
 
         stream.write("TC .\n".encode(encoding, "replace"))
 
@@ -105,7 +104,7 @@ class PatchSerializer(Serializer):
         return rows_to_add, rows_to_remove
 
     def _patch_row(self, triple, context_id, operation):
-        if context_id == self.store.default_context.identifier:
+        if context_id == self.store.default_graph.identifier:
             return f"{operation} {_nt_row(triple)}"
         else:
             return f"{operation} {_nq_row(triple, context_id)}"

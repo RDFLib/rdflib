@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import logging
 import time
+from collections.abc import Collection
 from contextlib import ExitStack
 from pathlib import Path
-from typing import Any, Collection, List, Optional, Set, Tuple, Type, Union
+from typing import Any, Optional, Union
 
 import pytest
 
@@ -283,13 +284,14 @@ class TestUtilTermConvert:
             '"""multi\n"line"\nstring"""@en',
         ):
             res, exp = util.from_n3(n3), parse_n3(n3)
-            assert (
-                res == exp
-            ), "from_n3(%(n3e)r): %(res)r != parser.notation3: %(exp)r" % {
-                "res": res,
-                "exp": exp,
-                "n3e": n3,
-            }
+            assert res == exp, (
+                "from_n3(%(n3e)r): %(res)r != parser.notation3: %(exp)r"
+                % {
+                    "res": res,
+                    "exp": exp,
+                    "n3e": n3,
+                }
+            )
 
     def test_util_from_n3_expectquotedgraph(self):
         s = "{<http://example.com/schema>}"
@@ -376,7 +378,7 @@ def test__coalesce_typing() -> None:
     type checking for _coalesce behaves as expected.
     """
     str_value: str
-    optional_str_value: Optional[str]
+    optional_str_value: str | None
 
     optional_str_value = _coalesce(None, "a", None)
     assert optional_str_value == "a"
@@ -427,12 +429,12 @@ def test__coalesce_typing() -> None:
     ],
 )
 def test_find_roots(
-    graph_sources: Tuple[Path, ...],
+    graph_sources: tuple[Path, ...],
     prop: URIRef,
-    roots: Optional[Set[Node]],
-    expected_result: Union[Set[URIRef], Type[Exception]],
+    roots: Optional[set[Node]],
+    expected_result: Union[set[URIRef], type[Exception]],
 ) -> None:
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
 
     graph = cached_graph(graph_sources)
 
@@ -551,13 +553,13 @@ def test_find_roots(
     ],
 )
 def test_get_tree(
-    graph_sources: Tuple[Path, ...],
+    graph_sources: tuple[Path, ...],
     root: IdentifiedNode,
     prop: URIRef,
     dir: str,
-    expected_result: Union[Tuple[IdentifiedNode, List[Any]], Type[Exception]],
+    expected_result: Union[tuple[IdentifiedNode, list[Any]], type[Exception]],
 ) -> None:
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
 
     graph = cached_graph(graph_sources)
 
@@ -655,11 +657,11 @@ def test_get_tree(
         ),
     ],
 )
-def test_iri2uri(iri: str, expected_result: Union[Set[str], Type[Exception]]) -> None:
+def test_iri2uri(iri: str, expected_result: Union[set[str], type[Exception]]) -> None:
     """
     Tests that
     """
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
 
     with ExitStack() as xstack:
         if isinstance(expected_result, type) and issubclass(expected_result, Exception):

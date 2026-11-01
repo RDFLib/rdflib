@@ -1,4 +1,50 @@
+from __future__ import annotations
+
+from collections.abc import Generator
+from typing import Optional
+
+import pytest
+
 from rdflib import Dataset, Graph, Literal, URIRef
+from rdflib.graph import _ContextType, _TripleType
+from rdflib.plugins.stores.memory import Memory
+
+
+class CountingMemory(Memory):
+    def __init__(self) -> None:
+        super().__init__()
+        self.yielded_contexts = 0
+
+    def contexts(
+        self, triple: Optional[_TripleType] = None
+    ) -> Generator[_ContextType, None, None]:
+        for context in super().contexts(triple):
+            self.yielded_contexts += 1
+            yield context
+
+
+@pytest.mark.parametrize("operation, op_code", [("add", "A"), ("remove", "D")])
+def test_patch_export_enumerates_graphs_once(operation: str, op_code: str) -> None:
+    store = CountingMemory()
+    dataset = Dataset(store=store)
+    triple = (URIRef("urn:subject"), URIRef("urn:predicate"), Literal("object"))
+    graph_count = 32
+    for index in range(graph_count):
+        dataset.graph(URIRef(f"urn:graph:{index}")).add(triple)
+    dataset.default_graph.add(triple)
+    store.yielded_contexts = 0
+
+    result = dataset.serialize(format="patch", operation=operation)
+
+    assert store.yielded_contexts <= graph_count + 1
+    expected_rows = {
+        f'{op_code} <urn:subject> <urn:predicate> "object" <urn:graph:{index}> .'
+        for index in range(graph_count)
+    }
+    expected_rows.add(f'{op_code} <urn:subject> <urn:predicate> "object" .')
+    assert {
+        line for line in result.splitlines() if line.startswith(f"{op_code} ")
+    } == expected_rows
 
 
 def test_add_quad():
@@ -165,6 +211,20 @@ def test_header_id():
     assert """H id <uuid:123>""" in result
 
 
+def test_no_header_id_omits_id_header():
+    ds = Dataset()
+    ds.add(
+        (
+            URIRef("http://example.org/subject1"),
+            URIRef("http://example.org/predicate2"),
+            Literal("object2"),
+        )
+    )
+    result = ds.serialize(format="patch", operation="add")
+    assert "H id" not in result
+    assert "TX ." in result
+
+
 def test_prev_header():
     ds = Dataset()
     ds.add(
@@ -175,4 +235,4 @@ def test_prev_header():
         )
     )
     result = ds.serialize(format="patch", operation="add", header_prev="uuid:123")
-    assert """H prev <uuid:123>""" in result
+    assert """H prev <uuid:123> .""" in result

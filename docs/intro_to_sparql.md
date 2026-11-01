@@ -129,6 +129,8 @@ This example sends a query to [DBPedia](https://dbpedia.org/)'s SPARQL endpoint 
 <http://www.w3.org/2001/XMLSchema#anyURI> <http://www.w3.org/2000/01/rdf-schema#Datatype>
 ```
 
+If the endpoint fails, the query raises an error. With `SERVICE SILENT`, the failure is logged as a warning and the `SERVICE` pattern gives one solution with no bindings. The endpoint must be an IRI: a variable endpoint, as in `SERVICE ?endpoint`, raises `ValueError`.
+
 ## Prepared Queries
 
 RDFLib lets you *prepare* queries before execution, this saves re-parsing and translating the query into SPARQL Algebra each time.

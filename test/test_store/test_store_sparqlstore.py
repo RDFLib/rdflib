@@ -1,21 +1,82 @@
 from __future__ import annotations
 
+import json
 import logging
 import re
 import socket
+from collections.abc import Callable
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
-from typing import Callable, ClassVar, Type
+from typing import ClassVar
 from unittest.mock import patch
 
 import pytest
 
-from rdflib import Graph, Literal, URIRef
+from rdflib import Dataset, Graph, Literal, URIRef
 from rdflib.namespace import FOAF, RDF, RDFS, XMLNS, XSD
 from rdflib.plugins.stores.sparqlconnector import SPARQLConnector
 from test.utils import helper
 from test.utils.http import MethodName, MockHTTPResponse
 from test.utils.httpservermock import ServedBaseHTTPServerMock
+
+
+@pytest.mark.parametrize("measure", [len, bool], ids=["length", "truth"])
+@pytest.mark.parametrize(
+    "default_count, named_counts, expected",
+    [
+        pytest.param(0, [], 0, id="empty"),
+        pytest.param(2, [], 2, id="default-only"),
+        pytest.param(0, [("urn:g1", 2), ("urn:g2", 3)], 5, id="named-only"),
+        pytest.param(1, [("urn:g1", 2), ("urn:g2", 3)], 6, id="mixed"),
+    ],
+)
+def test_dataset_len_read_only(
+    function_httpmock: ServedBaseHTTPServerMock,
+    default_count: int,
+    named_counts: list[tuple[str, int]],
+    expected: int,
+    measure: Callable[[Dataset], int],
+) -> None:
+    dataset = Dataset(store="SPARQLStore")
+    dataset.open(f"{function_httpmock.url}/sparql")
+    results = [
+        {
+            "head": {"vars": ["name"]},
+            "results": {
+                "bindings": [
+                    {"name": {"type": "uri", "value": name}} for name, _ in named_counts
+                ]
+            },
+        }
+    ]
+    for count in [count for _, count in named_counts] + [default_count]:
+        results.append(
+            {
+                "head": {"vars": ["c"]},
+                "results": {
+                    "bindings": [
+                        {
+                            "c": {
+                                "type": "literal",
+                                "datatype": str(XSD.integer),
+                                "value": str(count),
+                            }
+                        }
+                    ]
+                },
+            }
+        )
+    for result in results:
+        function_httpmock.responses[MethodName.GET].append(
+            MockHTTPResponse(
+                200,
+                "OK",
+                json.dumps(result).encode(),
+                {"Content-Type": ["application/sparql-results+json"]},
+            )
+        )
+
+    assert measure(dataset) == (expected if measure is len else bool(expected))
 
 
 class TestSPARQLStoreGraph:
@@ -37,7 +98,7 @@ class TestSPARQLStoreGraph:
         ],
     )
     def test_graph_modify_fails(
-        self, call: Callable[[Graph], None], exception_type: Type[Exception]
+        self, call: Callable[[Graph], None], exception_type: type[Exception]
     ) -> None:
         """
         Methods that modify the Graph fail.
@@ -48,9 +109,9 @@ class TestSPARQLStoreGraph:
             call(graph)
         pattern_str = r"read.*only"
         msg = f"{ctx.value}"
-        assert (
-            re.search(pattern_str, msg, re.IGNORECASE) is not None
-        ), f"exception text {msg!r} does not match regex {pattern_str!r}"
+        assert re.search(pattern_str, msg, re.IGNORECASE) is not None, (
+            f"exception text {msg!r} does not match regex {pattern_str!r}"
+        )
 
 
 class TestSPARQLStoreFakeDBPedia:
@@ -114,7 +175,7 @@ class TestSPARQLStoreFakeDBPedia:
             def unpacker(query, default_graph=None, named_graph=None):
                 return query, default_graph, named_graph
 
-            (mquery, _, _) = unpacker(*args, *kwargs)
+            mquery, _, _ = unpacker(*args, *kwargs)
             for _, uri in self.graph.namespaces():
                 assert mquery.count(f"<{uri}>") == 1
         assert self.httpmock.mocks[MethodName.GET].call_count == 1

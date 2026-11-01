@@ -1,5 +1,3 @@
-import pytest
-
 from rdflib import Graph
 from rdflib.container import Alt, Bag, Seq
 from rdflib.term import BNode, Literal
@@ -82,11 +80,21 @@ class TestContainer:
     def test_q(self):
         assert self.c2.index(Literal("1000")) != 3
 
-    def test_r(self):
-        match = "rdflib.container.Container.type_of_conatiner is deprecated. Use type_of_container method instead."
-        with pytest.warns(DeprecationWarning, match=match):
-            assert self.c1.type_of_container() == self.c1.type_of_conatiner()
-        with pytest.warns(DeprecationWarning, match=match):
-            assert self.c3.type_of_container() == self.c3.type_of_conatiner()
-        with pytest.warns(DeprecationWarning, match=match):
-            assert self.c4.type_of_container() == self.c4.type_of_conatiner()
+    def test_iter(self):
+        assert list(self.c1) == []
+        assert list(self.c2) == [Literal("80"), Literal("90")]
+        assert list(self.c3) == [
+            Literal("1"),
+            Literal("2"),
+            Literal("3"),
+            Literal("4"),
+        ]
+        assert list(self.c4) == [
+            Literal("1"),
+            Literal("2"),
+            Literal("60"),
+            Literal("3"),
+            Literal("4"),
+        ]
+        for item in self.c4:
+            assert isinstance(item, Literal)

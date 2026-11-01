@@ -12,8 +12,7 @@ def test_select_star_sub_select():
       parent of a sub-select using `SELECT *`.
     """
     results = list(
-        _graph_with_label.query(
-            """
+        _graph_with_label.query("""
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
             SELECT *
@@ -25,8 +24,7 @@ def test_select_star_sub_select():
                     }
                 }
             }
-            """
-        )
+            """)
     )
 
     assert len(results) == 1
@@ -39,8 +37,7 @@ def test_select_star_multiple_sub_select_star():
       of the variables out in the parent.
     """
     results = list(
-        _graph_with_label.query(
-            """
+        _graph_with_label.query("""
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
             SELECT *
@@ -59,8 +56,7 @@ def test_select_star_multiple_sub_select_star():
                     }
                 }
             }
-            """
-        )
+            """)
     )
 
     assert len(results) == 1
@@ -76,8 +72,7 @@ def test_select_star_multiple_sub_select_mixed_projections():
     projected variables on another sub-select and still select * out of the parent.
     """
     results = list(
-        _graph_with_label.query(
-            """
+        _graph_with_label.query("""
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
             SELECT *
@@ -96,8 +91,7 @@ def test_select_star_multiple_sub_select_mixed_projections():
                     }
                 }
             }
-            """
-        )
+            """)
     )
 
     assert len(results) == 1
@@ -113,8 +107,7 @@ def test_select_star_multiple_sub_select_defined_projections():
     projected variables.
     """
     results = list(
-        _graph_with_label.query(
-            """
+        _graph_with_label.query("""
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
             SELECT *
@@ -133,8 +126,7 @@ def test_select_star_multiple_sub_select_defined_projections():
                     }
                 }
             }
-            """
-        )
+            """)
     )
 
     assert len(results) == 1

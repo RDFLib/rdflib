@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 import tempfile
-from typing import Iterable, Optional, Tuple
+from collections.abc import Iterable
 
 import pytest
 
@@ -19,14 +19,14 @@ pytestmark = pytest.mark.skipif(
 
 
 @pytest.fixture
-def get_graph() -> Iterable[Tuple[str, ConjunctiveGraph]]:
+def get_graph() -> Iterable[tuple[str, ConjunctiveGraph]]:
     path = tempfile.NamedTemporaryFile().name
     g = ConjunctiveGraph("BerkeleyDB")
     rt = g.open(path, create=True)
     assert rt == VALID_STORE, "The underlying store is corrupt"
-    assert (
-        len(g) == 0
-    ), "There must be zero triples in the graph just after store (file) creation"
+    assert len(g) == 0, (
+        "There must be zero triples in the graph just after store (file) creation"
+    )
     data = """
             PREFIX : <https://example.org/>
 
@@ -42,32 +42,32 @@ def get_graph() -> Iterable[Tuple[str, ConjunctiveGraph]]:
     g.destroy(path)
 
 
-def test_write(get_graph: Tuple[str, ConjunctiveGraph]):
+def test_write(get_graph: tuple[str, ConjunctiveGraph]):
     path, g = get_graph
-    assert (
-        len(g) == 3
-    ), "There must be three triples in the graph after the first data chunk parse"
+    assert len(g) == 3, (
+        "There must be three triples in the graph after the first data chunk parse"
+    )
     data2 = """
             PREFIX : <https://example.org/>
 
             :d :i :j .
             """
     g.parse(data=data2, format="ttl")
-    assert (
-        len(g) == 4
-    ), "There must be four triples in the graph after the second data chunk parse"
+    assert len(g) == 4, (
+        "There must be four triples in the graph after the second data chunk parse"
+    )
     data3 = """
             PREFIX : <https://example.org/>
 
             :d :i :j .
             """
     g.parse(data=data3, format="ttl")
-    assert (
-        len(g) == 4
-    ), "There must still be four triples in the graph after the third data chunk parse"
+    assert len(g) == 4, (
+        "There must still be four triples in the graph after the third data chunk parse"
+    )
 
 
-def test_read(get_graph: Tuple[str, ConjunctiveGraph]):
+def test_read(get_graph: tuple[str, ConjunctiveGraph]):
     path, g = get_graph
     sx = None
     for s in g.subjects(
@@ -78,7 +78,7 @@ def test_read(get_graph: Tuple[str, ConjunctiveGraph]):
     assert sx == URIRef("https://example.org/d")
 
 
-def test_sparql_query(get_graph: Tuple[str, ConjunctiveGraph]):
+def test_sparql_query(get_graph: tuple[str, ConjunctiveGraph]):
     path, g = get_graph
     q = """
         PREFIX : <https://example.org/>
@@ -95,7 +95,7 @@ def test_sparql_query(get_graph: Tuple[str, ConjunctiveGraph]):
     assert c == 2, "SPARQL COUNT must return 2"
 
 
-def test_sparql_insert(get_graph: Tuple[str, ConjunctiveGraph]):
+def test_sparql_insert(get_graph: tuple[str, ConjunctiveGraph]):
     path, g = get_graph
     q = """
         PREFIX : <https://example.org/>
@@ -108,7 +108,7 @@ def test_sparql_insert(get_graph: Tuple[str, ConjunctiveGraph]):
     assert len(g) == 4, "After extra triple insert, length must be 4"
 
 
-def test_multigraph(get_graph: Tuple[str, ConjunctiveGraph]):
+def test_multigraph(get_graph: tuple[str, ConjunctiveGraph]):
     path, g = get_graph
 
     if logger.isEnabledFor(logging.DEBUG):
@@ -155,8 +155,8 @@ def test_multigraph(get_graph: Tuple[str, ConjunctiveGraph]):
     assert c == 2, "SPARQL COUNT must return 2 (default, :m & :n)"
 
 
-def test_open_shut(get_graph: Tuple[str, ConjunctiveGraph]):
-    g: Optional[ConjunctiveGraph]
+def test_open_shut(get_graph: tuple[str, ConjunctiveGraph]):
+    g: ConjunctiveGraph | None
     path, g = get_graph
     assert len(g) == 3, "Initially we must have 3 triples from setUp"
     g.close()
@@ -165,6 +165,6 @@ def test_open_shut(get_graph: Tuple[str, ConjunctiveGraph]):
     # reopen the graph
     g = ConjunctiveGraph("BerkeleyDB")
     g.open(path, create=False)
-    assert (
-        len(g) == 3
-    ), "After close and reopen, we should still have the 3 originally added triples"
+    assert len(g) == 3, (
+        "After close and reopen, we should still have the 3 originally added triples"
+    )

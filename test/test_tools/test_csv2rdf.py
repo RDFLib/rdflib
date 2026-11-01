@@ -1,7 +1,10 @@
+import inspect
+import json
 import os
 import re
 import subprocess
 import sys
+from pathlib import Path
 from tempfile import mkstemp
 from unittest.mock import mock_open, patch, sentinel
 
@@ -28,6 +31,47 @@ class TestCSV2RDF:
         assert re.search(r"Took [\d\.]+ seconds\.", completed.stderr)
         assert "<http://example.org/instances/0>" in completed.stdout
         assert "<http://example.org/props/zip>" in completed.stdout
+
+    def test_csv2rdf_cli_subprocess_coverage(self, tmp_path: Path):
+        report_path = tmp_path / "coverage.json"
+        # Isolate the nested run from coverage already active in this test process.
+        env = {
+            key: value
+            for key, value in os.environ.items()
+            if not key.startswith(("COVERAGE_", "COV_CORE_"))
+        }
+        env["COVERAGE_FILE"] = str(tmp_path / ".coverage")
+        env["PYTEST_ADDOPTS"] = ""
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "pytest",
+                f"{Path(__file__).resolve()}::TestCSV2RDF::test_csv2rdf_cli",
+                "--noconftest",
+                "-o",
+                "addopts=",
+                "--cov",
+                f"--cov-report=json:{report_path}",
+            ],
+            cwd=Path(__file__).resolve().parents[2],
+            env=env,
+            capture_output=True,
+            text=True,
+        )
+        assert completed.returncode == 0, completed.stdout + completed.stderr
+        files = json.loads(report_path.read_text())["files"]
+        measured = next(
+            data
+            for path, data in files.items()
+            if Path(path).as_posix().endswith("rdflib/tools/csv2rdf.py")
+        )
+        # convert() runs only in the CLI child, never during test collection.
+        source, first_line = inspect.getsourcelines(csv2rdf.CSV2RDF.convert)
+        body_lines = range(first_line + 1, first_line + len(source))
+        assert set(measured["executed_lines"]).intersection(body_lines), (
+            "Coverage did not measure csv2rdf's subprocess execution"
+        )
 
     def test_csv2rdf_cli_fileout(self):
         fh, fname = mkstemp()

@@ -127,6 +127,6 @@ def get_cases():
         yield gt, e
 
 
-@pytest.mark.parametrize("gt, envelope", get_cases())
+@pytest.mark.parametrize("gt, envelope", list(get_cases()))
 def test_cases(gt, envelope):
     gt(envelope)

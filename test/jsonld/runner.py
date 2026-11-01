@@ -265,6 +265,6 @@ def _dump_json(obj):
 def _compare_json(expected, result):
     expected = json.loads(_dump_json(expected))
     result = json.loads(_dump_json(result))
-    assert _to_ordered(expected) == _to_ordered(
-        result
-    ), "Expected JSON:\n%s\nGot:\n%s" % (_dump_json(expected), _dump_json(result))
+    assert _to_ordered(expected) == _to_ordered(result), (
+        "Expected JSON:\n%s\nGot:\n%s" % (_dump_json(expected), _dump_json(result))
+    )

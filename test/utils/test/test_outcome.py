@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from contextlib import ExitStack
-from typing import Any, Callable, NoReturn, Optional, Type, Union, cast
+from typing import Any, NoReturn, Union, cast
 
 import pytest
 
@@ -9,7 +10,7 @@ from test.utils.outcome import ExceptionChecker, OutcomeChecker
 
 
 def _raise(
-    what: Union[Type[Exception], Callable[..., Exception]],
+    what: Union[type[Exception], Callable[..., Exception]],
     *args: Any,
     **kwargs: Any,
 ) -> NoReturn:
@@ -57,7 +58,7 @@ def _raise(
 def test_checker(
     action: Union[Callable[[], Any], Any],
     checker: ExceptionChecker,
-    expected_exception: Optional[Type[BaseException]],
+    expected_exception: type[BaseException] | None,
 ) -> None:
     """
     Given the action, the checker raises the expected exception, or does

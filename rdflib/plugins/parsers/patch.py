@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from codecs import getreader
+from collections.abc import MutableMapping
 from enum import Enum
-from typing import TYPE_CHECKING, Any, MutableMapping, Optional, Union
+from typing import IO, TYPE_CHECKING, Any, Union, cast
 
 from rdflib.exceptions import ParserError as ParseError
 from rdflib.graph import Dataset
@@ -50,7 +51,7 @@ class RDFPatchParser(NQuadsParser):
         self,
         inputsource: InputSource,
         sink: Dataset,
-        bnode_context: Optional[_BNodeContextType] = None,
+        bnode_context: _BNodeContextType | None = None,
         skolemize: bool = False,
         **kwargs: Any,
     ) -> Dataset:
@@ -63,21 +64,21 @@ class RDFPatchParser(NQuadsParser):
                 instances. See `.W3CNTriplesParser.parse`
         """
         assert sink.store.context_aware, (
-            "RDFPatchParser must be given" " a context aware store."
+            "RDFPatchParser must be given a context aware store."
         )
         # type error: Incompatible types in assignment (expression has type "ConjunctiveGraph", base class "W3CNTriplesParser" defined the type as "Union[DummySink, NTGraphSink]")
         self.sink: Dataset = Dataset(store=sink.store)
         self.skolemize = skolemize
 
-        source = inputsource.getCharacterStream()
+        source: IO[str] | None = cast(IO[str], inputsource.getCharacterStream())
         if not source:
-            source = inputsource.getByteStream()
-            source = getreader("utf-8")(source)
+            byte_stream = cast(IO[bytes], inputsource.getByteStream())
+            source = cast(IO[str], getreader("utf-8")(byte_stream))
 
         if not hasattr(source, "read"):
             raise ParseError("Item to parse must be a file-like object.")
 
-        self.file = source
+        self.file = source  # type: ignore[assignment]
         self.buffer = ""
         while True:
             self.line = __line = self.readline()
@@ -89,7 +90,7 @@ class RDFPatchParser(NQuadsParser):
                 raise ParseError("Invalid line (%s):\n%r" % (msg, __line))
         return self.sink
 
-    def parsepatch(self, bnode_context: Optional[_BNodeContextType] = None) -> None:
+    def parsepatch(self, bnode_context: _BNodeContextType | None = None) -> None:
         self.eat(r_wspace)
         #  From spec: "No comments should be included (comments start # and run to end
         #  of line)."
@@ -108,7 +109,7 @@ class RDFPatchParser(NQuadsParser):
             self.delete_prefix()
 
     def add_or_remove_triple_or_quad(
-        self, operation, bnode_context: Optional[_BNodeContextType] = None
+        self, operation, bnode_context: _BNodeContextType | None = None
     ) -> None:
         self.eat(r_wspace)
         if (not self.line) or self.line.startswith("#"):
@@ -165,7 +166,7 @@ class RDFPatchParser(NQuadsParser):
         self.line = self.line.lstrip(op)  # type: ignore[union-attr]
 
     def nodeid(
-        self, bnode_context: Optional[_BNodeContextType] = None
+        self, bnode_context: _BNodeContextType | None = None
     ) -> Union[te.Literal[False], BNode, URIRef]:
         if self.peek("_"):
             return BNode(self.eat(r_nodeid).group(1))

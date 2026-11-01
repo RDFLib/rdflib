@@ -61,11 +61,11 @@ class REGEXMatching(Store):
         self.storage.destroy(configuration)
 
     def add(self, triple, context, quoted=False):
-        (subject, predicate, object_) = triple
+        subject, predicate, object_ = triple
         self.storage.add((subject, predicate, object_), context, quoted)
 
     def remove(self, triple, context=None):
-        (subject, predicate, object_) = triple
+        subject, predicate, object_ = triple
         if (
             isinstance(subject, REGEXTerm)
             or isinstance(predicate, REGEXTerm)
@@ -103,7 +103,7 @@ class REGEXMatching(Store):
             self.storage.remove((subject, predicate, object_), context)
 
     def triples(self, triple, context=None):
-        (subject, predicate, object_) = triple
+        subject, predicate, object_ = triple
         if (
             isinstance(subject, REGEXTerm)
             or isinstance(predicate, REGEXTerm)

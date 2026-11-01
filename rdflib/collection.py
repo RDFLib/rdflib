@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterable, Iterator, List, Optional
+from collections.abc import Iterable, Iterator
+from typing import TYPE_CHECKING, Optional
 
 from rdflib.namespace import RDF
 from rdflib.term import BNode, Node
@@ -53,7 +54,7 @@ class Collection:
     The collection is immutable if `uri` is the empty list (`http://www.w3.org/1999/02/22-rdf-syntax-ns#nil`).
     """
 
-    def __init__(self, graph: Graph, uri: Node, seq: List[Node] = []):
+    def __init__(self, graph: Graph, uri: Node, seq: list[Node] = []):
         self.graph = graph
         self.uri = uri or BNode()
         if seq:
@@ -201,7 +202,7 @@ class Collection:
         elif key == len(self) - 1:
             # the tail
             priorlink = self._get_container(key - 1)
-            # type error: Argument 1 to "set" of "Graph" has incompatible type "Tuple[Optional[Node], URIRef, URIRef]"; expected "Tuple[Node, Node, Any]"
+            # type error: Argument 1 to "set" of "Graph" has incompatible type "tuple[Optional[Node], URIRef, URIRef]"; expected "tuple[Node, Node, Any]"
             self.graph.set((priorlink, RDF.rest, RDF.nil))  # type: ignore[arg-type]
             graph.remove((current, None, None))
         else:

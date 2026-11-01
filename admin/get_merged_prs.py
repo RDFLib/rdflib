@@ -53,11 +53,11 @@ for pr in sorted(ITEMS, key=lambda k: k["closed_at"], reverse=True):
     matches = ["bump", "pre-commit.ci"]
     if any(x in pr["title"] for x in matches):
         boring_prs.append(
-            f"""* {pr['closed_at'][:10]} - {pr['title']}\n  [PR #{pr['number']}]({pr['html_url']})"""
+            f"""* {pr["closed_at"][:10]} - {pr["title"]}\n  [PR #{pr["number"]}]({pr["html_url"]})"""
         )
     else:
         good_prs.append(
-            f"""* {pr['closed_at'][:10]} - {pr['title']}\n  [PR #{pr['number']}]({pr['html_url']})"""
+            f"""* {pr["closed_at"][:10]} - {pr["title"]}\n  [PR #{pr["number"]}]({pr["html_url"]})"""
         )
 
 for pr in good_prs:

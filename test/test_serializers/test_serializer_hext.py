@@ -127,7 +127,7 @@ def test_hext_cg():
                 ex:s1 ex:p1 ex:o1 , ex:o2 .
             }
            """
-    d.parse(data=trig_data, format="trig", publicID=d.default_context.identifier)
+    d.parse(data=trig_data, format="trig", publicID=d.default_graph.identifier)
     out = d.serialize(format="hext")
     # note: cant' test for BNs in result as they will be different every time
     testing_lines = [
@@ -245,7 +245,7 @@ def test_hext_dataset():
             ex:s1 ex:p1 ex:o1 , ex:o2 .
             ex:s21 ex:p21 ex:o21 , ex:o22 .
            """
-    d.parse(data=trig_data, format="trig", publicID=d.default_context.identifier)
+    d.parse(data=trig_data, format="trig", publicID=d.default_graph.identifier)
     out = d.serialize(format="hext")
     # note: cant' test for BNs in result as they will be different ever time
     testing_lines = [
@@ -376,11 +376,11 @@ def test_hext_dataset_linecount():
     d.parse(
         Path(__file__).parent.parent / "data/test_parser_hext_multigraph.ndjson",
         format="hext",
-        publicID=d.default_context.identifier,
+        publicID=d.default_graph.identifier,
     )
     total_triples = 0
     # count all the triples in the Dataset
-    for context in d.contexts():
+    for context in d.graphs():
         for triple in context.triples((None, None, None)):
             total_triples += 1
     assert total_triples == 18
@@ -395,7 +395,7 @@ def test_roundtrip():
     d.parse(
         Path(__file__).parent.parent / "data/test_parser_hext_multigraph.ndjson",
         format="hext",
-        publicID=d.default_context.identifier,
+        publicID=d.default_graph.identifier,
     )
     d.default_union = True
     with open(

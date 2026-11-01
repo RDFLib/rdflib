@@ -8,10 +8,37 @@ jobs:
   report:
     runs-on: ubuntu-latest
     permissions:
+      actions: read
+      contents: read
       checks: write
       statuses: write
     steps:
+      - name: Find test report artifacts
+        id: artifacts
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+              ...context.repo,
+              run_id: run.id,
+            });
+            for (const reporter of ['mypy', 'pytest']) {
+              const found = artifacts.some(artifact =>
+                new RegExp(`(.*)-${reporter}-junit-xml$`).test(artifact.name));
+              core.setOutput(reporter, String(found));
+              if (!found) {
+                const message = `No ${reporter} report artifacts found for Validate run ${run.id} (${run.conclusion}).`;
+                // Early failures may produce no XML; cancellation may skip uploads.
+                if (['failure', 'cancelled'].includes(run.conclusion)) {
+                  core.warning(`${message} Skipping this report; see the Validate run for the cause.`);
+                } else {
+                  core.setFailed(message);
+                }
+              }
+            }
       - uses: dorny/test-reporter@v3
+        if: ${{ !cancelled() && steps.artifacts.outputs.mypy == 'true' }}
         with:
           artifact: /(.*)-mypy-junit-xml$/
           name: mypy report
@@ -19,9 +46,12 @@ jobs:
           reporter: java-junit
           fail-on-error: "false"
       - uses: dorny/test-reporter@v3
+        if: ${{ !cancelled() && steps.artifacts.outputs.pytest == 'true' }}
         with:
           artifact: /(.*)-pytest-junit-xml$/
           name: pytest report
           path: "*.xml"
           reporter: java-junit
+          # Avoid rendering every passing test before the action's size fallback.
+          list-tests: failed
           fail-on-error: "false"

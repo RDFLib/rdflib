@@ -50,7 +50,7 @@ def test_ontology_instantiation(graph):
 
     assert list(c.imports) == [pizza, wine]
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n"
         "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
@@ -76,7 +76,7 @@ def test_ontology_instantiation_exists_in_graph(graph):
 
     assert c is not None
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "\n"
         "<TestOntology> a owl:Ontology .\n"

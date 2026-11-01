@@ -1,12 +1,14 @@
 version: 2
 updates:
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: "/"
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
-    # todo: change this to widen when Dependabot adds widen back to Pip ecosystem
-    # see https://github.com/dependabot/dependabot-core/pull/10194
+    # auto widens ranges only while Dependabot detects rdflib as a library, i.e.
+    # PyPI's summary for the latest release equals [project].description. If they
+    # differ (e.g. the description is edited before a release), auto falls back to
+    # increase and raises lower bounds.
     versioning-strategy: auto
     ignore:
       # We only use setuptools for a couple of things in the test suite
@@ -18,8 +20,6 @@ updates:
       - dependency-name: types-setuptools
         versions:
           - ">=72.0"
-      # Ignore all black updates, because we use a pinned version we don't want to change
-      - dependency-name: black
       # Ignore types-setuptools patch-level updates, because they issue too many!
       - dependency-name: types-setuptools
         update-types: ["version-update:semver-patch"]
@@ -40,8 +40,3 @@ updates:
     directory: docker/unstable/
     schedule:
       interval: weekly
-  - package-ecosystem: pip
-    directory: devtools/
-    schedule:
-      interval: weekly
-    versioning-strategy: auto

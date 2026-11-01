@@ -1,6 +1,9 @@
 import re
 
+import pytest
+
 import rdflib
+from test.utils import GraphHelper
 
 TRIPLE = (
     rdflib.URIRef("http://example.com/s"),
@@ -9,10 +12,21 @@ TRIPLE = (
 )
 
 
-def test_empty():
-    g = rdflib.Graph()
+@pytest.mark.parametrize("graph_type", [rdflib.Graph, rdflib.Dataset])
+def test_empty(graph_type):
+    g = graph_type()
     s = g.serialize(format="trig")
     assert s is not None
+
+
+def test_default_and_named_graph_roundtrip():
+    dataset = rdflib.Dataset()
+    dataset.default_graph.add(TRIPLE)
+    dataset.graph(rdflib.URIRef("urn:named")).add(TRIPLE)
+
+    data = dataset.serialize(format="trig")
+    parsed = rdflib.Dataset().parse(data=data, format="trig")
+    GraphHelper.assert_quad_sets_equals(dataset, parsed)
 
 
 def test_repeat_triples():
@@ -84,7 +98,7 @@ def test_blank_graph_identifier():
     g = rdflib.Dataset()
     g.add(TRIPLE + (rdflib.BNode(),))
     out = g.serialize(format="trig", encoding="latin-1")
-    graph_label_line = out.splitlines()[-4]
+    graph_label_line = out.splitlines()[2]
 
     assert re.match(rb"^_:[a-zA-Z0-9]+ \{", graph_label_line)
 
