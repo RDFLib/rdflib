@@ -667,11 +667,19 @@ class Literal(Identifier):
 
             lang = lang or lexical_or_value.language
             if datatype is not None:
-                # override datatype
+                # override datatype. SPARQL builds "x"^^xsd:integer as
+                # Literal(Literal("x"), datatype=...), so this branch has to
+                # record ill_typed the same way the string branch does.
                 value = _castLexicalToPython(lexical_or_value, datatype)
+                if datatype in _toPythonMapping:
+                    checker = _check_well_formed_types.get(
+                        datatype, _well_formed_by_value
+                    )
+                    ill_typed = not checker(str(lexical_or_value), value)
             else:
                 datatype = lexical_or_value.datatype
                 value = lexical_or_value.value
+                ill_typed = lexical_or_value.ill_typed
 
         elif isinstance(lexical_or_value, str) or isinstance(lexical_or_value, bytes):
             # passed a string
