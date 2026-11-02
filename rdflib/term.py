@@ -1747,8 +1747,12 @@ class Literal(Identifier):
             if '"""' in self:
                 # is this ok?
                 encoded = encoded.replace('"""', '\\"\\"\\"')
-            if encoded[-1] == '"' and encoded[-2] != "\\":
-                encoded = encoded[:-1] + "\\" + '"'
+            if encoded[-1] == '"':
+                # Backslashes are doubled above, so the final quote is only
+                # escaped already if an odd number of backslashes precede it.
+                head = encoded[:-1]
+                if (len(head) - len(head.rstrip("\\"))) % 2 == 0:
+                    encoded = head + "\\" + '"'
             # TODO: Replace usage of %s here with fstrings
             # when we have ability to escape \r and \n inside
             # f-string inline function calls
