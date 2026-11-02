@@ -60,9 +60,7 @@ def test_star_self_loop_once():
     p = URIRef("http://example.org/p")
     g.add((a, p, a))
     rows = list(
-        g.query(
-            "SELECT ?o WHERE { <http://example.org/a> <http://example.org/p>* ?o }"
-        )
+        g.query("SELECT ?o WHERE { <http://example.org/a> <http://example.org/p>* ?o }")
     )
     assert _names(rows) == ["a"]
 
@@ -74,9 +72,7 @@ def test_star_chain_includes_start_once():
     p = URIRef("http://example.org/p")
     g.add((a, p, b))
     rows = list(
-        g.query(
-            "SELECT ?o WHERE { <http://example.org/a> <http://example.org/p>* ?o }"
-        )
+        g.query("SELECT ?o WHERE { <http://example.org/a> <http://example.org/p>* ?o }")
     )
     assert sorted(_names(rows)) == ["a", "b"]
     assert len(rows) == 2
