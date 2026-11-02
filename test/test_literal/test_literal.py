@@ -49,6 +49,7 @@ from rdflib.term import (
     _XSD_TIME,
     Literal,
     URIRef,
+    Variable,
     _reset_bindings,
     bind,
 )
@@ -109,7 +110,7 @@ def test_n3_long_literal_ending_in_quote(value: str) -> None:
     """
     literal = rdflib.Literal(value)
     result = rdflib.Graph().query(f"SELECT ?x WHERE {{ BIND({literal.n3()} AS ?x) }}")
-    assert [row[0] for row in result] == [literal]
+    assert [b[Variable("x")] for b in result.bindings] == [literal]
 
 
 def test_literal_from_bool() -> None:
