@@ -1198,7 +1198,8 @@ class Literal(Identifier):
                 and ((not self.ill_typed) and (not other.ill_typed))
                 and (self.value is not None and other.value is not None)
             ):
-                return self.value > other.value
+                left, right = _promote_numeric_pair(self.value, other.value)
+                return left > right
 
             # plain-literals and xsd:string literals
             # are "the same"
@@ -1444,7 +1445,8 @@ class Literal(Identifier):
                 and (self.value is not None and other.value is not None)
             ):
                 if self.value is not None and other.value is not None:
-                    return self.value == other.value
+                    left, right = _promote_numeric_pair(self.value, other.value)
+                    return left == right
                 else:
                     if str.__eq__(self, other):
                         return True
@@ -2014,6 +2016,21 @@ _XSD_HEXBINARY = URIRef(_XSD_PFX + "hexBinary")
 _XSD_GYEAR = URIRef(_XSD_PFX + "gYear")
 _XSD_GYEARMONTH = URIRef(_XSD_PFX + "gYearMonth")
 # TODO: gMonthDay, gDay, gMonth
+
+
+def _promote_numeric_pair(left: Any, right: Any) -> tuple[Any, Any]:
+    """Bring two numbers to the type XPath would compare them in.
+
+    A float here is an xsd:float or xsd:double. Decimal and integer promote
+    to that float, which is the value you get by writing the number out and
+    reading it back as a double.
+    """
+    if isinstance(left, float) or isinstance(right, float):
+        return float(left), float(right)
+    if isinstance(left, Decimal) or isinstance(right, Decimal):
+        return Decimal(left), Decimal(right)
+    return left, right
+
 
 _NUMERIC_LITERAL_TYPES: tuple[URIRef, ...] = (
     _XSD_INTEGER,
