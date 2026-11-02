@@ -248,6 +248,46 @@ def test_named_filter_graph_query():
     ) == [(Literal("Susan"),)]
 
 
+@pytest.mark.parametrize("graph", ["ex:g", "?g"])
+@pytest.mark.parametrize(
+    "pattern",
+    [
+        "BIND(EXISTS { ?s ex:p ?o } AS ?e)",
+        "FILTER EXISTS { ?s ex:p ?o } BIND(true AS ?e)",
+    ],
+    ids=["bind", "filter"],
+)
+def test_exists_inside_graph_block(graph: str, pattern: str) -> None:
+    """
+    This is issue https://github.com/RDFLib/rdflib/issues/3585
+
+    The solutions of the join with the sub-select share one context. Once
+    the first one left the GRAPH block, EXISTS ran on the default graph for
+    the others.
+    """
+    ex = Namespace("https://ex.com/")
+    ds = Dataset()
+    for s in (ex.s1, ex.s2, ex.s3):
+        ds.graph(ex.g).add((s, ex.p, ex.o))
+
+    result = ds.query(
+        f"""
+        SELECT ?s ?e WHERE {{ GRAPH {graph} {{
+            {{ SELECT DISTINCT ?o WHERE {{ ?x ex:p ?o }} }}
+            ?s ex:p ?o .
+            {pattern}
+        }} }}
+        """,
+        initNs={"ex": ex},
+    )
+
+    assert sorted(result) == [
+        (ex.s1, Literal(True)),
+        (ex.s2, Literal(True)),
+        (ex.s3, Literal(True)),
+    ]
+
+
 def test_txtresult():
     data = f"""\
     @prefix rdfs: <{str(RDFS)}> .
