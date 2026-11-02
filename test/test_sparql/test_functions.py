@@ -8,6 +8,7 @@ import pytest
 from rdflib.graph import Graph
 from rdflib.namespace import XSD, Namespace
 from rdflib.plugins.sparql.operators import _lang_range_check
+from rdflib.query import ResultRow
 from rdflib.term import BNode, Identifier, Literal, URIRef
 
 EG = Namespace("https://example.com/")
@@ -197,7 +198,9 @@ def test_isnumeric_filter_drops_ill_typed_literals() -> None:
         FILTER(isNumeric(?v))
     }
     """
-    values = sorted(str(row.v) for row in Graph().query(query))
+    values = sorted(
+        str(row.v) for row in Graph().query(query) if isinstance(row, ResultRow)
+    )
     assert values == ["12"]
 
 
