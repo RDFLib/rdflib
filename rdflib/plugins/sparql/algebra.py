@@ -1126,8 +1126,10 @@ class _AlgebraTranslator:
             elif node.name == "BGP":
                 # Identifiers or Paths
                 # Negated path throws a type error. Probably n3() method of negated paths should be fixed
+                # The space before "." ends a blank node label, which may contain
+                # a ".": in `_:a._:b` the label would run on into the next triple.
                 triples = "".join(
-                    triple[0].n3() + " " + triple[1].n3() + " " + triple[2].n3() + "."
+                    triple[0].n3() + " " + triple[1].n3() + " " + triple[2].n3() + " ."
                     for triple in node.triples
                 )
                 self._replace("{BGP}", triples)
