@@ -8,6 +8,7 @@ import pytest
 from rdflib.graph import Graph
 from rdflib.namespace import XSD, Namespace
 from rdflib.plugins.sparql.operators import _lang_range_check
+from rdflib.query import ResultRow
 from rdflib.term import BNode, Identifier, Literal, URIRef
 
 EG = Namespace("https://example.com/")
@@ -26,6 +27,10 @@ EG = Namespace("https://example.com/")
         (r"isLITERAL('eg:IRI')", Literal(True)),
         (r"isNumeric(eg:IRI)", Literal(False)),
         (r"isNumeric(1)", Literal(True)),
+        (r'isNumeric("x"^^xsd:integer)', Literal(False)),
+        (r'isNumeric("1200"^^xsd:byte)', Literal(False)),
+        (r'isNumeric("12"^^xsd:byte)', Literal(True)),
+        (r'isNumeric("01"^^xsd:integer)', Literal(True)),
         (r"STR(eg:IRI)", Literal("https://example.com/IRI")),
         (r"STR(1)", Literal("1")),
         (r'LANG("Robert"@en)', Literal("en")),
@@ -178,6 +183,25 @@ def test_function(expression: str, expected_result: Identifier | type) -> None:
         assert isinstance(actual_result, expected_result)
     else:
         assert actual_result == expected_result
+
+
+def test_isnumeric_filter_drops_ill_typed_literals() -> None:
+    """isNumeric is false when the lexical form is not valid for the datatype.
+
+    Regression for https://github.com/RDFLib/rdflib/issues/3653.
+    SPARQL 1.1 section 17.4.2.4: isNumeric("1200"^^xsd:byte) is false.
+    """
+    query = """
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    SELECT ?v WHERE {
+        VALUES ?v { "x"^^xsd:integer "1200"^^xsd:byte "12"^^xsd:byte }
+        FILTER(isNumeric(?v))
+    }
+    """
+    values = sorted(
+        str(row.v) for row in Graph().query(query) if isinstance(row, ResultRow)
+    )
+    assert values == ["12"]
 
 
 @pytest.mark.parametrize(

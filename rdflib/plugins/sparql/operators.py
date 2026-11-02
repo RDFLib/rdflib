@@ -79,8 +79,14 @@ def Builtin_isIRI(expr, ctx) -> Literal:
 
 
 def Builtin_isNUMERIC(expr, ctx) -> Literal:
+    # SPARQL isNumeric is false for a numeric datatype with an invalid
+    # lexical form (for example "1200"^^xsd:byte). ill_typed is None when
+    # the datatype is not one we check, and numeric() rejects those.
+    arg = expr.arg
+    if isinstance(arg, Literal) and arg.ill_typed:
+        return Literal(False)
     try:
-        numeric(expr.arg)
+        numeric(arg)
         return Literal(True)
     except:  # noqa: E722
         return Literal(False)
