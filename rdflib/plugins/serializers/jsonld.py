@@ -76,7 +76,7 @@ class JsonLDSerializer(Serializer):
             )
 
         context_data = kwargs.get("context")
-        use_native_types = (kwargs.get("use_native_types", False),)
+        use_native_types = kwargs.get("use_native_types", False)
         use_rdf_type = kwargs.get("use_rdf_type", False)
         auto_compact = kwargs.get("auto_compact", False)
 
