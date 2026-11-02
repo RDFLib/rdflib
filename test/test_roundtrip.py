@@ -203,6 +203,24 @@ XFAILS = {
     ),
 }
 
+# Formats whose serialization is binary
+BINARY_FORMATS = {"jelly"}
+
+# Formats that write "x"^^xsd:string as "x", which in RDF 1.1 is the same
+# term. We apply extra normalization for them in literal comparisons.
+SIMPLE_STRING_FORMATS = {"jelly"}
+
+
+def to_simple_literals(graph: Graph) -> None:
+    """Replace each "x"^^xsd:string in the graph with "x", the same RDF term."""
+    contexts = graph.contexts() if isinstance(graph, ConjunctiveGraph) else [graph]
+    for context in list(contexts):
+        for s, p, o in list(context.triples((None, None, None))):
+            if type(o) is rdflib.Literal and o.datatype == XSD.string:
+                context.remove((s, p, o))
+                context.add((s, p, rdflib.Literal(str(o))))
+
+
 # This is for files which can only be represented properly in one format
 CONSTRAINED_FORMAT_MAP = {
     "example-lots_of_graphs.n3": {"n3"}  # only n3 can serialize QuotedGraph
@@ -247,7 +265,12 @@ def roundtrip(
     else:
         g1.parse(source, format=infmt)
 
-    s = g1.serialize(format=testfmt)
+    s: str | bytes
+    if testfmt in BINARY_FORMATS:
+        # Graph.serialize returns str unless an encoding is given
+        s = g1.serialize(format=testfmt, encoding="utf-8")
+    else:
+        s = g1.serialize(format=testfmt)
 
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(
@@ -278,6 +301,10 @@ def roundtrip(
                     c.remove((s, p, o))  # type: ignore[arg-type]
                     # type error: Argument 1 to "add" of "Graph" has incompatible type "tuple[str, Node, Literal]"; expected "tuple[Node, Node, Node]"
                     c.add((s, p, rdflib.Literal(str(o))))  # type: ignore[arg-type]
+
+    if testfmt in SIMPLE_STRING_FORMATS:
+        to_simple_literals(g1)
+        to_simple_literals(g2)
 
     if logger.isEnabledFor(logging.DEBUG):
         both, first, second = rdflib.compare.graph_diff(g1, g2)
