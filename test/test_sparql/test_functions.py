@@ -13,6 +13,34 @@ from rdflib.term import BNode, Identifier, Literal, URIRef
 EG = Namespace("https://example.com/")
 
 
+def _one(graph: Graph, query: str) -> Literal | None:
+    rows = list(graph.query(query))
+    if not rows:
+        return None
+    value = rows[0][0]
+    assert isinstance(value, Literal)
+    return value
+
+
+def test_replace_whole_match_and_literal_dollar() -> None:
+    graph = Graph()
+    assert _one(
+        graph, 'SELECT (REPLACE("ab12cd", "[0-9]+", "[$0]") AS ?x) WHERE {}'
+    ) == Literal("ab[12]cd")
+    assert _one(graph, r'SELECT (REPLACE("a", "a", "\\$") AS ?x) WHERE {}') == Literal(
+        "$"
+    )
+    assert _one(
+        graph, 'SELECT (REPLACE("ab", "(a)(b)", "$2$1") AS ?x) WHERE {}'
+    ) == Literal("ba")
+    # $12 with one group: the group, then the extra digit.
+    assert _one(
+        graph, 'SELECT (REPLACE("ab", "(a)b", "$12") AS ?x) WHERE {}'
+    ) == Literal("a2")
+    # $$ is not a way to write a dollar. The query fails closed.
+    assert _one(graph, 'SELECT (REPLACE("a", "a", "$$") AS ?x) WHERE {}') is None
+
+
 @pytest.mark.parametrize(
     ["expression", "expected_result"],
     [
