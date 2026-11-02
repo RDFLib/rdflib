@@ -8,18 +8,20 @@ import pytest
 from rdflib.graph import Graph
 from rdflib.namespace import XSD, Namespace
 from rdflib.plugins.sparql.operators import _lang_range_check
+from rdflib.query import ResultRow
 from rdflib.term import BNode, Identifier, Literal, URIRef
 
 EG = Namespace("https://example.com/")
 
 
 def _one(graph: Graph, query: str) -> Literal | None:
-    rows = list(graph.query(query))
-    if not rows:
-        return None
-    value = rows[0][0]
-    assert isinstance(value, Literal)
-    return value
+    for row in graph.query(query):
+        if not isinstance(row, ResultRow):
+            continue
+        value = row[0]
+        assert isinstance(value, Literal)
+        return value
+    return None
 
 
 def test_replace_whole_match_and_literal_dollar() -> None:
