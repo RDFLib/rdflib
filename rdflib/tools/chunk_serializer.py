@@ -85,7 +85,7 @@ def serialize_in_chunks(
             max_file_size = max_file_size_kb * 1000
             file_no = 1 if write_prefixes else 0
             for i, t in enumerate(g.triples((None, None, None))):
-                row_bytes = _nt_row(t).encode("utf-8")
+                row_bytes = _nt_row(t).encode("utf-8", "_rdflib_nt_escape")
                 if len(row_bytes) > max_file_size:
                     raise ValueError(
                         # type error: Unsupported operand types for / ("bytes" and "int")
@@ -119,5 +119,5 @@ def serialize_in_chunks(
                     if i % max_triples == 0:
                         fp, fhb = xstack.enter_context(_start_new_file(file_no))
                         file_no += 1
-                    fhb.write(_nt_row(t).encode("utf-8"))
+                    fhb.write(_nt_row(t).encode("utf-8", "_rdflib_nt_escape"))
             return
