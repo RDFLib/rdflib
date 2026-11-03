@@ -45,28 +45,28 @@ def test_issue78():
 def test_serialize_surrogate_is_escaped():
     # https://github.com/RDFLib/rdflib/issues/2590
     g = Graph()
-    g.add((URIRef("foo"), URIRef("foo"), Literal("a\uD800b")))
+    g.add((URIRef("foo"), URIRef("foo"), Literal("a\ud800b")))
     s = g.serialize(format="nt")
     assert "\\uD800" in s
-    assert "\uD800" not in s
+    assert "\ud800" not in s
 
 
 def test_serialize_low_surrogate_is_escaped():
     # https://github.com/RDFLib/rdflib/issues/2590
     g = Graph()
-    g.add((URIRef("foo"), URIRef("foo"), Literal("\uDC00")))
+    g.add((URIRef("foo"), URIRef("foo"), Literal("\udc00")))
     s = g.serialize(format="nt")
     assert "\\uDC00" in s
-    assert "\uDC00" not in s
+    assert "\udc00" not in s
 
 
 def test_serialize_canon_surrogate_is_escaped():
     # https://github.com/RDFLib/rdflib/issues/2590
     g = Graph()
-    g.add((URIRef("foo"), URIRef("foo"), Literal("a\uD800b")))
+    g.add((URIRef("foo"), URIRef("foo"), Literal("a\ud800b")))
     s = g.serialize(format="nt", canon=True)
     assert "\\uD800" in s
-    assert "\uD800" not in s
+    assert "\ud800" not in s
 
 
 def test_serialize_plain_literal_unchanged():
