@@ -1,4 +1,5 @@
 import json
+from collections.abc import Collection
 from typing import Any
 from unittest.mock import patch
 
@@ -65,11 +66,12 @@ def _annotated_cell_graph():
     return g, head, head
 
 
-def _non_empty_lists(data: str) -> list[Any]:
+def _non_empty_lists(data: str, list_terms: Collection[str] = ()) -> list[Any]:
     """Every non-empty ``@list`` value in a JSON-LD document.
 
-    ``"@list": []`` is left out: it is ``rdf:nil``, a single IRI, not a list
-    structure.
+    A term with an ``@list`` container holds its list as a bare value; name
+    such terms in ``list_terms`` to include their values. ``"@list": []`` is
+    left out: it is ``rdf:nil``, a single IRI, not a list structure.
     """
     found: list[Any] = []
 
@@ -77,7 +79,11 @@ def _non_empty_lists(data: str) -> list[Any]:
         if isinstance(value, dict):
             if value.get("@list"):
                 found.append(value["@list"])
-            for item in value.values():
+            for key, item in value.items():
+                if key == "@context":
+                    continue
+                if key in list_terms and item != []:
+                    found.append(item)
                 walk(item)
         elif isinstance(value, list):
             for item in value:
@@ -227,22 +233,113 @@ def test_a_list_cell_shared_across_named_graphs_round_trips(context):
     (in_g2,) = ds2.graph(NS.g2).objects(NS.s2, NS.p)
     assert in_g1 == in_g2
     assert (in_g1, RDF.first, Literal("a")) in ds2.graph(NS.g1)
-    assert _non_empty_lists(data) == []
+    assert _non_empty_lists(data, list_terms=["p"]) == []
 
 
-def test_lists_in_separate_named_graphs_are_still_written_as_lists():
-    """Counting across graphs must not reject a list each graph owns alone."""
+def _label_in_named_graph(ds: Dataset, cell: BNode):
+    ds.graph(NS.g2).add((cell, RDFS.label, Literal("described elsewhere")))
+    return lambda ds2: next(ds2.graph(NS.g2).subjects(RDFS.label, None))
+
+
+def _label_in_default_graph(ds: Dataset, cell: BNode):
+    ds.default_graph.add((cell, RDFS.label, Literal("described elsewhere")))
+    return lambda ds2: next(ds2.default_graph.subjects(RDFS.label, None))
+
+
+def _type_in_named_graph(ds: Dataset, cell: BNode):
+    ds.graph(NS.g2).add((cell, RDF.type, RDF.List))
+    return lambda ds2: next(ds2.graph(NS.g2).subjects(RDF.type, RDF.List))
+
+
+def _graph(ds: Dataset, name):
+    return ds.graph(name) if name is not None else ds.default_graph
+
+
+@pytest.mark.parametrize("context", [None, LIST_CONTEXT, COERCING_LIST_CONTEXT])
+@pytest.mark.parametrize(
+    ("list_graph", "describe"),
+    [
+        pytest.param(NS.g1, _label_in_named_graph, id="label-in-named-graph"),
+        pytest.param(NS.g1, _label_in_default_graph, id="label-in-default-graph"),
+        pytest.param(NS.g1, _type_in_named_graph, id="type-in-named-graph"),
+        pytest.param(None, _label_in_named_graph, id="list-in-default-graph"),
+    ],
+)
+def test_a_list_cell_described_in_another_graph_round_trips(
+    context, list_graph, describe
+):
+    """A cell that is a subject in another graph keeps its identity.
+
+    Section 8.4 checks a cell's entries within its own graph, and its
+    "referenced once" map counts object positions only, so by the letter the
+    cell is inlined as ``@list``. Parsing then gives it a fresh blank node, and
+    the other graph's statement describes a node that is no longer the cell.
+    Explicit ``rdf:first``/``rdf:rest`` is always valid, so the serializer
+    writes the chain that way instead.
+    """
+    ds = Dataset()
+    g1 = _graph(ds, list_graph)
+    cell = BNode()
+    # A node member, so that the coercing list term is eligible for the chain.
+    g1.add((cell, RDF.first, NS.a))
+    g1.add((cell, RDF.rest, RDF.nil))
+    g1.add((NS.s, NS.p, cell))
+    find = describe(ds, cell)
+
+    data = ds.serialize(format="json-ld", context=context)
+    ds2 = Dataset()
+    ds2.parse(data=data, format="json-ld")
+
+    (listed,) = _graph(ds2, list_graph).objects(NS.s, NS.p)
+    assert find(ds2) == listed
+    assert (listed, RDF.first, NS.a) in _graph(ds2, list_graph)
+    assert str(RDF.first) in data
+    assert _non_empty_lists(data, list_terms=["p"]) == []
+
+
+@pytest.mark.parametrize("context", [None, LIST_CONTEXT, COERCING_LIST_CONTEXT])
+@pytest.mark.parametrize("position", [1, 2], ids=["middle-cell", "last-cell"])
+def test_a_later_list_cell_described_in_another_graph_round_trips(context, position):
+    """Every cell of the chain is checked, not only the head."""
+    ds = Dataset()
+    g1 = ds.graph(NS.g1)
+    cells = [BNode() for _ in range(3)]
+    for index, cell in enumerate(cells):
+        g1.add((cell, RDF.first, NS[f"m{index}"]))
+        g1.add((cell, RDF.rest, cells[index + 1] if index < 2 else RDF.nil))
+    g1.add((NS.s, NS.p, cells[0]))
+    ds.graph(NS.g2).add((cells[position], RDFS.label, Literal("described elsewhere")))
+
+    data = ds.serialize(format="json-ld", context=context)
+    ds2 = Dataset()
+    ds2.parse(data=data, format="json-ld")
+
+    parsed = ds2.graph(NS.g1)
+    cell = parsed.value(NS.s, NS.p)
+    for _ in range(position):
+        cell = parsed.value(cell, RDF.rest)
+    assert next(ds2.graph(NS.g2).subjects(RDFS.label, None)) == cell
+
+
+@pytest.mark.parametrize("context", [None, LIST_CONTEXT, COERCING_LIST_CONTEXT])
+def test_lists_in_separate_named_graphs_are_still_written_as_lists(context):
+    """Counting across graphs must not reject a list each graph owns alone.
+
+    This is also the positive control for ``_non_empty_lists`` with
+    ``list_terms``: it must find both lists under each context.
+    """
     ds = Dataset()
     for name in ("g1", "g2"):
         graph = ds.graph(NS[name])
         head = BNode()
-        graph.add((head, RDF.first, Literal(name)))
+        # A node member, so that the coercing list term is eligible.
+        graph.add((head, RDF.first, NS[name]))
         graph.add((head, RDF.rest, RDF.nil))
         graph.add((NS.s, NS.p, head))
 
-    data = ds.serialize(format="json-ld")
+    data = ds.serialize(format="json-ld", context=context)
 
-    assert len(_non_empty_lists(data)) == 2
+    assert len(_non_empty_lists(data, list_terms=["p"])) == 2
 
 
 @pytest.mark.parametrize("auto_compact", [False, True])
