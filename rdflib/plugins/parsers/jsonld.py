@@ -602,26 +602,29 @@ class Parser:
                     return listref
 
         else:  # expand compacted value
-            if term and term.type:
-                if term.type == JSON:
-                    node = self._to_typed_json_value(node)
-                elif node is None:
-                    # type error: Return value expected
-                    return  # type: ignore[return-value]
-                elif term.type == ID and isinstance(node, str):
-                    node = {ID: context.resolve(node)}
-                elif term.type == VOCAB and isinstance(node, str):
-                    node = {ID: context.expand(node) or context.resolve_iri(node)}
-                else:
-                    node = {TYPE: term.type, VALUE: node}
+            if term and term.type == JSON:
+                node = self._to_typed_json_value(node)
+            elif node is None:
+                # type error: Return value expected
+                return  # type: ignore[return-value]
+            elif term and term.type == ID and isinstance(node, str):
+                node = {ID: context.resolve(node)}
+            elif term and term.type == VOCAB and isinstance(node, str):
+                node = {ID: context.expand(node) or context.resolve_iri(node)}
+            elif term and term.type and term.type not in (ID, VOCAB, NONE):
+                node = {TYPE: term.type, VALUE: node}
             else:
-                if node is None:
-                    # type error: Return value expected
-                    return  # type: ignore[return-value]
+                # No type mapping applies: @id and @vocab coerce strings only,
+                # and @none coerces nothing (Value Expansion, JSON-LD 1.1
+                # Processing Algorithms and API, section 5.3.2). The value is
+                # converted as under an untyped term. A string takes the term's
+                # language mapping, which only a term without a type mapping
+                # has (Create Term Definition, section 4.2.2, step 22), or the
+                # default language.
                 if isinstance(node, float):
                     return Literal(node, datatype=XSD.double)
 
-                if term and term.language is not UNDEF:
+                if term and not term.type and term.language is not UNDEF:
                     lang = term.language
                 else:
                     lang = context.language

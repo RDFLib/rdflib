@@ -68,8 +68,6 @@ known_bugs: tuple[str, ...] = (
     "toRdf/e061-in",
     # Trying to use BNode as predicate, RDFLIB doesn't support
     "toRdf/e075-in",
-    # @id and @vocab in literal datatype expansion doesn't work
-    "toRdf/e088-in",
     # TODO: relative-iri keeps . on end of IRI?
     "toRdf/e076-in",
     "toRdf/e089-in",
