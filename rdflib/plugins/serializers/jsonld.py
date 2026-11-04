@@ -200,35 +200,34 @@ class Converter:
         context = self.context
 
         objs: list[Any] = []
+        # The default graph's nodes by "@id", for a graph named like one.
+        default_nodes: dict[Any, dict[str, Any]] = {}
         for g in graphs:
-            obj = {}
             graphname = None
-
-            if isinstance(g.identifier, URIRef):
-                if g.identifier != default_graph_id:
-                    graphname = context.shrink_iri(g.identifier)
-                    obj[context.id_key] = graphname
+            if isinstance(g.identifier, URIRef) and g.identifier != default_graph_id:
+                graphname = context.shrink_iri(g.identifier)
 
             nodes = self.from_graph(g)
 
-            if not graphname and len(nodes) == 1:
-                obj.update(nodes[0])
-            else:
-                if not nodes:
-                    continue
-                obj[context.graph_key] = nodes
+            if graphname is None:
+                # The default graph's nodes go into the result itself (Serialize
+                # RDF as JSON-LD Algorithm, JSON-LD 1.1 Processing Algorithms
+                # and API, section 8.4). Wrapped in "@graph" without "@id" they
+                # would be a graph named by a new blank node (section 7.2.2).
+                objs.extend(nodes)
+                default_nodes.update((node[context.id_key], node) for node in nodes)
+                continue
+            if not nodes:
+                continue
+            # A named graph is written into the default graph's node of the
+            # same name, if there is one, else into a node of its own.
+            node = default_nodes.get(graphname)
+            if node is None:
+                node = {context.id_key: graphname}
+                objs.append(node)
+            node[context.graph_key] = nodes
 
-            if objs and objs[0].get(context.get_key(ID)) == graphname:
-                objs[0].update(obj)
-            else:
-                objs.append(obj)
-
-        if len(graphs) == 1 and len(objs) == 1 and not self.context.active:
-            default = objs[0]
-            items = default.get(context.graph_key)
-            if len(default) == 1 and items:
-                objs = items
-        elif len(objs) == 1 and self.context.active:
+        if len(objs) == 1 and self.context.active:
             objs = objs[0]
 
         return objs
