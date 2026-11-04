@@ -163,32 +163,33 @@ class Converter:
         self._rejected_lists: Optional[set[Identifier]] = None
 
     def convert(self, graph: Graph):
-        # TODO: bug in rdflib dataset parsing (nquads et al):
-        # plain triples end up in separate unnamed graphs (rdflib issue #436)
         if graph.context_aware:
             # type error: "Graph" has no attribute "contexts"
             all_contexts = list(graph.graphs())  # type: ignore[attr-defined]
-            has_dataset_default_id = any(
-                c.identifier == DATASET_DEFAULT_GRAPH_ID for c in all_contexts
-            )
-            if (
-                has_dataset_default_id
-                # # type error: "Graph" has no attribute "contexts"
-                and graph.default_graph.identifier == DATASET_DEFAULT_GRAPH_ID  # type: ignore[attr-defined]
-            ):
-                default_graph = graph.default_graph  # type: ignore[attr-defined]
+            # type error: "Graph" has no attribute "default_graph"
+            default_graph = graph.default_graph  # type: ignore[attr-defined]
+            if default_graph.identifier == DATASET_DEFAULT_GRAPH_ID:
+                # A Dataset, whose default graph is urn:x-rdflib:default: every
+                # other graph is a named graph, whether an IRI or a blank node
+                # names it (RDF 1.1 Concepts, section 4).
+                graphs = [default_graph]
+                graphs.extend(
+                    g for g in all_contexts if g.identifier != DATASET_DEFAULT_GRAPH_ID
+                )
             else:
+                # TODO: bug in rdflib dataset parsing (nquads et al): plain
+                # triples end up in separate unnamed graphs (rdflib issue #436).
+                # A ConjunctiveGraph's default graph has a blank-node name like
+                # those, so they are merged, into a new graph so that the input
+                # is not changed.
                 default_graph = Graph()
-            graphs = [default_graph]
+                graphs = [default_graph]
+                for g in all_contexts:
+                    if isinstance(g.identifier, URIRef):
+                        graphs.append(g)
+                    else:
+                        default_graph += g
             default_graph_id = default_graph.identifier
-
-            for g in all_contexts:
-                if g in graphs:
-                    continue
-                if isinstance(g.identifier, URIRef):
-                    graphs.append(g)
-                else:
-                    default_graph += g
         else:
             graphs = [graph]
             default_graph_id = graph.identifier
@@ -204,8 +205,11 @@ class Converter:
         default_nodes: dict[Any, dict[str, Any]] = {}
         for g in graphs:
             graphname = None
-            if isinstance(g.identifier, URIRef) and g.identifier != default_graph_id:
-                graphname = context.shrink_iri(g.identifier)
+            if g.identifier != default_graph_id:
+                if isinstance(g.identifier, URIRef):
+                    graphname = context.shrink_iri(g.identifier)
+                else:
+                    graphname = g.identifier.n3()
 
             nodes = self.from_graph(g)
 
