@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import logging
-from typing import Union
+from collections import Counter
+from typing import Optional, Union
 
 import pytest
 
-from rdflib import RDF, RDFS, Graph, URIRef
+from rdflib import RDF, RDFS, Graph, Namespace, URIRef
 from rdflib.namespace import DCAT, DCTERMS
 from rdflib.paths import (
     AlternativePath,
@@ -21,6 +22,7 @@ from rdflib.paths import (
 
 g = Graph()
 nsm = g.namespace_manager
+EX = Namespace("http://example.org/")
 
 
 @pytest.mark.parametrize(
@@ -142,3 +144,39 @@ def test_hash(lhs: Path, rhs: Path) -> None:
 def test_dict_key(insert_path: Path, check_path: Path) -> None:
     d = {insert_path: "foo"}
     assert d[check_path] == "foo"
+
+
+@pytest.mark.parametrize(
+    "path, multiplicity",
+    [
+        (-EX.p0, 1),
+        (-~EX.p0, 1),
+        (-(EX.p0 | ~EX.p0), 2),
+        (NegatedPath(AlternativePath()), 1),
+    ],
+    ids=["forward", "inverse", "mixed", "empty"],
+)
+@pytest.mark.parametrize(
+    "subj, obj",
+    [(None, None), (EX.A, None), (None, EX.B), (EX.A, EX.B), (EX.A, EX.A)],
+)
+def test_negated_path_cardinality(
+    path: NegatedPath,
+    multiplicity: int,
+    subj: Optional[URIRef],
+    obj: Optional[URIRef],
+) -> None:
+    graph = Graph()
+    pairs = [(EX.A, EX.B), (EX.B, EX.A), (EX.A, EX.A)]
+    for subject, object_ in pairs:
+        for predicate in (EX.p0, EX.p1, EX.p2):
+            graph.add((subject, predicate, object_))
+
+    expected = Counter(
+        {
+            (subject, object_): multiplicity
+            for subject, object_ in pairs
+            if (subj is None or subject == subj) and (obj is None or object_ == obj)
+        }
+    )
+    assert Counter(path.eval(graph, subj, obj)) == expected
