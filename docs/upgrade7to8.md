@@ -30,3 +30,22 @@ Results are not cached, so repeated checks repeat the work. Avoid assuming
 these operations are constant-time, especially in loops over large or remote
 datasets. A dataset containing only empty named graphs has length zero and is
 false, even though those graph names remain present.
+
+## Infinite and NaN doubles
+
+A [`Literal`][rdflib.term.Literal] made from an infinite or NaN float, or
+parsed as an infinite or NaN `xsd:double` or `xsd:float`, now has the lexical
+form `INF`, `-INF` or `NaN`, the canonical XML Schema forms. RDFLib 7 used
+Python's spelling, `inf`, `-inf` and `nan`, which is not a valid `xsd:double`
+or `xsd:float`. Turtle and N3 output already used the new forms; `str()`,
+N-Triples, N-Quads, RDF/XML, TriX, HexT, Patch and SPARQL results change.
+
+- Such a literal no longer equals one made with `normalize=False` from the old
+  spelling, such as `Literal("inf", datatype=XSD.double, normalize=False)`.
+  Literals in SPARQL queries aren't normalized, so a query that spells the
+  value `"inf"^^xsd:double` no longer matches, and `"INF"^^xsd:double` now does.
+- A persistent store that indexes literals by their lexical form, such as the
+  BerkeleyDB store, keeps the old spelling for data written by RDFLib 7.
+  RDFLib 8 reads such data back as `INF` and `NaN`, but can't find or remove
+  it by value. To migrate such a store, export its data with RDFLib 8 and load
+  it into a new store.
