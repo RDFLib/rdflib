@@ -356,13 +356,18 @@ class Converter:
 
         else:
             p_key = context.to_symbol(p)
-            if p_key is None:
-                raise ValueError(
-                    f"Predicate {p} is not in context and cannot be coerced to a symbol"
-                )
             # TODO: for coercing curies - quite clumsy; unify to_symbol and find_term?
             key_term = context.terms.get(p_key)
-            if key_term and (key_term.type or key_term.container):
+            # A term named like the key reads the value with its own type,
+            # container, direction, language or scoped context, so the value
+            # goes under the full IRI instead.
+            if key_term and (
+                key_term.type
+                or key_term.container
+                or key_term.reverse
+                or key_term.language is not UNDEF
+                or key_term.context is not UNDEF
+            ):
                 p_key = p
             if not term and p == RDF.type and not self.use_rdf_type:
                 if isinstance(o, URIRef):
