@@ -161,6 +161,10 @@ class Converter:
         self._pending_nodes: list[BNode] = []
         # Rejected prefixes are reusable only during a single graph conversion.
         self._rejected_lists: Optional[set[Identifier]] = None
+        # Cells of the chains accepted as @list during a single graph conversion.
+        self._list_cells: Optional[set[Identifier]] = None
+        # Subjects given a node object during a single graph conversion.
+        self._written_nodes: Optional[set[Identifier]] = None
 
     def convert(self, graph: Graph):
         # TODO: bug in rdflib dataset parsing (nquads et al):
@@ -237,23 +241,47 @@ class Converter:
         nodemap: dict[Any, Any] = {}
         self._pending_nodes = []
         self._rejected_lists = set()
+        list_cells: set[Identifier] = set()
+        self._list_cells = list_cells
+        written: set[Identifier] = set()
+        self._written_nodes = written
 
         try:
-            for s in set(graph.subjects()):
+            subjects = list(graph.subjects(unique=True))
+            for s in subjects:
                 ## only iri:s and unreferenced (rest will be promoted to top if needed)
                 if isinstance(s, URIRef) or (
                     isinstance(s, BNode) and not any(graph.subjects(None, s))
                 ):
                     self.process_subject(graph, s, nodemap)
+            self._process_pending_nodes(graph, nodemap)
 
-            # Explicit blank-node chains can be arbitrarily long. Process their
-            # descriptions iteratively instead of recursing through each reference.
-            while self._pending_nodes:
-                self.process_subject(graph, self._pending_nodes.pop(), nodemap)
+            # Blank nodes that only refer to each other have no entry point
+            # above. Every subject is written (section 8.4), so start from each
+            # one not yet written; its cycle follows through the references.
+            # Cells of the chains accepted so far are inlined already. The
+            # other cells come last, so that a node owning a list is written
+            # before its cells whatever order the store yields them in, unless
+            # that node is a list cell itself. A cell written here before its
+            # referrer is refused by to_collection, so the referrer writes a
+            # reference to it instead.
+            cells = set(graph.subjects(RDF.first))
+            for s in sorted(subjects, key=cells.__contains__):
+                if isinstance(s, BNode) and s not in list_cells and s not in written:
+                    self.process_subject(graph, s, nodemap)
+                    self._process_pending_nodes(graph, nodemap)
 
             return list(nodemap.values())
         finally:
             self._rejected_lists = None
+            self._list_cells = None
+            self._written_nodes = None
+
+    def _process_pending_nodes(self, graph: Graph, nodemap: dict[Any, Any]) -> None:
+        # Explicit blank-node chains can be arbitrarily long. Process their
+        # descriptions iteratively instead of recursing through each reference.
+        while self._pending_nodes:
+            self.process_subject(graph, self._pending_nodes.pop(), nodemap)
 
     def process_subject(self, graph: Graph, s: IdentifiedNode, nodemap):
         if isinstance(s, URIRef):
@@ -271,6 +299,8 @@ class Converter:
         node = {}
         node[self.context.id_key] = node_id
         nodemap[node_id] = node
+        if self._written_nodes is not None:
+            self._written_nodes.add(s)
 
         for p, o in graph.predicate_objects(s):
             # type error: Argument 3 to "add_to_node" of "Converter" has incompatible type "Node"; expected "IdentifiedNode"
@@ -472,10 +502,19 @@ class Converter:
         left pointing at a node the output never defines. This is the
         "referenced once" condition of the Serialize RDF as JSON-LD Algorithm
         (JSON-LD 1.1 Processing Algorithms and API, section 8.4).
+
+        During a graph conversion the cells of every accepted chain are
+        recorded: such a chain is written inline, so its cells need no node
+        objects of their own. A cell that already has a node object, because
+        a cycle led to it before its referrer, is refused, and the referrer
+        writes a reference to it.
         """
         rejected = self._rejected_lists
         if rejected is None:
             rejected = set()
+        written = self._written_nodes
+        if written is None:
+            written = set()
         if l_ in rejected:
             return None
         if l_ != RDF.nil and not graph.value(l_, RDF.first):
@@ -484,10 +523,13 @@ class Converter:
         chain: set[Identifier] = set()
         while l_:
             if l_ == RDF.nil:
+                if self._list_cells is not None:
+                    self._list_cells.update(chain)
                 return list_nodes
             if (
                 l_ in chain
                 or l_ in rejected
+                or l_ in written
                 or isinstance(l_, URIRef)
                 or self._usages(graph, l_) != 1
             ):
