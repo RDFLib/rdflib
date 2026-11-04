@@ -2363,16 +2363,7 @@ class ConjunctiveGraph(Graph):
         """Iterate over all the quads in the entire conjunctive graph"""
 
         s, p, o, c = self._spoc(triple_or_quad)
-
-        for (s, p, o), cg in self.store.triples((s, p, o), context=c):
-            if c is not None:
-                # A context was requested, so only that context is relevant;
-                # the store also reports the other contexts the triple
-                # appears in, which must not leak into the result.
-                yield s, p, o, c
-            else:
-                for ctx in cg:
-                    yield s, p, o, ctx
+        yield from self.store.quads((s, p, o), context=c)
 
     def triples_choices(
         self,

@@ -34,6 +34,7 @@ if TYPE_CHECKING:
     from rdflib.graph import (
         Graph,
         _ContextType,
+        _OptionalQuadType,
         _QuadType,
         _TripleChoiceType,
         _TriplePatternType,
@@ -345,6 +346,26 @@ class Store:
                 queries by passing a Graph instance (if store is context aware).
         """
         subject, predicate, object = triple_pattern
+
+    def quads(
+        self,
+        triple_pattern: _TriplePatternType,
+        context: _ContextType | None = None,
+    ) -> Iterator[_OptionalQuadType]:
+        """Iterate over matching triples and their graph memberships.
+
+        With no context, include non-quoted statements from all contexts.
+        With a context, return only memberships in that context. Stores may
+        override this operation to retrieve memberships directly; the default
+        implementation preserves the store's `triples()` behavior.
+        """
+        for (s, p, o), contexts in self.triples(triple_pattern, context=context):
+            if context is not None:
+                # Do not leak the other contexts reported for this triple.
+                yield s, p, o, context
+            else:
+                for ctx in contexts:
+                    yield s, p, o, ctx
 
     # variants of triples will be done if / when optimization is needed
 
