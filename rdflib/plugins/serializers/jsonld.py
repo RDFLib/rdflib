@@ -45,7 +45,7 @@ from rdflib.namespace import RDF, XSD
 from rdflib.serializer import Serializer
 from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, URIRef
 
-from ..shared.jsonld.context import UNDEF, Context
+from ..shared.jsonld.context import UNDEF, Context, Term
 from ..shared.jsonld.keys import CONTEXT, GRAPH, ID, LANG, LIST, SET, VOCAB
 from ..shared.jsonld.util import _HAS_ORJSON, json, orjson
 
@@ -297,17 +297,20 @@ class Converter:
             term = context.find_term(str(p), datatype, language=language)
         else:
             term = self._find_node_term(p, None)
-            if graph.value(o, RDF.first):
+            if graph.value(o, RDF.first) is not None:
                 # find_term ranks terms differently for LIST: it can return an
                 # @list term, and it skips @set terms. That choice applies only
                 # to a chain that can be written as @list. Walk the chain only
-                # when the choice differs, so explicitly written cells do not
-                # rescan their suffixes.
+                # when the choice differs, or when the term coerces to @vocab,
+                # which a list object under it would apply to its members. So
+                # explicitly written cells do not rescan their suffixes.
                 list_term = self._find_node_term(p, LIST)
-                if list_term is not None and list_term is not term:
+                if list_term is not None and (
+                    list_term is not term or list_term.type == VOCAB
+                ):
                     collection = self.to_collection(graph, o)
                     if collection is not None:
-                        term = list_term
+                        term = self._find_list_term(graph, p, list_term, collection)
 
         node = None
         use_set = not context.active
@@ -316,7 +319,10 @@ class Converter:
             p_key = term.name
 
             if term.type:
-                node = self.type_coerce(o, term.type)
+                # A chain written as a list is not coerced: its term was
+                # chosen for its members.
+                if collection is None:
+                    node = self.type_coerce(o, term.type)
             # type error: "Identifier" has no attribute "language"
             elif term.language and o.language == term.language:  # type: ignore[attr-defined]
                 node = str(o)
@@ -329,11 +335,12 @@ class Converter:
                 node = str(o)
 
             if LIST in term.container and collection is not None:
-                node = [
-                    self.type_coerce(v, term.type)
-                    or self.to_raw_value(graph, s, v, nodemap)
-                    for v in collection
-                ]
+                node = []
+                for v in collection:
+                    member = self.type_coerce(v, term.type)
+                    if member is None:
+                        member = self.to_raw_value(graph, s, v, nodemap)
+                    node.append(member)
                 if term.type == ID:
                     self._pending_nodes.extend(
                         v
@@ -370,7 +377,11 @@ class Converter:
                 p_key = context.type_key
 
         if node is None:
-            node = self.to_raw_value(graph, s, o, nodemap)
+            if collection is not None:
+                # The chain is walked already; write it without a second walk.
+                node = self._list_object(graph, s, collection, nodemap)
+            else:
+                node = self.to_raw_value(graph, s, o, nodemap)
         elif isinstance(o, BNode) and term and LIST not in term.container:
             # Coercion emits only the reference; preserve its description too.
             if any(graph.predicate_objects(o)):
@@ -397,6 +408,49 @@ class Converter:
                 return term
         return None
 
+    def _find_plain_term(self, p: IdentifiedNode) -> Optional[Term]:
+        """Return the context term for `p` that can hold a list object, or None.
+
+        A list object fits a term without a type whose container is at most
+        `@set`: a coercing term would apply its coercion to the members, and
+        a map container (`@index`, `@id`, `@type` or `@graph`) would read the
+        list object as a map.
+        """
+        term = self.context.find_term(str(p), UNDEF, UNDEF)
+        if term is not None and not term.type and term.container <= {SET}:
+            return term
+        return None
+
+    def _find_list_term(
+        self,
+        graph: Graph,
+        p: IdentifiedNode,
+        list_term: Term,
+        members: list[_ObjectType],
+    ) -> Optional[Term]:
+        """Return the context term for `p` to write a list of `members` under.
+
+        `list_term` is the term `find_term` ranks first for the `@list`
+        container: by coercion, `@id`, then `@vocab`, then none, and with or
+        without `@list`. A term that coerces to `@id` or `@vocab` fits a list
+        of node references only: a literal member written under it would be
+        read back as an IRI. A nested list keeps the list off such a term
+        too: under `@vocab` its own literal members would take the coercion,
+        and under `@id` it would be written as a reference to explicit cells.
+        Any other list takes an `@list` term without a type, else a plain
+        term, else none, so that it is written under the property IRI.
+        """
+        if not list_term.type or all(
+            isinstance(member, URIRef)
+            or (isinstance(member, BNode) and graph.value(member, RDF.first) is None)
+            for member in members
+        ):
+            return list_term
+        term = self.context.find_term(str(p), UNDEF, LIST)
+        if term is not None and LIST in term.container:
+            return term
+        return self._find_plain_term(p)
+
     def type_coerce(self, o: Identifier, coerce_type: str):
         if coerce_type == ID:
             if isinstance(o, URIRef):
@@ -418,11 +472,7 @@ class Converter:
         context = self.context
         coll = self.to_collection(graph, o)
         if coll is not None:
-            coll = [
-                self.to_raw_value(graph, s, lo, nodemap)
-                for lo in self.to_collection(graph, o)
-            ]
-            return {context.list_key: coll}
+            return self._list_object(graph, s, coll, nodemap)
         elif isinstance(o, BNode):
             self._pending_nodes.append(o)
             return {context.id_key: o.n3()}
@@ -451,6 +501,22 @@ class Converter:
             else:
                 return v
 
+    def _list_object(
+        self,
+        graph: Graph,
+        s: IdentifiedNode,
+        members: list[_ObjectType],
+        nodemap: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Return a list object holding the raw values of `members`."""
+        return {
+            self.context.list_key: [
+                # type error: Argument 3 to "to_raw_value" of "Converter" has incompatible type "Node"; expected "Identifier"
+                self.to_raw_value(graph, s, member, nodemap)  # type: ignore[arg-type]
+                for member in members
+            ]
+        }
+
     def _usages(self, graph: Graph, node: Identifier) -> int:
         """Count the statements whose object is `node`.
 
@@ -478,11 +544,11 @@ class Converter:
             rejected = set()
         if l_ in rejected:
             return None
-        if l_ != RDF.nil and not graph.value(l_, RDF.first):
+        if l_ != RDF.nil and graph.value(l_, RDF.first) is None:
             return None
-        list_nodes: list[Optional[_ObjectType]] = []
+        list_nodes: list[_ObjectType] = []
         chain: set[Identifier] = set()
-        while l_:
+        while True:
             if l_ == RDF.nil:
                 return list_nodes
             if (
@@ -493,20 +559,40 @@ class Converter:
             ):
                 break
             chain.add(l_)
-            first, rest = None, None
-            for p, o in graph.predicate_objects(l_):
-                if not first and p == RDF.first:
-                    first = o
-                elif not rest and p == RDF.rest:
-                    rest = o
-                elif p != RDF.type or o != RDF.List:
-                    rejected.update(chain)
-                    return None
+            entries = self._list_cell_entries(graph, l_)
+            if entries is None:
+                break
+            first, rest = entries
             list_nodes.append(first)
-            # type error: Incompatible types in assignment (expression has type "Optional[Node]", variable has type "Identifier")
+            # type error: Incompatible types in assignment (expression has type "Node", variable has type "Identifier")
             l_ = rest  # type: ignore[assignment]
 
         # Every visited prefix reaches the same invalid suffix. Remember only
         # these rejections, so explicit cells do not repeatedly scan that suffix.
         rejected.update(chain)
         return None
+
+    @staticmethod
+    def _list_cell_entries(
+        graph: Graph, cell: Identifier
+    ) -> Optional[tuple[_ObjectType, _ObjectType]]:
+        """Return the `rdf:first` and `rdf:rest` values of a list cell, or None.
+
+        A cell has exactly one `rdf:first` and one `rdf:rest`, and nothing else
+        besides `rdf:type rdf:List` (Serialize RDF as JSON-LD Algorithm,
+        JSON-LD 1.1 Processing Algorithms and API, section 8.4). The entries
+        are tested for presence, not their values for truth: 0, "" and false
+        are members like any other.
+        """
+        first: Optional[_ObjectType] = None
+        rest: Optional[_ObjectType] = None
+        for p, o in graph.predicate_objects(cell):
+            if p == RDF.first and first is None:
+                first = o
+            elif p == RDF.rest and rest is None:
+                rest = o
+            elif p != RDF.type or o != RDF.List:
+                return None
+        if first is None or rest is None:
+            return None
+        return first, rest
