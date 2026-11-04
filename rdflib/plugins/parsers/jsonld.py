@@ -238,6 +238,7 @@ class Parser:
             else ALLOW_LISTS_OF_LISTS
         )
         self.invalid_uri_to_bnode: dict[str, BNode] = {}
+        self.bnodes: dict[str, BNode] = {}
 
     def parse(self, data: Any, context: Context, dataset: Graph) -> Graph:
         topcontext = False
@@ -455,9 +456,7 @@ class Parser:
         if bid:
             if not self.generalized_rdf:
                 return
-            pred = BNode(bid)
-            if self.skolemize:
-                pred = pred.skolemize()
+            pred = self._to_bnode(bid)
         else:
             pred = URIRef(pred_uri)
 
@@ -654,10 +653,7 @@ class Parser:
     def _to_rdf_id(self, context: Context, id_val: str) -> IdentifiedNode | None:
         bid = self._get_bnodeid(id_val)
         if bid:
-            b = BNode(bid)
-            if self.skolemize:
-                return b.skolemize()
-            return b
+            return self._to_bnode(bid)
         else:
             uri = context.resolve(id_val)
             if not self.generalized_rdf and ":" not in uri:
@@ -668,6 +664,15 @@ class Parser:
                     self.invalid_uri_to_bnode[id_val] = BNode(secrets.token_urlsafe(20))
                 node = self.invalid_uri_to_bnode[id_val]
             return node
+
+    def _to_bnode(self, bid: str) -> IdentifiedNode:
+        if self.skolemize:
+            # Skolem IRIs keep the label, as in the N-Triples family of parsers.
+            return BNode(bid).skolemize()
+        # Otherwise a label only has meaning inside the document that uses it.
+        if bid not in self.bnodes:
+            self.bnodes[bid] = BNode()
+        return self.bnodes[bid]
 
     def _get_bnodeid(self, ref: str) -> str | None:
         if not ref.startswith("_:"):
