@@ -45,7 +45,7 @@ from rdflib.namespace import RDF, XSD
 from rdflib.serializer import Serializer
 from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, URIRef
 
-from ..shared.jsonld.context import UNDEF, Context
+from ..shared.jsonld.context import UNDEF, Context, Term
 from ..shared.jsonld.keys import CONTEXT, GRAPH, ID, LANG, LIST, SET, VOCAB
 from ..shared.jsonld.util import _HAS_ORJSON, json, orjson
 
@@ -301,13 +301,16 @@ class Converter:
                 # find_term ranks terms differently for LIST: it can return an
                 # @list term, and it skips @set terms. That choice applies only
                 # to a chain that can be written as @list. Walk the chain only
-                # when the choice differs, so explicitly written cells do not
-                # rescan their suffixes.
+                # when the choice differs, or when the term coerces to @vocab,
+                # which a list object under it would apply to its members. So
+                # explicitly written cells do not rescan their suffixes.
                 list_term = self._find_node_term(p, LIST)
-                if list_term is not None and list_term is not term:
+                if list_term is not None and (
+                    list_term is not term or list_term.type == VOCAB
+                ):
                     collection = self.to_collection(graph, o)
                     if collection is not None:
-                        term = list_term
+                        term = self._find_list_term(graph, p, list_term, collection)
 
         node = None
         use_set = not context.active
@@ -316,7 +319,10 @@ class Converter:
             p_key = term.name
 
             if term.type:
-                node = self.type_coerce(o, term.type)
+                # A chain written as a list is not coerced: its term was
+                # chosen for its members.
+                if collection is None:
+                    node = self.type_coerce(o, term.type)
             # type error: "Identifier" has no attribute "language"
             elif term.language and o.language == term.language:  # type: ignore[attr-defined]
                 node = str(o)
@@ -370,7 +376,11 @@ class Converter:
                 p_key = context.type_key
 
         if node is None:
-            node = self.to_raw_value(graph, s, o, nodemap)
+            if collection is not None:
+                # The chain is walked already; write it without a second walk.
+                node = self._list_object(graph, s, collection, nodemap)
+            else:
+                node = self.to_raw_value(graph, s, o, nodemap)
         elif isinstance(o, BNode) and term and LIST not in term.container:
             # Coercion emits only the reference; preserve its description too.
             if any(graph.predicate_objects(o)):
@@ -397,6 +407,49 @@ class Converter:
                 return term
         return None
 
+    def _find_plain_term(self, p: IdentifiedNode) -> Optional[Term]:
+        """Return the context term for `p` that can hold a list object, or None.
+
+        A list object fits a term without a type whose container is at most
+        `@set`: a coercing term would apply its coercion to the members, and
+        a map container (`@index`, `@id`, `@type` or `@graph`) would read the
+        list object as a map.
+        """
+        term = self.context.find_term(str(p), UNDEF, UNDEF)
+        if term is not None and not term.type and term.container <= {SET}:
+            return term
+        return None
+
+    def _find_list_term(
+        self,
+        graph: Graph,
+        p: IdentifiedNode,
+        list_term: Term,
+        members: list[_ObjectType],
+    ) -> Optional[Term]:
+        """Return the context term for `p` to write a list of `members` under.
+
+        `list_term` is the term `find_term` ranks first for the `@list`
+        container: by coercion, `@id`, then `@vocab`, then none, and with or
+        without `@list`. A term that coerces to `@id` or `@vocab` fits a list
+        of node references only: a literal member written under it would be
+        read back as an IRI. A nested list keeps the list off such a term
+        too: under `@vocab` its own literal members would take the coercion,
+        and under `@id` it would be written as a reference to explicit cells.
+        Any other list takes an `@list` term without a type, else a plain
+        term, else none, so that it is written under the property IRI.
+        """
+        if not list_term.type or all(
+            isinstance(member, URIRef)
+            or (isinstance(member, BNode) and graph.value(member, RDF.first) is None)
+            for member in members
+        ):
+            return list_term
+        term = self.context.find_term(str(p), UNDEF, LIST)
+        if term is not None and LIST in term.container:
+            return term
+        return self._find_plain_term(p)
+
     def type_coerce(self, o: Identifier, coerce_type: str):
         if coerce_type == ID:
             if isinstance(o, URIRef):
@@ -418,11 +471,7 @@ class Converter:
         context = self.context
         coll = self.to_collection(graph, o)
         if coll is not None:
-            coll = [
-                self.to_raw_value(graph, s, lo, nodemap)
-                for lo in self.to_collection(graph, o)
-            ]
-            return {context.list_key: coll}
+            return self._list_object(graph, s, coll, nodemap)
         elif isinstance(o, BNode):
             self._pending_nodes.append(o)
             return {context.id_key: o.n3()}
@@ -450,6 +499,22 @@ class Converter:
                 return {context.value_key: v}
             else:
                 return v
+
+    def _list_object(
+        self,
+        graph: Graph,
+        s: IdentifiedNode,
+        members: list[_ObjectType],
+        nodemap: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Return a list object holding the raw values of `members`."""
+        return {
+            self.context.list_key: [
+                # type error: Argument 3 to "to_raw_value" of "Converter" has incompatible type "Node"; expected "Identifier"
+                self.to_raw_value(graph, s, member, nodemap)  # type: ignore[arg-type]
+                for member in members
+            ]
+        }
 
     def _usages(self, graph: Graph, node: Identifier) -> int:
         """Count the statements whose object is `node`.
