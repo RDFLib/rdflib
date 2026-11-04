@@ -30,3 +30,21 @@ Results are not cached, so repeated checks repeat the work. Avoid assuming
 these operations are constant-time, especially in loops over large or remote
 datasets. A dataset containing only empty named graphs has length zero and is
 false, even though those graph names remain present.
+
+## SPARQL multiplication and division
+
+SPARQL `*` and `/` now give the result the promoted type of their operands, as
+XPath's `op:numeric-multiply` and `op:numeric-divide` define it and as `+` and
+`-` already did:
+
+- An integer times an integer is an `xsd:integer`, and exact for large values.
+  It was an `xsd:decimal`, rounded to 28 digits.
+- A product or quotient with an `xsd:float` or `xsd:double` operand is a float
+  or double, also when that operand comes first, so `toPython()` gives a
+  Python `float` where it gave a `Decimal`.
+- A float or double divided by zero is `INF`, `-INF` or `NaN` instead of an
+  error. Integer and decimal division by zero are still errors.
+- An ill-typed operand, such as `"abc"^^xsd:integer`, is an error.
+
+`DATATYPE()`, `sameTerm()`, `DISTINCT` and joins on such computed values change
+accordingly.
