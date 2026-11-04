@@ -344,6 +344,33 @@ def test_join_ignores_base_fragment(base: str, reference: str, expected: str) ->
     assert join(base, reference) == expected
 
 
+@pytest.mark.parametrize(
+    "base, reference, expected",
+    [
+        ("http://a/b/c/d;p?q", "g#x/../y#z", "http://a/b/c/g#x/../y#z"),
+        ("http://a/b/c/d;p?q", "#x/../y#z", "http://a/b/c/d;p?q#x/../y#z"),
+        ("http://a/b#f/g#h", "c", "http://a/c"),
+        ("http://a/b#f/g#h", "?y", "http://a/b?y"),
+    ],
+)
+def test_join_splits_the_fragment_at_the_first_hash(
+    base: str, reference: str, expected: str
+) -> None:
+    """RFC 3986, section 3.5: the fragment starts at the first "#"."""
+    assert join(base, reference) == expected
+
+
+@pytest.mark.parametrize("format", ["turtle", "trig", "n3"])
+def test_parse_keeps_a_fragment_that_contains_a_hash(format: str) -> None:
+    """The parsers resolve such an IRI without reading its fragment as a path."""
+    data = '@base <http://example.org/a/b> . <g#x/../y#z> <http://example.org/p> "v" .'
+    dataset = Dataset()
+    dataset.parse(data=data, format=format)
+    assert {s for s, _, _, _ in dataset.quads()} == {
+        URIRef("http://example.org/a/g#x/../y#z")
+    }
+
+
 @pytest.mark.parametrize("format", ["turtle", "trig", "n3"])
 def test_parse_resolves_against_base_with_fragment(format: str) -> None:
     """A fragment-only reference replaces the fragment of the base IRI."""
