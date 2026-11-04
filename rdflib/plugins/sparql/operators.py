@@ -16,7 +16,7 @@ import re
 import uuid
 import warnings
 from collections.abc import Callable
-from decimal import ROUND_HALF_DOWN, ROUND_HALF_UP, Decimal, InvalidOperation
+from decimal import ROUND_HALF_DOWN, ROUND_HALF_UP, Decimal
 from functools import reduce
 from typing import Any, NoReturn, Union, overload
 from urllib.parse import quote
@@ -758,23 +758,61 @@ def MultiplicativeExpression(
     # we sometimes have nothing to do
     if other is None:
         return expr
+
+    # The operands are promoted to a common type, as op:numeric-multiply and
+    # op:numeric-divide do (SPARQL 1.1, section 17.3; XPath 3.1 Functions and
+    # Operators, section 4.2), and the result has that type. As in
+    # AdditiveExpression, xsd:float values are computed in double precision.
+    res: Union[int, Decimal, float] = _number(expr)
+    dt = expr.datatype
     try:
-        res: Union[Decimal, float]
-        res = Decimal(numeric(expr))
-        for op, f in zip(e.op, other):
-            f = numeric(f)
-
-            if type(f) == float:  # noqa: E721
-                res = float(res)
-
-            if op == "*":
-                res *= f
+        for op, term in zip(e.op, other):
+            n = _number(term)
+            dt = type_promotion(dt, term.datatype)
+            if dt in (XSD.float, XSD.double):
+                res, n = _to_float(res), _to_float(n)
+                res = res * n if op == "*" else _float_divide(res, n)
+            elif op == "*":
+                res = res * n
             else:
-                res /= f
-    except (InvalidOperation, ZeroDivisionError):
+                # Dividing integers gives a decimal.
+                res = Decimal(res) / Decimal(n)
+                dt = XSD.decimal
+        return Literal(res, datatype=dt)
+    except ZeroDivisionError:
         raise SPARQLError("divide by 0")
+    except (ArithmeticError, ValueError) as error:
+        raise SPARQLError("numeric overflow or invalid operation: %r" % error)
 
-    return Literal(res)
+
+def _number(term: Literal) -> Any:
+    """The value of a numeric literal, or a type error if it is ill-typed."""
+    value = numeric(term)
+    if not isinstance(value, (int, Decimal, float)):
+        raise SPARQLTypeError("%r is not a valid %s" % (term, term.datatype))
+    return value
+
+
+def _to_float(value: Union[int, Decimal, float]) -> float:
+    """Cast to xs:double; an integer too large for a double is INF or -INF."""
+    try:
+        return float(value)
+    except OverflowError:
+        return math.inf if value > 0 else -math.inf
+
+
+def _float_divide(dividend: float, divisor: float) -> float:
+    """Divide two floats as op:numeric-divide does for xs:float and xs:double.
+
+    Dividing by zero gives INF, -INF or NaN (XPath 3.1 Functions and
+    Operators, section 4.2.4), where Python raises an exception.
+    """
+    try:
+        return dividend / divisor
+    except ZeroDivisionError:
+        if dividend == 0 or math.isnan(dividend):
+            return math.nan
+        return math.copysign(math.inf, dividend) * math.copysign(1.0, divisor)
 
 
 # type error: Missing return statement
