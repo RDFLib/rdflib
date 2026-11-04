@@ -120,8 +120,6 @@ known_bugs: tuple[str, ...] = (
     # Investigate property issues:
     "toRdf/pr38-in",
     "toRdf/pr39-in",
-    # Negative zero representation?
-    "toRdf/rt01-in",
     # Property scope with @propagate not working
     "toRdf/so06-in",
     # Expand string as value gives wrong number representation

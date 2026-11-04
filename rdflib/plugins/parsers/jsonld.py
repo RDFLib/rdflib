@@ -33,6 +33,7 @@ Example:
 # we should consider streaming the input to deal with arbitrarily large graphs.
 from __future__ import annotations
 
+import math
 import secrets
 import warnings
 from collections.abc import Iterable
@@ -67,6 +68,7 @@ from ..shared.jsonld.util import (
     VOCAB_DELIMS,
     context_from_urlinputsource,
     json,
+    number_datatype,
     orjson,
     source_to_json,
 )
@@ -76,6 +78,22 @@ __all__ = ["JsonLDParser", "to_rdf"]
 TYPE_TERM = Term(str(RDF.type), TYPE, VOCAB)
 
 ALLOW_LISTS_OF_LISTS = True  # NOTE: Not allowed in JSON-LD 1.0
+
+
+def _number_literal(value: int | float) -> Literal:
+    """Return the literal for a JSON number without a datatype.
+
+    The datatype follows the value, not the Python type: `1.0` is the
+    integer 1 (see `number_datatype`).
+    """
+    if number_datatype(value) == XSD.integer:
+        return Literal(int(value))
+    try:
+        return Literal(float(value), datatype=XSD.double)
+    except OverflowError:
+        # An integer beyond the range of a double, which a JavaScript reader
+        # would also read as infinity.
+        return Literal(math.inf if value > 0 else -math.inf, datatype=XSD.double)
 
 
 class _ContextAwareGraph(Graph):
@@ -618,8 +636,8 @@ class Parser:
                 if node is None:
                     # type error: Return value expected
                     return  # type: ignore[return-value]
-                if isinstance(node, float):
-                    return Literal(node, datatype=XSD.double)
+                if isinstance(node, (int, float)) and not isinstance(node, bool):
+                    return _number_literal(node)
 
                 if term and term.language is not UNDEF:
                     lang = term.language
@@ -646,6 +664,8 @@ class Parser:
                 return Literal(value, lang=lang)
             elif datatype:
                 return Literal(value, datatype=context.expand(datatype))
+            elif isinstance(value, (int, float)) and not isinstance(value, bool):
+                return _number_literal(value)
             else:
                 return Literal(value)
         else:

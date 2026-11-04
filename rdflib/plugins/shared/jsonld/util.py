@@ -30,6 +30,7 @@ except ImportError:
     _HAS_ORJSON = False
 
 
+from rdflib.namespace import XSD
 from rdflib.parser import (
     BytesIOWrapper,
     InputSource,
@@ -38,6 +39,7 @@ from rdflib.parser import (
     URLInputSource,
     create_input_source,
 )
+from rdflib.term import URIRef
 
 
 def source_to_json(
@@ -253,6 +255,31 @@ def norm_url(base: str, url: str) -> str:
     if url.endswith("#") and not result.endswith("#"):
         result += "#"
     return result
+
+
+def number_datatype(value: int | float) -> URIRef:
+    """Return the datatype JSON-LD gives a JSON number.
+
+    Object to RDF Conversion (JSON-LD 1.1 Processing Algorithms and API,
+    section 8.2.2) decides by the value, not by how it is written: a number
+    with a non-zero fractional part, or with an absolute value of 10^21 or
+    more, is an `xsd:double` (step 10), and any other number an
+    `xsd:integer` (step 11). JSON has a single number type, so `1.0` is the
+    integer 1. A value that is not a finite number is an `xsd:double`.
+
+    ```python
+    >>> number_datatype(1.0)
+    rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer')
+    >>> number_datatype(2.5)
+    rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#double')
+    >>> number_datatype(10**21)
+    rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#double')
+
+    ```
+    """
+    if value % 1 != 0 or abs(value) >= 10**21:
+        return XSD.double
+    return XSD.integer
 
 
 # type error: Missing return statement
