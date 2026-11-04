@@ -5,6 +5,7 @@ Implementation of the JSON-LD Context structure. See: http://json-ld.org/
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/context.py
 from __future__ import annotations
 
+import re
 from collections.abc import Generator, Set
 from enum import Enum
 from typing import (
@@ -69,6 +70,13 @@ UNDEF = Defined.UNDEF
 
 # From <https://tools.ietf.org/html/rfc3986#section-2.2>
 URI_GEN_DELIMS = (":", "/", "?", "#", "[", "]", "@")
+
+# An absolute path without empty, "." or ".." segments, with an optional
+# non-empty query and fragment. Every resolver gives such a reference back
+# unchanged, so it needs no resolving to check (see Context.shrink_iri).
+_PLAIN_ABSOLUTE_PATH = re.compile(
+    r"(?:/(?!\.\.?(?:[/?#]|$))[^/?#]+)*/?(?:\?[^#]+)?(?:#.+)?"
+)
 
 _ContextSourceType = Union[
     list[Union[dict[str, Any], str, None]], dict[str, Any], str, None
@@ -143,6 +151,14 @@ class Context:
             else base
         )
         self._basedomain = "%s://%s" % urlsplit(base)[0:2] if base else None
+        # Whether an absolute path resolves against the base by taking its
+        # scheme and authority. The resolver does not join paths for every
+        # scheme (e.g. "s3:"), and shrink_iri may skip resolving only if so.
+        self._base_joins_paths = bool(
+            self._base
+            and self._basedomain
+            and norm_url(self._base, "/") == self._basedomain + "/"
+        )
 
     def subcontext(self, source: Any, propagate: bool = True) -> Context:
         # IMPROVE: to optimize, implement SubContext with parent fallback support
@@ -409,13 +425,36 @@ class Context:
         if pfx:
             # type error: Argument 1 to "join" of "str" has incompatible type "tuple[Any, Optional[str]]"; expected "Iterable[str]"
             return ":".join((pfx, name))  # type: ignore[arg-type]
-        elif self._base:
-            if str(iri) == self._base:
-                return ""
-            # type error: Argument 1 to "startswith" of "str" has incompatible type "Optional[str]"; expected "Union[str, tuple[str, ...]]"
-            elif iri.startswith(self._basedomain):  # type: ignore[arg-type]
-                # type error: Argument 1 to "len" has incompatible type "Optional[str]"; expected "Sized"
-                return iri[len(self._basedomain) :]  # type: ignore[arg-type]
+        elif (
+            self._base
+            and self._basedomain
+            # The base's scheme and authority as written: urlsplit lowercases
+            # the scheme, which resolving does not undo.
+            and self._base.startswith(self._basedomain)
+        ):
+            value = str(iri)
+            if value == self._base:
+                relative = ""
+            elif value.startswith(self._basedomain + "/") and not value.startswith(
+                self._basedomain + "//"
+            ):
+                # An absolute-path reference keeps the base's scheme and
+                # authority.
+                relative = value[len(self._basedomain) :]
+            else:
+                return iri
+            # A relative reference is only right if it resolves back to the IRI
+            # (IRI Compaction, JSON-LD 1.1 Processing Algorithms and API,
+            # section 6.2.2, step 10). A plain absolute path does; anything
+            # else is resolved with this context's resolver, the one the
+            # JSON-LD parser uses, to check.
+            if (
+                self._base_joins_paths
+                and "://" not in relative
+                and _PLAIN_ABSOLUTE_PATH.fullmatch(relative)
+                and relative
+            ) or self.resolve_iri(relative) == value:
+                return relative
         return iri
 
     def to_symbol(self, iri: str) -> str | None:
