@@ -40,6 +40,13 @@ Python's spelling, `inf`, `-inf` and `nan`, which is not a valid `xsd:double`
 or `xsd:float`. Turtle and N3 output already used the new forms; `str()`,
 N-Triples, N-Quads, RDF/XML, TriX, HexT, Patch and SPARQL results change.
 
+- A literal made with `normalize=False` keeps its lexical form. Only `n3()`,
+  and so Turtle, N3, TriG and the SPARQL stores, writes a special value spelled
+  as Python does, such as `infinity`, `INFINITY` or `NAN`, in its XSD form, as
+  it already did for `inf` and `nan`; a numeral is kept, even when it
+  overflows. Comparisons that use `n3()`, such as
+  [`isomorphic`][rdflib.compare.isomorphic], treat such a literal as equal to
+  the canonical one.
 - Such a literal no longer equals one made with `normalize=False` from the old
   spelling, such as `Literal("inf", datatype=XSD.double, normalize=False)`.
   Literals in SPARQL queries aren't normalized, so a query that spells the
