@@ -311,6 +311,17 @@ class Converter:
                     collection = self.to_collection(graph, o)
                     if collection is not None:
                         term = self._find_list_term(graph, p, list_term, collection)
+                        # An @list container term holds one list: its value
+                        # is the list. Only a list is written under its key,
+                        # so a key already present holds one. A further list
+                        # goes under a plain term, or under the IRI or compact
+                        # IRI, as a list object.
+                        if (
+                            term is not None
+                            and LIST in term.container
+                            and term.name in s_node
+                        ):
+                            term = self._find_plain_term(p)
 
         node = None
         use_set = not context.active
