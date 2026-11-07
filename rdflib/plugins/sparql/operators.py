@@ -38,6 +38,7 @@ from rdflib.plugins.sparql.sparql import (
     SPARQLTypeError,
 )
 from rdflib.term import (
+    _NUMERIC_LITERAL_TYPES,
     BNode,
     IdentifiedNode,
     Identifier,
@@ -938,6 +939,15 @@ def RelationalExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> L
             # in SPARQL for non-XSD DT Literals we can only do =,!=
             if op not in ("=", "!="):
                 raise SPARQLError("Can only do =,!= comparisons of non-XSD Literals")
+        # SPARQL 1.1 17.3 has no <, >, <= or >= between a number and a non-number,
+        # so `"n/a" > 26` is a type error rather than an ordering of datatype IRIs
+        if op in ("<", ">", "<=", ">=") and (
+            expr.datatype in _NUMERIC_LITERAL_TYPES
+        ) != (other.datatype in _NUMERIC_LITERAL_TYPES):
+            raise SPARQLError(
+                "Cannot compare a numeric and a non-numeric literal: %r %s %r"
+                % (expr, op, other)
+            )
 
     try:
         r = ops[op](expr, other)
