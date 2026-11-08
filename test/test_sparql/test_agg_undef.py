@@ -98,3 +98,14 @@ def test_values_outside_group_by():
     assert len(results) == 1
     assert results[0][0] == URIRef("http://example.com/something")
     assert results[0][1] == Literal("Match on this.")
+
+
+def test_sum_with_non_numeric_value_is_unbound() -> None:
+    """A non-numeric value makes SUM an error: the group's sum is unbound."""
+    query = """
+    SELECT ?x (SUM(?v) AS ?total) {
+      VALUES (?x ?v) { ("a" 1) ("a" "n/a") ("b" 2) ("b" 3) }
+    } GROUP BY ?x ORDER BY ?x
+    """
+    results = list(Graph().query(query))
+    assert results == [(Literal("a"), None), (Literal("b"), Literal(5))]
