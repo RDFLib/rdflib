@@ -2040,7 +2040,6 @@ _PLAIN_LITERAL_TYPES: tuple[URIRef, ...] = (
     _XSD_BOOLEAN,
     _XSD_DOUBLE,
     _XSD_DECIMAL,
-    _OWL_RATIONAL,
 )
 
 # these have special INF and NaN XSD representations
