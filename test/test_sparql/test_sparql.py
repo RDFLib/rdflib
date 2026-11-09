@@ -742,6 +742,96 @@ def test_operator_exception(
         ),
         pytest.param(
             """
+            SELECT (
+                EXISTS {
+                    <http://example.com/a>
+                    <http://example.com/b>
+                    <http://example.com/c>
+                }
+                AS ?exists
+            ) {}
+            """,
+            [{Variable("exists"): Literal(False)}],
+            id="select-project-exists-const-false",
+        ),
+        pytest.param(
+            """
+            SELECT (EXISTS { rdfs:Class rdfs:label "Class" } AS ?exists) {}
+            """,
+            [{Variable("exists"): Literal(True)}],
+            id="select-project-exists-const-true",
+        ),
+        pytest.param(
+            """
+            SELECT (
+                NOT EXISTS {
+                    <http://example.com/a>
+                    <http://example.com/b>
+                    <http://example.com/c>
+                }
+                AS ?notexists
+            ) {}
+            """,
+            [{Variable("notexists"): Literal(True)}],
+            id="select-project-notexists-const-false",
+        ),
+        pytest.param(
+            """
+            SELECT ?s (EXISTS { ?s rdfs:subClassOf/rdfs:label "Resource" } AS ?exists)
+            WHERE {
+                VALUES ?s { rdfs:Class rdfs:Resource }
+            }
+            """,
+            [
+                {Variable("s"): RDFS.Class, Variable("exists"): Literal(True)},
+                {Variable("s"): RDFS.Resource, Variable("exists"): Literal(False)},
+            ],
+            id="select-project-exists-var-path",
+        ),
+        pytest.param(
+            """
+            SELECT (IF(EXISTS { rdfs:Class rdfs:label "Class" }, 1, 0) AS ?found) {}
+            """,
+            [{Variable("found"): Literal(1)}],
+            id="select-project-if-exists",
+        ),
+        pytest.param(
+            """
+            SELECT ?s WHERE {
+                VALUES ?s { rdfs:Class rdfs:Literal }
+            }
+            ORDER BY DESC(EXISTS { ?s rdfs:label "Literal" })
+            """,
+            [{Variable("s"): RDFS.Literal}, {Variable("s"): RDFS.Class}],
+            id="select-order-by-exists",
+        ),
+        pytest.param(
+            """
+            SELECT ?exists (COUNT(*) AS ?count) WHERE {
+                VALUES ?s { rdfs:Class rdfs:Literal rdfs:Resource }
+            }
+            GROUP BY (EXISTS { ?s rdfs:subClassOf rdfs:Resource } AS ?exists)
+            ORDER BY ?exists
+            """,
+            [
+                {Variable("exists"): Literal(False), Variable("count"): Literal(1)},
+                {Variable("exists"): Literal(True), Variable("count"): Literal(2)},
+            ],
+            id="select-group-by-exists",
+        ),
+        pytest.param(
+            """
+            SELECT ?s WHERE {
+                VALUES ?s { rdfs:Class rdfs:Resource }
+            }
+            GROUP BY ?s
+            HAVING (EXISTS { ?s rdfs:subClassOf rdfs:Resource })
+            """,
+            [{Variable("s"): RDFS.Class}],
+            id="select-having-exists",
+        ),
+        pytest.param(
+            """
             PREFIX dce: <http://purl.org/dc/elements/1.1/>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             SELECT
