@@ -8,8 +8,7 @@ from xml.parsers import expat
 from xml.sax.saxutils import escape, quoteattr
 
 from rdflib.namespace import XMLNS, is_ncname
-from rdflib.term import URIRef
-from rdflib.term import _escape_surrogates
+from rdflib.term import URIRef, _escape_surrogates
 
 if TYPE_CHECKING:
     from rdflib.namespace import Namespace, NamespaceManager
