@@ -7,7 +7,7 @@ from typing import Any, Union
 
 import pytest
 
-from rdflib import Graph
+from rdflib import Graph, Literal
 from rdflib.plugins.shared.jsonld.context import Context
 from test.utils.namespace import EGDO
 
@@ -42,3 +42,15 @@ def test_serialize_context(input: Union[dict[str, Any], Context]) -> None:
     logging.debug("data = %s", data)
     obj = json.loads(data)
     assert obj["@context"] == {"eg": f"{EGDO}"}
+
+
+def test_serialize_lone_surrogate() -> None:
+    """
+    A literal containing a lone surrogate code point must be serialized as a
+    ``\\uXXXX`` escape rather than corrupted to a replacement character.
+    """
+    graph = Graph()
+    graph.add((EGDO.subject, EGDO.predicate, Literal("\ud800")))
+    data = graph.serialize(format="json-ld")
+    assert "\\ud800" in data.lower()
+    assert '"@value": "?"' not in data
