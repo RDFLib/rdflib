@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from rdflib import Dataset, Graph
+from rdflib import Dataset, Graph, Literal, URIRef
 
 
 def test_hext_graph():
@@ -327,6 +327,37 @@ def test_hext_dataset():
                 test[0] = True
 
     assert all([x[0] for x in testing_lines])
+
+
+def test_hext_graph_lone_surrogate():
+    """Lone surrogates in a Literal must be escaped, not raise (issue #3701)"""
+    g = Graph()
+    g.add(
+        (
+            URIRef("http://example.com/s1"),
+            URIRef("http://example.com/p1"),
+            Literal("\ud800"),
+        )
+    )
+    out = g.serialize(format="hext")
+    assert r"\ud800" in out.lower()
+    assert "?" not in out
+
+
+def test_hext_dataset_lone_surrogate():
+    """Lone surrogates via a Dataset named graph (per-context string path)"""
+    d = Dataset()
+    g = d.graph(URIRef("http://example.com/g1"))
+    g.add(
+        (
+            URIRef("http://example.com/s1"),
+            URIRef("http://example.com/p1"),
+            Literal("\ud800"),
+        )
+    )
+    out = d.serialize(format="hext")
+    assert r"\ud800" in out.lower()
+    assert "?" not in out
 
 
 def test_hext_json_representation():

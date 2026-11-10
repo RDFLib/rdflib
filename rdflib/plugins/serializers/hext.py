@@ -45,6 +45,13 @@ class HextuplesSerializer(Serializer):
             cls.xsd_string: str | Any = orjson.Fragment(
                 b'"' + XSD.string.encode("utf-8") + b'"'
             )
+            cls.orjson_fragment_plain: list[tuple[Any, str]] = [
+                (cls.str_local_id, "localId"),
+                (cls.str_global_id, "globalId"),
+                (cls.empty, ""),
+                (cls.lang_str, str(RDF.langString)),
+                (cls.xsd_string, str(XSD.string)),
+            ]
         else:
             cls.str_local_id = "localId"
             cls.str_global_id = "globalId"
@@ -104,23 +111,26 @@ class HextuplesSerializer(Serializer):
             for triple in context:
                 # Generate context string just once, because it doesn't change
                 # for every triple in this context
+                context_str_plain = (
+                    "" if self.graph_type is Graph else self._context_str(context)
+                )
                 context_str = cast(
                     Union[str, bytes],
                     (
                         self.empty
                         if self.graph_type is Graph
                         else (
-                            orjson.Fragment('"' + self._context_str(context) + '"')
+                            orjson.Fragment('"' + context_str_plain + '"')
                             if _HAS_ORJSON
-                            else self._context_str(context)
+                            else context_str_plain
                         )
                     ),
                 )
-                hl = self._hex_line(triple, context_str)
+                hl = self._hex_line(triple, context_str, context_str_plain)
                 if hl is not None:
                     stream.write(hl if _HAS_ORJSON else hl.encode())
 
-    def _hex_line(self, triple, context_str: bytes | str):
+    def _hex_line(self, triple, context_str: bytes | str, context_str_plain=None):
         if isinstance(
             triple[0], (URIRef, BNode)
         ):  # exclude QuotedGraph and other objects
@@ -167,7 +177,24 @@ class HextuplesSerializer(Serializer):
             ]
             outline: str | bytes
             if _HAS_ORJSON:
-                outline = orjson.dumps(line_list, option=orjson.OPT_APPEND_NEWLINE)
+                try:
+                    outline = orjson.dumps(line_list, option=orjson.OPT_APPEND_NEWLINE)
+                except TypeError:
+                    # orjson rejects strings containing lone surrogates, so fall back to
+                    # the stdlib encoder, which escapes them. Its pre-encoded Fragments
+                    # have to be swapped for their plain counterparts first.
+                    plain = []
+                    for item in line_list:
+                        for fragment, text in self.orjson_fragment_plain:
+                            if item is fragment:
+                                item = text
+                                break
+                        if item is context_str:
+                            item = '"' + context_str_plain + '"'
+                        elif isinstance(item, bytes):
+                            item = item.decode()
+                        plain.append(item)
+                    outline = (json.dumps(plain) + "\n").encode()
             else:
                 outline = json.dumps(line_list) + "\n"
             return outline
