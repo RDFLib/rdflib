@@ -36,15 +36,24 @@ class HextuplesSerializer(Serializer):
 
     def __new__(cls, store: Graph | Dataset | ConjunctiveGraph):
         if _HAS_ORJSON:
-            cls.str_local_id: str | Any = orjson.Fragment(b'"localId"')
-            cls.str_global_id: str | Any = orjson.Fragment(b'"globalId"')
-            cls.empty: str | Any = orjson.Fragment(b'""')
-            cls.lang_str: str | Any = orjson.Fragment(
-                b'"' + RDF.langString.encode("utf-8") + b'"'
-            )
-            cls.xsd_string: str | Any = orjson.Fragment(
-                b'"' + XSD.string.encode("utf-8") + b'"'
-            )
+            str_local_id = orjson.Fragment(b'"localId"')
+            str_global_id = orjson.Fragment(b'"globalId"')
+            empty = orjson.Fragment(b'""')
+            lang_str = orjson.Fragment(b'"' + RDF.langString.encode("utf-8") + b'"')
+            xsd_string = orjson.Fragment(b'"' + XSD.string.encode("utf-8") + b'"')
+
+            cls.str_local_id: str | Any = str_local_id
+            cls.str_global_id: str | Any = str_global_id
+            cls.empty: str | Any = empty
+            cls.lang_str: str | Any = lang_str
+            cls.xsd_string: str | Any = xsd_string
+            cls.orjson_fragment_plain: list[tuple[Any, str]] = [
+                (str_local_id, "localId"),
+                (str_global_id, "globalId"),
+                (empty, ""),
+                (lang_str, str(RDF.langString)),
+                (xsd_string, str(XSD.string)),
+            ]
         else:
             cls.str_local_id = "localId"
             cls.str_global_id = "globalId"
@@ -104,23 +113,26 @@ class HextuplesSerializer(Serializer):
             for triple in context:
                 # Generate context string just once, because it doesn't change
                 # for every triple in this context
+                context_str_plain = (
+                    "" if self.graph_type is Graph else self._context_str(context)
+                )
                 context_str = cast(
                     Union[str, bytes],
                     (
                         self.empty
                         if self.graph_type is Graph
                         else (
-                            orjson.Fragment('"' + self._context_str(context) + '"')
+                            orjson.Fragment('"' + context_str_plain + '"')
                             if _HAS_ORJSON
-                            else self._context_str(context)
+                            else context_str_plain
                         )
                     ),
                 )
-                hl = self._hex_line(triple, context_str)
+                hl = self._hex_line(triple, context_str, context_str_plain)
                 if hl is not None:
                     stream.write(hl if _HAS_ORJSON else hl.encode())
 
-    def _hex_line(self, triple, context_str: bytes | str):
+    def _hex_line(self, triple, context_str: bytes | str, context_str_plain=None):
         if isinstance(
             triple[0], (URIRef, BNode)
         ):  # exclude QuotedGraph and other objects
@@ -167,7 +179,24 @@ class HextuplesSerializer(Serializer):
             ]
             outline: str | bytes
             if _HAS_ORJSON:
-                outline = orjson.dumps(line_list, option=orjson.OPT_APPEND_NEWLINE)
+                try:
+                    outline = orjson.dumps(line_list, option=orjson.OPT_APPEND_NEWLINE)
+                except TypeError:
+                    # orjson rejects strings containing lone surrogates, so fall back to
+                    # the stdlib encoder, which escapes them. Its pre-encoded Fragments
+                    # have to be swapped for their plain counterparts first.
+                    plain = []
+                    for item in line_list:
+                        for fragment, text in self.orjson_fragment_plain:
+                            if item is fragment:
+                                item = text
+                                break
+                        if item is context_str:
+                            item = '"' + context_str_plain + '"'
+                        elif isinstance(item, bytes):
+                            item = item.decode()
+                        plain.append(item)
+                    outline = (json.dumps(plain) + "\n").encode()
             else:
                 outline = json.dumps(line_list) + "\n"
             return outline
