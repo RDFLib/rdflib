@@ -11,7 +11,15 @@ from rdflib.namespace import RDF, RDFS, Namespace, NamespaceManager  # , split_u
 from rdflib.plugins.parsers.RDFVOC import RDFVOC
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
 from rdflib.serializer import Serializer
-from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, Node, URIRef
+from rdflib.term import (
+    BNode,
+    IdentifiedNode,
+    Identifier,
+    Literal,
+    Node,
+    URIRef,
+    _escape_surrogates,
+)
 from rdflib.util import first, more_than
 
 from .xmlwriter import ESCAPE_ENTITIES
@@ -77,7 +85,9 @@ class XMLSerializer(Serializer):
         self.__stream = stream
         self.__serialized: dict[Identifier, int] = {}
         encoding = self.encoding
-        self.write = write = lambda uni: stream.write(uni.encode(encoding, "replace"))
+        self.write = write = lambda uni: stream.write(
+            _escape_surrogates(uni).encode(encoding, "replace")
+        )
 
         # startDocument
         write('<?xml version="1.0" encoding="%s"?>\n' % self.encoding)

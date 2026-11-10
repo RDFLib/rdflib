@@ -354,3 +354,12 @@ def test_unshortenable_predicate_raises_in_both_serializers(rdf_format):
     )
     with pytest.raises(ValueError, match="Cannot serialize predicate"):
         g.serialize(format=rdf_format)
+
+
+def test_serialize_literal_with_lone_surrogate():
+    """Lone surrogates in a literal must be serialized as \\uXXXX escapes, not raise (issue #2590)."""
+    g = Graph()
+    g.add((URIRef("http://example.org/subject"), RDFS.seeAlso, Literal("\ud800")))
+    result = g.serialize(format="pretty-xml")
+    assert "\\uD800" in result
+    assert ">?<" not in result

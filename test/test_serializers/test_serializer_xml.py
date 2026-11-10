@@ -5,7 +5,7 @@ import pytest
 from rdflib.graph import Dataset, Graph
 from rdflib.namespace import RDFS
 from rdflib.plugins.serializers.rdfxml import XMLSerializer
-from rdflib.term import BNode, URIRef
+from rdflib.term import BNode, Literal, URIRef
 
 
 class SerializerTestBase:
@@ -196,3 +196,12 @@ def test_unprefixable_predicate_raises_clear_error():
     g = Graph().parse(data='<a> <> "test"@en .', publicID="http://example.org/")
     with pytest.raises(ValueError, match="Cannot serialize predicate"):
         g.serialize(format="xml")
+
+
+def test_serialize_literal_with_lone_surrogate():
+    """Lone surrogates in a literal must be serialized as \\uXXXX escapes, not replaced by '?' (issue #2590)."""
+    g = Graph()
+    g.add((URIRef("http://example.org/subject"), RDFS.seeAlso, Literal("\ud800")))
+    result = g.serialize(format="xml")
+    assert "\\uD800" in result
+    assert ">?<" not in result

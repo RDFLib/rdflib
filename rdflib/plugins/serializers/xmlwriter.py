@@ -8,7 +8,7 @@ from xml.parsers import expat
 from xml.sax.saxutils import escape, quoteattr
 
 from rdflib.namespace import XMLNS, is_ncname
-from rdflib.term import URIRef
+from rdflib.term import URIRef, _escape_surrogates
 
 if TYPE_CHECKING:
     from rdflib.namespace import Namespace, NamespaceManager
@@ -132,6 +132,7 @@ class XMLWriter:
 
     def text(self, text: str) -> None:
         self.__close_start_tag()
+        text = _escape_surrogates(text)
         if "<" in text and ">" in text and "]]>" not in text:
             self.stream.write("<![CDATA[")
             self.stream.write(text)
