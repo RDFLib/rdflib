@@ -9,8 +9,6 @@ import pytest
 
 from rdflib import Graph, Literal
 from rdflib.namespace import XSD
-
-
 from rdflib.plugins.shared.jsonld.context import Context
 from test.utils.namespace import EGDO
 

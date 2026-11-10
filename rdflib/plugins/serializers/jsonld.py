@@ -145,8 +145,21 @@ class JsonLDSerializer(Serializer):
                 option |= orjson.OPT_SORT_KEYS
             if ensure_ascii:
                 warnings.warn("Cannot use ensure_ascii with orjson")
-            data_bytes = orjson.dumps(obj, option=option)
-            stream.write(data_bytes)
+            try:
+                data_bytes = orjson.dumps(obj, option=option)
+            except TypeError:
+                # orjson rejects strings containing lone surrogates outright, so fall
+                # back to the stdlib encoder, whose raw surrogate the escape below repairs
+                data = json.dumps(
+                    obj,
+                    indent=indent,
+                    separators=separators,
+                    sort_keys=sort_keys,
+                    ensure_ascii=ensure_ascii,
+                )
+                stream.write(_escape_surrogates(data).encode(encoding, "replace"))
+            else:
+                stream.write(data_bytes)
         else:
             data = json.dumps(
                 obj,
