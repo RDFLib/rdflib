@@ -43,7 +43,14 @@ from typing import IO, Any, Optional
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph, _ObjectType
 from rdflib.namespace import RDF, XSD
 from rdflib.serializer import Serializer
-from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, URIRef
+from rdflib.term import (
+    BNode,
+    IdentifiedNode,
+    Identifier,
+    Literal,
+    URIRef,
+    _escape_surrogates,
+)
 
 from ..shared.jsonld.context import UNDEF, Context
 from ..shared.jsonld.keys import CONTEXT, GRAPH, ID, LANG, LIST, SET, VOCAB
@@ -111,7 +118,7 @@ class JsonLDSerializer(Serializer):
                 sort_keys=sort_keys,
                 ensure_ascii=ensure_ascii,
             )
-            stream.write(data.encode(encoding, "replace"))
+            stream.write(_escape_surrogates(data).encode(encoding, "replace"))
 
 
 def from_rdf(
@@ -432,10 +439,9 @@ class Converter:
         elif isinstance(o, Literal):
             # TODO: if compact
             native = self.use_native_types and o.datatype in PLAIN_LITERAL_TYPES
-            if native:
-                v = o.toPython()
-            else:
-                v = str(o)
+            v = o.toPython() if native else str(o)
+            if isinstance(v, str):
+                v = _escape_surrogates(v)
             if o.datatype:
                 if native and self.context.active:
                     return v
