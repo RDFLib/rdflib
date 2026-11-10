@@ -45,11 +45,13 @@ class NQuadsSerializer(Serializer):
             for context in store.graphs():
                 for triple in context:
                     stream.write(
-                        _nq_row(triple, context.identifier).encode(encoding, "replace")
+                        _nq_row(triple, context.identifier).encode(
+                            encoding, "_rdflib_nt_escape"
+                        )
                     )
         else:
             for triple in self.store:
-                stream.write(_nt_row(triple).encode(encoding, "replace"))
+                stream.write(_nt_row(triple).encode(encoding, "_rdflib_nt_escape"))
         stream.write("\n".encode("latin-1"))
 
 
