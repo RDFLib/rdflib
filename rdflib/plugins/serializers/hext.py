@@ -36,21 +36,23 @@ class HextuplesSerializer(Serializer):
 
     def __new__(cls, store: Graph | Dataset | ConjunctiveGraph):
         if _HAS_ORJSON:
-            cls.str_local_id: str | Any = orjson.Fragment(b'"localId"')
-            cls.str_global_id: str | Any = orjson.Fragment(b'"globalId"')
-            cls.empty: str | Any = orjson.Fragment(b'""')
-            cls.lang_str: str | Any = orjson.Fragment(
-                b'"' + RDF.langString.encode("utf-8") + b'"'
-            )
-            cls.xsd_string: str | Any = orjson.Fragment(
-                b'"' + XSD.string.encode("utf-8") + b'"'
-            )
+            str_local_id = orjson.Fragment(b'"localId"')
+            str_global_id = orjson.Fragment(b'"globalId"')
+            empty = orjson.Fragment(b'""')
+            lang_str = orjson.Fragment(b'"' + RDF.langString.encode("utf-8") + b'"')
+            xsd_string = orjson.Fragment(b'"' + XSD.string.encode("utf-8") + b'"')
+
+            cls.str_local_id: str | Any = str_local_id
+            cls.str_global_id: str | Any = str_global_id
+            cls.empty: str | Any = empty
+            cls.lang_str: str | Any = lang_str
+            cls.xsd_string: str | Any = xsd_string
             cls.orjson_fragment_plain: list[tuple[Any, str]] = [
-                (cls.str_local_id, "localId"),
-                (cls.str_global_id, "globalId"),
-                (cls.empty, ""),
-                (cls.lang_str, str(RDF.langString)),
-                (cls.xsd_string, str(XSD.string)),
+                (str_local_id, "localId"),
+                (str_global_id, "globalId"),
+                (empty, ""),
+                (lang_str, str(RDF.langString)),
+                (xsd_string, str(XSD.string)),
             ]
         else:
             cls.str_local_id = "localId"
