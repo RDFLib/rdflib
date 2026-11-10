@@ -49,7 +49,14 @@ from typing import IO, Any, Optional
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph, _ObjectType
 from rdflib.namespace import RDF, XSD
 from rdflib.serializer import Serializer
-from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, URIRef
+from rdflib.term import (
+    BNode,
+    IdentifiedNode,
+    Identifier,
+    Literal,
+    URIRef,
+    _escape_surrogates,
+)
 
 from ..shared.jsonld.context import UNDEF, Context, Term
 from ..shared.jsonld.keys import CONTEXT, GRAPH, ID, LANG, LIST, SET, VOCAB
@@ -148,7 +155,7 @@ class JsonLDSerializer(Serializer):
                 sort_keys=sort_keys,
                 ensure_ascii=ensure_ascii,
             )
-            stream.write(data.encode(encoding, "replace"))
+            stream.write(_escape_surrogates(data).encode(encoding, "replace"))
 
 
 def from_rdf(
