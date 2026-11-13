@@ -1503,9 +1503,12 @@ DescribeQuery = Comp(
 )
 
 # [29] Update ::= Prologue ( Update1 ( ';' Update )? )?
-Update = Forward()
-Update <<= ParamList("prologue", Prologue) + Optional(
-    ParamList("request", Update1) + Optional(";" + Update)
+# Written as a loop, not as the grammar's right recursion, which recursed once per
+# operation and overflowed the stack on a request of about a hundred of them.
+Update = ParamList("prologue", Prologue) + Optional(
+    ParamList("request", Update1)
+    + ZeroOrMore(";" + ParamList("prologue", Prologue) + ParamList("request", Update1))
+    + Optional(";" + ParamList("prologue", Prologue))
 )
 
 

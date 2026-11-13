@@ -248,3 +248,44 @@ def test_inserts_in_named_graph():
     for graph in ds.graphs():
         expected_graph = expected_ds.graph(graph.identifier)
         assert isomorphic(graph, expected_graph)
+
+
+def test_request_of_many_operations() -> None:
+    """A request of many ``;``-joined operations parses without recursing once per operation.
+
+    See https://github.com/RDFLib/rdflib/issues/3710
+    """
+    count = 500
+    graph = Graph()
+    graph.update(
+        ";\n".join(
+            f"INSERT DATA {{ <urn:s> <urn:p> {number} }}" for number in range(count)
+        )
+    )
+    assert len(graph) == count
+
+
+@pytest.mark.parametrize(
+    ("request_text", "expected"),
+    [
+        pytest.param("INSERT DATA { <urn:s> <urn:p> 1 } ;", 1, id="trailing-separator"),
+        pytest.param(
+            "INSERT DATA { <urn:s> <urn:p> 1 } ; PREFIX ex: <urn:ex:>",
+            1,
+            id="trailing-prologue",
+        ),
+        pytest.param(
+            "PREFIX a: <urn:a:> INSERT DATA { a:s a:p 1 } ;"
+            " PREFIX b: <urn:b:> INSERT DATA { a:s b:p 2 } ;"
+            " INSERT DATA { b:s a:p 3 }",
+            3,
+            id="prologue-per-operation",
+        ),
+    ],
+)
+def test_request_separators_and_prologues(request_text: str, expected: int) -> None:
+    """The forms of [29] Update: each operation may carry its own prologue, declarations
+    carry forward, and a request may end in a separator or a prologue."""
+    graph = Graph()
+    graph.update(request_text)
+    assert len(graph) == expected
