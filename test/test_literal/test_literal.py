@@ -1106,3 +1106,24 @@ def test_global_normalize(
             checker.check(actual_outcome)
     finally:
         rdflib.NORMALIZE_LITERALS = _normalize_literals
+
+
+@pytest.mark.parametrize(
+    "lhs, rhs",
+    [
+        (Literal(1), Literal("a")),
+        (Literal(1), Literal("2020-01-01", datatype=XSD.date)),
+        (Literal("2020-01-01", datatype=XSD.date), Literal("x", lang="en")),
+    ],
+)
+def test_dawg_collation_incomparable_literals_do_not_raise(
+    lhs: Literal, rhs: Literal, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """With DAWG_LITERAL_COLLATION, `__gt__` returns NotImplemented for literals
+    of different datatypes. Python 3.14 no longer accepts NotImplemented in a
+    boolean context, so the other comparisons must not rely on it (#3083)."""
+    monkeypatch.setattr(rdflib, "DAWG_LITERAL_COLLATION", True)
+    for op in (operator.lt, operator.le, operator.gt, operator.ge):
+        op(lhs, rhs)
+        op(rhs, lhs)
+    sorted([rhs, lhs])

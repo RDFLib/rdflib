@@ -1254,7 +1254,10 @@ class Literal(Identifier):
             return False  # Nothing is less than None
         if isinstance(other, Literal):
             try:
-                return not self.__gt__(other) and not self.eq(other)
+                gt = self.__gt__(other)
+                if gt is NotImplemented:
+                    return False
+                return not gt and not self.eq(other)
             except TypeError:
                 return NotImplemented
         if isinstance(other, Node):
@@ -1273,7 +1276,7 @@ class Literal(Identifier):
             ```
         """
         r = self.__lt__(other)
-        if r:
+        if r is NotImplemented or r:
             return True
         try:
             return self.eq(other)
@@ -1282,7 +1285,7 @@ class Literal(Identifier):
 
     def __ge__(self, other: Any) -> bool:
         r = self.__gt__(other)
-        if r:
+        if r is NotImplemented or r:
             return True
         try:
             return self.eq(other)
