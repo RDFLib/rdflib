@@ -44,6 +44,10 @@ class TrigSerializer(TurtleSerializer):
             if len(context) == 0:
                 continue
             self.store = context
+            if isinstance(context.identifier, BNode):
+                # The graph name is a reference too, so a statement using it as an
+                # object must not write it inline as `[ ]`.
+                self._references[context.identifier] += 1
             # Don't generate a new prefix for a graph URI if one already exists
             self.get_pname(context.identifier, False)
             self._subjects = {}
