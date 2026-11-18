@@ -8,7 +8,6 @@ from __future__ import annotations
 from collections.abc import Generator, Set
 from enum import Enum
 from typing import (
-    TYPE_CHECKING,
     Any,
     Literal,
     NamedTuple,
@@ -440,13 +439,13 @@ class Context:
         override_protected: bool = False,
     ):
         self.active = True
-        sources: list[tuple[str | None, dict[str, Any] | str | None]] = []
+        sources: list[tuple[str | None, dict[str, Any] | str | None, set[str]]] = []
         # "Union[list[Union[dict[str, Any], str]], list[dict[str, Any]], list[str]]" : expression
         # "Union[list[dict[str, Any]], dict[str, Any], list[str], str]" : variable
         source = source if isinstance(source, list) else [source]
         referenced_contexts = referenced_contexts or set()
-        self._prep_sources(base, source, sources, referenced_contexts)
-        for source_url, source in sources:
+        self._prep_sources(base, source, sources, set(referenced_contexts))
+        for source_url, source, source_refs in sources:
             if source is None:
                 self._clear()
             else:
@@ -454,7 +453,7 @@ class Context:
                 self._read_source(
                     source,  # type: ignore[arg-type]
                     source_url,
-                    referenced_contexts,
+                    source_refs,
                     override_protected,
                 )
 
@@ -470,7 +469,7 @@ class Context:
         self,
         base: str | None,
         inputs: list[dict[str, Any] | str | None] | list[str],
-        sources: list[tuple[str | None, dict[str, Any] | str | None]],
+        sources: list[tuple[str | None, dict[str, Any] | str | None, set[str]]],
         referenced_contexts: set[str],
         in_source_url: str | None = None,
     ):
@@ -478,21 +477,18 @@ class Context:
         for source in inputs:
             source_url = in_source_url
             new_base = base
+            branch_refs = set(referenced_contexts)
             if isinstance(source, str):
-                source_url = source
                 source_doc_base = base or self.doc_base
-                new_ctx = self._fetch_context(
-                    source, source_doc_base, referenced_contexts
+                resolved_url, new_ctx = self._fetch_context(
+                    source, source_doc_base, branch_refs
                 )
                 if new_ctx is None:
                     continue
                 else:
-                    if base:
-                        if TYPE_CHECKING:
-                            # if base is not None, then source_doc_base won't be
-                            # none due to how it is assigned.
-                            assert source_doc_base is not None
-                        new_base = urljoin(source_doc_base, source_url)
+                    branch_refs.add(resolved_url)
+                    source_url = resolved_url
+                    new_base = resolved_url
                     source = new_ctx
 
             if isinstance(source, dict):
@@ -503,36 +499,29 @@ class Context:
 
             if isinstance(source, list):
                 # type error: Statement is unreachable
-                self._prep_sources(
-                    new_base, source, sources, referenced_contexts, source_url
-                )
+                self._prep_sources(new_base, source, sources, branch_refs, source_url)
             else:
-                sources.append((source_url, source))
+                sources.append((source_url, source, branch_refs))
 
     def _fetch_context(
         self, source: str, base: str | None, referenced_contexts: set[str]
-    ):
-        # type error: Value of type variable "AnyStr" of "urljoin" cannot be "Optional[str]"
-        source_url = urljoin(base, source)  # type: ignore[type-var]
+    ) -> tuple[str, Any]:
+        source_url = urljoin(base or "", source)
 
         if source_url in referenced_contexts:
             raise RECURSIVE_CONTEXT_INCLUSION
 
-        # type error: Argument 1 to "add" of "set" has incompatible type "Optional[str]"; expected "str"
-        referenced_contexts.add(source_url)  # type: ignore[arg-type]
-
         if source_url in self._context_cache:
-            return self._context_cache[source_url]
+            return source_url, self._context_cache[source_url]
 
         # type error: Incompatible types in assignment (expression has type "Optional[Any]", variable has type "str")
         source_json, _ = source_to_json(source_url)
         if source_json and CONTEXT not in source_json:
             raise INVALID_REMOTE_CONTEXT
 
-        # type error: Invalid index type "Optional[str]" for "dict[str, Any]"; expected type "str"
-        self._context_cache[source_url] = source_json  # type: ignore[index]
+        self._context_cache[source_url] = source_json
 
-        return source_json
+        return source_url, source_json
 
     def _read_source(
         self,
@@ -546,15 +535,14 @@ class Context:
             if not isinstance(imports, str):
                 raise INVALID_CONTEXT_ENTRY
 
-            imported = self._fetch_context(
-                imports, self.base, referenced_contexts or set()
+            import_base = source_url or self.base or self.doc_base
+            _, imported = self._fetch_context(
+                imports, import_base, referenced_contexts or set()
             )
             if not isinstance(imported, dict):
                 raise INVALID_CONTEXT_ENTRY
 
-            imported = imported[CONTEXT]
-            imported.update(source)
-            source = imported
+            source = {**imported[CONTEXT], **source}
 
         self.version = source.get(VERSION, self.version)
         # @base goes first, since a relative @vocab can depend on it.

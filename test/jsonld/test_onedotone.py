@@ -93,8 +93,6 @@ known_bugs: tuple[str, ...] = (
     # RDFLib cannot keep a colon on the end of a prefix uri
     "toRdf/e117-in",
     "toRdf/e118-in",
-    # Recursive Inclusion triggered!
-    "toRdf/e128-in",
     # JSON-native double representation
     "toRdf/js04-in",
     "toRdf/js10-in",
