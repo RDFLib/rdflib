@@ -318,14 +318,14 @@ class SPARQLStore(SPARQLConnector, Store):
         s, p, o = spo
 
         vars = []
-        if not s:
+        if s is None:
             s = Variable("s")
             vars.append(s)
 
-        if not p:
+        if p is None:
             p = Variable("p")
             vars.append(p)
-        if not o:
+        if o is None:
             o = Variable("o")
             vars.append(o)
 
@@ -457,13 +457,13 @@ class SPARQLStore(SPARQLConnector, Store):
         graphs.
         """
 
-        if triple:
+        if triple is not None:
             nts = self.node_to_sparql
             s, p, o = triple
             params = (
-                nts(s if s else Variable("s")),
-                nts(p if p else Variable("p")),
-                nts(o if o else Variable("o")),
+                nts(s if s is not None else Variable("s")),
+                nts(p if p is not None else Variable("p")),
+                nts(o if o is not None else Variable("o")),
             )
             q = "SELECT ?name WHERE { GRAPH ?name { %s %s %s }}" % params
         else:
@@ -797,11 +797,11 @@ class SPARQLUpdateStore(SPARQLStore):
             raise Exception("UpdateEndpoint is not set - call 'open'")
 
         subject, predicate, obj = spo
-        if not subject:
+        if subject is None:
             subject = Variable("S")
-        if not predicate:
+        if predicate is None:
             predicate = Variable("P")
-        if not obj:
+        if obj is None:
             obj = Variable("O")
 
         nts = self.node_to_sparql
