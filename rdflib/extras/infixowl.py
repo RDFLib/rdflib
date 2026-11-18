@@ -354,8 +354,25 @@ def manchesterSyntax(  # noqa: N802
             OWL.maxCardinality: "MAX",
             OWL.minCardinality: "MIN",
             OWL.cardinality: "EQUALS",
+            OWL.maxQualifiedCardinality: "MAX",
+            OWL.minQualifiedCardinality: "MIN",
+            OWL.qualifiedCardinality: "EQUALS",
         }
+        qualified_props = (
+            OWL.qualifiedCardinality,
+            OWL.maxQualifiedCardinality,
+            OWL.minQualifiedCardinality,
+        )
         for _s, p, o in store.triples_choices((thing, list(cardlookup.keys()), None)):
+            if p in qualified_props:
+                onclass = first(store.objects(subject=thing, predicate=OWL.onClass))
+                if onclass is not None:
+                    return "( %s %s %s %s )" % (
+                        propstring,
+                        cardlookup[p],
+                        o,
+                        manchesterSyntax(onclass, store),
+                    )
             return "( %s %s %s )" % (propstring, cardlookup[p], o)
     # is thing a complement of anything
     compl = list(store.objects(subject=thing, predicate=OWL.complementOf))
@@ -1782,6 +1799,29 @@ def AllDifferent(members):  # noqa: N802
     pass  # pragma: no cover
 
 
+def _restriction_property(predicate, converter):
+    """Build a Restriction descriptor for a single-valued OWL restriction predicate."""
+
+    def _get(self):
+        for i in self.graph.objects(subject=self.identifier, predicate=predicate):
+            return Class(i, graph=self.graph)
+        return None
+
+    def _set(self, other):
+        if not other:
+            return
+        triple = (self.identifier, predicate, converter(other))
+        if triple in self.graph:
+            return
+        self.graph.set(triple)
+
+    @TermDeletionHelper(predicate)
+    def _del(self):
+        pass  # pragma: no cover
+
+    return property(_get, _set, _del)
+
+
 class Restriction(Class):
     """
     ```
@@ -1801,6 +1841,9 @@ class Restriction(Class):
         OWL.cardinality,
         OWL.maxCardinality,
         OWL.minCardinality,
+        OWL.qualifiedCardinality,
+        OWL.maxQualifiedCardinality,
+        OWL.minQualifiedCardinality,
     ]
 
     def __init__(
@@ -1814,6 +1857,10 @@ class Restriction(Class):
         maxCardinality=None,  # noqa: N803
         minCardinality=None,  # noqa: N803
         identifier=None,
+        qualifiedCardinality=None,  # noqa: N803
+        maxQualifiedCardinality=None,  # noqa: N803
+        minQualifiedCardinality=None,  # noqa: N803
+        onClass=None,  # noqa: N803
     ):
         graph = Graph() if graph is None else graph
         super(Restriction, self).__init__(
@@ -1835,13 +1882,17 @@ class Restriction(Class):
             (cardinality, OWL.cardinality),
             (maxCardinality, OWL.maxCardinality),
             (minCardinality, OWL.minCardinality),
+            (qualifiedCardinality, OWL.qualifiedCardinality),
+            (maxQualifiedCardinality, OWL.maxQualifiedCardinality),
+            (minQualifiedCardinality, OWL.minQualifiedCardinality),
         ]
         valid_restr_props = [(i, oterm) for (i, oterm) in restr_types if i is not None]
         if not len(valid_restr_props):
             raise ValueError(
-                "Missing value. One of: allValuesFrom, someValuesFrom,"
-                "value, cardinality, maxCardinality or minCardinality"
-                "must have a value."
+                "Missing value. One of: allValuesFrom, someValuesFrom, "
+                "value, cardinality, maxCardinality, minCardinality, "
+                "qualifiedCardinality, maxQualifiedCardinality or "
+                "minQualifiedCardinality must have a value."
             )
         restriction_range, restriction_type = valid_restr_props.pop()
         self.restrictionType = restriction_type
@@ -1861,6 +1912,8 @@ class Restriction(Class):
             self.restrictionRange,
         ) not in self.graph:
             self.graph.add((self.identifier, restriction_type, self.restrictionRange))
+        if onClass is not None:
+            self.onClass = onClass
         assert self.restrictionRange is not None, Class(self.identifier)
         if (self.identifier, RDF.type, OWL.Restriction) not in self.graph:
             self.graph.add((self.identifier, RDF.type, OWL.Restriction))
@@ -1894,14 +1947,16 @@ class Restriction(Class):
         Property(self.onProperty, graph=self.graph, baseType=None).serialize(graph)
         for s, p, o in self.graph.triples((self.identifier, None, None)):
             graph.add((s, p, o))
-            if p in [OWL.allValuesFrom, OWL.someValuesFrom]:
+            if p in [OWL.allValuesFrom, OWL.someValuesFrom, OWL.onClass]:
                 CastClass(o, self.graph).serialize(graph)
 
     def isPrimitive(self):  # noqa: N802
         return False
 
     def __hash__(self):
-        return hash((self.onProperty, self.restrictionRange))
+        return hash(
+            (self.onProperty, self.restrictionType, self.restrictionRange, self.onClass)
+        )
 
     def __eq__(self, other):
         """
@@ -1912,8 +1967,9 @@ class Restriction(Class):
         if isinstance(other, Restriction):
             return (
                 other.onProperty == self.onProperty
-                # type error: "Restriction" has no attribute "restriction_range"; maybe "restrictionRange"?
-                and other.restriction_range == self.restrictionRange  # type: ignore[attr-defined]
+                and other.restrictionType == self.restrictionType
+                and other.restrictionRange == self.restrictionRange
+                and other.onClass == self.onClass
             )
         else:
             return False
@@ -2075,6 +2131,17 @@ class Restriction(Class):
     minCardinality = property(  # noqa: N815
         _get_mincardinality, _set_mincardinality, _del_mincardinality
     )
+
+    qualifiedCardinality = _restriction_property(  # noqa: N815
+        OWL.qualifiedCardinality, classOrTerm
+    )
+    maxQualifiedCardinality = _restriction_property(  # noqa: N815
+        OWL.maxQualifiedCardinality, classOrTerm
+    )
+    minQualifiedCardinality = _restriction_property(  # noqa: N815
+        OWL.minQualifiedCardinality, classOrTerm
+    )
+    onClass = _restriction_property(OWL.onClass, classOrIdentifier)  # noqa: N815
 
     def restrictionKind(self):  # noqa: N802
         for s, p, o in self.graph.triples_choices(
