@@ -8,8 +8,9 @@ from __future__ import annotations
 
 import json
 import warnings
+from collections.abc import Callable
 from io import TextIOWrapper
-from typing import TYPE_CHECKING, Any, BinaryIO, Callable, TextIO, Union, cast
+from typing import TYPE_CHECKING, Any, BinaryIO, TextIO, Union, cast
 
 from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from rdflib.parser import InputSource, Parser

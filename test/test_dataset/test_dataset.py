@@ -4,7 +4,6 @@ import os
 import shutil
 import tempfile
 import warnings
-from typing import Tuple
 
 import pytest
 
@@ -274,7 +273,7 @@ def test_dataset_default_context_public_access_warns() -> None:
 
 def test_dataset_internal_default_graph_operations_do_not_warn() -> None:
     dataset = Dataset()
-    triple: Tuple[Node, Node, Node] = (
+    triple: tuple[Node, Node, Node] = (
         URIRef("urn:s"),
         URIRef("urn:p"),
         URIRef("urn:o"),
@@ -300,7 +299,7 @@ def test_dataset_internal_default_graph_operations_do_not_warn() -> None:
 
 def test_dataset_parse_default_graph_does_not_warn() -> None:
     dataset = Dataset()
-    triple: Tuple[Node, Node, Node] = (
+    triple: tuple[Node, Node, Node] = (
         URIRef("urn:s"),
         URIRef("urn:p"),
         URIRef("urn:o"),
@@ -323,7 +322,7 @@ def test_dataset_parse_default_graph_does_not_warn() -> None:
 
 def test_dataset_update_default_graph_does_not_warn() -> None:
     dataset = Dataset()
-    triple: Tuple[Node, Node, Node] = (
+    triple: tuple[Node, Node, Node] = (
         URIRef("urn:s"),
         URIRef("urn:p"),
         URIRef("urn:o"),
