@@ -211,7 +211,8 @@ class Converter:
 
             nodes = self.from_graph(g)
 
-            if not graphname and len(nodes) == 1:
+            # The name of a graph named by the base IRI shrinks to "".
+            if graphname is None and len(nodes) == 1:
                 obj.update(nodes[0])
             else:
                 if not nodes:
@@ -341,15 +342,12 @@ class Converter:
                         if isinstance(v, BNode) and any(graph.predicate_objects(v))
                     )
             elif LANG in term.container and language:
-                value = s_node.setdefault(p_key, {})
-                values = value.get(language)
-                node = str(o)
-                if values or SET in term.container:
-                    if not isinstance(values, list):
-                        value[language] = values = [values]
-                    values.append(node)
-                else:
-                    value[language] = node
+                self._add_value(
+                    s_node.setdefault(p_key, {}),
+                    language,
+                    str(o),
+                    SET in term.container,
+                )
                 return
             elif SET in term.container:
                 use_set = True
@@ -376,16 +374,27 @@ class Converter:
             if any(graph.predicate_objects(o)):
                 self._pending_nodes.append(o)
 
-        value = s_node.get(p_key)
-        if value:
-            if not isinstance(value, list):
-                value = [value]
-            value.append(node)
-        elif use_set:
-            value = [node]
+        self._add_value(s_node, p_key, node, use_set)
+
+    @staticmethod
+    def _add_value(obj: dict[str, Any], key: str, value: Any, as_array: bool) -> None:
+        """Add `value` to the values of `key` in `obj`.
+
+        This is the add value step that the Compaction Algorithm uses (JSON-LD
+        1.1 Processing Algorithms and API, section 1.4.1). Whether `key`
+        already has a value is a question about the key: the value can be
+        falsy, such as 0, "" or false written as a bare JSON value, a falsy
+        typed literal, or "" for an IRI equal to the base.
+        """
+        if key in obj:
+            values = obj[key]
+            if not isinstance(values, list):
+                obj[key] = values = [values]
+            values.append(value)
+        elif as_array:
+            obj[key] = [value]
         else:
-            value = node
-        s_node[p_key] = value
+            obj[key] = value
 
     def _find_node_term(self, p: IdentifiedNode, container: Optional[str]):
         """Return the context term for `p` with a node object, or None."""
