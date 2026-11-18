@@ -103,18 +103,6 @@ XFAILS = {
         reason="contains characters forbidden by the xml spec",
         raises=SAXParseException,
     ),
-    ("json-ld", "keywords-04.nt"): pytest.mark.xfail(
-        reason="known NT->JSONLD problem",
-        raises=AssertionError,
-    ),
-    ("json-ld", "example-misc.n3"): pytest.mark.xfail(
-        reason="known N3->JSONLD problem",
-        raises=AssertionError,
-    ),
-    ("json-ld", "rdf-test-11.n3"): pytest.mark.xfail(
-        reason="known N3->JSONLD problem",
-        raises=AssertionError,
-    ),
     ("json-ld", "rdf-test-28.n3"): pytest.mark.xfail(
         reason="known N3->JSONLD problem",
         raises=AssertionError,
@@ -197,10 +185,6 @@ XFAILS = {
         "n3",
         "data/suites/w3c/n3/N3Tests/cwm_syntax/neg-single-quote.n3",
     ): pytest.mark.xfail(raises=BadSyntax, reason="no support for single quotes"),
-    ("json-ld", "bnode_refs.trig"): pytest.mark.xfail(
-        reason="a whole bunch of triples with bnode as subject is not in the reconstituted graph",
-        raises=AssertionError,
-    ),
 }
 
 # This is for files which can only be represented properly in one format

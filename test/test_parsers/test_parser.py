@@ -1,5 +1,12 @@
+import os
+import pathlib
+from unittest import mock
+
+import pytest
+
 from rdflib.graph import Graph
 from rdflib.namespace import RDF, RDFS
+from rdflib.parser import _create_input_source_from_location
 from rdflib.term import Literal, URIRef
 
 
@@ -81,3 +88,58 @@ class TestGitHubIssues:
         g.parse(data=data, format="nt")
         for _, _, o in g:
             assert "1891-01-01" not in o.n3()
+
+
+class TestWindowsUNCPaths:
+    """Regression tests for https://github.com/RDFLib/rdflib/issues/3424."""
+
+    @pytest.mark.skipif(os.name != "nt", reason="UNC paths are Windows-only")
+    def test_unc_path_with_backslashes_not_resolved_against_cwd(self):
+        location = "\\\\host\\share\\x.ttl"
+        with mock.patch("builtins.open", mock.mock_open(read_data=b"")) as m:
+            absolute_location, _, _, _ = _create_input_source_from_location(
+                file=None,
+                format=None,
+                input_source=None,
+                location=location,
+            )
+        assert str(absolute_location).startswith("file://")
+        assert "host" in str(absolute_location)
+        assert not str(absolute_location).startswith(pathlib.Path.cwd().as_uri())
+        m.assert_called_once_with(location, "rb")
+
+    def test_forward_slash_unc_path_keeps_network_path_reference_behaviour(self):
+        # ``//host/share/...`` is treated as a network-path reference rather than a UNC path because the two are indistinguishable.
+        location = "//host/share/x.ttl"
+        with mock.patch("rdflib.parser.URLInputSource") as mock_url_source:
+            absolute_location, _, _, _ = _create_input_source_from_location(
+                file=None,
+                format=None,
+                input_source=None,
+                location=location,
+            )
+        assert str(absolute_location) == "file://host/share/x.ttl"
+        mock_url_source.assert_called_once_with(absolute_location, None)
+
+    def test_relative_filename_still_resolved_against_cwd(self):
+        location = "rdflib_issue_3424_nonexistent.ttl"
+        with mock.patch("builtins.open", mock.mock_open()):
+            absolute_location, _, _, _ = _create_input_source_from_location(
+                file=None,
+                format=None,
+                input_source=None,
+                location=location,
+            )
+        base = pathlib.Path.cwd().as_uri()
+        assert str(absolute_location) == str(URIRef(location, base=base))
+
+    def test_existing_local_absolute_path_unchanged(self):
+        location = str(pathlib.Path(__file__).absolute())
+        with mock.patch("builtins.open", mock.mock_open()):
+            absolute_location, _, _, _ = _create_input_source_from_location(
+                file=None,
+                format=None,
+                input_source=None,
+                location=location,
+            )
+        assert str(absolute_location) == pathlib.Path(location).absolute().as_uri()
