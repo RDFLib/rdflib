@@ -2,7 +2,6 @@
 Runs the SPARQL 1.0 test suite from.
 """
 
-import sys
 from collections.abc import Generator
 from contextlib import ExitStack
 
@@ -97,10 +96,6 @@ MARK_DICT: MarksDictType = {
     ),
     f"{REMOTE_BASE_IRI}syntax-sparql4/syn-bad-37.rq": pytest.mark.xfail(
         reason="Accepts invalid query."
-    ),
-    f"{REMOTE_BASE_IRI}solution-seq/manifest#slice-3": pytest.mark.xfail(
-        condition=sys.version_info >= (3, 14),
-        reason="Python 3.14 raises a TypeError when evaluating NotImplemented as a boolean value.",
     ),
 }
 
