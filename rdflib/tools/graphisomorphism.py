@@ -63,6 +63,9 @@ class IsomorphicTestableGraph(Graph):
         """Negative graph isomorphism testing."""
         return not self.__eq__(G)
 
+    def __hash__(self):
+        return super().__hash__()
+
 
 def main():
     import sys
@@ -95,17 +98,21 @@ def main():
     if options.stdin:
         graph = IsomorphicTestableGraph().parse(sys.stdin, format=options.inputFormat)
         graphs.append(graph)
-        graph2FName[graph] = "(STDIN)"
+        graph2FName[graph.identifier] = "(STDIN)"
     for fn in args:
         graph = IsomorphicTestableGraph().parse(fn, format=options.inputFormat)
         graphs.append(graph)
-        graph2FName[graph] = fn
+        graph2FName[graph.identifier] = fn
     checked = set()
     for graph1, graph2 in combinations(graphs, 2):
-        if (graph1, graph2) not in checked and (graph2, graph1) not in checked:
+        if (graph1.identifier, graph2.identifier) not in checked and (
+            graph2.identifier,
+            graph1.identifier,
+        ) not in checked:
+            checked.add((graph1.identifier, graph2.identifier))
             assert graph1 == graph2, "%s != %s" % (
-                graph2FName[graph1],
-                graph2FName[graph2],
+                graph2FName[graph1.identifier],
+                graph2FName[graph2.identifier],
             )
 
 
