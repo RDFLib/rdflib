@@ -90,6 +90,7 @@ If you are not sure what format your file will be, you can use [`guess_format()`
 |---------|---------------------------------------------------------------|
 | json-ld | [`JsonLDParser`][rdflib.plugins.parsers.jsonld.JsonLDParser]  |
 | hext    | [`HextuplesParser`][rdflib.plugins.parsers.hext.HextuplesParser] |
+| jelly   | [`RDFLibJellyParser`](https://w3id.org/jelly/pyjelly/dev/api/#pyjelly.integrations.rdflib.parse.RDFLibJellyParser) |
 | n3      | [`N3Parser`][rdflib.plugins.parsers.notation3.N3Parser]       |
 | nquads  | [`NQuadsParser`][rdflib.plugins.parsers.nquads.NQuadsParser]  |
 | patch   | [`RDFPatchParser`][rdflib.plugins.parsers.patch.RDFPatchParser] |
@@ -135,6 +136,7 @@ graph.serialize(my_url, format='application/rdf+xml')
 | nquads     | [`NQuadsSerializer`][rdflib.plugins.serializers.nquads.NQuadsSerializer]             |
 | nt         | [`NTSerializer`][rdflib.plugins.serializers.nt.NTSerializer]                         |
 | hext       | [`HextuplesSerializer`][rdflib.plugins.serializers.hext.HextuplesSerializer]         |
+| jelly      | [`RDFLibJellySerializer`](https://w3id.org/jelly/pyjelly/dev/api/#pyjelly.integrations.rdflib.serialize.RDFLibJellySerializer) |
 | patch      | [`PatchSerializer`][rdflib.plugins.serializers.patch.PatchSerializer]                |
 | pretty-xml | [`PrettyXMLSerializer`][rdflib.plugins.serializers.rdfxml.PrettyXMLSerializer]       |
 | trig       | [`TrigSerializer`][rdflib.plugins.serializers.trig.TrigSerializer]                   |
@@ -160,6 +162,15 @@ For serialization of non-context-aware data sources, e.g. a single `Graph`, the 
 
 For context-aware (multi-graph) serialization, the 'graph' field of the default graph will be an empty string and the values for other graphs will be Blank Node IDs or IRIs.
 
+### Jelly
+
+[Jelly](https://w3id.org/jelly) is a fast and compact binary format for streams of RDF triples
+or quads, based on Protocol Buffers. RDFLib reads and writes it with [pyjelly](https://w3id.org/jelly/pyjelly),
+which is installed with RDFLib. The format name is `jelly`, the media type is 
+`application/x-jelly-rdf`, and files end in `.jelly`.
+
+See the [pyjelly documentation](https://w3id.org/jelly/pyjelly) for more, such as writing and reading streams of many graphs.
+
 ### Longturtle
 
 The `longturtle` format name remains available as an alias of the default `turtle`
@@ -178,6 +189,7 @@ Plugins for reading and writing of (SPARQL) [`Result`][rdflib.query.Result] - pa
 | Name | Class |
 | ---- | ----- |
 | csv  | [`CSVResultParser`][rdflib.plugins.sparql.results.csvresults.CSVResultParser] |
+| jelly | `RDFLibJellySparqlParser`, from [pyjelly](https://w3id.org/jelly/pyjelly) |
 | json | [`JSONResultParser`][rdflib.plugins.sparql.results.jsonresults.JSONResultParser] |
 | tsv  | [`TSVResultParser`][rdflib.plugins.sparql.results.tsvresults.TSVResultParser] |
 | xml  | [`XMLResultParser`][rdflib.plugins.sparql.results.xmlresults.XMLResultParser] |
@@ -187,6 +199,13 @@ Plugins for reading and writing of (SPARQL) [`Result`][rdflib.query.Result] - pa
 | Name | Class |
 | ---- | ----- |
 | csv  | [`CSVResultSerializer`][rdflib.plugins.sparql.results.csvresults.CSVResultSerializer] |
+| jelly | `RDFLibJellySparqlSerializer`, from [pyjelly](https://w3id.org/jelly/pyjelly) |
 | json | [`JSONResultSerializer`][rdflib.plugins.sparql.results.jsonresults.JSONResultSerializer] |
 | txt  | [`TXTResultSerializer`][rdflib.plugins.sparql.results.txtresults.TXTResultSerializer] |
 | xml  | [`XMLResultSerializer`][rdflib.plugins.sparql.results.xmlresults.XMLResultSerializer] |
+
+### Jelly-SPARQL
+
+[Jelly-SPARQL](https://w3id.org/jelly) is the binary Jelly format for the
+results of SELECT and ASK queries. Its format name is `jelly` (or `jellys`),
+its media type is `application/x-jelly-sparql`, and files end in `.jellys`.
