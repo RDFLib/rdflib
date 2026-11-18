@@ -5,7 +5,6 @@ from collections.abc import Generator
 from typing import IO, Any
 from xml.sax.saxutils import escape, quoteattr
 
-from rdflib.collection import Collection
 from rdflib.graph import Graph
 from rdflib.namespace import RDF, RDFS, Namespace, NamespaceManager  # , split_uri
 from rdflib.plugins.parsers.RDFVOC import RDFVOC
@@ -268,7 +267,7 @@ class PrettyXMLSerializer(Serializer):
         # now serialize only those BNodes that have not been serialized yet
         for bnode in bnodes:
             if bnode not in self.__serialized:
-                self.subject(subject, 1)
+                self.subject(bnode, 1)
 
         writer.pop(RDFVOC.RDF)
         stream.write("\n".encode("latin-1"))
@@ -332,6 +331,42 @@ class PrettyXMLSerializer(Serializer):
             writer.pop(RDFVOC.Description)
             self.forceRDFAbout.remove(subject)  # type: ignore[arg-type]
 
+    def _collection_items(
+        self, node: Identifier
+    ) -> tuple[list[Node], list[BNode]] | None:
+        """Return ``(items, link_cells)`` if *node* heads a well-formed,
+        single-referenced blank-node ``rdf:List`` representable as
+        ``rdf:parseType="Collection"`` without losing assertions.
+        """
+        store = self.store
+        items: list[Node] = []
+        cells: list[BNode] = []
+        seen: set[BNode] = set()
+        cur: Node = node
+        while cur != RDF.nil:
+            if not isinstance(cur, BNode) or cur in self.__serialized or cur in seen:
+                return None
+            if more_than(store.triples((None, None, cur)), 1):
+                return None
+            seen.add(cur)
+            cells.append(cur)
+            first_vals: list[Node] = []
+            rest_vals: list[Node] = []
+            for p, o in store.predicate_objects(cur):
+                if p == RDF.first:
+                    first_vals.append(o)
+                elif p == RDF.rest:
+                    rest_vals.append(o)
+                else:
+                    return None
+            if len(first_vals) != 1 or len(rest_vals) != 1:
+                return None
+            if isinstance(first_vals[0], Literal):
+                return None
+            items.append(first_vals[0])
+            cur = rest_vals[0]
+        return (items, cells) if cells else None
+
     def predicate(
         self, predicate: Identifier, object: Identifier, depth: int = 1
     ) -> None:
@@ -364,26 +399,15 @@ class PrettyXMLSerializer(Serializer):
                 writer.attribute(RDFVOC.resource, self.relativize(object))
 
         else:
-            if first(store.objects(object, RDF.first)):  # may not have type
-                # RDF.List
+            collection = self._collection_items(object)
+            if collection is not None:
+                items, cells = collection
+                for cell in cells:
+                    self.__serialized[cell] = 1
 
-                self.__serialized[object] = 1
-
-                # Warn that any assertions on object other than
-                # RDF.first and RDF.rest are ignored... including RDF.List
-                import warnings
-
-                warnings.warn(
-                    "Assertions on %s other than RDF.first " % repr(object)
-                    + "and RDF.rest are ignored ... including RDF.List",
-                    UserWarning,
-                    stacklevel=2,
-                )
                 writer.attribute(RDFVOC.parseType, "Collection")
 
-                col = Collection(store, object)
-
-                for item in col:
+                for item in items:
                     if isinstance(item, URIRef):
                         self.forceRDFAbout.add(item)
                     # type error: Argument 1 to "subject" of "PrettyXMLSerializer" has incompatible type "Node"; expected "Identifier"
