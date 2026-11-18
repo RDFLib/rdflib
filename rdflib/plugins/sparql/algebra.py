@@ -10,7 +10,7 @@ import collections
 import functools
 import operator
 import typing
-from collections.abc import Callable, Iterable, Mapping
+from collections.abc import Callable, Container, Iterable, Mapping
 from functools import reduce
 from typing import (
     Any,
@@ -546,6 +546,7 @@ def _addVars(x, children: list[set[Variable]]) -> set[Variable]:
 def _sample(  # type: ignore[return]
     e: typing.Union[CompValue, list[Expr], Expr, list[str], Variable],
     v: Variable | None = None,
+    bound_vars: Container[Variable] = (),
 ) -> CompValue | None:
     """
     For each unaggregated variable V in expr
@@ -553,7 +554,7 @@ def _sample(  # type: ignore[return]
     """
     if isinstance(e, CompValue) and e.name.startswith("Aggregate_"):
         return e  # do not replace vars in aggregates
-    if isinstance(e, Variable) and v != e:
+    if isinstance(e, Variable) and v != e and e not in bound_vars:
         return CompValue("Aggregate_Sample", vars=e)
 
 
@@ -570,11 +571,16 @@ def translateAggregates(
 
     # collect/replace aggs in :
     #    select expr as ?var
+    bound_vars: set[Variable] = set()
     if q.projection:
         for v in q.projection:
             if v.evar:
-                v.expr = traverse(v.expr, functools.partial(_sample, v=v.evar))
+                v.expr = traverse(
+                    v.expr,
+                    functools.partial(_sample, v=v.evar, bound_vars=bound_vars),
+                )
                 v.expr = traverse(v.expr, functools.partial(_aggs, A=A))
+                bound_vars.add(v.evar)
 
     # having clause
     if traverse(q.having, _hasAggregate, complete=True):
@@ -583,7 +589,9 @@ def translateAggregates(
 
     # order by
     if traverse(q.orderby, _hasAggregate, complete=False):
-        q.orderby = traverse(q.orderby, _sample)
+        q.orderby = traverse(
+            q.orderby, functools.partial(_sample, bound_vars=bound_vars)
+        )
         traverse(q.orderby, functools.partial(_aggs, A=A))
 
     # sample all other select vars
