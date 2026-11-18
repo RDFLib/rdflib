@@ -4,8 +4,7 @@ Parser tests exercise the pyparsing-based TSVResultParser.
 Serializer tests exercise the TSVResultSerializer, covering term encoding,
 structure, escaping, and round-trip correctness against W3C test data.
 """
-import subprocess
-import sys
+
 from collections.abc import Iterator
 from io import BytesIO, StringIO
 from pathlib import Path
@@ -40,6 +39,7 @@ W3C_DATA_DIR = (
 # ===========================================================================
 # Parser tests
 # ===========================================================================
+
 
 def test_empty_tsvresults_bindings() -> None:
     # check that optional bindings are ordered properly
@@ -669,9 +669,9 @@ class TestW3CRoundTrip:
         reparsed_result = parser.parse(buf)
 
         # Step 4: Compare bindings (modulo blank node labels)
-        assert (
-            original_result.vars == reparsed_result.vars
-        ), f"Variable lists differ: {original_result.vars} vs {reparsed_result.vars}"
+        assert original_result.vars == reparsed_result.vars, (
+            f"Variable lists differ: {original_result.vars} vs {reparsed_result.vars}"
+        )
         assert self._bindings_equivalent(
             original_result.bindings, reparsed_result.bindings
         ), (

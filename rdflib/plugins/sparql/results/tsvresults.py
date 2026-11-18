@@ -17,10 +17,7 @@ from io import BufferedIOBase, TextIOBase
 from typing import IO, Optional, Union, cast
 
 from pyparsing import (
-    FollowedBy,
-    LineEnd,
     Literal,
-    ParserElement,
     Regex,
     Suppress,
     ZeroOrMore,
