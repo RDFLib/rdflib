@@ -108,3 +108,13 @@ def test_issue_250():
     sg = graph.serialize(format="trix")
     assert 'xmlns="http://defaultnamespace"' not in sg, sg
     assert 'xmlns="http://www.w3.org/2004/03/trix/trix-1/' in sg, sg
+
+
+def test_serialize_literal_with_lone_surrogate():
+    """Lone surrogates in a literal must be serialized as \\uXXXX escapes, not raise (issue #2590)."""
+    ex = Namespace("http://example.org/")
+    g = Graph()
+    g.add((ex.subject, ex.predicate, Literal("\ud800")))
+    result = g.serialize(format="trix")
+    assert "\\uD800" in result
+    assert ">?<" not in result
