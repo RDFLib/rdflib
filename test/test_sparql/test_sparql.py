@@ -1246,3 +1246,11 @@ def test_order_by_expression_erroring_for_every_solution(order_by: str) -> None:
     query = f"SELECT ?o WHERE {{ VALUES ?o {{ 1 2 }} }} ORDER BY {order_by}"
     rows = [row for row in Graph().query(query)]
     assert sorted(rows) == [(Literal(1),), (Literal(2),)]
+
+
+def test_empty_values_block_has_no_solutions() -> None:
+    """A VALUES block with no rows is an empty multiset, not an error."""
+    graph = Graph()
+    graph.add((URIRef("urn:a"), URIRef("urn:p"), Literal(1)))
+    query = "SELECT ?s WHERE { ?s ?p ?o VALUES ?s { } }"
+    assert list(graph.query(query)) == []
