@@ -42,6 +42,44 @@ def test_issue78():
     assert "R\u00e4ksm\u00f6rg\u00e5s" in s
 
 
+def test_serialize_surrogate_is_escaped():
+    # https://github.com/RDFLib/rdflib/issues/2590
+    g = Graph()
+    g.add((URIRef("foo"), URIRef("foo"), Literal("a\ud800b")))
+    s = g.serialize(format="nt")
+    assert "\\uD800" in s
+    assert "\ud800" not in s
+
+
+def test_serialize_low_surrogate_is_escaped():
+    # https://github.com/RDFLib/rdflib/issues/2590
+    g = Graph()
+    g.add((URIRef("foo"), URIRef("foo"), Literal("\udc00")))
+    s = g.serialize(format="nt")
+    assert "\\uDC00" in s
+    assert "\udc00" not in s
+
+
+def test_serialize_canon_surrogate_is_escaped():
+    # https://github.com/RDFLib/rdflib/issues/2590
+    g = Graph()
+    g.add((URIRef("foo"), URIRef("foo"), Literal("a\ud800b")))
+    s = g.serialize(format="nt", canon=True)
+    assert "\\uD800" in s
+    assert "\ud800" not in s
+
+
+def test_serialize_plain_literal_unchanged():
+    # regression guard: ordinary literals are unchanged
+    g = Graph()
+    g.add((URIRef("foo"), URIRef("foo"), Literal("plain")))
+    s = g.serialize(format="nt").strip()
+    assert s == '<foo> <foo> "plain" .'
+    g.add((URIRef("bar"), URIRef("bar"), Literal("a\nb")))
+    s = g.serialize(format="nt")
+    assert '"a\\nb"' in s
+
+
 def test_issue146():
     g = Graph()
     g.add((URIRef("foo"), URIRef("foo"), Literal("test\n", lang="en")))

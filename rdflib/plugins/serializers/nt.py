@@ -67,12 +67,14 @@ class NTSerializer(Serializer):
             # terms can have the same str(), which would leave their relative
             # order down to the store's iteration order, whereas identical
             # rows mean identical statements.
+            # The registered "_rdflib_nt_escape" handler renders surrogates
+            # (unencodable in UTF-8) as \uXXXX escapes instead of raising.
             for row in sorted(_nt_row(t) for t in to_canonical_graph(triples)):
-                stream.write(row.encode())
+                stream.write(row.encode("utf-8", "_rdflib_nt_escape"))
             return
 
         for triple in self.store:
-            stream.write(_nt_row(triple).encode())
+            stream.write(_nt_row(triple).encode("utf-8", "_rdflib_nt_escape"))
 
 
 class NT11Serializer(NTSerializer):
