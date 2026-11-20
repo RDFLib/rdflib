@@ -158,6 +158,8 @@ class Converter:
         self.use_rdf_type = use_rdf_type
         # Statements per blank-node object, across every graph being converted.
         self._bnode_usages: Optional[Counter[Identifier]] = None
+        # Graphs per blank-node subject, across every graph being converted.
+        self._bnode_subject_graphs: Optional[Counter[Identifier]] = None
         self._pending_nodes: list[BNode] = []
         # Rejected prefixes are reusable only during a single graph conversion.
         self._rejected_lists: Optional[set[Identifier]] = None
@@ -200,6 +202,17 @@ class Converter:
 
         self._bnode_usages = Counter(
             o for g in graphs for o in g.objects() if isinstance(o, BNode)
+        )
+        # A cell can be described in another graph only when there is one.
+        self._bnode_subject_graphs = (
+            Counter(
+                s
+                for g in graphs
+                for s in g.subjects(unique=True)
+                if isinstance(s, BNode)
+            )
+            if len(graphs) > 1
+            else None
         )
 
         context = self.context
@@ -345,6 +358,17 @@ class Converter:
                     collection = self.to_collection(graph, o)
                     if collection is not None:
                         term = self._find_list_term(graph, p, list_term, collection)
+                        # An @list container term holds one list: its value
+                        # is the list. Only a list is written under its key,
+                        # so a key already present holds one. A further list
+                        # goes under a plain term, or under the IRI or compact
+                        # IRI, as a list object.
+                        if (
+                            term is not None
+                            and LIST in term.container
+                            and term.name in s_node
+                        ):
+                            term = self._find_plain_term(p)
 
         node = None
         use_set = not context.active
@@ -574,6 +598,16 @@ class Converter:
             return len(list(graph.subject_predicates(node)))
         return self._bnode_usages[node]
 
+    def _is_subject_in_several_graphs(self, node: Identifier) -> bool:
+        """Whether `node` is a subject in more than one graph being converted.
+
+        `convert` counts this for a dataset with more than one graph. For a
+        single graph nothing is counted, and the answer is False.
+        """
+        if self._bnode_subject_graphs is None:
+            return False
+        return self._bnode_subject_graphs[node] > 1
+
     def to_collection(self, graph: Graph, l_: Identifier):
         """Return the members of the `rdf:List` headed by `l_`, or None.
 
@@ -585,6 +619,13 @@ class Converter:
         left pointing at a node the output never defines. This is the
         "referenced once" condition of the Serialize RDF as JSON-LD Algorithm
         (JSON-LD 1.1 Processing Algorithms and API, section 8.4).
+
+        A cell that is the subject of a statement in another graph is refused
+        for the same reason: parsing `@list` creates fresh cells, so that
+        statement would end up describing a node that is no longer the cell.
+        Section 8.4 checks a cell's entries within its own graph only, but
+        explicit `rdf:first`/`rdf:rest` is always valid, so nothing is lost by
+        refusing.
 
         During a graph conversion the cells of every accepted chain are
         recorded: such a chain is written inline, so its cells need no node
@@ -615,6 +656,7 @@ class Converter:
                 or l_ in written
                 or isinstance(l_, URIRef)
                 or self._usages(graph, l_) != 1
+                or self._is_subject_in_several_graphs(l_)
             ):
                 break
             chain.add(l_)
