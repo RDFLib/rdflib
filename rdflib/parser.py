@@ -622,6 +622,13 @@ def _stream_name(stream: object) -> str | None:
     return None
 
 
+def _is_windows_unc_path(path: str) -> bool:
+    r"""Return True if ``path`` is a Windows UNC path, e.g. ``\\server\share\file.ttl``."""
+    if os.name != "nt":
+        return False
+    return path.startswith("\\\\")
+
+
 class FileInputSource(InputSource):
     def __init__(
         self,
@@ -800,14 +807,25 @@ def _create_input_source_from_location(
     # NOTE: using pathlib.Path.exists on a URL fails on windows as it is not a
     # valid path. However os.path.exists() returns false for a URL on windows
     # which is why it is being used instead.
-    if os.path.exists(location):
+    # A Windows UNC path (e.g. ``\\server\share\file.ttl``) is an absolute local
+    # path even when the share is not currently reachable, in which case
+    # os.path.exists() returns False. It must therefore not be resolved as a
+    # URI reference against the current working directory.
+    # See https://github.com/RDFLib/rdflib/issues/3424
+    original_location = location
+    is_unc = _is_windows_unc_path(location)
+    if os.path.exists(location) or is_unc:
         location = pathlib.Path(location).absolute().as_uri()
 
     base = pathlib.Path.cwd().as_uri()
 
     absolute_location = URIRef(rdflib.util._iri2uri(location), base=base)
 
-    if absolute_location.startswith("file:///"):
+    if is_unc:
+        # Open the path directly: neither url2pathname() nor the file URL
+        # handler reliably preserves the host component of a UNC path.
+        file = open(original_location, "rb")
+    elif absolute_location.startswith("file:///"):
         filename = url2pathname(absolute_location.replace("file:///", "/"))
         file = open(filename, "rb")
     else:

@@ -107,7 +107,7 @@ class CoverageArtifactsTest(unittest.TestCase):
         self.pages = [{"artifacts": [{"name": remaining, "expired": False}]}]
         self.write_data(self.directory)
         missing = sorted(expected_artifacts(self.workflow) - {remaining})
-        self.assertEqual(len(missing), 14)
+        self.assertEqual(len(missing), 17)
         self.assert_rejected("Missing coverage artifacts: " + ", ".join(missing))
         self.assert_rejected("Rerun all jobs")
 
@@ -210,14 +210,15 @@ class MatrixTest(unittest.TestCase):
     def test_real_matrix_and_upload_template(self):
         workflow = load_workflow(WORKFLOW)
         names = expected_artifacts(workflow)
-        self.assertEqual(len(names), 15)
+        self.assertEqual(len(names), 18)
         self.assertIn("coverage-3.11-ubuntu-latest-extensive-min", names)
         self.assertIn("coverage-3.11-ubuntu-latest", names)
+        self.assertIn("coverage-3.15-ubuntu-latest", names)
         self.assertNotIn("coverage-3.11-ubuntu-latest-docs", names)
         # A changed matrix axis and upload name must affect expectations directly.
         changed = copy.deepcopy(workflow)
         changed["jobs"]["validate"]["strategy"]["matrix"]["python-version"].append(
-            "3.15"
+            "3.16"
         )
         upload = next(
             step
@@ -225,8 +226,8 @@ class MatrixTest(unittest.TestCase):
             if step.get("name") == "Upload coverage data"
         )
         upload["with"]["name"] += "-new"
-        self.assertIn("coverage-3.15-windows-latest-new", expected_artifacts(changed))
-        self.assertEqual(len(expected_artifacts(changed)), 18)
+        self.assertIn("coverage-3.16-windows-latest-new", expected_artifacts(changed))
+        self.assertEqual(len(expected_artifacts(changed)), 21)
 
     def test_documented_include_semantics(self):
         self.assertEqual(

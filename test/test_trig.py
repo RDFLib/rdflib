@@ -103,6 +103,28 @@ def test_blank_graph_identifier():
     assert re.match(rb"^_:[a-zA-Z0-9]+ \{", graph_label_line)
 
 
+def test_blank_graph_identifier_used_once_as_an_object_keeps_its_label():
+    # A statement that names the graph must still refer to it after a round trip.
+    dataset = rdflib.Dataset()
+    dataset.parse(
+        data="""
+        <http://ex/a> <http://ex/p> <http://ex/b> _:g .
+        <http://ex/doc> <http://ex/hasGraph> _:g <http://ex/meta> .
+        """,
+        format="nquads",
+    )
+    data = dataset.serialize(format="trig")
+
+    parsed = rdflib.Dataset().parse(data=data, format="trig")
+    (graph_name,) = {
+        g for _s, _p, _o, g in parsed.quads() if isinstance(g, rdflib.BNode)
+    }
+    has_graph = rdflib.URIRef("http://ex/hasGraph")
+    assert [o for _s, _p, o, _g in parsed.quads((None, has_graph, None, None))] == [
+        graph_name
+    ]
+
+
 def test_graph_parsing():
     # should parse into single default graph context
     data = """
