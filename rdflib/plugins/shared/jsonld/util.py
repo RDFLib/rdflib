@@ -41,8 +41,8 @@ from rdflib.parser import (
     create_input_source,
 )
 
-from rdflib.term import URIRef
 from rdflib.plugins.parsers.notation3 import join
+from rdflib.term import URIRef
 
 
 def source_to_json(
