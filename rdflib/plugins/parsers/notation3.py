@@ -104,9 +104,18 @@ def splitFragP(uriref: str, punc: int = 0) -> tuple[str, str]:
     ('abcdef', '')
 
     ```
+
+    The fragment starts at the first "#" (RFC 3986, section 3.5), so any
+    further "#" belongs to it.
+
+    ```python
+    >>> splitFragP("abc#def#ghi")
+    ('abc', '#def#ghi')
+
+    ```
     """
 
-    i = uriref.rfind("#")
+    i = uriref.find("#")
     if i >= 0:
         return uriref[:i], uriref[i:]
     else:
