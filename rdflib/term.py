@@ -1254,7 +1254,10 @@ class Literal(Identifier):
             return False  # Nothing is less than None
         if isinstance(other, Literal):
             try:
-                return not self.__gt__(other) and not self.eq(other)
+                gt = self.__gt__(other)
+                if gt is NotImplemented:
+                    return False
+                return not gt and not self.eq(other)
             except TypeError:
                 return NotImplemented
         if isinstance(other, Node):
@@ -1273,7 +1276,7 @@ class Literal(Identifier):
             ```
         """
         r = self.__lt__(other)
-        if r:
+        if r is NotImplemented or r:
             return True
         try:
             return self.eq(other)
@@ -1282,7 +1285,7 @@ class Literal(Identifier):
 
     def __ge__(self, other: Any) -> bool:
         r = self.__gt__(other)
-        if r:
+        if r is NotImplemented or r:
             return True
         try:
             return self.eq(other)
@@ -1710,14 +1713,16 @@ class Literal(Identifier):
             if datatype in _NUMERIC_INF_NAN_LITERAL_TYPES:
                 try:
                     v = float(self)
-                    if math.isinf(v):
-                        # py string reps: float: 'inf', Decimal: 'Infinity"
-                        # both need to become "INF" in xsd datatypes
-                        encoded = encoded.replace("inf", "INF").replace(
-                            "Infinity", "INF"
-                        )
-                    if math.isnan(v):
-                        encoded = encoded.replace("nan", "NaN")
+                    # A special value spelled as Python does, such as "inf",
+                    # "Infinity" (also a Decimal's lexical form) or "nan", is
+                    # written in its XSD form. A numeral that overflows to
+                    # infinity is kept as it is.
+                    if (
+                        (math.isinf(v) or math.isnan(v))
+                        and not _XSD_DOUBLE_LEXICAL.fullmatch(self)
+                        and not any(c.isdigit() for c in self)
+                    ):
+                        encoded = f'"{_float_lexical(v)}"'
                 except ValueError:
                     # if we can't cast to float something is wrong, but we can
                     # still serialize. Warn user about it
@@ -1860,6 +1865,36 @@ def _writeXML(  # noqa: N802
     if s == b"<rdflibtoplevelelement/>":
         s = b""
     return s
+
+
+# The lexical space of xsd:double and xsd:float (XML Schema 1.1 Part 2,
+# sections 3.3.4.2 and 3.3.5.2). _literal_n3 also uses it for xsd:decimal,
+# whose lexical space has no special values, to keep valid forms as they are.
+_XSD_DOUBLE_LEXICAL = compile(
+    r"(\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)?|(\+|-)?INF|NaN"
+)
+
+
+def _float_lexical(value: float) -> str:
+    """The lexical form of a float as an `xsd:double` or `xsd:float`.
+
+    The special values are written in their canonical forms, `INF`, `-INF` and
+    `NaN` (XML Schema 1.1 Part 2, appendix E.1, `specialRepCanonicalMap`).
+    Python's `inf` and `nan` are not in the lexical space of these types
+    (sections 3.3.4.2 and 3.3.5.2). Other values keep the form that `str()`
+    gives them.
+
+    Args:
+        value: The float.
+
+    Returns:
+        The lexical form.
+    """
+    if math.isnan(value):
+        return "NaN"
+    if math.isinf(value):
+        return "INF" if value > 0 else "-INF"
+    return str(value)
 
 
 def _unhexlify(value: str | bytes | Literal) -> bytes:
@@ -2144,7 +2179,7 @@ _GenericPythonToXSDRules: list[
     tuple[type[Any], tuple[Callable[[Any], str | bytes] | None, str | None]]
 ] = [
     (str, (None, None)),
-    (float, (None, _XSD_DOUBLE)),
+    (float, (_float_lexical, _XSD_DOUBLE)),
     (bool, (lambda i: str(i).lower(), _XSD_BOOLEAN)),
     (int, (None, _XSD_INTEGER)),
     (long_type, (None, _XSD_INTEGER)),

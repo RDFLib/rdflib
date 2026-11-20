@@ -46,7 +46,7 @@ from rdflib.namespace import RDF, XSD
 from rdflib.serializer import Serializer
 from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, URIRef
 
-from ..shared.jsonld.context import UNDEF, Context
+from ..shared.jsonld.context import UNDEF, Context, Term
 from ..shared.jsonld.keys import CONTEXT, GRAPH, ID, LANG, LIST, SET, VOCAB
 from ..shared.jsonld.util import _HAS_ORJSON, json, number_datatype, orjson
 
@@ -161,37 +161,44 @@ class Converter:
         self.use_rdf_type = use_rdf_type
         # Statements per blank-node object, across every graph being converted.
         self._bnode_usages: Optional[Counter[Identifier]] = None
+        # Graphs per blank-node subject, across every graph being converted.
+        self._bnode_subject_graphs: Optional[Counter[Identifier]] = None
         self._pending_nodes: list[BNode] = []
         # Rejected prefixes are reusable only during a single graph conversion.
         self._rejected_lists: Optional[set[Identifier]] = None
+        # Cells of the chains accepted as @list during a single graph conversion.
+        self._list_cells: Optional[set[Identifier]] = None
+        # Subjects given a node object during a single graph conversion.
+        self._written_nodes: Optional[set[Identifier]] = None
 
     def convert(self, graph: Graph):
-        # TODO: bug in rdflib dataset parsing (nquads et al):
-        # plain triples end up in separate unnamed graphs (rdflib issue #436)
         if graph.context_aware:
             # type error: "Graph" has no attribute "contexts"
             all_contexts = list(graph.graphs())  # type: ignore[attr-defined]
-            has_dataset_default_id = any(
-                c.identifier == DATASET_DEFAULT_GRAPH_ID for c in all_contexts
-            )
-            if (
-                has_dataset_default_id
-                # # type error: "Graph" has no attribute "contexts"
-                and graph.default_graph.identifier == DATASET_DEFAULT_GRAPH_ID  # type: ignore[attr-defined]
-            ):
-                default_graph = graph.default_graph  # type: ignore[attr-defined]
+            # type error: "Graph" has no attribute "default_graph"
+            default_graph = graph.default_graph  # type: ignore[attr-defined]
+            if default_graph.identifier == DATASET_DEFAULT_GRAPH_ID:
+                # A Dataset, whose default graph is urn:x-rdflib:default: every
+                # other graph is a named graph, whether an IRI or a blank node
+                # names it (RDF 1.1 Concepts, section 4).
+                graphs = [default_graph]
+                graphs.extend(
+                    g for g in all_contexts if g.identifier != DATASET_DEFAULT_GRAPH_ID
+                )
             else:
+                # TODO: bug in rdflib dataset parsing (nquads et al): plain
+                # triples end up in separate unnamed graphs (rdflib issue #436).
+                # A ConjunctiveGraph's default graph has a blank-node name like
+                # those, so they are merged, into a new graph so that the input
+                # is not changed.
                 default_graph = Graph()
-            graphs = [default_graph]
+                graphs = [default_graph]
+                for g in all_contexts:
+                    if isinstance(g.identifier, URIRef):
+                        graphs.append(g)
+                    else:
+                        default_graph += g
             default_graph_id = default_graph.identifier
-
-            for g in all_contexts:
-                if g in graphs:
-                    continue
-                if isinstance(g.identifier, URIRef):
-                    graphs.append(g)
-                else:
-                    default_graph += g
         else:
             graphs = [graph]
             default_graph_id = graph.identifier
@@ -199,39 +206,53 @@ class Converter:
         self._bnode_usages = Counter(
             o for g in graphs for o in g.objects() if isinstance(o, BNode)
         )
+        # A cell can be described in another graph only when there is one.
+        self._bnode_subject_graphs = (
+            Counter(
+                s
+                for g in graphs
+                for s in g.subjects(unique=True)
+                if isinstance(s, BNode)
+            )
+            if len(graphs) > 1
+            else None
+        )
 
         context = self.context
 
         objs: list[Any] = []
+        # The default graph's nodes by "@id", for a graph named like one.
+        default_nodes: dict[Any, dict[str, Any]] = {}
         for g in graphs:
-            obj = {}
             graphname = None
-
-            if isinstance(g.identifier, URIRef):
-                if g.identifier != default_graph_id:
+            if g.identifier != default_graph_id:
+                if isinstance(g.identifier, URIRef):
                     graphname = context.shrink_iri(g.identifier)
-                    obj[context.id_key] = graphname
+                else:
+                    graphname = g.identifier.n3()
 
             nodes = self.from_graph(g)
 
-            if not graphname and len(nodes) == 1:
-                obj.update(nodes[0])
-            else:
-                if not nodes:
-                    continue
-                obj[context.graph_key] = nodes
+            # The name of a graph named by the base IRI shrinks to "".
+            if graphname is None:
+                # The default graph's nodes go into the result itself (Serialize
+                # RDF as JSON-LD Algorithm, JSON-LD 1.1 Processing Algorithms
+                # and API, section 8.4). Wrapped in "@graph" without "@id" they
+                # would be a graph named by a new blank node (section 7.2.2).
+                objs.extend(nodes)
+                default_nodes.update((node[context.id_key], node) for node in nodes)
+                continue
+            if not nodes:
+                continue
+            # A named graph is written into the default graph's node of the
+            # same name, if there is one, else into a node of its own.
+            node = default_nodes.get(graphname)
+            if node is None:
+                node = {context.id_key: graphname}
+                objs.append(node)
+            node[context.graph_key] = nodes
 
-            if objs and objs[0].get(context.get_key(ID)) == graphname:
-                objs[0].update(obj)
-            else:
-                objs.append(obj)
-
-        if len(graphs) == 1 and len(objs) == 1 and not self.context.active:
-            default = objs[0]
-            items = default.get(context.graph_key)
-            if len(default) == 1 and items:
-                objs = items
-        elif len(objs) == 1 and self.context.active:
+        if len(objs) == 1 and self.context.active:
             objs = objs[0]
 
         return objs
@@ -240,23 +261,47 @@ class Converter:
         nodemap: dict[Any, Any] = {}
         self._pending_nodes = []
         self._rejected_lists = set()
+        list_cells: set[Identifier] = set()
+        self._list_cells = list_cells
+        written: set[Identifier] = set()
+        self._written_nodes = written
 
         try:
-            for s in set(graph.subjects()):
+            subjects = list(graph.subjects(unique=True))
+            for s in subjects:
                 ## only iri:s and unreferenced (rest will be promoted to top if needed)
                 if isinstance(s, URIRef) or (
                     isinstance(s, BNode) and not any(graph.subjects(None, s))
                 ):
                     self.process_subject(graph, s, nodemap)
+            self._process_pending_nodes(graph, nodemap)
 
-            # Explicit blank-node chains can be arbitrarily long. Process their
-            # descriptions iteratively instead of recursing through each reference.
-            while self._pending_nodes:
-                self.process_subject(graph, self._pending_nodes.pop(), nodemap)
+            # Blank nodes that only refer to each other have no entry point
+            # above. Every subject is written (section 8.4), so start from each
+            # one not yet written; its cycle follows through the references.
+            # Cells of the chains accepted so far are inlined already. The
+            # other cells come last, so that a node owning a list is written
+            # before its cells whatever order the store yields them in, unless
+            # that node is a list cell itself. A cell written here before its
+            # referrer is refused by to_collection, so the referrer writes a
+            # reference to it instead.
+            cells = set(graph.subjects(RDF.first))
+            for s in sorted(subjects, key=cells.__contains__):
+                if isinstance(s, BNode) and s not in list_cells and s not in written:
+                    self.process_subject(graph, s, nodemap)
+                    self._process_pending_nodes(graph, nodemap)
 
             return list(nodemap.values())
         finally:
             self._rejected_lists = None
+            self._list_cells = None
+            self._written_nodes = None
+
+    def _process_pending_nodes(self, graph: Graph, nodemap: dict[Any, Any]) -> None:
+        # Explicit blank-node chains can be arbitrarily long. Process their
+        # descriptions iteratively instead of recursing through each reference.
+        while self._pending_nodes:
+            self.process_subject(graph, self._pending_nodes.pop(), nodemap)
 
     def process_subject(self, graph: Graph, s: IdentifiedNode, nodemap):
         if isinstance(s, URIRef):
@@ -274,6 +319,8 @@ class Converter:
         node = {}
         node[self.context.id_key] = node_id
         nodemap[node_id] = node
+        if self._written_nodes is not None:
+            self._written_nodes.add(s)
 
         for p, o in graph.predicate_objects(s):
             # type error: Argument 3 to "add_to_node" of "Converter" has incompatible type "Node"; expected "IdentifiedNode"
@@ -300,17 +347,31 @@ class Converter:
             term = context.find_term(str(p), datatype, language=language)
         else:
             term = self._find_node_term(p, None)
-            if graph.value(o, RDF.first):
+            if graph.value(o, RDF.first) is not None:
                 # find_term ranks terms differently for LIST: it can return an
                 # @list term, and it skips @set terms. That choice applies only
                 # to a chain that can be written as @list. Walk the chain only
-                # when the choice differs, so explicitly written cells do not
-                # rescan their suffixes.
+                # when the choice differs, or when the term coerces to @vocab,
+                # which a list object under it would apply to its members. So
+                # explicitly written cells do not rescan their suffixes.
                 list_term = self._find_node_term(p, LIST)
-                if list_term is not None and list_term is not term:
+                if list_term is not None and (
+                    list_term is not term or list_term.type == VOCAB
+                ):
                     collection = self.to_collection(graph, o)
                     if collection is not None:
-                        term = list_term
+                        term = self._find_list_term(graph, p, list_term, collection)
+                        # An @list container term holds one list: its value
+                        # is the list. Only a list is written under its key,
+                        # so a key already present holds one. A further list
+                        # goes under a plain term, or under the IRI or compact
+                        # IRI, as a list object.
+                        if (
+                            term is not None
+                            and LIST in term.container
+                            and term.name in s_node
+                        ):
+                            term = self._find_plain_term(p)
 
         node = None
         use_set = not context.active
@@ -319,7 +380,10 @@ class Converter:
             p_key = term.name
 
             if term.type:
-                node = self.type_coerce(o, term.type)
+                # A chain written as a list is not coerced: its term was
+                # chosen for its members.
+                if collection is None:
+                    node = self.type_coerce(o, term.type)
             # type error: "Identifier" has no attribute "language"
             elif term.language and o.language == term.language:  # type: ignore[attr-defined]
                 node = str(o)
@@ -332,11 +396,12 @@ class Converter:
                 node = str(o)
 
             if LIST in term.container and collection is not None:
-                node = [
-                    self.type_coerce(v, term.type)
-                    or self.to_raw_value(graph, s, v, nodemap)
-                    for v in collection
-                ]
+                node = []
+                for v in collection:
+                    member = self.type_coerce(v, term.type)
+                    if member is None:
+                        member = self.to_raw_value(graph, s, v, nodemap)
+                    node.append(member)
                 if term.type == ID:
                     self._pending_nodes.extend(
                         v
@@ -344,28 +409,30 @@ class Converter:
                         if isinstance(v, BNode) and any(graph.predicate_objects(v))
                     )
             elif LANG in term.container and language:
-                value = s_node.setdefault(p_key, {})
-                values = value.get(language)
-                node = str(o)
-                if values or SET in term.container:
-                    if not isinstance(values, list):
-                        value[language] = values = [values]
-                    values.append(node)
-                else:
-                    value[language] = node
+                self._add_value(
+                    s_node.setdefault(p_key, {}),
+                    language,
+                    str(o),
+                    SET in term.container,
+                )
                 return
             elif SET in term.container:
                 use_set = True
 
         else:
             p_key = context.to_symbol(p)
-            if p_key is None:
-                raise ValueError(
-                    f"Predicate {p} is not in context and cannot be coerced to a symbol"
-                )
             # TODO: for coercing curies - quite clumsy; unify to_symbol and find_term?
             key_term = context.terms.get(p_key)
-            if key_term and (key_term.type or key_term.container):
+            # A term named like the key reads the value with its own type,
+            # container, direction, language or scoped context, so the value
+            # goes under the full IRI instead.
+            if key_term and (
+                key_term.type
+                or key_term.container
+                or key_term.reverse
+                or key_term.language is not UNDEF
+                or key_term.context is not UNDEF
+            ):
                 p_key = p
             if not term and p == RDF.type and not self.use_rdf_type:
                 if isinstance(o, URIRef):
@@ -373,22 +440,37 @@ class Converter:
                 p_key = context.type_key
 
         if node is None:
-            node = self.to_raw_value(graph, s, o, nodemap)
+            if collection is not None:
+                # The chain is walked already; write it without a second walk.
+                node = self._list_object(graph, s, collection, nodemap)
+            else:
+                node = self.to_raw_value(graph, s, o, nodemap)
         elif isinstance(o, BNode) and term and LIST not in term.container:
             # Coercion emits only the reference; preserve its description too.
             if any(graph.predicate_objects(o)):
                 self._pending_nodes.append(o)
 
-        value = s_node.get(p_key)
-        if value:
-            if not isinstance(value, list):
-                value = [value]
-            value.append(node)
-        elif use_set:
-            value = [node]
+        self._add_value(s_node, p_key, node, use_set)
+
+    @staticmethod
+    def _add_value(obj: dict[str, Any], key: str, value: Any, as_array: bool) -> None:
+        """Add `value` to the values of `key` in `obj`.
+
+        This is the add value step that the Compaction Algorithm uses (JSON-LD
+        1.1 Processing Algorithms and API, section 1.4.1). Whether `key`
+        already has a value is a question about the key: the value can be
+        falsy, such as 0, "" or false written as a bare JSON value, a falsy
+        typed literal, or "" for an IRI equal to the base.
+        """
+        if key in obj:
+            values = obj[key]
+            if not isinstance(values, list):
+                obj[key] = values = [values]
+            values.append(value)
+        elif as_array:
+            obj[key] = [value]
         else:
-            value = node
-        s_node[p_key] = value
+            obj[key] = value
 
     def _find_node_term(self, p: IdentifiedNode, container: Optional[str]):
         """Return the context term for `p` with a node object, or None."""
@@ -399,6 +481,49 @@ class Converter:
             if term:
                 return term
         return None
+
+    def _find_plain_term(self, p: IdentifiedNode) -> Optional[Term]:
+        """Return the context term for `p` that can hold a list object, or None.
+
+        A list object fits a term without a type whose container is at most
+        `@set`: a coercing term would apply its coercion to the members, and
+        a map container (`@index`, `@id`, `@type` or `@graph`) would read the
+        list object as a map.
+        """
+        term = self.context.find_term(str(p), UNDEF, UNDEF)
+        if term is not None and not term.type and term.container <= {SET}:
+            return term
+        return None
+
+    def _find_list_term(
+        self,
+        graph: Graph,
+        p: IdentifiedNode,
+        list_term: Term,
+        members: list[_ObjectType],
+    ) -> Optional[Term]:
+        """Return the context term for `p` to write a list of `members` under.
+
+        `list_term` is the term `find_term` ranks first for the `@list`
+        container: by coercion, `@id`, then `@vocab`, then none, and with or
+        without `@list`. A term that coerces to `@id` or `@vocab` fits a list
+        of node references only: a literal member written under it would be
+        read back as an IRI. A nested list keeps the list off such a term
+        too: under `@vocab` its own literal members would take the coercion,
+        and under `@id` it would be written as a reference to explicit cells.
+        Any other list takes an `@list` term without a type, else a plain
+        term, else none, so that it is written under the property IRI.
+        """
+        if not list_term.type or all(
+            isinstance(member, URIRef)
+            or (isinstance(member, BNode) and graph.value(member, RDF.first) is None)
+            for member in members
+        ):
+            return list_term
+        term = self.context.find_term(str(p), UNDEF, LIST)
+        if term is not None and LIST in term.container:
+            return term
+        return self._find_plain_term(p)
 
     def type_coerce(self, o: Identifier, coerce_type: str):
         if coerce_type == ID:
@@ -421,11 +546,7 @@ class Converter:
         context = self.context
         coll = self.to_collection(graph, o)
         if coll is not None:
-            coll = [
-                self.to_raw_value(graph, s, lo, nodemap)
-                for lo in self.to_collection(graph, o)
-            ]
-            return {context.list_key: coll}
+            return self._list_object(graph, s, coll, nodemap)
         elif isinstance(o, BNode):
             self._pending_nodes.append(o)
             return {context.id_key: o.n3()}
@@ -482,6 +603,22 @@ class Converter:
             return math.isfinite(value)
         return True
 
+    def _list_object(
+        self,
+        graph: Graph,
+        s: IdentifiedNode,
+        members: list[_ObjectType],
+        nodemap: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Return a list object holding the raw values of `members`."""
+        return {
+            self.context.list_key: [
+                # type error: Argument 3 to "to_raw_value" of "Converter" has incompatible type "Node"; expected "Identifier"
+                self.to_raw_value(graph, s, member, nodemap)  # type: ignore[arg-type]
+                for member in members
+            ]
+        }
+
     def _usages(self, graph: Graph, node: Identifier) -> int:
         """Count the statements whose object is `node`.
 
@@ -491,6 +628,16 @@ class Converter:
         if self._bnode_usages is None:
             return len(list(graph.subject_predicates(node)))
         return self._bnode_usages[node]
+
+    def _is_subject_in_several_graphs(self, node: Identifier) -> bool:
+        """Whether `node` is a subject in more than one graph being converted.
+
+        `convert` counts this for a dataset with more than one graph. For a
+        single graph nothing is counted, and the answer is False.
+        """
+        if self._bnode_subject_graphs is None:
+            return False
+        return self._bnode_subject_graphs[node] > 1
 
     def to_collection(self, graph: Graph, l_: Identifier):
         """Return the members of the `rdf:List` headed by `l_`, or None.
@@ -503,41 +650,81 @@ class Converter:
         left pointing at a node the output never defines. This is the
         "referenced once" condition of the Serialize RDF as JSON-LD Algorithm
         (JSON-LD 1.1 Processing Algorithms and API, section 8.4).
+
+        A cell that is the subject of a statement in another graph is refused
+        for the same reason: parsing `@list` creates fresh cells, so that
+        statement would end up describing a node that is no longer the cell.
+        Section 8.4 checks a cell's entries within its own graph only, but
+        explicit `rdf:first`/`rdf:rest` is always valid, so nothing is lost by
+        refusing.
+
+        During a graph conversion the cells of every accepted chain are
+        recorded: such a chain is written inline, so its cells need no node
+        objects of their own. A cell that already has a node object, because
+        a cycle led to it before its referrer, is refused, and the referrer
+        writes a reference to it.
         """
         rejected = self._rejected_lists
         if rejected is None:
             rejected = set()
+        written = self._written_nodes
+        if written is None:
+            written = set()
         if l_ in rejected:
             return None
-        if l_ != RDF.nil and not graph.value(l_, RDF.first):
+        if l_ != RDF.nil and graph.value(l_, RDF.first) is None:
             return None
-        list_nodes: list[Optional[_ObjectType]] = []
+        list_nodes: list[_ObjectType] = []
         chain: set[Identifier] = set()
-        while l_:
+        while True:
             if l_ == RDF.nil:
+                if self._list_cells is not None:
+                    self._list_cells.update(chain)
                 return list_nodes
             if (
                 l_ in chain
                 or l_ in rejected
+                or l_ in written
                 or isinstance(l_, URIRef)
                 or self._usages(graph, l_) != 1
+                or self._is_subject_in_several_graphs(l_)
             ):
                 break
             chain.add(l_)
-            first, rest = None, None
-            for p, o in graph.predicate_objects(l_):
-                if not first and p == RDF.first:
-                    first = o
-                elif not rest and p == RDF.rest:
-                    rest = o
-                elif p != RDF.type or o != RDF.List:
-                    rejected.update(chain)
-                    return None
+            entries = self._list_cell_entries(graph, l_)
+            if entries is None:
+                break
+            first, rest = entries
             list_nodes.append(first)
-            # type error: Incompatible types in assignment (expression has type "Optional[Node]", variable has type "Identifier")
+            # type error: Incompatible types in assignment (expression has type "Node", variable has type "Identifier")
             l_ = rest  # type: ignore[assignment]
 
         # Every visited prefix reaches the same invalid suffix. Remember only
         # these rejections, so explicit cells do not repeatedly scan that suffix.
         rejected.update(chain)
         return None
+
+    @staticmethod
+    def _list_cell_entries(
+        graph: Graph, cell: Identifier
+    ) -> Optional[tuple[_ObjectType, _ObjectType]]:
+        """Return the `rdf:first` and `rdf:rest` values of a list cell, or None.
+
+        A cell has exactly one `rdf:first` and one `rdf:rest`, and nothing else
+        besides `rdf:type rdf:List` (Serialize RDF as JSON-LD Algorithm,
+        JSON-LD 1.1 Processing Algorithms and API, section 8.4). The entries
+        are tested for presence, not their values for truth: 0, "" and false
+        are members like any other.
+        """
+        first: Optional[_ObjectType] = None
+        rest: Optional[_ObjectType] = None
+        for p, o in graph.predicate_objects(cell):
+            if p == RDF.first and first is None:
+                first = o
+            elif p == RDF.rest and rest is None:
+                rest = o
+            elif p != RDF.type or o != RDF.List:
+                return None
+        if first is None or rest is None:
+            return None
+        return first, rest
