@@ -611,7 +611,7 @@ class Converter:
         Section 8.4 checks a cell's entries within its own graph only, but
         explicit `rdf:first`/`rdf:rest` is always valid, so nothing is lost by
         refusing.
-        
+
         During a graph conversion the cells of every accepted chain are
         recorded: such a chain is written inline, so its cells need no node
         objects of their own. A cell that already has a node object, because
