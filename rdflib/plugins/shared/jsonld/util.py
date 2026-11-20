@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import pathlib
+import re
 from html.parser import HTMLParser
 from io import StringIO, TextIOBase, TextIOWrapper
 from typing import IO, TYPE_CHECKING, Any, TextIO, Union
@@ -38,6 +39,7 @@ from rdflib.parser import (
     URLInputSource,
     create_input_source,
 )
+from rdflib.plugins.parsers.notation3 import join
 
 
 def source_to_json(
@@ -204,8 +206,21 @@ def split_iri(iri: str) -> tuple[str, str | None]:
     return iri, None
 
 
+# The scheme of an absolute IRI (RFC 3986, section 3.1). urlsplit() is not
+# used for this, as it strips leading spaces and raises on some inputs.
+_SCHEME = re.compile(r"[A-Za-z][A-Za-z0-9+.-]*:")
+
+
 def norm_url(base: str, url: str) -> str:
     """
+    Resolve a reference against a base IRI.
+
+    Against a base with a hierarchical path, such as `http://host/path`,
+    `file:/path` or `s3://bucket/key`, this is reference resolution as RFC
+    3986, section 5.2, describes it, done by the resolver of the N3 parser. It
+    keeps empty components and repeated slashes. A query-only reference is
+    resolved that way against any absolute base.
+
     ```python
     >>> norm_url('http://example.org/', '/one')
     'http://example.org/one'
@@ -219,12 +234,50 @@ def norm_url(base: str, url: str) -> str:
     'http://example.net/one'
     >>> norm_url('http://example.org/', 'http://example.org//one')
     'http://example.org//one'
+    >>> norm_url('http://example.org/one', '//example.net')
+    'http://example.net'
+    >>> norm_url('http://example.org', '?q')
+    'http://example.org?q'
+    >>> norm_url('http://example.org/one', 'two?')
+    'http://example.org/two?'
+
+    ```
+
+    As in JSON-LD IRI expansion, a value whose part after the first colon
+    begins with `//` is returned as it is. Against a URN base, a relative path
+    is joined as a path below the base; against other bases without a
+    hierarchical path, it is returned as it is.
+
+    ```python
+    >>> norm_url('http://example.org/one', 'two?u=http://example.net/')
+    'two?u=http://example.net/'
+    >>> norm_url('urn:ns:test', 'three')
+    'urn:ns:test/three'
 
     ```
     """
     # Same-document references must not change the base path.
     if not url or url.startswith("#"):
         return (base or "").split("#", 1)[0] + url
+
+    # An absolute IRI is not resolved, and neither is a value whose part after
+    # the first colon begins with "//" (JSON-LD 1.1 API, IRI Expansion, step
+    # 6.2).
+    colon = url.find(":", 1)
+    if _SCHEME.match(url) or (colon > 0 and url.startswith("//", colon + 1)):
+        return url
+
+    scheme = _SCHEME.match(base) if base else None
+    if scheme and (base.startswith("/", scheme.end()) or url.startswith("?")):
+        # The fragment is everything after the first "#" (RFC 3986, section
+        # 3.5), and it is not resolved.
+        reference, hash_mark, fragment = url.partition("#")
+        # Without a valid scheme, a colon in the first segment is part of a
+        # relative path, which RFC 3986, section 4.2, writes with a leading
+        # "./" so that it can't be read as a scheme.
+        if ":" in re.split("[/?]", reference, maxsplit=1)[0]:
+            reference = "./" + reference
+        return join(base, reference) + hash_mark + fragment
 
     if "://" in url:
         return url

@@ -107,3 +107,34 @@ class TestCSV2RDF:
                 csv2rdf.main()
                 # Check that we've "opened" the right file
                 open_mock.assert_called_once_with(config_file)
+
+
+class TestCSV2RDFOptions:
+    def _run(self, *args: str) -> subprocess.CompletedProcess:
+        return subprocess.run(
+            [sys.executable, "-m", "rdflib.tools.csv2rdf", *args],
+            capture_output=True,
+            text=True,
+        )
+
+    def test_ident_short_option(self):
+        """-i builds instance URIs from the given columns."""
+        completed = self._run("-i", "(0,)", str(REALESTATE_FILE_PATH))
+        assert completed.returncode == 0, completed.stderr
+        assert "<http://example.org/instances/3526_HIGH_ST>" in completed.stdout
+
+    def test_long_options(self):
+        """--ident, --default, --col<N> and --prop<N> are accepted."""
+        completed = self._run(
+            "--ident=(0,)",
+            "--default=ignore",
+            "--col2=int()",
+            "--prop2=http://example.org/props/postcode",
+            str(REALESTATE_FILE_PATH),
+        )
+        assert completed.returncode == 0, completed.stderr
+        assert "<http://example.org/instances/3526_HIGH_ST>" in completed.stdout
+        assert (
+            '<http://example.org/props/postcode> "95838"^^'
+            "<http://www.w3.org/2001/XMLSchema#integer>"
+        ) in completed.stdout
