@@ -1246,3 +1246,11 @@ def test_order_by_expression_erroring_for_every_solution(order_by: str) -> None:
     query = f"SELECT ?o WHERE {{ VALUES ?o {{ 1 2 }} }} ORDER BY {order_by}"
     rows = [row for row in Graph().query(query)]
     assert sorted(rows) == [(Literal(1),), (Literal(2),)]
+
+
+@pytest.mark.parametrize("op", [">", "<", ">=", "<="])
+def test_ordering_a_string_against_a_number_is_a_type_error(op: str) -> None:
+    """`"n/a" > 26` has no SPARQL operator, so the FILTER drops the string."""
+    query = f'SELECT ?v WHERE {{ VALUES ?v {{ "n/a" 26 }} FILTER(?v {op} 25) }}'
+    expected = [] if op in ("<", "<=") else [(Literal(26),)]
+    assert list(Graph().query(query)) == expected
