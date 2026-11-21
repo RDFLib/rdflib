@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 from warnings import warn
 
 import pytest
@@ -153,6 +153,23 @@ class TestNamespacePrefix:
             "name_with_(parenthesis)",
         )
 
+    def test_xml_namespace_with_trailing_slash_roundtrips(self):
+        """A URI extending the XML namespace must not be split into an invalid qname.
+
+        The built-in ``xml`` namespace has no trailing delimiter, so
+        ``http://www.w3.org/XML/1998/namespace/`` used to be split into the local
+        name ``/`` and serialized as ``xml:/``, which cannot be parsed back.
+        """
+        uri = URIRef("http://www.w3.org/XML/1998/namespace/")
+        graph = Graph()
+        graph.add((URIRef("https://example.org"), OWL.imports, uri))
+
+        serialized = graph.serialize(format="turtle")
+        assert "xml:/" not in serialized
+
+        reparsed = Graph().parse(data=serialized, format="turtle")
+        assert set(reparsed) == set(graph)
+
     def test_reset(self):
         data = (
             "@prefix a: <http://example.org/a> .\n"
@@ -239,17 +256,17 @@ class TestNamespacePrefix:
         """Tests for Namespace.__contains__() methods."""
 
         ref = URIRef("http://www.w3.org/ns/shacl#Info")
-        assert (
-            type(SH) is DefinedNamespaceMeta
-        ), f"SH no longer a DefinedNamespaceMeta (instead it is now {type(SH)}, update test."
+        assert type(SH) is DefinedNamespaceMeta, (
+            f"SH no longer a DefinedNamespaceMeta (instead it is now {type(SH)}, update test."
+        )
         assert ref in SH, "sh:Info not in SH"
 
         ref = URIRef("http://www.w3.org/2000/01/rdf-schema#label")
         assert ref in RDFS, "ClosedNamespace(RDFS) does not include rdfs:label"
         ref = URIRef("http://www.w3.org/2000/01/rdf-schema#example")
-        assert (
-            ref not in RDFS
-        ), "ClosedNamespace(RDFS) includes out-of-ns member rdfs:example"
+        assert ref not in RDFS, (
+            "ClosedNamespace(RDFS) includes out-of-ns member rdfs:example"
+        )
 
         ref = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
         assert ref in RDF, "RDF does not include rdf:type"
@@ -316,7 +333,7 @@ class TestNamespacePrefix:
 
         checker = OutcomeChecker.from_primitive(expected_result)
 
-        result: Optional[URIRef] = None
+        result: URIRef | None = None
         with checker.context():
             result = g.namespace_manager.expand_curie(curie)
             checker.check(result)

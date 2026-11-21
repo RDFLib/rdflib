@@ -3,7 +3,7 @@ test suite."""
 
 from __future__ import annotations
 
-from typing import Callable, Dict
+from collections.abc import Callable
 
 import pytest
 
@@ -52,11 +52,12 @@ def trix(test: RDFTest):
                     print(t)
                 raise Exception("Graphs do not match!")
 
-            assert isomorphic(
-                g, res
-            ), "graphs must be the same, expected\n%s\n, got\n%s" % (
-                g.serialize(format="nquads"),
-                res.serialize(format="nquads"),
+            assert isomorphic(g, res), (
+                "graphs must be the same, expected\n%s\n, got\n%s"
+                % (
+                    g.serialize(format="nquads"),
+                    res.serialize(format="nquads"),
+                )
             )
 
     except Exception:
@@ -64,7 +65,7 @@ def trix(test: RDFTest):
             raise
 
 
-testers: Dict[Node, Callable[[RDFTest], None]] = {
+testers: dict[Node, Callable[[RDFTest], None]] = {
     RDFT.TestTrixPositiveSyntax: trix,
     RDFT.TestTrixNegativeSyntax: trix,
     RDFT.TestTrixEval: trix,
@@ -105,7 +106,7 @@ positive_syntax_skipped = [
 ]
 
 
-EXPECTED_FAILURES: Dict[str, str] = {}
+EXPECTED_FAILURES: dict[str, str] = {}
 
 for test in star_skipped:
     EXPECTED_FAILURES[test] = "TriX Star NYI"
@@ -120,7 +121,7 @@ for test in eval_skipped:
 
 @pytest.mark.parametrize(
     "rdf_test_uri, type, rdf_test",
-    read_manifest(TEST_DATA_DIR / "suites" / "trix" / "manifest.ttl"),
+    list(read_manifest(TEST_DATA_DIR / "suites" / "trix" / "manifest.ttl")),
 )
 def test_manifest(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
     suffix = rdf_test_uri.split("#")[1]

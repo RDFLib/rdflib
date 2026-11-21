@@ -10,7 +10,7 @@ from rdflib.contrib.rdf4j import has_httpx
 if not has_httpx:
     pytest.skip("skipping graphdb tests, httpx not available", allow_module_level=True)
 
-import httpx
+import httpx2 as httpx
 
 from rdflib.contrib.graphdb.client import GraphDBClient, Repository
 from rdflib.contrib.graphdb.exceptions import (

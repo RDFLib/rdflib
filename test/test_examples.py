@@ -1,8 +1,8 @@
 import logging
 import subprocess
 import sys
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 import pytest
 from _pytest.mark.structures import ParameterSet
@@ -21,7 +21,7 @@ def generate_example_cases() -> Iterable[ParameterSet]:
 
 
 @pytest.mark.webtest
-@pytest.mark.parametrize(["example_file"], generate_example_cases())
+@pytest.mark.parametrize(["example_file"], list(generate_example_cases()))
 def test_example(example_file: Path) -> None:
     """
     The example runs without errors.

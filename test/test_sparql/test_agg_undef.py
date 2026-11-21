@@ -35,7 +35,9 @@ def get_aggregates_tests():
     yield template_tst, "GROUP_CONCAT", Literal(""), Literal("42")
 
 
-@pytest.mark.parametrize("checker, agg_func, first, second", get_aggregates_tests())
+@pytest.mark.parametrize(
+    "checker, agg_func, first, second", list(get_aggregates_tests())
+)
 def test_aggregates(checker, agg_func, first, second) -> None:
     checker(agg_func, first, second)
 
@@ -43,8 +45,7 @@ def test_aggregates(checker, agg_func, first, second) -> None:
 def test_group_by_null():
     g = Graph()
     results = list(
-        g.query(
-            """
+        g.query("""
         SELECT ?x ?y (AVG(?z) as ?az) {
             VALUES (?x ?y ?z) {
                 (1 undef 10)
@@ -55,8 +56,7 @@ def test_group_by_null():
            }
         } GROUP BY ?x ?y
         ORDER BY ?x
-    """
-        )
+    """)
     )
     assert len(results) == 2
     assert results[0][0] == Literal(1)
@@ -81,8 +81,7 @@ def test_values_outside_group_by():
     )
 
     results = list(
-        g.query(
-            """
+        g.query("""
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
     SELECT ?obj ?label
@@ -93,8 +92,7 @@ def test_values_outside_group_by():
     VALUES ( ?obj ) {
         ( <http://example.com/something> )
     }
-    """
-        )
+    """)
     )
 
     assert len(results) == 1

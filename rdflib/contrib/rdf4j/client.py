@@ -5,10 +5,11 @@ from __future__ import annotations
 import contextlib
 import io
 import typing as t
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Any, BinaryIO, Iterable
+from typing import Any, BinaryIO
 
-import httpx
+import httpx2 as httpx
 
 from rdflib import BNode
 from rdflib.contrib.rdf4j.exceptions import (
@@ -40,6 +41,20 @@ from rdflib.term import IdentifiedNode, Literal, URIRef
 SubjectType = t.Union[URIRef, None]
 PredicateType = t.Union[URIRef, None]
 ObjectType = t.Union[URIRef, Literal, None]
+
+
+def _size_context_params(
+    graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None,
+) -> dict[str, str | list[str]]:
+    """Encode graph selectors as repeated RDF4J size context parameters."""
+    if graph_name is None:
+        return {}
+    contexts = []
+    for name in (graph_name,) if isinstance(graph_name, str) else graph_name:
+        params: dict[str, str] = {}
+        build_context_param(params, name)
+        contexts.append(params["context"])
+    return {"context": contexts[0] if isinstance(graph_name, str) else contexts}
 
 
 @dataclass(frozen=True)
@@ -424,11 +439,14 @@ class Repository:
                 f"Repository {self._identifier} is not healthy. {err.response.status_code} - {err.response.text}"
             )
 
-    def size(self, graph_name: URIRef | Iterable[URIRef] | str | None = None) -> int:
+    def size(
+        self,
+        graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None,
+    ) -> int:
         """The number of statements in the repository or in the specified graph name.
 
         Parameters:
-            graph_name: Graph name(s) to restrict to.
+            graph_name: Graph name(s) to restrict to, including blank nodes.
 
                 The default value `None` queries all graphs.
 
@@ -441,9 +459,7 @@ class Repository:
         Raises:
             RepositoryResponseFormatError: Fails to parse the repository size.
         """
-        validate_graph_name(graph_name)
-        params: dict[str, str] = {}
-        build_context_param(params, graph_name)
+        params = _size_context_params(graph_name)
         response = self.http_client.get(
             f"/repositories/{self.identifier}/size", params=params
         )
@@ -853,11 +869,14 @@ class Transaction:
                 f"Transaction ping failed: {response.status_code} - {response.text}"
             )
 
-    def size(self, graph_name: URIRef | Iterable[URIRef] | str | None = None):
+    def size(
+        self,
+        graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None,
+    ) -> int:
         """The number of statements in the repository or in the specified graph name.
 
         Parameters:
-            graph_name: Graph name(s) to restrict to.
+            graph_name: Graph name(s) to restrict to, including blank nodes.
 
                 The default value `None` queries all graphs.
 
@@ -871,9 +890,8 @@ class Transaction:
             RepositoryResponseFormatError: Fails to parse the repository size.
         """
         self._raise_for_closed()
-        validate_graph_name(graph_name)
-        params = {"action": "SIZE"}
-        build_context_param(params, graph_name)
+        params = _size_context_params(graph_name)
+        params["action"] = "SIZE"
         response = self.repo.http_client.put(self.url, params=params)
         response.raise_for_status()
         return self.repo._to_size(response.text)

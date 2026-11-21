@@ -11,7 +11,7 @@ This is to make it easier to review PRs that contain type hints.
 To use this script
 
 ```bash
-task run -- python -m pip install --upgrade strip-hints black python-minifier
+task run -- python -m pip install --upgrade strip-hints python-minifier
 PYLOGGING_LEVEL=INFO task run -- git difftool -y -x $(readlink -f devtools/diffrtpy.py) upstream/main | tee /var/tmp/compact.diff
 ```
 
@@ -23,13 +23,12 @@ from __future__ import annotations
 import argparse
 import logging
 import os
+import subprocess
 import sys
 from dataclasses import dataclass, field
 from difflib import unified_diff
 from pathlib import Path
-from typing import List
 
-import black
 import python_minifier
 from strip_hints import strip_string_to_string
 
@@ -57,8 +56,13 @@ def clean_python(input: Path) -> str:
         convert_posargs_to_args=False,
         preserve_shebang=True,
     )
-    code = black.format_str(code, mode=black.FileMode())
-    return code
+    return subprocess.run(
+        [sys.executable, "-m", "ruff", "format", "--isolated", "-"],
+        input=code,
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout
 
 
 @dataclass
@@ -80,7 +84,7 @@ class Application:
         parser.add_argument("rhs_file", nargs=1, type=str)
         parser.set_defaults(handler=self.handle)
 
-    def run(self, args: List[str]) -> None:
+    def run(self, args: list[str]) -> None:
         parse_result = self.parser.parse_args(args)
 
         verbosity = parse_result.verbosity

@@ -3,7 +3,7 @@ from __future__ import annotations
 import builtins
 import logging
 from dataclasses import dataclass
-from typing import Any, Optional, Union
+from typing import Any, Union
 from xml.dom.minidom import DocumentFragment
 
 from rdflib.term import Literal, URIRef
@@ -37,16 +37,16 @@ class LiteralChecker(NoExceptionChecker[Literal]):
         if self.lexical is not Ellipsis:
             assert self.lexical == f"{actual}", "Literal lexical form does not match"
         if self.ill_typed is not Ellipsis:
-            assert (
-                self.ill_typed == actual.ill_typed
-            ), "Literal ill_typed flag does not match"
+            assert self.ill_typed == actual.ill_typed, (
+                "Literal ill_typed flag does not match"
+            )
         if self.language is not Ellipsis:
             assert self.language == actual.language, "Literal language does not match"
         if self.datatype is not Ellipsis:
             assert self.datatype == actual.datatype, "Literal datatype does not match"
 
 
-def literal_idfn(value: Any) -> Optional[str]:
+def literal_idfn(value: Any) -> str | None:
     if callable(value):
         try:
             literal = value()

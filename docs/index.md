@@ -50,6 +50,7 @@ If you are familiar with RDF and are looking for details on how RDFLib handles i
 * [Persistence](persistence.md)
 * [Merging](merging.md)
 * [Changelog](changelog.md)
+* [Upgrade 7 to 8](upgrade7to8.md)
 * [Upgrade 6 to 7](upgrade6to7.md)
 * [Upgrade 5 to 6](upgrade5to6.md)
 * [Upgrade 4 to 5](upgrade4to5.md)

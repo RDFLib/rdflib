@@ -13,7 +13,7 @@ from __future__ import annotations
 import collections
 import html
 import sys
-from typing import Any, Dict, TextIO
+from typing import Any, TextIO
 
 import rdflib
 import rdflib.extras.cmdlineutils
@@ -81,14 +81,14 @@ NODECOLOR = "black"
 ISACOLOR = "black"
 
 
-def rdf2dot(g: Graph, stream: TextIO, opts: Dict[str, Any] = {}):
+def rdf2dot(g: Graph, stream: TextIO, opts: dict[str, Any] = {}):
     """
     Convert the RDF graph to DOT
     writes the dot output to the stream
     """
 
     fields = collections.defaultdict(set)
-    nodes: Dict[Node, str] = {}
+    nodes: dict[Node, str] = {}
 
     def node(x: Node) -> str:
         if x not in nodes:
@@ -159,22 +159,20 @@ def rdf2dot(g: Graph, stream: TextIO, opts: Dict[str, Any] = {}):
         stream.write(
             opstr
             # type error: Value of type variable "AnyStr" of "escape" cannot be "Node"
-            % (n, NODECOLOR, html.escape(label(u, g)), u, html.escape(u), "".join(f))  # type: ignore[type-var]
+            % (n, NODECOLOR, html.escape(label(u, g)), u, html.escape(u), "".join(f))  # type: ignore[arg-type]
         )
 
     stream.write("}\n")
 
 
 def _help():
-    sys.stderr.write(
-        """
+    sys.stderr.write("""
 rdf2dot.py [-f <format>] files...
 Read RDF files given on STDOUT, writes a graph of the RDFS schema in DOT
 language to stdout
 -f specifies parser to use, if not given,
 
-"""
-    )
+""")
 
 
 def main():
