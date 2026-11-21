@@ -7,3 +7,4 @@ class JSONLDException(ValueError):  # noqa: N818
 RECURSIVE_CONTEXT_INCLUSION = JSONLDException("recursive context inclusion")
 INVALID_REMOTE_CONTEXT = JSONLDException("invalid remote context")
 INVALID_CONTEXT_ENTRY = JSONLDException("invalid context entry")
+INVALID_TYPE_VALUE = JSONLDException("invalid type value")

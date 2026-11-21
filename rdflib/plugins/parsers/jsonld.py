@@ -46,6 +46,7 @@ from rdflib.parser import InputSource, URLInputSource
 from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef
 
 from ..shared.jsonld.context import UNDEF, Context, Term
+from ..shared.jsonld.errors import INVALID_TYPE_VALUE
 from ..shared.jsonld.keys import (
     CONTEXT,
     GRAPH,
@@ -403,6 +404,11 @@ class Parser:
             term_id = None
 
         if TYPE in (key, term_id):
+            if not (
+                isinstance(obj, str)
+                or (isinstance(obj, list) and all(isinstance(v, str) for v in obj))
+            ):
+                raise INVALID_TYPE_VALUE
             term = TYPE_TERM
 
         if GRAPH in (key, term_id):
@@ -583,9 +589,16 @@ class Parser:
 
     @staticmethod
     def _add_type(context: Context, o: dict[str, Any], k: str) -> dict[str, Any]:
-        otype = context.get_type(o) or []
-        if otype and not isinstance(otype, list):
+        for tkey in context.get_keys(TYPE):
+            if tkey in o:
+                otype = o[tkey]
+                break
+        else:
+            otype = []
+        if not isinstance(otype, list):
             otype = [otype]
+        else:
+            otype = list(otype)
         otype.append(k)
         o[TYPE] = otype
         return o
@@ -647,13 +660,15 @@ class Parser:
         lang = context.get_language(node)
         datatype = not lang and context.get_type(node) or None
         value = context.get_value(node)
-        # type error: Unsupported operand types for in ("Optional[Any]" and "Generator[str, None, None]")
-        if datatype in context.get_keys(JSON):  # type: ignore[operator]
+        if isinstance(datatype, str) and datatype in context.get_keys(JSON):
             node = self._to_typed_json_value(value)
             datatype = context.get_type(node)
             value = context.get_value(node)
 
         if lang or context.get_key(VALUE) in node or VALUE in node:
+            for tkey in context.get_keys(TYPE):
+                if tkey in node and not isinstance(node[tkey], str):
+                    raise INVALID_TYPE_VALUE
             if value is None:
                 return None
             if lang:
