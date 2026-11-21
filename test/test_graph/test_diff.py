@@ -51,7 +51,6 @@ class TestDiff:
 
         graph_diff(g, g)
 
-    @pytest.mark.xfail()
     def test_subsets(self) -> None:
         """
         This test verifies that `graph_diff` returns the correct values
