@@ -18,7 +18,7 @@ from typing import Any
 
 import pytest
 
-from rdflib import RDF, BNode, Graph, Literal, Namespace
+from rdflib import RDF, XSD, BNode, Graph, Literal, Namespace
 from rdflib.collection import Collection
 from rdflib.compare import isomorphic
 from rdflib.plugins.serializers.jsonld import Converter
@@ -34,6 +34,12 @@ VOCAB_LIST_CONTEXT = {
 }
 
 FALSY_MEMBERS = [Literal(0), Literal(0.0), Literal(""), Literal(False)]
+FALSY_JSON_MEMBERS = [
+    0,
+    {"@type": str(XSD.double), "@value": "0.0"},
+    "",
+    False,
+]
 FALSY_IDS = ["0", "0.0", "empty-string", "false"]
 
 
@@ -74,21 +80,31 @@ def test_a_list_starting_with_a_falsy_member_is_written_as_a_list(
     assert isomorphic(g, g2)
 
 
-@pytest.mark.parametrize("first", FALSY_MEMBERS, ids=FALSY_IDS)
+@pytest.mark.parametrize(
+    ("first", "expected"),
+    list(zip(FALSY_MEMBERS, FALSY_JSON_MEMBERS, strict=True)),
+    ids=FALSY_IDS,
+)
 def test_a_list_starting_with_a_falsy_member_uses_a_list_container_term(
-    first: Literal,
+    first: Literal, expected: Any
 ) -> None:
     g, _head = _list_graph([first, Literal("a")])
 
     data, g2 = _round_trip(g, LIST_CONTEXT)
 
     (member, _a) = json.loads(data)["p"]
-    assert member == first.toPython() and type(member) is type(first.toPython())
+    assert member == expected and type(member) is type(expected)
     assert isomorphic(g, g2)
 
 
-@pytest.mark.parametrize("first", FALSY_MEMBERS, ids=FALSY_IDS)
-def test_a_list_starting_with_a_falsy_member_is_not_coerced(first: Literal) -> None:
+@pytest.mark.parametrize(
+    ("first", "expected"),
+    list(zip(FALSY_MEMBERS, FALSY_JSON_MEMBERS, strict=True)),
+    ids=FALSY_IDS,
+)
+def test_a_list_starting_with_a_falsy_member_is_not_coerced(
+    first: Literal, expected: Any
+) -> None:
     """Once recognised, the chain must not go under a term that coerces its
     members to IRIs. It is written as a list object under the IRI instead."""
     g, _head = _list_graph([first, Literal("a")])
@@ -96,7 +112,7 @@ def test_a_list_starting_with_a_falsy_member_is_not_coerced(first: Literal) -> N
     data, g2 = _round_trip(g, COERCING_LIST_CONTEXT)
 
     (member, _a) = json.loads(data)[str(NS.p)]["@list"]
-    assert member == first.toPython() and type(member) is type(first.toPython())
+    assert member == expected and type(member) is type(expected)
     assert isomorphic(g, g2)
 
 
