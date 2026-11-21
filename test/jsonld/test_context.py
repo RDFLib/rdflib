@@ -8,6 +8,7 @@ import json
 from functools import wraps
 from pathlib import Path
 from typing import Any, Literal, Optional, Union, assert_type
+from urllib.parse import urljoin
 
 import pytest
 
@@ -111,6 +112,83 @@ def test_resolving_iris():
     assert ctx.resolve("/trail") == "http://example.org/trail"
     assert ctx.resolve("../") == "http://example.org/"
     assert ctx.resolve("../../") == "http://example.org/"
+
+
+@pytest.mark.parametrize(
+    ("base", "iri", "expected"),
+    [
+        ("http://example.org/ns/doc", "http://example.org/ns/doc", ""),
+        ("http://example.org/ns/doc", "http://example.org/other", "/other"),
+        ("http://example.org/ns/doc", "http://example.org/", "/"),
+        # These share the base's "scheme://host" as a string only, or keep a
+        # query, fragment or port that an absolute path cannot express.
+        ("http://example.org/ns/doc", "http://example.org", None),
+        ("http://example.org/ns/doc", "http://example.org.evil/x", None),
+        ("http://example.org/ns/doc", "http://example.org?q=1", None),
+        ("http://example.org/ns/doc", "http://example.org#f", None),
+        ("http://example.org/ns/doc", "http://example.org:8080/x", None),
+        # A network-path reference would name another host.
+        ("http://example.org/ns/doc", "http://example.org//x", None),
+        # Resolving would remove the dot segments.
+        ("http://example.org/ns/doc", "http://example.org/a/../b", None),
+        # The base drops its fragment, so "" would lose it; a path keeps it.
+        ("http://example.org/ns/doc#f", "http://example.org/ns/doc#f", "/ns/doc#f"),
+        ("http://example.org/ns/doc", "http://other.example/x", None),
+        # Plain paths, which need no resolving to check.
+        ("http://example.org/ns/doc", "http://example.org/a/b/", "/a/b/"),
+        (
+            "http://example.org/ns/doc",
+            "http://example.org/.well-known/x",
+            "/.well-known/x",
+        ),
+        ("http://example.org/ns/doc", "http://example.org/a?q=1#f", "/a?q=1#f"),
+        ("http://example.org/ns/doc", "http://example.org/x%20y", "/x%20y"),
+        # rdflib reads these back without the empty query, or with "//"
+        # collapsed, so they stay whole.
+        ("http://example.org/ns/doc", "http://example.org/x?", None),
+        ("http://example.org/ns/doc", "http://example.org/a//b", None),
+        # The resolver lowercases the scheme, and joins no paths for these
+        # schemes: a path would not resolve back.
+        ("HTTP://example.org/ns/doc", "http://example.org/other", None),
+        ("file:/tmp/doc.jsonld", "file:///x", None),
+        ("s3://bucket/doc", "s3://bucket/x", None),
+    ],
+)
+def test_shrinking_iris_against_the_base(
+    base: str, iri: str, expected: Optional[str]
+) -> None:
+    """A shortened IRI must resolve back to the IRI; otherwise it stays whole."""
+    ctx = Context({"@base": base})
+
+    shrunk = ctx.shrink_iri(URIRef(iri))
+
+    assert shrunk == (URIRef(iri) if expected is None else expected)
+    # rdflib's resolver, and for a shortened IRI urllib's too, give it back.
+    assert str(ctx.resolve_iri(shrunk)) == iri
+    if expected is not None:
+        assert urljoin(base, expected) == iri
+
+
+@pytest.mark.parametrize(
+    "iri",
+    [
+        "http://example.org",
+        "http://example.org.evil/x",
+        "http://example.org?q=1",
+        "http://example.org/other",
+    ],
+)
+@pytest.mark.parametrize("base", ["http://example.org/ns/doc", "s3://example.org/doc"])
+def test_an_iri_on_the_base_host_round_trips(iri: str, base: str) -> None:
+    iri = iri.replace("http:", base.split(":", 1)[0] + ":", 1)
+    g = Graph()
+    g.add((URIRef("http://example.org/s"), URIRef("http://example.org/p"), URIRef(iri)))
+
+    data = g.serialize(format="json-ld", base=base, context={"@base": base})
+    g2 = Graph()
+    g2.parse(data=data, format="json-ld")
+
+    assert list(g2.objects()) == [URIRef(iri)]
 
 
 def test_accessing_keyword_values_by_alias():
