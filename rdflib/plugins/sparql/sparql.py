@@ -15,6 +15,7 @@ from typing import (
 import rdflib.plugins.sparql
 from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from rdflib.namespace import NamespaceManager
+from rdflib.plugins.parsers.notation3 import join as _join_iri
 from rdflib.plugins.sparql.parserutils import CompValue
 from rdflib.term import BNode, Identifier, Literal, Node, URIRef, Variable
 
@@ -466,6 +467,11 @@ class Prologue:
                     datatype=self.absolutize(iri.datatype),  # type: ignore[arg-type]
                 )
         elif isinstance(iri, URIRef) and not ":" in iri:  # noqa: E713
+            if self.base is not None and ":" in self.base:
+                try:
+                    return URIRef(_join_iri(str(self.base), str(iri)))
+                except ValueError:
+                    pass
             return URIRef(iri, base=self.base)
 
         return iri
