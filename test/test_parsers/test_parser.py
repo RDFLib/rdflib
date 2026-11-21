@@ -4,6 +4,7 @@ from unittest import mock
 
 import pytest
 
+from rdflib.exceptions import ParserError
 from rdflib.graph import Graph
 from rdflib.namespace import RDF, RDFS
 from rdflib.parser import _create_input_source_from_location
@@ -88,6 +89,37 @@ class TestGitHubIssues:
         g.parse(data=data, format="nt")
         for _, _, o in g:
             assert "1891-01-01" not in o.n3()
+
+    def test_issue_748(self):
+        unnamespaced = """<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ex="http://example.org/">
+  <rdf:Description rdf:about="http://example.org/s">
+    <ex:prop>
+      <NoNsNode1/>
+      <NoNsNode2/>
+    </ex:prop>
+  </rdf:Description>
+</rdf:RDF>"""
+        with pytest.raises(
+            ParserError,
+            match="Repeat node-elements inside property elements: NoNsNode2",
+        ):
+            Graph().parse(data=unnamespaced, format="xml")
+
+        namespaced = """<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ex="http://example.org/">
+  <rdf:Description rdf:about="http://example.org/s">
+    <ex:prop>
+      <ex:Node1/>
+      <ex:Node2/>
+    </ex:prop>
+  </rdf:Description>
+</rdf:RDF>"""
+        with pytest.raises(
+            ParserError,
+            match="Repeat node-elements inside property elements: http://example.org/Node2",
+        ):
+            Graph().parse(data=namespaced, format="xml")
 
 
 class TestWindowsUNCPaths:
