@@ -52,11 +52,12 @@ def trix(test: RDFTest):
                     print(t)
                 raise Exception("Graphs do not match!")
 
-            assert isomorphic(
-                g, res
-            ), "graphs must be the same, expected\n%s\n, got\n%s" % (
-                g.serialize(format="nquads"),
-                res.serialize(format="nquads"),
+            assert isomorphic(g, res), (
+                "graphs must be the same, expected\n%s\n, got\n%s"
+                % (
+                    g.serialize(format="nquads"),
+                    res.serialize(format="nquads"),
+                )
             )
 
     except Exception:
@@ -120,7 +121,7 @@ for test in eval_skipped:
 
 @pytest.mark.parametrize(
     "rdf_test_uri, type, rdf_test",
-    read_manifest(TEST_DATA_DIR / "suites" / "trix" / "manifest.ttl"),
+    list(read_manifest(TEST_DATA_DIR / "suites" / "trix" / "manifest.ttl")),
 )
 def test_manifest(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
     suffix = rdf_test_uri.split("#")[1]

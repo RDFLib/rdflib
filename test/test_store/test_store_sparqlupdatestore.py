@@ -106,10 +106,9 @@ def test_conjunctive_default(get_graph):
     ##
     # Fuseki/TDB has a flag for specifying that the default graph
     # is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
-    assert (
-        len(graph) == 3
-    ), "default union graph should contain three triples but contains:\n%s" % list(
-        graph
+    assert len(graph) == 3, (
+        "default union graph should contain three triples but contains:\n%s"
+        % list(graph)
     )
 
     r = graph.query("SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }")
@@ -151,9 +150,9 @@ def test_u_update_with_initns(get_graph):
     )
 
     g = graph.get_context(graphuri)
-    assert set(g.triples((None, None, None))) == set(
-        [(MICHEL, LIKES, PIZZA)]
-    ), "only MICHEL LIKES PIZZA"
+    assert set(g.triples((None, None, None))) == set([(MICHEL, LIKES, PIZZA)]), (
+        "only MICHEL LIKES PIZZA"
+    )
 
 
 def test_update_with_init_bindings(get_graph):
@@ -168,9 +167,9 @@ def test_update_with_init_bindings(get_graph):
     )
 
     g = graph.get_context(graphuri)
-    assert set(g.triples((None, None, None))) == set(
-        [(MICHEL, LIKES, PIZZA)]
-    ), "only MICHEL LIKES PIZZA"
+    assert set(g.triples((None, None, None))) == set([(MICHEL, LIKES, PIZZA)]), (
+        "only MICHEL LIKES PIZZA"
+    )
 
 
 def test_update_with_blank_node(get_graph):
@@ -224,18 +223,18 @@ def test_named_graph_update(get_graph):
     g = graph.get_context(graphuri)
     r1 = "INSERT DATA { <urn:example:michel> <urn:example:likes> <urn:example:pizza> }"
     g.update(r1)
-    assert set(g.triples((None, None, None))) == set(
-        [(MICHEL, LIKES, PIZZA)]
-    ), "only MICHEL LIKES PIZZA"
+    assert set(g.triples((None, None, None))) == set([(MICHEL, LIKES, PIZZA)]), (
+        "only MICHEL LIKES PIZZA"
+    )
 
     r2 = (
         "DELETE { <urn:example:michel> <urn:example:likes> <urn:example:pizza> } "
         + "INSERT { <urn:example:bob> <urn:example:likes> <urn:example:pizza> } WHERE {}"
     )
     g.update(r2)
-    assert set(g.triples((None, None, None))) == set(
-        [(BOB, LIKES, PIZZA)]
-    ), "only BOB LIKES PIZZA"
+    assert set(g.triples((None, None, None))) == set([(BOB, LIKES, PIZZA)]), (
+        "only BOB LIKES PIZZA"
+    )
 
     says = URIRef("urn:says")
 
@@ -321,9 +320,9 @@ def test_named_graph_update_with_init_bindings(get_graph):
     g = graph.get_context(graphuri)
     r = "INSERT { ?a ?b ?c } WHERE {}"
     g.update(r, initBindings={"a": MICHEL, "b": LIKES, "c": PIZZA})
-    assert set(g.triples((None, None, None))) == set(
-        [(MICHEL, LIKES, PIZZA)]
-    ), "only MICHEL LIKES PIZZA"
+    assert set(g.triples((None, None, None))) == set([(MICHEL, LIKES, PIZZA)]), (
+        "only MICHEL LIKES PIZZA"
+    )
 
 
 def test_empty_named_graph(get_graph):

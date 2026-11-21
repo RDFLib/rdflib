@@ -33,6 +33,7 @@ Example:
 # we should consider streaming the input to deal with arbitrarily large graphs.
 from __future__ import annotations
 
+import math
 import secrets
 import warnings
 from collections.abc import Iterable
@@ -67,15 +68,32 @@ from ..shared.jsonld.util import (
     VOCAB_DELIMS,
     context_from_urlinputsource,
     json,
+    number_datatype,
     orjson,
     source_to_json,
 )
 
 __all__ = ["JsonLDParser", "to_rdf"]
 
-TYPE_TERM = Term(str(RDF.type), TYPE, VOCAB)  # type: ignore[call-arg]
+TYPE_TERM = Term(str(RDF.type), TYPE, VOCAB)
 
 ALLOW_LISTS_OF_LISTS = True  # NOTE: Not allowed in JSON-LD 1.0
+
+
+def _number_literal(value: int | float) -> Literal:
+    """Return the literal for a JSON number without a datatype.
+
+    The datatype follows the value, not the Python type: `1.0` is the
+    integer 1 (see `number_datatype`).
+    """
+    if number_datatype(value) == XSD.integer:
+        return Literal(int(value))
+    try:
+        return Literal(float(value), datatype=XSD.double)
+    except OverflowError:
+        # An integer beyond the range of a double, which a JavaScript reader
+        # would also read as infinity.
+        return Literal(math.inf if value > 0 else -math.inf, datatype=XSD.double)
 
 
 class _ContextAwareGraph(Graph):
@@ -83,9 +101,9 @@ class _ContextAwareGraph(Graph):
 
     def __init__(self, sink: Graph):
         super().__init__(store=sink.store, identifier=sink.identifier)
-        assert (
-            self.store.context_aware
-        ), "JSON-LD named graphs require a context-aware store."
+        assert self.store.context_aware, (
+            "JSON-LD named graphs require a context-aware store."
+        )
         self.context_aware = True
         self.default_union = True
         self._default_context = Graph(
@@ -121,17 +139,11 @@ class JsonLDParser(rdflib.parser.Parser):
         sink: Graph,
         version: float = 1.1,
         skolemize: bool = False,
-        encoding: Optional[str] = "utf-8",
-        base: Optional[str] = None,
-        context: Optional[
-            Union[
-                list[Union[dict[str, Any], str, None]],
-                dict[str, Any],
-                str,
-            ]
-        ] = None,
-        generalized_rdf: Optional[bool] = False,
-        extract_all_scripts: Optional[bool] = False,
+        encoding: str | None = "utf-8",
+        base: str | None = None,
+        context: list[dict[str, Any] | str | None] | dict[str, Any] | str | None = None,
+        generalized_rdf: bool | None = False,
+        extract_all_scripts: bool | None = False,
         **kwargs: Any,
     ) -> None:
         """Parse JSON-LD from a source document.
@@ -157,8 +169,7 @@ class JsonLDParser(rdflib.parser.Parser):
         """
         if encoding not in ("utf-8", "utf-16"):
             warnings.warn(
-                "JSON should be encoded as unicode. "
-                "Given encoding was: %s" % encoding
+                "JSON should be encoded as unicode. Given encoding was: %s" % encoding
             )
 
         if not base:
@@ -209,17 +220,13 @@ class JsonLDParser(rdflib.parser.Parser):
 def to_rdf(
     data: Any,
     dataset: Graph,
-    base: Optional[str] = None,
-    context_data: Optional[
-        Union[
-            list[Union[dict[str, Any], str, None]],
-            dict[str, Any],
-            str,
-        ]
-    ] = None,
-    version: Optional[float] = None,
+    base: str | None = None,
+    context_data: (
+        list[dict[str, Any] | str | None] | dict[str, Any] | str | None
+    ) = None,
+    version: float | None = None,
     generalized_rdf: bool = False,
-    allow_lists_of_lists: Optional[bool] = None,
+    allow_lists_of_lists: bool | None = None,
     skolemize: bool = False,
 ):
     # TODO: docstring w. args and return value
@@ -238,7 +245,7 @@ class Parser:
     def __init__(
         self,
         generalized_rdf: bool = False,
-        allow_lists_of_lists: Optional[bool] = None,
+        allow_lists_of_lists: bool | None = None,
         skolemize: bool = False,
     ):
         self.skolemize = skolemize
@@ -348,7 +355,7 @@ class Parser:
         return subj
 
     # type error: Missing return statement
-    def _get_nested_id(self, context: Context, node: dict[str, Any]) -> Optional[str]:  # type: ignore[return]
+    def _get_nested_id(self, context: Context, node: dict[str, Any]) -> str | None:  # type: ignore[return]
         for key, obj in node.items():
             if context.version >= 1.1 and key in context.get_keys(NEST):
                 term = context.terms.get(key)
@@ -498,18 +505,29 @@ class Parser:
 
         v11 = context.version >= 1.1
 
+        # Anonymous graph-map entries need an ID to keep their contents in
+        # a named graph instead of the default graph.
         if v11 and GRAPH in term.container and ID in term.container:
             return [
                 (
-                    dict({GRAPH: o})
+                    dict({ID: BNode().n3(), GRAPH: o})
                     if k in context.get_keys(NONE)
-                    else dict({ID: k, GRAPH: o}) if isinstance(o, dict) else o
+                    else dict({ID: k, GRAPH: o})
+                    if isinstance(o, dict)
+                    else o
                 )
-                for k, o in obj.items()
+                for k, values in obj.items()
+                for o in (values if isinstance(values, list) else [values])
+                if o is not None
             ]
 
         elif v11 and GRAPH in term.container and INDEX in term.container:
-            return [dict({GRAPH: o}) for k, o in obj.items()]
+            return [
+                dict({ID: BNode().n3(), GRAPH: o})
+                for values in obj.values()
+                for o in (values if isinstance(values, list) else [values])
+                if o is not None
+            ]
 
         elif v11 and GRAPH in term.container:
             return [dict({GRAPH: obj})]
@@ -521,7 +539,8 @@ class Parser:
                     if isinstance(o, dict) and k not in context.get_keys(NONE)
                     else o
                 )
-                for k, o in obj.items()
+                for k, values in obj.items()
+                for o in (values if isinstance(values, list) else [values])
             ]
 
         elif v11 and TYPE in term.container:
@@ -539,7 +558,8 @@ class Parser:
                     if isinstance(o, (dict, str)) and k not in context.get_keys(NONE)
                     else o
                 )
-                for k, o in obj.items()
+                for k, values in obj.items()
+                for o in (values if isinstance(values, list) else [values])
             ]
 
         elif INDEX in term.container:
@@ -575,7 +595,7 @@ class Parser:
         dataset: Graph,
         graph: Graph,
         context: Context,
-        term: Optional[Term],
+        term: Term | None,
         node: Any,
         inlist: bool = False,
     ) -> Optional[Node]:
@@ -600,26 +620,25 @@ class Parser:
                     return listref
 
         else:  # expand compacted value
-            if term and term.type:
-                if term.type == JSON:
-                    node = self._to_typed_json_value(node)
-                elif node is None:
-                    # type error: Return value expected
-                    return  # type: ignore[return-value]
-                elif term.type == ID and isinstance(node, str):
-                    node = {ID: context.resolve(node)}
-                elif term.type == VOCAB and isinstance(node, str):
-                    node = {ID: context.expand(node) or context.resolve_iri(node)}
-                else:
-                    node = {TYPE: term.type, VALUE: node}
+            if term and term.type == JSON:
+                node = self._to_typed_json_value(node)
+            elif node is None:
+                # type error: Return value expected
+                return  # type: ignore[return-value]
+            elif term and term.type == ID and isinstance(node, str):
+                node = {ID: context.resolve(node)}
+            elif term and term.type == VOCAB and isinstance(node, str):
+                node = {ID: context.expand(node) or context.resolve_iri(node)}
+            elif term and term.type and term.type not in (ID, VOCAB, NONE):
+                node = {TYPE: term.type, VALUE: node}
             else:
                 if node is None:
                     # type error: Return value expected
                     return  # type: ignore[return-value]
-                if isinstance(node, float):
-                    return Literal(node, datatype=XSD.double)
+                if isinstance(node, (int, float)) and not isinstance(node, bool):
+                    return _number_literal(node)
 
-                if term and term.language is not UNDEF:
+                if term and not term.type and term.language is not UNDEF:
                     lang = term.language
                 else:
                     lang = context.language
@@ -644,12 +663,14 @@ class Parser:
                 return Literal(value, lang=lang)
             elif datatype:
                 return Literal(value, datatype=context.expand(datatype))
+            elif isinstance(value, (int, float)) and not isinstance(value, bool):
+                return _number_literal(value)
             else:
                 return Literal(value)
         else:
             return self._add_to_graph(dataset, graph, context, node)
 
-    def _to_rdf_id(self, context: Context, id_val: str) -> Optional[IdentifiedNode]:
+    def _to_rdf_id(self, context: Context, id_val: str) -> IdentifiedNode | None:
         bid = self._get_bnodeid(id_val)
         if bid:
             b = BNode(bid)
@@ -667,7 +688,7 @@ class Parser:
                 node = self.invalid_uri_to_bnode[id_val]
             return node
 
-    def _get_bnodeid(self, ref: str) -> Optional[str]:
+    def _get_bnodeid(self, ref: str) -> str | None:
         if not ref.startswith("_:"):
             # type error: Return value expected
             return  # type: ignore[return-value]
@@ -679,7 +700,7 @@ class Parser:
         dataset: Graph,
         graph: Graph,
         context: Context,
-        term: Optional[Term],
+        term: Term | None,
         node_list: Any,
     ) -> IdentifiedNode:
         if not isinstance(node_list, list):

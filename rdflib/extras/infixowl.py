@@ -281,7 +281,10 @@ def propertyOrIdentifier(thing):  # noqa: N802
 
 
 def manchesterSyntax(  # noqa: N802
-    thing, store, boolean=None, transientList=False  # noqa: N803
+    thing,
+    store,
+    boolean=None,
+    transientList=False,  # noqa: N803
 ):
     """
     Core serialization
@@ -1690,9 +1693,9 @@ class BooleanClass(OWLRDFListProxy, Class):
         assert operator in [OWL.intersectionOf, OWL.unionOf], str(operator)
         self._operator = operator
         rdf_list = list(self.graph.objects(predicate=operator, subject=self.identifier))
-        assert (
-            not members or not rdf_list
-        ), "This is a previous boolean class description."
+        assert not members or not rdf_list, (
+            "This is a previous boolean class description."
+        )
         OWLRDFListProxy.__init__(self, rdf_list, members)
 
     def copy(self):

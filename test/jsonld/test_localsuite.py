@@ -43,7 +43,17 @@ def get_test_suite_cases():
         else:  # fromRdf
             func = runner.do_test_serializer
         rdf_test_uri = URIRef("{0}{1}-manifest.jsonld#t{2}".format(TC_BASE, cat, num))
-        yield rdf_test_uri, func, TC_BASE, cat, num, inputpath, expectedpath, context, options
+        yield (
+            rdf_test_uri,
+            func,
+            TC_BASE,
+            cat,
+            num,
+            inputpath,
+            expectedpath,
+            context,
+            options,
+        )
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -56,7 +66,7 @@ def testsuide_dir():
 
 @pytest.mark.parametrize(
     "rdf_test_uri, func, suite_base, cat, num, inputpath, expectedpath, context, options",
-    get_test_suite_cases(),
+    list(get_test_suite_cases()),
 )
 def test_suite(
     rdf_test_uri: URIRef,

@@ -3,9 +3,10 @@ from __future__ import annotations
 
 import json
 import pathlib
+import re
 from html.parser import HTMLParser
 from io import StringIO, TextIOBase, TextIOWrapper
-from typing import IO, TYPE_CHECKING, Any, Optional, TextIO, Union
+from typing import IO, TYPE_CHECKING, Any, TextIO, Union
 
 if TYPE_CHECKING:
     import json
@@ -30,6 +31,7 @@ except ImportError:
     _HAS_ORJSON = False
 
 
+from rdflib.namespace import XSD
 from rdflib.parser import (
     BytesIOWrapper,
     InputSource,
@@ -38,14 +40,14 @@ from rdflib.parser import (
     URLInputSource,
     create_input_source,
 )
+from rdflib.plugins.parsers.notation3 import join
+from rdflib.term import URIRef
 
 
 def source_to_json(
-    source: Optional[
-        Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]
-    ],
-    fragment_id: Optional[str] = None,
-    extract_all_scripts: Optional[bool] = False,
+    source: IO[bytes] | TextIO | InputSource | str | bytes | pathlib.PurePath | None,
+    fragment_id: str | None = None,
+    extract_all_scripts: bool | None = False,
 ) -> tuple[Union[dict, list[dict]], Any]:
     """Extract JSON from a source document.
 
@@ -70,10 +72,10 @@ def source_to_json(
         # We can get the original string from the StringInputSource
         # It's hidden in the BytesIOWrapper 'wrapped' attribute
         b_stream = source.getByteStream()
-        original_string: Optional[str] = None
-        json_dict: Union[dict, list[dict]]
+        original_string: str | None = None
+        json_dict: dict | list[dict]
         if isinstance(b_stream, BytesIOWrapper):
-            wrapped_inner = cast(Union[str, StringIO, TextIOBase], b_stream.wrapped)
+            wrapped_inner = cast(Union[str, TextIO, TextIOBase], b_stream.wrapped)
             if isinstance(wrapped_inner, str):
                 original_string = wrapped_inner
             elif isinstance(wrapped_inner, StringIO):
@@ -108,7 +110,7 @@ def source_to_json(
         "application/xhtml+xml",
     )
     if is_html:
-        html_docparser: Optional[HTMLJSONParser] = HTMLJSONParser(
+        html_docparser: HTMLJSONParser | None = HTMLJSONParser(
             fragment_id=fragment_id, extract_all_scripts=extract_all_scripts
         )
     else:
@@ -126,10 +128,10 @@ def source_to_json(
             f"Source does not have a character stream or a byte stream and cannot be used {type(source)}"
         )
     try:
-        b_encoding: Optional[str] = None if b_stream is None else source.getEncoding()
+        b_encoding: str | None = None if b_stream is None else source.getEncoding()
     except (AttributeError, LookupError):
         b_encoding = None
-    underlying_string: Optional[str] = None
+    underlying_string: str | None = None
     if b_stream is not None and isinstance(b_stream, BytesIOWrapper):
         # Try to find an underlying wrapped Unicode string to use?
         wrapped_inner = b_stream.wrapped
@@ -198,7 +200,7 @@ def source_to_json(
 VOCAB_DELIMS = ("#", "/", ":")
 
 
-def split_iri(iri: str) -> tuple[str, Optional[str]]:
+def split_iri(iri: str) -> tuple[str, str | None]:
     for delim in VOCAB_DELIMS:
         at = iri.rfind(delim)
         if at > -1:
@@ -206,8 +208,21 @@ def split_iri(iri: str) -> tuple[str, Optional[str]]:
     return iri, None
 
 
+# The scheme of an absolute IRI (RFC 3986, section 3.1). urlsplit() is not
+# used for this, as it strips leading spaces and raises on some inputs.
+_SCHEME = re.compile(r"[A-Za-z][A-Za-z0-9+.-]*:")
+
+
 def norm_url(base: str, url: str) -> str:
     """
+    Resolve a reference against a base IRI.
+
+    Against a base with a hierarchical path, such as `http://host/path`,
+    `file:/path` or `s3://bucket/key`, this is reference resolution as RFC
+    3986, section 5.2, describes it, done by the resolver of the N3 parser. It
+    keeps empty components and repeated slashes. A query-only reference is
+    resolved that way against any absolute base.
+
     ```python
     >>> norm_url('http://example.org/', '/one')
     'http://example.org/one'
@@ -221,9 +236,51 @@ def norm_url(base: str, url: str) -> str:
     'http://example.net/one'
     >>> norm_url('http://example.org/', 'http://example.org//one')
     'http://example.org//one'
+    >>> norm_url('http://example.org/one', '//example.net')
+    'http://example.net'
+    >>> norm_url('http://example.org', '?q')
+    'http://example.org?q'
+    >>> norm_url('http://example.org/one', 'two?')
+    'http://example.org/two?'
+
+    ```
+
+    As in JSON-LD IRI expansion, a value whose part after the first colon
+    begins with `//` is returned as it is. Against a URN base, a relative path
+    is joined as a path below the base; against other bases without a
+    hierarchical path, it is returned as it is.
+
+    ```python
+    >>> norm_url('http://example.org/one', 'two?u=http://example.net/')
+    'two?u=http://example.net/'
+    >>> norm_url('urn:ns:test', 'three')
+    'urn:ns:test/three'
 
     ```
     """
+    # Same-document references must not change the base path.
+    if not url or url.startswith("#"):
+        return (base or "").split("#", 1)[0] + url
+
+    # An absolute IRI is not resolved, and neither is a value whose part after
+    # the first colon begins with "//" (JSON-LD 1.1 API, IRI Expansion, step
+    # 6.2).
+    colon = url.find(":", 1)
+    if _SCHEME.match(url) or (colon > 0 and url.startswith("//", colon + 1)):
+        return url
+
+    scheme = _SCHEME.match(base) if base else None
+    if scheme and (base.startswith("/", scheme.end()) or url.startswith("?")):
+        # The fragment is everything after the first "#" (RFC 3986, section
+        # 3.5), and it is not resolved.
+        reference, hash_mark, fragment = url.partition("#")
+        # Without a valid scheme, a colon in the first segment is part of a
+        # relative path, which RFC 3986, section 4.2, writes with a leading
+        # "./" so that it can't be read as a scheme.
+        if ":" in re.split("[/?]", reference, maxsplit=1)[0]:
+            reference = "./" + reference
+        return join(base, reference) + hash_mark + fragment
+
     if "://" in url:
         return url
 
@@ -253,8 +310,33 @@ def norm_url(base: str, url: str) -> str:
     return result
 
 
+def number_datatype(value: int | float) -> URIRef:
+    """Return the datatype JSON-LD gives a JSON number.
+
+    Object to RDF Conversion (JSON-LD 1.1 Processing Algorithms and API,
+    section 8.2.2) decides by the value, not by how it is written: a number
+    with a non-zero fractional part, or with an absolute value of 10^21 or
+    more, is an `xsd:double` (step 10), and any other number an
+    `xsd:integer` (step 11). JSON has a single number type, so `1.0` is the
+    integer 1. A value that is not a finite number is an `xsd:double`.
+
+    ```python
+    >>> number_datatype(1.0)
+    rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer')
+    >>> number_datatype(2.5)
+    rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#double')
+    >>> number_datatype(10**21)
+    rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#double')
+
+    ```
+    """
+    if value % 1 != 0 or abs(value) >= 10**21:
+        return XSD.double
+    return XSD.integer
+
+
 # type error: Missing return statement
-def context_from_urlinputsource(source: URLInputSource) -> Optional[str]:  # type: ignore[return]
+def context_from_urlinputsource(source: URLInputSource) -> str | None:  # type: ignore[return]
     """
     Please note that JSON-LD documents served with the `application/ld+json` media type
     MUST have all context information, including references to external contexts,
@@ -291,8 +373,8 @@ __all__ = [
 class HTMLJSONParser(HTMLParser):
     def __init__(
         self,
-        fragment_id: Optional[str] = None,
-        extract_all_scripts: Optional[bool] = False,
+        fragment_id: str | None = None,
+        extract_all_scripts: bool | None = False,
     ):
         super().__init__()
         self.fragment_id = fragment_id
@@ -326,7 +408,6 @@ class HTMLJSONParser(HTMLParser):
         # script element containing application/ld+json
 
         if self.contains_json is True and self.fragment_id_does_not_match is False:
-
             if not self.extract_all_scripts and self.script_count > 0:
                 return
 

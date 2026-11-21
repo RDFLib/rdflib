@@ -1,7 +1,11 @@
+import math
+from decimal import Decimal
 from functools import partial
 
+import pytest
+
 import rdflib.plugins.sparql.parser as p
-from rdflib import Literal, Variable
+from rdflib import XSD, Literal, URIRef, Variable
 from rdflib.plugins.sparql.algebra import translatePName, traverse
 from rdflib.plugins.sparql.operators import simplify
 from rdflib.plugins.sparql.sparql import Prologue, QueryContext, SPARQLError
@@ -61,6 +65,73 @@ def test_arithmetic():
     eq(_eval(_translate(p.Expression.parse_string("(2+3)*2")[0])).value, 10)
     eq(_eval(_translate(p.Expression.parse_string("2+4/2")[0])).value, 4)
     eq(_eval(_translate(p.Expression.parse_string("(2+4)/2")[0])).value, 3)
+
+
+FLOAT = f"<{XSD.float}>"
+INT = f"<{XSD.int}>"
+SHORT = f"<{XSD.short}>"
+
+
+@pytest.mark.parametrize(
+    ("expression", "value", "datatype"),
+    [
+        pytest.param("2*3", 6, XSD.integer, id="integer"),
+        pytest.param(f'"3"^^{INT}*"2"^^{SHORT}', 6, XSD.integer, id="integer-subtypes"),
+        pytest.param(
+            "123456789012345678901234567890*3",
+            370370367037037036703703703670,
+            XSD.integer,
+            id="large-integer",
+        ),
+        pytest.param("2*1.5", Decimal("3.0"), XSD.decimal, id="decimal"),
+        pytest.param("1.5e0*2", 3.0, XSD.double, id="double-first"),
+        pytest.param("1.5e0*2*3", 9.0, XSD.double, id="double-chain"),
+        pytest.param(f'"2.5"^^{FLOAT}*2', 5.0, XSD.float, id="float"),
+        pytest.param("7/2", Decimal("3.5"), XSD.decimal, id="integer-division"),
+        pytest.param("7e0/2", 3.5, XSD.double, id="double-division"),
+        pytest.param("1e308*10", math.inf, XSD.double, id="overflow"),
+        pytest.param("-1e308*10", -math.inf, XSD.double, id="negative-overflow"),
+        pytest.param(f"1{'0' * 400}*1e0", math.inf, XSD.double, id="huge-integer"),
+        pytest.param("1e0/0", math.inf, XSD.double, id="divide-by-zero"),
+        pytest.param("-1e0/0", -math.inf, XSD.double, id="negative-by-zero"),
+        pytest.param("1e0/-0e0", -math.inf, XSD.double, id="by-negative-zero"),
+        pytest.param(f'"2"^^{FLOAT}/0', math.inf, XSD.float, id="float-by-zero"),
+    ],
+)
+def test_multiplication_and_division_promote_numeric_types(
+    expression: str, value: object, datatype: URIRef
+) -> None:
+    """The result has the promoted type of the operands, as in XPath 3.1
+    Functions and Operators, section 4.2: integer times double is a double,
+    and a double divided by zero is infinite."""
+    result = _eval(_translate(p.Expression.parse_string(expression)[0]))
+
+    assert (result.value, result.datatype) == (value, datatype)
+
+
+def test_zero_divided_by_zero_is_nan_for_doubles() -> None:
+    result = _eval(_translate(p.Expression.parse_string("0e0/0")[0]))
+
+    assert math.isnan(result.value) and result.datatype == XSD.double
+
+
+@pytest.mark.parametrize(
+    "expression",
+    [
+        pytest.param("1/0", id="integer-by-zero"),
+        pytest.param("1.0/0", id="decimal-by-zero"),
+        pytest.param(f'"abc"^^<{XSD.integer}>*2', id="ill-typed-integer"),
+        pytest.param(f'2*"abc"^^<{XSD.decimal}>', id="ill-typed-decimal"),
+        pytest.param(f'"1.5"^^<{XSD.integer}>*3', id="ill-typed-fraction"),
+        pytest.param(f'"abc"^^<{XSD.double}>*2', id="ill-typed-double"),
+        pytest.param(f'2e0*"abc"^^<{XSD.integer}>', id="ill-typed-with-double"),
+        pytest.param(f"1{'0' * 2200}*1{'0' * 2200}", id="too-many-digits"),
+    ],
+)
+def test_multiplication_and_division_errors(expression: str) -> None:
+    """Integer and decimal division by zero, ill-typed operands, and an integer
+    too long to write are errors, not crashes or strings."""
+    assert _eval(_translate(p.Expression.parse_string(expression)[0])) is False
 
 
 def test_arithmetic_var():

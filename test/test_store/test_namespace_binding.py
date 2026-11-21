@@ -94,7 +94,7 @@ def check_ns(graph: Graph, expected_bindings: NamespaceBindings) -> None:
 
 
 @pytest.mark.parametrize(
-    ["override", "replace"], itertools.product([True, False], [True, False])
+    ["override", "replace"], list(itertools.product([True, False], [True, False]))
 )
 def test_simple_bind(
     tmp_path: Path, store_name: str, override: bool, replace: bool
@@ -108,7 +108,7 @@ def test_simple_bind(
 
 
 @pytest.mark.parametrize(
-    ["override", "replace"], itertools.product([True, False], [True, False])
+    ["override", "replace"], list(itertools.product([True, False], [True, False]))
 )
 def test_bind_two_bind(
     tmp_path: Path, store_name: str, override: bool, replace: bool
@@ -147,30 +147,32 @@ def test_rebind_uri_no_override(tmp_path: Path, store_name: str, replace: bool) 
 
 @pytest.mark.parametrize(
     ["store_name", "override"],
-    pytest_mark_filter(
-        itertools.product(store_info_dict.keys(), [True, False]),
-        {
-            ("SPARQLStore", False): (
-                pytest.mark.xfail(
-                    raises=AssertionError,
-                    reason="""
+    list(
+        pytest_mark_filter(
+            itertools.product(store_info_dict.keys(), [True, False]),
+            {
+                ("SPARQLStore", False): (
+                    pytest.mark.xfail(
+                        raises=AssertionError,
+                        reason="""
     SPARQLStore's namespace bindings work on a fundementally different way than
     the other stores, which is both simpler, but requires some additional work
     to make it behave like the other stores.
     """,
+                    ),
                 ),
-            ),
-            ("SPARQLUpdateStore", False): (
-                pytest.mark.xfail(
-                    raises=AssertionError,
-                    reason="""
+                ("SPARQLUpdateStore", False): (
+                    pytest.mark.xfail(
+                        raises=AssertionError,
+                        reason="""
     SPARQLStore's namespace bindings work on a fundementally different way than
     the other stores, which is both simpler, but requires some additional work
     to make it behave like the other stores.
     """,
+                    ),
                 ),
-            ),
-        },
+            },
+        )
     ),
 )
 def test_rebind_prefix_replace(tmp_path: Path, store_name: str, override: bool) -> None:
@@ -196,7 +198,8 @@ def test_rebind_prefix_replace(tmp_path: Path, store_name: str, override: bool) 
 
 
 @pytest.mark.parametrize(
-    ["reuse_override", "reuse_replace"], itertools.product([True, False], [True, False])
+    ["reuse_override", "reuse_replace"],
+    list(itertools.product([True, False], [True, False])),
 )
 def test_rebind_prefix_reuse_uri_replace(
     tmp_path: Path, store_name: str, reuse_override: bool, reuse_replace: bool

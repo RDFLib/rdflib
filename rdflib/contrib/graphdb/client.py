@@ -7,7 +7,7 @@ import os
 import pathlib
 import typing as t
 
-import httpx
+import httpx2 as httpx
 
 import rdflib.contrib.rdf4j
 from rdflib import Graph, Literal, URIRef

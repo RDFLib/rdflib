@@ -1,4 +1,4 @@
-.flakeheaven_cache/
+.ruff_cache/
 RDFLib.sublime-project
 RDFLib.sublime-workspace
 coverage/

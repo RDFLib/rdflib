@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import MutableMapping
-from typing import IO, Any, Optional, Union
+from typing import IO, Any, Optional
 
 from rdflib.graph import Graph
 from rdflib.namespace import RDF, Namespace
@@ -12,12 +12,12 @@ RS = Namespace("http://www.w3.org/2001/sw/DataAccess/tests/result-set#")
 
 
 class RDFResultParser(ResultParser):
-    def parse(self, source: Union[IO, Graph], **kwargs: Any) -> Result:
+    def parse(self, source: IO | Graph, **kwargs: Any) -> Result:
         return RDFResult(source, **kwargs)
 
 
 class RDFResult(Result):
-    def __init__(self, source: Union[IO, Graph], **kwargs: Any):
+    def __init__(self, source: IO | Graph, **kwargs: Any):
         if not isinstance(source, Graph):
             graph = Graph()
             graph.parse(source, **kwargs)

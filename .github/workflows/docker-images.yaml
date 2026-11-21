@@ -42,6 +42,9 @@ jobs:
           fetch-depth: 1
       - name: Install Task
         uses: go-task/setup-task@v2
+        with:
+          # An exact version skips setup-task's GitHub API lookup.
+          version: 3.54.0
       - uses: astral-sh/setup-uv@v7
       - name: Build images
         shell: bash
@@ -63,6 +66,9 @@ jobs:
           fetch-depth: 1
       - name: Install Task
         uses: go-task/setup-task@v2
+        with:
+          # An exact version skips setup-task's GitHub API lookup.
+          version: 3.54.0
       - uses: astral-sh/setup-uv@v7
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v4

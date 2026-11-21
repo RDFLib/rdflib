@@ -11,10 +11,6 @@ pytest.register_assert_rewrite("test.utils")
 
 from collections.abc import Collection, Generator, Iterable
 from pathlib import Path
-from typing import (
-    Optional,
-    Union,
-)
 
 from rdflib import Graph
 from test.utils.audit import AuditHookDispatcher
@@ -64,7 +60,7 @@ def function_httpmock(
     """
     HTTP server mock that is reset for each test function.
     """
-    (mock, _) = _session_function_httpmocks
+    mock, _ = _session_function_httpmocks
     mock.reset()
     yield mock
 
@@ -78,7 +74,7 @@ def function_httpmocks(
 
     This exists in case a tests needs to work with two different HTTP servers.
     """
-    (mock_a, mock_b) = _session_function_httpmocks
+    mock_a, mock_b = _session_function_httpmocks
     mock_a.reset()
     mock_b.reset()
     yield mock_a, mock_b
@@ -97,12 +93,14 @@ def exit_stack() -> Generator[ExitStack, None, None]:
         yield stack
 
 
-EXTRA_MARKERS: dict[
-    tuple[Optional[str], str], Collection[Union[pytest.MarkDecorator, str]]
-] = {
+EXTRA_MARKERS: dict[tuple[str | None, str], Collection[pytest.MarkDecorator | str]] = {
     ("rdflib/__init__.py", "rdflib"): [pytest.mark.webtest],
     ("rdflib/term.py", "rdflib.term.Literal.normalize"): [pytest.mark.webtest],
     ("rdflib/extras/infixowl.py", "rdflib.extras.infixowl"): [pytest.mark.webtest],
+    (
+        "rdflib/plugins/stores/sparqlstore.py",
+        "rdflib.plugins.stores.sparqlstore.SPARQLStore",
+    ): [pytest.mark.webtest],
 }
 
 
@@ -110,8 +108,15 @@ PROJECT_ROOT = Path(__file__).parent.parent
 
 
 @pytest.hookimpl(tryfirst=True)
-def pytest_collection_modifyitems(items: Iterable[pytest.Item]):
+def pytest_collection_modifyitems(config: pytest.Config, items: Iterable[pytest.Item]):
     for item in items:
+        if (
+            not config.getoption("--public-endpoints")
+            and "public_endpoints" in item.keywords
+        ):
+            item.add_marker(
+                pytest.mark.skip(reason="need --public-endpoints option to run")
+            )
         parent_name = (
             str(Path(item.parent.module.__file__).relative_to(PROJECT_ROOT))
             if item.parent is not None
@@ -123,3 +128,19 @@ def pytest_collection_modifyitems(items: Iterable[pytest.Item]):
             extra_markers = EXTRA_MARKERS[(parent_name, item.name)]
             for extra_marker in extra_markers:
                 item.add_marker(extra_marker)
+
+
+def pytest_addoption(parser):
+    """Add optional pytest markers to run tests on public endpoints."""
+    parser.addoption(
+        "--public-endpoints",
+        action="store_true",
+        default=False,
+        help="run tests that require public SPARQL endpoints",
+    )
+
+
+def pytest_configure(config):
+    config.addinivalue_line(
+        "markers", "public_endpoints: mark tests that require public SPARQL endpoints"
+    )

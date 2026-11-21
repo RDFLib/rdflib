@@ -115,7 +115,7 @@ def test_property(graph):
 
     assert list(isman.extent) == []
 
-    assert sg.serialize(format="ttl") == (
+    assert sg.serialize(format="origturtle") == (
         "@prefix ns1: <http://attempto.ifi.uzh.ch/ace_lexicon#> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n"

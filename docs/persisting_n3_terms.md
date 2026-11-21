@@ -74,7 +74,7 @@ def formulae(triple=None)
 
 This function would return all the Blank Node identifiers assigned to formulae or just those that contain statements matching the given triple pattern and would be the way a serializer determines if a term refers to a formula (in order to properly serializer it).
 
-How much would such an interface reduce the need to model formulae terms as first class objects (perhaps to be returned by the [`triples()`][rdflib.Graph.triples] function)? Would it be more useful for the [`Graph`][rdflib.Graph] (or the store itself) to return a Context object in place of a formula term (using the formulae interface to make this determination)?
+How much would such an interface reduce the need to model formulae terms as first class objects (perhaps to be returned by the [`triples()`][rdflib.graph.Graph.triples] function)? Would it be more useful for the [`Graph`][rdflib.Graph] (or the store itself) to return a Context object in place of a formula term (using the formulae interface to make this determination)?
 
 Conversely, would these interfaces (variables and formulae) be considered optimisations only since you have the distinction by the kinds of terms triples returns (which would be expanded to include variables and formulae)?
 

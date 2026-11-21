@@ -82,7 +82,7 @@ def test_restriction_inputs_bnode(graph):
 
     assert str(repr(r)) == "( ex:hasChild ONLY ex:Human )"
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "\n"
@@ -105,7 +105,7 @@ def test_restriction_inputs_with_identifier(graph):
 
     assert str(repr(r)) == "( ex:hasChild ONLY ex:Human )"
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "\n"
@@ -214,7 +214,7 @@ def test_restriction_cardinality_value(graph):
         cardinality=Literal("0", datatype=XSD.nonNegativeInteger),
     )
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
@@ -242,7 +242,7 @@ def test_restriction_cardinality_set_value(graph):
 
     assert str(r) == "( ex:hasChild EQUALS 0 )"
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
@@ -257,7 +257,7 @@ def test_restriction_cardinality_set_value(graph):
 
     assert str(r) == "( ex:hasChild EQUALS 1 )"
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
@@ -277,7 +277,7 @@ def test_restriction_maxcardinality(graph):
         identifier=URIRef(EXNS.r1),
     )
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
@@ -291,7 +291,7 @@ def test_restriction_maxcardinality(graph):
     # FIXME: Don't do this, it changes the value!!
     assert str(r.maxCardinality) == "Some Class "
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
@@ -306,7 +306,7 @@ def test_restriction_maxcardinality(graph):
 
     r.maxCardinality = OWL.maxCardinality
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "\n"
@@ -321,7 +321,7 @@ def test_restriction_maxcardinality(graph):
     # Ignored
     r.maxCardinality = None
 
-    assert graph.serialize(format="ttl") != ""
+    assert graph.serialize(format="origturtle") != ""
 
     superfluous_assertion_subject = list(graph.subjects(RDF.type, OWL.Class))[0]
 
@@ -329,7 +329,7 @@ def test_restriction_maxcardinality(graph):
 
     graph.remove((superfluous_assertion_subject, RDF.type, OWL.Class))
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "\n"
@@ -343,7 +343,7 @@ def test_restriction_maxcardinality(graph):
 
     assert str(r) == "( ex:hasChild MAX http://example.org/vocab/maxkids )"
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "\n"
@@ -355,7 +355,7 @@ def test_restriction_maxcardinality(graph):
 
     del r.maxCardinality
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "\n"
@@ -370,7 +370,7 @@ def test_restriction_maxcardinality(graph):
 
     assert str(r) == "( ex:hasChild MAX 2 )"
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
