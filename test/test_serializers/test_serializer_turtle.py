@@ -1,6 +1,9 @@
+from fractions import Fraction
 from textwrap import dedent
 
-from rdflib import RDF, RDFS, BNode, Graph, Literal, Namespace, URIRef
+import pytest
+
+from rdflib import RDF, RDFS, BNode, Dataset, Graph, Literal, Namespace, URIRef
 from rdflib.collection import Collection
 from rdflib.compare import isomorphic
 from rdflib.plugins.serializers.turtle import TurtleSerializer
@@ -193,3 +196,18 @@ def test_turtle_undeclared_prefix_when_using_base():
         .
     """)
     assert output.strip() == expected.strip()
+
+
+@pytest.mark.parametrize("format", ["turtle", "longturtle", "n3", "trig"])
+@pytest.mark.parametrize("value", [Fraction(1, 2), Fraction(-2, 3), Fraction(2)])
+def test_turtle_rational_round_trips(format: str, value: Fraction) -> None:
+    """An owl:rational literal has no bare form in Turtle, N3 or TriG."""
+    literal = Literal(value)
+    graph = Dataset() if format == "trig" else Graph()
+    graph.add((URIRef("urn:s"), URIRef("urn:p"), literal))
+    output = graph.serialize(format=format)
+    parse_format = "turtle" if format == "longturtle" else format
+    parsed = (Dataset() if format == "trig" else Graph()).parse(
+        data=output, format=parse_format
+    )
+    assert list(parsed.objects()) == [literal]
