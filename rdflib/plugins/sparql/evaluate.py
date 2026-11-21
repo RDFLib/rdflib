@@ -227,7 +227,9 @@ def evalGraph(
 
     ctx = ctx.clone()
     graph: Union[str, Path, None, Graph] = ctx[part.term]
-    prev_graph = ctx.graph
+    # Solutions leave the block on ctx, whose graph is the enclosing one.
+    # Changing x.ctx.graph instead would also change it for solutions that
+    # share x.ctx and are still being evaluated inside the block.
     if graph is None:
         for graph in ctx.dataset.contexts():
             # in SPARQL the default graph is NOT a named graph
@@ -238,8 +240,7 @@ def evalGraph(
             c = c.push()
             graphSolution = [{part.term: graph.identifier}]
             for x in _join(evalPart(c, part.p), graphSolution):
-                x.ctx.graph = prev_graph
-                yield x
+                yield FrozenBindings(ctx, x.items())
 
     else:
         if TYPE_CHECKING:
@@ -247,8 +248,7 @@ def evalGraph(
         # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Union[str, Path]"; expected "Union[Node, str, None]"
         c = ctx.pushGraph(ctx.dataset.get_context(graph))  # type: ignore[arg-type]
         for x in evalPart(c, part.p):
-            x.ctx.graph = prev_graph
-            yield x
+            yield FrozenBindings(ctx, x.items())
 
 
 def evalValues(
