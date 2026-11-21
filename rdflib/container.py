@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Iterable, Iterator
 from random import randint
-from typing import Iterable, Iterator, Optional
+from typing import Optional
 
 from rdflib.graph import Graph
 from rdflib.namespace import RDF
