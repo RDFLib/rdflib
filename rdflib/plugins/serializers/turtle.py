@@ -314,6 +314,8 @@ class TurtleSerializer(RecursiveSerializer):
             return False
         while l_:
             if l_ != RDF.nil:
+                if l_ in self._serialized:
+                    return False
                 if len(list(self.store.predicate_objects(l_))) != 2:
                     return False
                 if len(list(self.store.subject_predicates(l_))) != 1:

@@ -1,5 +1,7 @@
 from textwrap import dedent
 
+import pytest
+
 from rdflib import RDF, RDFS, BNode, Graph, Literal, Namespace, URIRef
 from rdflib.collection import Collection
 from rdflib.compare import isomorphic
@@ -106,6 +108,26 @@ def test_turtle_shared_list_tail_round_trips():
     ttl_dump = g.serialize(format="turtle")
     g2 = Graph()
     g2.parse(data=ttl_dump, format="turtle")
+    assert len(g2) == len(g)
+    assert isomorphic(g, g2)
+
+
+@pytest.mark.parametrize("format", ["turtle", "longturtle", "n3"])
+def test_list_hanging_off_blank_node_cycle_round_trips(format: str):
+    p = URIRef("http://example.org/p")
+    x, y, l1, l2 = BNode("b"), BNode("c"), BNode("d"), BNode("a")
+    g = Graph()
+    g.add((x, p, y))
+    g.add((y, p, x))
+    g.add((x, p, l1))
+    g.add((l1, RDF.first, Literal("a")))
+    g.add((l1, RDF.rest, l2))
+    g.add((l2, RDF.first, Literal("b")))
+    g.add((l2, RDF.rest, RDF.nil))
+
+    output = g.serialize(format=format)
+    g2 = Graph()
+    g2.parse(data=output, format="n3" if format == "n3" else "turtle")
     assert len(g2) == len(g)
     assert isomorphic(g, g2)
 
