@@ -19,6 +19,7 @@ import collections
 import itertools
 import logging
 import re
+import sys
 from collections.abc import Generator, Iterable, Mapping
 from typing import (
     TYPE_CHECKING,
@@ -594,11 +595,14 @@ def evalOrderBy(
 def evalSlice(ctx: QueryContext, slice: CompValue):
     res = evalPart(ctx, slice.p)
 
-    return itertools.islice(
-        res,
-        slice.start,
-        slice.start + slice.length if slice.length is not None else None,
+    start = min(slice.start, sys.maxsize)
+    stop = (
+        min(slice.start + slice.length, sys.maxsize)
+        if slice.length is not None
+        else None
     )
+
+    return itertools.islice(res, start, stop)
 
 
 def evalReduced(
