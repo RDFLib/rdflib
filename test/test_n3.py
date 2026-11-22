@@ -10,6 +10,19 @@ from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax, join
 from rdflib.term import Literal, URIRef
 from test import TEST_DIR
 
+
+def test_bad_syntax_exposes_error_message() -> None:
+    with pytest.raises(BadSyntax) as raised:
+        Graph().parse(
+            data="<urn:subject> missing:predicate <urn:object> .", format="turtle"
+        )
+
+    error = raised.value
+    assert error.msg is not None
+    assert 'Prefix "missing:" not bound' in error.msg
+    assert error.msg == str(error)
+
+
 test_data = """
 #  Definitions of terms describing the n3 model
 #
