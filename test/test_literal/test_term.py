@@ -11,8 +11,6 @@ from typing import Union, get_type_hints
 
 import pytest
 
-import pytest
-
 from rdflib.graph import Graph, QuotedGraph
 from rdflib.namespace import RDFS, XSD
 from rdflib.paths import AlternativePath, InvPath, NegatedPath, Path, SequencePath
