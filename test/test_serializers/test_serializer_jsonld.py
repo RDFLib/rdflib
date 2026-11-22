@@ -53,7 +53,7 @@ def test_serialize_context(input: Union[dict[str, Any], Context]) -> None:
         ({"use_native_types": True}, 7),
     ],
 )
-def test_serialize_use_native_types(kwargs: Dict[str, Any], expected: Any) -> None:
+def test_serialize_use_native_types(kwargs: dict[str, Any], expected: Any) -> None:
     """
     Without a context, the JSON-LD serializer writes native JSON values only
     when use_native_types is true, and keeps the lexical form otherwise.

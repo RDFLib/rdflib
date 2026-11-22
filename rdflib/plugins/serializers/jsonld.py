@@ -44,7 +44,7 @@ from __future__ import annotations
 import math
 import warnings
 from collections import Counter
-from typing import IO, Any, Dict, List, Optional, Tuple
+from typing import IO, Any, Dict, Optional, Tuple
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph, _ObjectType
 from rdflib.namespace import RDF, XSD
