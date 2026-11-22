@@ -1,0 +1,31 @@
+@prefix : <http://owldl.com/ontologies/dl-safe.owl#> .
+
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix swrl: <http://www.w3.org/2003/11/swrl#> .
+@prefix list: <http://www.w3.org/2000/10/swap/list#> .
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix string: <http://www.w3.org/2000/10/swap/string#>.
+@prefix fn: <http://www.w3.org/2005/xpath-functions#>.
+@prefix var: <http://localhost/var#>.
+
+{  
+   ?RULE :ruleAntecedent ?FA .
+   ?RULE :ruleConsequent ?FC .
+} => {
+   ?FA => ?FC
+}.
+
+{ :support :rules ?URI } => { :support :rules ?URI } .
+
+ # { ?LC :print ?L . } => { ?LC :print ?L . }.
+ 
+@prefix or: <http://eulergui.sf.net/owl-rule#>.
+
+{
+   ?FORMULA_SUBCLASS or:implies ?FORMULA_SUPERCLASS .
+} => {
+   ?FORMULA_SUBCLASS => ?FORMULA_SUPERCLASS .
+}.

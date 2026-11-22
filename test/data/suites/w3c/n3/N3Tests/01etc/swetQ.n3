@@ -1,0 +1,32 @@
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2003/03swap/brain#>.
+
+{   <swetA11.n3> log:semantics ?A.
+    ?A math:memberCount ?D.
+    <swetA01.n3> log:semantics ?E.
+    ?E math:memberCount ?H.
+    (?D ?H) math:quotient ?I.
+} =>
+{   {{:obs :ascribed :Rain} :given {:obs :ascribed :WetGrass}} e:possibility ?I.
+}.
+
+{   <swetA21.n3> log:semantics ?A.
+    ?A math:memberCount ?D.
+    <swetA01.n3> log:semantics ?E.
+    ?E math:memberCount ?H.
+    (?D ?H) math:quotient ?I.
+} =>
+{   {{:obs :ascribed :Sprinkler} :given {:obs :ascribed :WetGrass}} e:possibility ?I.
+}.
+
+{   <swetA31.n3> log:semantics ?A.
+    ?A math:memberCount ?D.
+    <swetA01.n3> log:semantics ?E.
+    ?E math:memberCount ?H.
+    (?D ?H) math:quotient ?I.
+} =>
+{   {{:obs :ascribed :Rain, :Sprinkler} :given {:obs :ascribed :WetGrass}} e:possibility ?I.
+}.

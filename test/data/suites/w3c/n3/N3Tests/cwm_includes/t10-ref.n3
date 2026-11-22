@@ -1,0 +1,7 @@
+# From swap/tests/ref/bi-t10.n3
+@prefix : <foo.n3#> .
+@prefix local: <t10.n3#>.
+
+:test10a     a :success .
+:fred local:favoriteColor :blue
+:test10b     a :success .

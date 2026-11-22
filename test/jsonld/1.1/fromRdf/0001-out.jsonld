@@ -1,0 +1,12 @@
+[
+  {
+    "@id": "http://example.com/Subj1",
+    "@type": ["http://example.com/Type"],
+    "http://example.com/prop1": [{"@id": "http://example.com/Obj1"}],
+    "http://example.com/prop2": [
+      {"@value": "Plain"},
+      {"@value": "2012-05-12", "@type": "http://www.w3.org/2001/XMLSchema#date"},
+      {"@value": "English", "@language": "en"}
+    ]
+  }
+]

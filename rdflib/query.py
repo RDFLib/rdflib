@@ -1,156 +1,200 @@
+from __future__ import annotations
 
-import os
-import shutil
-import tempfile
-import warnings
+import itertools
 import types
+import warnings
+from collections.abc import Iterator, Mapping, MutableSequence
+from io import BytesIO
+from typing import (
+    IO,
+    TYPE_CHECKING,
+    Any,
+    BinaryIO,
+    Optional,
+    Union,
+    cast,
+    overload,
+)
+from urllib.parse import urlparse
+from urllib.request import url2pathname
 
-from urlparse import urlparse
-try:
-    from io import BytesIO
-    assert BytesIO
-except:
-    from StringIO import StringIO as BytesIO
+__all__ = [
+    "Processor",
+    "UpdateProcessor",
+    "Result",
+    "ResultRow",
+    "ResultParser",
+    "ResultSerializer",
+    "ResultException",
+    "EncodeOnlyUnicode",
+]
 
-from . import py3compat
+import rdflib.term
 
-__all__ = ['Processor', 'Result', 'ResultParser', 'ResultSerializer',
-           'ResultException']
+if TYPE_CHECKING:
+    from rdflib.graph import Graph, _TripleType
+    from rdflib.plugins.sparql.sparql import Query, Update
+    from rdflib.term import Identifier, Variable
 
 
-
-
-class Processor(object):
+class Processor:
     """
     Query plugin interface.
 
     This module is useful for those wanting to write a query processor
     that can plugin to rdf. If you are wanting to execute a query you
     likely want to do so through the Graph class query method.
-
     """
 
-    def __init__(self, graph):
+    def __init__(self, graph: Graph):
         pass
 
-    def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False):
+    # type error: Missing return statement
+    def query(  # type: ignore[empty-body]
+        self,
+        strOrQuery: Union[str, Query],  # noqa: N803
+        initBindings: Mapping[str, Identifier] = {},  # noqa: N803
+        initNs: Mapping[str, Any] = {},  # noqa: N803
+        DEBUG: bool = False,  # noqa: N803
+    ) -> Mapping[str, Any]:
         pass
 
-class UpdateProcessor(object):
-    """
-    Update plugin interface.
+
+class UpdateProcessor:
+    """Update plugin interface.
 
     This module is useful for those wanting to write an update
     processor that can plugin to rdflib. If you are wanting to execute
     an update statement you likely want to do so through the Graph
     class update method.
 
-    .. versionadded:: 4.0
-
+    !!! example "New in version 4.0"
     """
 
-    def __init__(self, graph):
-        pass
-    def update(self, strOrQuery, initBindings={}, initNs={}):
+    def __init__(self, graph: Graph):
         pass
 
-class ResultException(Exception):
+    def update(
+        self,
+        strOrQuery: Union[str, Update],  # noqa: N803
+        initBindings: Mapping[str, Identifier] = {},  # noqa: N803
+        initNs: Mapping[str, Any] = {},  # noqa: N803
+    ) -> None:
+        pass
+
+
+class ResultException(Exception):  # noqa: N818
     pass
 
 
-class EncodeOnlyUnicode(object):
-    """
-    This is a crappy work-around for
-    http://bugs.python.org/issue11649
+class EncodeOnlyUnicode:
+    """This is a crappy work-around for http://bugs.python.org/issue11649"""
 
-
-    """
-
-    def __init__(self, stream):
+    def __init__(self, stream: BinaryIO):
         self.__stream = stream
 
     def write(self, arg):
-        if isinstance(arg, unicode):
+        if isinstance(arg, str):
             self.__stream.write(arg.encode("utf-8"))
         else:
             self.__stream.write(arg)
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
         return getattr(self.__stream, name)
 
 
-class ResultRow(tuple):
-    """
-    a single result row
-    allows accessing bindings as attributes or with []
+class ResultRow(tuple[rdflib.term.Identifier, ...]):
+    """A single result row allows accessing bindings as attributes or with []
 
+    ```python
     >>> from rdflib import URIRef, Variable
     >>> rr=ResultRow({ Variable('a'): URIRef('urn:cake') }, [Variable('a')])
 
     >>> rr[0]
-    rdflib.term.URIRef(%(u)s'urn:cake')
+    rdflib.term.URIRef('urn:cake')
     >>> rr[1]
     Traceback (most recent call last):
         ...
     IndexError: tuple index out of range
 
     >>> rr.a
-    rdflib.term.URIRef(%(u)s'urn:cake')
+    rdflib.term.URIRef('urn:cake')
     >>> rr.b
     Traceback (most recent call last):
         ...
     AttributeError: b
 
     >>> rr['a']
-    rdflib.term.URIRef(%(u)s'urn:cake')
+    rdflib.term.URIRef('urn:cake')
     >>> rr['b']
     Traceback (most recent call last):
         ...
     KeyError: 'b'
 
     >>> rr[Variable('a')]
-    rdflib.term.URIRef(%(u)s'urn:cake')
+    rdflib.term.URIRef('urn:cake')
 
-    .. versionadded:: 4.0
+    ```
 
+    !!! example "New in version 4.0"
     """
-    __doc__ = py3compat.format_doctest_out(__doc__)
 
-    def __new__(cls, values, labels):
+    labels: Mapping[str, int]
 
-        instance = super(ResultRow, cls).__new__(
-            cls, (values.get(v) for v in labels))
-        instance.labels = dict((unicode(x[1]), x[0])
-                               for x in enumerate(labels))
+    def __new__(cls, values: Mapping[Variable, Identifier], labels: list[Variable]):
+        # type error: Value of type variable "Self" of "__new__" of "tuple" cannot be "ResultRow"  [type-var]
+        # type error: Generator has incompatible item type "Optional[Identifier]"; expected "_T_co"  [misc]
+        instance = super(ResultRow, cls).__new__(cls, (values.get(v) for v in labels))  # type: ignore[type-var, misc, unused-ignore]
+        instance.labels = dict((str(x[1]), x[0]) for x in enumerate(labels))
         return instance
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Identifier:
         if name not in self.labels:
             raise AttributeError(name)
         return tuple.__getitem__(self, self.labels[name])
 
-    def __getitem__(self, name):
+    # type error: Signature of "__getitem__" incompatible with supertype "tuple"
+    # type error: Signature of "__getitem__" incompatible with supertype "Sequence"
+    def __getitem__(self, name: Union[str, int, Any]) -> Identifier:  # type: ignore[override]
         try:
-            return tuple.__getitem__(self, name)
+            # type error: Invalid index type "Union[str, int, Any]" for "tuple"; expected type "int"
+            return tuple.__getitem__(self, name)  # type: ignore[index]
         except TypeError:
             if name in self.labels:
-                return tuple.__getitem__(self, self.labels[name])
-            if unicode(name) in self.labels:  # passing in variable object
-                return tuple.__getitem__(self, self.labels[unicode(name)])
+                # type error: Invalid index type "Union[str, int, slice, Any]" for "Mapping[str, int]"; expected type "str"
+                return tuple.__getitem__(self, self.labels[name])  # type: ignore[index]
+            if str(name) in self.labels:  # passing in variable object
+                return tuple.__getitem__(self, self.labels[str(name)])
             raise KeyError(name)
 
-    def asdict(self):
-        return dict((v, self[v]) for v in self.labels if self[v] != None)
+    @overload
+    def get(self, name: str, default: Identifier) -> Identifier: ...
+
+    @overload
+    def get(
+        self, name: str, default: Optional[Identifier] = ...
+    ) -> Optional[Identifier]: ...
+
+    def get(
+        self, name: str, default: Optional[Identifier] = None
+    ) -> Optional[Identifier]:
+        try:
+            return self[name]
+        except KeyError:
+            return default
+
+    def asdict(self) -> dict[str, Identifier]:
+        return dict((v, self[v]) for v in self.labels if self[v] is not None)
 
 
-class Result(object):
+class Result:
     """
     A common class for representing query result.
 
     There is a bit of magic here that makes this appear like different
     Python objects, depending on the type of result.
 
-    If the type is "SELECT", iterating will yield lists of QueryRow objects
+    If the type is "SELECT", iterating will yield lists of ResultRow objects
 
     If the type is "ASK", iterating will yield a single bool (or
     bool(result) will return the same bool)
@@ -158,158 +202,228 @@ class Result(object):
     If the type is "CONSTRUCT" or "DESCRIBE" iterating will yield the
     triples.
 
-    len(result) also works.
-
+    `len(result)` also works.
     """
-    def __init__(self, type_):
 
-        if type_ not in ('CONSTRUCT', 'DESCRIBE', 'SELECT', 'ASK'):
-            raise ResultException('Unknown Result type: %s' % type_)
+    def __init__(self, type_: str):
+        if type_ not in ("CONSTRUCT", "DESCRIBE", "SELECT", "ASK"):
+            raise ResultException("Unknown Result type: %s" % type_)
 
         self.type = type_
-        self.vars = None
-        self._bindings = None
-        self._genbindings = None
-        self.askAnswer = None
-        self.graph = None
+        #: variables contained in the result.
+        self.vars: list[Variable] | None = None
+        """a list of variables contained in the result"""
+        self._bindings: MutableSequence[Mapping[Variable, Identifier]] = None  # type: ignore[assignment]
+        self._genbindings: Optional[Iterator[Mapping[Variable, Identifier]]] = None
+        self.askAnswer: bool | None = None
+        self.graph: Graph | None = None
 
-    def _get_bindings(self):
+    @property
+    def bindings(self) -> MutableSequence[Mapping[Variable, Identifier]]:
+        """
+        a list of variable bindings as dicts
+        """
         if self._genbindings:
             self._bindings += list(self._genbindings)
             self._genbindings = None
 
         return self._bindings
 
-    def _set_bindings(self, b):
-        if isinstance(b, types.GeneratorType):
+    @bindings.setter
+    def bindings(
+        self,
+        b: Union[
+            MutableSequence[Mapping[Variable, Identifier]],
+            Iterator[Mapping[Variable, Identifier]],
+        ],
+    ) -> None:
+        if isinstance(b, (types.GeneratorType, itertools.islice)):
             self._genbindings = b
             self._bindings = []
         else:
-            self._bindings = b
-
-    bindings = property(
-        _get_bindings, _set_bindings, doc="a list of variable bindings as dicts")
+            # type error: Incompatible types in assignment (expression has type "Union[MutableSequence[Mapping[Variable, Identifier]], Iterator[Mapping[Variable, Identifier]]]", variable has type "MutableSequence[Mapping[Variable, Identifier]]")
+            self._bindings = b  # type: ignore[assignment]
 
     @staticmethod
-    def parse(source, format='xml', **kwargs):
+    def parse(
+        source: IO | None = None,
+        format: str | None = None,
+        content_type: str | None = None,
+        **kwargs: Any,
+    ) -> Result:
+        """Parse a query result from a source."""
         from rdflib import plugin
-        parser = plugin.get(format, ResultParser)()
-        return parser.parse(source, **kwargs)
+
+        if format:
+            plugin_key = format
+        elif content_type:
+            plugin_key = content_type.split(";", 1)[0]
+        else:
+            plugin_key = "xml"
+
+        parser = plugin.get(plugin_key, ResultParser)()
+
+        # type error: Argument 1 to "parse" of "ResultParser" has incompatible type "Optional[IO[Any]]"; expected "IO[Any]"
+        return parser.parse(
+            source,  # type: ignore[arg-type]
+            content_type=content_type,
+            **kwargs,
+        )
 
     def serialize(
-            self, destination=None, encoding="utf-8", format='xml', **args):
+        self,
+        destination: str | IO | None = None,
+        encoding: str = "utf-8",
+        format: str = "xml",
+        **args: Any,
+    ) -> bytes | None:
+        """
+        Serialize the query result.
 
-        if self.type in ('CONSTRUCT', 'DESCRIBE'):
-            return self.graph.serialize(
-                destination, encoding=encoding, format=format, **args)
+
+        Args:
+            destination: Path of file output or BufferedIOBase object
+                to write the output to. If `None` this function
+                will return the output as  `bytes`
+            encoding: Encoding of output.
+            format: The format used for serialization.
+                See [sparql.results module][rdflib.plugins.sparql.results]
+                for all builtin SPARQL result serialization.
+                Further serializer can be loaded [as plugin][rdflib.plugin].
+                Some example formats are
+                [csv][rdflib.plugins.sparql.results.csvresults.CSVResultSerializer],
+                [json][rdflib.plugins.sparql.results.jsonresults.JSONResultSerializer],
+                [tsv][rdflib.plugins.sparql.results.tsvresults.TSVResultSerializer],
+                [txt][rdflib.plugins.sparql.results.txtresults.TXTResultSerializer]
+                or
+                [xml][rdflib.plugins.sparql.results.xmlresults.XMLResultSerializer]
+
+        Returns:
+            Serialized result, when destination is not given.
+        """
+        if self.type in ("CONSTRUCT", "DESCRIBE"):
+            # type error: Item "None" of "Optional[Graph]" has no attribute "serialize"
+            # type error: Incompatible return value type (got "Union[bytes, str, Graph, Any]", expected "Optional[bytes]")
+            return self.graph.serialize(  # type: ignore[union-attr,return-value]
+                destination, encoding=encoding, format=format, **args
+            )
 
         """stolen wholesale from graph.serialize"""
         from rdflib import plugin
+
         serializer = plugin.get(format, ResultSerializer)(self)
         if destination is None:
-            stream = BytesIO()
-            stream2 = EncodeOnlyUnicode(stream)
-            serializer.serialize(stream2, encoding=encoding, **args)
-            return stream.getvalue()
+            streamb: BytesIO = BytesIO()
+            stream2 = EncodeOnlyUnicode(streamb)  # TODO: Remove the need for this
+            # TODO: All QueryResult serializers should write to a Bytes Stream.
+            # type error: Argument 1 to "serialize" of "ResultSerializer" has incompatible type "EncodeOnlyUnicode"; expected "IO[Any]"
+            serializer.serialize(stream2, encoding=encoding, **args)  # type: ignore[arg-type]
+            return streamb.getvalue()
         if hasattr(destination, "write"):
-            stream = destination
+            stream = cast(IO[bytes], destination)
             serializer.serialize(stream, encoding=encoding, **args)
         else:
-            location = destination
+            location = cast(str, destination)
             scheme, netloc, path, params, query, fragment = urlparse(location)
-            if netloc != "":
-                print("WARNING: not saving as location" +
-                      "is not a local file reference")
-                return
-            fd, name = tempfile.mkstemp()
-            stream = os.fdopen(fd, 'wb')
-            serializer.serialize(stream, encoding=encoding, **args)
-            stream.close()
-            if hasattr(shutil, "move"):
-                shutil.move(name, path)
+            if scheme == "file":
+                if netloc != "":
+                    raise ValueError(
+                        f"the file URI {location!r} has an authority component which is not supported"
+                    )
+                os_path = url2pathname(path)
             else:
-                shutil.copy(name, path)
-                os.remove(name)
+                os_path = location
+            with open(os_path, "wb") as stream:
+                serializer.serialize(stream, encoding=encoding, **args)
+        return None
 
-    def __len__(self):
-        if self.type == 'ASK':
+    def __len__(self) -> int:
+        if self.type == "ASK":
             return 1
-        elif self.type == 'SELECT':
+        elif self.type == "SELECT":
             return len(self.bindings)
         else:
-            return len(self.graph)
+            # type error: Argument 1 to "len" has incompatible type "Optional[Graph]"; expected "Sized"
+            return len(self.graph)  # type: ignore[arg-type]
 
-    def __nonzero__(self):
-        if self.type == 'ASK':
-            return self.askAnswer
+    def __bool__(self) -> bool:
+        if self.type == "ASK":
+            # type error: Incompatible return value type (got "Optional[bool]", expected "bool")
+            return self.askAnswer  # type: ignore[return-value]
         else:
-            return len(self)>0
+            return len(self) > 0
 
-    def __iter__(self):
+    def __iter__(
+        self,
+    ) -> Iterator[Union[_TripleType, bool, ResultRow]]:
         if self.type in ("CONSTRUCT", "DESCRIBE"):
-            for t in self.graph:
+            # type error: Item "None" of "Optional[Graph]" has no attribute "__iter__" (not iterable)
+            for t in self.graph:  # type: ignore[union-attr]
                 yield t
-        elif self.type == 'ASK':
-            yield self.askAnswer
-        elif self.type == 'SELECT':
+        elif self.type == "ASK":
+            # type error: Incompatible types in "yield" (actual type "Optional[bool]", expected type "Union[tuple[Identifier, Identifier, Identifier], bool, ResultRow]")  [misc]
+            yield self.askAnswer  # type: ignore[misc]
+        elif self.type == "SELECT":
             # this iterates over ResultRows of variable bindings
 
             if self._genbindings:
                 for b in self._genbindings:
                     if b:  # don't add a result row in case of empty binding {}
                         self._bindings.append(b)
-                        yield ResultRow(b, self.vars)
+                        # type error: Argument 2 to "ResultRow" has incompatible type "Optional[list[Variable]]"; expected "list[Variable]"
+                        yield ResultRow(b, self.vars)  # type: ignore[arg-type]
                 self._genbindings = None
             else:
                 for b in self._bindings:
                     if b:  # don't add a result row in case of empty binding {}
-                        yield ResultRow(b, self.vars)
+                        # type error: Argument 2 to "ResultRow" has incompatible type "Optional[list[Variable]]"; expected "list[Variable]"
+                        yield ResultRow(b, self.vars)  # type: ignore[arg-type]
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
         if self.type in ("CONSTRUCT", "DESCRIBE") and self.graph is not None:
-            return self.graph.__getattr__(self, name)
-        elif self.type == 'SELECT' and name == 'result':
+            # type error: "Graph" has no attribute "__getattr__"
+            return self.graph.__getattr__(self, name)  # type: ignore[attr-defined]
+        elif self.type == "SELECT" and name == "result":
             warnings.warn(
                 "accessing the 'result' attribute is deprecated."
                 " Iterate over the object instead.",
-                DeprecationWarning, stacklevel=2)
+                DeprecationWarning,
+                stacklevel=2,
+            )
             # copied from __iter__, above
-            return [(tuple(b[v] for v in self.vars)) for b in self.bindings]
+            # type error: Item "None" of "Optional[list[Variable]]" has no attribute "__iter__" (not iterable)
+            return [(tuple(b[v] for v in self.vars)) for b in self.bindings]  # type: ignore[union-attr]
         else:
-            raise AttributeError(
-                "'%s' object has no attribute '%s'" % (self, name))
+            raise AttributeError("'%s' object has no attribute '%s'" % (self, name))
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         try:
             if self.type != other.type:
                 return False
-            if self.type == 'ASK':
+            if self.type == "ASK":
                 return self.askAnswer == other.askAnswer
-            elif self.type == 'SELECT':
-                return self.vars == other.vars \
-                    and self.bindings == other.bindings
+            elif self.type == "SELECT":
+                return self.vars == other.vars and self.bindings == other.bindings
             else:
                 return self.graph == other.graph
-
-        except:
+        except Exception:
             return False
 
 
-class ResultParser(object):
-
+class ResultParser:
     def __init__(self):
         pass
 
-    def parse(self, source, **kwargs):
+    # type error: Missing return statement
+    def parse(self, source: IO, **kwargs: Any) -> Result:  # type: ignore[empty-body]
         """return a Result object"""
         pass  # abstract
 
 
-class ResultSerializer(object):
-
-    def __init__(self, result):
+class ResultSerializer:
+    def __init__(self, result: Result):
         self.result = result
 
-    def serialize(self, stream, encoding="utf-8", **kwargs):
+    def serialize(self, stream: IO, encoding: str = "utf-8", **kwargs: Any) -> None:
         """return a string properly serialized"""
         pass  # abstract

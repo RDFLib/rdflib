@@ -1,0 +1,122 @@
+#Processed by EYE v18.0417.2132 josd
+#eye http://eulersharp.sourceforge.net/2007/07test/witchE.n3 --query http://eulersharp.sourceforge.net/2007/07test/witchF.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/witch#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:component <#lemma3>;
+  r:component <#lemma4>;
+  r:gives {
+    :GIRL a :WITCH.
+    :GIRL a :BURNS.
+    :GIRL a :ISMADEOFWOOD.
+    :GIRL a :FLOATS.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    :GIRL a :WITCH.
+  };
+  r:evidence (
+    <#lemma5>
+    <#lemma6>
+    [ a r:Fact; r:gives {{:GIRL a :WITCH} e:graphMember {:GIRL a :WITCH}}]
+  );
+  r:rule <#lemma7>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    :GIRL a :BURNS.
+  };
+  r:evidence (
+    <#lemma8>
+    <#lemma9>
+    [ a r:Fact; r:gives {{:GIRL a :BURNS} e:graphMember {:GIRL a :BURNS}}]
+  );
+  r:rule <#lemma7>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    :GIRL a :ISMADEOFWOOD.
+  };
+  r:evidence (
+    <#lemma10>
+    <#lemma11>
+    [ a r:Fact; r:gives {{:GIRL a :ISMADEOFWOOD} e:graphMember {:GIRL a :ISMADEOFWOOD}}]
+  );
+  r:rule <#lemma7>.
+
+<#lemma4> a r:Inference;
+  r:gives {
+    :GIRL a :FLOATS.
+  };
+  r:evidence (
+    <#lemma12>
+    <#lemma13>
+    [ a r:Fact; r:gives {{:GIRL a :FLOATS} e:graphMember {:GIRL a :FLOATS}}]
+  );
+  r:rule <#lemma7>.
+
+<#lemma5> a r:Extraction;
+  r:gives {
+    <http://eulersharp.sourceforge.net/2007/07test/witchE.n3#lemma1> a r:Inference.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witchE.n3>].
+
+<#lemma6> a r:Extraction;
+  r:gives {
+    <http://eulersharp.sourceforge.net/2007/07test/witchE.n3#lemma1> r:gives {:GIRL a :WITCH}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witchE.n3>].
+
+<#lemma7> a r:Extraction;
+  r:gives {
+    {?x_0_1 a r:Inference.
+     ?x_0_1 r:gives ?x_1_1.
+     ?x_1_1 e:graphMember {?x_3_1 ?x_2_1 ?x_4_1}} => {?x_3_1 ?x_2_1 ?x_4_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witchF.n3>].
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    <http://eulersharp.sourceforge.net/2007/07test/witchE.n3#lemma4> a r:Inference.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witchE.n3>].
+
+<#lemma9> a r:Extraction;
+  r:gives {
+    <http://eulersharp.sourceforge.net/2007/07test/witchE.n3#lemma4> r:gives {:GIRL a :BURNS}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witchE.n3>].
+
+<#lemma10> a r:Extraction;
+  r:gives {
+    <http://eulersharp.sourceforge.net/2007/07test/witchE.n3#lemma7> a r:Inference.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witchE.n3>].
+
+<#lemma11> a r:Extraction;
+  r:gives {
+    <http://eulersharp.sourceforge.net/2007/07test/witchE.n3#lemma7> r:gives {:GIRL a :ISMADEOFWOOD}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witchE.n3>].
+
+<#lemma12> a r:Extraction;
+  r:gives {
+    <http://eulersharp.sourceforge.net/2007/07test/witchE.n3#lemma9> a r:Inference.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witchE.n3>].
+
+<#lemma13> a r:Extraction;
+  r:gives {
+    <http://eulersharp.sourceforge.net/2007/07test/witchE.n3#lemma9> r:gives {:GIRL a :FLOATS}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witchE.n3>].
+
+#2018-04-18T08:28:32.891Z in=96 out=4 ent=4 step=5 brake=1 inf=30321 sec=0.024 inf/sec=1263375
+#ENDS
+

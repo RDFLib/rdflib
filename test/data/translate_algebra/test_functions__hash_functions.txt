@@ -1,0 +1,9 @@
+select
+(md5("abc") as ?md5)
+(sha1("abc") as ?sha1)
+(SHA256("abc") as ?SHA256)
+(SHA384("abc") as ?SHA384)
+(SHA512("abc") as ?SHA512)
+where {
+	?s ?p ?o .
+} limit 1

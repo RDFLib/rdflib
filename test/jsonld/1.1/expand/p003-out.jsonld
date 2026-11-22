@@ -1,0 +1,4 @@
+[{
+ "http://example/a": [{"@id": "http://example.org/foo"}],
+ "http://example/b": [{"@id": "http://example.org/bar"}]
+}]

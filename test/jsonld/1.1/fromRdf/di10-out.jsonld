@@ -1,0 +1,4 @@
+[{
+  "@id": "http://example.com/a",
+  "http://example.org/label": [{"@value": "en-US", "@type": "https://www.w3.org/ns/i18n#en-us_rtl"}]
+}]

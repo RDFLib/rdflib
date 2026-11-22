@@ -1,0 +1,66 @@
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix c2d: <http://josd.github.io/eye/reasoning/c2d#>.
+
+{
+    (?POD ?ALPHA ?BETA) c2d:transformer (?Y ?Z).
+} <= {
+    ?SCOPE e:findall (
+        (?H ?F ?G ?J ?K)
+        {
+            ?POD list:member (?F ?G ?J ?K).
+            ("log(_J+0.5)-log(_K+0.5)" ?J ?K) e:calculate ?H.
+        }
+        ?YL
+    ).
+    ?SCOPE e:findall (
+        (?H ?U1 ?U2 ?U3 ?U4)
+        {
+            ?YL list:member (?H ?U1 ?U2 ?U3 ?U4).
+            ?H math:notLessThan 0.
+        }
+        ?PL
+    ).
+    ?PL e:sort ?PS.
+    ?PS e:reverse ?PR.
+    ?SCOPE e:optional {
+        ((?P1 ?P2 ?P3 ?P4 ?P5) ?PI) list:append ?PR.
+        ?PT log:equalTo (?P1 ?P2 ?P3 ?P4 ?P5).
+    }, {
+        ?PT log:equalTo ?PR.
+    }.
+    ?SCOPE e:findall (
+        (?H ?U1 ?U2 ?U3 ?U4)
+        {
+            ?YL list:member (?H ?U1 ?U2 ?U3 ?U4).
+            ?H math:lessThan 0.
+        }
+        ?NL
+    ).
+    ?NL e:sort ?NS.
+    ?SCOPE e:optional {
+        ((?N1 ?N2 ?N3 ?N4 ?N5) ?NI) list:append ?NS.
+        ?NT log:equalTo (?N1 ?N2 ?N3 ?N4 ?N5).
+    }, {
+        ?NT log:equalTo ?NS.
+    }.
+    (?PT ?NT) list:append ?Y.
+    ?SCOPE e:findall (
+        ?H
+        {
+            ?YL list:member (?H ?U1 ?U2 ?U3 ?U4).
+        }
+        ?L
+    ).
+    ?L math:sum ?M.
+    ?L math:memberCount ?N.
+    ?SCOPE e:optional {
+        ?N math:greaterThan 0.
+        ("1/(1+exp(-_ALPHA*_M/_N+_BETA))" ?ALPHA ?M ?N ?BETA) e:calculate ?Z.
+    }, {
+        ?N math:notGreaterThan 0.
+        ("1/(1+exp(_BETA))" ?BETA) e:calculate ?Z.
+    }.
+}.

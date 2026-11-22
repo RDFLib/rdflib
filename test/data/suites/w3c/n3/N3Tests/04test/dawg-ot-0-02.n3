@@ -1,0 +1,16 @@
+# $Id: dawg-ot-0-02.n3 463 2005-02-06 12:27:34Z josd $
+# PxButton | es  | euler --nope --think dawg-data-01.n3 --query dawg-ot-0-02.n3
+# PxButton | cwm | python /w3ccvs/WWW/2000/10/swap/cwm.py dawg-data-01.n3 --think --query"=dawg-ot-0-02.n3"
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+# Get names of people, together with the names of people they know.
+
+[]
+q:select {<> q:answer (?name _:name2)};
+q:where  {?person foaf:name ?name}.
+
+[]
+q:select {<> q:answer (?name ?name2)};
+q:where  {?person foaf:name ?name; foaf:knows ?p2. ?p2 foaf:name ?name2}.

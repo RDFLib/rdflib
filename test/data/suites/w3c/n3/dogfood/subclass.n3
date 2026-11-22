@@ -1,0 +1,3 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+{ ?x a ?C . ?C rdfs:subClassOf ?D } => { ?x a ?D } .

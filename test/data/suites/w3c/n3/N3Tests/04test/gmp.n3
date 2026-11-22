@@ -1,0 +1,15 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/gmp#>.
+
+((:P) e:T) e:depends
+  (() 0.5).
+
+((:P log:implies :C) e:T) e:depends
+  (() 0.5).
+
+((:C) e:T) e:depends
+  ((((:P) e:T) ((:P log:implies :C) e:T)) 1),
+  ((((:P) e:T) ((:P log:implies :C) e:F)) 0),
+  ((((:P) e:F) ((:P log:implies :C) e:T)) 0),
+  ((((:P) e:F) ((:P log:implies :C) e:F)) 0).

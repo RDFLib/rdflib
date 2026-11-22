@@ -1,0 +1,781 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --wcache http://josd.github.io/brain/dqc . --no-distinct-output http://josd.github.io/brain/dqc/sdcoding.n3 --query http://josd.github.io/brain/dqc/sdcoding-q.n3
+
+@prefix dqc: <http://josd.github.io/brain/dqc#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:component <#lemma3>;
+  r:component <#lemma4>;
+  r:component <#lemma5>;
+  r:component <#lemma6>;
+  r:component <#lemma7>;
+  r:component <#lemma8>;
+  r:component <#lemma9>;
+  r:component <#lemma10>;
+  r:component <#lemma11>;
+  r:component <#lemma12>;
+  r:component <#lemma13>;
+  r:component <#lemma14>;
+  r:gives {
+    0 dqc:sdcoding 1 .
+    0 dqc:sdcoding 3 .
+    1 dqc:sdcoding 0 .
+    1 dqc:sdcoding 1 .
+    1 dqc:sdcoding 2 .
+    2 dqc:sdcoding 1 .
+    2 dqc:sdcoding 3 .
+    3 dqc:sdcoding 1 .
+    3 dqc:sdcoding 3 .
+    3 dqc:sdcoding 0 .
+    3 dqc:sdcoding 2 .
+    0 dqc:sdcoding 0 .
+    2 dqc:sdcoding 0 .
+    2 dqc:sdcoding 2 .
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    0 dqc:sdcoding 1 .
+  };
+  r:evidence (
+    <#lemma15>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:rule <#lemma16>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    0 dqc:sdcoding 3 .
+  };
+  r:evidence (
+    <#lemma17>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 3];
+  r:rule <#lemma16>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    1 dqc:sdcoding 0 .
+  };
+  r:evidence (
+    <#lemma18>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 0];
+  r:rule <#lemma16>.
+
+<#lemma4> a r:Inference;
+  r:gives {
+    1 dqc:sdcoding 1 .
+  };
+  r:evidence (
+    <#lemma19>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:rule <#lemma16>.
+
+<#lemma5> a r:Inference;
+  r:gives {
+    1 dqc:sdcoding 2 .
+  };
+  r:evidence (
+    <#lemma20>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 2];
+  r:rule <#lemma16>.
+
+<#lemma6> a r:Inference;
+  r:gives {
+    2 dqc:sdcoding 1 .
+  };
+  r:evidence (
+    <#lemma21>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:rule <#lemma16>.
+
+<#lemma7> a r:Inference;
+  r:gives {
+    2 dqc:sdcoding 3 .
+  };
+  r:evidence (
+    <#lemma22>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 3];
+  r:rule <#lemma16>.
+
+<#lemma8> a r:Inference;
+  r:gives {
+    3 dqc:sdcoding 1 .
+  };
+  r:evidence (
+    <#lemma23>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:rule <#lemma16>.
+
+<#lemma9> a r:Inference;
+  r:gives {
+    3 dqc:sdcoding 3 .
+  };
+  r:evidence (
+    <#lemma24>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 3];
+  r:rule <#lemma16>.
+
+<#lemma10> a r:Inference;
+  r:gives {
+    3 dqc:sdcoding 0 .
+  };
+  r:evidence (
+    <#lemma25>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 0];
+  r:rule <#lemma16>.
+
+<#lemma11> a r:Inference;
+  r:gives {
+    3 dqc:sdcoding 2 .
+  };
+  r:evidence (
+    <#lemma26>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 2];
+  r:rule <#lemma16>.
+
+<#lemma12> a r:Inference;
+  r:gives {
+    0 dqc:sdcoding 0 .
+  };
+  r:evidence (
+    <#lemma27>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 0];
+  r:rule <#lemma16>.
+
+<#lemma13> a r:Inference;
+  r:gives {
+    2 dqc:sdcoding 0 .
+  };
+  r:evidence (
+    <#lemma28>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 0];
+  r:rule <#lemma16>.
+
+<#lemma14> a r:Inference;
+  r:gives {
+    2 dqc:sdcoding 2 .
+  };
+  r:evidence (
+    <#lemma29>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 2];
+  r:rule <#lemma16>.
+
+<#lemma15> a r:Inference;
+  r:gives {
+    0 dqc:sdcoding 1 .
+  };
+  r:evidence (
+    <#lemma30>
+    <#lemma31>
+    <#lemma32>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:rule <#lemma33>.
+
+<#lemma16> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 dqc:sdcoding var:x_1} => {var:x_0 dqc:sdcoding var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding-q.n3>].
+
+<#lemma17> a r:Inference;
+  r:gives {
+    0 dqc:sdcoding 3 .
+  };
+  r:evidence (
+    <#lemma30>
+    <#lemma31>
+    <#lemma34>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 3];
+  r:rule <#lemma33>.
+
+<#lemma18> a r:Inference;
+  r:gives {
+    1 dqc:sdcoding 0 .
+  };
+  r:evidence (
+    <#lemma30>
+    <#lemma35>
+    <#lemma36>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:rule <#lemma33>.
+
+<#lemma19> a r:Inference;
+  r:gives {
+    1 dqc:sdcoding 1 .
+  };
+  r:evidence (
+    <#lemma30>
+    <#lemma35>
+    <#lemma37>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:rule <#lemma33>.
+
+<#lemma20> a r:Inference;
+  r:gives {
+    1 dqc:sdcoding 2 .
+  };
+  r:evidence (
+    <#lemma30>
+    <#lemma35>
+    <#lemma38>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 2];
+  r:rule <#lemma33>.
+
+<#lemma21> a r:Inference;
+  r:gives {
+    2 dqc:sdcoding 1 .
+  };
+  r:evidence (
+    <#lemma30>
+    <#lemma39>
+    <#lemma32>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:rule <#lemma33>.
+
+<#lemma22> a r:Inference;
+  r:gives {
+    2 dqc:sdcoding 3 .
+  };
+  r:evidence (
+    <#lemma30>
+    <#lemma39>
+    <#lemma34>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 3];
+  r:rule <#lemma33>.
+
+<#lemma23> a r:Inference;
+  r:gives {
+    3 dqc:sdcoding 1 .
+  };
+  r:evidence (
+    <#lemma30>
+    <#lemma40>
+    <#lemma32>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:rule <#lemma33>.
+
+<#lemma24> a r:Inference;
+  r:gives {
+    3 dqc:sdcoding 3 .
+  };
+  r:evidence (
+    <#lemma30>
+    <#lemma40>
+    <#lemma34>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 3];
+  r:rule <#lemma33>.
+
+<#lemma25> a r:Inference;
+  r:gives {
+    3 dqc:sdcoding 0 .
+  };
+  r:evidence (
+    <#lemma30>
+    <#lemma41>
+    <#lemma36>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:rule <#lemma33>.
+
+<#lemma26> a r:Inference;
+  r:gives {
+    3 dqc:sdcoding 2 .
+  };
+  r:evidence (
+    <#lemma30>
+    <#lemma41>
+    <#lemma38>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 2];
+  r:rule <#lemma33>.
+
+<#lemma27> a r:Inference;
+  r:gives {
+    0 dqc:sdcoding 0 .
+  };
+  r:evidence (
+    <#lemma42>
+    <#lemma43>
+    <#lemma44>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:rule <#lemma33>.
+
+<#lemma28> a r:Inference;
+  r:gives {
+    2 dqc:sdcoding 0 .
+  };
+  r:evidence (
+    <#lemma42>
+    <#lemma45>
+    <#lemma46>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:rule <#lemma33>.
+
+<#lemma29> a r:Inference;
+  r:gives {
+    2 dqc:sdcoding 2 .
+  };
+  r:evidence (
+    <#lemma42>
+    <#lemma45>
+    <#lemma47>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 2];
+  r:rule <#lemma33>.
+
+<#lemma30> a r:Extraction;
+  r:gives {
+    false dqc:r false.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma31> a r:Inference;
+  r:gives {
+    0 dqc:alice (false false).
+  };
+  r:evidence (
+    <#lemma48>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:rule <#lemma49>.
+
+<#lemma32> a r:Inference;
+  r:gives {
+    (false false) dqc:bob 1 .
+  };
+  r:evidence (
+    <#lemma50>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:rule <#lemma51>.
+
+<#lemma33> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4. {var:x_2 dqc:sdcoding var:x_4} <= {var:x_0 dqc:r var:x_1.
+     var:x_2 dqc:alice (var:x_0 var:x_3).
+     (var:x_3 var:x_1) dqc:bob var:x_4}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma34> a r:Inference;
+  r:gives {
+    (false false) dqc:bob 3 .
+  };
+  r:evidence (
+    <#lemma48>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:rule <#lemma52>.
+
+<#lemma35> a r:Inference;
+  r:gives {
+    1 dqc:alice (false true).
+  };
+  r:evidence (
+    <#lemma53>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo true];
+  r:rule <#lemma54>.
+
+<#lemma36> a r:Inference;
+  r:gives {
+    (true false) dqc:bob 0 .
+  };
+  r:evidence (
+    <#lemma55>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:rule <#lemma56>.
+
+<#lemma37> a r:Inference;
+  r:gives {
+    (true false) dqc:bob 1 .
+  };
+  r:evidence (
+    <#lemma57>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:rule <#lemma51>.
+
+<#lemma38> a r:Inference;
+  r:gives {
+    (true false) dqc:bob 2 .
+  };
+  r:evidence (
+    <#lemma58>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:rule <#lemma59>.
+
+<#lemma39> a r:Inference;
+  r:gives {
+    2 dqc:alice (false false).
+  };
+  r:evidence (
+    <#lemma50>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:rule <#lemma60>.
+
+<#lemma40> a r:Inference;
+  r:gives {
+    3 dqc:alice (false false).
+  };
+  r:evidence (
+    <#lemma61>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:rule <#lemma62>.
+
+<#lemma41> a r:Inference;
+  r:gives {
+    3 dqc:alice (false true).
+  };
+  r:evidence (
+    <#lemma63>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo true];
+  r:rule <#lemma62>.
+
+<#lemma42> a r:Extraction;
+  r:gives {
+    true dqc:r true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma43> a r:Inference;
+  r:gives {
+    0 dqc:alice (true true).
+  };
+  r:evidence (
+    <#lemma64>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo true];
+  r:rule <#lemma49>.
+
+<#lemma44> a r:Inference;
+  r:gives {
+    (true true) dqc:bob 0 .
+  };
+  r:evidence (
+    <#lemma65>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo true];
+  r:rule <#lemma56>.
+
+<#lemma45> a r:Inference;
+  r:gives {
+    2 dqc:alice (true false).
+  };
+  r:evidence (
+    <#lemma57>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:rule <#lemma60>.
+
+<#lemma46> a r:Inference;
+  r:gives {
+    (false true) dqc:bob 0 .
+  };
+  r:evidence (
+    <#lemma66>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo true];
+  r:rule <#lemma56>.
+
+<#lemma47> a r:Inference;
+  r:gives {
+    (false true) dqc:bob 2 .
+  };
+  r:evidence (
+    <#lemma53>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo true];
+  r:rule <#lemma59>.
+
+<#lemma48> a r:Extraction;
+  r:gives {
+    false dqc:id false.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma49> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {0 dqc:alice (var:x_0 var:x_1)} <= {var:x_0 dqc:id var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma50> a r:Extraction;
+  r:gives {
+    false dqc:k false.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma51> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {(var:x_0 var:x_1) dqc:bob 1} <= {var:x_0 dqc:k var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma52> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {(var:x_0 var:x_1) dqc:bob 3} <= {var:x_0 dqc:id var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma53> a r:Extraction;
+  r:gives {
+    false dqc:g true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma54> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {1 dqc:alice (var:x_0 var:x_1)} <= {var:x_0 dqc:g var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma55> a r:Inference;
+  r:gives {
+    true dqc:gk false.
+  };
+  r:evidence (
+    <#lemma67>
+    <#lemma58>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo false];
+  r:rule <#lemma68>.
+
+<#lemma56> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {(var:x_0 var:x_1) dqc:bob 0} <= {var:x_0 dqc:gk var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma57> a r:Extraction;
+  r:gives {
+    true dqc:k false.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma58> a r:Extraction;
+  r:gives {
+    true dqc:g false.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma59> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {(var:x_0 var:x_1) dqc:bob 2} <= {var:x_0 dqc:g var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma60> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {2 dqc:alice (var:x_0 var:x_1)} <= {var:x_0 dqc:k var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma61> a r:Inference;
+  r:gives {
+    false dqc:kg false.
+  };
+  r:evidence (
+    <#lemma53>
+    <#lemma57>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo false];
+  r:rule <#lemma69>.
+
+<#lemma62> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {3 dqc:alice (var:x_0 var:x_1)} <= {var:x_0 dqc:kg var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma63> a r:Inference;
+  r:gives {
+    false dqc:kg true.
+  };
+  r:evidence (
+    <#lemma53>
+    <#lemma67>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:rule <#lemma69>.
+
+<#lemma64> a r:Extraction;
+  r:gives {
+    true dqc:id true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma65> a r:Inference;
+  r:gives {
+    true dqc:gk true.
+  };
+  r:evidence (
+    <#lemma57>
+    <#lemma53>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:rule <#lemma68>.
+
+<#lemma66> a r:Inference;
+  r:gives {
+    false dqc:gk true.
+  };
+  r:evidence (
+    <#lemma50>
+    <#lemma53>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:rule <#lemma68>.
+
+<#lemma67> a r:Extraction;
+  r:gives {
+    true dqc:k true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma68> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2. {var:x_0 dqc:gk var:x_2} <= {var:x_0 dqc:k var:x_1.
+     var:x_1 dqc:g var:x_2}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+<#lemma69> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2. {var:x_0 dqc:kg var:x_2} <= {var:x_0 dqc:g var:x_1.
+     var:x_1 dqc:k var:x_2}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding.n3>].
+
+#2020-02-22T21:51:05.991Z in=29 out=14 ent=14 step=24 brake=1 inf=96679 sec=0.114 inf/sec=848061
+#ENDS
+

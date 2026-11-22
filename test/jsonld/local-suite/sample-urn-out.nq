@@ -1,0 +1,3 @@
+<urn:example:2:nsvocab> <urn:example:1:foo> ":bar" .
+<urn:example:2:nsvocab> <urn:example:3:baz> ":qwerty" .
+<urn:example:2:nsvocab> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <urn:example:1:nsthing> .

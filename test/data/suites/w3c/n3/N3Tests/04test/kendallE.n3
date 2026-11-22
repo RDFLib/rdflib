@@ -1,0 +1,21 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix myfoaf: <http://clark.dallas.tx.us/kendall/foaf.rdf#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+myfoaf:kendall foaf:depiction <http://clark.dallas.tx.us/kendall/kendall.jpg>. 
+myfoaf:kendall foaf:schoolHomepage <http://www.smu.edu/>. 
+myfoaf:kendall foaf:name "Kendall Grant Clark". 
+myfoaf:kendall foaf:workplaceHomepage <http://www.mindswap.org/>. 
+myfoaf:kendall foaf:homepage <http://clark.dallas.tx.us/kendall/>. 
+myfoaf:kendall foaf:knows myfoaf:edd. 
+myfoaf:kendall foaf:knows myfoaf:niel. 
+myfoaf:kendall rdf:type foaf:Person. 
+myfoaf:edd foaf:mbox <mailto:edd@usefulinc.com>. 
+myfoaf:edd rdf:type foaf:Person. 
+myfoaf:niel rdf:type foaf:Person. 
+myfoaf:niel foaf:mbox <mailto:niel@bornstein.atlanta.ga.us>. 
+

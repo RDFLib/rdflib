@@ -1,0 +1,7 @@
+{
+  "@context": {
+    "@vocab": "http://example.org/vocab",
+    ":term": {"@type": "@id"}
+  },
+  ":term": "http://example.org/base"
+}

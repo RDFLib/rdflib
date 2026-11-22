@@ -1,37 +1,71 @@
+from __future__ import annotations
+
 import codecs
-from xml.sax.saxutils import quoteattr, escape
+from collections.abc import Iterable
+from functools import lru_cache
+from typing import IO, TYPE_CHECKING
+from xml.parsers import expat
+from xml.sax.saxutils import escape, quoteattr
 
-__all__ = ['XMLWriter']
+from rdflib.namespace import XMLNS, is_ncname
+from rdflib.term import URIRef
 
-ESCAPE_ENTITIES = {
-    '\r': '&#13;'
-}
+if TYPE_CHECKING:
+    from rdflib.namespace import Namespace, NamespaceManager
 
 
-class XMLWriter(object):
-    def __init__(self, stream, namespace_manager, encoding=None,
-                 decl=1, extra_ns=None):
-        encoding = encoding or 'utf-8'
-        encoder, decoder, stream_reader, stream_writer = \
-            codecs.lookup(encoding)
-        self.stream = stream = stream_writer(stream)
+__all__ = ["XMLWriter"]
+
+ESCAPE_ENTITIES = {"\r": "&#13;"}
+
+
+@lru_cache(maxsize=512)
+def _is_xml_ncname(name: str) -> bool:
+    """Check local names against the XML parser used by RDFLib."""
+    if not is_ncname(name):
+        return False
+    try:
+        expat.ParserCreate(namespace_separator=" ").Parse(f"<{name}/>", True)
+    except expat.ExpatError:
+        return False
+    return True
+
+
+class XMLWriter:
+    """A simple XML writer that writes to a stream."""
+
+    def __init__(
+        self,
+        stream: IO[bytes],
+        namespace_manager: NamespaceManager,
+        encoding: str | None = None,
+        decl: int = 1,
+        extra_ns: dict[str, Namespace] | None = None,
+    ):
+        encoding = encoding or "utf-8"
+        encoder, decoder, stream_reader, stream_writer = codecs.lookup(encoding)
+        # NOTE on type ignores: this is mainly because the variable is being re-used.
+        # type error: Incompatible types in assignment (expression has type "StreamWriter", variable has type "IO[bytes]")
+        self.stream = stream = stream_writer(stream)  # type: ignore[assignment]
         if decl:
-            stream.write('<?xml version="1.0" encoding="%s"?>' % encoding)
-        self.element_stack = []
+            # type error: No overload variant of "write" of "IO" matches argument type "str"
+            stream.write('<?xml version="1.0" encoding="%s"?>' % encoding)  # type: ignore[call-overload]
+        self.element_stack: list[str] = []
         self.nm = namespace_manager
         self.extra_ns = extra_ns or {}
         self.closed = True
 
-    def __get_indent(self):
+    def __get_indent(self) -> str:
         return "  " * len(self.element_stack)
+
     indent = property(__get_indent)
 
-    def __close_start_tag(self):
+    def __close_start_tag(self) -> None:
         if not self.closed:  # TODO:
             self.closed = True
             self.stream.write(">")
 
-    def push(self, uri):
+    def push(self, uri: str) -> None:
         self.__close_start_tag()
         write = self.stream.write
         write("\n")
@@ -41,7 +75,7 @@ class XMLWriter(object):
         self.closed = False
         self.parent = False
 
-    def pop(self, uri=None):
+    def pop(self, uri: str | None = None) -> None:
         top = self.element_stack.pop()
         if uri:
             assert uri == top
@@ -56,25 +90,34 @@ class XMLWriter(object):
             write("</%s>" % self.qname(top))
         self.parent = True
 
-    def element(self, uri, content, attributes={}):
+    def element(
+        self, uri: str, content: str, attributes: dict[URIRef, str] = {}
+    ) -> None:
         """Utility method for adding a complete simple element"""
         self.push(uri)
-        for k, v in attributes.iteritems():
+        for k, v in attributes.items():
             self.attribute(k, v)
         self.text(content)
         self.pop()
 
-    def namespaces(self, namespaces=None):
-        if not namespaces:
+    def namespaces(self, namespaces: Iterable[tuple[str, str]] | None = None) -> None:
+        if namespaces is None:
             namespaces = self.nm.namespaces()
 
         write = self.stream.write
         write("\n")
         for prefix, namespace in namespaces:
+            if prefix in self.extra_ns:
+                if prefix and str(namespace) != str(self.extra_ns[prefix]):
+                    raise ValueError(
+                        f"Namespace prefix {prefix!r} is bound to both "
+                        f"{str(namespace)!r} and {str(self.extra_ns[prefix])!r}"
+                    )
+                # Extra default namespaces take precedence, as required by TriX.
+                continue
             if prefix:
                 write('  xmlns:%s="%s"\n' % (prefix, namespace))
-            # Allow user-provided namespace bindings to prevail
-            elif prefix not in self.extra_ns:
+            else:
                 write('  xmlns="%s"\n' % namespace)
 
         for prefix, namespace in self.extra_ns.items():
@@ -83,28 +126,32 @@ class XMLWriter(object):
             else:
                 write('  xmlns="%s"\n' % namespace)
 
-    def attribute(self, uri, value):
+    def attribute(self, uri: str, value: str) -> None:
         write = self.stream.write
         write(" %s=%s" % (self.qname(uri), quoteattr(value)))
 
-    def text(self, text):
+    def text(self, text: str) -> None:
         self.__close_start_tag()
-        if "<" in text and ">" in text and not "]]>" in text:
+        if "<" in text and ">" in text and "]]>" not in text:
             self.stream.write("<![CDATA[")
             self.stream.write(text)
             self.stream.write("]]>")
         else:
             self.stream.write(escape(text, ESCAPE_ENTITIES))
 
-    def qname(self, uri):
+    def qname(self, uri: str) -> str:
         """Compute qname for a uri using our extra namespaces,
         or the given namespace manager"""
 
         for pre, ns in self.extra_ns.items():
-            if uri.startswith(ns):
+            if uri.startswith(ns) and _is_xml_ncname(uri[len(ns) :]):
                 if pre != "":
-                    return ":".join(pre, uri[len(ns):])
+                    return ":".join([pre, uri[len(ns) :]])
                 else:
-                    return uri[len(ns):]
+                    return uri[len(ns) :]
 
-        return self.nm.qname(uri)
+        # The xml prefix is predefined and never declared
+        if uri.startswith(XMLNS) and _is_xml_ncname(uri[len(XMLNS) :]):
+            return "xml:" + uri[len(XMLNS) :]
+
+        return self.nm.qname_strict(uri)

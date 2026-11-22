@@ -1,6 +1,0 @@
-# Two elements in the group
-PREFIX :  <http://example.org/ns#>
-SELECT *
-{ :p :q :r  OPTIONAL { :a :b :c } 
-  :p :q :r  OPTIONAL { :a :b :c } 
-}

@@ -1,0 +1,16 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+{_: e:true 0.20} => {:A e:boolean e:T}.
+
+{:A e:boolean e:T. _: e:true 0.80} => {:B e:boolean e:T}.
+{:A e:boolean e:F. _: e:true 0.02} => {:B e:boolean e:T}.
+
+{:A e:boolean e:T. _: e:true 0.70} => {:C e:boolean e:T}.
+{:A e:boolean e:F. _: e:true 0.03} => {:C e:boolean e:T}.
+
+{:B e:boolean e:T. _: e:true 0.70} => {:D e:boolean e:T}.
+{:B e:boolean e:F. _: e:true 0.03} => {:D e:boolean e:T}.
+
+{:C e:boolean e:T. _: e:true 0.80} => {:D e:boolean e:T}.
+{:C e:boolean e:F. _: e:true 0.02} => {:D e:boolean e:T}.

@@ -1,0 +1,16 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@vocab": "http://example.com/",
+    "container": {
+      "@id": "http://example.com/container",
+      "@container": "@index",
+      "@index": true
+    }
+  },
+  "@id": "http://example.com/annotationsTest",
+  "container": {
+    "en": "The Queen",
+    "de": [ "Die Königin", "Ihre Majestät" ]
+  }
+}

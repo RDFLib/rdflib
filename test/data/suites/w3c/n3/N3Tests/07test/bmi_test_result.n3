@@ -1,0 +1,80 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/bmi_instances.n3 http://eulersharp.sourceforge.net/2003/03swap/bmi_rules.n3 http://eulersharp.sourceforge.net/2003/03swap/weightStatus_rules.n3 http://eulersharp.sourceforge.net/2003/03swap/age_rules_backward.n3 --query http://eulersharp.sourceforge.net/2007/07test/bmi_query.n3
+
+@prefix i: <http://eulersharp.sourceforge.net/2007/07test/bmi_instances.n3#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix physical: <http://eulersharp.sourceforge.net/2003/03swap/physicalResource#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix dce: <http://purl.org/dc/elements/1.1/>.
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix func: <http://www.w3.org/2007/rif-builtin-function#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix organism: <http://eulersharp.sourceforge.net/2003/03swap/organism#>.
+@prefix schema: <http://schema.org/>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix fos: <http://eulersharp.sourceforge.net/2003/03swap/foster#>.
+@prefix event: <http://eulersharp.sourceforge.net/2003/03swap/event#>.
+@prefix time: <http://eulersharp.sourceforge.net/2003/03swap/time#>.
+@prefix quant: <http://eulersharp.sourceforge.net/2003/03swap/quantities#>.
+@prefix units: <http://eulersharp.sourceforge.net/2003/03swap/units#>.
+@prefix humanbody: <http://eulersharp.sourceforge.net/2003/03swap/humanBody#>.
+@prefix human: <http://eulersharp.sourceforge.net/2003/03swap/human#>.
+
+i:adult3 human:hasBodyMassIndex _:sk_0.
+i:adult3 human:hasWeightStatus _:sk_3.
+_:sk_0 time:hasDateTime "2010-01-20T00:00:00+01:00"^^xsd:dateTime.
+_:sk_0 quant:hasUnit units:kilogramPerMeterSquare.
+_:sk_0 quant:hasValue 15.299747554165355 .
+_:sk_0 event:basedOn i:weightMeasurement3.
+_:sk_0 event:basedOn i:lengthMeasurement3.
+_:sk_3 a humanbody:SeverelyUnderweight.
+_:sk_3 time:hasDateTime "2010-01-20T00:00:00+01:00"^^xsd:dateTime.
+_:sk_3 event:basedOn _:sk_0.
+i:adult4 human:hasBodyMassIndex _:sk_1.
+i:adult4 human:hasWeightStatus _:sk_5.
+_:sk_1 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+_:sk_1 quant:hasUnit units:kilogramPerMeterSquare.
+_:sk_1 quant:hasValue 24.535123966942148 .
+_:sk_1 event:basedOn i:weightMeasurement4.
+_:sk_1 event:basedOn i:lengthMeasurement4.
+_:sk_5 a humanbody:NormalWeight.
+_:sk_5 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+_:sk_5 event:basedOn _:sk_1.
+i:adult5 human:hasBodyMassIndex _:sk_2.
+i:adult5 human:hasWeightStatus _:sk_4.
+_:sk_2 time:hasDateTime "2011-02-20T00:00:00+01:00"^^xsd:dateTime.
+_:sk_2 quant:hasUnit units:kilogramPerMeterSquare.
+_:sk_2 quant:hasValue 18.359697064998425 .
+_:sk_2 event:basedOn i:weightMeasurement5.
+_:sk_2 event:basedOn i:lengthMeasurement5.
+_:sk_4 a humanbody:Underweight.
+_:sk_4 time:hasDateTime "2011-02-20T00:00:00+01:00"^^xsd:dateTime.
+_:sk_4 event:basedOn _:sk_2.
+i:adult1 human:hasBodyMassIndex _:sk_7.
+i:adult1 human:hasWeightStatus _:sk_11.
+_:sk_7 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+_:sk_7 quant:hasUnit units:kilogramPerMeterSquare.
+_:sk_7 quant:hasValue 55.4016620498615 .
+_:sk_7 event:basedOn i:weightMeasurement1.
+_:sk_7 event:basedOn i:lengthMeasurement1.
+_:sk_11 a humanbody:SuperObese.
+_:sk_11 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+_:sk_11 event:basedOn _:sk_7.
+i:adult2 human:hasBodyMassIndex _:sk_9.
+i:adult2 human:hasWeightStatus _:sk_10.
+_:sk_9 time:hasDateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime.
+_:sk_9 quant:hasUnit units:kilogramPerMeterSquare.
+_:sk_9 quant:hasValue 26.17489589530042 .
+_:sk_9 event:basedOn i:weightMeasurement2.
+_:sk_9 event:basedOn i:lengthMeasurement2.
+_:sk_10 a humanbody:Overweight.
+_:sk_10 time:hasDateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime.
+_:sk_10 event:basedOn _:sk_9.
+
+#2018-04-18T08:27:45.111Z in=297 out=50 ent=100 step=48 brake=4 inf=75105 sec=0.035 inf/sec=2145857
+#ENDS
+

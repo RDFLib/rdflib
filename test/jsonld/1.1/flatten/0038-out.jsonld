@@ -1,0 +1,44 @@
+[
+    {
+        "@id": "_:b0",
+        "@type": [
+            "_:b0"
+        ],
+        "_:b0": [
+            {
+                "@id": "_:b0"
+            },
+            {
+                "@id": "_:b1"
+            },
+            {
+                "@value": "plain value"
+            },
+            {
+                "@id": "_:b2"
+            },
+            {
+                "@id": "_:b3"
+            },
+            {
+                "@id": "https://w3c.github.io/json-ld-api/tests/flatten/relativeIri"
+            }
+        ]
+    },
+    {
+        "@id": "_:b1",
+        "_:b0": [
+            {
+                "@value": "term"
+            }
+        ]
+    },
+    {
+        "@id": "_:b2",
+        "_:b0": [
+            {
+                "@value": "termId"
+            }
+        ]
+    }
+]

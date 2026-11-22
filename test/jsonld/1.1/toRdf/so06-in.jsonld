@@ -1,0 +1,13 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@vocab": "http://example/",
+    "bar": {
+      "@context": {
+        "@import": "so06-context.jsonld",
+        "@propagate": false
+      }
+    }
+  },
+  "bar": {"baz": {"baz": "buzz"}}
+}

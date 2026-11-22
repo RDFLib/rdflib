@@ -1,0 +1,182 @@
+
+
+@prefix : <http://smartlab.elis.ugent.be/aimontologies/geometry/instancesSTLTest#>.
+@prefix x3d: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologyx3d20091015#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix list: <http://www.co-ode.org/ontologies/lists/2008/09/11/list.owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix inst: <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> . 
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix stl:     <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101#> .
+@prefix matrix: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/matrix#>.
+@prefix we: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/wingededge#>.
+
+
+  # Search neighbourtriangles in one face.
+	{
+  ?face a we:FinalFace.
+  ?TriangleA we:partofface ?face.
+  ?TriangleB we:partofface ?face.
+  ?TriangleA we:neighbourtriangle ?TriangleB.
+  }
+  =>
+  {
+  ?TriangleA we:faceneighbourtriangle ?TriangleB.
+  }.
+  
+  # Put the faceneighbour triangles in a sorted list.
+  { 
+     ?TriangleA a stl:StlTriangle.
+     ?y e:findall (?TriangleE {?TriangleA we:faceneighbourtriangle ?TriangleE} ?ANSWER)
+  }
+  =>
+  {
+     ?TriangleA we:faceneighbourtriangles ?ANSWER
+  }.
+  
+  # Neighbourcount
+  {
+	   ?TriangleA we:faceneighbourtriangles ?NTlist.
+	   ?NTlist e:length ?length.
+  }
+  =>
+  {
+     ?TriangleA we:faceneighbourcount ?length.
+  }.
+
+  
+  # Detect EdgeTriangles
+  {
+	   ?TriangleX a stl:StlTriangle.
+	   ?TriangleX we:faceneighbourcount 2.
+  }
+  =>
+  {
+     ?TriangleX a we:faceedgetriangle.
+  }.
+  {
+	   ?TriangleX a stl:StlTriangle.
+	   ?TriangleX we:faceneighbourcount 1.
+  }
+  =>
+  {
+     ?TriangleX a we:facedoubleedgetriangle.
+  }.
+  {
+	   ?TriangleX a stl:StlTriangle.
+	   ?TriangleX we:faceneighbourcount 3.
+  }
+  =>
+  {
+     ?TriangleX a we:nofaceedgetriangle.
+  }.
+  
+  # Search edges of triangles are part of a total faceedge.
+  {
+  ?TriangleA a we:facedoubleedgetriangle.
+  ?TriangleA we:faceneighbourtriangle ?TriangleB.
+  ?edge1 we:isEdgeOf ?TriangleA.
+  ?edge2 we:isEdgeOf ?TriangleB.
+  ?edge1 we:vertexStart ?vS1.
+  ?edge1 we:vertexEnd ?vE1.
+  ?edge2 we:vertexStart ?vE1.
+  ?edge2 we:vertexEnd ?vS1.
+	}
+	=>
+	{
+	?edge1 a we:nofaceedge.
+  }.
+  
+  {
+  ?TriangleA a we:faceedgetriangle.
+  ?TriangleA we:faceneighbourtriangle ?TriangleB.
+  ?TriangleA we:faceneighbourtriangle ?TriangleC.
+  ?TriangleB log:notEqualTo ?TriangleC.
+  ?edge1a we:isEdgeOf ?TriangleA.
+  ?edge1b we:isEdgeOf ?TriangleA.
+  ?edge1a log:notEqualTo ?edge1b.
+  
+  ?edge2 we:isEdgeOf ?TriangleB.
+  ?edge3 we:isEdgeOf ?TriangleC.
+  
+  ?edge1a we:vertexStart ?vS1.
+  ?edge1a we:vertexEnd ?vE1.
+  ?edge2 we:vertexStart ?vE1.
+  ?edge2 we:vertexEnd ?vS1.
+  ?edge1b we:vertexStart ?vS2.
+  ?edge1b we:vertexEnd ?vE2.
+  ?edge3 we:vertexStart ?vE2.
+  ?edge3 we:vertexEnd ?vS2.
+	}
+	=>
+	{
+	?edge1a a we:nofaceedge.
+	?edge1b a we:nofaceedge.
+  }.
+  
+  {
+  ?TriangleA a we:nofaceedgetriangle.
+  ?edge1 we:isEdgeOf ?TriangleA.
+	}
+	=>
+	{
+	?edge1 a we:nofaceedge.
+  }.  
+  
+  {
+  ?edge we:isEdgeOf ?triangle.
+  ?y e:findall (?edge {?edge a we:nofaceedge.} ()).
+	}
+	=>
+	{
+	?edge a we:faceedge.
+  }.
+  
+  
+  
+  {
+  ?y e:findall (?edge1 {?edge1 a we:faceedge} ?ANSWER).
+  ?ANSWER e:length ?count.
+	}
+	=>
+	{
+	?A we:listofallfaceedges ?ANSWER.
+	?A we:totalfaceedgescount ?count.
+  }.
+  
+  {
+  ?y e:findall (?edge1 {?edge1 we:isEdgeOf ?TriangleX} ?ANSWER).
+  ?ANSWER e:length ?count.
+	}
+	=>
+	{
+	?A we:listofalledges ?ANSWER.
+	?A we:totaledgescount ?count.
+  }.
+  
+  # Search neighbourfaceedges (= same normal and following each other)
+  {
+  ?edge1 we:normalizedvector ?NV.
+  ?edge2 we:normalizedvector ?NV.
+  ?edge1 we:vertexEnd ?VS.
+  ?edge2 we:vertexStart ?VS.
+	}
+	=>
+	{
+	?edge1 we:neighbourfaceedge ?edge2.
+  }.
+  {
+  ?edge1 we:normalizedvector ?NV.
+  ?edge2 we:normalizedvector ?NV.
+  ?edge1 we:vertexStart ?VS.
+  ?edge2 we:vertexEnd ?VS.
+	}
+	=>
+	{
+	?edge1 we:neighbourfaceedge ?edge2.
+  }.

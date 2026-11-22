@@ -1,0 +1,32 @@
+<!-- Example 2 in 
+     "TriX : RDF Triples in XML"
+     http://www.hpl.hp.com/techreports/2004/HPL-2004-56.html
+     http://www.hpl.hp.com/techreports/2004/HPL-2004-56.pdf
+-->
+<!-- NOT SUPPORTED: <integer> -->
+
+<!--
+<?xml-stylesheet type="text/xml"
+href="http://www.w3.org/2004/03/trix/all.xsl"?>
+-->
+<TriX xmlns="http://www.w3.org/2004/03/trix/trix-1/"
+      xmlns:eg="http://example.org/">
+  <graph>
+    <uri>http://example.org/graph2</uri>
+    <triple>
+      <qname>eg:Bob</qname>
+      <qname>eg:wife</qname>
+      <qname>eg:Mary</qname>
+    </triple>
+    <triple>
+      <qname>eg:Bob</qname>
+      <qname>eg:name</qname>
+      <plainLiteral>Bob</plainLiteral>
+    </triple>
+    <triple>
+      <qname>eg:Mary</qname>
+      <qname>eg:age</qname>
+      <integer>32</integer>
+    </triple>
+  </graph>
+</TriX>

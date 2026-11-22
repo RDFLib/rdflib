@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Trix with namespaces -->
+<trix xmlns="http://www.w3.org/2004/03/trix/trix-1/"
+      xmlns:ex="http://example.org/"
+      xmlns:ns="http://example/ns#"
+      xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+  <graph>
+    <triple>
+      <uri>http://example/s</uri>
+      <qname>ex:p</qname>
+      <typedLiteral datatype="http://www.w3.org/2001/XMLSchema#integer">123</typedLiteral>
+    </triple>
+    <triple>
+      <triple>
+        <uri>http://example/s</uri>
+        <qname>ex:p</qname>
+        <qname>ex:o</qname>
+      </triple>
+      <qname>ex:embedded</qname>
+      <triple>
+        <uri>http://example/s</uri>
+        <qname>ex:p</qname>
+        <qname>ex:o</qname>
+      </triple>
+    </triple>
+  </graph>
+</trix>

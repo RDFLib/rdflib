@@ -1,0 +1,10 @@
+# $Id: rtQ.n3 379 2004-09-18 19:11:35Z josd $
+# PxButton | es  | euler --nope --think http://slashdot.org/slashdot.rss http://www.w3.org/2000/08/w3c-synd/home.rss --query rtQ.n3
+# PxButton | cwm | cwm http://slashdot.org/slashdot.rss http://www.w3.org/2000/08/w3c-synd/home.rss --query"=rtQ.n3"
+
+@prefix rss: <http://purl.org/rss/1.0/>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+
+[]
+q:select {?U rss:title ?T};
+q:where  {?U rss:title ?T}.

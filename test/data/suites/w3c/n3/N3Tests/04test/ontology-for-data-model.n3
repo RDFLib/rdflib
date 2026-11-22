@@ -1,0 +1,3846 @@
+# Base: file:///C:/temp/ontology-for-data-model.rdf
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix :        <http://www.tc184-sc4.org/iso15926/part2/2003-12#> .
+
+:ComparisonOfProperty
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE That the temperature in a room is less than that in a furnace can be
+            indicated by an instance of ComparisonOfProperty .
+        """^^xsd:string , """
+            DEFINITION A ComparisonOfProperty is a Relationship that indicates the
+            magnitude of one Property is greater than that of another.
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Property ;
+                owl:onProperty :lesserElement
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Property ;
+                owl:onProperty :greaterElement
+              ] .
+
+:ClassOfMultidimensionalObject
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfMultidimensionalObject is a ClassOfAbstractObject whose
+            members are instances of MultidimensionalObject . The role played by each
+            position in the classified MultidimensionalObject is specified at the same
+            position in the roles attribute. Constant values that apply to any position
+            in the roles attribute are specified in the same position in the parameters
+            attribute. The cardinalities for the roles attribute are specified by the
+            same position in the cardinalities attribute.
+        """^^xsd:string , """
+            EXAMPLE The definition of the input to a function y = a + bx to convert
+            Celsius to Fahrenheit with roles [a, b, x] defining the input
+            MultidimensionalObject , and parameter list [32,1.8,] is an example of a
+            ClassOfMultidimensionalObject .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfAbstractObject ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Thing ;
+                owl:onProperty :parameters
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Cardinality ;
+                owl:onProperty :cardinalities
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom ""^^xsd:boolean ;
+                owl:onProperty :optionalElement
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :RoleAndDomain ;
+                owl:onProperty :roles
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom ""^^xsd:nonNegativeInteger ;
+                owl:onProperty :parameterPosition
+              ] .
+
+:classOfShape
+      a       owl:ObjectProperty .
+
+:ClassOfPropertySpace
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE Pump performance curve is an example of ClassOfPropertySpace .
+        """^^xsd:string , """
+            EXAMPLE Property curves, property areas, and property volumes of various
+            dimensionality and degrees of freedom are members of ClassOfPropertySpace .
+        """^^xsd:string , """
+            DEFINITION A ClassOfPropertySpace is a ClassOfClass whose members are members
+            of PropertySpace .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClass .
+
+:Property
+      a       owl:Class , :ClassOfProperty ;
+      rdfs:comment """
+            NOTE The types of characteristic or quality, such as temperature or density,
+            are instances of ClassOfProperty .
+        """^^xsd:string , """
+            DEFINITION A Property is a ClassOfIndividual that is a member of a continuum
+            of a ClassOfProperty . The Property may be quantified by mapping to a number
+            on a scale.
+        """^^xsd:string , """
+            EXAMPLE A particular degree of hotness can be represented as an instance of
+            Property .
+        """^^xsd:string , """
+            NOTE The owl:Class rdf:ID=\"Property\" defined here is different from
+            rdf:Property
+        """^^xsd:string , """
+            NOTE Duplicate properties (e.g. that map to the same number on the same
+            scale) should not be created within the same data store.
+        """^^xsd:string , """
+            NOTE A member of a Property is a PossibleIndividual that has the same degree
+            or magnitude of the quality or characteristic represented by the Property as
+            other members.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfIndividual .
+
+:ClassOfInformationPresentation
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfInformationPresentation is a ClassOfArrangedIndividual
+            that distinguishes styles for presenting information.
+        """^^xsd:string , """
+            EXAMPLE The character styles bold, italic, Times New Roman, and 16pt can be
+            represented as instances of ClassOfInformationPresentation .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:PossibleRoleAndDomain
+      a       owl:Class , :ClassOfPossibleRoleAndDomain ;
+      rdfs:comment """
+            DEFINITION A PossibleRoleAndDomain is a Relationship that indicates that a
+            player PossibleIndividual can possibly play the played RoleAndDomain .
+        """^^xsd:string , """
+            EXAMPLE 'Acting as an anchor' is a PossibleRoleAndDomain for pump 1234.
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :player
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :RoleAndDomain ;
+                owl:onProperty :played
+              ] .
+
+:ClassOfInformationObject
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfInformationObject is a ClassOfArrangedIndividual whose
+            members are members of zero or more ClassOfInformationRepresentation and of
+            zero or more ClassOfInformationPresentation .
+        """^^xsd:string , """
+            NOTE Usually, it is a physical_object (like a paper document) that is
+            classified as a ClassOfInformationObject.
+        """^^xsd:string , """
+            EXAMPLE 'Newspaper' is a ClassOfInformationObject.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:ResponsibilityForRepresentation
+      a       :ClassOfResponsibilityForRepresentation , owl:Class ;
+      rdfs:comment """
+            EXAMPLE The responsibility for the administration of this standard lies with
+            ISO. This is represented as a PossibleIndividual 'ISO' is linked by an
+            instance of ResponsibilityForRepresentation to a RepresentationOfThing; the
+            latter links the ClassOfInformationObject 'ISO 15926-7' to a PhysicalObject
+            'myNumberedCopy of ISO 15926-7'.
+        """^^xsd:string , """
+            DEFINITION A ResponsibilityForRepresentation is a Relationship that indicates
+            that the controller PossibleIndividual administers the controlled
+            RepresentationOfThing .
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :controller
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :RepresentationOfThing ;
+                owl:onProperty :controlled
+              ] .
+
+:Participation
+      a       owl:Class , :ClassOfParticipation ;
+      rdfs:comment """
+            NOTE The PossibleIndividual that is the part in the Participation is may be a
+            temporal part of a WholeLifeIndividual that is classified by the
+            RoleAndDomain that indicates the role it plays in the Activity .
+        """^^xsd:string , """
+            DEFINITION A Participation is a CompositionOfIndividual that indicates that
+            a PossibleIndividual is a participant in an Activity .
+        """^^xsd:string , """
+            EXAMPLE The relationship between the temporal part of P1234 that performs the
+            discharge of the Motor Vessel Murex on 2nd December 2002, and the activity
+            that is that discharge of that vessel is a Participation.
+        """^^xsd:string ;
+      rdfs:subClassOf :CompositionOfIndividual ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Activity ;
+                owl:onProperty :whole
+              ] .
+
+:classOfDimension
+      a       owl:ObjectProperty .
+
+:RelativeLocation
+      a       owl:Class , :ClassOfRelativeLocation ;
+      rdfs:comment """
+            NOTE The Classification of the RelativeLocation indicates the nature of the
+            RelativeLocation , e.g. 'above', 'below', 'beside'.
+        """^^xsd:string , """
+            DEFINITION A RelativeLocation is a Relationship that indicates that the
+            position of one PossibleIndividual is relative to another.
+        """^^xsd:string , """
+            EXAMPLE A being the located relative to B being the locator in a
+            RelativeLocation that is classified by the ClassOfRelativeLocation 'above'
+            indicates that A is above B.
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :locator
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :located
+              ] .
+
+:user
+      a       owl:ObjectProperty .
+
+:sign
+      a       owl:ObjectProperty .
+
+:classOfSide1
+      a       owl:ObjectProperty .
+
+:IntegerNumber
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE '1', '2', and '10' are instances of IntegerNumber .
+        """^^xsd:string , """
+            NOTE IntegerNumber is not a subtype of RealNumber. The members of
+            IntegerNumber are part of a different continuum from the members of
+            RealNumber, but are isomorphic to a subset of it.
+        """^^xsd:string , """
+            DEFINITION An IntegerNumber is an ArithmeticNumber that is an integer number.
+        """^^xsd:string ;
+      rdfs:subClassOf :ArithmeticNumber .
+
+:controller
+      a       owl:ObjectProperty .
+
+:Language
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A Language is a ClassOfClassOfInformationRepresentation whose
+            members are all the information representations made in the language.
+        """^^xsd:string , """
+            EXAMPLE English, French, C++ and Java can be represented by instances of
+            Language .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfInformationRepresentation .
+
+:ClassOfRecognition
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE A measurement activity may result in the recognition of the
+            Classification of a PossibleIndividual by a Property .
+        """^^xsd:string , """
+            DEFINITION A ClassOfRecognition is a ClassOfRelationship that indicates that
+            a member of a ClassOfActivity may result in the recognition of a member of a
+            Class .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Class ;
+                owl:onProperty :classOfRecognized
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfActivity ;
+                owl:onProperty :classOfRecognizing
+              ] .
+
+:locator
+      a       owl:ObjectProperty .
+
+:involver
+      a       owl:ObjectProperty .
+
+:IndirectConnection
+      a       owl:Class , :ClassOfIndirectConnection ;
+      rdfs:comment """
+            EXAMPLE The relation that indicates that there is a railway connection
+            between the cities of London and Paris can be represented by an instance of
+            IndirectConnection .
+        """^^xsd:string , """
+            DEFINITION An IndirectConnection is a ConnectionOfIndividual that indicates
+            that side1 and side2 are connected via other individuals.
+        """^^xsd:string ;
+      rdfs:subClassOf :ConnectionOfIndividual .
+
+:ClassOfClassOfRepresentation
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The link that indicates that members of the class 'document' can be
+            represented by patterns of the class 'XML' is a ClassOfClassOfRepresentation .
+        """^^xsd:string , """
+            DEFINITION A ClassOfClassOfRepresentation is a ClassOfClassOfRelationship
+            whose members are instances of ClassOfRepresentationOfThing .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Class ;
+                owl:onProperty :classOfRepresented
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfClassOfInformationRepresentation ;
+                owl:onProperty :classOfPattern
+              ] .
+
+:ClassOfIdentification
+      a       owl:Class , :ClassOfClassOfIdentification ;
+      rdfs:comment """
+            DEFINITION A ClassOfIdentification is a ClassOfRepresentationOfThing that
+            indicates that the pattern is used to refer to the represented Thing.
+        """^^xsd:string , """
+            EXAMPLE The link between the pattern 'AC-1234' and a particular pump,
+            indicating that members of 'AC-1234' are used to refer to the pump, can be
+            represented by an instance of ClassOfIdentification .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRepresentationOfThing .
+
+:ClassOfShapeDimension
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE 'Diameter', 'height', and 'width' (in general rather than a
+            particular one) are examples of ClassOfShapeDimension .
+        """^^xsd:string , """
+            DEFINITION A ClassOfShapeDimension is a ClassOfClass that is a dimension of a
+            ClassOfShape .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClass .
+
+:pattern
+      a       owl:ObjectProperty .
+
+:classOfLocator
+      a       owl:ObjectProperty .
+
+:classOfRecognizing
+      a       owl:ObjectProperty .
+
+:domain
+      a       owl:ObjectProperty .
+
+:FeatureWholePart
+      a       owl:Class , :ClassOfFeatureWholePart ;
+      rdfs:comment """
+            NOTE This includes wholes that cannot be non-destructively disassembled and
+            reassembled such as the inlet flange of a pump.
+        """^^xsd:string , """
+            DEFINITION A FeatureWholePart is an ArrangementOfIndividual that indicates
+            that the part is a non-separable, contiguous part of the whole.
+        """^^xsd:string , """
+            EXAMPLE The relation that indicates that a flange face is part of a flange
+            can be represented by an instance of FeatureWholePart .
+        """^^xsd:string ;
+      rdfs:subClassOf :ArrangementOfIndividual .
+
+:AbstractObject
+      a       owl:Class , :ClassOfAbstractObject ;
+      rdfs:comment """
+            DEFINITION An AbstractObject is a Thing that does not exist in space-time.
+        """^^xsd:string ;
+      rdfs:subClassOf :Thing .
+
+:BoundaryOfNumberSpace
+      a       owl:Class ;
+      rdfs:comment """
+			EXAMPLE The side of a cube in R3 is a NumberSpace that is a plane in R3 and
+			that is a boundary to the NumberSpace that is a cube in R3.
+		"""^^xsd:string , """
+			DEFINITION A BoundaryOfNumberSpace is a Specialization that indicates that a
+			NumberSpace is a boundary to another NumberSpace .
+		"""^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :NumberSpace ;
+                owl:onProperty :bounded
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :NumberSpace ;
+                owl:onProperty :bounding
+              ] .
+
+:caused
+      a       owl:ObjectProperty .
+
+:recognizing
+      a       owl:ObjectProperty .
+
+:ClassOfRelationship
+      a       owl:Class , :ClassOfClassOfRelationship ;
+      rdfs:comment """
+            DEFINITION A ClassOfRelationship is a ClassOfAbstractObject whose members are
+            members of Relationship .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfAbstractObject .
+
+:predecessor
+      a       owl:ObjectProperty .
+
+:EnumeratedPropertySet
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE {115 Volt, 240 Volt} is an example of an EnumeratedPropertySet .
+        """^^xsd:string , """
+            DEFINITION An EnumeratedPropertySet is a ClassOfProperty and an
+            EnumeratedSetOfClass whose members are an enumerated set of properties of the
+            same SinglePropertyDimension or MultidimensionalPropertySpace .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfProperty , :EnumeratedSetOfClass .
+
+:ClassOfSpecialization
+      a       owl:Class ;
+      rdfs:comment """
+            NOTE Since in OWL there is no Specialization possible because of the use of
+            the standard rdfs:subClassOf construct, this ClassOfClassification cannot be 
+            used as such.
+        """^^xsd:string , """
+            EXAMPLE The ClassOfSpecialization that indicates that members of the class
+            \"family of ASME bolts\", e.g. '3 inch bolts', '2 inch bolts', are
+            specializations of members of the EnumeratedPropertySet \"set of bolt
+            lengths\", e.g. '3 inch', '2 inch'.
+        """^^xsd:string , """
+            DEFINITION A ClassOfSpecialization is a ClassOfRelationship whose members are
+            instances of Specialization . It indicates that a member of the
+            classOfSubclass is a subclass of a member of the classOfSuperclass.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfClass ;
+                owl:onProperty :classOfSubclass
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfClass ;
+                owl:onProperty :classOfSuperclass
+              ] .
+
+:ClassOfResposibilityForRepresentation
+      a       owl:Class , :ClassOfClassOfResponsibilityForRepresentation ;
+      rdfs:comment """
+            EXAMPLE The link between the identification of pump #1234 and the XYZ
+            Corporation, that indicates that the XYZ Corporation controls this
+            identification, can be represented by an instance of
+            ClassOfResposibilityForRepresentation .
+        """^^xsd:string , """
+            DEFINITION A ClassOfResposibilityForRepresentation is a ClassOfRelationship
+            whose members indicate that a PossibleIndividual (usually an organization)
+            deems that members of the pattern can be used as representations of the
+            represented Thing .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfRepresentationOfThing ;
+                owl:onProperty :classOfControlled
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :controller
+              ] .
+
+:LogicalValue
+      a       owl:DatatypeProperty ;
+      rdfs:range
+              [ a       owl:DataRange ;
+                owl:oneof ("0"^^xsd:string "1"^^xsd:string "-"^^xsd:string)
+              ] .
+
+:TemporalBounding
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The Event of the birth of JohnDoe is linked to JohnDoe by an instance
+            of TemporalBounding that is a Beginning .
+        """^^xsd:string , """
+            DEFINITION A TemporalBounding is a CompositionOfIndividual that indicates
+            that the part Event is a temporal boundary of the whole PossibleIndividual .
+        """^^xsd:string ;
+      rdfs:subClassOf :CompositionOfIndividual ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Event ;
+                owl:onProperty :part
+              ] .
+
+:SinglePropertyDimension
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE 'Temperature', 'pressure', 'viscosity', and 'length' are examples of
+            SinglePropertyDimension .
+        """^^xsd:string , """
+            DEFINITION A SinglePropertyDimension is a PropertySpace that is a single and
+            complete continuum of properties each of which maps to a single number.
+        """^^xsd:string ;
+      rdfs:subClassOf :PropertySpace .
+
+:input
+      a       owl:ObjectProperty .
+
+:classOfEnd1
+      a       owl:ObjectProperty .
+
+:Class
+      a       owl:Class , :ClassOfClass ;
+      rdfs:comment """
+            NOTE The set theory that applies to classes in this model is non-wellfounded
+            set theory (see: ACZEL, Peter. Non-Well-Founded Sets, Center for the Study of
+            Language and Information, Stanford, California, 1988, ISBN 0937073229).
+            This permits statements like \"class is a member of class\", unlike traditional
+            set theories such as Zermelo-Fraenkel set theory found in standard texts
+            (see: ITҬ K. (editor). Encyclopedic Dictionary of Mathematics, Mathematical
+            Society of Japan, Edition 2, Cambridge, Massachusetts, MIT Press, 1993,
+            ISBN 0262590204)
+        """^^xsd:string , """
+            EXAMPLE Centrifugal pump is a Class .
+        """^^xsd:string , """
+            NOTE A class may be a member of another class or itself.
+        """^^xsd:string , """
+            NOTE There is a null Class that has no members. Although there is only one
+            Class that has no members, there can be a Class that has no members in the
+            actual world, but which does have members in other possible worlds.
+        """^^xsd:string , """
+            DEFINITION A Class is a Thing that is an understanding of the nature of
+            things and that divides things into those which are members of the class and
+            those which are not according to one or more criteria.
+            The identity of a Class is ultimately defined by its members. No two classes
+            have the same membership. However, a distinction must be made between a Class
+            having members, and those members being known, so within an information
+            system the members recorded may change over time, even though the true
+            membership does not change.
+        """^^xsd:string , """
+            EXAMPLE Temperature is a Class .
+        """^^xsd:string , """
+            EXAMPLE Mechanical equipment type is a Class .
+        """^^xsd:string , """
+            NOTE The known members of a Class are identified by Classification .
+        """^^xsd:string , """
+            EXAMPLE The Centigrade scale is a Class .
+        """^^xsd:string , """
+            EXAMPLE Commercial fusion reactor is a Class, with no members at present.
+        """^^xsd:string , """
+            NOTE The membership of a Class is unchanging as a result of the
+            spatio-temporal paradigm upon which this schema is based. In another paradigm
+            it might be stated that a car is red at one time, and green at another time,
+            indicating that the class of red things and class of green things changed
+            members. However, using a spatio-temporal paradigm, a temporal part, state 1,
+            of the car is red, and another temporal part of the car, state 2, is green.
+            In this way the members of the classes red and green are unchanging. The same
+            principle applies to future temporal parts as to past temporal parts, it is
+            just more likely that the membership of these is not known.
+        """^^xsd:string ;
+      rdfs:subClassOf :AbstractObject .
+
+:ClassOfClassOfRelationshipWithSignature
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION An ClassOfClassOfRelationshipWithSignature is a
+            ClassOfClassOfRelationship and ClassOfRelationshipWithSignature.
+        """^^xsd:string , """
+            EXAMPLE 'Transitive', with the roles from and to indicating the direction of
+            transitivity, is a ClassOfClassOfRelationshipWithSignature.
+            (A ClassOfRelationship is transitive if when A relates to B and B relates to C
+            then A relates to C, all in the same way).
+        """^^xsd:string , """
+            NOTE The purpose of ClassOfClassOfRelationshipWithSignature is to allow other
+            types of classes of relationship, not explicitly defined as entity data types
+            in this part of ISO 15926, to be defined as reference data.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationshipWithSignature , :ClassOfClassOfRelationship .
+
+:Role
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE Employee is a Role that indicates what a temporal part of a person
+            has to do with an employment relation.
+        """^^xsd:string , """
+            DEFINITION A Role is a RoleAndDomain that indicates what some thing has to do
+            with an Activity , Relationship , or MultidimensionalObject .
+        """^^xsd:string , """
+            EXAMPLE Pumper is a Role that indicates what a temporal part of a pump has to
+            do with a pumping Activity.
+        """^^xsd:string ;
+      rdfs:subClassOf :RoleAndDomain .
+
+:CoordinateSystem
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The XYZ site coordinate system, is an example of a CoordinateSystem .
+        """^^xsd:string , """
+            DEFINITION A CoordinateSystem is a MultidimensionalScale for locating and
+            relating a PossibleIndividual in an n-dimensional space in which arbitrary
+            geometric transformations are valid.
+        """^^xsd:string ;
+      rdfs:subClassOf :MultidimensionalScale .
+
+:ClassOfFunctionalObject
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfFunctionalObject is a ClassOfArrangedIndividual that
+            indicates the function or purpose of an object.
+        """^^xsd:string , """
+            EXAMPLE Pump, valve, and car are examples of ClassOfFunctionalObject .
+            Particular models of pump, valve, car, etc are instances of
+            ClassOfInanimatePhysicalObject that are specializations of these instances
+            of ClassOfFunctionalObject .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:player
+      a       owl:ObjectProperty .
+
+:ClassOfProperty
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE 'Temperature' is an example of ClassOfProperty .
+        """^^xsd:string , """
+            DEFINITION A ClassOfProperty is a ClassOfClassOfIndividual whose members are
+            instances of Property .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfIndividual .
+
+:ClassOfPerson
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE 'Engineer', 'plant manager', 'student', 'male', 'female',
+            'senior citizen', 'adult', 'girl', and 'boy' can be represented by instances
+            of ClassOfPerson . Engineer, plant manager, and student are also instances of
+            ClassOfFunctionalObject .
+        """^^xsd:string , """
+            DEFINITION A ClassOfPerson is a ClassOfOrganism whose members are people.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfOrganism .
+
+:represented
+      a       owl:ObjectProperty .
+
+:dimension
+      a       owl:ObjectProperty .
+
+:CompositionOfIndividual
+      a       owl:Class , :ClassOfCompositionOfIndividual ;
+      rdfs:comment """
+            DEFINITION A CompositionOfIndividual is a Relationship that indicates that
+            the part PossibleIndividual is a part of the whole PossibleIndividual .
+            A simple composition is indicated, unless a subtype is instantiated too.
+        """^^xsd:string , """
+            NOTE Simple composition means that for example no arrangement of parts is
+            necessarily implied or of concern. Where there is an arrangement of parts,
+            this is indicated by an ArrangementOfIndividual , which, by being a subtype,
+            implies also a simple composition.
+        """^^xsd:string , """
+            EXAMPLE A grain of sand being part of a pile of sand is an example of
+            CompositionOfIndividual.
+        """^^xsd:string , """
+            CompositionOfIndividual is transitive.
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :whole
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :part
+              ] .
+
+:NumberSpace
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The integers from 1 to 5 and the reals from 0.000 to 1.000 are
+            examples of NumberSpace.
+        """^^xsd:string , """
+            DEFINITION A NumberSpace is a ClassOfNumber that is a continuum.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfNumber .
+
+:CrystallineStructure
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A CrystallineStructure is a ClassOfArrangedIndividual that is a
+            form in which many simple elements and their natural compounds regularly
+            aggregate by the operation of natural affinity: it has a definite internal
+            structure, with the external form of a solid enclosed by a number of
+            symmetrically arranged plane faces, and varying in simplicity from the cube
+            to much more complicated geometric bodies.
+        """^^xsd:string , """
+            EXAMPLE Ferritic, martensitic, and austenitic are examples of
+            CrystallineStructure .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:classOfControlled
+      a       owl:ObjectProperty .
+
+:MaterializedPhysicalObject
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The shell and tube heat exchanger with manufacture's number ES/1234
+            can be represented by an instance of MaterializedPhysicalObject .
+        """^^xsd:string , """
+            DEFINITION A MaterializedPhysicalObject is a PhysicalObject that has matter
+            and/or energy continuity as its basis for identity. Matter or energy
+            continuity requires some matter or energy to be common to adjacent temporal
+            parts of the MaterializedPhysicalObject . Replacement of some components from
+            time to time does not create a new identity.
+        """^^xsd:string ;
+      rdfs:subClassOf :PhysicalObject .
+
+:Activity
+      a       owl:Class , :ClassOfActivity ;
+      rdfs:comment """
+            DEFINITION An Activity is a PossibleIndividual that brings about change by
+            causing the Event that marks the Beginning, or the Event that marks the
+            Ending of a PossibleIndividual .
+            An Activity consists of the temporal parts of those members of
+            PossibleIndividual that participate in the Activity. The participating
+            temporal parts will be classified by the ParticipatingRoleAndDomain
+            that indicates the role of the temporal part in the Activity .
+        """^^xsd:string , """
+            EXAMPLE Pumping a fluid with a mechanical pump can be represented by an
+            instance of Activity .
+        """^^xsd:string ;
+      rdfs:subClassOf :PossibleIndividual .
+
+:ClassOfArrangementOfIndividual
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfArrangementOfIndividual is a
+            ClassOfCompositionOfIndividual whose members are instances of
+            ArrangementOfIndividual .
+        """^^xsd:string , """
+            EXAMPLE The fact that water is made up of H2O molecules is an instance of
+            ClassOfArrangementOfIndividual .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfCompositionOfIndividual ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfArrangedIndividual ;
+                owl:onProperty :classOfWhole
+              ] .
+
+:optionalElement
+      a       owl:ObjectProperty .
+
+:side2
+      a       owl:ObjectProperty .
+
+:year
+      a       owl:ObjectProperty .
+
+:PropertyForShapeDimension
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The ShapeDimension '10m diameter' is related to the Property
+            '10m length' by means of an instance of PropertyForShapeDimension .
+        """^^xsd:string , """
+            DEFINITION A PropertyForShapeDimension is a ClassOfRelationship that
+            indicates that the members of the ShapeDimension are of the Property .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Property ;
+                owl:onProperty :property
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ShapeDimension ;
+                owl:onProperty :shapeDimension
+              ] .
+
+:DocumentDefinition
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE In ISO 15926-7 a Template Specification defines and describes a
+            template; the latter is a DocumentDefinition .
+        """^^xsd:string , """
+            EXAMPLE XYZ Corp. Material Safety Data Sheet is a DocumentDefinition.
+        """^^xsd:string , """
+            DEFINITION A DocumentDefinition is a ClassOfClassOfInformationRepresentation
+            that defines the content and/or structure of documents.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfInformationRepresentation .
+
+:Cardinality
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE A minimum of 1 and a maximum of 1 means that there is exactly one
+            Relationship MultidimensionalObject of this type for each object.
+        """^^xsd:string , """
+            DEFINITION A Cardinality is a Class that is the maximum and/or minimum number
+            of times a thing can play a particular role in a ClassOfRelationship or
+            ClassOfMultidimensionalObject .
+        """^^xsd:string ;
+      rdfs:subClassOf :Class ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:minCardinality ""^^xsd:nonNegativeInteger ;
+                owl:onProperty :minimumCardinality
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:maxCardinality ""^^xsd:nonNegativeInteger ;
+                owl:onProperty :maximumCardinality
+              ] .
+
+:MultidimensionalNumber
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A MultidimensionalNumber is an ArithmeticNumber that is also a
+            MultidimensionalObject .
+        """^^xsd:string , """
+            EXAMPLE '[3.2, 5.4, 55.6]' is a MultidimensionalNumber.
+        """^^xsd:string ;
+      rdfs:subClassOf :MultidimensionalObject , :ArithmeticNumber .
+
+:ClassOfAssemblyOfIndividual
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE That impellers are parts of centrifugal pumps is a
+            ClassOfAssemblyOfIndividual .
+        """^^xsd:string , """
+            DEFINITION A ClassOfAssemblyOfIndividual is a ClassOfArrangementOfIndividual
+            whose members are instances of AssemblyOfIndividual .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangementOfIndividual .
+
+:classOfFirst
+      a       owl:ObjectProperty .
+
+:classOfInvolver
+      a       owl:ObjectProperty .
+
+:controlled
+      a       owl:ObjectProperty .
+
+:ClassOfClassOfRepresentationTranslation
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The class ASCII whose members include all translation classes between
+            members of the ASCII Binary and ASCII Text representation classes is a
+            ClassOfClassOfRepresentationTranslation .
+        """^^xsd:string , """
+            DEFINITION A ClassOfClassOfRepresentationTranslation is a
+            ClassOfClassOfRelationship whose members are members of
+            ClassOfRepresentationTranslation .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfClassOfInformationRepresentation ;
+                owl:onProperty :classOfSecond
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfClassOfInformationRepresentation ;
+                owl:onProperty :classOfFirst
+              ] .
+
+:InvolvementByReference
+      a       owl:Class , :ClassOfInvolvementByReference ;
+      rdfs:comment """
+            NOTE This entity type is for involvements that are not direct Participation
+            of a Thing , such as involvement of a Class, or of a historical or future
+            temporal part of a PossibleIndividual .
+        """^^xsd:string , """
+            EXAMPLE The use of the ASME Boiler and Pressure Vessel Code for the Activity
+            'design Boiler E-106' is represented by an instance of InvolvementByReference
+            between that ClassOfInformationRepresentation and that Activity .
+        """^^xsd:string , """
+            DEFINITION An InvolvementByReference is a Relationship that indicates that a
+            Thing is referred to in an Activity .
+        """^^xsd:string , """
+            EXAMPLE A conversation that refers to the Roman Empire is an Activity that
+            relates to the Roman Empire by an InvolvementByReference .
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Activity ;
+                owl:onProperty :involver
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Thing ;
+                owl:onProperty :involved
+              ] .
+
+:LeftNamespace
+      a       :ClassOfLeftNamespace , owl:Class ;
+      rdfs:comment """
+            EXAMPLE Where WC1: is the Namespace in WC1:1234, it is a LeftNamespace .
+        """^^xsd:string , """
+            DEFINITION A LeftNamespace is a Namespace where the classOfPart is the left
+            part of the classOfWhole .
+        """^^xsd:string ;
+      rdfs:subClassOf :Namespace .
+
+:ClassOfShape
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfShape is a PropertySpace that has instances of Shape as
+            its members.
+        """^^xsd:string , """
+            EXAMPLE Regular geometric forms such as 'line', 'circle', 'square',
+            'cylinder', 'sphere', and 'cone' can be represented by instances of
+            ClassOfShape .
+        """^^xsd:string ;
+      rdfs:subClassOf :PropertySpace .
+
+:EnumeratedSetOfClass
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION An EnumeratedSetOfClass is a ClassOfClass that is an enumerated
+            set of the instances of Class . Enumerated means that the full set of
+            members is specified.
+        """^^xsd:string , """
+            EXAMPLE {Plastic, 1.2kg, frame} is an EnumeratedSetOfClass.
+            More generally {{A,B,C},{B,C,D},{C,D,E}} is an EnumeratedSetOfClass. Also
+            \"electrical engineering classes for ERDL V1.1\" is an EnumeratedSetOfClass.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClass .
+
+:classOfLocated
+      a       owl:ObjectProperty .
+
+:ExpressBinary
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION An ExpressBinary is a ClassOfExpressInformationRepresentation that
+            represents a binary value as defined in ISO 10303-11:1994, 8.1.7 .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfExpressInformationRepresentation ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom ""^^xsd:base64Binary ;
+                owl:onProperty :content
+              ] .
+
+:highestProperty
+      a       owl:ObjectProperty .
+
+:ClassOfApproval
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfApproval is a ClassOfRelationship whose members are
+            members of Approval that indicates that members of the ClassOfIndividual are
+            approvers in an Approval for the members of the Class that are approved.
+        """^^xsd:string , """
+            EXAMPLE That site managers approve designs for construction
+            (a ClassOfInvolvementByReference ) is an example of ClassOfApproval .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfRelationship ;
+                owl:onProperty :classOfApproved
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfIndividual ;
+                owl:onProperty :classOfApprover
+              ] .
+
+:recordCopyCreated
+      a       owl:ObjectProperty .
+
+:ClassOfInanimatePhysicalObject
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The classes known as 'oil' and 'oilwell' can be represented by
+            instances of ClassOfInanimatePhysicalObject .
+        """^^xsd:string , """
+            DEFINITION A ClassOfInanimatePhysicalObject is a ClassOfArrangedIndividual
+            whose members are not living.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:used
+      a       owl:ObjectProperty .
+
+:located
+      a       owl:ObjectProperty .
+
+:ClassOfIndividual
+      a       owl:Class , :ClassOfClassOfIndividual ;
+      rdfs:comment """
+            DEFINITION A ClassOfIndividual is a Class whose members are instances of
+            PossibleIndividual .
+        """^^xsd:string , """
+            EXAMPLE The class known as 'engineer', whose members are people qualified or
+            skilled in engineering principles and practices can be represented by an
+            instance of ClassOfIndividual .
+        """^^xsd:string ;
+      rdfs:subClassOf :Class .
+
+:ClassOfParticulateMaterial
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfParticulateMaterial is a ClassOfArrangedIndividual whose
+            members are arranged amounts of super-molecular sized objects of the same or
+            different types.
+        """^^xsd:string , """
+            EXAMPLE Pile of sand, sand and cement mix, bag of bolts, catalyst fill for a
+            reactor are examples of ClassOfParticulateMaterial .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:UnionOfSetOfClass
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A UnionOfSetOfClass is a FunctionalMapping that indicates that the
+            membership of the result Class is the union of the members of the
+            EnumeratedSetOfClass classes.
+        """^^xsd:string , """
+            EXAMPLE The union of the EnumeratedSetOfClass {{A,B,C},{B,C,D},{C,D,E}} is
+            {A,B,C,D,E}.
+        """^^xsd:string ;
+      rdfs:subClassOf :FunctionalMapping ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Class ;
+                owl:onProperty :result
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :EnumeratedSetOfClass ;
+                owl:onProperty :input
+              ] .
+
+:DifferenceOfSetOfClass
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A DifferenceOfSetOfClass is a FunctionalMapping that indicates
+            that the membership of the result Class is the difference between the
+            membership of the union of the classes that are members of the
+            EnumeratedSetOfClass and their intersection.
+        """^^xsd:string , """
+            NOTE When the EnumeratedSetOfClass consists of a Class and another Class that
+            is a subclass of the first class, then the difference is the complement of
+            the subclass.
+        """^^xsd:string , """
+            EXAMPLE The difference of the EnumeratedSetOfClass {{A,B,C},{B,C,D},{C,D,E}}
+            is {A,B,D,E}.
+        """^^xsd:string ;
+      rdfs:subClassOf :FunctionalMapping ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :EnumeratedSetOfClass ;
+                owl:onProperty :input
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Class ;
+                owl:onProperty :result
+              ] .
+
+:ClassOfIndividualUsedInConnection
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The link between the ClassOfIndividualUsedInConnection that indicates
+            that B12 type beams are connected to pipe hangers, and the ClassOfIndividual
+            \"20mm Diameter bolt\", that indicates that four 20mm diameter bolts are used
+            in the connection of a pipe hanger to a type B12 beam can be represented by
+            an instance of ClassOfIndividualUsedInConnection .
+        """^^xsd:string , """
+            DEFINITION A ClassOfIndividualUsedInConnection is a ClassOfRelationship whose
+            members are members of IndividualUsedInConnection. It indicates that a member
+            of the ClassOfIndividual is used in a ClassOfConnectionOfIndividual .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfConnectionOfIndividual ;
+                owl:onProperty :classOfConnection
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfIndividual ;
+                owl:onProperty :classOfInvolved
+              ] .
+
+:ClassOfCompound
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE Water, sulphuric acid, sand, limestone, and steel can be represented
+            by instances of ClassOfCompound .
+        """^^xsd:string , """
+            DEFINITION A ClassOfCompound is a ClassOfArrangedIndividual whose members
+            consist of arrangements of molecules of the same or different types, bound
+            together by intermolecular forces. This includes both mixtures and alloys.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:hour
+      a       owl:ObjectProperty .
+
+:classOfUsed
+      a       owl:ObjectProperty .
+
+:NumberRange
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A NumberRange is a one-dimensional NumberSpace .
+        """^^xsd:string , """
+            EXAMPLE The NumberSpace -273.1 to +infinity is a NumberRange.
+        """^^xsd:string ;
+      rdfs:subClassOf :NumberSpace .
+
+:OtherRelationship
+      a       owl:Class , :ClassOfClassOfRelationshipWithSignature ;
+      rdfs:comment """
+            DEFINITION An OtherRelationship is a Relationship that is not a member of any
+            of the other explicit subtypes of Relationship . The meaning of an
+            OtherRelationship is specified by a Classification by an instance of
+            ClassOfRelationshipWithSignature .
+        """^^xsd:string , """
+            EXAMPLE The Relationship that indicates that a particular car is manufactured
+            by Ford can be represented by an instance of OtherRelationship.
+        """^^xsd:string , """
+            NOTE The RoleAndDomain for the end1 and end2 is given by the classOfEnd1 and
+            classOfEnd2 respectively for the ClassOfRelationshipWithSignature that
+            classifies the OtherRelationship .
+            Where the ClassOfRelationshipWithSignature is also a
+            ClassOfRelationshipWithRelatedEnd1 or a ClassOfRelationshipWithRelatedEnd2
+            then the end1 or end2 respectively of the OtherRelationship shall take the
+            value specified by the related instance of rdf:Property.
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Thing ;
+                owl:onProperty :end2
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Thing ;
+                owl:onProperty :end1
+              ] .
+
+:month
+      a       owl:ObjectProperty .
+
+:ClassOfCauseOfEndingOfClassOfIndividual
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE A car crushing activity causes the end of the life of a car.
+        """^^xsd:string , """
+            DEFINITION A ClassOfCauseOfEndingOfClassOfIndividual is a ClassOfRelationship
+            that indicates that a member of the ClassOfActivity causes the ending of
+            a member of the ClassOfIndividual .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfActivity ;
+                owl:onProperty :classOfCauser
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfIndividual ;
+                owl:onProperty :classOfEnded
+              ] .
+
+:classOfApproved
+      a       owl:ObjectProperty .
+
+:UpperBoundOfPropertyRange
+      a       owl:Class ;
+      rdfs:comment """
+			DEFINITION An UpperBoundOfPropertyRange is a Classification that indicates
+			that the Property is the upper bound of the PropertyRange .
+		"""^^xsd:string , """
+			EXAMPLE The instance of Property that is represented by the instance of
+			ExpressReal '+20' has an UpperBoundOfPropertyRange relationship with the
+			instance of PropertyRange'[-10 to +20 degrees Celsius]'.
+		"""^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Property ;
+                owl:onProperty :highestProperty
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PropertyRange ;
+                owl:onProperty :range
+              ] .
+
+:IntendedRoleAndDomain
+      a       owl:Class , :ClassOfIntendedRoleAndDomain ;
+      rdfs:comment """
+            DEFINITION An IntendedRoleAndDomain is a Relationship that indicates the
+            RoleAndDomain some temporal part of the PossibleIndividual is intended to
+            take with respect to some Activity .
+        """^^xsd:string , """
+            EXAMPLE The Relationship between a PossibleIndividual, that is classified as
+            'pump', and the RoleAndDomain of 'performer and pumping' that it is intended
+            to play is an instance of IntendedRoleAndDomain .
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :RoleAndDomain ;
+                owl:onProperty :played
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :player
+              ] .
+
+:ClassOfIsomorphicFunctionalMapping
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The natural logarithm function is a
+            ClassOfIsomorphicFunctionalMapping .
+        """^^xsd:string , """
+            DEFINITION A ClassOfIsomorphicFunctionalMapping is a ClassOfFunctionalMapping
+            that is isomorphic.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfFunctionalMapping .
+
+:interest
+      a       owl:ObjectProperty .
+
+:classOfClassified
+      a       owl:ObjectProperty .
+
+:ClassOfStatus
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfStatus is a ClassOfClassOfIndividual whose members are a
+            Status .
+        """^^xsd:string , """
+            EXAMPLE An example of ClassOfStatus is 'approval', with members:
+            'not assessed', 'approved', 'rejected'.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfIndividual .
+
+:ClassOfClass
+      a       owl:Class ;
+      rdfs:comment """
+            NOTE When it is necessary to classify a ClassOfClass, another ClassOfClass
+            can be used. This is because a ClassOfClass is a Class .
+        """^^xsd:string , """
+            DEFINITION A ClassOfClass is a Class whose members are instances of Class .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfAbstractObject .
+
+:day  a       owl:ObjectProperty .
+
+:ClassOfNamespace
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE WC1: is used as the name space for a set of water company identifiers.
+        """^^xsd:string , """
+            DEFINITION A ClassOfNamespace is a ClassOfClassOfRelationship that indicates
+            that a ClassOfInformationRepresentation is the classOfPart used as a
+            namespace for each member of a ClassOfClassOfInformationRepresentation that
+            is the classOfClassOfWhole .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfInformationRepresentation ;
+                owl:onProperty :classOfPart
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfClassOfInformationRepresentation ;
+                owl:onProperty :classOfClassOfWhole
+              ] .
+
+:Approval
+      a       owl:Class , :ClassOfApproval , :ClassOfApprovalByStatus ;
+      rdfs:comment """
+            DEFINITION An Approval is a Relationship that indicates that a Relationship
+            has been approved by a PossibleIndividual that is an approver.
+        """^^xsd:string , """
+            EXAMPLE The InvolvementByReference of a plant design with a construction
+            activity, being approved by the site manager, is an example of an Approval.
+        """^^xsd:string , """
+            NOTE Care should be taken as to what is approved. Sometimes it will not be
+            say a pump that is approved, but the participation of the pump in a
+            particular Activity, or member of some ClassOfActivity .
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :approver
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Relationship ;
+                owl:onProperty :approved
+              ] .
+
+:ClassOfIndirectConnection
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE Drip pipe indirectly connected to drain funnel is an example of
+            ClassOfIndirectConnection .
+        """^^xsd:string , """
+            DEFINITION A ClassOfIndirectConnection is a ClassOfConnectionOfIndividual
+            whose members are members of IndirectConnection .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfConnectionOfIndividual .
+
+:ClassOfRelationshipWithSignature
+      a       owl:Class ;
+      rdfs:comment """
+            NOTE A ClassOfRelationshipWithSignature is analogous to a simple EXPRESS
+            attribute and its inverse. More complex objects can be modelled with
+            MultidimensionalObject and ClassOfMultidimensionalObject .
+        """^^xsd:string , """
+            EXAMPLE Married is a ClassOfRelationship where classOfEnd1 is the
+            RoleAndDomain husband, and classOfEnd2 the RoleAndDomain wife.
+        """^^xsd:string , """
+            DEFINITION A ClassOfRelationshipWithSignature is a ClassOfRelationship that
+            may have a RoleAndDomain specified for each end.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship , :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :RoleAndDomain ;
+                owl:onProperty :classOfEnd2
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :RoleAndDomain ;
+                owl:onProperty :classOfEnd1
+              ] .
+
+:Event
+      a       owl:Class , :ClassOfEvent ;
+      rdfs:comment """
+            DEFINITION An Event is a PossibleIndividual with zero extent in time.
+            An Event is the temporal boundary of one or more instances of
+            PossibleIndividual, although there may be no knowledge of these instances.
+        """^^xsd:string , """
+            EXAMPLE The connection of power to a pump is an Event that marks the
+            beginning of a temporal part of that pump.
+        """^^xsd:string ;
+      rdfs:subClassOf :PossibleIndividual .
+
+:ClassOfFunctionalMapping
+      a       owl:Class ;
+      rdfs:comment """
+            NOTE 3 When there are several arguments to a function, then these are
+            presented in a MultidimensionalObject .
+        """^^xsd:string , """
+            NOTE This entity type would naturally have the name of function, but this is
+            an EXPRESS reserved word (note that the data model was expressed in EXPRESS).
+        """^^xsd:string , """
+            DEFINITION A ClassOfFunctionalMapping is a ClassOfRelationship that is a many
+            to one mapping. A ClassOfRelationship is a function.
+        """^^xsd:string , """
+            NOTE 2 The significance of a function being a many to one mapping is that the
+            same answer is always obtained. So, for example, 5 - 3 always gives 2. Note
+            that the minus function on two other arguments can also give 2.
+        """^^xsd:string , """
+            EXAMPLE Minus is an example of ClassOfFunctionalMapping .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Class ;
+                owl:onProperty :codomain
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Class ;
+                owl:onProperty :domain
+              ] .
+
+:end2
+      a       owl:ObjectProperty .
+
+:ArrangedIndividual
+      a       owl:Class , :ClassOfArrangedIndividual ;
+      rdfs:comment """
+            EXAMPLE John Doe is an ArrangedIndividual .
+        """^^xsd:string , """
+            EXAMPLE The company Bloggs  Co. is an ArrangedIndividual .
+        """^^xsd:string , """
+            EXAMPLE The vessel with serial number V-1234 is an ArrangedIndividual .
+        """^^xsd:string , """
+            DEFINITION An ArrangedIndividual is a PossibleIndividual that has parts
+            that play distinct roles with respect to the whole. The qualities of an
+            ArrangedIndividual are distinct from the qualities of its parts.
+        """^^xsd:string ;
+      rdfs:subClassOf :PossibleIndividual .
+
+:maximumCardinality
+      a       owl:ObjectProperty .
+
+:ClassOfRepresentationTranslation
+      a       owl:Class , :ClassOfClassOfRepresentationTranslation ;
+      rdfs:comment """
+            EXAMPLE The link that indicates that the representations 'F' and '15' are
+            equivalent (concept of fifteen in hexadecimal and octal respectively) can be
+            represented by an instance of ClassOfRepresentationTranslation.
+        """^^xsd:string , """
+            DEFINITION A ClassOfRepresentationTranslation is a ClassOfRelationship that
+            indicates the translation of two instances of
+            ClassOfInformationRepresentation .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfInformationRepresentation ;
+                owl:onProperty :classOfSecond
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfInformationRepresentation ;
+                owl:onProperty :classOfFirst
+              ] .
+
+:ClassOfIndirectProperty
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE Maximum Allowable Working Pressure is a ClassOfIndirectProperty that
+            is indicated by a pressure, and can be possessed by a pressure vessel.
+        """^^xsd:string , """
+            DEFINITION A ClassOfIndirectProperty is a ClassOfRelationship that indicates
+            that a member of the ClassOfIndividual can possess a member of the
+            ClassOfProperty as an IndirectProperty of this type.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfIndividual ;
+                owl:onProperty :classOfPossessor
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PropertySpace ;
+                owl:onProperty :propertySpace
+              ] .
+
+:ClassOfClassOfIndividual
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfClassOfIndividual is a ClassOfClass whose members are
+            instances of ClassOfIndividual .
+        """^^xsd:string , """
+            EXAMPLE \"Premium Product\" is a ClassOfClassOfIndividual that has
+            ClassOfIndividual \"mogas\" as a member.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClass .
+
+:TemporalWholePart
+      a       owl:Class , :ClassOfTemporalWholePart ;
+      rdfs:comment """
+            NOTE Since TemporalWholePart is transitive (inherited from its supertype) a
+            hierarchy of temporal parts is possible, with a WholeLifeIndividual at the top.
+        """^^xsd:string , """
+            EXAMPLE The Relationship that indicates that the time period known as March
+            1999 is part of the period known as 1st Quarter 1999 can be represented by an
+            instance of TemporalWholePart .
+        """^^xsd:string , """
+            DEFINITION A TemporalWholePart is a CompositionOfIndividual that indicates
+            that one PossibleIndividual is a temporal part of another PossibleIndividual.
+            The spatial extent of the temporal part is that of the temporal whole for the
+            period of the existence of the temporal part. Relationships that apply to the
+            whole PossibleIndividual also apply to the temporal parts of the
+            PossibleIndividual, except when the relationships relate to the temporal
+            nature of the whole. So if a PossibleIndividual is connected so are all its
+            temporal parts, but being a WholeLifeIndividual is not inherited by its
+            temporal parts.
+        """^^xsd:string , """
+            EXAMPLE The Relationship that indicates that an operating period of a pump is
+            a temporal part of the pump can be represented by an instance of
+            TemporalWholePart .
+        """^^xsd:string ;
+      rdfs:subClassOf :CompositionOfIndividual .
+
+:classOfWhole
+      a       owl:ObjectProperty .
+
+:BoundaryOfPropertySpace
+      a       owl:Class ;
+      rdfs:comment """
+			NOTE For reasons of mapping to OWL where specialization is represented by
+			rdfs:subClassOf, the expressivity of this relationship would be lost; for
+			that reason we have mapped it to the supertype of spepcialization, i.e.
+			Relationship.
+		"""^^xsd:string , """
+			DEFINITION A BoundaryOfPropertySpace is a Specialization that indicates the
+			members of the subclass form a boundary of the superclass.
+		"""^^xsd:string , """
+			EXAMPLE The PropertySpace that corresponds to the maximum speed head flow
+			curve is a boundary of the PropertySpace that corresponds to the pump
+			operating envelope.
+		"""^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PropertySpace ;
+                owl:onProperty :bounded
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PropertySpace ;
+                owl:onProperty :bounding
+              ] .
+
+:ClassOfCompositeMaterial
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE Laminates such as plywood, fibreglass, and carbon fibre can be
+            represented by instances of ClassOfCompositeMaterial.
+        """^^xsd:string , """
+            EXAMPLE Wood, muscle, and skin can be represented by instances of
+            ClassOfCompositeMaterial.
+        """^^xsd:string , """
+            DEFINITION A ClassOfCompositeMaterial is a ClassOfArrangedIndividual whose
+            members have a common arrangement of separable compounds.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:RealNumber
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE '3.2146' is a representation of a RealNumber .
+        """^^xsd:string , """
+            DEFINITION A RealNumber is an ArithmeticNumber that is a real number.
+        """^^xsd:string ;
+      rdfs:subClassOf :ArithmeticNumber .
+
+:classOfClassOfControlled
+      a       owl:ObjectProperty .
+
+:ClassOfRightNamespace
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfRightNamespace is a ClassOfNamespace where the
+            classOfPart is the namespace for the members of the classOfClassOfWhole .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfNamespace .
+
+:LowerBoundOfPropertyRange
+      a       owl:Class ;
+      rdfs:comment """
+			EXAMPLE The instance of Property that is represented by the instance of
+			ExpressReal '-10' has a LowerBoundOfPropertyRange relationship with the
+			instance of PropertyRange'[-10 to +20 degrees Celsius]'.
+		"""^^xsd:string , """
+			DEFINITION A LowerBoundOfPropertyRange is a Classification that indicates
+			that a Property is the lower bound of a PropertyRange .
+		"""^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PropertyRange ;
+                owl:onProperty :range
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Property ;
+                owl:onProperty :lowestProperty
+              ] .
+
+:ClassOfContainmentOfIndividual
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfContainmentOfIndividual is a ClassOfRelativeLocation
+            whose members are instances of ContainmentOfIndividual . It indicates that
+            a member of the classOfLocator ClassOfIndividual can contain a member of the
+            classOfLocated ClassOfIndividual .
+        """^^xsd:string , """
+            EXAMPLE That 'de-icing fluid' can be contained by a '1500ml screw-top plastic
+            bottle' is a ClassOfContainmentOfIndividual .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelativeLocation .
+
+:classOfPlayer
+      a       owl:ObjectProperty .
+
+:greaterElement
+      a       owl:ObjectProperty .
+
+:MultidimensionalNumberSpace
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE R3, the space defined as being all the triples of real numbers
+            (e.g. '[1.0, 2.1, 5.4]'), is a MultidimensionalNumberSpace .
+        """^^xsd:string , """
+            DEFINITION A MultidimensionalNumberSpace is a NumberSpace and a
+            MultidimensionalObject .
+        """^^xsd:string ;
+      rdfs:subClassOf :MultidimensionalObject , :NumberSpace .
+
+:classOfApprover
+      a       owl:ObjectProperty .
+
+:second
+      a       owl:ObjectProperty .
+
+:minute
+      a       owl:ObjectProperty .
+
+:RightNamespace
+      a       owl:Class , :ClassOfRightNamespace ;
+      rdfs:comment """
+            DEFINITION A RightNamespace is a Namespace that indicates that the
+            classOfPart is the right most part of the classOfWhole .
+        """^^xsd:string , """
+            EXAMPLE When ZH is the namespace in 5367ZH, this is indicated by a
+            Namespace relationship between them.
+        """^^xsd:string ;
+      rdfs:subClassOf :Namespace .
+
+:bounded
+      a       owl:ObjectProperty .
+
+:ClassOfArrangedIndividual
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfArrangedIndividual is a ClassOfIndividual whose members
+            are an arrangement of components.
+        """^^xsd:string , """
+            NOTE The ONEOF constraint on some of the subtypes does not prevent a
+            particular PossibleIndividual from being, say, classified by
+            ClassOfBiologicalMatter and a member of a particular
+            ClassOfCompositeMaterial . It is only the classes themselves that are not
+            members of more than one of the entity types.
+        """^^xsd:string , """
+            NOTE Specifications or descriptions of useful objects are often intersections
+            of several arrangement classes, allowing both shape and material aspects to
+            be constrained. In this part of ISO 15926, such intersections are members of
+            ClassOfArrangedIndividual , ClassOfFeature , ClassOfInanimatePhysicalObject ,
+            ClassOfOrganization , ClassOfActivity , ClassOfOrganism , or
+            ClassOfInformationObject .
+        """^^xsd:string , """
+            EXAMPLE Robocop is a ClassOfArrangedIndividual that has some parts that are
+            members of some ClassOfInanimatePhysicalObject and parts that are members of
+            some ClassOfOrganism .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfIndividual .
+
+:ClassOfRelationshipWithRelatedEnd2
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE Possession of welding skills by John Doe is an example of
+            ClassOfRelationshipWithRelatedEnd2 , where John Doe is the related
+            Thing .
+        """^^xsd:string , """
+            DEFINITION A ClassOfRelationshipWithRelatedEnd2 is a ClassOfRelationship
+            where a particular Thing is related in the ClassOfRelationship , rather than
+            the members of a Class . The related Thing plays the RoleAndDomain indicated
+            by the classOfEnd2 attribute.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Thing ;
+                owl:onProperty :related
+              ] .
+
+:classOfPart
+      a       owl:ObjectProperty .
+
+:ClassOfAtom
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfAtom is a ClassOfArrangedIndividual whose members are
+            atoms.
+        """^^xsd:string , """
+            EXAMPLE All entries in the periodic table of elements can be represented by
+            instances of ClassOfAtom .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:classOfSubclass
+      a       owl:ObjectProperty .
+
+:individual
+      a       owl:ObjectProperty .
+
+:ClassOfPossibleRoleAndDomain
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE Pumps can play the role of anchor (although they are not intended
+            to do so).
+        """^^xsd:string , """
+            DEFINITION A ClassOfPossibleRoleAndDomain is a ClassOfRelationship that
+            indicates the RoleAndDomain that can be played by a member of the
+            ClassOfIndividual , in some Activity .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :RoleAndDomain ;
+                owl:onProperty :played
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfIndividual ;
+                owl:onProperty :classOfPlayer
+              ] .
+
+:lesserElement
+      a       owl:ObjectProperty .
+
+:minimumCardinality
+      a       owl:ObjectProperty .
+
+:Relationship
+      a       :ClassOfRelationship , owl:Class , :ClassOfAssertion ;
+      rdfs:comment """
+            DEFINITION A Relationship is an AbstractObject that indicates something that
+            one Thing has to do with another.
+        """^^xsd:string , """
+            NOTE An rdf:Property comes close, but has one direction. The two attributes
+            of a relationship are mapped to rdf:Property, with the subclass of
+            Relationship as rdf:domain, and the rdg:range defined using the built-in
+            OWL properties owl:onProperty and owl:allValuesFrom.
+        """^^xsd:string , """
+            NOTE Only classes of binary relationship are supported. More complex objects
+            can be supported using MultidimensionalObject and
+            ClassOfMultidimensionalObject . Instances of ISO 15926-7 Templates are such
+            complex objects.
+        """^^xsd:string ;
+      rdfs:subClassOf :AbstractObject .
+
+:ClassOfScale
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfScale is a ClassOfClassOfRelationship whose members are
+            instances of Scale .
+        """^^xsd:string , """
+            EXAMPLE 'SI Unit' is an instance of ClassOfScale .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfRelationship .
+
+:ClassOfApprovalByStatus
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE approved, approved with comments, disapproved with comments are
+            examples of ClassOfApprovalByStatus .
+        """^^xsd:string , """
+            DEFINITION A ClassOfApprovalByStatus is a ClassOfRelationship that indicates
+            a status of the approval that is independent of what is being approved by
+            whom.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship .
+
+:classOfSuperclass
+      a       owl:ObjectProperty .
+
+:PeriodInTime
+      a       owl:Class , :ClassOfPeriodInTime ;
+      rdfs:comment """
+            EXAMPLE July 2000 is an instance of PeriodInTime.
+        """^^xsd:string , """
+            DEFINITION A PeriodInTime is a PossibleIndividual that is all space for
+            part of time - a temporal part of the universe.
+        """^^xsd:string , """
+            EXAMPLE The period described by UTC 2000-11-21T06:00 to
+            UTC 2000-11-21T11:53 is an instance of PeriodInTime compliant with ISO8601.
+        """^^xsd:string ;
+      rdfs:subClassOf :PossibleIndividual .
+
+:shapeDimension
+      a       owl:ObjectProperty .
+
+:PropertySpace
+      a       owl:Class , :ClassOfPropertySpace ;
+      rdfs:comment """
+            EXAMPLE The members of the 'pressure' and 'flow rate' ClassOfProperty that
+            fall on a particular pump curve is a PropertySpace .
+        """^^xsd:string , """
+            DEFINITION A PropertySpace is a ClassOfProperty whose members are a coherent
+            continuum of Property .
+        """^^xsd:string , """
+            EXAMPLE The set of temperature properties, known as temperature, is a
+            PropertySpace.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfProperty .
+
+:highestNumber
+      a       owl:ObjectProperty .
+
+:causer
+      a       owl:ObjectProperty .
+
+:ClassOfBiologicalMatter
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfBiologicalMatter is a ClassOfArrangedIndividual whose
+            members are particular types of cell or aggregations of cells.
+        """^^xsd:string , """
+            EXAMPLE The classes known as 'blood', 'enzyme', and 'plasma' can be
+            represented by instances of ClassOfBiologicalMatter .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:ClassOfAbstractObject
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfAbstractObject> is a Class whose members classify members
+            of AbstractObject .
+        """^^xsd:string ;
+      rdfs:subClassOf :Class .
+
+:range
+      a       owl:ObjectProperty .
+
+:classOfInvolved
+      a       owl:ObjectProperty .
+
+:UpperBoundOfNumberRange
+      a       owl:Class ;
+      rdfs:comment """
+			DEFINITION An UpperBoundOfNumberRange is a Relationship that indicates an
+			ArithmeticNumber is the largest value in a NumberRange .
+		"""^^xsd:string , """
+			EXAMPLE The instance of RealNumber that is represented by the instance of
+			ExpressReal '5.3' has an UpperBoundOfNumberRange relationship with the
+			instance of NumberRange'[3.1 to 5.3]'.
+		"""^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :NumberRange ;
+                owl:onProperty :range
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ArithmeticNumber ;
+                owl:onProperty :highestNumber
+              ] .
+
+:classOfBegun
+      a       owl:ObjectProperty .
+
+:classOfClassifier
+      a       owl:ObjectProperty .
+
+:content
+      a       owl:ObjectProperty .
+
+:FunctionalPhysicalObject
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A FunctionalPhysicalObject is a PhysicalObject that has
+            functional, rather than material, continuity as its basis for identity.
+            Adjacent temporal parts of a FunctionalPhysicalObject need not have common
+            matter or energy, provided the matter or energy of each temporal part fulfils
+            the same function.
+        """^^xsd:string , """
+            EXAMPLE The heat exchanger system known as tag E-4507, which is part of a
+            distillate transfer system, can be represented by an instance of
+            FunctionalPhysicalObject. Note that this is distinct from the \"shell and tube
+            heat exchanger manufacture number ES/1234\" that was installed as E-4507 when
+            the plant was first built and later removed when worn out, to be replaced by
+            a new heat exchanger with different serial number. \"Shell and tube heat
+            exchanger manufacture number ES/1234\" and its differently numbered
+            replacement can be represented by instances of MaterializedPhysicalObject .
+            When ES/1234 is installed as E-4507 there is a temporal part of ES/1234 that
+            is also a temporal part of E-4507.
+        """^^xsd:string ;
+      rdfs:subClassOf :PhysicalObject .
+
+:classOfClassOfPart
+      a       owl:ObjectProperty .
+
+:related
+      a       owl:ObjectProperty .
+
+:recordLogicallyDeleted
+      a       owl:ObjectProperty .
+
+:lowestNumber
+      a       owl:ObjectProperty .
+
+:interested
+      a       owl:ObjectProperty .
+
+:ClassOfDefinition
+      a       owl:Class , :ClassOfClassOfDefinition ;
+      rdfs:comment """
+            DEFINITION A ClassOfDefinition is a ClassOfRepresentationOfThing that
+            indicates the pattern is a definition of the represented Class .
+        """^^xsd:string , """
+            EXAMPLE The link between the pattern 'pump' and the Class that goes by that
+            name in English can be represented by an instance of ClassOfDefinition .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRepresentationOfThing ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Class ;
+                owl:onProperty :represented
+              ] .
+
+:RoleAndDomain
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A RoleAndDomain is a Class that specifies the domain and role for
+            an end of a ClassOfRelationship or ClassOfMultidimensionalObject .
+        """^^xsd:string , """
+            EXAMPLE \"Husband and man\" and \"wife and woman\" are examples of RoleAndDomain.
+        """^^xsd:string , """
+            NOTE A RoleAndDomain is analogous to specifying an EXPRESS attribute or its
+            inverse.
+        """^^xsd:string ;
+      rdfs:subClassOf :Class .
+
+:ClassOfDirectConnection
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfDirectConnection is a ClassOfConnectionOfIndividual whose
+            members are members of DirectConnection .
+        """^^xsd:string , """
+            EXAMPLE Three-pin electrical plug into three-pin socket is an example of
+            ClassOfDirectConnection .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfConnectionOfIndividual .
+
+:ClassOfDescription
+      a       owl:Class , :ClassOfClassOfDescription ;
+      rdfs:comment """
+            DEFINITION A ClassOfDescription is a ClassOfRepresentationOfThing that
+            indicates the pattern is a description of the represented Thing.
+        """^^xsd:string , """
+            EXAMPLE The link between the pattern 'this is an old bilge pump' and a
+            particular pump can be represented by an instance of ClassOfDescription .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRepresentationOfThing .
+
+:UsageOfRepresentation
+      a       owl:Class , :ClassOfUsageOfRepresentation ;
+      rdfs:comment """
+            EXAMPLE The sign \"P101\" is used by the XYZ company to represent a particular
+            pump in a design.
+        """^^xsd:string , """
+            DEFINITION A UsageOfRepresentation is a Relationship that indicates that the
+            RepresentationOfThing is used by the PossibleIndividual . Usage does not
+            imply responsibility.
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :user
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :RepresentationOfThing ;
+                owl:onProperty :used
+              ] .
+
+:classOfRecognized
+      a       owl:ObjectProperty .
+
+:Ending
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE 1 The relation that indicates that the PointInTime known as 0000hrs
+            1st July 1999 GMT is the end of the PeriodInTime known as June 1999 00.00 GMT
+            can be represented by an instance of Ending .
+        """^^xsd:string , """
+            EXAMPLE 2 The relation that indicates that the Event 'loading complete'
+            marks the end of the PossibleIndividual 'loading plant operating period 1'
+            (a temporal part of the loading plant) is an instance of Ending .
+        """^^xsd:string , """
+            DEFINITION An Ending is a TemporalBounding that marks the end of a PossibleIndividual .
+        """^^xsd:string ;
+      rdfs:subClassOf :TemporalBounding .
+
+:classOfSuccessor
+      a       owl:ObjectProperty .
+
+:position
+      a       owl:ObjectProperty .
+
+:Description
+      a       owl:Class , :ClassOfDescription ;
+      rdfs:comment """
+            DEFINITION A Description is a RepresentationOfThing that indicates that the
+            PossibleIndividual describes the Thing .
+        """^^xsd:string , """
+            EXAMPLE A paper copy of the Piping and Instrumentation Diagram for Crude
+            Distillation Unit 1 at refinery X has a Description relationship with the
+            plant.
+        """^^xsd:string ;
+      rdfs:subClassOf :RepresentationOfThing .
+
+:classOfSide2
+      a       owl:ObjectProperty .
+
+:ClassOfActivity
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfActivity is a ClassOfArrangedIndividual whose members are
+            instances of Activity .
+        """^^xsd:string , """
+            NOTE Behaviour is a term used to describe a ClassOfActivity either where
+            there are preconditions and the ClassOfActivity is a response to those
+            preconditions, e.g. reaction to touching a hot surface, or where the way an
+            activity occurs is described by some property or function, e.g. fluid flow
+            being described by the viscosity of the fluid.
+        """^^xsd:string , """
+            EXAMPLE Drilling, distilling, and approving can be represented by instances
+            of ClassOfActivity .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:ClassOfClassOfUsageOfRepresentation
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The link between a user company and the identification set between
+            Weir pumps and Weir serial numbers indicating that the user company uses the
+            Weir identifiers can be represented by an instance of
+            ClassOfClassOfUsageOfRepresentation.
+        """^^xsd:string , """
+            DEFINITION A ClassOfClassOfUsageOfRepresentation is a
+            ClassOfClassOfRelationship whose members are members of
+            ClassOfUsageOfRepresentation linking the user to a set of representations.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfClassOfRepresentation ;
+                owl:onProperty :classOfClassOfUsed
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :user
+              ] .
+
+:ClassOfOrganism
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfOrganism is a ClassOfArrangedIndividual whose members are
+            living organisms.
+        """^^xsd:string , """
+            EXAMPLE Human being, sheep, earthworm, oak tree, and bacteria are instances
+            of ClassOfOrganism .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:IndirectProperty
+      a       owl:Class , :ClassOfIndirectProperty ;
+      rdfs:comment """
+            DEFINITION An IndirectProperty is a Relationship between a Property and a
+            PossibleIndividual . The nature of the IndirectProperty is defined by its
+            Classification by a ClassOfIndirectProperty . A Property is indirect when it
+            does not directly apply to the PossibleIndividual it applies to, but is
+            derived from some process.
+        """^^xsd:string , """
+            EXAMPLE A Maximum Allowable Working Pressure of 50 BarA for V101 is specified
+            by an IndirectProperty between the pressure of 50 BarA and V101, classified
+            by the ClassOfIndirectProperty Maximum Allowable Working Pressure.
+        """^^xsd:string , """
+            NOTE A property is indirect because it does not directly apply. There can
+            only be one temperature that a thing has (at a time), so a Maximum Allowable
+            Working Temperature is not its temperature, but an indirect property derived
+            from doing some tests or calculations to determine its value (as opposed to
+            it being a current measurement). This is what makes it indirect.
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Property ;
+                owl:onProperty :property
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :possessor
+              ] .
+
+:involved
+      a       owl:ObjectProperty .
+
+:classOfConnection
+      a       owl:ObjectProperty .
+
+:ActualIndividual
+      a       owl:Class ;
+      rdfs:comment """
+            NOTE The things we plan can usually only be assumed to be part of some
+            imagined universe, until they come about.
+        """^^xsd:string , """
+            EXAMPLE The fictional character, Sherlock Holmes, is a PossibleIndividual
+            who is not an ActualIndividual .
+        """^^xsd:string , """
+            DEFINITION An ActualIndividual is a PossibleIndividual that is a part of
+            the space-time continuum that we inhabit. It exists in the present, past,
+            or future of our universe, as opposed to some imagined universe.
+        """^^xsd:string , """
+            EXAMPLE The Eiffel Tower is an ActualIndividual .
+        """^^xsd:string , """
+            EXAMPLE The Earth in the year 2300 (assuming it still exists) is an
+            ActualIndividual .
+        """^^xsd:string ;
+      rdfs:subClassOf :PossibleIndividual .
+
+:IndividualDimension
+      a       owl:Class , :ShapeDimension ;
+      rdfs:comment """
+            EXAMPLE The set of lines that are each a diameter of a particular circle are
+            instances of IndividualDimension .
+        """^^xsd:string , """
+            DEFINITION An IndividualDimension is a ClassOfIndividual whose members
+            characterize a particular PossibleIndividual .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfIndividual .
+
+:ClassOfPointInTime
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE Midnight is a ClassOfPointInTime .
+        """^^xsd:string , """
+            DEFINITION A ClassOfPointInTime is a ClassOfEvent whose members are members
+            of PointInTime .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfEvent .
+
+:ClassOfAssertion
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfAssertion is a ClassOfRelationship that describes the
+            assertive nature of the member relations.
+        """^^xsd:string , """
+            EXAMPLE Asserting, denying, and probabilistic can be represented by instances
+            of ClassOfAssertion .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship .
+
+:ConnectionOfIndividual
+      a       owl:Class , :ClassOfConnectionOfIndividual ;
+      rdfs:comment """
+            NOTE There is no significance to the ordering of the two related instances of
+            PossibleIndividual . The names side1 and side2 serve only to distinguish the
+            attributes.
+        """^^xsd:string , """
+            DEFINITION A ConnectionOfIndividual is a Relationship that indicates that
+            matter, energy, or both can be transferred between the members of
+            PossibleIndividual that are connected, either directly or indirectly.
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :side2
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :side1
+              ] .
+
+:approver
+      a       owl:ObjectProperty .
+
+:classOfPredecessor
+      a       owl:ObjectProperty .
+
+:PhysicalObject
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The XYZ Corporation is a PhysicalObject .
+        """^^xsd:string , """
+            EXAMPLE A light beam is a PhysicalObject .
+        """^^xsd:string , """
+            DEFINITION A PhysicalObject is a PpossibleIndividual that is a distribution
+            of matter, energy, or both.
+        """^^xsd:string , """
+            EXAMPLE A tree is a PhysicalObject .
+        """^^xsd:string , """
+            EXAMPLE The thing identified by tag P101 is a PhysicalObject .
+        """^^xsd:string , """
+            EXAMPLE A piece of metal is a PhysicalObject .
+        """^^xsd:string , """
+            EXAMPLE A tank that is built and dismantled on site is both a
+            MaterializedPhysicalObject and a FunctionalPhysicalObject .
+        """^^xsd:string , """
+            EXAMPLE John Doe is a PhysicalObject .
+        """^^xsd:string ;
+      rdfs:subClassOf :PossibleIndividual .
+
+:ClassOfConnectionOfIndividual
+      a       owl:Class ;
+      rdfs:comment """
+            NOTE 2 Flexible, rigid, and welded cannot be represented as instances of
+            ClassOfConnectionOfIndividual , these are classes of the materials connected
+            or used in the connection.
+        """^^xsd:string , """
+            DEFINITION A ClassOfConnectionOfIndividual is a ClassOfRelationship whose
+            members are members of ConnectionOfIndividual. It indicates that a member
+            of the classOfSide1 ClassOfIndividual can be connected to a member of the
+            classOfSide2 ClassOfIndividual .
+        """^^xsd:string , """
+            NOTE 1 The classOfSide1 and classOfSide2 indicate the ClassOfIndividual that
+            is the side1 and side2 respectively in a ConnectionOfIndividual that is a
+            member of this ClassOfConnectionOfIndividual .
+        """^^xsd:string , """
+            EXAMPLE Electrical connection between wires is a
+            ClassOfConnectionOfIndividual .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfIndividual ;
+                owl:onProperty :classOfSide2
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfIndividual ;
+                owl:onProperty :classOfSide1
+              ] .
+
+:end2Cardinality
+      a       owl:ObjectProperty .
+
+:DirectConnection
+      a       owl:Class , :ClassOfDirectConnection ;
+      rdfs:comment """
+            EXAMPLE The relation that indicates that the plug terminating a serial
+            communications cable is connected to the socket on a piece of computer
+            equipment can be represented by an instance of DirectConnection.
+        """^^xsd:string , """
+            DEFINITION A DirectConnection is a ConnectionOfIndividual that indicates that
+            the side1 and side2 are directly connected via a common spatial boundary.
+        """^^xsd:string ;
+      rdfs:subClassOf :ConnectionOfIndividual .
+
+:DimensionOfShape
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A DimensionOfShape is a ClassOfClassOfRelationship that indicates
+            that members of the ShapeDimension are dimensions of the Shape members.
+        """^^xsd:string , """
+            EXAMPLE The sets of 10m lines that are diameters of 10m circles is an example
+            of DimensionOfShape .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Shape ;
+                owl:onProperty :shape
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ShapeDimension ;
+                owl:onProperty :dimension
+              ] .
+
+:usage
+      a       owl:ObjectProperty .
+
+:approved
+      a       owl:ObjectProperty .
+
+:PossibleIndividual
+      a       owl:Class , :ClassOfIndividual ;
+      rdfs:comment """
+            DEFINITION A PossibleIndividual is a Thing that exists in space and time.
+            This includes:
+            - things where any of the space time dimensions are vanishingly small;
+            - those that are either all space for any time, or all time and any space;
+            - the entirety of all space time;
+            - things that actually exist, or have existed;
+            - things that are fictional or conjectured and possibly exist in the past,
+              present or future;
+            - temporal parts (states) of other individuals;
+            - things that have a specific position, but zero extent in one or more
+              dimensions, such as points, lines, and surfaces.
+            In this context existence is based upon being imaginable within some
+            consistent logic, including actual, hypothetical, planned, expected, or
+            required individuals.
+        """^^xsd:string , """
+            EXAMPLE The pump with serial number ABC123, Battersea Power Station, Sir
+            Joseph Whitworth, Shakespeare, and the starship \"Enterprise\" can be
+            represented by instances of PossibleIndividual .
+        """^^xsd:string ;
+      rdfs:subClassOf :Thing .
+
+:Phase
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The classes known as 'liquid' and 'solid' can be represented by
+            instances of Phase .
+        """^^xsd:string , """
+            NOTE Phase excludes types of internal structure such as crystalline.
+        """^^xsd:string , """
+            DEFINITION A Phase is a ClassOfArrangedIndividual based on the nature of the
+            boundary behaviour of material resulting from its atomic and molecular
+            bonding.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:AssemblyOfIndividual
+      a       owl:Class , :ClassOfAssemblyOfIndividual ;
+      rdfs:comment """
+            NOTE Composition of molecules and smaller is represented through instances
+            of ClassOfArrangementOfIndividual .
+        """^^xsd:string , """
+            EXAMPLE The relation that indicates that a temporal part of an impeller is a
+            part of an assembled pump can be represented by an instance of
+            AssemblyOfIndividual .
+        """^^xsd:string , """
+            DEFINITION An AssemblyOfIndividual is an ArrangementOfIndividual that
+            indicates that the part is connected directly or indirectly to other parts
+            of the whole. The parts and wholes are super-molecular objects.
+        """^^xsd:string ;
+      rdfs:subClassOf :ArrangementOfIndividual .
+
+:SpatialLocation
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A SpatialLocation is a PhysicalObject that has continuity of
+            relative position.
+        """^^xsd:string , """
+            EXAMPLE 'Geographic datum', 'license block', 'construction area', 'country',
+            'air corridor', 'maritime traffic zone', 'hazard control zone', '4D points',
+            'lines', 'planes', 'solids' are instances of SpatialLocation .
+        """^^xsd:string ;
+      rdfs:subClassOf :PhysicalObject .
+
+:Beginning
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The relation that indicates that the Event 'loading complete' marks
+            the start of the PossibleIndividual 'loading plant idle' can be represented
+            by an instance of Beginning .
+        """^^xsd:string , """
+            DEFINITION A Beginning is a TemporalBounding that marks the temporal start
+            of a PossibleIndividual .
+        """^^xsd:string , """
+            EXAMPLE The relation that indicates that the PointInTime known as 0000hrs
+            1st July 1999 UTC is the beginning of the PeriodInTime known as July 1999
+            00:00UTC can be represented by an instance of Beginning .
+        """^^xsd:string ;
+      rdfs:subClassOf :TemporalBounding .
+
+:successor
+      a       owl:ObjectProperty .
+
+:MultidimensionalObject
+      a       :ClassOfMultidimensionalObject , owl:Class ;
+      rdfs:comment """
+            DEFINITION A MultidimensionalObject is an AbstractObject that is an
+            ordered list of Thing . The significance of the MultidimensionalObject is
+            determined by being a member of a ClassOfMultidimensionalObject that
+            indicates the role played by each of its elements.
+        """^^xsd:string , """
+            EXAMPLE '[32, 1.8, 20]' is a MultidimensionalObject that may be specified to
+            be the input parameters for the function y=a+bx to convert 20 Celsius to
+            Fahrenheit.
+        """^^xsd:string , """
+            NOTE The MultidimensionalObject [A,B,C] is different from [B,C,A].
+        """^^xsd:string ;
+      rdfs:subClassOf :AbstractObject ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom ""^^xsd:nonNegativeInteger ;
+                owl:onProperty :position
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Thing ;
+                owl:onProperty :elements
+              ] .
+
+:CauseOfEvent
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A CauseOfEvent is a Relationship that indicates that the caused
+            Event is caused by the causer Activity .
+        """^^xsd:string , """
+            EXAMPLE The relation that indicates that the tanker loading activity caused
+            the Event described as 'tank liquid level full' can be represented by an
+            instance of CauseOfEvent .
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Activity ;
+                owl:onProperty :causer
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Event ;
+                owl:onProperty :caused
+              ] .
+
+:ClassOfFeatureWholePart
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfFeatureWholePart is a ClassOfArrangementOfIndividual
+            whose members are instances of FeatureWholePart .
+        """^^xsd:string , """
+            EXAMPLE Thermowells have stems, and tables have tops are examples of
+            ClassOfFeatureWholePart .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangementOfIndividual .
+
+:end1Cardinality
+      a       owl:ObjectProperty .
+
+:recordCreator
+      a       owl:ObjectProperty .
+
+:recognized
+      a       owl:ObjectProperty .
+
+:WholeLifeIndividual
+      a       owl:Class ;
+      rdfs:comment """
+            NOTE A possible future temporal part of the WholeLifeIndividual is a
+            PossibleIndividual that is related to the WholeLifeIndividual by a
+            TemporalWholePart relation.
+        """^^xsd:string , """
+            EXAMPLE The universe for all time is a WholeLifeIndividual .
+        """^^xsd:string , """
+            EXAMPLE A plastic cup (bounded by its 'creation' and 'destruction' Event's)
+            can be represented by an instance of WholeLifeIndividual . The cup whilst it
+            stands on this table is a temporal part of this WholeLifeIndividual .
+        """^^xsd:string , """
+            DEFINITION A WholeLifeIndividual is a PossibleIndividual that is a member of
+            a ClassOfIndividual , and is not a temporal part of any other
+            PossibleIndividual that is also a member of the same ClassOfIndividual .
+            A WholeLifeIndividual includes its past and future.
+        """^^xsd:string ;
+      rdfs:subClassOf :PossibleIndividual .
+
+:parameters
+      a       owl:ObjectProperty .
+
+:recordCreated
+      a       owl:ObjectProperty .
+
+:classOfPattern
+      a       owl:ObjectProperty .
+
+:classOfEnd2
+      a       owl:ObjectProperty .
+
+:ClassOfIntendedRoleAndDomain
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE Pumps are intended to play the RoleAndDomain of performer in some
+            pumping activity.
+        """^^xsd:string , """
+            DEFINITION A ClassOfIntendedRoleAndDomain is a ClassOfRelationship that
+            indicates that a member of the ClassOfIndividual is intended to act as a
+            member of the RoleAndDomain .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :RoleAndDomain ;
+                owl:onProperty :played
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfIndividual ;
+                owl:onProperty :classOfPlayer
+              ] .
+
+:ClassOfDimensionForShape
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfDimensionForShape is a ClassOfClassOfRelationship that
+            indicates that members of the classOfShape have a dimension that is a
+            member of the classOfDimension .
+        """^^xsd:string , """
+            EXAMPLE Specifying that members of the \"class of circle\" have members of
+            \"class of diameter\" is an instance of ClassOfDimensionForShape .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfShapeDimension ;
+                owl:onProperty :classOfDimension
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfShape ;
+                owl:onProperty :classOfShape
+              ] .
+
+:ClassOfTemporalSequence
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE 2 The link that indicates that emptying activities for a tank precede
+            cleaning activities can be represented by an instance of
+            ClassOfTemporalSequence .
+        """^^xsd:string , """
+            EXAMPLE 1 The link that indicates that members of July follow members of June
+            can be represented by an instance of ClassOfTemporalSequence .
+        """^^xsd:string , """
+            DEFINITION A ClassOfTemporalSequence is a ClassOfRelationship where the
+            sequence is of a temporal nature.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfIndividual ;
+                owl:onProperty :classOfPredecessor
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfIndividual ;
+                owl:onProperty :classOfSuccessor
+              ] .
+
+:Shape
+      a       owl:Class , :ClassOfShape ;
+      rdfs:comment """
+            DEFINITION A Shape is a Property that depends on constant relations of
+            position and proportionate distance among all the points composing its
+            outline or its external surface.
+        """^^xsd:string , """
+            EXAMPLE '20mm diameter circle' and '10-20mm diameter circles' are examples
+            of Shape .
+        """^^xsd:string , """
+            EXAMPLE 2 Irregular forms such as the outer envelope of a model of pump can
+            be represented by instances of Shape .
+        """^^xsd:string ;
+      rdfs:subClassOf :Property .
+
+:parameterPosition
+      a       owl:ObjectProperty .
+
+:ClassOfClassOfIdentification
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfClassOfIdentification is a ClassOfClassOfRepresentation
+            whose members are members of ClassOfIdentification .
+        """^^xsd:string , """
+            EXAMPLE The link between the Class 'family of manufactured parts' and the
+            RepresentationForm 'ISO 13584 Basic Semantic Unit', that indicates that part
+            families can be identified using ISO 13584, can be represented by an instance
+            of ClassOfClassOfIdentification.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfRepresentation .
+
+:ClassOfClassification
+      a       owl:Class ;
+      rdfs:comment """
+            NOTE Since in OWL there is no Classification possible because of the use of
+            the standard rdf:type construct, this ClassOfClassification cannot be used
+            as such.
+        """^^xsd:string , """
+            EXAMPLE The link between Class centrifugal pump and the ClassOfProperty 'RPM',
+            indicating that a centrifugal pump is a member of at least one RPM class,
+            can be represented by an instance of ClassOfClassification .
+        """^^xsd:string , """
+            DEFINITION A ClassOfClassification is a ClassOfRelationship whose members
+            are members of Classification . A ClassOfClassification indicates that a
+            member of the classOfClassified Class is classified by one or more members
+            of the classOfClassifier ClassOfClass .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Class ;
+                owl:onProperty :classOfClassified
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfClass ;
+                owl:onProperty :classOfClassifier
+              ] .
+
+:Definition
+      a       owl:Class , :ClassOfDefinition ;
+      rdfs:comment """
+            EXAMPLE The Relationship between the ClassOfInanimatePhysicalObject
+            'condensate' and the PhysicalObject that is the ink-on-paper
+            (or pixels-on-screeen): \"An aggregate which is in condensed form which means
+            in liquid state, resulting from a substance in vapour state.\" is an instance
+            of Definition .
+        """^^xsd:string , """
+            NOTE In semiotics, a sign is generally defined as \"something that stands for
+            something else, to someone in some capacity\". It may be understood as a
+            discrete unit of meaning. Signs are not limited to words but also include
+            images, gestures, scents, tastes, textures, sounds - essentially all of the
+            ways in which information can be processed and communicated by any sentient,
+            reasoning mind.
+        """^^xsd:string , """
+            DEFINITION A Definition is a RepresentationOfThing that indicates that the
+            Class is defined by the sign PossibleIndividual .
+        """^^xsd:string ;
+      rdfs:subClassOf :RepresentationOfThing ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Class ;
+                owl:onProperty :represented
+              ] .
+
+:ClassOfClassOfComposition
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfClassOfComposition is a ClassOfClassOfRelationship whose
+            members are instances of ClassOfComposition . It indicates that a member of a
+            member of the classOfClassOfPart is a part of a member of an instance of the
+            classOfClassOfWhole.
+        """^^xsd:string , """
+            EXAMPLE Toxicity description is a classOfClassOfPart of a material data
+            sheet, where the description \"has carcinogenic components\" is a classOfPart
+            on the Mogas Material Safety Data Sheet, and copy #5 of the Mogas Material
+            Safety Data Sheet has \"has carcinogenic components\" as a part.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfClassOfIndividual ;
+                owl:onProperty :classOfClassOfWhole
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfClassOfIndividual ;
+                owl:onProperty :classOfClassOfPart
+              ] .
+
+:IndividualUsedInConnection
+      a       owl:Class , :ClassOfIndividualUsedInConnection ;
+      rdfs:comment """
+            DEFINITION An IndividualUsedInConnection is a Relationship that indicates
+            that a PossibleIndividual is used in a ConnectionOfIndividual .
+        """^^xsd:string , """
+            EXAMPLE The Relationship between the connection of the flanged ends of two
+            pipes and a temporal part of the bolts, nuts, washers and gasket set that
+            indicates that the bolt and gasket set participates in the connection can be
+            represented by an instance of IndividualUsedInConnection .
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ConnectionOfIndividual ;
+                owl:onProperty :connection
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :usage
+              ] .
+
+:ClassOfClassOfRelationship
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfClassOfRelationship is a ClassOfClass whose members are
+            instances of ClassOfRelationship.
+        """^^xsd:string , """
+            EXAMPLE Reflexive is an example of ClassOfClassOfRelationship . A reflexive
+            ClassOfRelationship is one that may have the same Thing playing both roles,
+            such as connection, where something may be connected to itself.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClass .
+
+:ExpressBoolean
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION An ExpressBoolean is a ClassOfExpressInformationRepresentation
+            that represents a Boolean value as defined in ISO 10303-11:1994, 8.1.5 .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfExpressInformationRepresentation ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom ""^^xsd:boolean ;
+                owl:onProperty :content
+              ] .
+
+:classOfCauser
+      a       owl:ObjectProperty .
+
+:ClassOfCauseOfBeginningOfClassOfIndividual
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE A car manufacturing activity causes the beginning of a car.
+        """^^xsd:string , """
+            DEFINITION A ClassOfCauseOfBeginningOfClassOfIndividual is a
+            ClassOfRelationship that indicates that a member of a ClassOfActivity causes
+            the beginning of a member of a ClassOfIndividual .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfActivity ;
+                owl:onProperty :classOfCauser
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfIndividual ;
+                owl:onProperty :classOfBegun
+              ] .
+
+:EnumeratedNumberSet
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The set of integer numbers {3,4,5} can be represented by an instance
+            of EnumeratedNumberSet .
+        """^^xsd:string , """
+            DEFINITION An EnumeratedNumberSet is a ClassOfNumber and an
+            EnumeratedSetOfClass .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfNumber , :EnumeratedSetOfClass .
+
+:LifecycleStage
+      a       owl:Class , :ClassOfLifecycleStage ;
+      rdfs:comment """
+            DEFINITION A LifecycleStage is a Relationship that indicates the interest
+            that a PossibleIndividual has in some PossibleIndividual .
+        """^^xsd:string , """
+            EXAMPLE The relation that links a possible building to a temporal part of the
+            XYZ Corp. can be represented by an instance of LifecycleStage. The nature of
+            that LifecycleStage (e.g. 'planned') can be expressed by classifying with the
+            applicable ClassOfLifecycleStage .
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :interested
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :interest
+              ] .
+
+:side1
+      a       owl:ObjectProperty .
+
+:ClassOfNumber
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The class of prime numbers can be represented by an instance
+            ClassOfNumber .
+        """^^xsd:string , """
+            DEFINITION A ClassOfNumber is a ClassOfClass whose members are members of
+            ArithmeticNumber .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClass .
+
+:PropertyQuantification
+      a       :Scale , owl:Class ;
+      rdfs:comment """
+            NOTE The actual representation of the number is done by linking the
+            ArithmeticNumber to a  ClassOfExpressInformationRepresentation via a
+            ClassOfRepresentationOfThing .
+        """^^xsd:string , """
+            NOTE The unit or scale of the quantification is given by classifying the
+            PropertyQuantification by a Scale .
+        """^^xsd:string , """
+            DEFINITION A PropertyQuantification is a FunctionalMapping whose members map
+            a Property to an ArithmeticNumber .
+        """^^xsd:string , """
+            EXAMPLE The link that maps a particular mass to the RealNumber '4.2' can be
+            represented by an instance of PropertyQuantification .
+        """^^xsd:string ;
+      rdfs:subClassOf :FunctionalMapping .
+
+:PropertySpaceForClassOfShapeDimension
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The ClassOfShapeDimension 'diameter' is linked to the PropertySpace
+            'length' by an instance of PropertySpaceForClassOfShapeDimension .
+        """^^xsd:string , """
+            DEFINITION A PropertySpaceForClassOfShapeDimension is a
+            ClassOfClassOfRelationship that indicates the PropertySpace that a
+            ClassOfShapeDimension is from.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PropertySpace ;
+                owl:onProperty :propertySpace
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfShapeDimension ;
+                owl:onProperty :classOfShapeDimension
+              ] .
+
+:cardinalities
+      a       owl:ObjectProperty .
+
+:LowerBoundOfNumberRange
+      a       owl:Class ;
+      rdfs:comment """
+			DEFINITION A LowerBoundOfNumberRange is a Classification that indicates an
+			ArithmeticNumber is the lowest value in a NumberRange .
+		"""^^xsd:string , """
+			EXAMPLE The instance of RealNumber that is represented by the instance of
+			ExpressReal '3.1' has a LowerBoundOfNumberRange relationship with the
+			instance of NumberRange'[3.1 to 5.3]'.
+		"""^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :NumberRange ;
+                owl:onProperty :range
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ArithmeticNumber ;
+                owl:onProperty :lowestNumber
+              ] .
+
+:ClassOfClassOfDefinition
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE 'Normative' is a ClassOfClassOfDefinition.
+        """^^xsd:string , """
+            DEFINITION A ClassOfClassOfDefinition is a ClassOfClassOfRepresentation whose
+            members are members of ClassOfDefinition .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfRepresentation .
+
+:ExpressString
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION An ExpressString is a ClassOfExpressInformationRepresentation
+            that represents a string as defined in ISO 10303-11:1994, 8.1.6 .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfExpressInformationRepresentation ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom ""^^xsd:string ;
+                owl:onProperty :content
+              ] .
+
+:part
+      a       owl:ObjectProperty .
+
+:propertySpace
+      a       owl:ObjectProperty .
+
+:MultidimensionalProperty
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A MultidimensionalProperty is a Property that is also a
+            MultidimensionalObject .
+        """^^xsd:string , """
+            EXAMPLE A pump flow head characteristic is a MultidimensionalProperty. It
+            consists of a continuum of Q, H property pairs, where Q is the flow rate and
+            H is the flowing head difference. Each pair of properties Qa and Ha, where Qa
+            is a particular flow rate and Ha a particular head, is a multidimensional
+            property [Qa, Ha].
+        """^^xsd:string ;
+      rdfs:subClassOf :Property , :MultidimensionalObject .
+
+:played
+      a       owl:ObjectProperty .
+
+:ExpressReal
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION An ExpressReal is a ClassOfExpressInformationRepresentation
+            that represents a real number as defined in ISO 10303-11:1994, 8.1.2 .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfExpressInformationRepresentation ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom ""^^xsd:long ;
+                owl:onProperty :content
+              ] .
+
+:Stream
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The naphtha flowing in a pipe between a crude distillation unit and a
+            platformer is a Stream .
+        """^^xsd:string , """
+            EXAMPLE Flux is a 4D-constrained case of Stream where the path crosses a
+            surface.
+        """^^xsd:string , """
+            DEFINITION A Stream is a PhysicalObject that is material or energy moving
+            along a path, where the path is the basis of identity and may be constrained.
+            The Stream consists of the temporal parts of those things that are in the
+            Stream whilst they are in it.
+        """^^xsd:string ;
+      rdfs:subClassOf :PhysicalObject .
+
+:SpecializationOfIndividualDimensionFromProperty
+      a       owl:Class ;
+      rdfs:comment """
+			DEFINITION A SpecializationOfIndividualDimensionFromProperty is a
+			Specialization that indicates the members of the IndividualDimension are
+			members of the Property .
+		"""^^xsd:string , """
+			EXAMPLE An IndividualDimension 'diameter of 10m' is a subclass of the
+			Property 'length of 10m'.
+		"""^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :IndividualDimension ;
+                owl:onProperty :dimension
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Property ;
+                owl:onProperty :property
+              ] .
+
+:bounding
+      a       owl:ObjectProperty .
+
+:ClassOfRelationshipWithRelatedEnd1
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE Products manufactured by Bloggs and Co is a
+            ClassOfRelationshipWithRelatedEnd1 that points to Bloggs and Co as the related
+            Thing .
+        """^^xsd:string , """
+            DEFINITION A ClassOfRelationshipWithRelatedEnd1 is a ClassOfRelationship
+            where a particular Thing is related in the ClassOfRelationship , rather than
+            the members of a Class . The related Thing plays the RoleAndDomain indicated
+            by the classOfEnd1 attribute.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Thing ;
+                owl:onProperty :related
+              ] .
+
+:ClassOfInformationRepresentation
+      a       owl:Class , :ClassOfClassOfInformationRepresentation ;
+      rdfs:comment """
+            DEFINITION A ClassOfInformationRepresentation is a ClassOfArrangedIndividual
+            that defines a pattern that represents information.
+        """^^xsd:string , """
+            EXAMPLE The texts formed with the pattern of characters 's' concatenated
+            with 'u' concatenated with 'n' are members of the 'sun'
+            ClassOfInformationRepresentation .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:ClassOfEvent
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfEvent is a ClassOfIndividual whose members are members
+            of Event .
+        """^^xsd:string , """
+            EXAMPLE Continuous and instantaneous are instances of ClassOfEvent. A
+            continuous event is one such as a stream boundary flowing through a pipe.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfIndividual .
+
+:classOfClassOfWhole
+      a       owl:ObjectProperty .
+
+:ArithmeticNumber
+      a       owl:Class , :ClassOfNumber ;
+      rdfs:comment """
+            EXAMPLE Fifteen, the number itself not the English word \"fifteen\", is an
+            ArithmeticNumber. It could be represented by an ExpressInteger or an
+            ExpressReal but could also be represented by \"XV\", or a binary, or a
+            hexadecimal representation.
+        """^^xsd:string , """
+            DEFINITION An ArithmeticNumber is a ClassOfClass whose member classes have
+            the same sign and count or magnitude. An ArithmeticNumber is the number
+            itself, not any representation of the number.
+        """^^xsd:string , """
+            EXAMPLE The number 2 and the number 2.0 can be represented by instances of
+            ArithmeticNumber .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClass .
+
+<http://www.tc184-sc4.org/iso15926/part2/2003-12>
+      a       owl:Ontology ;
+      rdfs:comment "EXPRESS model of ISO 15926-2 mapped to OWL" ;
+      rdfs:label "DataModel" ;
+      :versionInfo "August 2005" .
+
+:TemporalSequence
+      a       owl:Class , :ClassOfTemporalSequence ;
+      rdfs:comment """
+            DEFINITION A TemporalSequence is a Relationship that indicates that one
+            PossibleIndividual precedes another in a temporal sense.
+        """^^xsd:string , """
+            EXAMPLE The Relationship that indicates that the PeriodInTime known as the
+            industrial revolution preceded the PeriodInTime known as the information
+            revolution can be represented by an instance of TemporalSequence .
+        """^^xsd:string , """
+            EXAMPLE The Relationship that indicates that the PossibleIndividual that is
+            the construction phase of a plant precedes the PossibleIndividual that is the
+            commissioning phase of a plant can be represented by an instance of
+            TemporalSequence .
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :successor
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :predecessor
+              ] .
+
+:lowestProperty
+      a       owl:ObjectProperty .
+
+:property
+      a       owl:ObjectProperty .
+
+:ClassOfClassOfInformationRepresentation
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE Integer Octal is a ClassOfClassOfInformationRepresentation whose
+            members are all the information representation classes that correspond to
+            Octal formatted integers.
+        """^^xsd:string , """
+            DEFINITION A ClassOfClassOfInformationRepresentation is a
+            ClassOfClassOfIndividual that classifies information representation classes.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfIndividual .
+
+:ClassOfScaleConversion
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfScaleConversion is a ClassOfIsomorphicFunctionalMapping
+            that defines a conversion between two different scales of units used for the
+            quantification of properties.
+        """^^xsd:string , """
+            EXAMPLE The Fahrenheit scale for temperature and the Celsius scale for
+            temperature can each be represented by instances of Scale . The conversion
+            between these scales can be represented by an instance of
+            ClassOfScaleConversion.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfIsomorphicFunctionalMapping ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Scale ;
+                owl:onProperty :codomain
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Scale ;
+                owl:onProperty :domain
+              ] .
+
+:possessor
+      a       owl:ObjectProperty .
+
+:PropertyRange
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE '[-10C to +20C]' is a PropertyRange of temperature.
+        """^^xsd:string , """
+            DEFINITION A PropertyRange is a PropertySpace that is a continuous subset of
+            a SinglePropertyDimension .
+        """^^xsd:string ;
+      rdfs:subClassOf :PropertySpace .
+
+:classOfShapeDimension
+      a       owl:ObjectProperty .
+
+:shape
+      a       owl:ObjectProperty .
+
+:ClassOfInvolvementByReference
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfInvolvementByReference is a ClassOfRelationship whose
+            members are instances of InvolvementByReference .
+        """^^xsd:string , """
+            EXAMPLE Discussion of historical activities is an example of
+            ClassOfInvolvementByReference .
+        """^^xsd:string , """
+            EXAMPLE The relation between API 610 and the ClassOfActivity 'design of
+            centrifugal pumps' is represented by an instance of
+            ClassOfInvolvementByReference .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfIndividual ;
+                owl:onProperty :classOfInvolved
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfActivity ;
+                owl:onProperty :classOfInvolver
+              ] .
+
+:DimensionOfIndividual
+      a       :DimensionOfShape , owl:Class ;
+      rdfs:comment """
+            DEFINITION A DimensionOfIndividual is a ClassOfRelationship that indicates
+            that each member of the set of lines that are the IndividualDimension are a
+            dimension of the PossibleIndividual .
+        """^^xsd:string , """
+            EXAMPLE The set of all lines that pass through the centre of a particular
+            circle and end at the circumference of that circle, are a dimension
+            (diameter) of that circle. The particular dimension is indicated by the
+            DimensionOfShape that classifies the DimensionOfIndividual .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :individual
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :IndividualDimension ;
+                owl:onProperty :individualDimension
+              ] .
+
+:ArrangementOfIndividual
+      a       owl:Class , :ClassOfArrangementOfIndividual ;
+      rdfs:comment """
+            EXAMPLE The relationship that indicates that a particular bin in a warehouse
+            is part of the warehouse layout can be represented by an instance of
+            ArrangementOfIndividual .
+        """^^xsd:string , """
+            EXAMPLE The relationship that indicates that a particular aircraft is
+            flying as part of a formation can be represented by an instance of
+            ArrangementOfIndividual .
+        """^^xsd:string , """
+            DEFINITION An ArrangementOfIndividual is a CompositionOfIndividual that
+            indicates that the part is a part of an ArrangedIndividual.
+            The temporal extent of the part is that of the whole.
+            An ArrangementOfIndividual may be an AssemblyOfIndividual .
+        """^^xsd:string , """
+            NOTE The natures of the relations to other parts of the whole are not
+            specified by the arrangement relation. Relationships like
+            ConnectionOfIndividual and RelativeLocation would indicate this.
+        """^^xsd:string , """
+            NOTE The term \"arranged\" implies that parts have particular roles with
+            respect to the whole.
+        """^^xsd:string ;
+      rdfs:subClassOf :CompositionOfIndividual ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ArrangedIndividual ;
+                owl:onProperty :whole
+              ] .
+
+:RepresentationOfGregorianDateAndUtcTime
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A RepresentationOfGregorianDateAndUtcTime is a
+            ClassOfInformationRepresentation whose members are representations of time
+            using the UTC system of time identification as specified in ISO 8601:2000
+            together with the Gregorian system for representing dates. All times shall
+            be represented using UTC representation of time. Dates shall follow the
+            Gregorian calendar.
+        """^^xsd:string , """
+            NOTE Coordinated Universal Time (UTC) is the basis for legal time worldwide
+            and follows TAI (see below) exactly except for an integral number of seconds,
+            presently 32. These leap seconds are inserted on the advice of the
+            International Earth Rotation Service (IERS) (http://hpiers.obspm.fr) to
+            ensure that, on average over the years, the Sun is overhead within 0.9
+            seconds of 12:00:00 UTC on the meridian of Greenwich. UTC is thus the modern
+            successor of Greenwich Mean Time, GMT, which was used when the unit of time
+            was the mean solar day. International Atomic Time (TAI) is calculated by the
+            BIPM from the readings of more than 200 atomic clocks located in metrology
+            institutes and observatories in more than 30 countries around the world. TAI
+            is made available every month in the BIPM Circular T
+            (ftp://62.161.69.5/pub/tai/publication). It is estimated that TAI does not
+            lose or gain with respect to an imaginary perfect clock by more than about
+            one tenth of a microsecond (0.0000001 second) per year.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfInformationRepresentation ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom ""^^xsd:nonNegativeInteger ;
+                owl:onProperty :year
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom ""^^xsd:nonNegativeInteger ;
+                owl:onProperty :hour
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom ""^^xsd:nonNegativeInteger ;
+                owl:onProperty :month
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom ""^^xsd:nonNegativeInteger ;
+                owl:onProperty :day
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom ""^^xsd:unsignedLong ;
+                owl:onProperty :second
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom ""^^xsd:nonNegativeInteger ;
+                owl:onProperty :minute
+              ] .
+
+:RepresentationOfThing
+      a       owl:Class , :ClassOfRepresentationOfThing ;
+      rdfs:comment """
+            EXAMPLE The relationship between a nameplate with its serial number and other
+            data, and a particular pressure vessel (MaterializedPhysicalObject) is an
+            example of RepresentationOfThing that is an Identification .
+        """^^xsd:string , """
+            DEFINITION A RepresentationOfThing is a Relationship that indicates that a
+            PossibleIndividual is a sign for a Thing .
+        """^^xsd:string , """
+            NOTE In general it will be ClassOfRepresentationOfThing that will be of
+            interest, rather than each RepresentationOfThing. However,
+            RepresentationOfThing will be of interest when individual copies of documents
+            are managed and controlled.
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Thing ;
+                owl:onProperty :represented
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :sign
+              ] .
+
+:Scale
+      a       owl:Class , :ClassOfScale ;
+      rdfs:comment """
+            EXAMPLE The link that is known as the Celsius scale between the ClassOfNumber
+            '[-273, inf]' and the ClassOfProperty 'temperature' can be represented by an
+            instance of Scale.
+        """^^xsd:string , """
+            DEFINITION A Scale is a ClassOfIsomorphicFunctionalMapping whose members are
+            members of PropertyQuantification . It indicates the NumberSpace a
+            PropertySpace maps to for the Scale in question.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfIsomorphicFunctionalMapping ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :NumberSpace ;
+                owl:onProperty :codomain
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PropertySpace ;
+                owl:onProperty :domain
+              ] .
+
+:ExpressLogical
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION An ExpressLogical is a ClassOfExpressInformationRepresentation
+            that represents a logical value as defined in ISO 10303-11:1994, 8.1.4 .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfExpressInformationRepresentation ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :LogicalValue ;
+                owl:onProperty :content
+              ] .
+
+:FunctionalMapping
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A FunctionalMapping is a Relationship that indicates that the
+            input gave the result for the classifying ClassOfFunctionalMapping .
+        """^^xsd:string , """
+            EXAMPLE The mapping of [5, 3] to 2, classified by the minus function is an
+            example of FunctionalMapping .
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Thing ;
+                owl:onProperty :input
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Thing ;
+                owl:onProperty :result
+              ] .
+
+:connection
+      a       owl:ObjectProperty .
+
+:ShapeDimension
+      a       owl:Class , :ClassOfShapeDimension ;
+      rdfs:comment """
+            EXAMPLE 'Diameter of 5m', 'height of 3mm', and 'width of 10cm' are members
+            of ShapeDimension .
+        """^^xsd:string , """
+            DEFINITION A ShapeDimension is a ClassOfClassOfIndividual that is a set of
+            IndividualDimension that defines an aspect of a Shape .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfIndividual .
+
+:Thing
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A Thing is anything that is or may be thought about or perceived,
+            including material and non-material objects, ideas, and actions. Every Thing
+            is either a PossibleIndividual , or an AbstractObject .
+        """^^xsd:string , """
+            NOTE Every Thing is identifiable within a system by means of rdf:ID..
+            System identifiers created by other systems and received as part of a data
+            exchange may be stored for future reference as an identification, referring to
+            the originating organisation or system.
+        """^^xsd:string , """
+            NOTE Every example provided for other entity data types declared in this
+            schema is also an example of Thing .
+        """^^xsd:string ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfInformationRepresentation ;
+                owl:onProperty :whyDeleted
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :RepresentationOfGregorianDateAndUtcTime ;
+                owl:onProperty :recordCopyCreated
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :RepresentationOfGregorianDateAndUtcTime ;
+                owl:onProperty :recordLogicallyDeleted
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :RepresentationOfGregorianDateAndUtcTime ;
+                owl:onProperty :recordCreated
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :recordCreator
+              ] .
+
+:ContainmentOfIndividual
+      a       owl:Class , :ClassOfContainmentOfIndividual ;
+      rdfs:comment """
+            NOTE Containment is distinct from composition; in composition the whole
+            consists of all of its part, with containment, what is contained is not a
+            part of the container.
+        """^^xsd:string , """
+            DEFINITION A ContainmentOfIndividual is a RelativeLocation where the located
+            PossibleIndividual is contained by the locator PossibleIndividual but is not
+            part of it.
+        """^^xsd:string , """
+            EXAMPLE The contents of a vessel being inside the vessel can be represented
+            by an instance of ContainmentOfIndividual .
+        """^^xsd:string ;
+      rdfs:subClassOf :RelativeLocation .
+
+:ClassOfMolecule
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE H2O, H2SO4, and DNA can be represented by instances of
+            ClassOfMolecule .
+        """^^xsd:string , """
+            DEFINITION A ClassOfMolecule is a ClassOfArrangedIndividual whose members
+            are molecules.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:ExpressInteger
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION An ExpressInteger is a ClassOfExpressInformationRepresentation
+            that represents an integer number as defined in ISO 10303-11:1994, 8.1.3 .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfExpressInformationRepresentation ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom ""^^xsd:integer ;
+                owl:onProperty :content
+              ] .
+
+:whyDeleted
+      a       owl:ObjectProperty .
+
+:elements
+      a       owl:ObjectProperty .
+
+:ClassOfFeature
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE The classes known as 'mountain', 'groove', 'rim', 'nozzle', 'nose',
+            and 'raised face' can all be represented as instances of ClassOfFeature .
+        """^^xsd:string , """
+            DEFINITION A ClassOfFeature is a ClassOfArrangedIndividual whose members are
+            contiguous, non-separable parts of some PossibleIndividual and have an
+            incompletely defined boundary.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:MultidimensionalScale
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A MultidimensionalScale is a Scale that is also a
+            MultidimensionalObject .
+        """^^xsd:string , """
+            EXAMPLE A '[Celsius, seconds]' scale is a MultidimensionalScale on which
+            temperature variation over time can be plotted.
+        """^^xsd:string ;
+      rdfs:subClassOf :Scale , :MultidimensionalObject ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :NumberSpace ;
+                owl:onProperty :codomain
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PropertySpace ;
+                owl:onProperty :domain
+              ] .
+
+:codomain
+      a       owl:ObjectProperty .
+
+:end1
+      a       owl:ObjectProperty .
+
+:ClassOfCompositionOfIndividual
+      a       owl:Class , :ClassOfClassOfComposition ;
+      rdfs:comment """
+            EXAMPLE That piles of sand may have grains of sand as parts is an example of
+            ClassOfCompositionOfIndividual .
+        """^^xsd:string , """
+            DEFINITION A ClassOfCompositionOfIndividual is a ClassOfRelationship whose
+            members are members of CompositionOfIndividual .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfIndividual ;
+                owl:onProperty :classOfPart
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfIndividual ;
+                owl:onProperty :classOfWhole
+              ] .
+
+:Namespace
+      a       :ClassOfNamespace , owl:Class ;
+      rdfs:comment """
+            EXAMPLE The string 'owl:' is the (left_)namespace in the name owl:Class .
+        """^^xsd:string , """
+            DEFINITION A Namespace is a ClassOfArrangementOfIndividual where the
+            classOfWhole and classOfPart are members of ClassOfInformationRepresentation
+            and the part is the most significant part of the whole that is the namespace.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangementOfIndividual ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfInformationRepresentation ;
+                owl:onProperty :classOfWhole
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfInformationRepresentation ;
+                owl:onProperty :classOfPart
+              ] .
+
+:ClassOfClassOfResponsibilityForRepresentation
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfClassOfResponsibilityForRepresentation is a
+            ClassOfClassOfRelationship whose members are members of
+            ClassOfResponsibilityForRepresentation linking the controller to a set of
+            representations.
+        """^^xsd:string , """
+            EXAMPLE The link between Weir and the identification set between Weir pumps
+            and Weir serial numbers indicating that the identifications are defined by
+            Weir can be represented by an instance of
+            ClassOfClassOfResponsibilityForRepresentation .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :controller
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfClassOfRepresentation ;
+                owl:onProperty :classOfClassOfControlled
+              ] .
+
+:Identification
+      a       :ClassOfIdentification , owl:Class ;
+      rdfs:comment """
+            EXAMPLE The relationship between the text \"P101\" on a printed copy of a pump
+            data sheet and the applicable FunctionalPhysicalObject is an example of
+            Identification .
+        """^^xsd:string , """
+            DEFINITION An Identification is a RepresentationOfThing that indicates that
+            the PossibleIndividual is an identifier for the Thing identified.
+        """^^xsd:string , """
+            EXAMPLE The relationship between a name tag and an employee wearing it is an
+            example of Identification .
+        """^^xsd:string ;
+      rdfs:subClassOf :RepresentationOfThing .
+
+:classOfClassOfUsed
+      a       owl:ObjectProperty .
+
+:PointInTime
+      a       owl:Class , :ClassOfPointInTime ;
+      rdfs:comment """
+            EXAMPLE The time known as UTC 1999-05-13T16:31:23.56 is a PointInTime .
+        """^^xsd:string , """
+            NOTE In using this part of ISO15926, a PointInTime should be represented by a
+            RepresentationOfGregorianDateAndUtcTime .
+        """^^xsd:string , """
+            DEFINITION A PointInTime is an Event that is the whole space extension with
+            zero extent in time.
+        """^^xsd:string ;
+      rdfs:subClassOf :Event .
+
+:ClassOfLifecycleStage
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE 'Planned', 'required', 'expected', and 'proposed' can be represented
+            by instances of ClassOfLifecycleStage .
+        """^^xsd:string , """
+            DEFINITION A ClassOfLifecycleStage is a ClassOfRelationship whose members are
+            members of LifecycleStage .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship .
+
+:ClassOfLeftNamespace
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfLeftNamespace is a ClassOfNamespace that indicates that
+            the classOfPart is the left namespace for the members of the
+            classOfClassOfWhole .
+        """^^xsd:string , """
+            EXAMPLE WC1: is the left namespace for customer site identifiers for Water
+            Company 1.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfNamespace .
+
+:classOfRepresented
+      a       owl:ObjectProperty .
+
+:MultidimensionalPropertySpace
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE A pump performance curve of flowrate and differential head is a
+            MultidimensionalPropertySpace .
+        """^^xsd:string , """
+            DEFINITION A MultidimensionalPropertySpace is a PropertySpace and a
+            MultidimensionalObject whose members are instances of Property each of which
+            maps to more than one number. Each Property will consist of elements of the
+            same property dimensions.
+        """^^xsd:string ;
+      rdfs:subClassOf :MultidimensionalObject , :PropertySpace .
+
+:ClassOfRelativeLocation
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfRelativeLocation is a ClassOfRelationship whose members
+            are instances of RelativeLocation .
+        """^^xsd:string , """
+            EXAMPLE Beside, above, and below are examples of ClassOfRelativeLocation.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfIndividual ;
+                owl:onProperty :classOfLocator
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfIndividual ;
+                owl:onProperty :classOfLocated
+              ] .
+
+:ClassOfPeriodInTime
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE Monday and June are examples of ClassOfPeriodInTime .
+        """^^xsd:string , """
+            DEFINITION A ClassOfPeriodInTime is a ClassOfIndividual whose members are
+            instances of PeriodInTime .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfIndividual .
+
+:ParticipatingRoleAndDomain
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE Performer and pumper are examples of ParticipatingRoleAndDomain .
+        """^^xsd:string , """
+            DEFINITION A ParticipatingRoleAndDomain is a RoleAndDomain that is also a
+            ClassOfIndividual that indicates a participating role in an Activity .
+        """^^xsd:string ;
+      rdfs:subClassOf :RoleAndDomain , :ClassOfIndividual .
+
+:classOfSecond
+      a       owl:ObjectProperty .
+
+:classOfPossessor
+      a       owl:ObjectProperty .
+
+:Recognition
+      a       owl:Class , :ClassOfRecognition ;
+      rdfs:comment """
+            DEFINITION A Recognition is a Relationship that indicates that a Thing is
+            recognized through an Activity .
+        """^^xsd:string , """
+            EXAMPLE Measurement activity #358 recognized that the room was a member of
+            the 20 Celsius Property .
+        """^^xsd:string ;
+      rdfs:subClassOf :Relationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Activity ;
+                owl:onProperty :recognizing
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Thing ;
+                owl:onProperty :recognized
+              ] .
+
+:whole
+      a       owl:ObjectProperty .
+
+:classOfUsage
+      a       owl:ObjectProperty .
+
+:classOfEnded
+      a       owl:ObjectProperty .
+
+:ClassOfClassOfDescription
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfClassOfDescription is a ClassOfClassOfRepresentation
+            whose members are members of ClassOfDescription .
+        """^^xsd:string , """
+            EXAMPLE 'Service description' is a ClassOfClassOfDescription .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfRepresentation .
+
+:ClassOfUsageOfRepresentation
+      a       owl:Class , :ClassOfClassOfUsageOfRepresentation ;
+      rdfs:comment """
+            EXAMPLE The link between the identification of pump #1234 and contractor
+            ABC Ltd, that indicates that ABC Ltd uses this identification can be
+            represented by a class of ClassOfUsageOfRepresentation.
+        """^^xsd:string , """
+            DEFINITION A ClassOfUsageOfRepresentation is a ClassOfRelationship whose
+            members indicate that a PossibleIndividual (usually an organization) reads or
+            otherwise uses members of the pattern as a representation of the represented
+            Thing .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :PossibleIndividual ;
+                owl:onProperty :User
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfRepresentationOfThing ;
+                owl:onProperty :classOfUsed
+              ] .
+
+:roles
+      a       owl:ObjectProperty .
+
+:IntersectionOfSetOfClass
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION An IntersectionOfSetOfClass is a FunctionalMapping that indicates
+            that the result Class consists of those members of the members of the classes
+            EnumeratedSetOfClass that are common to each Class .
+        """^^xsd:string , """
+            EXAMPLE The intersection of the EnumeratedSetOfClass
+            {{A,B,C},{B,C,D},{C,D,E}} is {C}.
+        """^^xsd:string ;
+      rdfs:subClassOf :FunctionalMapping ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Class ;
+                owl:onProperty :result
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :EnumeratedSetOfClass ;
+                owl:onProperty :input
+              ] .
+
+:ClassOfTemporalWholePart
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfTemporalWholePart is a ClassOfCompositionOfIndividual
+            whose members are members of TemporalWholePart .
+        """^^xsd:string , """
+            EXAMPLE The class that indicates that Crude Distillation Units may have a
+            maximum naphtha mode can be represented by an instance of
+            ClassOfTemporalWholePart .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfCompositionOfIndividual .
+
+:individualDimension
+      a       owl:ObjectProperty .
+
+:ClassOfOrganization
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE Company, government, and project team can be represented by instances
+            of ClassOfOrganization .
+        """^^xsd:string , """
+            DEFINITION A ClassOfOrganization is a ClassOfArrangedIndividual whose members
+            are instances of PhysicalObject that are composed of temporal parts of people
+            and other assets, and are organised with a particular purpose.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:RepresentationForm
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A RepresentationForm is a ClassOfClassOfInformationRepresentation
+            that distinguishes the form of representation.
+        """^^xsd:string , """
+            EXAMPLE 'Hexadecimal', 'text', 'script', 'symbol', 'picture', 'diagram',
+            'semaphore', 'Morse code', 'music score', 'MIDI', 'XML', and 'OWL' are
+            instances of RepresentationForm.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfClassOfInformationRepresentation .
+
+:ClassOfSubAtomicParticle
+      a       owl:Class ;
+      rdfs:comment """
+            EXAMPLE 'Proton', 'electron', 'meson', 'neutron', 'positron', 'muon',
+            'quark', and 'neutrino' can be represented by instances of
+            ClassOfSubAtomicParticle .
+        """^^xsd:string , """
+            DEFINITION A ClassOfSubAtomicParticle is a ClassOfArrangedIndividual whose
+            members are constituent particles of atoms.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfArrangedIndividual .
+
+:Status
+      a       owl:Class , :ClassOfStatus ;
+      rdfs:comment """
+            DEFINITION A Status is a ClassOfIndividual that is a characteristic or
+            quality that is described by discrete, unordered values.
+        """^^xsd:string , """
+            NOTE Degrees of openness or paintedness are represented as instances of
+            Property and not instances of Status .
+        """^^xsd:string , """
+            EXAMPLE The classes known as 'open', 'painted', 'approved', 'old', 'new',
+            'worn', 'hazardous', 'safe', 'dangerous', 'happy', 'sad', and 'rusty' can all
+            be represented as instances of Status .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfIndividual .
+
+:ClassOfParticipation
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfParticipation is a ClassOfCompositionOfIndividual that
+            indicates a member of an instance of ParticipatingRoleAndDomain participates
+            in a member of an instance of ClassOfActivity .
+        """^^xsd:string , """
+            EXAMPLE 'Conductor of a musical performance' is an example of
+            ClassOfParticipation .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfCompositionOfIndividual ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfActivity ;
+                owl:onProperty :classOfWhole
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfParticipatingRoleAndDomain ;
+                owl:onProperty :classOfPart
+              ] .
+
+:ClassOfExpressInformationRepresentation
+      a       owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfExpressInformationRepresentation is a
+            ClassOfInformationRepresentation that is defined by ISO 10303-11.
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfInformationRepresentation .
+
+:ClassOfRepresentationOfThing
+      a       :ClassOfClassOfRepresentation , owl:Class ;
+      rdfs:comment """
+            DEFINITION A ClassOfRepresentationOfThing> is a ClassOfRelationship that
+            indicates that all members of the pattern ClassOfInformationRepresentation
+            represent the Thing .
+        """^^xsd:string , """
+            EXAMPLE The ClassOfRelationship that indicates that occurrences of the
+            pattern denoted by 'London' represent the concept of the capital of the
+            United Kingdom can be represented by an instance of
+            ClassOfRepresentationOfThing .
+        """^^xsd:string ;
+      rdfs:subClassOf :ClassOfRelationship ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Thing ;
+                owl:onProperty :represented
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :ClassOfInformationRepresentation ;
+                owl:onProperty :pattern
+              ] .
+
+:result
+      a       owl:ObjectProperty .

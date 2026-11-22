@@ -1,0 +1,14 @@
+# $Id: disjunctionQ.n3 463 2005-02-06 12:27:34Z josd $
+# PxButton | es  | euler --nope --think disjunction.n3 --query disjunctionQ.n3
+# PxButton | cwm | python /w3ccvs/WWW/2000/10/swap/cwm.py disjunction.n3 --think --query"=disjunctionQ.n3"
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://example.org/> .
+
+[]
+q:select {<> q:answer (?x _:p ?q)};
+q:where  {?x :q ?q}.
+
+[]
+q:select {<> q:answer (?x ?p ?q)};
+q:where  {?x :p ?p. ?x :q ?q}.

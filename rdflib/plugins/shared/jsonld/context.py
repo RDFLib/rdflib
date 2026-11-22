@@ -1,0 +1,815 @@
+"""
+Implementation of the JSON-LD Context structure. See: http://json-ld.org/
+"""
+
+# https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/context.py
+from __future__ import annotations
+
+from collections.abc import Generator, Set
+from enum import Enum
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Literal,
+    NamedTuple,
+    Optional,
+    TypeAlias,
+    TypedDict,
+    Union,
+)
+from urllib.parse import urljoin, urlsplit
+
+from rdflib.namespace import RDF
+
+from .errors import (
+    INVALID_CONTEXT_ENTRY,
+    INVALID_REMOTE_CONTEXT,
+    RECURSIVE_CONTEXT_INCLUSION,
+)
+from .keys import (
+    BASE,
+    CONTAINER,
+    CONTEXT,
+    GRAPH,
+    ID,
+    IMPORT,
+    INCLUDED,
+    INDEX,
+    JSON,
+    LANG,
+    LIST,
+    NEST,
+    NONE,
+    PREFIX,
+    PROPAGATE,
+    PROTECTED,
+    REV,
+    SET,
+    TYPE,
+    VALUE,
+    VERSION,
+    VOCAB,
+)
+from .util import norm_url, source_to_json, split_iri
+
+NODE_KEYS = {GRAPH, ID, INCLUDED, JSON, LIST, NEST, NONE, REV, SET, TYPE, VALUE, LANG}
+
+
+# Following PEP 484, we define the UNDEF as an Enum member
+# Ultimately this should become a PEP 661 sentinel.
+class Defined(Enum):
+    UNDEF = 0
+
+    def __bool__(self) -> bool:
+        # Ensure that UNDEF is falsy
+        return False
+
+
+UNDEF = Defined.UNDEF
+
+# From <https://tools.ietf.org/html/rfc3986#section-2.2>
+URI_GEN_DELIMS = (":", "/", "?", "#", "[", "]", "@")
+
+_ContextSourceType = Union[
+    list[Union[dict[str, Any], str, None]], dict[str, Any], str, None
+]
+
+#: A single @container keyword.
+#: See https://www.w3.org/TR/json-ld11/#expanded-term-definition (§9.15.1)
+_ContainerLiteral: TypeAlias = Literal[
+    "@list", "@set", "@language", "@index", "@id", "@graph", "@type"
+]
+#: The value of @container in an expanded term definition: a keyword, an array
+#: of keywords, or null (§9.15.1).
+_ContainerType: TypeAlias = list[_ContainerLiteral] | _ContainerLiteral | None
+
+#: An expanded term definition.
+#: See https://www.w3.org/TR/json-ld11/#expanded-term-definition (§9.15.1)
+_ExpandedTermDict = TypedDict(
+    "_ExpandedTermDict",
+    {
+        "@id": str | None,
+        "@type": str | None,
+        "@container": _ContainerType,
+        "@language": str | None,
+        "@reverse": str,
+    },
+    total=False,
+)
+
+#: Anything that is a valid JSON-LD term definition.
+#: See https://www.w3.org/TR/json-ld11/#context-definitions (§9.15)
+_TermSerialization: TypeAlias = _ExpandedTermDict | str | None
+
+
+class Context:
+    def __init__(
+        self,
+        source: _ContextSourceType = None,
+        base: str | None = None,
+        version: float | None = 1.1,
+    ):
+        self.version: float = version or 1.1
+        self.language: Optional[str] = None
+        self.vocab: str | None = None
+        self._base: str | None
+        self.base = base
+        self.doc_base = base
+        self.terms: dict[str, Any] = {}
+        # _alias maps NODE_KEY to list of aliases
+        self._alias: dict[str, list[str]] = {}
+        self._lookup: dict[tuple[str, Any, Defined | str, bool], Term] = {}
+        self._prefixes: dict[str, str] = {}
+        self.active = False
+        self.parent: Context | None = None
+        self.propagate = True
+        self._context_cache: dict[str, Any] = {}
+        if source:
+            self.load(source)
+
+    @property
+    def base(self) -> str | None:
+        return self._base
+
+    @base.setter
+    def base(self, base: str | None):
+        if base:
+            hash_index = base.find("#")
+            if hash_index > -1:
+                base = base[0:hash_index]
+        self._base = (
+            self.resolve_iri(base)
+            if (hasattr(self, "_base") and base is not None)
+            else base
+        )
+        self._basedomain = "%s://%s" % urlsplit(base)[0:2] if base else None
+
+    def subcontext(self, source: Any, propagate: bool = True) -> Context:
+        # IMPROVE: to optimize, implement SubContext with parent fallback support
+        parent = self.parent if self.propagate is False else self
+        # type error: Item "None" of "Optional[Context]" has no attribute "_subcontext"
+        return parent._subcontext(source, propagate)  # type: ignore[union-attr]
+
+    def _subcontext(
+        self, source: Any, propagate: bool, override_protected: bool = False
+    ) -> Context:
+        ctx = Context(version=self.version)
+        ctx.propagate = propagate
+        ctx.parent = self
+        ctx.language = self.language
+        ctx.vocab = self.vocab
+        ctx.base = self.base
+        ctx.doc_base = self.doc_base
+        ctx._alias = {k: l[:] for k, l in self._alias.items()}  # noqa: E741
+        ctx.terms = self.terms.copy()
+        ctx._lookup = self._lookup.copy()
+        ctx._prefixes = self._prefixes.copy()
+        ctx._context_cache = self._context_cache
+        ctx.load(source, override_protected=override_protected)
+        return ctx
+
+    def _clear(self) -> None:
+        self.language = None
+        self.vocab = None
+        self.terms = {}
+        self._alias = {}
+        self._lookup = {}
+        self._prefixes = {}
+        self.active = False
+        self.propagate = True
+
+    def get_context_for_term(self, term: Term | None) -> Context:
+        if term and term.context is not UNDEF:
+            # A property-scoped context may redefine protected terms.
+            return self._subcontext(
+                term.context, propagate=True, override_protected=True
+            )
+        return self
+
+    def get_context_for_type(self, node: Any) -> Context | None:
+        if self.version >= 1.1:
+            rtype = self.get_type(node) if isinstance(node, dict) else None
+            if not isinstance(rtype, list):
+                rtype = [rtype] if rtype else []
+
+            typeterm = None
+            for rt in rtype:
+                try:
+                    typeterm = self.terms.get(rt)
+                except TypeError:
+                    # extra lenience, triggers if type is set to a literal
+                    pass
+                if typeterm is not None:
+                    break
+
+            if typeterm and typeterm.context:
+                subcontext = self.subcontext(typeterm.context, propagate=False)
+                if subcontext:
+                    return subcontext
+
+        return self.parent if self.propagate is False else self
+
+    def get_id(self, obj: dict[str, Any]) -> Any:
+        return self._get(obj, ID)
+
+    def get_type(self, obj: dict[str, Any]) -> Any:
+        return self._get(obj, TYPE)
+
+    def get_language(self, obj: dict[str, Any]) -> Any:
+        return self._get(obj, LANG)
+
+    def get_value(self, obj: dict[str, Any]) -> Any:
+        return self._get(obj, VALUE)
+
+    def get_graph(self, obj: dict[str, Any]) -> Any:
+        return self._get(obj, GRAPH)
+
+    def get_list(self, obj: dict[str, Any]) -> Any:
+        return self._get(obj, LIST)
+
+    def get_set(self, obj: dict[str, Any]) -> Any:
+        return self._get(obj, SET)
+
+    def get_rev(self, obj: dict[str, Any]) -> Any:
+        return self._get(obj, REV)
+
+    def _get(self, obj: dict[str, Any], key: str) -> Any:
+        for alias in self._alias.get(key, []):
+            if alias in obj:
+                return obj.get(alias)
+        return obj.get(key)
+
+    # type error: Missing return statement
+    def get_key(self, key: str) -> str:  # type: ignore[return]
+        for alias in self.get_keys(key):
+            return alias
+
+    def get_keys(self, key: str) -> Generator[str, None, None]:
+        if key in self._alias:
+            for alias in self._alias[key]:
+                yield alias
+        yield key
+
+    lang_key = property(lambda self: self.get_key(LANG))
+    id_key = property(lambda self: self.get_key(ID))
+    type_key = property(lambda self: self.get_key(TYPE))
+    value_key = property(lambda self: self.get_key(VALUE))
+    list_key = property(lambda self: self.get_key(LIST))
+    rev_key = property(lambda self: self.get_key(REV))
+    graph_key = property(lambda self: self.get_key(GRAPH))
+
+    def add_term(
+        self,
+        name: str,
+        idref: str,
+        coercion: Union[Defined, str] = UNDEF,
+        container: _ContainerType | Defined = UNDEF,
+        index: Optional[str | Defined] = None,
+        language: Optional[str | Defined] = UNDEF,
+        reverse: bool = False,
+        context: Any = UNDEF,
+        prefix: bool | None = None,
+        protected: bool = False,
+        override_protected: bool = False,
+    ):
+        if self.version < 1.1 or prefix is None:
+            prefix = isinstance(idref, str) and idref.endswith(URI_GEN_DELIMS)
+
+        if not self._accept_term(name):
+            return
+
+        if self.version >= 1.1 and not override_protected:
+            existing = self.terms.get(name)
+            if existing and existing.protected:
+                return
+
+        container_set: set[_ContainerLiteral]
+        if isinstance(container, (list, set, tuple)):
+            container_set = set(container)
+        elif container is not UNDEF and container is not None:
+            container_set = {container}
+        else:
+            # "@container": null is the same as no container (§9.15.1)
+            container_set = set()
+
+        term = Term(
+            idref,
+            name,
+            coercion,
+            container_set,
+            index,
+            language,
+            reverse,
+            context,
+            prefix,
+            protected,
+        )
+
+        self.terms[name] = term
+
+        container_key: Defined | str
+        for container_key in (LIST, LANG, SET):  # , INDEX, ID, GRAPH):
+            if container_key in container_set:
+                break
+        else:
+            container_key = UNDEF
+
+        self._lookup[(idref, coercion or language, container_key, reverse)] = term
+
+        if term.prefix is True:
+            self._prefixes[idref] = name
+
+    def find_term(
+        self,
+        idref: str,
+        coercion: str | Defined | None = None,
+        container: Union[Defined, str] = UNDEF,
+        language: str | None = None,
+        reverse: bool = False,
+    ):
+        lu = self._lookup
+
+        if coercion is None:
+            coercion = language
+
+        if coercion is not UNDEF and container:
+            found = lu.get((idref, coercion, container, reverse))
+            if found:
+                return found
+
+        if coercion is not UNDEF:
+            found = lu.get((idref, coercion, UNDEF, reverse))
+            if found:
+                return found
+
+        if container:
+            found = lu.get((idref, coercion, container, reverse))
+            if found:
+                return found
+        elif language:
+            found = lu.get((idref, UNDEF, LANG, reverse))
+            if found:
+                return found
+        else:
+            found = lu.get((idref, coercion or UNDEF, SET, reverse))
+            if found:
+                return found
+
+        return lu.get((idref, UNDEF, UNDEF, reverse))
+
+    def resolve(self, curie_or_iri: str) -> str:
+        iri = self.expand(curie_or_iri, False)
+        # type error: Argument 1 to "isblank" of "Context" has incompatible type "Optional[str]"; expected "str"
+        if self.isblank(iri):  # type: ignore[arg-type]
+            # type error: Incompatible return value type (got "Optional[str]", expected "str")
+            return iri  # type: ignore[return-value]
+        # type error: Unsupported right operand type for in ("Optional[str]")
+        if " " in iri:  # type: ignore[operator]
+            return ""
+        # type error: Argument 1 to "resolve_iri" of "Context" has incompatible type "Optional[str]"; expected "str"
+        return self.resolve_iri(iri)  # type: ignore[arg-type]
+
+    def resolve_iri(self, iri: str) -> str:
+        # type error: Argument 1 to "norm_url" has incompatible type "Optional[str]"; expected "str"
+        return norm_url(self._base, iri)  # type: ignore[arg-type]
+
+    def isblank(self, ref: str) -> bool:
+        return ref.startswith("_:")
+
+    def expand(self, term_curie_or_iri: Any, use_vocab: bool = True) -> Optional[str]:
+        if not isinstance(term_curie_or_iri, str):
+            return term_curie_or_iri
+
+        if not self._accept_term(term_curie_or_iri):
+            return ""
+
+        if use_vocab:
+            term = self.terms.get(term_curie_or_iri)
+            if term:
+                return term.id
+
+        is_term, pfx, local = self._prep_expand(term_curie_or_iri)
+        if pfx == "_":
+            return term_curie_or_iri
+
+        if pfx is not None:
+            ns = self.terms.get(pfx)
+            if ns and ns.prefix and ns.id:
+                return ns.id + local
+        elif is_term and use_vocab:
+            if self.vocab:
+                return self.vocab + term_curie_or_iri
+            return None
+
+        return self.resolve_iri(term_curie_or_iri)
+
+    def shrink_iri(self, iri: str) -> str:
+        ns, name = split_iri(str(iri))
+        pfx = self._prefixes.get(ns)
+        if pfx:
+            compact = f"{pfx}:{name}"
+            # Like a name from to_symbol, a compact IRI is only right if it
+            # expands back to the IRI: the prefix may have been redefined.
+            if self.expand(compact, use_vocab=False) == str(iri):
+                return compact
+        if self._base:
+            if str(iri) == self._base:
+                return ""
+            # type error: Argument 1 to "startswith" of "str" has incompatible type "Optional[str]"; expected "Union[str, tuple[str, ...]]"
+            elif iri.startswith(self._basedomain):  # type: ignore[arg-type]
+                # type error: Argument 1 to "len" has incompatible type "Optional[str]"; expected "Sized"
+                return iri[len(self._basedomain) :]  # type: ignore[arg-type]
+        return iri
+
+    def to_symbol(self, iri: str) -> str:
+        iri = str(iri)
+        term = self.find_term(iri)
+        if term:
+            return term.name
+        ns, name = split_iri(iri)
+        # An IRI equal to the vocabulary mapping or a prefix is not shortened
+        # (IRI Compaction, section 6.2.2, steps 5 and 7: the IRI must be
+        # longer). A keyword-shaped name would be read as that keyword.
+        if not name or name.startswith("@"):
+            return iri
+        candidates = []
+        if ns == self.vocab:
+            candidates.append(name)
+        pfx = self._prefixes.get(ns)
+        if pfx:
+            candidates.append(f"{pfx}:{name}")
+        # A vocabulary-relative name or a compact IRI is only right if it
+        # expands back to the IRI: the context can define it as a term for a
+        # different IRI (IRI Compaction, JSON-LD 1.1 Processing Algorithms and
+        # API, section 6.2.2, steps 5.1 and 7.3).
+        for candidate in candidates:
+            if self.expand(candidate) == iri:
+                return candidate
+        return iri
+
+    def load(
+        self,
+        source: _ContextSourceType,
+        base: str | None = None,
+        referenced_contexts: set[Any] | None = None,
+        override_protected: bool = False,
+    ):
+        self.active = True
+        sources: list[tuple[str | None, dict[str, Any] | str | None]] = []
+        # "Union[list[Union[dict[str, Any], str]], list[dict[str, Any]], list[str]]" : expression
+        # "Union[list[dict[str, Any]], dict[str, Any], list[str], str]" : variable
+        source = source if isinstance(source, list) else [source]
+        referenced_contexts = referenced_contexts or set()
+        self._prep_sources(base, source, sources, referenced_contexts)
+        for source_url, source in sources:
+            if source is None:
+                self._clear()
+            else:
+                # type error: Argument 1 to "_read_source" of "Context" has incompatible type "Union[dict[str, Any], str]"; expected "dict[str, Any]"
+                self._read_source(
+                    source,  # type: ignore[arg-type]
+                    source_url,
+                    referenced_contexts,
+                    override_protected,
+                )
+
+    def _accept_term(self, key: str) -> bool:
+        if self.version < 1.1:
+            return True
+        if key and len(key) > 1 and key[0] == "@" and key[1].isalnum():
+            return key in NODE_KEYS
+        else:
+            return True
+
+    def _prep_sources(
+        self,
+        base: str | None,
+        inputs: list[dict[str, Any] | str | None] | list[str],
+        sources: list[tuple[str | None, dict[str, Any] | str | None]],
+        referenced_contexts: set[str],
+        in_source_url: str | None = None,
+    ):
+        source: dict[str, Any] | str | None | list[Any]
+        for source in inputs:
+            source_url = in_source_url
+            new_base = base
+            if isinstance(source, str):
+                source_url = source
+                source_doc_base = base or self.doc_base
+                new_ctx = self._fetch_context(
+                    source, source_doc_base, referenced_contexts
+                )
+                if new_ctx is None:
+                    continue
+                else:
+                    if base:
+                        if TYPE_CHECKING:
+                            # if base is not None, then source_doc_base won't be
+                            # none due to how it is assigned.
+                            assert source_doc_base is not None
+                        new_base = urljoin(source_doc_base, source_url)
+                    source = new_ctx
+
+            if isinstance(source, dict):
+                if CONTEXT in source:
+                    source = source[CONTEXT]
+                    # type ignore: Incompatible types in assignment (expression has type "list[Union[dict[str, Any], str, None]]", variable has type "Union[dict[str, Any], str, None]")
+                    source = source if isinstance(source, list) else [source]
+
+            if isinstance(source, list):
+                # type error: Statement is unreachable
+                self._prep_sources(
+                    new_base, source, sources, referenced_contexts, source_url
+                )
+            else:
+                sources.append((source_url, source))
+
+    def _fetch_context(
+        self, source: str, base: str | None, referenced_contexts: set[str]
+    ):
+        # type error: Value of type variable "AnyStr" of "urljoin" cannot be "Optional[str]"
+        source_url = urljoin(base, source)  # type: ignore[type-var]
+
+        if source_url in referenced_contexts:
+            raise RECURSIVE_CONTEXT_INCLUSION
+
+        # type error: Argument 1 to "add" of "set" has incompatible type "Optional[str]"; expected "str"
+        referenced_contexts.add(source_url)  # type: ignore[arg-type]
+
+        if source_url in self._context_cache:
+            return self._context_cache[source_url]
+
+        # type error: Incompatible types in assignment (expression has type "Optional[Any]", variable has type "str")
+        source_json, _ = source_to_json(source_url)
+        if source_json and CONTEXT not in source_json:
+            raise INVALID_REMOTE_CONTEXT
+
+        # type error: Invalid index type "Optional[str]" for "dict[str, Any]"; expected type "str"
+        self._context_cache[source_url] = source_json  # type: ignore[index]
+
+        return source_json
+
+    def _read_source(
+        self,
+        source: dict[str, Any],
+        source_url: str | None = None,
+        referenced_contexts: set[str] | None = None,
+        override_protected: bool = False,
+    ):
+        imports = source.get(IMPORT)
+        if imports:
+            if not isinstance(imports, str):
+                raise INVALID_CONTEXT_ENTRY
+
+            imported = self._fetch_context(
+                imports, self.base, referenced_contexts or set()
+            )
+            if not isinstance(imported, dict):
+                raise INVALID_CONTEXT_ENTRY
+
+            imported = imported[CONTEXT]
+            imported.update(source)
+            source = imported
+
+        self.version = source.get(VERSION, self.version)
+        # @base goes first, since a relative @vocab can depend on it.
+        if BASE in source and not source_url and not imports:
+            self.base = source[BASE]
+        if VOCAB in source:
+            vocab = source[VOCAB]
+            self.vocab = None if vocab is None else self._expand_vocab(vocab)
+        protected = source.get(PROTECTED, False)
+
+        for key, value in source.items():
+            if key in {VOCAB, VERSION, IMPORT, PROTECTED, BASE}:
+                continue
+            elif key == PROPAGATE and isinstance(value, bool):
+                self.propagate = value
+            elif key == LANG:
+                self.language = value
+            else:
+                self._read_term(source, key, value, protected, override_protected)
+
+    def _expand_vocab(self, vocab: str) -> str:
+        """
+        Expands the value of `@vocab` like JSON-LD 1.1 does. A term or compact
+        IRI is expanded, and a relative IRI reference is appended to the
+        current vocabulary mapping, or resolved against the base IRI if there
+        is no vocabulary mapping yet. So `"@vocab": ""` means the base IRI.
+
+        See https://www.w3.org/TR/json-ld11/#default-vocabulary and
+        https://www.w3.org/TR/json-ld11/#document-relative-vocabulary-mapping
+        """
+        iri = self.expand(vocab)
+        if iri is None:
+            # A relative IRI reference and no vocabulary mapping in scope.
+            # Without a base IRI it's kept as is.
+            return self.resolve_iri(vocab) if self._base else vocab
+        return iri
+
+    def _read_term(
+        self,
+        source: dict[str, Any],
+        name: str,
+        dfn: dict[str, Any] | str,
+        protected: bool = False,
+        override_protected: bool = False,
+    ) -> None:
+        idref = None
+        if isinstance(dfn, dict):
+            # term = self._create_term(source, key, value)
+            rev = dfn.get(REV)
+            protected = dfn.get(PROTECTED, protected)
+
+            coercion = dfn.get(TYPE, UNDEF)
+            if coercion and coercion not in (ID, TYPE, VOCAB):
+                coercion = self._rec_expand(source, coercion)
+
+            idref = rev or dfn.get(ID, UNDEF)
+            if idref == TYPE:
+                idref = str(RDF.type)
+                coercion = VOCAB
+            elif idref is not UNDEF:
+                idref = self._rec_expand(source, idref)
+            elif ":" in name:
+                idref = self._rec_expand(source, name)
+            elif self.vocab:
+                idref = self.vocab + name
+
+            context = dfn.get(CONTEXT, UNDEF)
+
+            self.add_term(
+                name,
+                idref,  # type: ignore[arg-type]
+                coercion,
+                dfn.get(CONTAINER, UNDEF),
+                dfn.get(INDEX),
+                dfn.get(LANG, UNDEF),
+                bool(rev),
+                context,
+                dfn.get(PREFIX),
+                protected=protected,
+                override_protected=override_protected,
+            )
+        else:
+            if isinstance(dfn, str):
+                if not self._accept_term(dfn):
+                    return
+                idref = self._rec_expand(source, dfn)
+            # type error: Argument 2 to "add_term" of "Context" has incompatible type "Optional[str]"; expected "str"
+            self.add_term(
+                name,
+                idref,  # type: ignore[arg-type]
+                protected=protected,
+                override_protected=override_protected,
+            )
+
+        if idref in NODE_KEYS:
+            self._alias.setdefault(idref, []).append(name)
+        else:
+            # undo aliases that may have been inherited from parent context
+            for v in self._alias.values():
+                if name in v:
+                    v.remove(name)
+
+    def _rec_expand(
+        self, source: dict[str, Any], expr: str | None, prev: str | None = None
+    ) -> str | None:
+        if expr == prev or expr in NODE_KEYS:
+            return expr
+
+        nxt: str | None
+        # type error: Argument 1 to "_prep_expand" of "Context" has incompatible type "Optional[str]"; expected "str"
+        is_term, pfx, nxt = self._prep_expand(expr)  # type: ignore[arg-type]
+        if pfx:
+            iri = self._get_source_id(source, pfx)
+            if iri is None:
+                if pfx + ":" == self.vocab:
+                    return expr
+                else:
+                    term = self.terms.get(pfx)
+                    if term:
+                        iri = term.id
+
+            if iri is None:
+                nxt = expr
+            else:
+                nxt = iri + nxt
+        else:
+            nxt = self._get_source_id(source, nxt) or nxt
+            if ":" not in nxt and self.vocab:
+                return self.vocab + nxt
+
+        return self._rec_expand(source, nxt, expr)
+
+    def _prep_expand(self, expr: str) -> tuple[bool, str | None, str]:
+        if ":" not in expr:
+            return True, None, expr
+        pfx, local = expr.split(":", 1)
+        if not local.startswith("//"):
+            return False, pfx, local
+        else:
+            return False, None, expr
+
+    def _get_source_id(self, source: dict[str, Any], key: str) -> str | None:
+        # .. from source dict or if already defined
+        term = source.get(key)
+        if term is None:
+            dfn = self.terms.get(key)
+            if dfn:
+                term = dfn.id
+        elif isinstance(term, dict):
+            term = term.get(ID)
+        return term
+
+    def _term_dict(self, term: Term) -> _TermSerialization:
+        """
+        Converts a Term object into a term definition suitable for JSON-LD
+        (§9.15, §9.15.1).
+
+        If the term only has an ID, a simple term definition (the bare IRI) is
+        returned instead of an expanded term definition.
+        """
+        tdict: _ExpandedTermDict = {}
+        if term.type is None:
+            tdict["@type"] = None
+        elif term.type != UNDEF:
+            tdict["@type"] = self.shrink_iri(term.type)
+        if term.container:
+            tdict["@container"] = list(term.container)
+        if term.language != UNDEF:
+            tdict["@language"] = term.language
+        # @reverse cannot be null (§9.15.1), so a null id is always written as @id
+        if term.reverse and term.id is not None:
+            tdict["@reverse"] = term.id
+        else:
+            tdict["@id"] = term.id
+        if tdict.keys() == {"@id"} and "@id" in tdict:
+            # Return a simplified representation if the term only has an ID
+            return tdict["@id"]
+        return tdict
+
+    def to_dict(self) -> dict[str, Any]:
+        """
+        Returns a dictionary representation of the context that can be
+        serialized to JSON.
+
+        Returns:
+            a dictionary representation of the context.
+        """
+        r: dict[str, _TermSerialization] = {v: k for (k, v) in self._prefixes.items()}
+        r.update({term.name: self._term_dict(term) for term in self._lookup.values()})
+        if self.base:
+            r[BASE] = self.base
+        if self.language:
+            r[LANG] = self.language
+        return r
+
+
+class Term(NamedTuple):
+    """
+    Describes how a JSON key should be interpreted when parsed as RDF.
+
+    This is the parsed form of a term definition.
+    See https://www.w3.org/TR/json-ld11/#context-definitions (§9.15)
+    """
+
+    #: Typically the expanded IRI of the term.
+    #: Can also be a keyword if the term is a keyword alias (§4.1.6),
+    #: or None if the term was defined as null to decouple it from @vocab (§9.15).
+    id: str | None
+    #: The name of the term, ie the JSON key that is an alias for the id.
+    name: str
+    #: The type coercion of values of this term: an IRI, or one of @id, @json,
+    #: @none or @vocab. None if @type was explicitly null.
+    #: See https://www.w3.org/TR/json-ld11/#type-coercion (§4.2.3)
+    type: Defined | str | None = UNDEF
+    #: The container type(s): any of @graph, @id, @index, @language, @list, @set or @type. See:
+    #: https://www.w3.org/TR/json-ld11/#syntax-tokens-and-keywords (§1.7) and the sections it references
+    container: Set[_ContainerLiteral] = frozenset()
+    #: A predicate IRI that should be used to interpret keys of this object,
+    #: when used alongside `@container: @index`.
+    #: See https://www.w3.org/TR/json-ld11/#property-based-data-indexing (§4.6.1.1)
+    #: Ideally this wouldn't be called 'index' as it overrides the tuple's builtin index() method
+    #: Hence the type ignore comment
+    index: str | Defined | None = None  # type: ignore[assignment]
+    #: The language of string values of this term.
+    #: None if @language was explicitly null, ie the values have no language.
+    #: See https://www.w3.org/TR/json-ld11/#string-internationalization (§4.2.4)
+    language: str | Defined | None = UNDEF
+    #: Indicates that this term is a reverse property (defined with @reverse
+    #: instead of @id), so subject and object are swapped.
+    #: See https://www.w3.org/TR/json-ld11/#reverse-properties (§4.8)
+    reverse: bool = False
+    #: A scoped context used inside values that use this term.
+    #: See https://www.w3.org/TR/json-ld11/#scoped-contexts (§4.1.8)
+    context: Any = UNDEF
+    #: If true, this term may be used as the prefix of a compact IRI when
+    #: expanding or compacting. If false, it may not, although it can still be
+    #: used as a term in its own right.
+    #: See https://www.w3.org/TR/json-ld11/#compact-iris (§4.1.5)
+    prefix: bool | None = None
+    #: If true, marks the term as protected, meaning a later context cannot
+    #: redefine it unless the new definition is identical.
+    #: See https://www.w3.org/TR/json-ld11/#protected-term-definitions (§4.1.11)
+    protected: bool = False

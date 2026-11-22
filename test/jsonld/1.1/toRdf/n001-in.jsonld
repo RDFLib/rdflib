@@ -1,0 +1,7 @@
+{
+  "@context": {"@vocab": "http://example.org/"},
+  "p1": "v1",
+  "@nest": {
+    "p2": "v2"
+  }
+}

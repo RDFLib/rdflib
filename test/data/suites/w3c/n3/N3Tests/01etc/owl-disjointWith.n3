@@ -1,0 +1,4 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+{?A owl:disjointWith ?B. ?X a ?A. ?Y a ?B } => {?X owl:differentFrom ?Y}.
+{?A owl:disjointWith ?B. ?X a ?A. ?X a ?B} => false.

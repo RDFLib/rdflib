@@ -1,0 +1,32 @@
+# ------------------------------
+# graph generation -- Jos De Roo
+# ------------------------------
+
+@prefix prolog: <http://eulersharp.sourceforge.net/2003/03swap/prolog#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/graphgen#>.
+
+
+{(?F ?N) :graphgen true} <=
+{	(?F "write"^^prolog:atom ?FD) prolog:open true.
+	(?FD) prolog:tell true.
+	("@prefix : <http://eulersharp.sourceforge.net/2007/07test/graph#>.~n~n"^^prolog:atom ()) prolog:format true.
+	(1 ?N ?I) prolog:between true.
+	(10000) prolog:random ?S.
+	(100) prolog:random ?P.
+	(10000) prolog:random ?O.
+	(":i~d :i~d :i~d.~n"^^prolog:atom (?S ?P ?O)) prolog:format true.
+	() prolog:fail true.
+}.
+{(?F ?N) :graphgen true} <=
+{	() prolog:told true.
+}.
+
+
+true <=
+{	("graph-10.n3"^^prolog:atom 10) :graphgen true.
+	("graph-100.n3"^^prolog:atom 100) :graphgen true.
+	("graph-1000.n3"^^prolog:atom 1000) :graphgen true.
+	("graph-10000.n3"^^prolog:atom 10000) :graphgen true.
+	("graph-100000.n3"^^prolog:atom 100000) :graphgen true.
+	("graph-1000000.n3"^^prolog:atom 1000000) :graphgen true.
+}.

@@ -1,0 +1,15 @@
+{
+  "@context": {
+    "@vocab": "http://vocab.org/",
+    "prop1": {}
+  },
+  "@id": "ex:outer",
+  "foo": {
+    "@context": {
+      "@vocab": "http://vocab.override.org/"
+    },
+    "@id": "ex:inner",
+    "prop1": "baz1",
+    "prop2": "baz2"
+  }
+}

@@ -1,0 +1,6 @@
+[{
+  "http://example.com/foo": [
+    {"@list": [{"@value": "en", "@direction": "ltr"}]},
+    {"@list": [{"@value": "ar", "@direction": "rtl"}]}
+  ]
+}]

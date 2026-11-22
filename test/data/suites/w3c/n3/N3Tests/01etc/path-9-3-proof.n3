@@ -1,0 +1,388 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --tactic limited-answer 1 http://josd.github.io/brain/restpath/initial.n3 http://josd.github.io/brain/restpath/path-9-3.n3 --query http://josd.github.io/brain/restpath/goal.n3
+
+@prefix ex: <http://example.org/#>.
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    <http://josd.github.io/brain/restpath/x> ex:relGoal <http://josd.github.io/brain/restpath/y>.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    <http://josd.github.io/brain/restpath/x> ex:relGoal <http://josd.github.io/brain/restpath/y>.
+  };
+  r:evidence (
+    <#lemma2>
+  );
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    _:sk_52 http:methodName "GET".
+    _:sk_52 http:requestURI <http://josd.github.io/brain/restpath/x>.
+    _:sk_52 http:resp _:sk_53.
+    _:sk_53 http:body <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel10 <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel10 <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel10 <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:relGoal <http://josd.github.io/brain/restpath/y>.
+  };
+  r:evidence (
+    <#lemma4>
+    <#lemma4>
+    <#lemma4>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_52"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_53"]];
+  r:rule <#lemma5>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    {<http://josd.github.io/brain/restpath/x> ex:relGoal <http://josd.github.io/brain/restpath/y>} => {<http://josd.github.io/brain/restpath/x> ex:relGoal <http://josd.github.io/brain/restpath/y>}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/restpath/goal.n3>].
+
+<#lemma4> a r:Inference;
+  r:gives {
+    _:sk_46 http:methodName "GET".
+    _:sk_46 http:requestURI <http://josd.github.io/brain/restpath/x>.
+    _:sk_46 http:resp _:sk_47.
+    _:sk_47 http:body <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel9 <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel9 <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel9 <http://josd.github.io/brain/restpath/y>.
+  };
+  r:evidence (
+    <#lemma6>
+    <#lemma6>
+    <#lemma6>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_46"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_47"]];
+  r:rule <#lemma7>.
+
+<#lemma5> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5. @forSome var:x_6, var:x_7. {var:x_0 ex:rel9 var:x_1.
+     var:x_2 ex:rel9 var:x_3.
+     var:x_4 ex:rel9 var:x_5} => {var:x_6 http:methodName "GET".
+     var:x_6 http:requestURI var:x_0.
+     var:x_6 http:resp var:x_7.
+     var:x_7 http:body var:x_1.
+     var:x_0 ex:rel10 var:x_1.
+     var:x_2 ex:rel10 var:x_3.
+     var:x_4 ex:rel10 var:x_5.
+     var:x_0 ex:relGoal var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/restpath/path-9-3.n3>].
+
+<#lemma6> a r:Inference;
+  r:gives {
+    _:sk_40 http:methodName "GET".
+    _:sk_40 http:requestURI <http://josd.github.io/brain/restpath/x>.
+    _:sk_40 http:resp _:sk_41.
+    _:sk_41 http:body <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel8 <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel8 <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel8 <http://josd.github.io/brain/restpath/y>.
+  };
+  r:evidence (
+    <#lemma8>
+    <#lemma8>
+    <#lemma8>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_40"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_41"]];
+  r:rule <#lemma9>.
+
+<#lemma7> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5. @forSome var:x_6, var:x_7. {var:x_0 ex:rel8 var:x_1.
+     var:x_2 ex:rel8 var:x_3.
+     var:x_4 ex:rel8 var:x_5} => {var:x_6 http:methodName "GET".
+     var:x_6 http:requestURI var:x_0.
+     var:x_6 http:resp var:x_7.
+     var:x_7 http:body var:x_1.
+     var:x_0 ex:rel9 var:x_1.
+     var:x_2 ex:rel9 var:x_3.
+     var:x_4 ex:rel9 var:x_5}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/restpath/path-9-3.n3>].
+
+<#lemma8> a r:Inference;
+  r:gives {
+    _:sk_34 http:methodName "GET".
+    _:sk_34 http:requestURI <http://josd.github.io/brain/restpath/x>.
+    _:sk_34 http:resp _:sk_35.
+    _:sk_35 http:body <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel7 <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel7 <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel7 <http://josd.github.io/brain/restpath/y>.
+  };
+  r:evidence (
+    <#lemma10>
+    <#lemma10>
+    <#lemma10>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_34"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_35"]];
+  r:rule <#lemma11>.
+
+<#lemma9> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5. @forSome var:x_6, var:x_7. {var:x_0 ex:rel7 var:x_1.
+     var:x_2 ex:rel7 var:x_3.
+     var:x_4 ex:rel7 var:x_5} => {var:x_6 http:methodName "GET".
+     var:x_6 http:requestURI var:x_0.
+     var:x_6 http:resp var:x_7.
+     var:x_7 http:body var:x_1.
+     var:x_0 ex:rel8 var:x_1.
+     var:x_2 ex:rel8 var:x_3.
+     var:x_4 ex:rel8 var:x_5}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/restpath/path-9-3.n3>].
+
+<#lemma10> a r:Inference;
+  r:gives {
+    _:sk_28 http:methodName "GET".
+    _:sk_28 http:requestURI <http://josd.github.io/brain/restpath/x>.
+    _:sk_28 http:resp _:sk_29.
+    _:sk_29 http:body <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel6 <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel6 <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel6 <http://josd.github.io/brain/restpath/y>.
+  };
+  r:evidence (
+    <#lemma12>
+    <#lemma12>
+    <#lemma12>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_28"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_29"]];
+  r:rule <#lemma13>.
+
+<#lemma11> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5. @forSome var:x_6, var:x_7. {var:x_0 ex:rel6 var:x_1.
+     var:x_2 ex:rel6 var:x_3.
+     var:x_4 ex:rel6 var:x_5} => {var:x_6 http:methodName "GET".
+     var:x_6 http:requestURI var:x_0.
+     var:x_6 http:resp var:x_7.
+     var:x_7 http:body var:x_1.
+     var:x_0 ex:rel7 var:x_1.
+     var:x_2 ex:rel7 var:x_3.
+     var:x_4 ex:rel7 var:x_5}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/restpath/path-9-3.n3>].
+
+<#lemma12> a r:Inference;
+  r:gives {
+    _:sk_22 http:methodName "GET".
+    _:sk_22 http:requestURI <http://josd.github.io/brain/restpath/x>.
+    _:sk_22 http:resp _:sk_23.
+    _:sk_23 http:body <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel5 <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel5 <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel5 <http://josd.github.io/brain/restpath/y>.
+  };
+  r:evidence (
+    <#lemma14>
+    <#lemma14>
+    <#lemma14>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_22"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_23"]];
+  r:rule <#lemma15>.
+
+<#lemma13> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5. @forSome var:x_6, var:x_7. {var:x_0 ex:rel5 var:x_1.
+     var:x_2 ex:rel5 var:x_3.
+     var:x_4 ex:rel5 var:x_5} => {var:x_6 http:methodName "GET".
+     var:x_6 http:requestURI var:x_0.
+     var:x_6 http:resp var:x_7.
+     var:x_7 http:body var:x_1.
+     var:x_0 ex:rel6 var:x_1.
+     var:x_2 ex:rel6 var:x_3.
+     var:x_4 ex:rel6 var:x_5}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/restpath/path-9-3.n3>].
+
+<#lemma14> a r:Inference;
+  r:gives {
+    _:sk_16 http:methodName "GET".
+    _:sk_16 http:requestURI <http://josd.github.io/brain/restpath/x>.
+    _:sk_16 http:resp _:sk_17.
+    _:sk_17 http:body <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel4 <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel4 <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel4 <http://josd.github.io/brain/restpath/y>.
+  };
+  r:evidence (
+    <#lemma16>
+    <#lemma16>
+    <#lemma16>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_16"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_17"]];
+  r:rule <#lemma17>.
+
+<#lemma15> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5. @forSome var:x_6, var:x_7. {var:x_0 ex:rel4 var:x_1.
+     var:x_2 ex:rel4 var:x_3.
+     var:x_4 ex:rel4 var:x_5} => {var:x_6 http:methodName "GET".
+     var:x_6 http:requestURI var:x_0.
+     var:x_6 http:resp var:x_7.
+     var:x_7 http:body var:x_1.
+     var:x_0 ex:rel5 var:x_1.
+     var:x_2 ex:rel5 var:x_3.
+     var:x_4 ex:rel5 var:x_5}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/restpath/path-9-3.n3>].
+
+<#lemma16> a r:Inference;
+  r:gives {
+    _:sk_6 http:methodName "GET".
+    _:sk_6 http:requestURI <http://josd.github.io/brain/restpath/x>.
+    _:sk_6 http:resp _:sk_7.
+    _:sk_7 http:body <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel3 <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel3 <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel3 <http://josd.github.io/brain/restpath/y>.
+  };
+  r:evidence (
+    <#lemma18>
+    <#lemma18>
+    <#lemma18>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:rule <#lemma19>.
+
+<#lemma17> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5. @forSome var:x_6, var:x_7. {var:x_0 ex:rel3 var:x_1.
+     var:x_2 ex:rel3 var:x_3.
+     var:x_4 ex:rel3 var:x_5} => {var:x_6 http:methodName "GET".
+     var:x_6 http:requestURI var:x_0.
+     var:x_6 http:resp var:x_7.
+     var:x_7 http:body var:x_1.
+     var:x_0 ex:rel4 var:x_1.
+     var:x_2 ex:rel4 var:x_3.
+     var:x_4 ex:rel4 var:x_5}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/restpath/path-9-3.n3>].
+
+<#lemma18> a r:Inference;
+  r:gives {
+    _:sk_0 http:methodName "GET".
+    _:sk_0 http:requestURI <http://josd.github.io/brain/restpath/x>.
+    _:sk_0 http:resp _:sk_1.
+    _:sk_1 http:body <http://josd.github.io/brain/restpath/y>.
+    <http://josd.github.io/brain/restpath/x> ex:rel2 <http://josd.github.io/brain/restpath/y>.
+    _:sk_2 ex:rel2 _:sk_3.
+    _:sk_4 ex:rel2 _:sk_5.
+  };
+  r:evidence (
+    <#lemma20>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/x"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/restpath/y"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:rule <#lemma21>.
+
+<#lemma19> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5. @forSome var:x_6, var:x_7. {var:x_0 ex:rel2 var:x_1.
+     var:x_2 ex:rel2 var:x_3.
+     var:x_4 ex:rel2 var:x_5} => {var:x_6 http:methodName "GET".
+     var:x_6 http:requestURI var:x_0.
+     var:x_6 http:resp var:x_7.
+     var:x_7 http:body var:x_1.
+     var:x_0 ex:rel3 var:x_1.
+     var:x_2 ex:rel3 var:x_3.
+     var:x_4 ex:rel3 var:x_5}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/restpath/path-9-3.n3>].
+
+<#lemma20> a r:Extraction;
+  r:gives {
+    <http://josd.github.io/brain/restpath/x> ex:rel1 <http://josd.github.io/brain/restpath/y>.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/restpath/initial.n3>].
+
+<#lemma21> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. @forSome var:x_2, var:x_3, var:x_4, var:x_5, var:x_6, var:x_7. {var:x_0 ex:rel1 var:x_1} => {var:x_2 http:methodName "GET".
+     var:x_2 http:requestURI var:x_0.
+     var:x_2 http:resp var:x_3.
+     var:x_3 http:body var:x_1.
+     var:x_0 ex:rel2 var:x_1.
+     var:x_4 ex:rel2 var:x_5.
+     var:x_6 ex:rel2 var:x_7}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/restpath/path-9-3.n3>].
+
+#2020-02-22T21:52:40.549Z in=11 out=1 ent=209 step=218 brake=1 inf=109078 sec=0.126 inf/sec=865698
+#ENDS
+

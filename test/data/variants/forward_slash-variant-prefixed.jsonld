@@ -1,0 +1,33 @@
+{
+  "@context": {
+    "ex": "http://example.org/ontology/",
+    "kb": "http://example.org/kb/",
+    "owl": "http://www.w3.org/2002/07/owl#"
+  },
+  "_comment": [
+    "The JSON-LD spec does not provide a grammar production rule set in,",
+    "EBNF.  However, the section on compact IRIs indicates that an IRI can",
+    "be prefixed at any point that would not result in a suffix starting",
+    "with \"//\".  Hence, an unpaired forward slash, as a legal character of",
+    "an IRI, can appear in the suffix component of a compact IRI.",
+    "https://json-ld.org/spec/latest/json-ld/#compact-iris"
+  ],
+  "@graph": [
+    {
+      "@id": "kb:individual-a",
+      "@type": "ex:core/MyClassA"
+    },
+    {
+      "@id": "ex:core/MyClassA",
+      "@type": "owl:Class"
+    },
+    {
+      "@id": "kb:individual-b",
+      "@type": "ex:core/MyClassB"
+    },
+    {
+      "@id": "ex:core/MyClassB",
+      "@type": "owl:Class"
+    }
+  ]
+}

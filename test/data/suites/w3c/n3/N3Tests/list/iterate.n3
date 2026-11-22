@@ -1,0 +1,19 @@
+@prefix : <#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+
+{ (1 2 3 4) list:iterate (0 1) } => {:test1a a :SUCCESS}.
+{ (1 2 3 4) list:iterate (1 2) } => {:test1b a :SUCCESS}.
+{ (1 2 3 4) list:iterate (2 3) } => {:test1c a :SUCCESS}.
+{ (1 2 3 4) list:iterate (3 4) } => {:test1d a :SUCCESS}.
+{ (1 2 3 4) list:iterate (4 5) } => {:test1e a :FAILURE}.
+
+{ (1 2 3 4) list:iterate ?R } => {:test2a :has ?R}.
+{ (1 2 3 4) list:iterate (?i ?v) } => {:test2b :has (?i ?v)}.
+
+{ ("a" "b" "c" "c") list:iterate (2 ?Y) } => {:test3a :has (2 ?Y)}.
+{ ("a" "b" "c" "c") list:iterate (?x "c") } => {:test3b :has (?x "c")}.
+{ ("a" "b" "c" "c") list:iterate (2 "c") } => {:test3c a :SUCCESS}.
+{ ("a" "b" "c" "c") list:iterate (2 "x") } => {:test3d a :FAILURE}.
+
+{ (1 2 3 4) list:iterate (?x)} => {:test4a a :FAILURE}.
+{ (1 2 3 4) list:iterate (?x ?y ?z)} => {:test4b a :FAILURE}.

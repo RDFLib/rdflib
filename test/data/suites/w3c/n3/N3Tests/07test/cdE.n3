@@ -1,0 +1,29 @@
+#Processed by Id: euler.yap 7292 2014-06-13 12:27:29Z josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/cd.n3 --pass
+
+@prefix prolog: <http://eulersharp.sourceforge.net/2003/03swap/prolog#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix var: <http://localhost/var#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/cd#>.
+
+
+[ e:possibleModel {_:qe1 a :HumanMale}
+; e:gives {
+    _:qe1 a :HumanMale.
+    _:qe1 a :Human.
+  }
+].
+
+[ e:possibleModel {_:qe1 a :HumanFemale}
+; e:gives {
+    _:qe1 a :HumanFemale.
+    _:qe1 a :Human.
+  }
+].
+
+_:qe1 a :Human.
+
+[ e:inductivity 1; e:evidentiality 1; e:applicability 1; e:possibleModels 2; e:counterModels 0; e:falseModels 0; e:allModels 2].
+
+#ENDS 0.293 [sec] TC=0 TP=0 BC=8 BP=21 PM=2 CM=0 FM=0 AM=2
+

@@ -1,0 +1,6 @@
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+
+{?C owl:hasKey ?L. ?X a ?C. ?Y a ?C. ?X log:notEqualTo ?Y. ?S e:findall (?P {?P list:in ?L. ?X ?P ?Z. ?Y ?P ?Z} ?L)} => {?X owl:sameAs ?Y}.

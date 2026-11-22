@@ -1,0 +1,28 @@
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix bk: <http://josd.github.io/brain/ppt-bank/banking#>.
+@prefix ck: <http://josd.github.io/brain/ppt-bank/checking#>.
+
+{
+    ?ACCT bk:statements (?ST).
+    ?ST log:semantics ?SF.
+    ?SF log:includes { ?ACCT ck:balance ?B0 }.
+    ?ACCT bk:transactions ?L.
+    ?SCOPE e:findall (
+        ?A1
+        {
+            ?L list:member ?DOC.
+            ?DOC log:semantics ?TF.
+            ?TF log:includes { ?DOC a ck:Check; ck:amount ?A1; ck:account ?ACCT }.
+        }
+        ?AL
+    ).
+    ?AL math:sum ?TT.
+    (?B0 ?TT) math:difference ?TOT.
+}
+=>
+{
+    ?ACCT ck:balance ?TOT.
+}.

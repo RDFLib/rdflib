@@ -1,0 +1,4514 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/bi/biP.n3 --query http://josd.github.io/brain/bi/biQ.n3
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix string: <http://www.w3.org/2000/10/swap/string#>.
+@prefix time: <http://www.w3.org/2000/10/swap/time#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix med: <http://eulersharp.sourceforge.net/2006/02swap/med#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+@prefix fl: <http://eulersharp.sourceforge.net/2003/03swap/fl-rules#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:component <#lemma3>;
+  r:component <#lemma4>;
+  r:component <#lemma5>;
+  r:component <#lemma6>;
+  r:component <#lemma7>;
+  r:component <#lemma8>;
+  r:component <#lemma9>;
+  r:component <#lemma10>;
+  r:component <#lemma11>;
+  r:component <#lemma12>;
+  r:component <#lemma13>;
+  r:component <#lemma14>;
+  r:component <#lemma15>;
+  r:component <#lemma16>;
+  r:component <#lemma17>;
+  r:component <#lemma18>;
+  r:component <#lemma19>;
+  r:component <#lemma20>;
+  r:component <#lemma21>;
+  r:component <#lemma22>;
+  r:component <#lemma23>;
+  r:component <#lemma24>;
+  r:component <#lemma25>;
+  r:component <#lemma26>;
+  r:component <#lemma27>;
+  r:component <#lemma28>;
+  r:component <#lemma29>;
+  r:component <#lemma30>;
+  r:component <#lemma31>;
+  r:component <#lemma32>;
+  r:component <#lemma33>;
+  r:component <#lemma34>;
+  r:component <#lemma35>;
+  r:component <#lemma36>;
+  r:component <#lemma37>;
+  r:component <#lemma38>;
+  r:component <#lemma39>;
+  r:component <#lemma40>;
+  r:component <#lemma41>;
+  r:component <#lemma42>;
+  r:component <#lemma43>;
+  r:component <#lemma44>;
+  r:component <#lemma45>;
+  r:component <#lemma46>;
+  r:component <#lemma47>;
+  r:component <#lemma48>;
+  r:component <#lemma49>;
+  r:component <#lemma50>;
+  r:component <#lemma51>;
+  r:component <#lemma52>;
+  r:component <#lemma53>;
+  r:component <#lemma54>;
+  r:component <#lemma55>;
+  r:component <#lemma56>;
+  r:component <#lemma57>;
+  r:component <#lemma58>;
+  r:component <#lemma59>;
+  r:component <#lemma60>;
+  r:component <#lemma61>;
+  r:component <#lemma62>;
+  r:component <#lemma63>;
+  r:component <#lemma64>;
+  r:component <#lemma65>;
+  r:component <#lemma66>;
+  r:component <#lemma67>;
+  r:component <#lemma68>;
+  r:component <#lemma69>;
+  r:component <#lemma70>;
+  r:component <#lemma71>;
+  r:component <#lemma72>;
+  r:component <#lemma73>;
+  r:component <#lemma74>;
+  r:component <#lemma75>;
+  r:component <#lemma76>;
+  r:component <#lemma77>;
+  r:component <#lemma78>;
+  r:component <#lemma79>;
+  r:component <#lemma80>;
+  r:component <#lemma81>;
+  r:component <#lemma82>;
+  r:component <#lemma83>;
+  r:component <#lemma84>;
+  r:component <#lemma85>;
+  r:component <#lemma86>;
+  r:component <#lemma87>;
+  r:component <#lemma88>;
+  r:component <#lemma89>;
+  r:component <#lemma90>;
+  r:component <#lemma91>;
+  r:component <#lemma92>;
+  r:component <#lemma93>;
+  r:component <#lemma94>;
+  r:component <#lemma95>;
+  r:component <#lemma96>;
+  r:component <#lemma97>;
+  r:gives {
+    {{(55 66 72 87 56 77 73 69 74 56) e:avg 68.5 .
+      68.5 math:equalTo 68.5} => {:ea1 :result true}} a :PASS.
+    {{("1+1") e:calculate 2 .
+      2 math:equalTo 2} => {:ec1 :result true}} a :PASS.
+    {{3 log:equalTo 3 .
+      ("sqrt(_width^2+_length^2)" 3 4) e:calculate 5.0 .
+      5.0 math:equalTo 5.0} => {:ec2 :result true}} a :PASS.
+    {{("_period-250" "PT5M2S"^^xsd:dayTimeDuration) e:calculate 52.0 .
+      52.0 math:equalTo 52.0} => {:ec3 :result true}} a :PASS.
+    {{((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:cov 0.992777777777778 .
+      0.992777777777778 math:equalTo 0.992777777777778} => {:eco1 :result true}} a :PASS.
+    {{("atom_codes" "HOME" (72 79 77 69)) e:derive true} => {:epac1 :result true}} a :PASS.
+    {{("date(1970, 1, 1, 0, 0, 0.0, 0, 'UTC', -)") e:compoundTerm "date(1970,1,1,0,0,0.0,0,'UTC',-)".
+      ("date_time_stamp" "date(1970,1,1,0,0,0.0,0,'UTC',-)" 0.0) e:derive true.
+      0.0 math:equalTo 0.0} => {:epdts1 :result true}} a :PASS.
+    {{("This is a ~w with number ~w and with an escaped linefeed \n" "test" 5) e:format "This is a test with number 5 and with an escaped linefeed \n"} => {:ef4 :result true}} a :PASS.
+    {{({:a :b :c.
+       :d :e :f} true) e:graphDifference {:a :b :c.
+       :d :e :f}} => {:egd1 :result true}} a :PASS.
+    {{(true {:d :e :f}) e:graphDifference true} => {:egd2 :result true}} a :PASS.
+    {{({:a :b :c.
+       :d :e :f} {:d :e :f}) e:graphDifference {:a :b :c}} => {:egd3 :result true}} a :PASS.
+    {{({:a :b :c.
+       :d :e :f.
+       :g :h :i} {:d :e :f}) e:graphDifference {:a :b :c.
+       :g :h :i}} => {:egd4 :result true}} a :PASS.
+    {{({:a :b :c} {:a :b :c.
+       :u :v :w.
+       :x :y :z}) e:graphDifference true} => {:egd5 :result true}} a :PASS.
+    {{(true) e:graphIntersection true} => {:egi1 :result true}} a :PASS.
+    {{(true {:d :e :f}) e:graphIntersection true} => {:egi2 :result true}} a :PASS.
+    {{({:a :b :c.
+       :d :e :f.
+       :g :h :i} true) e:graphIntersection true} => {:egi3 :result true}} a :PASS.
+    {{({:a :b :c.
+       :d :e :f} {:d :e :f}) e:graphIntersection {:d :e :f}} => {:egi4 :result true}} a :PASS.
+    {{({:a :b :c.
+       :d :e :f.
+       :g :h :i} {:g :h :i.
+       :d :e :f} {:d :e :f.
+       :g :h :i}) e:graphIntersection {:d :e :f.
+       :g :h :i}} => {:egi5 :result true}} a :PASS.
+    {{((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:length 6} => {:el1 :result true}} a :PASS.
+    {{(8 5 6 7 9 4) e:max 9} => {:em1 :result true}} a :PASS.
+    {{(8 5 6 7 9 4) e:min 4} => {:em2 :result true}} a :PASS.
+    {{(1 3 6 6 7 2 3) e:multisetEqualTo (3 3 7 6 6 2 1)} => {:eme1 :result true}} a :PASS.
+    {{(1 3 6 6 7 2 3) e:multisetNotEqualTo (3 3 7 6 2 1)} => {:emn1 :result true}} a :PASS.
+    {{:a :b :d.
+      ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:optional {:g :h :i}} => {:eo1 :result true}} a :PASS.
+    {{((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:pcc 0.9569729506311461 .
+      0.9569729506311461 math:equalTo 0.9569729506311461} => {:ep1 :result true}} a :PASS.
+    {{((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d)) e:reverse ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))} => {:erv1 :result true}} a :PASS.
+    {{(55 66 72 87 56 77 73 69 74 56) e:rms 69.2105483289939 .
+      69.2105483289939 math:equalTo 69.2105483289939} => {:erm1 :result true}} a :PASS.
+    {{((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:sort ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))} => {:es1 :result true}} a :PASS.
+    {{(9 3 8 3 5 7 7 9 9 2) e:sort (2 3 3 5 7 7 8 9 9 9)} => {:es2 :result true}} a :PASS.
+    {{(55 66 72 87 56 77 73 69 74 56) e:std 10.426994879744703 .
+      10.426994879744703 math:equalTo 10.426994879744703} => {:est1 :result true}} a :PASS.
+    {{"\"test\n" e:stringEscape "\\\"test\\n"} => {:ese1 :result true}} a :PASS.
+    {{("a-b/c-d/e" "-/") e:stringSplit ("a" "b" "c" "d" "e")} => {:ess1 :result true}} a :PASS.
+    {{(1 2 3 4 5) e:subsequence (1 2 4)} => {:esl1 :result true}} a :PASS.
+    {{((<http://josd.github.io/brain/bi/biP.n3>) 1) e:fail {(1 2 3 4 5) e:subsequence (4 2 1)}} => {:esl2 :result true}} a :PASS.
+    {{() e:subsequence ()} => {:esl3 :result true}} a :PASS.
+    {{((0 1) (2 3) (4 5)) e:transpose ((0 2 4) (1 3 5))} => {:et1 :result true}} a :PASS.
+    {{:c e:whenGround {:a :b :d}.
+      :a :b :c} => {:ewg1 :result true}} a :PASS.
+    {{:d e:whenGround {:a :b :d}.
+      :a :b :d} => {:ewg1 :result true}} a :PASS.
+    {{"http://www.agfa.com/w3c/euler" e:wwwFormEncode "http%3a%2f%2fwww.agfa.com%2fw3c%2feuler"} => {:ew1 :result true}} a :PASS.
+    {{"Hello World!" e:wwwFormEncode "Hello+World%21"} => {:ew2 :result true}} a :PASS.
+    {{((:a :b :c) (:d :e)) list:append (:a :b :c :d :e)} => {:lista1 :result true}} a :PASS.
+    {{(:a :b :c) list:first :a} => {:listf1 :result true}} a :PASS.
+    {{:c list:in (:a :b :c)} => {:listi1 :result true}} a :PASS.
+    {{(:a :b :c) list:last :c} => {:listl1 :result true}} a :PASS.
+    {{(:a :b :c :d) list:member :b} => {:listm1 :result true}} a :PASS.
+    {{(:a :b :c) list:rest (:b :c)} => {:listr1 :result true}} a :PASS.
+    {{(true) log:conjunction true} => {:logc1 :result true}} a :PASS.
+    {{(true {:u :v :w} {:x :y :z.
+       :j :k :l}) log:conjunction {:u :v :w.
+       :x :y :z.
+       :j :k :l}} => {:logc2 :result true}} a :PASS.
+    {{(true {:u :v :w} true true) log:conjunction {:u :v :w}} => {:logc3 :result true}} a :PASS.
+    {{(:a :b) log:equalTo (:a :b)} => {:loge1 :result true}} a :PASS.
+    {{{:a :b :c} log:equalTo {:a :b :c}} => {:logee1 :result true}} a :PASS.
+    {{<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+      {:a :b :c} log:equalTo {:a :b :c}} => {:loges0 :result true}} a :PASS.
+    {{<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+      {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_2>}} => {:loges3 :result true}} a :PASS.
+    {{{:b :a :c.
+       :e :d :f.
+       :h :g :i.
+       :k :j :l} log:includes {:k :j :l.
+       :e :d :f}} => {:logi1 :result true}} a :PASS.
+    {{{:a :b :c} log:includes {:a :b :c}} => {:logid0 :result true}} a :PASS.
+    {{<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+      {:a :b :c} log:includes {:a :b :c}} => {:logis0 :result true}} a :PASS.
+    {{:a log:notEqualTo :b} => {:logne1 :result true}} a :PASS.
+    {{{:a :b :c} log:notEqualTo {:a :b :_c}} => {:logned1 :result true}} a :PASS.
+    {{{:a :b :_c} log:notEqualTo {:a :b :c}} => {:logned2 :result true}} a :PASS.
+    {{{:a :b :_c} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_3>}} => {:logned3 :result true}} a :PASS.
+    {{{:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_4>}} => {:lognid1 :result true}} a :PASS.
+    {{{:a :b :_c} log:notIncludes {:a :b :c}} => {:lognid2 :result true}} a :PASS.
+    {{{:a :b :_c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_5>}} => {:lognid3 :result true}} a :PASS.
+    {{<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+      {:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_6>}} => {:lognis1 :result true}} a :PASS.
+    {{<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+      {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}} => {:lognis2 :result true}} a :PASS.
+    {{<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+      {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_7>}} => {:lognis3 :result true}} a :PASS.
+    {{<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+      <http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+      {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}} => {:lognis4 :result true}} a :PASS.
+    {{med:Fever log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"} => {:logu1 :result true}} a :PASS.
+    {{:betaBlocker log:uri "http://eulersharp.sourceforge.net/2007/07test#betaBlocker"} => {:logu2 :result true}} a :PASS.
+    {{(1 1) math:difference 0} => {:mathd1 :result true}} a :PASS.
+    {{("2009-01-25T12:00:00"^^xsd:dateTime "1970-01-01T00:00:00"^^xsd:dateTime) math:difference 1232884800} => {:mathd2 :result true}} a :PASS.
+    {{(2 3.0) math:exponentiation 8.0 .
+      (4.0 3.0) math:product 12.0} => {:mathe1 :result true}} a :PASS.
+    {{2 math:greaterThan 1} => {:mathg1 :result true}} a :PASS.
+    {{"02" math:greaterThan "1"} => {:mathg2 :result true}} a :PASS.
+    {{(:u :v :u) math:memberCount 3} => {:mathm1 :result true}} a :PASS.
+    {{{:s :p :o1.
+       :s :p :o2.
+       :s :p :o1} math:memberCount 2} => {:mathm2 :result true}} a :PASS.
+    {{7 math:notLessThan 5} => {:mathnl1 :result true}} a :PASS.
+    {{(1 1) math:sum 2} => {:maths1 :result true}} a :PASS.
+    {{("1" "1") math:sum 2} => {:maths2 :result true}} a :PASS.
+    {{("1970-01-01T00:00:00+01:00"^^xsd:dateTime) math:sum -3600} => {:maths3 :result true}} a :PASS.
+    {{("P1D"^^xsd:duration) math:sum 86400.0} => {:maths4 :result true}} a :PASS.
+    {{(:f :g) rdf:first :f} => {:rdff1 :result true}} a :PASS.
+    {{(:f :g) rdf:rest (:g)} => {:rdfr1 :result true}} a :PASS.
+    {{("eul" "er") string:concatenation "euler"} => {:strc1 :result true}} a :PASS.
+    {{("€" "Ø"@en-US) string:concatenation "€Ø"} => {:strc2 :result true}} a :PASS.
+    {{("test " "is \"ok\"") string:concatenation "test is \"ok\""} => {:strc3 :result true}} a :PASS.
+    {{"Rob Smith" string:contains "Smith"} => {:strcn1 :result true}} a :PASS.
+    {{"Rob Smith"@en string:contains "Smith"@en} => {:strcn2 :result true}} a :PASS.
+    {{"Tim" string:containsIgnoringCase "IM"} => {:strci1 :result true}} a :PASS.
+    {{"abracadabra" string:matches "(a|b|r|c|d)+"} => {:strm1 :result true}} a :PASS.
+    {{("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:scrape "example.org"} => {:strs1 :result true}} a :PASS.
+    {{("{x" "{(.)") string:scrape "x"} => {:strs2 :result true}} a :PASS.
+    {{("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:search ("example.org" "1995")} => {:strs3 :result true}} a :PASS.
+    {{"euler" string:startsWith "eu"} => {:strs4 :result true}} a :PASS.
+    {{"2006-12-14"^^xsd:date time:day "14"} => {:timed1 :result true}} a :PASS.
+    {{"2006-12-14"^^xsd:date time:month "12"} => {:timem1 :result true}} a :PASS.
+    {{"2006-12-14"^^xsd:date time:year "2006"} => {:timey1 :result true}} a :PASS.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    {{(55 66 72 87 56 77 73 69 74 56) e:avg 68.5 .
+      68.5 math:equalTo 68.5} => {:ea1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(55 66 72 87 56 77 73 69 74 56) e:avg 68.5 .
+     68.5 math:equalTo 68.5} => {:ea1 :result true}}]
+    <#lemma98>
+    <#lemma99>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(55 66 72 87 56 77 73 69 74 56) e:avg 68.5 .
+   68.5 math:equalTo 68.5}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#ea1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    {{("1+1") e:calculate 2 .
+      2 math:equalTo 2} => {:ec1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{("1+1") e:calculate 2 .
+     2 math:equalTo 2} => {:ec1 :result true}}]
+    <#lemma101>
+    <#lemma102>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {("1+1") e:calculate 2 .
+   2 math:equalTo 2}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#ec1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    {{3 log:equalTo 3 .
+      ("sqrt(_width^2+_length^2)" 3 4) e:calculate 5.0 .
+      5.0 math:equalTo 5.0} => {:ec2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{3 log:equalTo 3 .
+     ("sqrt(_width^2+_length^2)" 3 4) e:calculate 5.0 .
+     5.0 math:equalTo 5.0} => {:ec2 :result true}}]
+    <#lemma103>
+    <#lemma104>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {3 log:equalTo 3 .
+   ("sqrt(_width^2+_length^2)" 3 4) e:calculate 5.0 .
+   5.0 math:equalTo 5.0}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#ec2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma4> a r:Inference;
+  r:gives {
+    {{("_period-250" "PT5M2S"^^xsd:dayTimeDuration) e:calculate 52.0 .
+      52.0 math:equalTo 52.0} => {:ec3 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{("_period-250" "PT5M2S"^^xsd:dayTimeDuration) e:calculate 52.0 .
+     52.0 math:equalTo 52.0} => {:ec3 :result true}}]
+    <#lemma105>
+    <#lemma106>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {("_period-250" "PT5M2S"^^xsd:dayTimeDuration) e:calculate 52.0 .
+   52.0 math:equalTo 52.0}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#ec3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma5> a r:Inference;
+  r:gives {
+    {{((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:cov 0.992777777777778 .
+      0.992777777777778 math:equalTo 0.992777777777778} => {:eco1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:cov 0.992777777777778 .
+     0.992777777777778 math:equalTo 0.992777777777778} => {:eco1 :result true}}]
+    <#lemma107>
+    <#lemma108>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:cov 0.992777777777778 .
+   0.992777777777778 math:equalTo 0.992777777777778}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#eco1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma6> a r:Inference;
+  r:gives {
+    {{("atom_codes" "HOME" (72 79 77 69)) e:derive true} => {:epac1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{("atom_codes" "HOME" (72 79 77 69)) e:derive true} => {:epac1 :result true}}]
+    <#lemma109>
+    <#lemma110>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {("atom_codes" "HOME" (72 79 77 69)) e:derive true}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#epac1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma7> a r:Inference;
+  r:gives {
+    {{("date(1970, 1, 1, 0, 0, 0.0, 0, 'UTC', -)") e:compoundTerm "date(1970,1,1,0,0,0.0,0,'UTC',-)".
+      ("date_time_stamp" "date(1970,1,1,0,0,0.0,0,'UTC',-)" 0.0) e:derive true.
+      0.0 math:equalTo 0.0} => {:epdts1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{("date(1970, 1, 1, 0, 0, 0.0, 0, 'UTC', -)") e:compoundTerm "date(1970,1,1,0,0,0.0,0,'UTC',-)".
+     ("date_time_stamp" "date(1970,1,1,0,0,0.0,0,'UTC',-)" 0.0) e:derive true.
+     0.0 math:equalTo 0.0} => {:epdts1 :result true}}]
+    <#lemma111>
+    <#lemma112>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {("date(1970, 1, 1, 0, 0, 0.0, 0, 'UTC', -)") e:compoundTerm "date(1970,1,1,0,0,0.0,0,'UTC',-)".
+   ("date_time_stamp" "date(1970,1,1,0,0,0.0,0,'UTC',-)" 0.0) e:derive true.
+   0.0 math:equalTo 0.0}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#epdts1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma8> a r:Inference;
+  r:gives {
+    {{("This is a ~w with number ~w and with an escaped linefeed \n" "test" 5) e:format "This is a test with number 5 and with an escaped linefeed \n"} => {:ef4 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{("This is a ~w with number ~w and with an escaped linefeed \n" "test" 5) e:format "This is a test with number 5 and with an escaped linefeed \n"} => {:ef4 :result true}}]
+    <#lemma113>
+    <#lemma114>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {("This is a ~w with number ~w and with an escaped linefeed \n" "test" 5) e:format "This is a test with number 5 and with an escaped linefeed \n"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#ef4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma9> a r:Inference;
+  r:gives {
+    {{({:a :b :c.
+       :d :e :f} true) e:graphDifference {:a :b :c.
+       :d :e :f}} => {:egd1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{({:a :b :c.
+      :d :e :f} true) e:graphDifference {:a :b :c.
+      :d :e :f}} => {:egd1 :result true}}]
+    <#lemma115>
+    <#lemma116>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {({:a :b :c.
+    :d :e :f} true) e:graphDifference {:a :b :c.
+    :d :e :f}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#egd1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma10> a r:Inference;
+  r:gives {
+    {{(true {:d :e :f}) e:graphDifference true} => {:egd2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(true {:d :e :f}) e:graphDifference true} => {:egd2 :result true}}]
+    <#lemma117>
+    <#lemma118>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(true {:d :e :f}) e:graphDifference true}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#egd2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma11> a r:Inference;
+  r:gives {
+    {{({:a :b :c.
+       :d :e :f} {:d :e :f}) e:graphDifference {:a :b :c}} => {:egd3 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{({:a :b :c.
+      :d :e :f} {:d :e :f}) e:graphDifference {:a :b :c}} => {:egd3 :result true}}]
+    <#lemma119>
+    <#lemma120>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {({:a :b :c.
+    :d :e :f} {:d :e :f}) e:graphDifference {:a :b :c}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#egd3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma12> a r:Inference;
+  r:gives {
+    {{({:a :b :c.
+       :d :e :f.
+       :g :h :i} {:d :e :f}) e:graphDifference {:a :b :c.
+       :g :h :i}} => {:egd4 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{({:a :b :c.
+      :d :e :f.
+      :g :h :i} {:d :e :f}) e:graphDifference {:a :b :c.
+      :g :h :i}} => {:egd4 :result true}}]
+    <#lemma121>
+    <#lemma122>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {({:a :b :c.
+    :d :e :f.
+    :g :h :i} {:d :e :f}) e:graphDifference {:a :b :c.
+    :g :h :i}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#egd4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma13> a r:Inference;
+  r:gives {
+    {{({:a :b :c} {:a :b :c.
+       :u :v :w.
+       :x :y :z}) e:graphDifference true} => {:egd5 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{({:a :b :c} {:a :b :c.
+      :u :v :w.
+      :x :y :z}) e:graphDifference true} => {:egd5 :result true}}]
+    <#lemma123>
+    <#lemma124>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {({:a :b :c} {:a :b :c.
+    :u :v :w.
+    :x :y :z}) e:graphDifference true}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#egd5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma14> a r:Inference;
+  r:gives {
+    {{(true) e:graphIntersection true} => {:egi1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(true) e:graphIntersection true} => {:egi1 :result true}}]
+    <#lemma125>
+    <#lemma126>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(true) e:graphIntersection true}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#egi1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma15> a r:Inference;
+  r:gives {
+    {{(true {:d :e :f}) e:graphIntersection true} => {:egi2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(true {:d :e :f}) e:graphIntersection true} => {:egi2 :result true}}]
+    <#lemma127>
+    <#lemma128>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(true {:d :e :f}) e:graphIntersection true}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#egi2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma16> a r:Inference;
+  r:gives {
+    {{({:a :b :c.
+       :d :e :f.
+       :g :h :i} true) e:graphIntersection true} => {:egi3 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{({:a :b :c.
+      :d :e :f.
+      :g :h :i} true) e:graphIntersection true} => {:egi3 :result true}}]
+    <#lemma129>
+    <#lemma130>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {({:a :b :c.
+    :d :e :f.
+    :g :h :i} true) e:graphIntersection true}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#egi3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma17> a r:Inference;
+  r:gives {
+    {{({:a :b :c.
+       :d :e :f} {:d :e :f}) e:graphIntersection {:d :e :f}} => {:egi4 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{({:a :b :c.
+      :d :e :f} {:d :e :f}) e:graphIntersection {:d :e :f}} => {:egi4 :result true}}]
+    <#lemma131>
+    <#lemma132>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {({:a :b :c.
+    :d :e :f} {:d :e :f}) e:graphIntersection {:d :e :f}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#egi4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma18> a r:Inference;
+  r:gives {
+    {{({:a :b :c.
+       :d :e :f.
+       :g :h :i} {:g :h :i.
+       :d :e :f} {:d :e :f.
+       :g :h :i}) e:graphIntersection {:d :e :f.
+       :g :h :i}} => {:egi5 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{({:a :b :c.
+      :d :e :f.
+      :g :h :i} {:g :h :i.
+      :d :e :f} {:d :e :f.
+      :g :h :i}) e:graphIntersection {:d :e :f.
+      :g :h :i}} => {:egi5 :result true}}]
+    <#lemma133>
+    <#lemma134>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {({:a :b :c.
+    :d :e :f.
+    :g :h :i} {:g :h :i.
+    :d :e :f} {:d :e :f.
+    :g :h :i}) e:graphIntersection {:d :e :f.
+    :g :h :i}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#egi5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma19> a r:Inference;
+  r:gives {
+    {{((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:length 6} => {:el1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:length 6} => {:el1 :result true}}]
+    <#lemma135>
+    <#lemma136>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:length 6}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#el1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma20> a r:Inference;
+  r:gives {
+    {{(8 5 6 7 9 4) e:max 9} => {:em1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(8 5 6 7 9 4) e:max 9} => {:em1 :result true}}]
+    <#lemma137>
+    <#lemma138>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(8 5 6 7 9 4) e:max 9}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#em1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma21> a r:Inference;
+  r:gives {
+    {{(8 5 6 7 9 4) e:min 4} => {:em2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(8 5 6 7 9 4) e:min 4} => {:em2 :result true}}]
+    <#lemma139>
+    <#lemma140>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(8 5 6 7 9 4) e:min 4}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#em2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma22> a r:Inference;
+  r:gives {
+    {{(1 3 6 6 7 2 3) e:multisetEqualTo (3 3 7 6 6 2 1)} => {:eme1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(1 3 6 6 7 2 3) e:multisetEqualTo (3 3 7 6 6 2 1)} => {:eme1 :result true}}]
+    <#lemma141>
+    <#lemma142>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(1 3 6 6 7 2 3) e:multisetEqualTo (3 3 7 6 6 2 1)}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#eme1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma23> a r:Inference;
+  r:gives {
+    {{(1 3 6 6 7 2 3) e:multisetNotEqualTo (3 3 7 6 2 1)} => {:emn1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(1 3 6 6 7 2 3) e:multisetNotEqualTo (3 3 7 6 2 1)} => {:emn1 :result true}}]
+    <#lemma143>
+    <#lemma144>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(1 3 6 6 7 2 3) e:multisetNotEqualTo (3 3 7 6 2 1)}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#emn1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma24> a r:Inference;
+  r:gives {
+    {{:a :b :d.
+      ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:optional {:g :h :i}} => {:eo1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b :d.
+     ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:optional {:g :h :i}} => {:eo1 :result true}}]
+    <#lemma145>
+    <#lemma146>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:a :b :d.
+   ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:optional {:g :h :i}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#eo1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma25> a r:Inference;
+  r:gives {
+    {{((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:pcc 0.9569729506311461 .
+      0.9569729506311461 math:equalTo 0.9569729506311461} => {:ep1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:pcc 0.9569729506311461 .
+     0.9569729506311461 math:equalTo 0.9569729506311461} => {:ep1 :result true}}]
+    <#lemma147>
+    <#lemma148>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:pcc 0.9569729506311461 .
+   0.9569729506311461 math:equalTo 0.9569729506311461}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#ep1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma26> a r:Inference;
+  r:gives {
+    {{((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d)) e:reverse ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))} => {:erv1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d)) e:reverse ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))} => {:erv1 :result true}}]
+    <#lemma149>
+    <#lemma150>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d)) e:reverse ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#erv1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma27> a r:Inference;
+  r:gives {
+    {{(55 66 72 87 56 77 73 69 74 56) e:rms 69.2105483289939 .
+      69.2105483289939 math:equalTo 69.2105483289939} => {:erm1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(55 66 72 87 56 77 73 69 74 56) e:rms 69.2105483289939 .
+     69.2105483289939 math:equalTo 69.2105483289939} => {:erm1 :result true}}]
+    <#lemma151>
+    <#lemma152>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(55 66 72 87 56 77 73 69 74 56) e:rms 69.2105483289939 .
+   69.2105483289939 math:equalTo 69.2105483289939}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#erm1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma28> a r:Inference;
+  r:gives {
+    {{((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:sort ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))} => {:es1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:sort ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))} => {:es1 :result true}}]
+    <#lemma153>
+    <#lemma154>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:sort ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#es1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma29> a r:Inference;
+  r:gives {
+    {{(9 3 8 3 5 7 7 9 9 2) e:sort (2 3 3 5 7 7 8 9 9 9)} => {:es2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(9 3 8 3 5 7 7 9 9 2) e:sort (2 3 3 5 7 7 8 9 9 9)} => {:es2 :result true}}]
+    <#lemma155>
+    <#lemma156>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(9 3 8 3 5 7 7 9 9 2) e:sort (2 3 3 5 7 7 8 9 9 9)}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#es2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma30> a r:Inference;
+  r:gives {
+    {{(55 66 72 87 56 77 73 69 74 56) e:std 10.426994879744703 .
+      10.426994879744703 math:equalTo 10.426994879744703} => {:est1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(55 66 72 87 56 77 73 69 74 56) e:std 10.426994879744703 .
+     10.426994879744703 math:equalTo 10.426994879744703} => {:est1 :result true}}]
+    <#lemma157>
+    <#lemma158>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(55 66 72 87 56 77 73 69 74 56) e:std 10.426994879744703 .
+   10.426994879744703 math:equalTo 10.426994879744703}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#est1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma31> a r:Inference;
+  r:gives {
+    {{"\"test\n" e:stringEscape "\\\"test\\n"} => {:ese1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{"\"test\n" e:stringEscape "\\\"test\\n"} => {:ese1 :result true}}]
+    <#lemma159>
+    <#lemma160>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {"\"test\n" e:stringEscape "\\\"test\\n"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#ese1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma32> a r:Inference;
+  r:gives {
+    {{("a-b/c-d/e" "-/") e:stringSplit ("a" "b" "c" "d" "e")} => {:ess1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{("a-b/c-d/e" "-/") e:stringSplit ("a" "b" "c" "d" "e")} => {:ess1 :result true}}]
+    <#lemma161>
+    <#lemma162>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {("a-b/c-d/e" "-/") e:stringSplit ("a" "b" "c" "d" "e")}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#ess1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma33> a r:Inference;
+  r:gives {
+    {{(1 2 3 4 5) e:subsequence (1 2 4)} => {:esl1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(1 2 3 4 5) e:subsequence (1 2 4)} => {:esl1 :result true}}]
+    <#lemma163>
+    <#lemma164>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(1 2 3 4 5) e:subsequence (1 2 4)}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#esl1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma34> a r:Inference;
+  r:gives {
+    {{((<http://josd.github.io/brain/bi/biP.n3>) 1) e:fail {(1 2 3 4 5) e:subsequence (4 2 1)}} => {:esl2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{((<http://josd.github.io/brain/bi/biP.n3>) 1) e:fail {(1 2 3 4 5) e:subsequence (4 2 1)}} => {:esl2 :result true}}]
+    <#lemma165>
+    <#lemma166>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:fail {(1 2 3 4 5) e:subsequence (4 2 1)}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#esl2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma35> a r:Inference;
+  r:gives {
+    {{() e:subsequence ()} => {:esl3 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{() e:subsequence ()} => {:esl3 :result true}}]
+    <#lemma167>
+    <#lemma168>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {() e:subsequence ()}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#esl3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma36> a r:Inference;
+  r:gives {
+    {{((0 1) (2 3) (4 5)) e:transpose ((0 2 4) (1 3 5))} => {:et1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{((0 1) (2 3) (4 5)) e:transpose ((0 2 4) (1 3 5))} => {:et1 :result true}}]
+    <#lemma169>
+    <#lemma170>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {((0 1) (2 3) (4 5)) e:transpose ((0 2 4) (1 3 5))}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#et1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma37> a r:Inference;
+  r:gives {
+    {{:c e:whenGround {:a :b :d}.
+      :a :b :c} => {:ewg1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:c e:whenGround {:a :b :d}.
+     :a :b :c} => {:ewg1 :result true}}]
+    <#lemma171>
+    <#lemma172>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:c e:whenGround {:a :b :d}.
+   :a :b :c}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#ewg1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma38> a r:Inference;
+  r:gives {
+    {{:d e:whenGround {:a :b :d}.
+      :a :b :d} => {:ewg1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:d e:whenGround {:a :b :d}.
+     :a :b :d} => {:ewg1 :result true}}]
+    <#lemma171>
+    <#lemma173>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:d e:whenGround {:a :b :d}.
+   :a :b :d}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#ewg1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma39> a r:Inference;
+  r:gives {
+    {{"http://www.agfa.com/w3c/euler" e:wwwFormEncode "http%3a%2f%2fwww.agfa.com%2fw3c%2feuler"} => {:ew1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{"http://www.agfa.com/w3c/euler" e:wwwFormEncode "http%3a%2f%2fwww.agfa.com%2fw3c%2feuler"} => {:ew1 :result true}}]
+    <#lemma174>
+    <#lemma175>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {"http://www.agfa.com/w3c/euler" e:wwwFormEncode "http%3a%2f%2fwww.agfa.com%2fw3c%2feuler"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#ew1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma40> a r:Inference;
+  r:gives {
+    {{"Hello World!" e:wwwFormEncode "Hello+World%21"} => {:ew2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{"Hello World!" e:wwwFormEncode "Hello+World%21"} => {:ew2 :result true}}]
+    <#lemma176>
+    <#lemma177>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {"Hello World!" e:wwwFormEncode "Hello+World%21"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#ew2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma41> a r:Inference;
+  r:gives {
+    {{((:a :b :c) (:d :e)) list:append (:a :b :c :d :e)} => {:lista1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{((:a :b :c) (:d :e)) list:append (:a :b :c :d :e)} => {:lista1 :result true}}]
+    <#lemma178>
+    <#lemma179>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {((:a :b :c) (:d :e)) list:append (:a :b :c :d :e)}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#lista1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma42> a r:Inference;
+  r:gives {
+    {{(:a :b :c) list:first :a} => {:listf1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(:a :b :c) list:first :a} => {:listf1 :result true}}]
+    <#lemma180>
+    <#lemma181>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(:a :b :c) list:first :a}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#listf1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma43> a r:Inference;
+  r:gives {
+    {{:c list:in (:a :b :c)} => {:listi1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:c list:in (:a :b :c)} => {:listi1 :result true}}]
+    <#lemma182>
+    <#lemma183>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:c list:in (:a :b :c)}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#listi1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma44> a r:Inference;
+  r:gives {
+    {{(:a :b :c) list:last :c} => {:listl1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(:a :b :c) list:last :c} => {:listl1 :result true}}]
+    <#lemma184>
+    <#lemma185>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(:a :b :c) list:last :c}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#listl1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma45> a r:Inference;
+  r:gives {
+    {{(:a :b :c :d) list:member :b} => {:listm1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(:a :b :c :d) list:member :b} => {:listm1 :result true}}]
+    <#lemma186>
+    <#lemma187>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(:a :b :c :d) list:member :b}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#listm1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma46> a r:Inference;
+  r:gives {
+    {{(:a :b :c) list:rest (:b :c)} => {:listr1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(:a :b :c) list:rest (:b :c)} => {:listr1 :result true}}]
+    <#lemma188>
+    <#lemma189>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(:a :b :c) list:rest (:b :c)}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#listr1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma47> a r:Inference;
+  r:gives {
+    {{(true) log:conjunction true} => {:logc1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(true) log:conjunction true} => {:logc1 :result true}}]
+    <#lemma190>
+    <#lemma191>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(true) log:conjunction true}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#logc1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma48> a r:Inference;
+  r:gives {
+    {{(true {:u :v :w} {:x :y :z.
+       :j :k :l}) log:conjunction {:u :v :w.
+       :x :y :z.
+       :j :k :l}} => {:logc2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(true {:u :v :w} {:x :y :z.
+      :j :k :l}) log:conjunction {:u :v :w.
+      :x :y :z.
+      :j :k :l}} => {:logc2 :result true}}]
+    <#lemma192>
+    <#lemma193>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(true {:u :v :w} {:x :y :z.
+    :j :k :l}) log:conjunction {:u :v :w.
+    :x :y :z.
+    :j :k :l}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#logc2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma49> a r:Inference;
+  r:gives {
+    {{(true {:u :v :w} true true) log:conjunction {:u :v :w}} => {:logc3 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(true {:u :v :w} true true) log:conjunction {:u :v :w}} => {:logc3 :result true}}]
+    <#lemma194>
+    <#lemma195>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(true {:u :v :w} true true) log:conjunction {:u :v :w}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#logc3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma50> a r:Inference;
+  r:gives {
+    {{(:a :b) log:equalTo (:a :b)} => {:loge1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(:a :b) log:equalTo (:a :b)} => {:loge1 :result true}}]
+    <#lemma196>
+    <#lemma197>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(:a :b) log:equalTo (:a :b)}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#loge1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma51> a r:Inference;
+  r:gives {
+    {{{:a :b :c} log:equalTo {:a :b :c}} => {:logee1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{{:a :b :c} log:equalTo {:a :b :c}} => {:logee1 :result true}}]
+    <#lemma198>
+    <#lemma199>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {{:a :b :c} log:equalTo {:a :b :c}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#logee1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma52> a r:Inference;
+  r:gives {
+    {{<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+      {:a :b :c} log:equalTo {:a :b :c}} => {:loges0 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+     {:a :b :c} log:equalTo {:a :b :c}} => {:loges0 :result true}}]
+    <#lemma200>
+    <#lemma201>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+   {:a :b :c} log:equalTo {:a :b :c}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#loges0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma53> a r:Inference;
+  r:gives {
+    {{<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+      {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_2>}} => {:loges3 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+     {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_2>}} => {:loges3 :result true}}]
+    <#lemma202>
+    <#lemma203>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+   {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_2>}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#loges3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma54> a r:Inference;
+  r:gives {
+    {{{:b :a :c.
+       :e :d :f.
+       :h :g :i.
+       :k :j :l} log:includes {:k :j :l.
+       :e :d :f}} => {:logi1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{{:b :a :c.
+      :e :d :f.
+      :h :g :i.
+      :k :j :l} log:includes {:k :j :l.
+      :e :d :f}} => {:logi1 :result true}}]
+    <#lemma204>
+    <#lemma205>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {{:b :a :c.
+    :e :d :f.
+    :h :g :i.
+    :k :j :l} log:includes {:k :j :l.
+    :e :d :f}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#logi1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma55> a r:Inference;
+  r:gives {
+    {{{:a :b :c} log:includes {:a :b :c}} => {:logid0 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{{:a :b :c} log:includes {:a :b :c}} => {:logid0 :result true}}]
+    <#lemma206>
+    <#lemma207>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {{:a :b :c} log:includes {:a :b :c}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#logid0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma56> a r:Inference;
+  r:gives {
+    {{<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+      {:a :b :c} log:includes {:a :b :c}} => {:logis0 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+     {:a :b :c} log:includes {:a :b :c}} => {:logis0 :result true}}]
+    <#lemma208>
+    <#lemma209>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+   {:a :b :c} log:includes {:a :b :c}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#logis0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma57> a r:Inference;
+  r:gives {
+    {{:a log:notEqualTo :b} => {:logne1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a log:notEqualTo :b} => {:logne1 :result true}}]
+    <#lemma210>
+    <#lemma211>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:a log:notEqualTo :b}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#logne1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma58> a r:Inference;
+  r:gives {
+    {{{:a :b :c} log:notEqualTo {:a :b :_c}} => {:logned1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{{:a :b :c} log:notEqualTo {:a :b :_c}} => {:logned1 :result true}}]
+    <#lemma212>
+    <#lemma213>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {{:a :b :c} log:notEqualTo {:a :b :_c}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#logned1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma59> a r:Inference;
+  r:gives {
+    {{{:a :b :_c} log:notEqualTo {:a :b :c}} => {:logned2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{{:a :b :_c} log:notEqualTo {:a :b :c}} => {:logned2 :result true}}]
+    <#lemma214>
+    <#lemma215>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {{:a :b :_c} log:notEqualTo {:a :b :c}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#logned2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma60> a r:Inference;
+  r:gives {
+    {{{:a :b :_c} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_3>}} => {:logned3 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{{:a :b :_c} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_3>}} => {:logned3 :result true}}]
+    <#lemma216>
+    <#lemma217>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {{:a :b :_c} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_3>}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#logned3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma61> a r:Inference;
+  r:gives {
+    {{{:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_4>}} => {:lognid1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{{:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_4>}} => {:lognid1 :result true}}]
+    <#lemma218>
+    <#lemma219>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {{:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_4>}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#lognid1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma62> a r:Inference;
+  r:gives {
+    {{{:a :b :_c} log:notIncludes {:a :b :c}} => {:lognid2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{{:a :b :_c} log:notIncludes {:a :b :c}} => {:lognid2 :result true}}]
+    <#lemma220>
+    <#lemma221>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {{:a :b :_c} log:notIncludes {:a :b :c}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#lognid2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma63> a r:Inference;
+  r:gives {
+    {{{:a :b :_c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_5>}} => {:lognid3 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{{:a :b :_c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_5>}} => {:lognid3 :result true}}]
+    <#lemma222>
+    <#lemma223>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {{:a :b :_c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_5>}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#lognid3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma64> a r:Inference;
+  r:gives {
+    {{<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+      {:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_6>}} => {:lognis1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+     {:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_6>}} => {:lognis1 :result true}}]
+    <#lemma224>
+    <#lemma225>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+   {:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_6>}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#lognis1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma65> a r:Inference;
+  r:gives {
+    {{<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+      {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}} => {:lognis2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+     {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}} => {:lognis2 :result true}}]
+    <#lemma226>
+    <#lemma227>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+   {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#lognis2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma66> a r:Inference;
+  r:gives {
+    {{<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+      {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_7>}} => {:lognis3 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+     {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_7>}} => {:lognis3 :result true}}]
+    <#lemma228>
+    <#lemma229>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+   {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_7>}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#lognis3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma67> a r:Inference;
+  r:gives {
+    {{<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+      <http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+      {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}} => {:lognis4 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+     <http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+     {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}} => {:lognis4 :result true}}]
+    <#lemma230>
+    <#lemma231>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+   <http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+   {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#lognis4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma68> a r:Inference;
+  r:gives {
+    {{med:Fever log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"} => {:logu1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{med:Fever log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"} => {:logu1 :result true}}]
+    <#lemma232>
+    <#lemma233>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {med:Fever log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#logu1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma69> a r:Inference;
+  r:gives {
+    {{:betaBlocker log:uri "http://eulersharp.sourceforge.net/2007/07test#betaBlocker"} => {:logu2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:betaBlocker log:uri "http://eulersharp.sourceforge.net/2007/07test#betaBlocker"} => {:logu2 :result true}}]
+    <#lemma234>
+    <#lemma235>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:betaBlocker log:uri "http://eulersharp.sourceforge.net/2007/07test#betaBlocker"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#logu2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma70> a r:Inference;
+  r:gives {
+    {{(1 1) math:difference 0} => {:mathd1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(1 1) math:difference 0} => {:mathd1 :result true}}]
+    <#lemma236>
+    <#lemma237>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(1 1) math:difference 0}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#mathd1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma71> a r:Inference;
+  r:gives {
+    {{("2009-01-25T12:00:00"^^xsd:dateTime "1970-01-01T00:00:00"^^xsd:dateTime) math:difference 1232884800} => {:mathd2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{("2009-01-25T12:00:00"^^xsd:dateTime "1970-01-01T00:00:00"^^xsd:dateTime) math:difference 1232884800} => {:mathd2 :result true}}]
+    <#lemma238>
+    <#lemma239>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {("2009-01-25T12:00:00"^^xsd:dateTime "1970-01-01T00:00:00"^^xsd:dateTime) math:difference 1232884800}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#mathd2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma72> a r:Inference;
+  r:gives {
+    {{(2 3.0) math:exponentiation 8.0 .
+      (4.0 3.0) math:product 12.0} => {:mathe1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(2 3.0) math:exponentiation 8.0 .
+     (4.0 3.0) math:product 12.0} => {:mathe1 :result true}}]
+    <#lemma240>
+    <#lemma241>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(2 3.0) math:exponentiation 8.0 .
+   (4.0 3.0) math:product 12.0}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#mathe1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma73> a r:Inference;
+  r:gives {
+    {{2 math:greaterThan 1} => {:mathg1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{2 math:greaterThan 1} => {:mathg1 :result true}}]
+    <#lemma242>
+    <#lemma243>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {2 math:greaterThan 1}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#mathg1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma74> a r:Inference;
+  r:gives {
+    {{"02" math:greaterThan "1"} => {:mathg2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{"02" math:greaterThan "1"} => {:mathg2 :result true}}]
+    <#lemma244>
+    <#lemma245>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {"02" math:greaterThan "1"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#mathg2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma75> a r:Inference;
+  r:gives {
+    {{(:u :v :u) math:memberCount 3} => {:mathm1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(:u :v :u) math:memberCount 3} => {:mathm1 :result true}}]
+    <#lemma246>
+    <#lemma247>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(:u :v :u) math:memberCount 3}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#mathm1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma76> a r:Inference;
+  r:gives {
+    {{{:s :p :o1.
+       :s :p :o2.
+       :s :p :o1} math:memberCount 2} => {:mathm2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{{:s :p :o1.
+      :s :p :o2.
+      :s :p :o1} math:memberCount 2} => {:mathm2 :result true}}]
+    <#lemma248>
+    <#lemma249>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {{:s :p :o1.
+    :s :p :o2.
+    :s :p :o1} math:memberCount 2}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#mathm2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma77> a r:Inference;
+  r:gives {
+    {{7 math:notLessThan 5} => {:mathnl1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{7 math:notLessThan 5} => {:mathnl1 :result true}}]
+    <#lemma250>
+    <#lemma251>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {7 math:notLessThan 5}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#mathnl1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma78> a r:Inference;
+  r:gives {
+    {{(1 1) math:sum 2} => {:maths1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(1 1) math:sum 2} => {:maths1 :result true}}]
+    <#lemma252>
+    <#lemma253>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(1 1) math:sum 2}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#maths1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma79> a r:Inference;
+  r:gives {
+    {{("1" "1") math:sum 2} => {:maths2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{("1" "1") math:sum 2} => {:maths2 :result true}}]
+    <#lemma254>
+    <#lemma255>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {("1" "1") math:sum 2}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#maths2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma80> a r:Inference;
+  r:gives {
+    {{("1970-01-01T00:00:00+01:00"^^xsd:dateTime) math:sum -3600} => {:maths3 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{("1970-01-01T00:00:00+01:00"^^xsd:dateTime) math:sum -3600} => {:maths3 :result true}}]
+    <#lemma256>
+    <#lemma257>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {("1970-01-01T00:00:00+01:00"^^xsd:dateTime) math:sum -3600}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#maths3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma81> a r:Inference;
+  r:gives {
+    {{("P1D"^^xsd:duration) math:sum 86400.0} => {:maths4 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{("P1D"^^xsd:duration) math:sum 86400.0} => {:maths4 :result true}}]
+    <#lemma258>
+    <#lemma259>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {("P1D"^^xsd:duration) math:sum 86400.0}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#maths4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma82> a r:Inference;
+  r:gives {
+    {{(:f :g) rdf:first :f} => {:rdff1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(:f :g) rdf:first :f} => {:rdff1 :result true}}]
+    <#lemma260>
+    <#lemma261>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(:f :g) rdf:first :f}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#rdff1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma83> a r:Inference;
+  r:gives {
+    {{(:f :g) rdf:rest (:g)} => {:rdfr1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{(:f :g) rdf:rest (:g)} => {:rdfr1 :result true}}]
+    <#lemma262>
+    <#lemma263>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {(:f :g) rdf:rest (:g)}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#rdfr1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma84> a r:Inference;
+  r:gives {
+    {{("eul" "er") string:concatenation "euler"} => {:strc1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{("eul" "er") string:concatenation "euler"} => {:strc1 :result true}}]
+    <#lemma264>
+    <#lemma265>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {("eul" "er") string:concatenation "euler"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#strc1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma85> a r:Inference;
+  r:gives {
+    {{("€" "Ø"@en-US) string:concatenation "€Ø"} => {:strc2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{("€" "Ø"@en-US) string:concatenation "€Ø"} => {:strc2 :result true}}]
+    <#lemma266>
+    <#lemma267>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {("€" "Ø"@en-US) string:concatenation "€Ø"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#strc2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma86> a r:Inference;
+  r:gives {
+    {{("test " "is \"ok\"") string:concatenation "test is \"ok\""} => {:strc3 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{("test " "is \"ok\"") string:concatenation "test is \"ok\""} => {:strc3 :result true}}]
+    <#lemma268>
+    <#lemma269>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {("test " "is \"ok\"") string:concatenation "test is \"ok\""}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#strc3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma87> a r:Inference;
+  r:gives {
+    {{"Rob Smith" string:contains "Smith"} => {:strcn1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{"Rob Smith" string:contains "Smith"} => {:strcn1 :result true}}]
+    <#lemma270>
+    <#lemma271>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {"Rob Smith" string:contains "Smith"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#strcn1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma88> a r:Inference;
+  r:gives {
+    {{"Rob Smith"@en string:contains "Smith"@en} => {:strcn2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{"Rob Smith"@en string:contains "Smith"@en} => {:strcn2 :result true}}]
+    <#lemma272>
+    <#lemma273>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {"Rob Smith"@en string:contains "Smith"@en}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#strcn2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma89> a r:Inference;
+  r:gives {
+    {{"Tim" string:containsIgnoringCase "IM"} => {:strci1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{"Tim" string:containsIgnoringCase "IM"} => {:strci1 :result true}}]
+    <#lemma274>
+    <#lemma275>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {"Tim" string:containsIgnoringCase "IM"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#strci1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma90> a r:Inference;
+  r:gives {
+    {{"abracadabra" string:matches "(a|b|r|c|d)+"} => {:strm1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{"abracadabra" string:matches "(a|b|r|c|d)+"} => {:strm1 :result true}}]
+    <#lemma276>
+    <#lemma277>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {"abracadabra" string:matches "(a|b|r|c|d)+"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#strm1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma91> a r:Inference;
+  r:gives {
+    {{("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:scrape "example.org"} => {:strs1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:scrape "example.org"} => {:strs1 :result true}}]
+    <#lemma278>
+    <#lemma279>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:scrape "example.org"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#strs1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma92> a r:Inference;
+  r:gives {
+    {{("{x" "{(.)") string:scrape "x"} => {:strs2 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{("{x" "{(.)") string:scrape "x"} => {:strs2 :result true}}]
+    <#lemma280>
+    <#lemma281>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {("{x" "{(.)") string:scrape "x"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#strs2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma93> a r:Inference;
+  r:gives {
+    {{("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:search ("example.org" "1995")} => {:strs3 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:search ("example.org" "1995")} => {:strs3 :result true}}]
+    <#lemma282>
+    <#lemma283>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:search ("example.org" "1995")}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#strs3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma94> a r:Inference;
+  r:gives {
+    {{"euler" string:startsWith "eu"} => {:strs4 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{"euler" string:startsWith "eu"} => {:strs4 :result true}}]
+    <#lemma284>
+    <#lemma285>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {"euler" string:startsWith "eu"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#strs4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma95> a r:Inference;
+  r:gives {
+    {{"2006-12-14"^^xsd:date time:day "14"} => {:timed1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{"2006-12-14"^^xsd:date time:day "14"} => {:timed1 :result true}}]
+    <#lemma286>
+    <#lemma287>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {"2006-12-14"^^xsd:date time:day "14"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#timed1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma96> a r:Inference;
+  r:gives {
+    {{"2006-12-14"^^xsd:date time:month "12"} => {:timem1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{"2006-12-14"^^xsd:date time:month "12"} => {:timem1 :result true}}]
+    <#lemma288>
+    <#lemma289>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {"2006-12-14"^^xsd:date time:month "12"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#timem1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma97> a r:Inference;
+  r:gives {
+    {{"2006-12-14"^^xsd:date time:year "2006"} => {:timey1 :result true}} a :PASS.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{"2006-12-14"^^xsd:date time:year "2006"} => {:timey1 :result true}}]
+    <#lemma290>
+    <#lemma291>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {"2006-12-14"^^xsd:date time:year "2006"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#timey1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma100>.
+
+<#lemma98> a r:Inference;
+  r:gives {
+    :ea1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(55 66 72 87 56 77 73 69 74 56) e:avg 68.5}]
+    [ a r:Fact; r:gives {68.5 math:equalTo 68.5}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 68.5];
+  r:rule <#lemma292>.
+
+<#lemma99> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(55 66 72 87 56 77 73 69 74 56) e:avg 68.5 .
+     68.5 math:equalTo 68.5}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(55 66 72 87 56 77 73 69 74 56) e:avg 68.5}]
+    [ a r:Fact; r:gives {68.5 math:equalTo 68.5}]
+  );
+  r:rule [ a r:Fact; r:gives {{(55 66 72 87 56 77 73 69 74 56) e:avg 68.5 .
+    68.5 math:equalTo 68.5} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(55 66 72 87 56 77 73 69 74 56) e:avg 68.5 .
+     68.5 math:equalTo 68.5}}}].
+
+<#lemma100> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3. {var:x_0 => {var:x_1 :result var:x_2}.
+     var:x_1 :result var:x_2.
+     var:x_3 e:call var:x_0} => {{var:x_0 => {var:x_1 :result var:x_2}} a :PASS}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biQ.n3>].
+
+<#lemma101> a r:Inference;
+  r:gives {
+    :ec1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("1+1") e:calculate 2}]
+    [ a r:Fact; r:gives {2 math:equalTo 2}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 2];
+  r:rule <#lemma293>.
+
+<#lemma102> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("1+1") e:calculate 2 .
+     2 math:equalTo 2}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("1+1") e:calculate 2}]
+    [ a r:Fact; r:gives {2 math:equalTo 2}]
+  );
+  r:rule [ a r:Fact; r:gives {{("1+1") e:calculate 2 .
+    2 math:equalTo 2} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("1+1") e:calculate 2 .
+     2 math:equalTo 2}}}].
+
+<#lemma103> a r:Inference;
+  r:gives {
+    :ec2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {3 log:equalTo 3}]
+    [ a r:Fact; r:gives {("sqrt(_width^2+_length^2)" 3 4) e:calculate 5.0}]
+    [ a r:Fact; r:gives {5.0 math:equalTo 5.0}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 5.0];
+  r:rule <#lemma294>.
+
+<#lemma104> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {3 log:equalTo 3 .
+     ("sqrt(_width^2+_length^2)" 3 4) e:calculate 5.0 .
+     5.0 math:equalTo 5.0}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {3 log:equalTo 3}]
+    [ a r:Fact; r:gives {("sqrt(_width^2+_length^2)" 3 4) e:calculate 5.0}]
+    [ a r:Fact; r:gives {5.0 math:equalTo 5.0}]
+  );
+  r:rule [ a r:Fact; r:gives {{3 log:equalTo 3 .
+    ("sqrt(_width^2+_length^2)" 3 4) e:calculate 5.0 .
+    5.0 math:equalTo 5.0} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {3 log:equalTo 3 .
+     ("sqrt(_width^2+_length^2)" 3 4) e:calculate 5.0 .
+     5.0 math:equalTo 5.0}}}].
+
+<#lemma105> a r:Inference;
+  r:gives {
+    :ec3 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("_period-250" "PT5M2S"^^xsd:dayTimeDuration) e:calculate 52.0}]
+    [ a r:Fact; r:gives {52.0 math:equalTo 52.0}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 52.0];
+  r:rule <#lemma295>.
+
+<#lemma106> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("_period-250" "PT5M2S"^^xsd:dayTimeDuration) e:calculate 52.0 .
+     52.0 math:equalTo 52.0}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("_period-250" "PT5M2S"^^xsd:dayTimeDuration) e:calculate 52.0}]
+    [ a r:Fact; r:gives {52.0 math:equalTo 52.0}]
+  );
+  r:rule [ a r:Fact; r:gives {{("_period-250" "PT5M2S"^^xsd:dayTimeDuration) e:calculate 52.0 .
+    52.0 math:equalTo 52.0} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("_period-250" "PT5M2S"^^xsd:dayTimeDuration) e:calculate 52.0 .
+     52.0 math:equalTo 52.0}}}].
+
+<#lemma107> a r:Inference;
+  r:gives {
+    :eco1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:cov 0.992777777777778}]
+    [ a r:Fact; r:gives {0.992777777777778 math:equalTo 0.992777777777778}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0.992777777777778];
+  r:rule <#lemma296>.
+
+<#lemma108> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:cov 0.992777777777778 .
+     0.992777777777778 math:equalTo 0.992777777777778}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:cov 0.992777777777778}]
+    [ a r:Fact; r:gives {0.992777777777778 math:equalTo 0.992777777777778}]
+  );
+  r:rule [ a r:Fact; r:gives {{((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:cov 0.992777777777778 .
+    0.992777777777778 math:equalTo 0.992777777777778} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:cov 0.992777777777778 .
+     0.992777777777778 math:equalTo 0.992777777777778}}}].
+
+<#lemma109> a r:Inference;
+  r:gives {
+    :epac1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("atom_codes" "HOME" (72 79 77 69)) e:derive true}]
+  );
+  r:rule <#lemma297>.
+
+<#lemma110> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("atom_codes" "HOME" (72 79 77 69)) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("atom_codes" "HOME" (72 79 77 69)) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("atom_codes" "HOME" (72 79 77 69)) e:derive true} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("atom_codes" "HOME" (72 79 77 69)) e:derive true}}}].
+
+<#lemma111> a r:Inference;
+  r:gives {
+    :epdts1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("date(1970, 1, 1, 0, 0, 0.0, 0, 'UTC', -)") e:compoundTerm "date(1970,1,1,0,0,0.0,0,'UTC',-)"}]
+    [ a r:Fact; r:gives {("date_time_stamp" "date(1970,1,1,0,0,0.0,0,'UTC',-)" 0.0) e:derive true}]
+    [ a r:Fact; r:gives {0.0 math:equalTo 0.0}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo "date(1970,1,1,0,0,0.0,0,'UTC',-)"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 0.0];
+  r:rule <#lemma298>.
+
+<#lemma112> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("date(1970, 1, 1, 0, 0, 0.0, 0, 'UTC', -)") e:compoundTerm "date(1970,1,1,0,0,0.0,0,'UTC',-)".
+     ("date_time_stamp" "date(1970,1,1,0,0,0.0,0,'UTC',-)" 0.0) e:derive true.
+     0.0 math:equalTo 0.0}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("date(1970, 1, 1, 0, 0, 0.0, 0, 'UTC', -)") e:compoundTerm "date(1970,1,1,0,0,0.0,0,'UTC',-)"}]
+    [ a r:Fact; r:gives {("date_time_stamp" "date(1970,1,1,0,0,0.0,0,'UTC',-)" 0.0) e:derive true}]
+    [ a r:Fact; r:gives {0.0 math:equalTo 0.0}]
+  );
+  r:rule [ a r:Fact; r:gives {{("date(1970, 1, 1, 0, 0, 0.0, 0, 'UTC', -)") e:compoundTerm "date(1970,1,1,0,0,0.0,0,'UTC',-)".
+    ("date_time_stamp" "date(1970,1,1,0,0,0.0,0,'UTC',-)" 0.0) e:derive true.
+    0.0 math:equalTo 0.0} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("date(1970, 1, 1, 0, 0, 0.0, 0, 'UTC', -)") e:compoundTerm "date(1970,1,1,0,0,0.0,0,'UTC',-)".
+     ("date_time_stamp" "date(1970,1,1,0,0,0.0,0,'UTC',-)" 0.0) e:derive true.
+     0.0 math:equalTo 0.0}}}].
+
+<#lemma113> a r:Inference;
+  r:gives {
+    :ef4 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("This is a ~w with number ~w and with an escaped linefeed \n" "test" 5) e:format "This is a test with number 5 and with an escaped linefeed \n"}]
+  );
+  r:rule <#lemma299>.
+
+<#lemma114> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("This is a ~w with number ~w and with an escaped linefeed \n" "test" 5) e:format "This is a test with number 5 and with an escaped linefeed \n"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("This is a ~w with number ~w and with an escaped linefeed \n" "test" 5) e:format "This is a test with number 5 and with an escaped linefeed \n"}]
+  );
+  r:rule [ a r:Fact; r:gives {{("This is a ~w with number ~w and with an escaped linefeed \n" "test" 5) e:format "This is a test with number 5 and with an escaped linefeed \n"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("This is a ~w with number ~w and with an escaped linefeed \n" "test" 5) e:format "This is a test with number 5 and with an escaped linefeed \n"}}}].
+
+<#lemma115> a r:Inference;
+  r:gives {
+    :egd1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {({:a :b :c.
+     :d :e :f} true) e:graphDifference {:a :b :c.
+     :d :e :f}}]
+  );
+  r:rule <#lemma300>.
+
+<#lemma116> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {({:a :b :c.
+      :d :e :f} true) e:graphDifference {:a :b :c.
+      :d :e :f}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {({:a :b :c.
+     :d :e :f} true) e:graphDifference {:a :b :c.
+     :d :e :f}}]
+  );
+  r:rule [ a r:Fact; r:gives {{({:a :b :c.
+     :d :e :f} true) e:graphDifference {:a :b :c.
+     :d :e :f}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {({:a :b :c.
+      :d :e :f} true) e:graphDifference {:a :b :c.
+      :d :e :f}}}}].
+
+<#lemma117> a r:Inference;
+  r:gives {
+    :egd2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(true {:d :e :f}) e:graphDifference true}]
+  );
+  r:rule <#lemma301>.
+
+<#lemma118> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(true {:d :e :f}) e:graphDifference true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(true {:d :e :f}) e:graphDifference true}]
+  );
+  r:rule [ a r:Fact; r:gives {{(true {:d :e :f}) e:graphDifference true} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(true {:d :e :f}) e:graphDifference true}}}].
+
+<#lemma119> a r:Inference;
+  r:gives {
+    :egd3 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {({:a :b :c.
+     :d :e :f} {:d :e :f}) e:graphDifference {:a :b :c}}]
+  );
+  r:rule <#lemma302>.
+
+<#lemma120> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {({:a :b :c.
+      :d :e :f} {:d :e :f}) e:graphDifference {:a :b :c}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {({:a :b :c.
+     :d :e :f} {:d :e :f}) e:graphDifference {:a :b :c}}]
+  );
+  r:rule [ a r:Fact; r:gives {{({:a :b :c.
+     :d :e :f} {:d :e :f}) e:graphDifference {:a :b :c}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {({:a :b :c.
+      :d :e :f} {:d :e :f}) e:graphDifference {:a :b :c}}}}].
+
+<#lemma121> a r:Inference;
+  r:gives {
+    :egd4 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {({:a :b :c.
+     :d :e :f.
+     :g :h :i} {:d :e :f}) e:graphDifference {:a :b :c.
+     :g :h :i}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#d"]];
+  r:rule <#lemma303>.
+
+<#lemma122> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {({:a :b :c.
+      :d :e :f.
+      :g :h :i} {:d :e :f}) e:graphDifference {:a :b :c.
+      :g :h :i}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {({:a :b :c.
+     :d :e :f.
+     :g :h :i} {:d :e :f}) e:graphDifference {:a :b :c.
+     :g :h :i}}]
+  );
+  r:rule [ a r:Fact; r:gives {{({:a :b :c.
+     :d :e :f.
+     :g :h :i} {:d :e :f}) e:graphDifference {:a :b :c.
+     :g :h :i}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {({:a :b :c.
+      :d :e :f.
+      :g :h :i} {:d :e :f}) e:graphDifference {:a :b :c.
+      :g :h :i}}}}].
+
+<#lemma123> a r:Inference;
+  r:gives {
+    :egd5 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {({:a :b :c} {:a :b :c.
+     :u :v :w.
+     :x :y :z}) e:graphDifference true}]
+  );
+  r:rule <#lemma304>.
+
+<#lemma124> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {({:a :b :c} {:a :b :c.
+      :u :v :w.
+      :x :y :z}) e:graphDifference true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {({:a :b :c} {:a :b :c.
+     :u :v :w.
+     :x :y :z}) e:graphDifference true}]
+  );
+  r:rule [ a r:Fact; r:gives {{({:a :b :c} {:a :b :c.
+     :u :v :w.
+     :x :y :z}) e:graphDifference true} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {({:a :b :c} {:a :b :c.
+      :u :v :w.
+      :x :y :z}) e:graphDifference true}}}].
+
+<#lemma125> a r:Inference;
+  r:gives {
+    :egi1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(true) e:graphIntersection true}]
+  );
+  r:rule <#lemma305>.
+
+<#lemma126> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(true) e:graphIntersection true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(true) e:graphIntersection true}]
+  );
+  r:rule [ a r:Fact; r:gives {{(true) e:graphIntersection true} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(true) e:graphIntersection true}}}].
+
+<#lemma127> a r:Inference;
+  r:gives {
+    :egi2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(true {:d :e :f}) e:graphIntersection true}]
+  );
+  r:rule <#lemma306>.
+
+<#lemma128> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(true {:d :e :f}) e:graphIntersection true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(true {:d :e :f}) e:graphIntersection true}]
+  );
+  r:rule [ a r:Fact; r:gives {{(true {:d :e :f}) e:graphIntersection true} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(true {:d :e :f}) e:graphIntersection true}}}].
+
+<#lemma129> a r:Inference;
+  r:gives {
+    :egi3 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {({:a :b :c.
+     :d :e :f.
+     :g :h :i} true) e:graphIntersection true}]
+  );
+  r:rule <#lemma307>.
+
+<#lemma130> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {({:a :b :c.
+      :d :e :f.
+      :g :h :i} true) e:graphIntersection true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {({:a :b :c.
+     :d :e :f.
+     :g :h :i} true) e:graphIntersection true}]
+  );
+  r:rule [ a r:Fact; r:gives {{({:a :b :c.
+     :d :e :f.
+     :g :h :i} true) e:graphIntersection true} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {({:a :b :c.
+      :d :e :f.
+      :g :h :i} true) e:graphIntersection true}}}].
+
+<#lemma131> a r:Inference;
+  r:gives {
+    :egi4 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {({:a :b :c.
+     :d :e :f} {:d :e :f}) e:graphIntersection {:d :e :f}}]
+  );
+  r:rule <#lemma308>.
+
+<#lemma132> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {({:a :b :c.
+      :d :e :f} {:d :e :f}) e:graphIntersection {:d :e :f}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {({:a :b :c.
+     :d :e :f} {:d :e :f}) e:graphIntersection {:d :e :f}}]
+  );
+  r:rule [ a r:Fact; r:gives {{({:a :b :c.
+     :d :e :f} {:d :e :f}) e:graphIntersection {:d :e :f}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {({:a :b :c.
+      :d :e :f} {:d :e :f}) e:graphIntersection {:d :e :f}}}}].
+
+<#lemma133> a r:Inference;
+  r:gives {
+    :egi5 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {({:a :b :c.
+     :d :e :f.
+     :g :h :i} {:g :h :i.
+     :d :e :f} {:d :e :f.
+     :g :h :i}) e:graphIntersection {:d :e :f.
+     :g :h :i}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#d"]];
+  r:rule <#lemma309>.
+
+<#lemma134> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {({:a :b :c.
+      :d :e :f.
+      :g :h :i} {:g :h :i.
+      :d :e :f} {:d :e :f.
+      :g :h :i}) e:graphIntersection {:d :e :f.
+      :g :h :i}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {({:a :b :c.
+     :d :e :f.
+     :g :h :i} {:g :h :i.
+     :d :e :f} {:d :e :f.
+     :g :h :i}) e:graphIntersection {:d :e :f.
+     :g :h :i}}]
+  );
+  r:rule [ a r:Fact; r:gives {{({:a :b :c.
+     :d :e :f.
+     :g :h :i} {:g :h :i.
+     :d :e :f} {:d :e :f.
+     :g :h :i}) e:graphIntersection {:d :e :f.
+     :g :h :i}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {({:a :b :c.
+      :d :e :f.
+      :g :h :i} {:g :h :i.
+      :d :e :f} {:d :e :f.
+      :g :h :i}) e:graphIntersection {:d :e :f.
+      :g :h :i}}}}].
+
+<#lemma135> a r:Inference;
+  r:gives {
+    :el1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:length 6}]
+  );
+  r:rule <#lemma310>.
+
+<#lemma136> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:length 6}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:length 6}]
+  );
+  r:rule [ a r:Fact; r:gives {{((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:length 6} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:length 6}}}].
+
+<#lemma137> a r:Inference;
+  r:gives {
+    :em1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(8 5 6 7 9 4) e:max 9}]
+  );
+  r:rule <#lemma311>.
+
+<#lemma138> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(8 5 6 7 9 4) e:max 9}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(8 5 6 7 9 4) e:max 9}]
+  );
+  r:rule [ a r:Fact; r:gives {{(8 5 6 7 9 4) e:max 9} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(8 5 6 7 9 4) e:max 9}}}].
+
+<#lemma139> a r:Inference;
+  r:gives {
+    :em2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(8 5 6 7 9 4) e:min 4}]
+  );
+  r:rule <#lemma312>.
+
+<#lemma140> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(8 5 6 7 9 4) e:min 4}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(8 5 6 7 9 4) e:min 4}]
+  );
+  r:rule [ a r:Fact; r:gives {{(8 5 6 7 9 4) e:min 4} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(8 5 6 7 9 4) e:min 4}}}].
+
+<#lemma141> a r:Inference;
+  r:gives {
+    :eme1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 3 6 6 7 2 3) e:multisetEqualTo (3 3 7 6 6 2 1)}]
+  );
+  r:rule <#lemma313>.
+
+<#lemma142> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(1 3 6 6 7 2 3) e:multisetEqualTo (3 3 7 6 6 2 1)}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 3 6 6 7 2 3) e:multisetEqualTo (3 3 7 6 6 2 1)}]
+  );
+  r:rule [ a r:Fact; r:gives {{(1 3 6 6 7 2 3) e:multisetEqualTo (3 3 7 6 6 2 1)} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(1 3 6 6 7 2 3) e:multisetEqualTo (3 3 7 6 6 2 1)}}}].
+
+<#lemma143> a r:Inference;
+  r:gives {
+    :emn1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 3 6 6 7 2 3) e:multisetNotEqualTo (3 3 7 6 2 1)}]
+  );
+  r:rule <#lemma314>.
+
+<#lemma144> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(1 3 6 6 7 2 3) e:multisetNotEqualTo (3 3 7 6 2 1)}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 3 6 6 7 2 3) e:multisetNotEqualTo (3 3 7 6 2 1)}]
+  );
+  r:rule [ a r:Fact; r:gives {{(1 3 6 6 7 2 3) e:multisetNotEqualTo (3 3 7 6 2 1)} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(1 3 6 6 7 2 3) e:multisetNotEqualTo (3 3 7 6 2 1)}}}].
+
+<#lemma145> a r:Inference;
+  r:gives {
+    :eo1 :result true.
+  };
+  r:evidence (
+    <#lemma315>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:optional {:g :h :i}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma316>.
+
+<#lemma146> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {:a :b :d.
+     ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:optional {:g :h :i}}.
+  };
+  r:evidence (
+    <#lemma315>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:optional {:g :h :i}}]
+  );
+  r:rule [ a r:Fact; r:gives {{:a :b :d.
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:optional {:g :h :i}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {:a :b :d.
+     ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:optional {:g :h :i}}}}].
+
+<#lemma147> a r:Inference;
+  r:gives {
+    :ep1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:pcc 0.9569729506311461}]
+    [ a r:Fact; r:gives {0.9569729506311461 math:equalTo 0.9569729506311461}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0.9569729506311461];
+  r:rule <#lemma317>.
+
+<#lemma148> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:pcc 0.9569729506311461 .
+     0.9569729506311461 math:equalTo 0.9569729506311461}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:pcc 0.9569729506311461}]
+    [ a r:Fact; r:gives {0.9569729506311461 math:equalTo 0.9569729506311461}]
+  );
+  r:rule [ a r:Fact; r:gives {{((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:pcc 0.9569729506311461 .
+    0.9569729506311461 math:equalTo 0.9569729506311461} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:pcc 0.9569729506311461 .
+     0.9569729506311461 math:equalTo 0.9569729506311461}}}].
+
+<#lemma149> a r:Inference;
+  r:gives {
+    :erv1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d)) e:reverse ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))}]
+  );
+  r:rule <#lemma318>.
+
+<#lemma150> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d)) e:reverse ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d)) e:reverse ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))}]
+  );
+  r:rule [ a r:Fact; r:gives {{((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d)) e:reverse ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d)) e:reverse ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))}}}].
+
+<#lemma151> a r:Inference;
+  r:gives {
+    :erm1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(55 66 72 87 56 77 73 69 74 56) e:rms 69.2105483289939}]
+    [ a r:Fact; r:gives {69.2105483289939 math:equalTo 69.2105483289939}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 69.2105483289939];
+  r:rule <#lemma319>.
+
+<#lemma152> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(55 66 72 87 56 77 73 69 74 56) e:rms 69.2105483289939 .
+     69.2105483289939 math:equalTo 69.2105483289939}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(55 66 72 87 56 77 73 69 74 56) e:rms 69.2105483289939}]
+    [ a r:Fact; r:gives {69.2105483289939 math:equalTo 69.2105483289939}]
+  );
+  r:rule [ a r:Fact; r:gives {{(55 66 72 87 56 77 73 69 74 56) e:rms 69.2105483289939 .
+    69.2105483289939 math:equalTo 69.2105483289939} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(55 66 72 87 56 77 73 69 74 56) e:rms 69.2105483289939 .
+     69.2105483289939 math:equalTo 69.2105483289939}}}].
+
+<#lemma153> a r:Inference;
+  r:gives {
+    :es1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:sort ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))}]
+  );
+  r:rule <#lemma320>.
+
+<#lemma154> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:sort ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:sort ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))}]
+  );
+  r:rule [ a r:Fact; r:gives {{((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:sort ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:sort ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))}}}].
+
+<#lemma155> a r:Inference;
+  r:gives {
+    :es2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(9 3 8 3 5 7 7 9 9 2) e:sort (2 3 3 5 7 7 8 9 9 9)}]
+  );
+  r:rule <#lemma321>.
+
+<#lemma156> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(9 3 8 3 5 7 7 9 9 2) e:sort (2 3 3 5 7 7 8 9 9 9)}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(9 3 8 3 5 7 7 9 9 2) e:sort (2 3 3 5 7 7 8 9 9 9)}]
+  );
+  r:rule [ a r:Fact; r:gives {{(9 3 8 3 5 7 7 9 9 2) e:sort (2 3 3 5 7 7 8 9 9 9)} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(9 3 8 3 5 7 7 9 9 2) e:sort (2 3 3 5 7 7 8 9 9 9)}}}].
+
+<#lemma157> a r:Inference;
+  r:gives {
+    :est1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(55 66 72 87 56 77 73 69 74 56) e:std 10.426994879744703}]
+    [ a r:Fact; r:gives {10.426994879744703 math:equalTo 10.426994879744703}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 10.426994879744703];
+  r:rule <#lemma322>.
+
+<#lemma158> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(55 66 72 87 56 77 73 69 74 56) e:std 10.426994879744703 .
+     10.426994879744703 math:equalTo 10.426994879744703}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(55 66 72 87 56 77 73 69 74 56) e:std 10.426994879744703}]
+    [ a r:Fact; r:gives {10.426994879744703 math:equalTo 10.426994879744703}]
+  );
+  r:rule [ a r:Fact; r:gives {{(55 66 72 87 56 77 73 69 74 56) e:std 10.426994879744703 .
+    10.426994879744703 math:equalTo 10.426994879744703} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(55 66 72 87 56 77 73 69 74 56) e:std 10.426994879744703 .
+     10.426994879744703 math:equalTo 10.426994879744703}}}].
+
+<#lemma159> a r:Inference;
+  r:gives {
+    :ese1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"\"test\n" e:stringEscape "\\\"test\\n"}]
+  );
+  r:rule <#lemma323>.
+
+<#lemma160> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"\"test\n" e:stringEscape "\\\"test\\n"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"\"test\n" e:stringEscape "\\\"test\\n"}]
+  );
+  r:rule [ a r:Fact; r:gives {{"\"test\n" e:stringEscape "\\\"test\\n"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"\"test\n" e:stringEscape "\\\"test\\n"}}}].
+
+<#lemma161> a r:Inference;
+  r:gives {
+    :ess1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("a-b/c-d/e" "-/") e:stringSplit ("a" "b" "c" "d" "e")}]
+  );
+  r:rule <#lemma324>.
+
+<#lemma162> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("a-b/c-d/e" "-/") e:stringSplit ("a" "b" "c" "d" "e")}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("a-b/c-d/e" "-/") e:stringSplit ("a" "b" "c" "d" "e")}]
+  );
+  r:rule [ a r:Fact; r:gives {{("a-b/c-d/e" "-/") e:stringSplit ("a" "b" "c" "d" "e")} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("a-b/c-d/e" "-/") e:stringSplit ("a" "b" "c" "d" "e")}}}].
+
+<#lemma163> a r:Inference;
+  r:gives {
+    :esl1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 2 3 4 5) e:subsequence (1 2 4)}]
+  );
+  r:rule <#lemma325>.
+
+<#lemma164> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(1 2 3 4 5) e:subsequence (1 2 4)}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 2 3 4 5) e:subsequence (1 2 4)}]
+  );
+  r:rule [ a r:Fact; r:gives {{(1 2 3 4 5) e:subsequence (1 2 4)} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(1 2 3 4 5) e:subsequence (1 2 4)}}}].
+
+<#lemma165> a r:Inference;
+  r:gives {
+    :esl2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:fail {(1 2 3 4 5) e:subsequence (4 2 1)}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/bi/biP.n3>) 1)];
+  r:rule <#lemma326>.
+
+<#lemma166> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:fail {(1 2 3 4 5) e:subsequence (4 2 1)}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:fail {(1 2 3 4 5) e:subsequence (4 2 1)}}]
+  );
+  r:rule [ a r:Fact; r:gives {{((<http://josd.github.io/brain/bi/biP.n3>) 1) e:fail {(1 2 3 4 5) e:subsequence (4 2 1)}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:fail {(1 2 3 4 5) e:subsequence (4 2 1)}}}}].
+
+<#lemma167> a r:Inference;
+  r:gives {
+    :esl3 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {() e:subsequence ()}]
+  );
+  r:rule <#lemma327>.
+
+<#lemma168> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {() e:subsequence ()}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {() e:subsequence ()}]
+  );
+  r:rule [ a r:Fact; r:gives {{() e:subsequence ()} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {() e:subsequence ()}}}].
+
+<#lemma169> a r:Inference;
+  r:gives {
+    :et1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((0 1) (2 3) (4 5)) e:transpose ((0 2 4) (1 3 5))}]
+  );
+  r:rule <#lemma328>.
+
+<#lemma170> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {((0 1) (2 3) (4 5)) e:transpose ((0 2 4) (1 3 5))}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((0 1) (2 3) (4 5)) e:transpose ((0 2 4) (1 3 5))}]
+  );
+  r:rule [ a r:Fact; r:gives {{((0 1) (2 3) (4 5)) e:transpose ((0 2 4) (1 3 5))} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {((0 1) (2 3) (4 5)) e:transpose ((0 2 4) (1 3 5))}}}].
+
+<#lemma171> a r:Inference;
+  r:gives {
+    :ewg1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {:c e:whenGround {:a :b :d}}]
+    <#lemma329>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#c"]];
+  r:rule <#lemma330>.
+
+<#lemma172> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {:c e:whenGround {:a :b :d}.
+     :a :b :c}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {:c e:whenGround {:a :b :d}}]
+    <#lemma329>
+  );
+  r:rule [ a r:Fact; r:gives {{:c e:whenGround {:a :b :d}.
+    :a :b :c} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {:c e:whenGround {:a :b :d}.
+     :a :b :c}}}].
+
+<#lemma173> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {:d e:whenGround {:a :b :d}.
+     :a :b :d}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {:d e:whenGround {:a :b :d}}]
+    <#lemma315>
+  );
+  r:rule [ a r:Fact; r:gives {{:d e:whenGround {:a :b :d}.
+    :a :b :d} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {:d e:whenGround {:a :b :d}.
+     :a :b :d}}}].
+
+<#lemma174> a r:Inference;
+  r:gives {
+    :ew1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"http://www.agfa.com/w3c/euler" e:wwwFormEncode "http%3a%2f%2fwww.agfa.com%2fw3c%2feuler"}]
+  );
+  r:rule <#lemma331>.
+
+<#lemma175> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"http://www.agfa.com/w3c/euler" e:wwwFormEncode "http%3a%2f%2fwww.agfa.com%2fw3c%2feuler"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"http://www.agfa.com/w3c/euler" e:wwwFormEncode "http%3a%2f%2fwww.agfa.com%2fw3c%2feuler"}]
+  );
+  r:rule [ a r:Fact; r:gives {{"http://www.agfa.com/w3c/euler" e:wwwFormEncode "http%3a%2f%2fwww.agfa.com%2fw3c%2feuler"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"http://www.agfa.com/w3c/euler" e:wwwFormEncode "http%3a%2f%2fwww.agfa.com%2fw3c%2feuler"}}}].
+
+<#lemma176> a r:Inference;
+  r:gives {
+    :ew2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"Hello World!" e:wwwFormEncode "Hello+World%21"}]
+  );
+  r:rule <#lemma332>.
+
+<#lemma177> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"Hello World!" e:wwwFormEncode "Hello+World%21"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"Hello World!" e:wwwFormEncode "Hello+World%21"}]
+  );
+  r:rule [ a r:Fact; r:gives {{"Hello World!" e:wwwFormEncode "Hello+World%21"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"Hello World!" e:wwwFormEncode "Hello+World%21"}}}].
+
+<#lemma178> a r:Inference;
+  r:gives {
+    :lista1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:a :b :c) (:d :e)) list:append (:a :b :c :d :e)}]
+  );
+  r:rule <#lemma333>.
+
+<#lemma179> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {((:a :b :c) (:d :e)) list:append (:a :b :c :d :e)}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:a :b :c) (:d :e)) list:append (:a :b :c :d :e)}]
+  );
+  r:rule [ a r:Fact; r:gives {{((:a :b :c) (:d :e)) list:append (:a :b :c :d :e)} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {((:a :b :c) (:d :e)) list:append (:a :b :c :d :e)}}}].
+
+<#lemma180> a r:Inference;
+  r:gives {
+    :listf1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:a :b :c) list:first :a}]
+  );
+  r:rule <#lemma334>.
+
+<#lemma181> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(:a :b :c) list:first :a}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:a :b :c) list:first :a}]
+  );
+  r:rule [ a r:Fact; r:gives {{(:a :b :c) list:first :a} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(:a :b :c) list:first :a}}}].
+
+<#lemma182> a r:Inference;
+  r:gives {
+    :listi1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {:c list:in (:a :b :c)}]
+  );
+  r:rule <#lemma335>.
+
+<#lemma183> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {:c list:in (:a :b :c)}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {:c list:in (:a :b :c)}]
+  );
+  r:rule [ a r:Fact; r:gives {{:c list:in (:a :b :c)} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {:c list:in (:a :b :c)}}}].
+
+<#lemma184> a r:Inference;
+  r:gives {
+    :listl1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:a :b :c) list:last :c}]
+  );
+  r:rule <#lemma336>.
+
+<#lemma185> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(:a :b :c) list:last :c}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:a :b :c) list:last :c}]
+  );
+  r:rule [ a r:Fact; r:gives {{(:a :b :c) list:last :c} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(:a :b :c) list:last :c}}}].
+
+<#lemma186> a r:Inference;
+  r:gives {
+    :listm1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:a :b :c :d) list:member :b}]
+  );
+  r:rule <#lemma337>.
+
+<#lemma187> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(:a :b :c :d) list:member :b}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:a :b :c :d) list:member :b}]
+  );
+  r:rule [ a r:Fact; r:gives {{(:a :b :c :d) list:member :b} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(:a :b :c :d) list:member :b}}}].
+
+<#lemma188> a r:Inference;
+  r:gives {
+    :listr1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:a :b :c) list:rest (:b :c)}]
+  );
+  r:rule <#lemma338>.
+
+<#lemma189> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(:a :b :c) list:rest (:b :c)}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:a :b :c) list:rest (:b :c)}]
+  );
+  r:rule [ a r:Fact; r:gives {{(:a :b :c) list:rest (:b :c)} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(:a :b :c) list:rest (:b :c)}}}].
+
+<#lemma190> a r:Inference;
+  r:gives {
+    :logc1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(true) log:conjunction true}]
+  );
+  r:rule <#lemma339>.
+
+<#lemma191> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(true) log:conjunction true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(true) log:conjunction true}]
+  );
+  r:rule [ a r:Fact; r:gives {{(true) log:conjunction true} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(true) log:conjunction true}}}].
+
+<#lemma192> a r:Inference;
+  r:gives {
+    :logc2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(true {:u :v :w} {:x :y :z.
+     :j :k :l}) log:conjunction {:u :v :w.
+     :x :y :z.
+     :j :k :l}}]
+  );
+  r:rule <#lemma340>.
+
+<#lemma193> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(true {:u :v :w} {:x :y :z.
+      :j :k :l}) log:conjunction {:u :v :w.
+      :x :y :z.
+      :j :k :l}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(true {:u :v :w} {:x :y :z.
+     :j :k :l}) log:conjunction {:u :v :w.
+     :x :y :z.
+     :j :k :l}}]
+  );
+  r:rule [ a r:Fact; r:gives {{(true {:u :v :w} {:x :y :z.
+     :j :k :l}) log:conjunction {:u :v :w.
+     :x :y :z.
+     :j :k :l}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(true {:u :v :w} {:x :y :z.
+      :j :k :l}) log:conjunction {:u :v :w.
+      :x :y :z.
+      :j :k :l}}}}].
+
+<#lemma194> a r:Inference;
+  r:gives {
+    :logc3 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(true {:u :v :w} true true) log:conjunction {:u :v :w}}]
+  );
+  r:rule <#lemma341>.
+
+<#lemma195> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(true {:u :v :w} true true) log:conjunction {:u :v :w}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(true {:u :v :w} true true) log:conjunction {:u :v :w}}]
+  );
+  r:rule [ a r:Fact; r:gives {{(true {:u :v :w} true true) log:conjunction {:u :v :w}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(true {:u :v :w} true true) log:conjunction {:u :v :w}}}}].
+
+<#lemma196> a r:Inference;
+  r:gives {
+    :loge1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:a :b) log:equalTo (:a :b)}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#b"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#a"]];
+  r:rule <#lemma342>.
+
+<#lemma197> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(:a :b) log:equalTo (:a :b)}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:a :b) log:equalTo (:a :b)}]
+  );
+  r:rule [ a r:Fact; r:gives {{(:a :b) log:equalTo (:a :b)} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(:a :b) log:equalTo (:a :b)}}}].
+
+<#lemma198> a r:Inference;
+  r:gives {
+    :logee1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b :c} log:equalTo {:a :b :c}}]
+  );
+  r:rule <#lemma343>.
+
+<#lemma199> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:a :b :c} log:equalTo {:a :b :c}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b :c} log:equalTo {:a :b :c}}]
+  );
+  r:rule [ a r:Fact; r:gives {{{:a :b :c} log:equalTo {:a :b :c}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:a :b :c} log:equalTo {:a :b :c}}}}].
+
+<#lemma200> a r:Inference;
+  r:gives {
+    :loges0 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}}]
+    [ a r:Fact; r:gives {{:a :b :c} log:equalTo {:a :b :c}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:a :b :c}];
+  r:rule <#lemma344>.
+
+<#lemma201> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+     {:a :b :c} log:equalTo {:a :b :c}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}}]
+    [ a r:Fact; r:gives {{:a :b :c} log:equalTo {:a :b :c}}]
+  );
+  r:rule [ a r:Fact; r:gives {{<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+    {:a :b :c} log:equalTo {:a :b :c}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+     {:a :b :c} log:equalTo {:a :b :c}}}}].
+
+<#lemma202> a r:Inference;
+  r:gives {
+    :loges3 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}}]
+    [ a r:Fact; r:gives {{:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_2>}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}];
+  r:rule <#lemma345>.
+
+<#lemma203> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+     {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_2>}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}}]
+    [ a r:Fact; r:gives {{:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_2>}}]
+  );
+  r:rule [ a r:Fact; r:gives {{<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+    {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_2>}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+     {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_2>}}}}].
+
+<#lemma204> a r:Inference;
+  r:gives {
+    :logi1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:b :a :c.
+     :e :d :f.
+     :h :g :i.
+     :k :j :l} log:includes {:k :j :l.
+     :e :d :f}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#e"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test#f"]];
+  r:rule <#lemma346>.
+
+<#lemma205> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:b :a :c.
+      :e :d :f.
+      :h :g :i.
+      :k :j :l} log:includes {:k :j :l.
+      :e :d :f}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:b :a :c.
+     :e :d :f.
+     :h :g :i.
+     :k :j :l} log:includes {:k :j :l.
+     :e :d :f}}]
+  );
+  r:rule [ a r:Fact; r:gives {{{:b :a :c.
+     :e :d :f.
+     :h :g :i.
+     :k :j :l} log:includes {:k :j :l.
+     :e :d :f}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:b :a :c.
+      :e :d :f.
+      :h :g :i.
+      :k :j :l} log:includes {:k :j :l.
+      :e :d :f}}}}].
+
+<#lemma206> a r:Inference;
+  r:gives {
+    :logid0 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b :c} log:includes {:a :b :c}}]
+  );
+  r:rule <#lemma347>.
+
+<#lemma207> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:a :b :c} log:includes {:a :b :c}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b :c} log:includes {:a :b :c}}]
+  );
+  r:rule [ a r:Fact; r:gives {{{:a :b :c} log:includes {:a :b :c}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:a :b :c} log:includes {:a :b :c}}}}].
+
+<#lemma208> a r:Inference;
+  r:gives {
+    :logis0 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}}]
+    [ a r:Fact; r:gives {{:a :b :c} log:includes {:a :b :c}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:a :b :c}];
+  r:rule <#lemma348>.
+
+<#lemma209> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+     {:a :b :c} log:includes {:a :b :c}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}}]
+    [ a r:Fact; r:gives {{:a :b :c} log:includes {:a :b :c}}]
+  );
+  r:rule [ a r:Fact; r:gives {{<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+    {:a :b :c} log:includes {:a :b :c}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+     {:a :b :c} log:includes {:a :b :c}}}}].
+
+<#lemma210> a r:Inference;
+  r:gives {
+    :logne1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {:a log:notEqualTo :b}]
+  );
+  r:rule <#lemma349>.
+
+<#lemma211> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {:a log:notEqualTo :b}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {:a log:notEqualTo :b}]
+  );
+  r:rule [ a r:Fact; r:gives {{:a log:notEqualTo :b} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {:a log:notEqualTo :b}}}].
+
+<#lemma212> a r:Inference;
+  r:gives {
+    :logned1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b :c} log:notEqualTo {:a :b :_c}}]
+  );
+  r:rule <#lemma350>.
+
+<#lemma213> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:a :b :c} log:notEqualTo {:a :b :_c}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b :c} log:notEqualTo {:a :b :_c}}]
+  );
+  r:rule [ a r:Fact; r:gives {{{:a :b :c} log:notEqualTo {:a :b :_c}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:a :b :c} log:notEqualTo {:a :b :_c}}}}].
+
+<#lemma214> a r:Inference;
+  r:gives {
+    :logned2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b :_c} log:notEqualTo {:a :b :c}}]
+  );
+  r:rule <#lemma351>.
+
+<#lemma215> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:a :b :_c} log:notEqualTo {:a :b :c}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b :_c} log:notEqualTo {:a :b :c}}]
+  );
+  r:rule [ a r:Fact; r:gives {{{:a :b :_c} log:notEqualTo {:a :b :c}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:a :b :_c} log:notEqualTo {:a :b :c}}}}].
+
+<#lemma216> a r:Inference;
+  r:gives {
+    :logned3 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b :_c} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_3>}}]
+  );
+  r:rule <#lemma352>.
+
+<#lemma217> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:a :b :_c} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_3>}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b :_c} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_3>}}]
+  );
+  r:rule [ a r:Fact; r:gives {{{:a :b :_c} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_3>}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:a :b :_c} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_3>}}}}].
+
+<#lemma218> a r:Inference;
+  r:gives {
+    :lognid1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_4>}}]
+  );
+  r:rule <#lemma353>.
+
+<#lemma219> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_4>}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_4>}}]
+  );
+  r:rule [ a r:Fact; r:gives {{{:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_4>}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_4>}}}}].
+
+<#lemma220> a r:Inference;
+  r:gives {
+    :lognid2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b :_c} log:notIncludes {:a :b :c}}]
+  );
+  r:rule <#lemma354>.
+
+<#lemma221> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:a :b :_c} log:notIncludes {:a :b :c}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b :_c} log:notIncludes {:a :b :c}}]
+  );
+  r:rule [ a r:Fact; r:gives {{{:a :b :_c} log:notIncludes {:a :b :c}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:a :b :_c} log:notIncludes {:a :b :c}}}}].
+
+<#lemma222> a r:Inference;
+  r:gives {
+    :lognid3 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b :_c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_5>}}]
+  );
+  r:rule <#lemma355>.
+
+<#lemma223> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:a :b :_c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_5>}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b :_c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_5>}}]
+  );
+  r:rule [ a r:Fact; r:gives {{{:a :b :_c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_5>}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:a :b :_c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_5>}}}}].
+
+<#lemma224> a r:Inference;
+  r:gives {
+    :lognis1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}}]
+    [ a r:Fact; r:gives {{:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_6>}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:a :b :c}];
+  r:rule <#lemma356>.
+
+<#lemma225> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+     {:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_6>}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}}]
+    [ a r:Fact; r:gives {{:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_6>}}]
+  );
+  r:rule [ a r:Fact; r:gives {{<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+    {:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_6>}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+     {:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_6>}}}}].
+
+<#lemma226> a r:Inference;
+  r:gives {
+    :lognis2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}}]
+    [ a r:Fact; r:gives {{:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}];
+  r:rule <#lemma357>.
+
+<#lemma227> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+     {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}}]
+    [ a r:Fact; r:gives {{:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}}]
+  );
+  r:rule [ a r:Fact; r:gives {{<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+    {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+     {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}}}}].
+
+<#lemma228> a r:Inference;
+  r:gives {
+    :lognis3 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}}]
+    [ a r:Fact; r:gives {{:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_7>}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}];
+  r:rule <#lemma358>.
+
+<#lemma229> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+     {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_7>}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}}]
+    [ a r:Fact; r:gives {{:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_7>}}]
+  );
+  r:rule [ a r:Fact; r:gives {{<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+    {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_7>}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+     {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_7>}}}}].
+
+<#lemma230> a r:Inference;
+  r:gives {
+    :lognis4 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}}]
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}}]
+    [ a r:Fact; r:gives {{:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo {:a :b :c}];
+  r:rule <#lemma359>.
+
+<#lemma231> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+     <http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+     {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}}]
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}}]
+    [ a r:Fact; r:gives {{:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}}]
+  );
+  r:rule [ a r:Fact; r:gives {{<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+    <http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+    {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>}.
+     <http://josd.github.io/brain/bi/abc.n3> log:semantics {:a :b :c}.
+     {:a :b <http://josd.github.io/.well-known/genid/#e_c_8>} log:notIncludes {:a :b :c}}}}].
+
+<#lemma232> a r:Inference;
+  r:gives {
+    :logu1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {med:Fever log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"}]
+  );
+  r:rule <#lemma360>.
+
+<#lemma233> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {med:Fever log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {med:Fever log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"}]
+  );
+  r:rule [ a r:Fact; r:gives {{med:Fever log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {med:Fever log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"}}}].
+
+<#lemma234> a r:Inference;
+  r:gives {
+    :logu2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {:betaBlocker log:uri "http://eulersharp.sourceforge.net/2007/07test#betaBlocker"}]
+  );
+  r:rule <#lemma361>.
+
+<#lemma235> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {:betaBlocker log:uri "http://eulersharp.sourceforge.net/2007/07test#betaBlocker"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {:betaBlocker log:uri "http://eulersharp.sourceforge.net/2007/07test#betaBlocker"}]
+  );
+  r:rule [ a r:Fact; r:gives {{:betaBlocker log:uri "http://eulersharp.sourceforge.net/2007/07test#betaBlocker"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {:betaBlocker log:uri "http://eulersharp.sourceforge.net/2007/07test#betaBlocker"}}}].
+
+<#lemma236> a r:Inference;
+  r:gives {
+    :mathd1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1) math:difference 0}]
+  );
+  r:rule <#lemma362>.
+
+<#lemma237> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(1 1) math:difference 0}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1) math:difference 0}]
+  );
+  r:rule [ a r:Fact; r:gives {{(1 1) math:difference 0} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(1 1) math:difference 0}}}].
+
+<#lemma238> a r:Inference;
+  r:gives {
+    :mathd2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("2009-01-25T12:00:00"^^xsd:dateTime "1970-01-01T00:00:00"^^xsd:dateTime) math:difference 1232884800}]
+  );
+  r:rule <#lemma363>.
+
+<#lemma239> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("2009-01-25T12:00:00"^^xsd:dateTime "1970-01-01T00:00:00"^^xsd:dateTime) math:difference 1232884800}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("2009-01-25T12:00:00"^^xsd:dateTime "1970-01-01T00:00:00"^^xsd:dateTime) math:difference 1232884800}]
+  );
+  r:rule [ a r:Fact; r:gives {{("2009-01-25T12:00:00"^^xsd:dateTime "1970-01-01T00:00:00"^^xsd:dateTime) math:difference 1232884800} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("2009-01-25T12:00:00"^^xsd:dateTime "1970-01-01T00:00:00"^^xsd:dateTime) math:difference 1232884800}}}].
+
+<#lemma240> a r:Inference;
+  r:gives {
+    :mathe1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(2 3.0) math:exponentiation 8.0}]
+    [ a r:Fact; r:gives {(4.0 3.0) math:product 12.0}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 3.0];
+  r:rule <#lemma364>.
+
+<#lemma241> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(2 3.0) math:exponentiation 8.0 .
+     (4.0 3.0) math:product 12.0}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(2 3.0) math:exponentiation 8.0}]
+    [ a r:Fact; r:gives {(4.0 3.0) math:product 12.0}]
+  );
+  r:rule [ a r:Fact; r:gives {{(2 3.0) math:exponentiation 8.0 .
+    (4.0 3.0) math:product 12.0} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(2 3.0) math:exponentiation 8.0 .
+     (4.0 3.0) math:product 12.0}}}].
+
+<#lemma242> a r:Inference;
+  r:gives {
+    :mathg1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {2 math:greaterThan 1}]
+  );
+  r:rule <#lemma365>.
+
+<#lemma243> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {2 math:greaterThan 1}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {2 math:greaterThan 1}]
+  );
+  r:rule [ a r:Fact; r:gives {{2 math:greaterThan 1} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {2 math:greaterThan 1}}}].
+
+<#lemma244> a r:Inference;
+  r:gives {
+    :mathg2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"02" math:greaterThan "1"}]
+  );
+  r:rule <#lemma366>.
+
+<#lemma245> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"02" math:greaterThan "1"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"02" math:greaterThan "1"}]
+  );
+  r:rule [ a r:Fact; r:gives {{"02" math:greaterThan "1"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"02" math:greaterThan "1"}}}].
+
+<#lemma246> a r:Inference;
+  r:gives {
+    :mathm1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:u :v :u) math:memberCount 3}]
+  );
+  r:rule <#lemma367>.
+
+<#lemma247> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(:u :v :u) math:memberCount 3}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:u :v :u) math:memberCount 3}]
+  );
+  r:rule [ a r:Fact; r:gives {{(:u :v :u) math:memberCount 3} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(:u :v :u) math:memberCount 3}}}].
+
+<#lemma248> a r:Inference;
+  r:gives {
+    :mathm2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:s :p :o1.
+     :s :p :o2.
+     :s :p :o1} math:memberCount 2}]
+  );
+  r:rule <#lemma368>.
+
+<#lemma249> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:s :p :o1.
+      :s :p :o2.
+      :s :p :o1} math:memberCount 2}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:s :p :o1.
+     :s :p :o2.
+     :s :p :o1} math:memberCount 2}]
+  );
+  r:rule [ a r:Fact; r:gives {{{:s :p :o1.
+     :s :p :o2.
+     :s :p :o1} math:memberCount 2} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {{:s :p :o1.
+      :s :p :o2.
+      :s :p :o1} math:memberCount 2}}}].
+
+<#lemma250> a r:Inference;
+  r:gives {
+    :mathnl1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {7 math:notLessThan 5}]
+  );
+  r:rule <#lemma369>.
+
+<#lemma251> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {7 math:notLessThan 5}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {7 math:notLessThan 5}]
+  );
+  r:rule [ a r:Fact; r:gives {{7 math:notLessThan 5} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {7 math:notLessThan 5}}}].
+
+<#lemma252> a r:Inference;
+  r:gives {
+    :maths1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1) math:sum 2}]
+  );
+  r:rule <#lemma370>.
+
+<#lemma253> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(1 1) math:sum 2}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1) math:sum 2}]
+  );
+  r:rule [ a r:Fact; r:gives {{(1 1) math:sum 2} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(1 1) math:sum 2}}}].
+
+<#lemma254> a r:Inference;
+  r:gives {
+    :maths2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("1" "1") math:sum 2}]
+  );
+  r:rule <#lemma371>.
+
+<#lemma255> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("1" "1") math:sum 2}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("1" "1") math:sum 2}]
+  );
+  r:rule [ a r:Fact; r:gives {{("1" "1") math:sum 2} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("1" "1") math:sum 2}}}].
+
+<#lemma256> a r:Inference;
+  r:gives {
+    :maths3 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("1970-01-01T00:00:00+01:00"^^xsd:dateTime) math:sum -3600}]
+  );
+  r:rule <#lemma372>.
+
+<#lemma257> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("1970-01-01T00:00:00+01:00"^^xsd:dateTime) math:sum -3600}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("1970-01-01T00:00:00+01:00"^^xsd:dateTime) math:sum -3600}]
+  );
+  r:rule [ a r:Fact; r:gives {{("1970-01-01T00:00:00+01:00"^^xsd:dateTime) math:sum -3600} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("1970-01-01T00:00:00+01:00"^^xsd:dateTime) math:sum -3600}}}].
+
+<#lemma258> a r:Inference;
+  r:gives {
+    :maths4 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("P1D"^^xsd:duration) math:sum 86400.0}]
+  );
+  r:rule <#lemma373>.
+
+<#lemma259> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("P1D"^^xsd:duration) math:sum 86400.0}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("P1D"^^xsd:duration) math:sum 86400.0}]
+  );
+  r:rule [ a r:Fact; r:gives {{("P1D"^^xsd:duration) math:sum 86400.0} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("P1D"^^xsd:duration) math:sum 86400.0}}}].
+
+<#lemma260> a r:Inference;
+  r:gives {
+    :rdff1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:f :g) rdf:first :f}]
+  );
+  r:rule <#lemma374>.
+
+<#lemma261> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(:f :g) rdf:first :f}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:f :g) rdf:first :f}]
+  );
+  r:rule [ a r:Fact; r:gives {{(:f :g) rdf:first :f} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(:f :g) rdf:first :f}}}].
+
+<#lemma262> a r:Inference;
+  r:gives {
+    :rdfr1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:f :g) rdf:rest (:g)}]
+  );
+  r:rule <#lemma375>.
+
+<#lemma263> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(:f :g) rdf:rest (:g)}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:f :g) rdf:rest (:g)}]
+  );
+  r:rule [ a r:Fact; r:gives {{(:f :g) rdf:rest (:g)} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {(:f :g) rdf:rest (:g)}}}].
+
+<#lemma264> a r:Inference;
+  r:gives {
+    :strc1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("eul" "er") string:concatenation "euler"}]
+  );
+  r:rule <#lemma376>.
+
+<#lemma265> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("eul" "er") string:concatenation "euler"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("eul" "er") string:concatenation "euler"}]
+  );
+  r:rule [ a r:Fact; r:gives {{("eul" "er") string:concatenation "euler"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("eul" "er") string:concatenation "euler"}}}].
+
+<#lemma266> a r:Inference;
+  r:gives {
+    :strc2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("€" "Ø"@en-US) string:concatenation "€Ø"}]
+  );
+  r:rule <#lemma377>.
+
+<#lemma267> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("€" "Ø"@en-US) string:concatenation "€Ø"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("€" "Ø"@en-US) string:concatenation "€Ø"}]
+  );
+  r:rule [ a r:Fact; r:gives {{("€" "Ø"@en-US) string:concatenation "€Ø"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("€" "Ø"@en-US) string:concatenation "€Ø"}}}].
+
+<#lemma268> a r:Inference;
+  r:gives {
+    :strc3 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("test " "is \"ok\"") string:concatenation "test is \"ok\""}]
+  );
+  r:rule <#lemma378>.
+
+<#lemma269> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("test " "is \"ok\"") string:concatenation "test is \"ok\""}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("test " "is \"ok\"") string:concatenation "test is \"ok\""}]
+  );
+  r:rule [ a r:Fact; r:gives {{("test " "is \"ok\"") string:concatenation "test is \"ok\""} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("test " "is \"ok\"") string:concatenation "test is \"ok\""}}}].
+
+<#lemma270> a r:Inference;
+  r:gives {
+    :strcn1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"Rob Smith" string:contains "Smith"}]
+  );
+  r:rule <#lemma379>.
+
+<#lemma271> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"Rob Smith" string:contains "Smith"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"Rob Smith" string:contains "Smith"}]
+  );
+  r:rule [ a r:Fact; r:gives {{"Rob Smith" string:contains "Smith"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"Rob Smith" string:contains "Smith"}}}].
+
+<#lemma272> a r:Inference;
+  r:gives {
+    :strcn2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"Rob Smith"@en string:contains "Smith"@en}]
+  );
+  r:rule <#lemma380>.
+
+<#lemma273> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"Rob Smith"@en string:contains "Smith"@en}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"Rob Smith"@en string:contains "Smith"@en}]
+  );
+  r:rule [ a r:Fact; r:gives {{"Rob Smith"@en string:contains "Smith"@en} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"Rob Smith"@en string:contains "Smith"@en}}}].
+
+<#lemma274> a r:Inference;
+  r:gives {
+    :strci1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"Tim" string:containsIgnoringCase "IM"}]
+  );
+  r:rule <#lemma381>.
+
+<#lemma275> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"Tim" string:containsIgnoringCase "IM"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"Tim" string:containsIgnoringCase "IM"}]
+  );
+  r:rule [ a r:Fact; r:gives {{"Tim" string:containsIgnoringCase "IM"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"Tim" string:containsIgnoringCase "IM"}}}].
+
+<#lemma276> a r:Inference;
+  r:gives {
+    :strm1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"abracadabra" string:matches "(a|b|r|c|d)+"}]
+  );
+  r:rule <#lemma382>.
+
+<#lemma277> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"abracadabra" string:matches "(a|b|r|c|d)+"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"abracadabra" string:matches "(a|b|r|c|d)+"}]
+  );
+  r:rule [ a r:Fact; r:gives {{"abracadabra" string:matches "(a|b|r|c|d)+"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"abracadabra" string:matches "(a|b|r|c|d)+"}}}].
+
+<#lemma278> a r:Inference;
+  r:gives {
+    :strs1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:scrape "example.org"}]
+  );
+  r:rule <#lemma383>.
+
+<#lemma279> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:scrape "example.org"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:scrape "example.org"}]
+  );
+  r:rule [ a r:Fact; r:gives {{("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:scrape "example.org"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:scrape "example.org"}}}].
+
+<#lemma280> a r:Inference;
+  r:gives {
+    :strs2 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("{x" "{(.)") string:scrape "x"}]
+  );
+  r:rule <#lemma384>.
+
+<#lemma281> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("{x" "{(.)") string:scrape "x"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("{x" "{(.)") string:scrape "x"}]
+  );
+  r:rule [ a r:Fact; r:gives {{("{x" "{(.)") string:scrape "x"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("{x" "{(.)") string:scrape "x"}}}].
+
+<#lemma282> a r:Inference;
+  r:gives {
+    :strs3 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:search ("example.org" "1995")}]
+  );
+  r:rule <#lemma385>.
+
+<#lemma283> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:search ("example.org" "1995")}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:search ("example.org" "1995")}]
+  );
+  r:rule [ a r:Fact; r:gives {{("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:search ("example.org" "1995")} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:search ("example.org" "1995")}}}].
+
+<#lemma284> a r:Inference;
+  r:gives {
+    :strs4 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"euler" string:startsWith "eu"}]
+  );
+  r:rule <#lemma386>.
+
+<#lemma285> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"euler" string:startsWith "eu"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"euler" string:startsWith "eu"}]
+  );
+  r:rule [ a r:Fact; r:gives {{"euler" string:startsWith "eu"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"euler" string:startsWith "eu"}}}].
+
+<#lemma286> a r:Inference;
+  r:gives {
+    :timed1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"2006-12-14"^^xsd:date time:day "14"}]
+  );
+  r:rule <#lemma387>.
+
+<#lemma287> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"2006-12-14"^^xsd:date time:day "14"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"2006-12-14"^^xsd:date time:day "14"}]
+  );
+  r:rule [ a r:Fact; r:gives {{"2006-12-14"^^xsd:date time:day "14"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"2006-12-14"^^xsd:date time:day "14"}}}].
+
+<#lemma288> a r:Inference;
+  r:gives {
+    :timem1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"2006-12-14"^^xsd:date time:month "12"}]
+  );
+  r:rule <#lemma388>.
+
+<#lemma289> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"2006-12-14"^^xsd:date time:month "12"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"2006-12-14"^^xsd:date time:month "12"}]
+  );
+  r:rule [ a r:Fact; r:gives {{"2006-12-14"^^xsd:date time:month "12"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"2006-12-14"^^xsd:date time:month "12"}}}].
+
+<#lemma290> a r:Inference;
+  r:gives {
+    :timey1 :result true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"2006-12-14"^^xsd:date time:year "2006"}]
+  );
+  r:rule <#lemma389>.
+
+<#lemma291> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"2006-12-14"^^xsd:date time:year "2006"}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"2006-12-14"^^xsd:date time:year "2006"}]
+  );
+  r:rule [ a r:Fact; r:gives {{"2006-12-14"^^xsd:date time:year "2006"} => {((<http://josd.github.io/brain/bi/biP.n3>) 1) e:call {"2006-12-14"^^xsd:date time:year "2006"}}}].
+
+<#lemma292> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {(55 66 72 87 56 77 73 69 74 56) e:avg var:x_0.
+     var:x_0 math:equalTo 68.5} => {:ea1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma293> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {("1+1") e:calculate var:x_0.
+     var:x_0 math:equalTo 2} => {:ec1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma294> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 log:equalTo 3 .
+     ("sqrt(_width^2+_length^2)" var:x_0 4) e:calculate var:x_1.
+     var:x_1 math:equalTo 5.0} => {:ec2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma295> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {("_period-250" "PT5M2S"^^xsd:dayTimeDuration) e:calculate var:x_0.
+     var:x_0 math:equalTo 52.0} => {:ec3 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma296> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:cov var:x_0.
+     var:x_0 math:equalTo 0.992777777777778} => {:eco1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma297> a r:Extraction;
+  r:gives {
+    {("atom_codes" "HOME" (72 79 77 69)) e:derive true} => {:epac1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma298> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {("date(1970, 1, 1, 0, 0, 0.0, 0, 'UTC', -)") e:compoundTerm var:x_0.
+     ("date_time_stamp" var:x_0 var:x_1) e:derive true.
+     var:x_1 math:equalTo 0.0} => {:epdts1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma299> a r:Extraction;
+  r:gives {
+    {("This is a ~w with number ~w and with an escaped linefeed \n" "test" 5) e:format "This is a test with number 5 and with an escaped linefeed \n"} => {:ef4 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma300> a r:Extraction;
+  r:gives {
+    {({:a :b :c.
+      :d :e :f} true) e:graphDifference {:a :b :c.
+      :d :e :f}} => {:egd1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma301> a r:Extraction;
+  r:gives {
+    {(true {:d :e :f}) e:graphDifference true} => {:egd2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma302> a r:Extraction;
+  r:gives {
+    {({:a :b :c.
+      :d :e :f} {:d :e :f}) e:graphDifference {:a :b :c}} => {:egd3 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma303> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {({:a :b :c.
+      :d :e :f.
+      :g :h :i} {var:x_0 :e :f}) e:graphDifference {:a :b :c.
+      :g :h :i}} => {:egd4 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma304> a r:Extraction;
+  r:gives {
+    {({:a :b :c} {:a :b :c.
+      :u :v :w.
+      :x :y :z}) e:graphDifference true} => {:egd5 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma305> a r:Extraction;
+  r:gives {
+    {(true) e:graphIntersection true} => {:egi1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma306> a r:Extraction;
+  r:gives {
+    {(true {:d :e :f}) e:graphIntersection true} => {:egi2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma307> a r:Extraction;
+  r:gives {
+    {({:a :b :c.
+      :d :e :f.
+      :g :h :i} true) e:graphIntersection true} => {:egi3 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma308> a r:Extraction;
+  r:gives {
+    {({:a :b :c.
+      :d :e :f} {:d :e :f}) e:graphIntersection {:d :e :f}} => {:egi4 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma309> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {({:a :b :c.
+      :d :e :f.
+      :g :h :i} {:g :h :i.
+      var:x_0 :e :f} {var:x_0 :e :f.
+      :g :h :i}) e:graphIntersection {var:x_0 :e :f.
+      :g :h :i}} => {:egi5 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma310> a r:Extraction;
+  r:gives {
+    {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:length 6} => {:el1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma311> a r:Extraction;
+  r:gives {
+    {(8 5 6 7 9 4) e:max 9} => {:em1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma312> a r:Extraction;
+  r:gives {
+    {(8 5 6 7 9 4) e:min 4} => {:em2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma313> a r:Extraction;
+  r:gives {
+    {(1 3 6 6 7 2 3) e:multisetEqualTo (3 3 7 6 6 2 1)} => {:eme1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma314> a r:Extraction;
+  r:gives {
+    {(1 3 6 6 7 2 3) e:multisetNotEqualTo (3 3 7 6 2 1)} => {:emn1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma315> a r:Extraction;
+  r:gives {
+    :a :b :d.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma316> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {:a :b :d.
+     var:x_0 e:optional {:g :h :i}} => {:eo1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma317> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:pcc var:x_0.
+     var:x_0 math:equalTo 0.9569729506311461} => {:ep1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma318> a r:Extraction;
+  r:gives {
+    {((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d)) e:reverse ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))} => {:erv1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma319> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {(55 66 72 87 56 77 73 69 74 56) e:rms var:x_0.
+     var:x_0 math:equalTo 69.2105483289939} => {:erm1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma320> a r:Extraction;
+  r:gives {
+    {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:sort ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))} => {:es1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma321> a r:Extraction;
+  r:gives {
+    {(9 3 8 3 5 7 7 9 9 2) e:sort (2 3 3 5 7 7 8 9 9 9)} => {:es2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma322> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {(55 66 72 87 56 77 73 69 74 56) e:std var:x_0.
+     var:x_0 math:equalTo 10.426994879744703} => {:est1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma323> a r:Extraction;
+  r:gives {
+    {"\"test\n" e:stringEscape "\\\"test\\n"} => {:ese1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma324> a r:Extraction;
+  r:gives {
+    {("a-b/c-d/e" "-/") e:stringSplit ("a" "b" "c" "d" "e")} => {:ess1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma325> a r:Extraction;
+  r:gives {
+    {(1 2 3 4 5) e:subsequence (1 2 4)} => {:esl1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma326> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 e:fail {(1 2 3 4 5) e:subsequence (4 2 1)}} => {:esl2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma327> a r:Extraction;
+  r:gives {
+    {() e:subsequence ()} => {:esl3 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma328> a r:Extraction;
+  r:gives {
+    {((0 1) (2 3) (4 5)) e:transpose ((0 2 4) (1 3 5))} => {:et1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma329> a r:Extraction;
+  r:gives {
+    :a :b :c.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma330> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 e:whenGround {:a :b :d}.
+     :a :b var:x_0} => {:ewg1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma331> a r:Extraction;
+  r:gives {
+    {"http://www.agfa.com/w3c/euler" e:wwwFormEncode "http%3a%2f%2fwww.agfa.com%2fw3c%2feuler"} => {:ew1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma332> a r:Extraction;
+  r:gives {
+    {"Hello World!" e:wwwFormEncode "Hello+World%21"} => {:ew2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma333> a r:Extraction;
+  r:gives {
+    {((:a :b :c) (:d :e)) list:append (:a :b :c :d :e)} => {:lista1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma334> a r:Extraction;
+  r:gives {
+    {(:a :b :c) list:first :a} => {:listf1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma335> a r:Extraction;
+  r:gives {
+    {:c list:in (:a :b :c)} => {:listi1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma336> a r:Extraction;
+  r:gives {
+    {(:a :b :c) list:last :c} => {:listl1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma337> a r:Extraction;
+  r:gives {
+    {(:a :b :c :d) list:member :b} => {:listm1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma338> a r:Extraction;
+  r:gives {
+    {(:a :b :c) list:rest (:b :c)} => {:listr1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma339> a r:Extraction;
+  r:gives {
+    {(true) log:conjunction true} => {:logc1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma340> a r:Extraction;
+  r:gives {
+    {(true {:u :v :w} {:x :y :z.
+      :j :k :l}) log:conjunction {:u :v :w.
+      :x :y :z.
+      :j :k :l}} => {:logc2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma341> a r:Extraction;
+  r:gives {
+    {(true {:u :v :w} true true) log:conjunction {:u :v :w}} => {:logc3 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma342> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {(:a var:x_0) log:equalTo (var:x_1 :b)} => {:loge1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma343> a r:Extraction;
+  r:gives {
+    {{:a :b :c} log:equalTo {:a :b :c}} => {:logee1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma344> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {<http://josd.github.io/brain/bi/abc.n3> log:semantics var:x_0.
+     var:x_0 log:equalTo {:a :b :c}} => {:loges0 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma345> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics var:x_0.
+     var:x_0 log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_2>}} => {:loges3 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma346> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {{:b :a :c.
+      :e :d :f.
+      :h :g :i.
+      :k :j :l} log:includes {:k :j :l.
+      var:x_0 :d var:x_1}} => {:logi1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma347> a r:Extraction;
+  r:gives {
+    {{:a :b :c} log:includes {:a :b :c}} => {:logid0 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma348> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {<http://josd.github.io/brain/bi/abc.n3> log:semantics var:x_0.
+     var:x_0 log:includes {:a :b :c}} => {:logis0 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma349> a r:Extraction;
+  r:gives {
+    {:a log:notEqualTo :b} => {:logne1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma350> a r:Extraction;
+  r:gives {
+    {{:a :b :c} log:notEqualTo {:a :b :_c}} => {:logned1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma351> a r:Extraction;
+  r:gives {
+    {{:a :b :_c} log:notEqualTo {:a :b :c}} => {:logned2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma352> a r:Extraction;
+  r:gives {
+    {{:a :b :_c} log:notEqualTo {:a :b <http://josd.github.io/.well-known/genid/#e_c_3>}} => {:logned3 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma353> a r:Extraction;
+  r:gives {
+    {{:a :b :c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_4>}} => {:lognid1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma354> a r:Extraction;
+  r:gives {
+    {{:a :b :_c} log:notIncludes {:a :b :c}} => {:lognid2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma355> a r:Extraction;
+  r:gives {
+    {{:a :b :_c} log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_5>}} => {:lognid3 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma356> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {<http://josd.github.io/brain/bi/abc.n3> log:semantics var:x_0.
+     var:x_0 log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_6>}} => {:lognis1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma357> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics var:x_0.
+     var:x_0 log:notIncludes {:a :b :c}} => {:lognis2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma358> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics var:x_0.
+     var:x_0 log:notIncludes {:a :b <http://josd.github.io/.well-known/genid/#e_c_7>}} => {:lognis3 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma359> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {<http://josd.github.io/brain/bi/ab_c.n3> log:semantics var:x_0.
+     <http://josd.github.io/brain/bi/abc.n3> log:semantics var:x_1.
+     var:x_0 log:notIncludes var:x_1} => {:lognis4 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma360> a r:Extraction;
+  r:gives {
+    {med:Fever log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"} => {:logu1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma361> a r:Extraction;
+  r:gives {
+    {:betaBlocker log:uri "http://eulersharp.sourceforge.net/2007/07test#betaBlocker"} => {:logu2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma362> a r:Extraction;
+  r:gives {
+    {(1 1) math:difference 0} => {:mathd1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma363> a r:Extraction;
+  r:gives {
+    {("2009-01-25T12:00:00"^^xsd:dateTime "1970-01-01T00:00:00"^^xsd:dateTime) math:difference 1232884800} => {:mathd2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma364> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {(2 var:x_0) math:exponentiation 8.0 .
+     (4.0 var:x_0) math:product 12.0} => {:mathe1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma365> a r:Extraction;
+  r:gives {
+    {2 math:greaterThan 1} => {:mathg1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma366> a r:Extraction;
+  r:gives {
+    {"02" math:greaterThan "1"} => {:mathg2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma367> a r:Extraction;
+  r:gives {
+    {(:u :v :u) math:memberCount 3} => {:mathm1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma368> a r:Extraction;
+  r:gives {
+    {{:s :p :o1.
+      :s :p :o2.
+      :s :p :o1} math:memberCount 2} => {:mathm2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma369> a r:Extraction;
+  r:gives {
+    {7 math:notLessThan 5} => {:mathnl1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma370> a r:Extraction;
+  r:gives {
+    {(1 1) math:sum 2} => {:maths1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma371> a r:Extraction;
+  r:gives {
+    {("1" "1") math:sum 2} => {:maths2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma372> a r:Extraction;
+  r:gives {
+    {("1970-01-01T00:00:00+01:00"^^xsd:dateTime) math:sum -3600} => {:maths3 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma373> a r:Extraction;
+  r:gives {
+    {("P1D"^^xsd:duration) math:sum 86400.0} => {:maths4 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma374> a r:Extraction;
+  r:gives {
+    {(:f :g) rdf:first :f} => {:rdff1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma375> a r:Extraction;
+  r:gives {
+    {(:f :g) rdf:rest (:g)} => {:rdfr1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma376> a r:Extraction;
+  r:gives {
+    {("eul" "er") string:concatenation "euler"} => {:strc1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma377> a r:Extraction;
+  r:gives {
+    {("€" "Ø"@en-US) string:concatenation "€Ø"} => {:strc2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma378> a r:Extraction;
+  r:gives {
+    {("test " "is \"ok\"") string:concatenation "test is \"ok\""} => {:strc3 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma379> a r:Extraction;
+  r:gives {
+    {"Rob Smith" string:contains "Smith"} => {:strcn1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma380> a r:Extraction;
+  r:gives {
+    {"Rob Smith"@en string:contains "Smith"@en} => {:strcn2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma381> a r:Extraction;
+  r:gives {
+    {"Tim" string:containsIgnoringCase "IM"} => {:strci1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma382> a r:Extraction;
+  r:gives {
+    {"abracadabra" string:matches "(a|b|r|c|d)+"} => {:strm1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma383> a r:Extraction;
+  r:gives {
+    {("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:scrape "example.org"} => {:strs1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma384> a r:Extraction;
+  r:gives {
+    {("{x" "{(.)") string:scrape "x"} => {:strs2 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma385> a r:Extraction;
+  r:gives {
+    {("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:search ("example.org" "1995")} => {:strs3 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma386> a r:Extraction;
+  r:gives {
+    {"euler" string:startsWith "eu"} => {:strs4 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma387> a r:Extraction;
+  r:gives {
+    {"2006-12-14"^^xsd:date time:day "14"} => {:timed1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma388> a r:Extraction;
+  r:gives {
+    {"2006-12-14"^^xsd:date time:month "12"} => {:timem1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+<#lemma389> a r:Extraction;
+  r:gives {
+    {"2006-12-14"^^xsd:date time:year "2006"} => {:timey1 :result true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bi/biP.n3>].
+
+#2020-02-22T21:50:15.443Z in=131 out=97 ent=200 step=910 brake=6 inf=1145849 sec=0.609 inf/sec=1881525
+#ENDS
+

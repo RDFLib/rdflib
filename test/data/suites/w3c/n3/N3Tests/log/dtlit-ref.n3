@@ -1,0 +1,4 @@
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <dtlit.n3#> .
+
+"2005-03-30T11:00:00"^^xsd:dateTime a :Answer .

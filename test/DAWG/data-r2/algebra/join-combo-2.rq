@@ -1,6 +1,0 @@
-PREFIX :    <http://example/>
-
-SELECT ?x ?y ?z
-{ 
-    GRAPH ?g { ?x ?p 1 } { ?x :p ?y } UNION { ?p a ?z }
-}

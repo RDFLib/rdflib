@@ -1,0 +1,35 @@
+# Special rules for document loader tests
+# Rewrite engine setup
+RewriteEngine On
+RewriteBase /tests
+
+# Add directive for test types
+AddType application/jldTest+json .jldt
+AddType application/jldTest .jldte
+
+# Tests 0005-0007, status redirect to 0001
+RewriteRule ^0005-in.jsonld$ 0001-in.jsonld [R=301]
+RewriteRule ^0006-in.jsonld$ 0001-in.jsonld [R=303]
+RewriteRule ^0007-in.jsonld$ 0001-in.jsonld [R=307]
+
+# Tests 0009-0011 Add link header
+<FilesMatch "0009-in.jsonld">
+  Header set Link '<0009-context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"'
+</FilesMatch>
+<FilesMatch "0010-in.json">
+  Header set Link '<0010-context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"'
+</FilesMatch>
+<FilesMatch "0011-in.jldt">
+  Header set Link '<0011-context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"'
+</FilesMatch>
+
+# Test 0012 adds multiple link headers
+<FilesMatch "0012-in.json">
+  Header set Link '<0012-context1.jsonld>; rel="http://www.w3.org/ns/json-ld#context"'
+  Header append Link '<0012-context2.jsonld>; rel="http://www.w3.org/ns/json-ld#context"'
+</FilesMatch>
+
+# Test 0013 link header to HTML document
+<FilesMatch "0013-in.json">
+  Header set Link '<0013-context.html>; rel="http://www.w3.org/ns/json-ld#context"'
+</FilesMatch>

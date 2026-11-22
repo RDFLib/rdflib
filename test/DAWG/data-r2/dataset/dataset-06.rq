@@ -1,9 +1,0 @@
-PREFIX : <http://example/> 
-
-SELECT * 
-FROM <data-g1.ttl>
-FROM NAMED <data-g2.ttl>
-{ 
-    GRAPH ?g { ?s ?p ?o }
-}
-

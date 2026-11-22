@@ -1,0 +1,5 @@
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+{?A owl:distinctMembers ?L. ?X list:in ?L. ?Y list:in ?L. ?X log:notEqualTo ?Y} => {?X owl:differentFrom ?Y}.

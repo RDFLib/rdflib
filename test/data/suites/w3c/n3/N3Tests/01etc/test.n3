@@ -1,0 +1,8 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix : <http://example.org/try#>.
+
+{?b log:equalTo :b} => {{:a ?b :c} :p :o}.
+
+{:r :s :t} :p :o.
+
+{:r :s :t. :d :e :f. :r :s :t} :p :o.

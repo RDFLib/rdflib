@@ -1,0 +1,86 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --tactic limited-answer 1 http://josd.github.io/brain/dp/dp.n3 --query http://josd.github.io/brain/dp/dpQ.n3
+
+# <http://josd.github.io/brain#person5> thinking for 0.025 seconds
+# <http://josd.github.io/brain#person1> thinking for 0.1 seconds
+# <http://josd.github.io/brain#person5> eating for 0.1 seconds
+# <http://josd.github.io/brain#person2> thinking for 0.2 seconds
+# <http://josd.github.io/brain#person1> eating for 0.1 seconds
+# <http://josd.github.io/brain#person4> thinking for 0.25 seconds
+# <http://josd.github.io/brain#person3> thinking for 0.3 seconds
+# <http://josd.github.io/brain#person2> eating for 0.2 seconds
+# <http://josd.github.io/brain#person4> eating for 0.2 seconds
+# <http://josd.github.io/brain#person3> eating for 0.3 seconds
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://josd.github.io/brain#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    :all :got :dinner.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    :all :got :dinner.
+  };
+  r:evidence (
+    <#lemma2>
+  );
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    :all :got :dinner.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("thread_create" {:person1 :run (0.1 0.1)} <http://josd.github.io/.well-known/genid/#t_0> ()) e:derive true}]
+    [ a r:Fact; r:gives {("thread_create" {:person2 :run (0.2 0.2)} <http://josd.github.io/.well-known/genid/#t_1> ()) e:derive true}]
+    [ a r:Fact; r:gives {("thread_create" {:person3 :run (0.3 0.3)} <http://josd.github.io/.well-known/genid/#t_2> ()) e:derive true}]
+    [ a r:Fact; r:gives {("thread_create" {:person4 :run (0.25 0.2)} <http://josd.github.io/.well-known/genid/#t_3> ()) e:derive true}]
+    [ a r:Fact; r:gives {("thread_create" {:person5 :run (0.025 0.1)} <http://josd.github.io/.well-known/genid/#t_4> ()) e:derive true}]
+    [ a r:Fact; r:gives {("thread_join" <http://josd.github.io/.well-known/genid/#t_0> true) e:derive true}]
+    [ a r:Fact; r:gives {("thread_join" <http://josd.github.io/.well-known/genid/#t_1> true) e:derive true}]
+    [ a r:Fact; r:gives {("thread_join" <http://josd.github.io/.well-known/genid/#t_2> true) e:derive true}]
+    [ a r:Fact; r:gives {("thread_join" <http://josd.github.io/.well-known/genid/#t_3> true) e:derive true}]
+    [ a r:Fact; r:gives {("thread_join" <http://josd.github.io/.well-known/genid/#t_4> true) e:derive true}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo <http://josd.github.io/.well-known/genid/#t_0>];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo <http://josd.github.io/.well-known/genid/#t_1>];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo <http://josd.github.io/.well-known/genid/#t_2>];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo <http://josd.github.io/.well-known/genid/#t_3>];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo <http://josd.github.io/.well-known/genid/#t_4>];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo true];
+  r:rule <#lemma4>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    {:all :got :dinner} => {:all :got :dinner}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dp/dpQ.n3>].
+
+<#lemma4> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5, var:x_6, var:x_7, var:x_8, var:x_9. {("thread_create" {:person1 :run (0.1 0.1)} var:x_0 ()) e:derive true.
+     ("thread_create" {:person2 :run (0.2 0.2)} var:x_1 ()) e:derive true.
+     ("thread_create" {:person3 :run (0.3 0.3)} var:x_2 ()) e:derive true.
+     ("thread_create" {:person4 :run (0.25 0.2)} var:x_3 ()) e:derive true.
+     ("thread_create" {:person5 :run (0.025 0.1)} var:x_4 ()) e:derive true.
+     ("thread_join" var:x_0 var:x_5) e:derive true.
+     ("thread_join" var:x_1 var:x_6) e:derive true.
+     ("thread_join" var:x_2 var:x_7) e:derive true.
+     ("thread_join" var:x_3 var:x_8) e:derive true.
+     ("thread_join" var:x_4 var:x_9) e:derive true} => {:all :got :dinner}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dp/dp.n3>].
+
+#2020-02-22T21:51:04.041Z in=10 out=1 ent=2 step=2 brake=1 inf=48580 sec=0.100 inf/sec=485800
+#ENDS
+

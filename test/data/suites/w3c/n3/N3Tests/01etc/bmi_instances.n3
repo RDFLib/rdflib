@@ -1,0 +1,52 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix organism: <http://eulersharp.sourceforge.net/2003/03swap/organism#>.
+@prefix humanbody: <http://eulersharp.sourceforge.net/2003/03swap/humanBody#>.
+@prefix human: <http://eulersharp.sourceforge.net/2003/03swap/human#>.
+@prefix units: <http://eulersharp.sourceforge.net/2003/03swap/units#>.
+@prefix quant: <http://eulersharp.sourceforge.net/2003/03swap/quantities#>.
+@prefix physical: <http://eulersharp.sourceforge.net/2003/03swap/physicalResource#>.
+@prefix event: <http://eulersharp.sourceforge.net/2003/03swap/event#>.
+@prefix time: <http://eulersharp.sourceforge.net/2003/03swap/time#>.
+@prefix i: <#>. # data instances
+
+
+# HUMAN ADULTS WITH BODY WEIGHT AND LENGTH
+
+i:adult1 a human:BiologicalAdult;
+    organism:hasBirthDateTime "1943-01-01T00:00:00+01:00"^^xsd:dateTime;
+    human:weighs i:weightMeasurement1;
+    human:hasLength i:lengthMeasurement1.
+i:weightMeasurement1 quant:hasValue "200"^^xsd:decimal; quant:hasUnit units:kilogram; time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+i:lengthMeasurement1 quant:hasValue "1.90"^^xsd:decimal; quant:hasUnit units:meter; time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+
+i:adult2 a human:BiologicalAdult;
+    organism:hasBirthDateTime "1966-01-01T00:00:00+01:00"^^xsd:dateTime;
+    human:weighs i:weightMeasurement2;
+    human:hasLength i:lengthMeasurement2.
+i:weightMeasurement2 quant:hasValue "110"^^xsd:decimal; quant:hasUnit units:kilogram; time:hasDateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime.
+i:lengthMeasurement2 quant:hasValue "2.05"^^xsd:decimal; quant:hasUnit units:meter; time:hasDateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime.
+
+
+# HUMAN ADULTS WITH BODY WEIGHT AND LENGTH RELATED TO BODY
+
+i:adult3 a human:BiologicalAdult; physical:hasComplexity i:body1; organism:hasBirthDateTime "1987-01-01T00:00:00+01:00"^^xsd:dateTime.
+i:body1 a humanbody:Body; humanbody:hasWeight i:weight1; humanbody:hasLength i:length1.
+i:weight1 a humanbody:Weight; quant:hasMeasurement i:weightMeasurement3.
+i:weightMeasurement3 quant:hasValue "45"^^xsd:decimal; quant:hasUnit units:kilogram; time:hasDateTime "2010-01-20T00:00:00+01:00"^^xsd:dateTime.
+i:length1 a humanbody:Length; quant:hasMeasurement i:lengthMeasurement3.
+i:lengthMeasurement3 quant:hasValue "1.715"^^xsd:decimal; quant:hasUnit units:meter; time:hasDateTime "2010-01-20T00:00:00+01:00"^^xsd:dateTime.
+
+i:adult4 a human:BiologicalAdult; physical:hasComplexity i:body2; organism:hasBirthDateTime "1975-01-01T00:00:00+01:00"^^xsd:dateTime.
+i:body2 a humanbody:Body; humanbody:hasWeight i:weight2; humanbody:hasLength i:length2.
+i:weight2 a humanbody:Weight; quant:hasMeasurement i:weightMeasurement4.
+i:weightMeasurement4 quant:hasValue "76"^^xsd:decimal; quant:hasUnit units:kilogram; time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+i:length2 a humanbody:Length; quant:hasMeasurement i:lengthMeasurement4.
+i:lengthMeasurement4 quant:hasValue "1.76"^^xsd:decimal; quant:hasUnit units:meter; time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+
+i:adult5 a human:BiologicalAdult; physical:hasComplexity i:body3;organism:hasBirthDateTime "1995-08-07T00:00:00+01:00"^^xsd:dateTime.
+i:body3 a humanbody:Body; humanbody:hasWeight i:weight3; humanbody:hasLength i:length3.
+i:weight3 a humanbody:Weight; quant:hasMeasurement i:weightMeasurement5.
+i:weightMeasurement5 quant:hasValue "54"^^xsd:decimal; quant:hasUnit units:kilogram; time:hasDateTime "2011-02-20T00:00:00+01:00"^^xsd:dateTime.
+i:length3 a humanbody:Length; quant:hasMeasurement i:lengthMeasurement5.
+i:lengthMeasurement5 quant:hasValue "1.715"^^xsd:decimal; quant:hasUnit units:meter; time:hasDateTime "2011-02-20T00:00:00+01:00"^^xsd:dateTime.

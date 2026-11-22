@@ -1,33 +1,75 @@
-#
-# code to simplify supporting older python versions
-#
+"""
+Utility functions and objects to ease Python 2/3 compatibility,
+and different versions of support libraries.
+"""
 
-try:
-  from lxml import etree
-except ImportError:
-  try:
-    # Python 2.5
-    import xml.etree.cElementTree as etree
-  except ImportError:
-    try:
-      # Python 2.5
-      import xml.etree.ElementTree as etree
-    except ImportError:
-      try:
-        # normal cElementTree install
-        import cElementTree as etree
-      except ImportError:
-        try:
-          # normal ElementTree install
-          import elementtree.ElementTree as etree
-        except ImportError:
-          raise Exception("Failed to import ElementTree from any known place")
+from __future__ import annotations
 
-try:
-    etree_register_namespace = etree.register_namespace
-except AttributeError:
+import codecs
+import re
+from re import Match
 
-    import xml.etree.ElementTree as etreenative
 
-    def etree_register_namespace(prefix, uri):
-        etreenative._namespace_map[uri] = prefix
+def cast_bytes(s, enc="utf-8"):
+    if isinstance(s, str):
+        return s.encode(enc)
+    return s
+
+
+def ascii(stream):
+    return codecs.getreader("ascii")(stream)
+
+
+def bopen(*args, **kwargs):
+    # type error: No overload variant of "open" matches argument types "tuple[Any, ...]", "str", "dict[str, Any]"
+    return open(*args, mode="rb", **kwargs)  # type: ignore[call-overload]
+
+
+long_type = int
+
+
+def sign(n):
+    if n < 0:
+        return -1
+    if n > 0:
+        return 1
+    return 0
+
+
+r_unicodeEscape = re.compile(r"(\\u[0-9A-Fa-f]{4}|\\U[0-9A-Fa-f]{8})")  # noqa: N816
+
+
+def _unicodeExpand(s):  # noqa: N802
+    return r_unicodeEscape.sub(lambda m: chr(int(m.group(0)[2:], 16)), s)
+
+
+_string_escape_map = {
+    "t": "\t",
+    "b": "\b",
+    "n": "\n",
+    "r": "\r",
+    "f": "\f",
+    '"': '"',
+    "'": "'",
+    "\\": "\\",
+}
+
+
+def _turtle_escape_subber(match: Match[str]) -> str:
+    smatch, umatch = match.groups()
+    if smatch is not None:
+        return _string_escape_map[smatch]
+    else:
+        return chr(int(umatch[1:], 16))
+
+
+_turtle_escape_pattern = re.compile(
+    r"""\\(?:([tbnrf"'\\])|(u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8}))""",
+)
+
+
+def decodeUnicodeEscape(escaped: str) -> str:  # noqa: N802
+    if "\\" not in escaped:
+        # Most of times, there are no backslashes in strings.
+        return escaped
+    return _turtle_escape_pattern.sub(_turtle_escape_subber, escaped)

@@ -1,0 +1,22 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-03.n3> q:answer (_:alice_0_ _:name_1_ _:mbox_1_). 
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-03.n3> q:answer (_:bob_0_ _:name_1_ _:mbox_1_). 
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-03.n3> q:answer (_:eve_0_ _:name_1_ _:mbox_1_). 
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-03.n3> q:answer (_:fred_0_ _:name_1_ _:mbox_1_). 
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-03.n3> q:answer (_:alice_0_ "Alice" _:mbox_1_). 
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-03.n3> q:answer (_:bob_0_ "Bob" _:mbox_1_). 
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-03.n3> q:answer (_:eve_0_ "Eve" _:mbox_1_). 
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-03.n3> q:answer (_:alice_0_ _:name_1_ <mailto:alice@work>). 
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-03.n3> q:answer (_:bob_0_ _:name_1_ <mailto:bob@work>). 
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-03.n3> q:answer (_:bob_0_ _:name_1_ <mailto:bob@home>). 
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-03.n3> q:answer (_:fred_0_ _:name_1_ <mailto:fred@edu>). 
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-03.n3> q:answer (_:alice_0_ "Alice" <mailto:alice@work>). 
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-03.n3> q:answer (_:bob_0_ "Bob" <mailto:bob@work>). 
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-03.n3> q:answer (_:bob_0_ "Bob" <mailto:bob@home>). 
+

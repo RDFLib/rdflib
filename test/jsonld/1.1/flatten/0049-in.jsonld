@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "valueOf": "http://example.org/valueOf",
+    "toString": "http://example.org/toString"
+  },
+  "@id": "ex:test",
+  "valueOf": "first",
+  "toString": "second"
+}

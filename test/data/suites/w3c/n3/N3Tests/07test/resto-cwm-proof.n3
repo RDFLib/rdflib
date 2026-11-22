@@ -1,0 +1,473 @@
+#Processed by Id: cwm.py,v 1.198 2012-01-30 09:30:20 timbl Exp 
+        #    using base file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526
+             @prefix : <http://www.w3.org/2000/10/swap/reason#> .
+    @prefix con: <http://www.w3.org/2000/10/swap/pim/contact#> .
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    @prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+    @prefix http: <http://www.w3.org/2011/http#> .
+    @prefix meteo: <http://purl.org/ns/meteo#> .
+    @prefix n3: <http://www.w3.org/2004/06/rei#> .
+    @prefix resto: <http://example.org/restaurant#> .
+    @prefix run: <#> .
+    @prefix vocab: <http://example.org/vocab#> .
+    
+     @forSome run:_g0,
+                run:_g1,
+                run:_g2 .
+      [      a :Inference,
+                    :Proof;
+             :binding  [
+                 :boundTo  [
+                     a :Existential;
+                     n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g80" ];
+                 :variable  [
+                     n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/restoG.n3#restaurant" ] ],
+                     [
+                 :boundTo "12/12/12";
+                 :variable  [
+                     n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/restoG.n3#date" ] ],
+                     [
+                 :boundTo  [
+                     a :Existential;
+                     n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g88" ];
+                 :variable  [
+                     n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/restoG.n3#reservation" ] ],
+                     [
+                 :boundTo  [
+                     a :Existential;
+                     n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g89" ];
+                 :variable  [
+                     n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/restoG.n3#place" ] ],
+                     [
+                 :boundTo  [
+                     a :Existential;
+                     n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g81" ];
+                 :variable  [
+                     n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/restoG.n3#outside" ] ];
+             :evidence  (
+             [
+                     a :Extraction;
+                     :because  [
+                         a :Inference;
+                         :binding  [
+                             :boundTo "12/12/12";
+                             :variable  [
+                                 n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#date" ] ],
+                                 [
+                             :boundTo  [
+                                 a :Existential;
+                                 n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g84" ];
+                             :variable  [
+                                 n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#place" ] ],
+                                 [
+                             :boundTo  [
+                                 a :Existential;
+                                 n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g80" ];
+                             :variable  [
+                                 n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#restaurant" ] ],
+                                 [
+                             :boundTo  [
+                                 a :Existential;
+                                 n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g81" ];
+                             :variable  [
+                                 n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#outside" ] ],
+                                 [
+                             :boundTo  [
+                                 a :Existential;
+                                 n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g83" ];
+                             :variable  [
+                                 n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#reservations" ] ],
+                                 [
+                             :boundTo  [
+                                 n3:uri "http://example.org/vocab#RestAppointment" ];
+                             :variable  [
+                                 n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#day" ] ];
+                         :evidence  (
+                         [
+                                 a :Extraction;
+                                 :because  [
+                                     a :Inference;
+                                     :binding  [
+                                         :boundTo "12/12/12";
+                                         :variable  [
+                                             n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#date" ] ],
+                                             [
+                                         :boundTo  [
+                                             a :Existential;
+                                             n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g71" ];
+                                         :variable  [
+                                             n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#temperature" ] ],
+                                             [
+                                         :boundTo  [
+                                             a :Existential;
+                                             n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g77" ];
+                                         :variable  [
+                                             n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#pres" ] ],
+                                             [
+                                         :boundTo  [
+                                             n3:uri "http://example.org/vocab#RestAppointment" ];
+                                         :variable  [
+                                             n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#appointment" ] ],
+                                             [
+                                         :boundTo  [
+                                             a :Existential;
+                                             n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g72" ];
+                                         :variable  [
+                                             n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#temp" ] ],
+                                             [
+                                         :boundTo  [
+                                             a :Existential;
+                                             n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g66" ];
+                                         :variable  [
+                                             n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#lat" ] ],
+                                             [
+                                         :boundTo  [
+                                             a :Existential;
+                                             n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g65" ];
+                                         :variable  [
+                                             n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#location" ] ],
+                                             [
+                                         :boundTo  [
+                                             a :Existential;
+                                             n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g76" ];
+                                         :variable  [
+                                             n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#pressure" ] ],
+                                             [
+                                         :boundTo "<#myAppointments>";
+                                         :variable  [
+                                             n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#appointmentList" ] ],
+                                             [
+                                         :boundTo  [
+                                             a :Existential;
+                                             n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g67" ];
+                                         :variable  [
+                                             n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#long" ] ];
+                                     :evidence  (
+                                     [
+                                             a :Extraction;
+                                             :because run:_g1;
+                                             :gives {vocab:RestAppointment     resto:hasDate "12/12/12";
+                                                 resto:isOn "<#myAppointments>" .
+                                            } ]
+                                     [
+                                             a :Extraction;
+                                             :because  [
+                                                 a :Inference;
+                                                 :binding  [
+                                                     :boundTo  [
+                                                         a :Existential;
+                                                         n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g66" ];
+                                                     :variable  [
+                                                         n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#lat" ] ],
+                                                         [
+                                                     :boundTo  [
+                                                         a :Existential;
+                                                         n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g65" ];
+                                                     :variable  [
+                                                         n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#location" ] ],
+                                                         [
+                                                     :boundTo  [
+                                                         a :Existential;
+                                                         n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g67" ];
+                                                     :variable  [
+                                                         n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#long" ] ];
+                                                 :evidence  (
+                                                 [
+                                                         a :Extraction;
+                                                         :because run:_g2;
+                                                         :gives { @forSome run:_g3,
+                                                                    run:_g4,
+                                                                    run:_g5 .
+                                                        run:_g3     geo:lat run:_g4;
+                                                             geo:long run:_g5 .
+                                                        } ] );
+                                                 :rule  [
+                                                     a :Extraction;
+                                                     :because run:_g1;
+                                                     :gives { @forAll <http://eulersharp.sourceforge.net/2007/07test/resto.n3#lat>,
+                                                                <http://eulersharp.sourceforge.net/2007/07test/resto.n3#location>,
+                                                                <http://eulersharp.sourceforge.net/2007/07test/resto.n3#long> .
+                                                    {
+                                                        <http://eulersharp.sourceforge.net/2007/07test/resto.n3#location>     geo:lat <http://eulersharp.sourceforge.net/2007/07test/resto.n3#lat>;
+                                                             geo:long <http://eulersharp.sourceforge.net/2007/07test/resto.n3#long> .
+                                                        
+                                                        }     => { @forSome run:_g6 .
+                                                          [      http:methodName "GET";
+                                                                 http:requestURI  (
+                                                                "CurrentTemperature?lat="
+                                                                <http://eulersharp.sourceforge.net/2007/07test/resto.n3#lat>
+                                                                "&long="
+                                                                <http://eulersharp.sourceforge.net/2007/07test/resto.n3#long> );
+                                                                 http:resp  [
+                                                                     http:body run:_g6 ] ].
+                                                        <http://eulersharp.sourceforge.net/2007/07test/resto.n3#location>     meteo:temperature  [
+                                                                 meteo:celsius run:_g6 ] .
+                                                        } .
+                                                    } ] ];
+                                             :gives { @forSome run:_g3 .
+                                            run:_g3     meteo:temperature  [
+                                                     meteo:celsius  [
+                                                     ] ] .
+                                            } ]
+                                     [
+                                             a :Extraction;
+                                             :because run:_g2;
+                                             :gives { @forSome run:_g3,
+                                                        run:_g4,
+                                                        run:_g5 .
+                                            run:_g3     geo:lat run:_g4;
+                                                 geo:long run:_g5 .
+                                            } ]
+                                     [
+                                             a :Extraction;
+                                             :because  [
+                                                 a :Inference;
+                                                 :binding  [
+                                                     :boundTo  [
+                                                         a :Existential;
+                                                         n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g66" ];
+                                                     :variable  [
+                                                         n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#lat" ] ],
+                                                         [
+                                                     :boundTo  [
+                                                         a :Existential;
+                                                         n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g65" ];
+                                                     :variable  [
+                                                         n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#location" ] ],
+                                                         [
+                                                     :boundTo  [
+                                                         a :Existential;
+                                                         n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g67" ];
+                                                     :variable  [
+                                                         n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#long" ] ];
+                                                 :evidence  (
+                                                 [
+                                                         a :Extraction;
+                                                         :because run:_g2;
+                                                         :gives { @forSome run:_g3,
+                                                                    run:_g4,
+                                                                    run:_g5 .
+                                                        run:_g3     geo:lat run:_g4;
+                                                             geo:long run:_g5 .
+                                                        } ] );
+                                                 :rule  [
+                                                     a :Extraction;
+                                                     :because run:_g1;
+                                                     :gives { @forAll <http://eulersharp.sourceforge.net/2007/07test/resto.n3#lat>,
+                                                                <http://eulersharp.sourceforge.net/2007/07test/resto.n3#location>,
+                                                                <http://eulersharp.sourceforge.net/2007/07test/resto.n3#long> .
+                                                    {
+                                                        <http://eulersharp.sourceforge.net/2007/07test/resto.n3#location>     geo:lat <http://eulersharp.sourceforge.net/2007/07test/resto.n3#lat>;
+                                                             geo:long <http://eulersharp.sourceforge.net/2007/07test/resto.n3#long> .
+                                                        
+                                                        }     => { @forSome run:_g7 .
+                                                          [      http:methodName "GET";
+                                                                 http:requestURI  (
+                                                                "CurrentPressure?lat="
+                                                                <http://eulersharp.sourceforge.net/2007/07test/resto.n3#lat>
+                                                                "&long="
+                                                                <http://eulersharp.sourceforge.net/2007/07test/resto.n3#long> );
+                                                                 http:resp  [
+                                                                     http:body run:_g7 ] ].
+                                                        <http://eulersharp.sourceforge.net/2007/07test/resto.n3#location>     meteo:pressure  [
+                                                                 meteo:millibar run:_g7 ] .
+                                                        } .
+                                                    } ] ];
+                                             :gives { @forSome run:_g3 .
+                                            run:_g3     meteo:pressure  [
+                                                     meteo:millibar  [
+                                                     ] ] .
+                                            } ] );
+                                     :rule  [
+                                         a :Extraction;
+                                         :because run:_g1;
+                                         :gives { @forAll <http://eulersharp.sourceforge.net/2007/07test/resto.n3#appointment>,
+                                                    <http://eulersharp.sourceforge.net/2007/07test/resto.n3#appointmentList>,
+                                                    <http://eulersharp.sourceforge.net/2007/07test/resto.n3#date>,
+                                                    <http://eulersharp.sourceforge.net/2007/07test/resto.n3#lat>,
+                                                    <http://eulersharp.sourceforge.net/2007/07test/resto.n3#location>,
+                                                    <http://eulersharp.sourceforge.net/2007/07test/resto.n3#long>,
+                                                    <http://eulersharp.sourceforge.net/2007/07test/resto.n3#pres>,
+                                                    <http://eulersharp.sourceforge.net/2007/07test/resto.n3#pressure>,
+                                                    <http://eulersharp.sourceforge.net/2007/07test/resto.n3#temp>,
+                                                    <http://eulersharp.sourceforge.net/2007/07test/resto.n3#temperature> .
+                                        {
+                                            <http://eulersharp.sourceforge.net/2007/07test/resto.n3#appointment>     resto:hasDate <http://eulersharp.sourceforge.net/2007/07test/resto.n3#date>;
+                                                 resto:isOn <http://eulersharp.sourceforge.net/2007/07test/resto.n3#appointmentList> .
+                                            <http://eulersharp.sourceforge.net/2007/07test/resto.n3#location>     meteo:pressure <http://eulersharp.sourceforge.net/2007/07test/resto.n3#pres>;
+                                                 meteo:temperature <http://eulersharp.sourceforge.net/2007/07test/resto.n3#temp>;
+                                                 geo:lat <http://eulersharp.sourceforge.net/2007/07test/resto.n3#lat>;
+                                                 geo:long <http://eulersharp.sourceforge.net/2007/07test/resto.n3#long> .
+                                            <http://eulersharp.sourceforge.net/2007/07test/resto.n3#pres>     meteo:millibar <http://eulersharp.sourceforge.net/2007/07test/resto.n3#pressure> .
+                                            <http://eulersharp.sourceforge.net/2007/07test/resto.n3#temp>     meteo:celsius <http://eulersharp.sourceforge.net/2007/07test/resto.n3#temperature> .
+                                            
+                                            }     => { @forSome run:_g8,
+                                                        run:_g9 .
+                                              [      http:body  (
+                                                    <http://eulersharp.sourceforge.net/2007/07test/resto.n3#appointment>
+                                                    run:_g8
+                                                    run:_g9 );
+                                                     http:methodName "POST";
+                                                     http:requestURI <http://eulersharp.sourceforge.net/2007/07test/resto.n3#appointmentList>;
+                                                     http:resp  [
+                                                         http:body <http://eulersharp.sourceforge.net/2007/07test/resto.n3#appointment> ] ].
+                                            run:_g8     a resto:Restaurant;
+                                                 resto:reservationList  [
+                                                 ] .
+                                              [      resto:isOutside run:_g9 ].
+                                            <http://eulersharp.sourceforge.net/2007/07test/resto.n3#appointment>     resto:isAt run:_g8 .
+                                            } .
+                                        } ] ];
+                                 :gives { @forSome run:_g10,
+                                            run:_g11 .
+                                run:_g10     resto:reservationList  [
+                                     ] .
+                                  [      resto:isOutside run:_g11 ].
+                                } ]
+                         [
+                                 a :Extraction;
+                                 :because run:_g1;
+                                 :gives {vocab:RestAppointment     resto:hasDate "12/12/12" .
+                                } ] );
+                         :rule  [
+                             a :Extraction;
+                             :because run:_g1;
+                             :gives { @forAll <http://eulersharp.sourceforge.net/2007/07test/resto.n3#date>,
+                                        <http://eulersharp.sourceforge.net/2007/07test/resto.n3#day>,
+                                        <http://eulersharp.sourceforge.net/2007/07test/resto.n3#outside>,
+                                        <http://eulersharp.sourceforge.net/2007/07test/resto.n3#place>,
+                                        <http://eulersharp.sourceforge.net/2007/07test/resto.n3#reservations>,
+                                        <http://eulersharp.sourceforge.net/2007/07test/resto.n3#restaurant> .
+                            {
+                                <http://eulersharp.sourceforge.net/2007/07test/resto.n3#day>     resto:hasDate <http://eulersharp.sourceforge.net/2007/07test/resto.n3#date> .
+                                <http://eulersharp.sourceforge.net/2007/07test/resto.n3#place>     resto:isOutside <http://eulersharp.sourceforge.net/2007/07test/resto.n3#outside> .
+                                <http://eulersharp.sourceforge.net/2007/07test/resto.n3#restaurant>     resto:reservationList <http://eulersharp.sourceforge.net/2007/07test/resto.n3#reservations> .
+                                
+                                }     => { @forSome run:_g12 .
+                                  [      http:body  (
+                                        <http://eulersharp.sourceforge.net/2007/07test/resto.n3#date>
+                                        <http://eulersharp.sourceforge.net/2007/07test/resto.n3#outside> );
+                                         http:methodName "POST";
+                                         http:requestURI <http://eulersharp.sourceforge.net/2007/07test/resto.n3#reservations>;
+                                         http:resp  [
+                                             http:body run:_g12 ] ].
+                                run:_g12     resto:onDate <http://eulersharp.sourceforge.net/2007/07test/resto.n3#date>;
+                                     resto:place  [
+                                         resto:isOutside <http://eulersharp.sourceforge.net/2007/07test/resto.n3#outside> ] .
+                                <http://eulersharp.sourceforge.net/2007/07test/resto.n3#restaurant>     resto:hasReservation run:_g12 .
+                                } .
+                            } ] ];
+                     :gives { @forSome run:_g10,
+                                run:_g11,
+                                run:_g13,
+                                run:_g14 .
+                    run:_g10     resto:hasReservation run:_g13 .
+                    run:_g13     resto:onDate "12/12/12";
+                         resto:place run:_g14 .
+                    run:_g14     resto:isOutside run:_g11 .
+                    } ] );
+             :gives { @forSome run:_g10,
+                        run:_g11,
+                        run:_g13,
+                        run:_g14 .
+            run:_g10     resto:hasReservation run:_g13 .
+            run:_g13     resto:onDate "12/12/12";
+                 resto:place run:_g14 .
+            run:_g14     resto:isOutside run:_g11 .
+            };
+             :rule  [
+                 a :Extraction;
+                 :because  [
+                     a :Parsing;
+                     :because run:_g0;
+                     :source <http://eulersharp.sourceforge.net/2007/07test/restoG.n3> ];
+                 :gives { @forAll <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#date>,
+                            <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#outside>,
+                            <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#place>,
+                            <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#reservation>,
+                            <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#restaurant> .
+                {
+                    <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#place>     resto:isOutside <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#outside> .
+                    <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#reservation>     resto:onDate <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#date>;
+                         resto:place <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#place> .
+                    <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#restaurant>     resto:hasReservation <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#reservation> .
+                    
+                    }     => {<http://eulersharp.sourceforge.net/2007/07test/restoG.n3#place>     resto:isOutside <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#outside> .
+                    <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#reservation>     resto:onDate <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#date>;
+                         resto:place <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#place> .
+                    <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#restaurant>     resto:hasReservation <http://eulersharp.sourceforge.net/2007/07test/restoG.n3#reservation> .
+                    } .
+                } ] ].
+    
+    run:_g0     a :CommandLine;
+         :args "['/home/jdroo/acasvn/wopeg/cwm/swap/cwm.py', 'http://eulersharp.sourceforge.net/2007/07test/resto.n3', '--think', '--filter=http://eulersharp.sourceforge.net/2007/07test/restoG.n3', '--why']" .
+    
+    run:_g1     a :Parsing;
+         :because run:_g0;
+         :source <http://eulersharp.sourceforge.net/2007/07test/resto.n3> .
+    
+    run:_g2     a :Inference;
+         :binding  [
+             :boundTo  [
+                 a :Existential;
+                 n3:nodeId "file:///home/jdroo/eyesvn/2007/07test/.run-1413751892.230897p32526#_g61" ];
+             :variable  [
+                 n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#address" ] ];
+         :evidence  (
+         [
+                 a :Extraction;
+                 :because  [
+                     a :Inference;
+                     :binding  [
+                         :boundTo  [
+                             n3:uri "http://example.org/vocab#Areeb" ];
+                         :variable  [
+                             n3:nodeId "http://eulersharp.sourceforge.net/2007/07test/resto.n3#user" ] ];
+                     :evidence  (
+                     [
+                             a :Extraction;
+                             :because run:_g1;
+                             :gives {vocab:Areeb     a foaf:Person .
+                            } ] );
+                     :rule  [
+                         a :Extraction;
+                         :because run:_g1;
+                         :gives { @forAll <http://eulersharp.sourceforge.net/2007/07test/resto.n3#user> .
+                        {
+                            <http://eulersharp.sourceforge.net/2007/07test/resto.n3#user>     a foaf:Person .
+                            
+                            }     => { @forSome run:_g15 .
+                              [      http:methodName "GET";
+                                     http:requestURI  (
+                                    <http://eulersharp.sourceforge.net/2007/07test/resto.n3#user> );
+                                     http:resp  [
+                                         http:body run:_g15 ] ].
+                            run:_g15     a con:Address .
+                            <http://eulersharp.sourceforge.net/2007/07test/resto.n3#user>     foaf:based_near run:_g15 .
+                            } .
+                        } ] ];
+                 :gives {
+                  [      a con:Address ].
+                } ] );
+         :rule  [
+             a :Extraction;
+             :because run:_g1;
+             :gives { @forAll <http://eulersharp.sourceforge.net/2007/07test/resto.n3#address> .
+            {
+                <http://eulersharp.sourceforge.net/2007/07test/resto.n3#address>     a con:Address .
+                
+                }     => {
+                  [      http:methodName "GET";
+                         http:requestURI  (
+                        "?location= "
+                        <http://eulersharp.sourceforge.net/2007/07test/resto.n3#address> );
+                         http:resp  [
+                             http:body  [
+                                 a geo:Point;
+                                 geo:lat  [
+                                 ];
+                                 geo:long  [
+                                 ] ] ] ].
+                } .
+            } ] .
+    

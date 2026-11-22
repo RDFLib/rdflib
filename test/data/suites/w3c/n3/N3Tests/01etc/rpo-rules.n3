@@ -1,0 +1,65 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <http://eulersharp.sourceforge.net/2003/03swap/rpo-rules#>.
+
+### RDF plus OWL rules
+
+rdf:first a rdf:Property; rdfs:domain rdf:List.
+rdf:rest a rdf:Property; rdfs:domain rdf:List; rdfs:range rdf:List.
+rdfs:subClassOf a rdf:Property; rdfs:domain rdfs:Class; rdfs:range rdfs:Class; a owl:TransitiveProperty.
+rdfs:subPropertyOf a rdf:Property; rdfs:domain rdf:Property; rdfs:range rdf:Property; a owl:TransitiveProperty.
+owl:equivalentClass a rdf:Property; rdfs:domain rdfs:Class; rdfs:range rdfs:Class; rdfs:subPropertyOf rdfs:subClassOf; a owl:SymmetricProperty.
+owl:equivalentProperty a rdf:Property; rdfs:domain rdf:Property; rdfs:range rdf:Property; rdfs:subPropertyOf rdfs:subPropertyOf; a owl:SymmetricProperty.
+owl:sameAs a rdf:Property; a owl:SymmetricProperty, owl:TransitiveProperty.
+owl:inverseOf a rdf:Property; rdfs:domain owl:ObjectProperty; rdfs:range owl:ObjectProperty; a owl:SymmetricProperty.
+owl:differentFrom a rdf:Property; a owl:SymmetricProperty.
+owl:distinctMembers a rdf:Property; rdfs:domain owl:AllDifferent; rdfs:range rdf:List.
+owl:oneOf a rdf:Property; rdfs:domain rdfs:Class; rdfs:range rdf:List.
+owl:intersectionOf a rdf:Property; rdfs:domain rdfs:Class; rdfs:range rdf:List.
+owl:unionOf a rdf:Property; rdfs:domain rdfs:Class; rdfs:range rdf:List.
+owl:complementOf a rdf:Property; rdfs:domain rdfs:Class; rdfs:range rdfs:Class.
+#:subListOf a rdf:Property; rdfs:domain rdf:List; rdfs:range rdf:List.
+:inAllOf a rdf:Property; rdfs:range rdf:List.
+:inSomeOf a rdf:Property; rdfs:range rdf:List.
+
+#{?S ?P ?O} => {?P a rdf:Property}.
+{?P rdfs:domain ?C. ?S ?P ?O} => {?S a ?C}.
+{?P rdfs:range ?C. ?S ?P ?O} => {?O a ?C}.
+{?A rdfs:subClassOf ?B. ?S a ?A} => {?S a ?B}.
+{?P rdfs:subPropertyOf ?R. ?S ?P ?O} => {?S ?R ?O}.
+#{?X owl:sameAs ?Y. ?P a rdf:Property. ?X ?P ?O} => {?Y ?P ?O}.
+#{?X owl:sameAs ?Y. ?X a rdf:Property. ?Y a rdf:Property. ?S ?X ?O} => {?S ?Y ?O}.
+#{?X owl:sameAs ?Y. ?P a rdf:Property. ?S ?P ?X} => {?S ?P ?Y}.
+{?P owl:inverseOf ?Q. ?S ?P ?O} => {?O ?Q ?S}.
+{?P a owl:SymmetricProperty. ?S ?P ?O} => {?O ?P ?S}.
+{?P a owl:TransitiveProperty. ?X ?P ?O. ?S ?P ?X} => {?S ?P ?O}.
+{?P a owl:FunctionalProperty. ?S ?P ?X. ?S ?P ?Y} => {?X owl:sameAs ?Y}.
+{?P a owl:InverseFunctionalProperty. ?X ?P ?O. ?Y ?P ?O} => {?X owl:sameAs ?Y}.
+{?A owl:distinctMembers ?D. ?D rdf:rest ?R} => {?A owl:distinctMembers ?R}.
+{?A owl:distinctMembers ?D. ?L :subListOf ?D. ?L rdf:first ?X; rdf:rest ?R. ?Y list:in ?R} => {?X owl:differentFrom ?Y}.
+{?C owl:oneOf ?L. ?X list:in ?L} => {?X a ?C}.
+{?C owl:intersectionOf ?L. ?X :inAllOf ?L} => {?X a ?C}.
+{?C owl:unionOf ?L. ?X :inSomeOf ?L} => {?X a ?C}.
+
+### integrity constraints
+
+#{?Y owl:disjointWith ?Z. ?X a ?Y. ?X a ?Z} => false.
+#{?P a owl:FunctionalProperty. ?S ?P ?X, ?Y. ?X owl:differentFrom ?Y} => false.
+#{?P a owl:InverseFunctionalProperty. ?X ?P ?O. ?Y ?P ?O. ?X owl:differentFrom ?Y} => false.
+#{?R owl:onProperty ?P; owl:maxCardinality ?M. ?M math:equalTo 0. ?X ?P ?Y; a ?R} => false.
+#{?R owl:onProperty ?P; owl:maxCardinality ?M. ?M math:equalTo 1. ?X ?P ?Y1, ?Y2; a ?R. ?Y2 owl:differentFrom ?Y1} => false.
+#{?R owl:onProperty ?P; owl:hasValue ?V. ?X ?P ?Y; a ?R. ?V owl:differentFrom ?Y} => false.
+
+### support
+
+{?L a rdf:List} => {?L :subListOf ?L}.
+{?L rdf:rest ?R; a rdf:List. ?X :subListOf ?R} => {?X :subListOf ?L}.
+{?L rdf:first ?A; a rdf:List. ?X a ?A. ?L rdf:rest rdf:nil} => {?X :inAllOf ?L}.
+{?L rdf:first ?A; a rdf:List. ?X a ?A. ?L rdf:rest ?R. ?X :inAllOf ?R} => {?X :inAllOf ?L}.
+{?L rdf:first ?A; a rdf:List. ?X a ?A} => {?X :inSomeOf ?L}.
+{?L rdf:rest ?R; a rdf:List. ?X :inSomeOf ?R} => {?X :inSomeOf ?L}.

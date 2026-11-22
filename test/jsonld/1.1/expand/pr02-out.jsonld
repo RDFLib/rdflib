@@ -1,0 +1,9 @@
+[
+  {
+    "http://example.com/protected": [{"@value": true}],
+    "http://example.com/unprotected": [{"@value": true}],
+    "http://example.com/scope": [{
+      "http://example.com/something-else": [{"@value": "property http://example.com/something-else"}]
+    }]
+  }
+]

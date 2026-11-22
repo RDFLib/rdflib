@@ -1,0 +1,10 @@
+{
+   "id": "https://monarchinitiative.org/genelist/",
+   "kg_source": "Test",
+   "type": "biolink:KnowledgeGraph",
+   "@context": {
+        "id": "@id",
+        "type": "@type",
+        "z": "@id"
+    }
+}

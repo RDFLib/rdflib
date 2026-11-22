@@ -1,96 +1,161 @@
+from __future__ import annotations
+
+import codecs
+import warnings
+from typing import IO, TYPE_CHECKING, Any
+
+from rdflib.compare import to_canonical_graph
+from rdflib.graph import Graph
+from rdflib.serializer import Serializer
+from rdflib.term import Literal
+
+if TYPE_CHECKING:
+    from rdflib.graph import _TripleType
+
 """
 N-Triples RDF graph serializer for RDFLib.
 See <http://www.w3.org/TR/rdf-testcases/#ntriples> for details about the
 format.
 """
-from rdflib.term import Literal
-from rdflib.serializer import Serializer
-from rdflib.py3compat import b
 
-import warnings
-import codecs
-
-__all__ = ['NTSerializer']
+__all__ = ["NTSerializer"]
 
 
 class NTSerializer(Serializer):
-    """
-    Serializes RDF graphs to NTriples format.
-    """
+    """Serializes RDF graphs to NTriples format."""
 
-    def __init__(self, store):
+    def __init__(self, store: Graph):
         Serializer.__init__(self, store)
-        self.encoding = 'ascii' # n-triples are ascii encoded
 
-    def serialize(self, stream, base=None, encoding=None, **args):
+    def serialize(
+        self,
+        stream: IO[bytes],
+        base: str | None = None,
+        encoding: str | None = "utf-8",
+        **kwargs: Any,
+    ) -> None:
+        """Write the graph as N-Triples.
+
+        When the optional parameter `canon` is set to `True`, the graph is
+        canonicalized and the statements are written in sorted order, so
+        isomorphic graphs serialize to identical bytes. This is the `canon`
+        parameter of the longturtle serializer, with the same canonicalization
+        (RGDA1, `rdflib.compare.to_canonical_graph`) and the same cost. It is
+        not RDFC-1.0, and the blank node labels it produces may change between
+        rdflib versions. Its time grows faster than linearly with the number of
+        blank nodes, and the statements are held in memory to be sorted, so it
+        is off by default and ordinary serialization still streams statement
+        by statement.
+
+        A `Dataset` or `ConjunctiveGraph` is written as the statements of all
+        of its graphs, with or without `canon`: N-Triples has no graph names.
+        """
         if base is not None:
             warnings.warn("NTSerializer does not support base.")
-        if encoding is not None:
-            warnings.warn("NTSerializer does not use custom encoding.")
-        encoding = self.encoding
+        if encoding != "utf-8":
+            warnings.warn(
+                "NTSerializer always uses UTF-8 encoding. "
+                f"Given encoding was: {encoding}"
+            )
+
+        if kwargs.get("canon", False):
+            # The statements the default path below writes. A Dataset iterates
+            # quads, which the canonicalizer does not accept.
+            triples = Graph()
+            triples += (statement[:3] for statement in self.store)
+            # Sort the rendered rows rather than the triples: two distinct
+            # terms can have the same str(), which would leave their relative
+            # order down to the store's iteration order, whereas identical
+            # rows mean identical statements.
+            for row in sorted(_nt_row(t) for t in to_canonical_graph(triples)):
+                stream.write(row.encode())
+            return
+
         for triple in self.store:
-            stream.write(_nt_row(triple).encode(self.encoding, "_rdflib_nt_escape"))
-        stream.write(b("\n"))
+            stream.write(_nt_row(triple).encode())
 
 
 class NT11Serializer(NTSerializer):
-    """
-    Serializes RDF graphs to RDF 1.1 NTriples format.
+    """Serializes RDF graphs to RDF 1.1 NTriples format.
 
     Exactly like nt - only utf8 encoded.
     """
 
-    def __init__(self, store):
-        Serializer.__init__(self, store) # default to utf-8
+    def __init__(self, store: Graph):
+        Serializer.__init__(self, store)  # default to utf-8
 
 
-def _nt_row(triple):
+def _nt_row(triple: _TripleType) -> str:
     if isinstance(triple[2], Literal):
-        return u"%s %s %s .\n" % (
-            triple[0].n3(),
-            triple[1].n3(),
-            _quoteLiteral(triple[2]))
+        return f"{triple[0].n3()} {triple[1].n3()} {_quoteLiteral(triple[2])} .\n"
     else:
-        return u"%s %s %s .\n" % (triple[0].n3(),
-                                  triple[1].n3(),
-                                  triple[2].n3())
+        return f"{triple[0].n3()} {triple[1].n3()} {triple[2].n3()} .\n"
 
 
-def _quoteLiteral(l):
-    '''
-    a simpler version of term.Literal.n3()
-    '''
+def _quoteLiteral(l_: Literal) -> str:  # noqa: N802
+    """A simpler version of term.Literal.n3()"""
 
-    encoded = _quote_encode(l)
+    encoded = _quote_encode(l_)
 
-    if l.language:
-        if l.datatype:
+    if l_.language:
+        if l_.datatype:
             raise Exception("Literal has datatype AND language!")
-        return '%s@%s' % (encoded, l.language)
-    elif l.datatype:
-        return '%s^^<%s>' % (encoded, l.datatype)
+        return "%s@%s" % (encoded, l_.language)
+    elif l_.datatype:
+        return "%s^^<%s>" % (encoded, l_.datatype)
     else:
-        return '%s' % encoded
+        return "%s" % encoded
 
 
-def _quote_encode(l):
-    return '"%s"' % l.replace('\\', '\\\\')\
-        .replace('\n', '\\n')\
-        .replace('"', '\\"')\
-        .replace('\r', '\\r')
+def _quote_encode(l_: str) -> str:
+    # Accept either an rdflib Literal or a plain string
+    s = str(l_)
 
-def _nt_unicode_error_resolver(err):
+    parts = ""
+    for ch in s:
+        code = ord(ch)
+        if ch == "\\":
+            parts += "\\\\"
+        elif ch == '"':
+            parts += '\\"'
+        elif ch == "\n":
+            parts += "\\n"
+        elif ch == "\r":
+            parts += "\\r"
+        elif ch == "\t":
+            parts += "\\t"
+        elif code == 0x08:  # backspace
+            parts += "\\b"
+        elif code == 0x0C:  # form feed
+            parts += "\\f"
+        elif (
+            code == 0x0B or (code < 0x20) or (code == 0x7F)
+        ):  # vertical tab -> use \u000B
+            parts += f"\\u{code:04X}"
+        else:
+            parts += ch
 
+    return '"' + parts + '"'
+
+
+def _nt_unicode_error_resolver(
+    err: UnicodeError,
+) -> tuple[str | bytes, int]:
     """
     Do unicode char replaces as defined in https://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#ntrip_strings
     """
 
     def _replace_single(c):
         c = ord(c)
-        fmt = u'\\u%04X' if c <= 0xFFFF else u'\\U%08X'
+        fmt = "\\u%04X" if c <= 0xFFFF else "\\U%08X"
         return fmt % c
 
-    string = err.object[err.start:err.end]
-    return ( "".join( _replace_single(c) for c in string ), err.end )
+    # type error: "UnicodeError" has no attribute "object"
+    # type error: "UnicodeError" has no attribute "start"
+    # type error: "UnicodeError" has no attribute "end"
+    string = err.object[err.start : err.end]  # type: ignore[attr-defined]
+    # type error: "UnicodeError" has no attribute "end"
+    return "".join(_replace_single(c) for c in string), err.end  # type: ignore[attr-defined]
 
-codecs.register_error('_rdflib_nt_escape', _nt_unicode_error_resolver)
+
+codecs.register_error("_rdflib_nt_escape", _nt_unicode_error_resolver)

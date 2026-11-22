@@ -1,0 +1,1262 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --plugin http://josd.github.io/brain/sudoku/sudoku_program.pl --query http://josd.github.io/brain/sudoku/sudoku_query.n3
+
+@prefix sudoku: <http://josd.github.io/brain/sudoku#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:component <#lemma3>;
+  r:component <#lemma4>;
+  r:gives {
+    1 sudoku:solve ((8 1 3 4 2 5 7 9 6) (6 2 4 8 9 7 3 5 1) (5 7 9 6 1 3 8 4 2) (4 3 7 2 8 9 6 1 5) (2 8 6 3 5 1 4 7 9) (1 9 5 7 6 4 2 3 8) (9 4 2 5 3 8 1 6 7) (7 5 8 1 4 6 9 2 3) (3 6 1 9 7 2 5 8 4)).
+    2 sudoku:solve ((4 3 9 7 6 8 5 1 2) (6 8 7 2 1 5 9 4 3) (5 2 1 4 9 3 8 7 6) (1 7 8 9 2 4 3 6 5) (2 6 3 5 8 1 7 9 4) (9 4 5 3 7 6 1 2 8) (3 1 4 6 5 9 2 8 7) (8 5 2 1 4 7 6 3 9) (7 9 6 8 3 2 4 5 1)).
+    3 sudoku:solve ((8 5 9 6 1 2 4 3 7) (7 2 3 8 5 4 1 6 9) (1 6 4 3 7 9 5 2 8) (9 8 6 1 4 7 3 5 2) (3 7 5 2 6 8 9 1 4) (2 4 1 5 9 3 7 8 6) (4 3 2 9 8 1 6 7 5) (6 1 7 4 2 5 8 9 3) (5 9 8 7 3 6 2 4 1)).
+    4 sudoku:solve ((1 3 8 2 4 6 5 7 9) (6 5 9 1 3 7 2 4 8) (2 7 4 5 9 8 1 6 3) (7 4 5 6 8 2 3 9 1) (8 1 3 4 5 9 6 2 7) (9 2 6 7 1 3 8 5 4) (4 8 7 3 2 5 9 1 6) (3 6 2 9 7 1 4 8 5) (5 9 1 8 6 4 7 3 2)).
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    1 sudoku:solve ((8 1 3 4 2 5 7 9 6) (6 2 4 8 9 7 3 5 1) (5 7 9 6 1 3 8 4 2) (4 3 7 2 8 9 6 1 5) (2 8 6 3 5 1 4 7 9) (1 9 5 7 6 4 2 3 8) (9 4 2 5 3 8 1 6 7) (7 5 8 1 4 6 9 2 3) (3 6 1 9 7 2 5 8 4)).
+  };
+  r:evidence (
+    <#lemma5>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo ((8 1 3 4 2 5 7 9 6) (6 2 4 8 9 7 3 5 1) (5 7 9 6 1 3 8 4 2) (4 3 7 2 8 9 6 1 5) (2 8 6 3 5 1 4 7 9) (1 9 5 7 6 4 2 3 8) (9 4 2 5 3 8 1 6 7) (7 5 8 1 4 6 9 2 3) (3 6 1 9 7 2 5 8 4))];
+  r:rule <#lemma6>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    2 sudoku:solve ((4 3 9 7 6 8 5 1 2) (6 8 7 2 1 5 9 4 3) (5 2 1 4 9 3 8 7 6) (1 7 8 9 2 4 3 6 5) (2 6 3 5 8 1 7 9 4) (9 4 5 3 7 6 1 2 8) (3 1 4 6 5 9 2 8 7) (8 5 2 1 4 7 6 3 9) (7 9 6 8 3 2 4 5 1)).
+  };
+  r:evidence (
+    <#lemma7>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo ((4 3 9 7 6 8 5 1 2) (6 8 7 2 1 5 9 4 3) (5 2 1 4 9 3 8 7 6) (1 7 8 9 2 4 3 6 5) (2 6 3 5 8 1 7 9 4) (9 4 5 3 7 6 1 2 8) (3 1 4 6 5 9 2 8 7) (8 5 2 1 4 7 6 3 9) (7 9 6 8 3 2 4 5 1))];
+  r:rule <#lemma6>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    3 sudoku:solve ((8 5 9 6 1 2 4 3 7) (7 2 3 8 5 4 1 6 9) (1 6 4 3 7 9 5 2 8) (9 8 6 1 4 7 3 5 2) (3 7 5 2 6 8 9 1 4) (2 4 1 5 9 3 7 8 6) (4 3 2 9 8 1 6 7 5) (6 1 7 4 2 5 8 9 3) (5 9 8 7 3 6 2 4 1)).
+  };
+  r:evidence (
+    <#lemma8>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo ((8 5 9 6 1 2 4 3 7) (7 2 3 8 5 4 1 6 9) (1 6 4 3 7 9 5 2 8) (9 8 6 1 4 7 3 5 2) (3 7 5 2 6 8 9 1 4) (2 4 1 5 9 3 7 8 6) (4 3 2 9 8 1 6 7 5) (6 1 7 4 2 5 8 9 3) (5 9 8 7 3 6 2 4 1))];
+  r:rule <#lemma6>.
+
+<#lemma4> a r:Inference;
+  r:gives {
+    4 sudoku:solve ((1 3 8 2 4 6 5 7 9) (6 5 9 1 3 7 2 4 8) (2 7 4 5 9 8 1 6 3) (7 4 5 6 8 2 3 9 1) (8 1 3 4 5 9 6 2 7) (9 2 6 7 1 3 8 5 4) (4 8 7 3 2 5 9 1 6) (3 6 2 9 7 1 4 8 5) (5 9 1 8 6 4 7 3 2)).
+  };
+  r:evidence (
+    <#lemma9>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo ((1 3 8 2 4 6 5 7 9) (6 5 9 1 3 7 2 4 8) (2 7 4 5 9 8 1 6 3) (7 4 5 6 8 2 3 9 1) (8 1 3 4 5 9 6 2 7) (9 2 6 7 1 3 8 5 4) (4 8 7 3 2 5 9 1 6) (3 6 2 9 7 1 4 8 5) (5 9 1 8 6 4 7 3 2))];
+  r:rule <#lemma6>.
+
+<#lemma5> a r:Inference;
+  r:gives {
+    1 sudoku:solve ((8 1 3 4 2 5 7 9 6) (6 2 4 8 9 7 3 5 1) (5 7 9 6 1 3 8 4 2) (4 3 7 2 8 9 6 1 5) (2 8 6 3 5 1 4 7 9) (1 9 5 7 6 4 2 3 8) (9 4 2 5 3 8 1 6 7) (7 5 8 1 4 6 9 2 3) (3 6 1 9 7 2 5 8 4)).
+  };
+  r:evidence (
+    <#lemma10>
+    [ a r:Fact; r:gives {"append([[8,1,3,4,2,5,7,9,6],[6,2,4,8,9,7,3,5,1],[5,7,9,6,1,3,8,4,2],[4,3,7,2,8,9,6,1,5],[2,8,6,3,5,1,4,7,9],[1,9,5,7,6,4,2,3,8],[9,4,2,5,3,8,1,6,7],[7,5,8,1,4,6,9,2,3],[3,6,1,9,7,2,5,8,4]],[8,1,3,4,2,5,7,9,6,6,2,4,8,9,7,3,5,1,5,7,9,6,1,3,8,4,2,4,3,7,2,8,9,6,1,5,2,8,6,3,5,1,4,7,9,1,9,5,7,6,4,2,3,8,9,4,2,5,3,8,1,6,7,7,5,8,1,4,6,9,2,3,3,6,1,9,7,2,5,8,4])"}]
+    [ a r:Fact; r:gives {"[8,1,3,4,2,5,7,9,6,6,2,4,8,9,7,3,5,1,5,7,9,6,1,3,8,4,2,4,3,7,2,8,9,6,1,5,2,8,6,3,5,1,4,7,9,1,9,5,7,6,4,2,3,8,9,4,2,5,3,8,1,6,7,7,5,8,1,4,6,9,2,3,3,6,1,9,7,2,5,8,4]ins 1..9"}]
+    [ a r:Fact; r:gives {"maplist(all_distinct,[[8,1,3,4,2,5,7,9,6],[6,2,4,8,9,7,3,5,1],[5,7,9,6,1,3,8,4,2],[4,3,7,2,8,9,6,1,5],[2,8,6,3,5,1,4,7,9],[1,9,5,7,6,4,2,3,8],[9,4,2,5,3,8,1,6,7],[7,5,8,1,4,6,9,2,3],[3,6,1,9,7,2,5,8,4]])"}]
+    [ a r:Fact; r:gives {"transpose([[8,1,3,4,2,5,7,9,6],[6,2,4,8,9,7,3,5,1],[5,7,9,6,1,3,8,4,2],[4,3,7,2,8,9,6,1,5],[2,8,6,3,5,1,4,7,9],[1,9,5,7,6,4,2,3,8],[9,4,2,5,3,8,1,6,7],[7,5,8,1,4,6,9,2,3],[3,6,1,9,7,2,5,8,4]],[[8,6,5,4,2,1,9,7,3],[1,2,7,3,8,9,4,5,6],[3,4,9,7,6,5,2,8,1],[4,8,6,2,3,7,5,1,9],[2,9,1,8,5,6,3,4,7],[5,7,3,9,1,4,8,6,2],[7,3,8,6,4,2,1,9,5],[9,5,4,1,7,3,6,2,8],[6,1,2,5,9,8,7,3,4]])"}]
+    [ a r:Fact; r:gives {"maplist(all_distinct,[[8,6,5,4,2,1,9,7,3],[1,2,7,3,8,9,4,5,6],[3,4,9,7,6,5,2,8,1],[4,8,6,2,3,7,5,1,9],[2,9,1,8,5,6,3,4,7],[5,7,3,9,1,4,8,6,2],[7,3,8,6,4,2,1,9,5],[9,5,4,1,7,3,6,2,8],[6,1,2,5,9,8,7,3,4]])"}]
+    [ a r:Fact; r:gives {"[[8,1,3,4,2,5,7,9,6],[6,2,4,8,9,7,3,5,1],[5,7,9,6,1,3,8,4,2],[4,3,7,2,8,9,6,1,5],[2,8,6,3,5,1,4,7,9],[1,9,5,7,6,4,2,3,8],[9,4,2,5,3,8,1,6,7],[7,5,8,1,4,6,9,2,3],[3,6,1,9,7,2,5,8,4]]=[[8,1,3,4,2,5,7,9,6],[6,2,4,8,9,7,3,5,1],[5,7,9,6,1,3,8,4,2],[4,3,7,2,8,9,6,1,5],[2,8,6,3,5,1,4,7,9],[1,9,5,7,6,4,2,3,8],[9,4,2,5,3,8,1,6,7],[7,5,8,1,4,6,9,2,3],[3,6,1,9,7,2,5,8,4]]"}]
+    <#lemma11>
+    <#lemma12>
+    <#lemma13>
+    [ a r:Fact; r:gives {"once(maplist(label,[[8,1,3,4,2,5,7,9,6],[6,2,4,8,9,7,3,5,1],[5,7,9,6,1,3,8,4,2],[4,3,7,2,8,9,6,1,5],[2,8,6,3,5,1,4,7,9],[1,9,5,7,6,4,2,3,8],[9,4,2,5,3,8,1,6,7],[7,5,8,1,4,6,9,2,3],[3,6,1,9,7,2,5,8,4]]))"}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo ((8 1 3 4 2 5 7 9 6) (6 2 4 8 9 7 3 5 1) (5 7 9 6 1 3 8 4 2) (4 3 7 2 8 9 6 1 5) (2 8 6 3 5 1 4 7 9) (1 9 5 7 6 4 2 3 8) (9 4 2 5 3 8 1 6 7) (7 5 8 1 4 6 9 2 3) (3 6 1 9 7 2 5 8 4))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (8 1 3 4 2 5 7 9 6 6 2 4 8 9 7 3 5 1 5 7 9 6 1 3 8 4 2 4 3 7 2 8 9 6 1 5 2 8 6 3 5 1 4 7 9 1 9 5 7 6 4 2 3 8 9 4 2 5 3 8 1 6 7 7 5 8 1 4 6 9 2 3 3 6 1 9 7 2 5 8 4)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((8 6 5 4 2 1 9 7 3) (1 2 7 3 8 9 4 5 6) (3 4 9 7 6 5 2 8 1) (4 8 6 2 3 7 5 1 9) (2 9 1 8 5 6 3 4 7) (5 7 3 9 1 4 8 6 2) (7 3 8 6 4 2 1 9 5) (9 5 4 1 7 3 6 2 8) (6 1 2 5 9 8 7 3 4))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (8 1 3 4 2 5 7 9 6)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (6 2 4 8 9 7 3 5 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (5 7 9 6 1 3 8 4 2)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (4 3 7 2 8 9 6 1 5)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo (2 8 6 3 5 1 4 7 9)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1 9 5 7 6 4 2 3 8)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (9 4 2 5 3 8 1 6 7)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (7 5 8 1 4 6 9 2 3)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_12"]; r:boundTo (3 6 1 9 7 2 5 8 4)];
+  r:rule [ a r:Fact; r:gives {{var:x_0 sudoku:solve var:x_1} <= {"problem(avar0,avar1)".
+    "append(avar1,avar2)".
+    "avar2 ins 1..9".
+    "maplist(all_distinct,avar1)".
+    "transpose(avar1,avar3)".
+    "maplist(all_distinct,avar3)".
+    "avar1=[avar4,avar5,avar6,avar7,avar8,avar9,avar10,avar11,avar12]".
+    "blocks(avar4,avar5,avar6)".
+    "blocks(avar7,avar8,avar9)".
+    "blocks(avar10,avar11,avar12)".
+    "once(maplist(label,avar1))"}}].
+
+<#lemma6> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 sudoku:solve var:x_1} => {var:x_0 sudoku:solve var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/sudoku/sudoku_query.n3>].
+
+<#lemma7> a r:Inference;
+  r:gives {
+    2 sudoku:solve ((4 3 9 7 6 8 5 1 2) (6 8 7 2 1 5 9 4 3) (5 2 1 4 9 3 8 7 6) (1 7 8 9 2 4 3 6 5) (2 6 3 5 8 1 7 9 4) (9 4 5 3 7 6 1 2 8) (3 1 4 6 5 9 2 8 7) (8 5 2 1 4 7 6 3 9) (7 9 6 8 3 2 4 5 1)).
+  };
+  r:evidence (
+    <#lemma14>
+    [ a r:Fact; r:gives {"append([[4,3,9,7,6,8,5,1,2],[6,8,7,2,1,5,9,4,3],[5,2,1,4,9,3,8,7,6],[1,7,8,9,2,4,3,6,5],[2,6,3,5,8,1,7,9,4],[9,4,5,3,7,6,1,2,8],[3,1,4,6,5,9,2,8,7],[8,5,2,1,4,7,6,3,9],[7,9,6,8,3,2,4,5,1]],[4,3,9,7,6,8,5,1,2,6,8,7,2,1,5,9,4,3,5,2,1,4,9,3,8,7,6,1,7,8,9,2,4,3,6,5,2,6,3,5,8,1,7,9,4,9,4,5,3,7,6,1,2,8,3,1,4,6,5,9,2,8,7,8,5,2,1,4,7,6,3,9,7,9,6,8,3,2,4,5,1])"}]
+    [ a r:Fact; r:gives {"[4,3,9,7,6,8,5,1,2,6,8,7,2,1,5,9,4,3,5,2,1,4,9,3,8,7,6,1,7,8,9,2,4,3,6,5,2,6,3,5,8,1,7,9,4,9,4,5,3,7,6,1,2,8,3,1,4,6,5,9,2,8,7,8,5,2,1,4,7,6,3,9,7,9,6,8,3,2,4,5,1]ins 1..9"}]
+    [ a r:Fact; r:gives {"maplist(all_distinct,[[4,3,9,7,6,8,5,1,2],[6,8,7,2,1,5,9,4,3],[5,2,1,4,9,3,8,7,6],[1,7,8,9,2,4,3,6,5],[2,6,3,5,8,1,7,9,4],[9,4,5,3,7,6,1,2,8],[3,1,4,6,5,9,2,8,7],[8,5,2,1,4,7,6,3,9],[7,9,6,8,3,2,4,5,1]])"}]
+    [ a r:Fact; r:gives {"transpose([[4,3,9,7,6,8,5,1,2],[6,8,7,2,1,5,9,4,3],[5,2,1,4,9,3,8,7,6],[1,7,8,9,2,4,3,6,5],[2,6,3,5,8,1,7,9,4],[9,4,5,3,7,6,1,2,8],[3,1,4,6,5,9,2,8,7],[8,5,2,1,4,7,6,3,9],[7,9,6,8,3,2,4,5,1]],[[4,6,5,1,2,9,3,8,7],[3,8,2,7,6,4,1,5,9],[9,7,1,8,3,5,4,2,6],[7,2,4,9,5,3,6,1,8],[6,1,9,2,8,7,5,4,3],[8,5,3,4,1,6,9,7,2],[5,9,8,3,7,1,2,6,4],[1,4,7,6,9,2,8,3,5],[2,3,6,5,4,8,7,9,1]])"}]
+    [ a r:Fact; r:gives {"maplist(all_distinct,[[4,6,5,1,2,9,3,8,7],[3,8,2,7,6,4,1,5,9],[9,7,1,8,3,5,4,2,6],[7,2,4,9,5,3,6,1,8],[6,1,9,2,8,7,5,4,3],[8,5,3,4,1,6,9,7,2],[5,9,8,3,7,1,2,6,4],[1,4,7,6,9,2,8,3,5],[2,3,6,5,4,8,7,9,1]])"}]
+    [ a r:Fact; r:gives {"[[4,3,9,7,6,8,5,1,2],[6,8,7,2,1,5,9,4,3],[5,2,1,4,9,3,8,7,6],[1,7,8,9,2,4,3,6,5],[2,6,3,5,8,1,7,9,4],[9,4,5,3,7,6,1,2,8],[3,1,4,6,5,9,2,8,7],[8,5,2,1,4,7,6,3,9],[7,9,6,8,3,2,4,5,1]]=[[4,3,9,7,6,8,5,1,2],[6,8,7,2,1,5,9,4,3],[5,2,1,4,9,3,8,7,6],[1,7,8,9,2,4,3,6,5],[2,6,3,5,8,1,7,9,4],[9,4,5,3,7,6,1,2,8],[3,1,4,6,5,9,2,8,7],[8,5,2,1,4,7,6,3,9],[7,9,6,8,3,2,4,5,1]]"}]
+    <#lemma15>
+    <#lemma16>
+    <#lemma17>
+    [ a r:Fact; r:gives {"once(maplist(label,[[4,3,9,7,6,8,5,1,2],[6,8,7,2,1,5,9,4,3],[5,2,1,4,9,3,8,7,6],[1,7,8,9,2,4,3,6,5],[2,6,3,5,8,1,7,9,4],[9,4,5,3,7,6,1,2,8],[3,1,4,6,5,9,2,8,7],[8,5,2,1,4,7,6,3,9],[7,9,6,8,3,2,4,5,1]]))"}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo ((4 3 9 7 6 8 5 1 2) (6 8 7 2 1 5 9 4 3) (5 2 1 4 9 3 8 7 6) (1 7 8 9 2 4 3 6 5) (2 6 3 5 8 1 7 9 4) (9 4 5 3 7 6 1 2 8) (3 1 4 6 5 9 2 8 7) (8 5 2 1 4 7 6 3 9) (7 9 6 8 3 2 4 5 1))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (4 3 9 7 6 8 5 1 2 6 8 7 2 1 5 9 4 3 5 2 1 4 9 3 8 7 6 1 7 8 9 2 4 3 6 5 2 6 3 5 8 1 7 9 4 9 4 5 3 7 6 1 2 8 3 1 4 6 5 9 2 8 7 8 5 2 1 4 7 6 3 9 7 9 6 8 3 2 4 5 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((4 6 5 1 2 9 3 8 7) (3 8 2 7 6 4 1 5 9) (9 7 1 8 3 5 4 2 6) (7 2 4 9 5 3 6 1 8) (6 1 9 2 8 7 5 4 3) (8 5 3 4 1 6 9 7 2) (5 9 8 3 7 1 2 6 4) (1 4 7 6 9 2 8 3 5) (2 3 6 5 4 8 7 9 1))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (4 3 9 7 6 8 5 1 2)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (6 8 7 2 1 5 9 4 3)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (5 2 1 4 9 3 8 7 6)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 7 8 9 2 4 3 6 5)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo (2 6 3 5 8 1 7 9 4)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (9 4 5 3 7 6 1 2 8)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (3 1 4 6 5 9 2 8 7)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (8 5 2 1 4 7 6 3 9)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_12"]; r:boundTo (7 9 6 8 3 2 4 5 1)];
+  r:rule [ a r:Fact; r:gives {{var:x_0 sudoku:solve var:x_1} <= {"problem(avar0,avar1)".
+    "append(avar1,avar2)".
+    "avar2 ins 1..9".
+    "maplist(all_distinct,avar1)".
+    "transpose(avar1,avar3)".
+    "maplist(all_distinct,avar3)".
+    "avar1=[avar4,avar5,avar6,avar7,avar8,avar9,avar10,avar11,avar12]".
+    "blocks(avar4,avar5,avar6)".
+    "blocks(avar7,avar8,avar9)".
+    "blocks(avar10,avar11,avar12)".
+    "once(maplist(label,avar1))"}}].
+
+<#lemma8> a r:Inference;
+  r:gives {
+    3 sudoku:solve ((8 5 9 6 1 2 4 3 7) (7 2 3 8 5 4 1 6 9) (1 6 4 3 7 9 5 2 8) (9 8 6 1 4 7 3 5 2) (3 7 5 2 6 8 9 1 4) (2 4 1 5 9 3 7 8 6) (4 3 2 9 8 1 6 7 5) (6 1 7 4 2 5 8 9 3) (5 9 8 7 3 6 2 4 1)).
+  };
+  r:evidence (
+    <#lemma18>
+    [ a r:Fact; r:gives {"append([[8,5,9,6,1,2,4,3,7],[7,2,3,8,5,4,1,6,9],[1,6,4,3,7,9,5,2,8],[9,8,6,1,4,7,3,5,2],[3,7,5,2,6,8,9,1,4],[2,4,1,5,9,3,7,8,6],[4,3,2,9,8,1,6,7,5],[6,1,7,4,2,5,8,9,3],[5,9,8,7,3,6,2,4,1]],[8,5,9,6,1,2,4,3,7,7,2,3,8,5,4,1,6,9,1,6,4,3,7,9,5,2,8,9,8,6,1,4,7,3,5,2,3,7,5,2,6,8,9,1,4,2,4,1,5,9,3,7,8,6,4,3,2,9,8,1,6,7,5,6,1,7,4,2,5,8,9,3,5,9,8,7,3,6,2,4,1])"}]
+    [ a r:Fact; r:gives {"[8,5,9,6,1,2,4,3,7,7,2,3,8,5,4,1,6,9,1,6,4,3,7,9,5,2,8,9,8,6,1,4,7,3,5,2,3,7,5,2,6,8,9,1,4,2,4,1,5,9,3,7,8,6,4,3,2,9,8,1,6,7,5,6,1,7,4,2,5,8,9,3,5,9,8,7,3,6,2,4,1]ins 1..9"}]
+    [ a r:Fact; r:gives {"maplist(all_distinct,[[8,5,9,6,1,2,4,3,7],[7,2,3,8,5,4,1,6,9],[1,6,4,3,7,9,5,2,8],[9,8,6,1,4,7,3,5,2],[3,7,5,2,6,8,9,1,4],[2,4,1,5,9,3,7,8,6],[4,3,2,9,8,1,6,7,5],[6,1,7,4,2,5,8,9,3],[5,9,8,7,3,6,2,4,1]])"}]
+    [ a r:Fact; r:gives {"transpose([[8,5,9,6,1,2,4,3,7],[7,2,3,8,5,4,1,6,9],[1,6,4,3,7,9,5,2,8],[9,8,6,1,4,7,3,5,2],[3,7,5,2,6,8,9,1,4],[2,4,1,5,9,3,7,8,6],[4,3,2,9,8,1,6,7,5],[6,1,7,4,2,5,8,9,3],[5,9,8,7,3,6,2,4,1]],[[8,7,1,9,3,2,4,6,5],[5,2,6,8,7,4,3,1,9],[9,3,4,6,5,1,2,7,8],[6,8,3,1,2,5,9,4,7],[1,5,7,4,6,9,8,2,3],[2,4,9,7,8,3,1,5,6],[4,1,5,3,9,7,6,8,2],[3,6,2,5,1,8,7,9,4],[7,9,8,2,4,6,5,3,1]])"}]
+    [ a r:Fact; r:gives {"maplist(all_distinct,[[8,7,1,9,3,2,4,6,5],[5,2,6,8,7,4,3,1,9],[9,3,4,6,5,1,2,7,8],[6,8,3,1,2,5,9,4,7],[1,5,7,4,6,9,8,2,3],[2,4,9,7,8,3,1,5,6],[4,1,5,3,9,7,6,8,2],[3,6,2,5,1,8,7,9,4],[7,9,8,2,4,6,5,3,1]])"}]
+    [ a r:Fact; r:gives {"[[8,5,9,6,1,2,4,3,7],[7,2,3,8,5,4,1,6,9],[1,6,4,3,7,9,5,2,8],[9,8,6,1,4,7,3,5,2],[3,7,5,2,6,8,9,1,4],[2,4,1,5,9,3,7,8,6],[4,3,2,9,8,1,6,7,5],[6,1,7,4,2,5,8,9,3],[5,9,8,7,3,6,2,4,1]]=[[8,5,9,6,1,2,4,3,7],[7,2,3,8,5,4,1,6,9],[1,6,4,3,7,9,5,2,8],[9,8,6,1,4,7,3,5,2],[3,7,5,2,6,8,9,1,4],[2,4,1,5,9,3,7,8,6],[4,3,2,9,8,1,6,7,5],[6,1,7,4,2,5,8,9,3],[5,9,8,7,3,6,2,4,1]]"}]
+    <#lemma19>
+    <#lemma20>
+    <#lemma21>
+    [ a r:Fact; r:gives {"once(maplist(label,[[8,5,9,6,1,2,4,3,7],[7,2,3,8,5,4,1,6,9],[1,6,4,3,7,9,5,2,8],[9,8,6,1,4,7,3,5,2],[3,7,5,2,6,8,9,1,4],[2,4,1,5,9,3,7,8,6],[4,3,2,9,8,1,6,7,5],[6,1,7,4,2,5,8,9,3],[5,9,8,7,3,6,2,4,1]]))"}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo ((8 5 9 6 1 2 4 3 7) (7 2 3 8 5 4 1 6 9) (1 6 4 3 7 9 5 2 8) (9 8 6 1 4 7 3 5 2) (3 7 5 2 6 8 9 1 4) (2 4 1 5 9 3 7 8 6) (4 3 2 9 8 1 6 7 5) (6 1 7 4 2 5 8 9 3) (5 9 8 7 3 6 2 4 1))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (8 5 9 6 1 2 4 3 7 7 2 3 8 5 4 1 6 9 1 6 4 3 7 9 5 2 8 9 8 6 1 4 7 3 5 2 3 7 5 2 6 8 9 1 4 2 4 1 5 9 3 7 8 6 4 3 2 9 8 1 6 7 5 6 1 7 4 2 5 8 9 3 5 9 8 7 3 6 2 4 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((8 7 1 9 3 2 4 6 5) (5 2 6 8 7 4 3 1 9) (9 3 4 6 5 1 2 7 8) (6 8 3 1 2 5 9 4 7) (1 5 7 4 6 9 8 2 3) (2 4 9 7 8 3 1 5 6) (4 1 5 3 9 7 6 8 2) (3 6 2 5 1 8 7 9 4) (7 9 8 2 4 6 5 3 1))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (8 5 9 6 1 2 4 3 7)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (7 2 3 8 5 4 1 6 9)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (1 6 4 3 7 9 5 2 8)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (9 8 6 1 4 7 3 5 2)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo (3 7 5 2 6 8 9 1 4)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (2 4 1 5 9 3 7 8 6)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (4 3 2 9 8 1 6 7 5)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (6 1 7 4 2 5 8 9 3)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_12"]; r:boundTo (5 9 8 7 3 6 2 4 1)];
+  r:rule [ a r:Fact; r:gives {{var:x_0 sudoku:solve var:x_1} <= {"problem(avar0,avar1)".
+    "append(avar1,avar2)".
+    "avar2 ins 1..9".
+    "maplist(all_distinct,avar1)".
+    "transpose(avar1,avar3)".
+    "maplist(all_distinct,avar3)".
+    "avar1=[avar4,avar5,avar6,avar7,avar8,avar9,avar10,avar11,avar12]".
+    "blocks(avar4,avar5,avar6)".
+    "blocks(avar7,avar8,avar9)".
+    "blocks(avar10,avar11,avar12)".
+    "once(maplist(label,avar1))"}}].
+
+<#lemma9> a r:Inference;
+  r:gives {
+    4 sudoku:solve ((1 3 8 2 4 6 5 7 9) (6 5 9 1 3 7 2 4 8) (2 7 4 5 9 8 1 6 3) (7 4 5 6 8 2 3 9 1) (8 1 3 4 5 9 6 2 7) (9 2 6 7 1 3 8 5 4) (4 8 7 3 2 5 9 1 6) (3 6 2 9 7 1 4 8 5) (5 9 1 8 6 4 7 3 2)).
+  };
+  r:evidence (
+    <#lemma22>
+    [ a r:Fact; r:gives {"append([[1,3,8,2,4,6,5,7,9],[6,5,9,1,3,7,2,4,8],[2,7,4,5,9,8,1,6,3],[7,4,5,6,8,2,3,9,1],[8,1,3,4,5,9,6,2,7],[9,2,6,7,1,3,8,5,4],[4,8,7,3,2,5,9,1,6],[3,6,2,9,7,1,4,8,5],[5,9,1,8,6,4,7,3,2]],[1,3,8,2,4,6,5,7,9,6,5,9,1,3,7,2,4,8,2,7,4,5,9,8,1,6,3,7,4,5,6,8,2,3,9,1,8,1,3,4,5,9,6,2,7,9,2,6,7,1,3,8,5,4,4,8,7,3,2,5,9,1,6,3,6,2,9,7,1,4,8,5,5,9,1,8,6,4,7,3,2])"}]
+    [ a r:Fact; r:gives {"[1,3,8,2,4,6,5,7,9,6,5,9,1,3,7,2,4,8,2,7,4,5,9,8,1,6,3,7,4,5,6,8,2,3,9,1,8,1,3,4,5,9,6,2,7,9,2,6,7,1,3,8,5,4,4,8,7,3,2,5,9,1,6,3,6,2,9,7,1,4,8,5,5,9,1,8,6,4,7,3,2]ins 1..9"}]
+    [ a r:Fact; r:gives {"maplist(all_distinct,[[1,3,8,2,4,6,5,7,9],[6,5,9,1,3,7,2,4,8],[2,7,4,5,9,8,1,6,3],[7,4,5,6,8,2,3,9,1],[8,1,3,4,5,9,6,2,7],[9,2,6,7,1,3,8,5,4],[4,8,7,3,2,5,9,1,6],[3,6,2,9,7,1,4,8,5],[5,9,1,8,6,4,7,3,2]])"}]
+    [ a r:Fact; r:gives {"transpose([[1,3,8,2,4,6,5,7,9],[6,5,9,1,3,7,2,4,8],[2,7,4,5,9,8,1,6,3],[7,4,5,6,8,2,3,9,1],[8,1,3,4,5,9,6,2,7],[9,2,6,7,1,3,8,5,4],[4,8,7,3,2,5,9,1,6],[3,6,2,9,7,1,4,8,5],[5,9,1,8,6,4,7,3,2]],[[1,6,2,7,8,9,4,3,5],[3,5,7,4,1,2,8,6,9],[8,9,4,5,3,6,7,2,1],[2,1,5,6,4,7,3,9,8],[4,3,9,8,5,1,2,7,6],[6,7,8,2,9,3,5,1,4],[5,2,1,3,6,8,9,4,7],[7,4,6,9,2,5,1,8,3],[9,8,3,1,7,4,6,5,2]])"}]
+    [ a r:Fact; r:gives {"maplist(all_distinct,[[1,6,2,7,8,9,4,3,5],[3,5,7,4,1,2,8,6,9],[8,9,4,5,3,6,7,2,1],[2,1,5,6,4,7,3,9,8],[4,3,9,8,5,1,2,7,6],[6,7,8,2,9,3,5,1,4],[5,2,1,3,6,8,9,4,7],[7,4,6,9,2,5,1,8,3],[9,8,3,1,7,4,6,5,2]])"}]
+    [ a r:Fact; r:gives {"[[1,3,8,2,4,6,5,7,9],[6,5,9,1,3,7,2,4,8],[2,7,4,5,9,8,1,6,3],[7,4,5,6,8,2,3,9,1],[8,1,3,4,5,9,6,2,7],[9,2,6,7,1,3,8,5,4],[4,8,7,3,2,5,9,1,6],[3,6,2,9,7,1,4,8,5],[5,9,1,8,6,4,7,3,2]]=[[1,3,8,2,4,6,5,7,9],[6,5,9,1,3,7,2,4,8],[2,7,4,5,9,8,1,6,3],[7,4,5,6,8,2,3,9,1],[8,1,3,4,5,9,6,2,7],[9,2,6,7,1,3,8,5,4],[4,8,7,3,2,5,9,1,6],[3,6,2,9,7,1,4,8,5],[5,9,1,8,6,4,7,3,2]]"}]
+    <#lemma23>
+    <#lemma24>
+    <#lemma25>
+    [ a r:Fact; r:gives {"once(maplist(label,[[1,3,8,2,4,6,5,7,9],[6,5,9,1,3,7,2,4,8],[2,7,4,5,9,8,1,6,3],[7,4,5,6,8,2,3,9,1],[8,1,3,4,5,9,6,2,7],[9,2,6,7,1,3,8,5,4],[4,8,7,3,2,5,9,1,6],[3,6,2,9,7,1,4,8,5],[5,9,1,8,6,4,7,3,2]]))"}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo ((1 3 8 2 4 6 5 7 9) (6 5 9 1 3 7 2 4 8) (2 7 4 5 9 8 1 6 3) (7 4 5 6 8 2 3 9 1) (8 1 3 4 5 9 6 2 7) (9 2 6 7 1 3 8 5 4) (4 8 7 3 2 5 9 1 6) (3 6 2 9 7 1 4 8 5) (5 9 1 8 6 4 7 3 2))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (1 3 8 2 4 6 5 7 9 6 5 9 1 3 7 2 4 8 2 7 4 5 9 8 1 6 3 7 4 5 6 8 2 3 9 1 8 1 3 4 5 9 6 2 7 9 2 6 7 1 3 8 5 4 4 8 7 3 2 5 9 1 6 3 6 2 9 7 1 4 8 5 5 9 1 8 6 4 7 3 2)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((1 6 2 7 8 9 4 3 5) (3 5 7 4 1 2 8 6 9) (8 9 4 5 3 6 7 2 1) (2 1 5 6 4 7 3 9 8) (4 3 9 8 5 1 2 7 6) (6 7 8 2 9 3 5 1 4) (5 2 1 3 6 8 9 4 7) (7 4 6 9 2 5 1 8 3) (9 8 3 1 7 4 6 5 2))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 3 8 2 4 6 5 7 9)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (6 5 9 1 3 7 2 4 8)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (2 7 4 5 9 8 1 6 3)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (7 4 5 6 8 2 3 9 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo (8 1 3 4 5 9 6 2 7)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (9 2 6 7 1 3 8 5 4)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (4 8 7 3 2 5 9 1 6)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (3 6 2 9 7 1 4 8 5)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_12"]; r:boundTo (5 9 1 8 6 4 7 3 2)];
+  r:rule [ a r:Fact; r:gives {{var:x_0 sudoku:solve var:x_1} <= {"problem(avar0,avar1)".
+    "append(avar1,avar2)".
+    "avar2 ins 1..9".
+    "maplist(all_distinct,avar1)".
+    "transpose(avar1,avar3)".
+    "maplist(all_distinct,avar3)".
+    "avar1=[avar4,avar5,avar6,avar7,avar8,avar9,avar10,avar11,avar12]".
+    "blocks(avar4,avar5,avar6)".
+    "blocks(avar7,avar8,avar9)".
+    "blocks(avar10,avar11,avar12)".
+    "once(maplist(label,avar1))"}}].
+
+<#lemma10> a r:Extraction;
+  r:gives {
+    "problem(1,[[8,1,3,4,2,5,7,9,6],[6,2,4,8,9,7,3,5,1],[5,7,9,6,1,3,8,4,2],[4,3,7,2,8,9,6,1,5],[2,8,6,3,5,1,4,7,9],[1,9,5,7,6,4,2,3,8],[9,4,2,5,3,8,1,6,7],[7,5,8,1,4,6,9,2,3],[3,6,1,9,7,2,5,8,4]])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma11> a r:Inference;
+  r:gives {
+    "blocks([8,1,3,4,2,5,7,9,6],[6,2,4,8,9,7,3,5,1],[5,7,9,6,1,3,8,4,2])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([8,1,some0,6,2,4,some1,7,some2])"}]
+    <#lemma26>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (4 2 5 7 9 6)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (4 2 5 _:sk_3 _:sk_4 _:sk_5)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (8 9 7 3 5 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (_:sk_6 _:sk_7 7 _:sk_8 _:sk_9 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (6 1 3 8 4 2)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_10 1 _:sk_11 _:sk_12 _:sk_13 2)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma12> a r:Inference;
+  r:gives {
+    "blocks([4,3,7,2,8,9,6,1,5],[2,8,6,3,5,1,4,7,9],[1,9,5,7,6,4,2,3,8])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([4,3,7,2,8,6,1,9,5])"}]
+    <#lemma27>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (2 8 9 6 1 5)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (3 5 1 4 7 9)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (7 6 4 2 3 8)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma13> a r:Inference;
+  r:gives {
+    "blocks([9,4,2,5,3,8,1,6,7],[7,5,8,1,4,6,9,2,3],[3,6,1,9,7,2,5,8,4])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([9,4,2,7,5,8,3,6,1])"}]
+    <#lemma28>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (5 3 8 1 6 7)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 4 6 9 2 3)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (9 7 2 5 8 4)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma14> a r:Extraction;
+  r:gives {
+    "problem(2,[[4,3,9,7,6,8,5,1,2],[6,8,7,2,1,5,9,4,3],[5,2,1,4,9,3,8,7,6],[1,7,8,9,2,4,3,6,5],[2,6,3,5,8,1,7,9,4],[9,4,5,3,7,6,1,2,8],[3,1,4,6,5,9,2,8,7],[8,5,2,1,4,7,6,3,9],[7,9,6,8,3,2,4,5,1]])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma15> a r:Inference;
+  r:gives {
+    "blocks([4,3,9,7,6,8,5,1,2],[6,8,7,2,1,5,9,4,3],[5,2,1,4,9,3,8,7,6])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([4,some0,9,6,8,7,5,some1,1])"}]
+    <#lemma29>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (7 6 8 5 1 2)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (_:sk_2 _:sk_3 8 5 1 _:sk_4)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (2 1 5 9 4 3)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (_:sk_5 1 5 9 _:sk_6 _:sk_7)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (4 9 3 8 7 6)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_8 _:sk_9 _:sk_10 8 7 _:sk_11)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma16> a r:Inference;
+  r:gives {
+    "blocks([1,7,8,9,2,4,3,6,5],[2,6,3,5,8,1,7,9,4],[9,4,5,3,7,6,1,2,8])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([1,7,8,2,6,3,9,4,5])"}]
+    <#lemma30>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (9 2 4 3 6 5)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (5 8 1 7 9 4)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (3 7 6 1 2 8)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma17> a r:Inference;
+  r:gives {
+    "blocks([3,1,4,6,5,9,2,8,7],[8,5,2,1,4,7,6,3,9],[7,9,6,8,3,2,4,5,1])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([3,1,4,8,5,2,7,9,6])"}]
+    <#lemma31>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (6 5 9 2 8 7)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 4 7 6 3 9)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (8 3 2 4 5 1)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma18> a r:Extraction;
+  r:gives {
+    "problem(3,[[8,5,9,6,1,2,4,3,7],[7,2,3,8,5,4,1,6,9],[1,6,4,3,7,9,5,2,8],[9,8,6,1,4,7,3,5,2],[3,7,5,2,6,8,9,1,4],[2,4,1,5,9,3,7,8,6],[4,3,2,9,8,1,6,7,5],[6,1,7,4,2,5,8,9,3],[5,9,8,7,3,6,2,4,1]])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma19> a r:Inference;
+  r:gives {
+    "blocks([8,5,9,6,1,2,4,3,7],[7,2,3,8,5,4,1,6,9],[1,6,4,3,7,9,5,2,8])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([8,5,some0,7,2,some1,some2,some3,4])"}]
+    <#lemma32>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (6 1 2 4 3 7)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (_:sk_4 _:sk_5 2 4 _:sk_6 _:sk_7)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (8 5 4 1 6 9)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (_:sk_8 _:sk_9 _:sk_10 _:sk_11 _:sk_12 9)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (3 7 9 5 2 8)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_13 _:sk_14 _:sk_15 _:sk_16 _:sk_17 _:sk_18)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma20> a r:Inference;
+  r:gives {
+    "blocks([9,8,6,1,4,7,3,5,2],[3,7,5,2,6,8,9,1,4],[2,4,1,5,9,3,7,8,6])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([some0,some1,some2,3,7,5,some3,4,some4])"}]
+    <#lemma33>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1 4 7 3 5 2)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1 4 7 _:sk_5 _:sk_6 2)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (2 6 8 9 1 4)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (_:sk_7 _:sk_8 8 9 1 4)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (5 9 3 7 8 6)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_9 _:sk_10 _:sk_11 _:sk_12 _:sk_13 _:sk_14)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma21> a r:Inference;
+  r:gives {
+    "blocks([4,3,2,9,8,1,6,7,5],[6,1,7,4,2,5,8,9,3],[5,9,8,7,3,6,2,4,1])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([4,3,2,6,1,7,5,9,8])"}]
+    <#lemma34>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (9 8 1 6 7 5)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (4 2 5 8 9 3)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (7 3 6 2 4 1)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma22> a r:Extraction;
+  r:gives {
+    "problem(4,[[1,3,8,2,4,6,5,7,9],[6,5,9,1,3,7,2,4,8],[2,7,4,5,9,8,1,6,3],[7,4,5,6,8,2,3,9,1],[8,1,3,4,5,9,6,2,7],[9,2,6,7,1,3,8,5,4],[4,8,7,3,2,5,9,1,6],[3,6,2,9,7,1,4,8,5],[5,9,1,8,6,4,7,3,2]])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma23> a r:Inference;
+  r:gives {
+    "blocks([1,3,8,2,4,6,5,7,9],[6,5,9,1,3,7,2,4,8],[2,7,4,5,9,8,1,6,3])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([some0,some1,some2,some3,5,9,2,some4,some5])"}]
+    <#lemma35>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (2 4 6 5 7 9)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (_:sk_6 _:sk_7 6 _:sk_8 _:sk_9 _:sk_10)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 3 7 2 4 8)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (_:sk_11 _:sk_12 _:sk_13 _:sk_14 _:sk_15 8)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (5 9 8 1 6 3)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_16 _:sk_17 8 _:sk_18 _:sk_19 _:sk_20)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma24> a r:Inference;
+  r:gives {
+    "blocks([7,4,5,6,8,2,3,9,1],[8,1,3,4,5,9,6,2,7],[9,2,6,7,1,3,8,5,4])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([some0,4,5,some1,some2,3,some3,some4,6])"}]
+    <#lemma36>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (6 8 2 3 9 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (_:sk_5 _:sk_6 _:sk_7 _:sk_8 _:sk_9 _:sk_10)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (4 5 9 6 2 7)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (_:sk_11 _:sk_12 _:sk_13 _:sk_14 _:sk_15 _:sk_16)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (7 1 3 8 5 4)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_17 _:sk_18 3 _:sk_19 5 4)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma25> a r:Inference;
+  r:gives {
+    "blocks([4,8,7,3,2,5,9,1,6],[3,6,2,9,7,1,4,8,5],[5,9,1,8,6,4,7,3,2])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([some0,some1,some2,some3,some4,some5,some6,some7,some8])"}]
+    <#lemma37>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_8"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (3 2 5 9 1 6)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (3 2 5 _:sk_9 _:sk_10 6)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (9 7 1 4 8 5)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (_:sk_11 _:sk_12 _:sk_13 _:sk_14 _:sk_15 _:sk_16)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (8 6 4 7 3 2)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_17 _:sk_18 _:sk_19 _:sk_20 _:sk_21 _:sk_22)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma26> a r:Inference;
+  r:gives {
+    "blocks([4,2,5,some3,some4,some5],[some6,some7,7,some8,some9,1],[some10,1,some11,some12,some13,2])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([4,2,5,some0,some1,7,some2,1,some3])"}]
+    <#lemma38>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_10"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_11"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (_:sk_3 _:sk_4 _:sk_5)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (_:sk_4 _:sk_5 _:sk_6)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (_:sk_7 _:sk_8 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (_:sk_8 _:sk_9 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_12 _:sk_13 2)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_9 _:sk_10 2)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma27> a r:Inference;
+  r:gives {
+    "blocks([2,8,9,6,1,5],[3,5,1,4,7,9],[7,6,4,2,3,8])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([2,8,9,3,5,1,7,6,4])"}]
+    <#lemma39>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (6 1 5)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (4 7 9)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (2 3 8)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma28> a r:Inference;
+  r:gives {
+    "blocks([5,3,8,1,6,7],[1,4,6,9,2,3],[9,7,2,5,8,4])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([5,3,8,1,4,6,9,7,2])"}]
+    <#lemma40>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1 6 7)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (9 2 3)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (5 8 4)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma29> a r:Inference;
+  r:gives {
+    "blocks([some2,some3,8,5,1,some4],[some5,1,5,9,some6,some7],[some8,some9,some10,8,7,some11])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([some0,some1,8,some2,1,5,some3,some4,some5])"}]
+    <#lemma41>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_8"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_9"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_10"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (5 1 _:sk_4)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (5 1 _:sk_6)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (9 _:sk_6 _:sk_7)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (9 _:sk_7 _:sk_8)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (8 7 _:sk_11)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (8 7 _:sk_9)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma30> a r:Inference;
+  r:gives {
+    "blocks([9,2,4,3,6,5],[5,8,1,7,9,4],[3,7,6,1,2,8])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([9,2,4,5,8,1,3,7,6])"}]
+    <#lemma42>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (3 6 5)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (7 9 4)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (1 2 8)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma31> a r:Inference;
+  r:gives {
+    "blocks([6,5,9,2,8,7],[1,4,7,6,3,9],[8,3,2,4,5,1])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([6,5,9,1,4,7,8,3,2])"}]
+    <#lemma43>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (2 8 7)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (6 3 9)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (4 5 1)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma32> a r:Inference;
+  r:gives {
+    "blocks([some4,some5,2,4,some6,some7],[some8,some9,some10,some11,some12,9],[some13,some14,some15,some16,some17,some18])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([some0,some1,2,some2,some3,some4,some5,some6,some7])"}]
+    <#lemma44>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_8"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_9"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_10"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_13"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_14"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_15"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (4 _:sk_6 _:sk_7)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (4 _:sk_8 _:sk_9)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (_:sk_10 _:sk_11 9)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (_:sk_11 _:sk_12 9)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_12 _:sk_13 _:sk_14)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_16 _:sk_17 _:sk_18)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma33> a r:Inference;
+  r:gives {
+    "blocks([1,4,7,some5,some6,2],[some7,some8,8,9,1,4],[some9,some10,some11,some12,some13,some14])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([1,4,7,some0,some1,8,some2,some3,some4])"}]
+    <#lemma45>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_8"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_9"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_10"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_11"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (_:sk_5 _:sk_6 2)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (9 1 4)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_12 _:sk_13 _:sk_14)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_7 _:sk_8 _:sk_9)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma34> a r:Inference;
+  r:gives {
+    "blocks([9,8,1,6,7,5],[4,2,5,8,9,3],[7,3,6,2,4,1])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([9,8,1,4,2,5,7,3,6])"}]
+    <#lemma46>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (6 7 5)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (8 9 3)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (2 4 1)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma35> a r:Inference;
+  r:gives {
+    "blocks([some6,some7,6,some8,some9,some10],[some11,some12,some13,some14,some15,8],[some16,some17,8,some18,some19,some20])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([some0,some1,6,some2,some3,some4,some5,some6,8])"}]
+    <#lemma47>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_11"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_12"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_13"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_16"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_17"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (_:sk_7 _:sk_8 _:sk_9)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (_:sk_8 _:sk_9 _:sk_10)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (_:sk_10 _:sk_11 8)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (_:sk_14 _:sk_15 8)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_12 _:sk_13 _:sk_14)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_18 _:sk_19 _:sk_20)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma36> a r:Inference;
+  r:gives {
+    "blocks([some5,some6,some7,some8,some9,some10],[some11,some12,some13,some14,some15,some16],[some17,some18,3,some19,5,4])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([some0,some1,some2,some3,some4,some5,some6,some7,3])"}]
+    <#lemma48>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_11"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_12"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_13"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_17"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_18"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (_:sk_8 _:sk_9 _:sk_10)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (_:sk_11 _:sk_12 _:sk_13)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (_:sk_14 _:sk_15 _:sk_16)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_14 5 4)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_19 5 4)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma37> a r:Inference;
+  r:gives {
+    "blocks([3,2,5,some9,some10,6],[some11,some12,some13,some14,some15,some16],[some17,some18,some19,some20,some21,some22])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([3,2,5,some0,some1,some2,some3,some4,some5])"}]
+    <#lemma49>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_11"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_12"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_13"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_17"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_18"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_19"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (_:sk_6 _:sk_7 6)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (_:sk_9 _:sk_10 6)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (_:sk_14 _:sk_15 _:sk_16)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (_:sk_8 _:sk_9 _:sk_10)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_11 _:sk_12 _:sk_13)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (_:sk_20 _:sk_21 _:sk_22)];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma38> a r:Inference;
+  r:gives {
+    "blocks([some4,some5,some6],[some7,some8,1],[some9,some10,2])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([some0,some1,some2,some3,some4,1,some5,some6,2])"}]
+    <#lemma50>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_8"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_9"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_10"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo ()];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma39> a r:Inference;
+  r:gives {
+    "blocks([6,1,5],[4,7,9],[2,3,8])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([6,1,5,4,7,9,2,3,8])"}]
+    <#lemma50>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo ()];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma40> a r:Inference;
+  r:gives {
+    "blocks([1,6,7],[9,2,3],[5,8,4])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([1,6,7,9,2,3,5,8,4])"}]
+    <#lemma50>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo ()];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma41> a r:Inference;
+  r:gives {
+    "blocks([5,1,some6],[9,some7,some8],[8,7,some9])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([5,1,some0,9,some1,some2,8,7,some3])"}]
+    <#lemma50>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_8"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_9"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo ()];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma42> a r:Inference;
+  r:gives {
+    "blocks([3,6,5],[7,9,4],[1,2,8])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([3,6,5,7,9,4,1,2,8])"}]
+    <#lemma50>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo ()];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma43> a r:Inference;
+  r:gives {
+    "blocks([2,8,7],[6,3,9],[4,5,1])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([2,8,7,6,3,9,4,5,1])"}]
+    <#lemma50>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo ()];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma44> a r:Inference;
+  r:gives {
+    "blocks([4,some8,some9],[some10,some11,9],[some12,some13,some14])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([4,some0,some1,some2,some3,9,some4,some5,some6])"}]
+    <#lemma50>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_8"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_9"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_10"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_11"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_12"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_13"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_14"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo ()];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma45> a r:Inference;
+  r:gives {
+    "blocks([some5,some6,2],[9,1,4],[some7,some8,some9])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([some0,some1,2,9,1,4,some2,some3,some4])"}]
+    <#lemma50>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_8"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_9"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo ()];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma46> a r:Inference;
+  r:gives {
+    "blocks([6,7,5],[8,9,3],[2,4,1])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([6,7,5,8,9,3,2,4,1])"}]
+    <#lemma50>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 7];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo ()];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma47> a r:Inference;
+  r:gives {
+    "blocks([some7,some8,some9],[some10,some11,8],[some12,some13,some14])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([some0,some1,some2,some3,some4,8,some5,some6,some7])"}]
+    <#lemma50>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_8"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_9"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_10"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_11"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 8];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_12"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_13"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_14"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo ()];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma48> a r:Inference;
+  r:gives {
+    "blocks([some8,some9,some10],[some11,some12,some13],[some14,5,4])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([some0,some1,some2,some3,some4,some5,some6,5,4])"}]
+    <#lemma50>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_8"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_9"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_10"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_11"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_12"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_13"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_14"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo ()];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma49> a r:Inference;
+  r:gives {
+    "blocks([some6,some7,6],[some8,some9,some10],[some11,some12,some13])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"all_distinct([some0,some1,6,some2,some3,some4,some5,some6,some7])"}]
+    <#lemma50>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_8"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_9"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_10"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_11"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_12"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_13"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo ()];
+  r:rule [ a r:Fact; r:gives {"blocks([avar0,avar1,avar2|avar9],[avar3,avar4,avar5|avar10],[avar6,avar7,avar8|avar11])" <= {"all_distinct([avar0,avar1,avar2,avar3,avar4,avar5,avar6,avar7,avar8])".
+    "blocks(avar9,avar10,avar11)"}}].
+
+<#lemma50> a r:Extraction;
+  r:gives {
+    "blocks([],[],[])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+#2020-02-22T21:52:56.721Z in=1 out=4 ent=4 step=4 brake=1 inf=3852886 sec=1.258 inf/sec=3062707
+#ENDS
+

@@ -1,0 +1,11 @@
+<?xml-stylesheet href="tests/de/fuberlin/wiwiss/ng4j/trix/tests/extension2.xsl" type="application/xml"?>
+<TriX	xmlns="http://www.w3.org/2004/03/trix/trix-1/"
+		xmlns:ex="http://example.org/#">
+	<graph>
+		<triple>
+			<qname>ex:a</qname>
+			<qname>ex:b</qname>
+			<qname>ex:c</qname>
+		</triple>
+	</graph>
+</TriX>

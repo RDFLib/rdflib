@@ -1,0 +1,370 @@
+@prefix : <http://owldl.com/ontologies/dl-safe.owl#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix swrl: <http://www.w3.org/2003/11/swrl#> .
+@prefix swrlb: <http://www.w3.org/2003/11/swrlb#> .
+@prefix list: <http://www.w3.org/2000/10/swap/list#> .
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#> .
+@prefix log:    <http://www.w3.org/2000/10/swap/log#> .
+@prefix string: <http://www.w3.org/2000/10/swap/string#>.
+@prefix math:   <http://www.w3.org/2000/10/swap/math#>.
+@prefix fn: <http://www.w3.org/2005/xpath-functions#>.
+@prefix func: <http://www.w3.org/2007/rif-builtin-function#>.
+# @prefix euler_owl: <http://sourceforge.net/p/eulersharp/code/HEAD/tree/trunk/2003/03swap/> .
+@prefix var: <http://localhost/var#>.
+
+# Translation of SWRL to N3 logic - $Revision: 511 $
+# NOTE: if you want the unique name assumption, you can add unique-name-assumption.n3 to the project
+
+######### machinery #########
+
+{ ?CRIT :hasN3Statement ?N3CRIT .
+  ?CRIT :swrl_body_in ?RULE .
+} => {
+  ?RULE :n3_antecedent_has ?N3CRIT.
+} .
+
+{ ?CRIT :hasN3Statement ?N3CRIT .
+  ?CRIT :swrl_head_in ?RULE .
+} => {
+  ?RULE :n3_consequent_has ?N3CRIT.
+} .
+
+######### antecedent (body) #########
+
+{
+  ?RULE a swrl:Imp ;
+    swrl:body ?LIST .
+  ?CRIT list:in ?LIST .
+} => {
+  ?CRIT :swrl_body_in ?RULE .
+} .
+
+## specific
+
+{ ?CRIT :swrl_body_in ?RULE ;
+    a swrl:ClassAtom ;
+      swrl:argument1 ?A1 ;
+      swrl:classPredicate ?CLASS .
+      # this would not be a significant criterium: ?X a owl:Thing,
+      ?CLASS log:notEqualTo owl:Thing.
+      # except when there is no other criterium for ?X ; then following rule takes care
+      
+      _:d e:optional { ?CLASS a ?METACLASS }.
+      # _:d e:trace ( ?CLASS a ?METACLASS ).
+      # ?METACLASS log:notEqualTo owl:Restriction. # PENDING answer from Jos <<<<<<<
+} => {
+  ?CRIT :hasN3Statement { ?A1 rdf:type ?CLASS } .
+}.
+
+{ ?CRIT :swrl_body_in ?RULE ;
+    a swrl:ClassAtom ;
+      swrl:argument1 ?A1 ;
+      swrl:classPredicate ?CLASS .
+      ?CLASS log:equalTo owl:Thing.
+      # there is no other criterium for ?A1
+      _:d e:findall( ?CRIT2 { ?CRIT list:in ?LIST.
+	  ?CRIT2 list:in ?LIST.
+	  ?CRIT2 log:notEqualTo ?CRIT .
+	  ?CRIT2 swrl:argument1 ?AA1 .
+	  ?AA1 log:notEqualTo ?A1 .
+      } () ).
+} => {
+  ?CRIT :hasN3Statement { ?A1 rdf:type ?CLASS } .
+}.
+
+{ ?CRIT
+    a swrl:ClassAtom ;
+      swrl:argument1 ?A1 ;
+      swrl:classPredicate ?CLASS .
+    ?CLASS a owl:Restriction ;
+      owl:onProperty ?PROP ;
+      owl:someValuesFrom ?VALUE_CLASS .
+} => {
+  ?CRIT :hasN3Statement {
+    ?A1 ?PROP [ rdf:type ?VALUE_CLASS ]
+  } .
+}.
+# end of classPredicate
+
+{ ?CRIT a swrl:IndividualPropertyAtom;
+                 swrl:argument1 ?A1 ;
+                 swrl:argument2 ?A2 ;
+                 swrl:propertyPredicate ?P .
+} => {
+  ?CRIT :hasN3Statement { ?A1 ?P ?A2 } .
+}.
+
+{ ?CRIT # :swrl_body_in ?RULE ;
+    a swrl:DatavaluedPropertyAtom ;
+    swrl:argument1 ?A1;
+    swrl:argument2 ?A2;
+    swrl:propertyPredicate ?P .
+} => {
+  ?CRIT :hasN3Statement { ?A1 ?P ?A2 } .
+}.
+
+# DataRangeAtom does not seem to be inplemented in other engines,
+# and usable examples cannot be found
+#{ ?CRIT :swrl_body_in ?RULE ;
+#  a swrl:DataRangeAtom ;
+#   swrl:dataRange ?DR ;
+#   swrl:argument1 ?A1;
+#} => { }.
+
+{ ?CRIT a swrl:SameIndividualAtom;
+    swrl:argument1 ?A1 ;
+    swrl:argument2 ?A2 ;
+} => {
+  ?CRIT :hasN3Statement { ?A1 owl:sameAs ?A2 } .
+# ?CRIT :hasN3Statement { ?A1 log:equalTo ?A2 } .
+}.
+
+{ ?CRIT # :swrl_body_in ?RULE ;
+  a swrl:DifferentIndividualsAtom;
+  swrl:argument1 ?A1;
+  swrl:argument2 ?A2 .
+} => {
+  # ?RULE :n3_antecedent_has { ?A1 owl:differentFrom ?A2 } .
+  # cf http://www.w3.org/TR/owl-ref/#differentFrom-def
+  # add N3 rules for owl:differentFrom
+  :support :rules # euler_owl:owl-differentFrom.n3 .
+    <http://eulersharp.svn.sourceforge.net/viewvc/eulersharp/trunk/2003/03swap/owl-differentFrom.n3> .
+  ?CRIT :hasN3Statement { ?A1 owl:differentFrom ?A2 } .
+}.
+
+######### built-ins #########
+
+# see http://www.daml.org/2004/04/swrl/builtins.html
+
+## machinery
+{ ?CRIT a swrl:BuiltinAtom ;
+  swrl:builtin ?BUILTIN
+} => {
+  ?CRIT :swrl_builtin ?BUILTIN
+} .
+
+## built-in specific
+
+# TODO : replace rules below with a single generic rule + facts like
+#	:swrl_builtin2 :n3_translation ( swrlb:stringConcat  string:concatenation).
+#	:swrl_builtin3 :n3_translation ( swrlb:multiply math:product ).
+
+{ ?CRIT :swrl_builtin swrlb:stringConcat ;
+  swrl:arguments ( ?RES ?A1 ?A2 ) ;
+} => {
+  ?CRIT :hasN3Statement { (?A1 ?A2) string:concatenation ?RES } .
+} .
+
+# Satisfied iff the first argument is equal to the substring of optional length the fourth argument, starting at character offset the third argument in the string the second argument
+{ ?CRIT :swrl_builtin swrlb:substring ;
+  swrl:arguments ( ?RES ?A1 ?A2 ?A3 ) ;
+} => {
+  ?CRIT :hasN3Statement { (?A1 ?A2 ?A3) func:substring ?RES } .
+} .
+
+{ ?CRIT :swrl_builtin swrlb:equal ;
+  swrl:arguments ( ?A1 ?A2 ) ;
+  #_:d e:trace ( ":swrl_builtin 2" ?LIST ?A1 ) ;
+} => {
+  ?CRIT :hasN3Statement { ?A1 log:equalTo ?A2 } . # PENDING math:equalTo
+} .
+
+{ ?CRIT :swrl_builtin swrlb:greaterThanOrEqual ;
+  swrl:arguments ( ?A1 ?A2 ) ;
+} => {
+  ?CRIT :hasN3Statement { ?A1 math:notLessThan ?A2 } .
+} .
+
+{ ?CRIT :swrl_builtin swrlb:lessThanOrEqual ;
+  swrl:arguments ( ?A1 ?A2 ).
+} => {
+  ?CRIT :hasN3Statement { ?A1 math:notGreaterThan ?A2 } .
+} .
+
+{ ?CRIT :swrl_builtin swrlb:greaterThan ;
+  swrl:arguments ( ?A1 ?A2 ).
+} => {
+  ?CRIT :hasN3Statement { ?A1 math:greaterThan ?A2 } .
+} .
+
+{ ?CRIT :swrl_builtin swrlb:lessThan ;
+  swrl:arguments ( ?A1 ?A2 ).
+} => {
+  ?CRIT :hasN3Statement { ?A1 math:lessThan ?A2 } .
+} .
+
+{ ?CRIT :swrl_builtin swrlb:multiply ;
+  #
+  swrl:arguments ( ?RES ?A1 ?A2 ).
+  # swrl:arguments ?LIST .  ?LIST rdf:first ?RES .  ?LIST rdf:rest ?R .  ?R rdf:first ?A1 .  ?R rdf:rest ?RR .  ?RR rdf:first ?A2 .
+  #
+  # _:d e:trace ( ">>r CRIT" ?CRIT " : " ?A1 ?A2 "product" ?RES ).
+ } => {
+  ?CRIT :hasN3Statement { (?A1 ?A2) math:product ?RES } .
+} .
+
+{ ?CRIT :swrl_builtin swrlb:add ;
+  swrl:arguments ( ?RES ?A1 ?A2 ).
+  # swrl:arguments ?LIST .
+  # ?LIST rdf:first ?RES .
+  # ?LIST rdf:rest ?R .
+  # ?R rdf:first ?A1 .
+  # ?R rdf:rest ?RR .
+  # ?RR rdf:first ?A2 .
+ } => {
+   ?CRIT :hasN3Statement { (?A1 ?A2) math:sum ?RES } .
+} .
+
+{ ?CRIT :swrl_builtin swrlb:subtract ;
+  swrl:arguments ( ?RES ?A1 ?A2 ).
+ } => {
+   ?CRIT :hasN3Statement { (?A1 ?A2) math:difference ?RES } .
+} .
+
+{ ?CRIT :swrl_builtin swrlb:divide ;
+  swrl:arguments ( ?RES ?A1 ?A2 ).
+ } => {
+   ?CRIT :hasN3Statement { (?A1 ?A2) math:quotient ?RES } .
+} .
+
+
+######### consequent (head) #########
+{
+  ?RULE a swrl:Imp ;
+     swrl:head ?LIST .
+  ?CRIT list:in ?LIST .
+} => {
+  ?CRIT :swrl_head_in ?RULE .
+} .
+
+## specific
+
+{
+  ?CRIT :swrl_head_in ?RULE ;
+    a swrl:ClassAtom ;
+    swrl:argument1 ?A1 ;
+    swrl:classPredicate ?CLASS .
+} => {
+  # ?RULE :n3_consequent_has { ?A1 rdf:type ?CLASS } .
+  ?CRIT :hasN3Statement { ?A1 rdf:type ?CLASS } .
+}.
+
+######### gather variables #########
+
+{
+  ?CRIT :swrl_body_in ?RULE ;
+        swrl:argument1 ?A
+} => {
+  ?A :swrl_body_variable_in ?RULE .
+}.
+{
+  ?CRIT :swrl_body_in ?RULE ;
+        swrl:argument2 ?A
+} => {
+  ?A :swrl_body_variable_in ?RULE .
+}.
+
+{
+  ?CRIT :swrl_head_in ?RULE ;
+        swrl:argument1 ?A .
+	?A log:rawType ?T .  ?T log:notEqualto log:Literal .
+} => {
+  ?A :swrl_head_variable_in ?RULE .
+}.
+{
+  ?CRIT :swrl_head_in ?RULE ;
+        swrl:argument2 ?A .
+	?A log:rawType ?T .  ?T log:notEqualto log:Literal .
+} => {
+  ?A :swrl_head_variable_in ?RULE .
+}.
+
+{
+  ?A :swrl_body_variable_in ?RULE .
+} => {
+  ?RULE :hasVariable ?A .
+}.
+{
+  ?A :swrl_head_variable_in ?RULE .
+} => {
+  ?RULE :hasVariable ?A .
+}.
+
+{
+  ?CRIT :swrl_body_in ?RULE ;
+        swrl:arguments ?LIST .
+  ?VAR list:in ?LIST . 
+  # _:d e:trace ( ">> Variable" ?VAR ).
+  # ?VAR log:rawType ?T .
+
+  # eliminate literals
+  ?VAR log:uri ?URI_STRING .
+
+  # _:d e:trace ( ">> Variable" ?VAR ?T ).
+  # _:d e:trace ( ">> Variable == URI" ?VAR ?URI_STRING ).
+  # ?T log:notEqualto log:Literal .
+} => {
+  ?RULE :hasVariable ?VAR .
+}.
+
+{
+  ?RULE a swrl:Imp .
+  _:d e:findall ( ?A
+    { ?RULE :hasVariable ?A . }
+    ?LA ).
+ ?LA e:distinct ?LDV .
+ # _:d e:trace ( ">>distinctVariables"  ?RULE ?LDV ).
+} => {
+  ?RULE :distinctVariables ?LDV .
+}.
+
+################# substitute variables ###################
+
+{	# create the substitution list for each RULE
+  ?RULE :distinctVariables ?LDV .
+  _:d e:findall ( (?VAR_ORIG ?VARNEW) {
+      ?VAR_ORIG list:in ?LDV.
+      ?VARNEW e:tuple ?VAR_ORIG.
+    }
+    ?LIST_SUBST ).
+ # _:d e:trace ( ">>distinctVariables"  ?RULE ?LDV ).
+} => {
+  ?RULE :swrlToN3VariableSubtitution ?LIST_SUBST.
+}.
+
+{ # substitute variables in Antecedent
+  ?RULE a swrl:Imp .
+  (_:d 2) e:findall ( ?A { ?RULE :n3_antecedent_has ?A } ?LA ).
+  ?LA log:conjunction ?FA .
+  ?RULE :swrlToN3VariableSubtitution ?LIST_SUBST.
+} => {
+  ?RULE :ruleAntecedent_tmp ?FA . # keep track
+  ?FA :substituteVariablesInFormula ?LIST_SUBST .
+}.
+{
+  ?RULE :ruleAntecedent_tmp ?FA .
+  (?FA ?L) :substitutedFormula ?FSUBST.
+} => {
+  ?RULE :ruleAntecedent ?FSUBST .
+}.
+
+{ # substitute variables in Consequent
+  ?RULE a swrl:Imp .
+  _:d e:findall ( ?A { ?RULE :n3_consequent_has ?A } ?LA ).
+  ?LA log:conjunction ?FA .
+  ?RULE :swrlToN3VariableSubtitution ?LIST_SUBST.
+} => {
+  ?RULE :ruleConsequent_tmp ?FA . # keep track
+  ?FA :substituteVariablesInFormula ?LIST_SUBST .
+}.
+{
+  ?RULE :ruleConsequent_tmp ?FA .
+  (?FA ?L) :substitutedFormula ?FSUBST.
+} => {
+  ?RULE :ruleConsequent ?FSUBST .
+}.
+
+## test print
+# { ?LC :ruleAntecedent ?L . } => { _:dd :print (?LC :ruleAntecedent ?L) . }.

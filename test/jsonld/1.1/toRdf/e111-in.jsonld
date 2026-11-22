@@ -1,0 +1,21 @@
+{
+  "@context": [{
+    "@version": 1.1,
+    "@base": "http://example.com/some/deep/directory/and/file/",
+    "@vocab": "http://example.com/vocabulary/"
+  }, {
+    "@vocab": "./rel2#"
+  }],
+  "@id": "relativePropertyIris",
+  "link": "link",
+  "#fragment-works": "#fragment-works",
+  "?query=works": "?query=works",
+  "./": "./",
+  "../": "../",
+  "../parent": "../parent",
+  "../../parent-parent-eq-root": "../../parent-parent-eq-root",
+  "../../../../../still-root": "../../../../../still-root",
+  "../.././.././../../too-many-dots": "../.././.././../../too-many-dots",
+  "/absolute": "/absolute",
+  "//example.org/scheme-relative": "//example.org/scheme-relative"
+}

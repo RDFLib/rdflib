@@ -1,0 +1,82 @@
+#Processed by Id: euler.yap 4653 2011-10-30 11:01:47Z josd
+#eye --nope --no-span http://eulersharp.sourceforge.net/2010/05smml/FACTSneighbourtriangles.n3 http://eulersharp.sourceforge.net/2010/05smml/RULESfaces.n3 --query http://eulersharp.sourceforge.net/2010/05smml/QUERYfaces.n3
+
+@prefix : <http://smartlab.elis.ugent.be/aimontologies/geometry/instancesSTLBox#>.
+@prefix stl: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix ns1: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/ifctox3d#>.
+@prefix x3d: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologyx3d20091015#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix list: <http://www.co-ode.org/ontologies/lists/2008/09/11/list.owl#>.
+@prefix inst: <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix matrix: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/matrix#>.
+@prefix we: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/wingededge#>.
+@prefix var: <http://localhost/var#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+_:sk5 a we:FinalFace. _:sk5 we:facetriangles (:Triangle1 :Triangle3 :Triangle4 :Triangle2). _:sk5 we:trianglescount 4 .
+:Triangle1 we:partofface _:sk5.
+:Triangle3 we:partofface _:sk5.
+:Triangle4 we:partofface _:sk5.
+:Triangle2 we:partofface _:sk5.
+_:sk5 we:facenormal ("-0.0"^^xsd:double "-1.0"^^xsd:double "0.0"^^xsd:double).
+_:sk5 we:facenormal ("0.0"^^xsd:double "-1.0"^^xsd:double "-0.0"^^xsd:double).
+_:sk14 a we:FinalFace. _:sk14 we:facetriangles (:Triangle5 :Triangle7 :Triangle8 :Triangle6). _:sk14 we:trianglescount 4 .
+:Triangle5 we:partofface _:sk14.
+:Triangle7 we:partofface _:sk14.
+:Triangle8 we:partofface _:sk14.
+:Triangle6 we:partofface _:sk14.
+_:sk14 we:facenormal ("1.0"^^xsd:double "-0.0"^^xsd:double "0.0"^^xsd:double).
+_:sk14 we:facenormal ("1.0"^^xsd:double "0.0"^^xsd:double "-0.0"^^xsd:double).
+_:sk23 a we:FinalFace. _:sk23 we:facetriangles (:Triangle9 :Triangle11 :Triangle12 :Triangle10). _:sk23 we:trianglescount 4 .
+:Triangle9 we:partofface _:sk23.
+:Triangle11 we:partofface _:sk23.
+:Triangle12 we:partofface _:sk23.
+:Triangle10 we:partofface _:sk23.
+_:sk23 we:facenormal ("-0.0"^^xsd:double "1.0"^^xsd:double "-0.0"^^xsd:double).
+_:sk23 we:facenormal ("0.0"^^xsd:double "1.0"^^xsd:double "0.0"^^xsd:double).
+_:sk5 we:parallelface _:sk23.
+_:sk23 we:parallelface _:sk5.
+_:sk32 a we:FinalFace. _:sk32 we:facetriangles (:Triangle13 :Triangle15 :Triangle16 :Triangle14). _:sk32 we:trianglescount 4 .
+:Triangle13 we:partofface _:sk32.
+:Triangle15 we:partofface _:sk32.
+:Triangle16 we:partofface _:sk32.
+:Triangle14 we:partofface _:sk32.
+_:sk32 we:facenormal ("-1.0"^^xsd:double "-0.0"^^xsd:double "-0.0"^^xsd:double).
+_:sk32 we:facenormal ("-1.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+_:sk14 we:parallelface _:sk32.
+_:sk32 we:parallelface _:sk14.
+_:sk43 a we:FinalFace. _:sk43 we:facetriangles (:Triangle17 :Triangle21 :Triangle18 :Triangle22 :Triangle19 :Triangle20). _:sk43 we:trianglescount 6 .
+:Triangle17 we:partofface _:sk43.
+:Triangle21 we:partofface _:sk43.
+:Triangle18 we:partofface _:sk43.
+:Triangle22 we:partofface _:sk43.
+:Triangle19 we:partofface _:sk43.
+:Triangle20 we:partofface _:sk43.
+_:sk43 we:facenormal ("0.0"^^xsd:double "0.0"^^xsd:double "-1.0"^^xsd:double).
+_:sk43 we:facenormal ("0.0"^^xsd:double "-0.0"^^xsd:double "-1.0"^^xsd:double).
+_:sk43 we:facenormal ("-0.0"^^xsd:double "0.0"^^xsd:double "-1.0"^^xsd:double).
+_:sk54 a we:FinalFace. _:sk54 we:facetriangles (:Triangle23 :Triangle27 :Triangle24 :Triangle28 :Triangle25 :Triangle26). _:sk54 we:trianglescount 6 .
+:Triangle23 we:partofface _:sk54.
+:Triangle27 we:partofface _:sk54.
+:Triangle24 we:partofface _:sk54.
+:Triangle28 we:partofface _:sk54.
+:Triangle25 we:partofface _:sk54.
+:Triangle26 we:partofface _:sk54.
+_:sk54 we:facenormal ("0.0"^^xsd:double "0.0"^^xsd:double "1.0"^^xsd:double).
+_:sk54 we:facenormal ("0.0"^^xsd:double "-0.0"^^xsd:double "1.0"^^xsd:double).
+_:sk54 we:facenormal ("-0.0"^^xsd:double "-0.0"^^xsd:double "1.0"^^xsd:double).
+_:sk54 we:facenormal ("-0.0"^^xsd:double "0.0"^^xsd:double "1.0"^^xsd:double).
+_:sk43 we:parallelface _:sk54.
+_:sk54 we:parallelface _:sk43.
+
+
+#ENDS 1132 [msec] TC=199 TP=38180 BC=0 BP=1496 PM=0 CM=0 FM=0 AM=0
+

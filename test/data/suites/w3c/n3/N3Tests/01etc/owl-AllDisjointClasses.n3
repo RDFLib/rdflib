@@ -1,0 +1,5 @@
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+{?X a owl:AllDisjointClasses. ?X owl:members ?L. ?C list:in ?L. ?D list:in ?L. ?C log:notEqualTo ?D. ?I a ?C. ?I a ?D} => false.

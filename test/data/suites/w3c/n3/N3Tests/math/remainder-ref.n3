@@ -1,0 +1,8 @@
+@prefix : <remainder.n3#> .
+
+:test1a a :SUCCESS .
+:test1b a :SUCCESS .
+:test1c a :SUCCESS .
+:test1d a :SUCCESS .
+:test1e a :SUCCESS .
+:test1f a :SUCCESS .

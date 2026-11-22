@@ -1,0 +1,11 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+select reduced ?x (count(distinct ?y) as ?cnt)  where
+{
+    ?x (rdf:type|^rdf:type) ?y
+    {
+        ?y ?a ?z
+    }
+}
+group by ?x
+order by ?x
+limit 50

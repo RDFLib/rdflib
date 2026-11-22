@@ -1,0 +1,7 @@
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+
+{?A a owl:AllDifferent. ?A owl:members ?L. ?X list:in ?L. ?Y list:in ?L. ?X log:notEqualTo ?Y. ?X owl:sameAs ?Y} => false.
+{?A a owl:AllDifferent. ?A owl:distinctMembers ?L. ?X list:in ?L. ?Y list:in ?L. ?X log:notEqualTo ?Y. ?X owl:sameAs ?Y} => false.

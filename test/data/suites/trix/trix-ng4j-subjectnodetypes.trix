@@ -1,0 +1,29 @@
+<TriX xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+  <graph>
+    <triple>
+      <id>foobar</id>
+      <uri>http://example.org/#bar</uri>
+      <uri>http://example.org/#baz</uri>
+    </triple>
+    <triple>
+      <uri>http://example.org/#foo</uri>
+      <uri>http://example.org/#bar</uri>
+      <uri>http://example.org/#baz</uri>
+    </triple>
+    <triple>
+      <plainLiteral>foobar</plainLiteral>
+      <uri>http://example.org/#bar</uri>
+      <uri>http://example.org/#baz</uri>
+    </triple>
+    <triple>
+      <plainLiteral xml:lang="en">foobar</plainLiteral>
+      <uri>http://example.org/#bar</uri>
+      <uri>http://example.org/#baz</uri>
+    </triple>
+    <triple>
+      <typedLiteral datatype="http://example.org/#dt">foobar</typedLiteral>
+      <uri>http://example.org/#bar</uri>
+      <uri>http://example.org/#baz</uri>
+    </triple>
+  </graph>
+</TriX>

@@ -1,0 +1,28 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "prop": {"@container": "@index"},
+    "foo": "http://example/base-foo",
+    "Outer": {
+      "@context": {
+        "prop": {
+          "@id": "http://example/outer-prop",
+          "@container": "@type"
+        }
+      }
+    },
+    "Inner": {"@context": {"foo": "http://example/inner-foo"}}
+  },
+  "@type": "Outer",
+  "prop": {
+    "Inner": {
+      "prop": {
+        "index": {
+          "@id": "http://example/inner-with-index",
+          "foo": "inner-foo"
+        }
+      }
+    }
+  },
+  "foo": "base-foo"
+}

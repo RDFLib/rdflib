@@ -1,0 +1,3 @@
+<http://me.markus-lanthaler.com/> <http://example.com/link> <http://json-ld.org/test-suite/tests/relative-iri> .
+<http://me.markus-lanthaler.com/> <http://xmlns.com/foaf/0.1/homepage> <http://www.markus-lanthaler.com/> .
+<http://me.markus-lanthaler.com/> <http://xmlns.com/foaf/0.1/name> "Markus Lanthaler" .

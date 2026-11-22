@@ -1,0 +1,18 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+### reason-state test
+
+{_: e:true 0.15} => {:R1 e:boolean e:T}.
+
+{:R1 e:boolean e:T. _: e:true 0.66} => {:S1 e:boolean e:T}.
+{:R1 e:boolean e:F. _: e:true 0.42} => {:S1 e:boolean e:T}.
+
+{:R1 e:boolean e:T. _: e:true 0.75} => {:S2 e:boolean e:T}.
+{:R1 e:boolean e:F. _: e:true 0.52} => {:S2 e:boolean e:T}.
+
+{:S1 e:boolean e:T. _: e:true 0.30} => {:T1 e:boolean e:T}.
+{:S1 e:boolean e:F. _: e:true 0.13} => {:T1 e:boolean e:T}.
+
+{:S2 e:boolean e:T. _: e:true 0.20} => {:T2 e:boolean e:T}.
+{:S2 e:boolean e:F. _: e:true 0.10} => {:T2 e:boolean e:T}.

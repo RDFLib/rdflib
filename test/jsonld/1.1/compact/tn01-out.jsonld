@@ -1,0 +1,19 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "notype": {"@id": "http://example.com/notype", "@type": "@none"}
+  },
+  "notype": [
+    {"@value": "string"},
+    {"@value": true},
+    {"@value": false},
+    {"@value": 1},
+    {"@value": 10.0},
+    {"@value": "plain"},
+    {"@value": true, "@type": "xsd:boolean"},
+    {"@value": "english", "@language": "en"},
+    {"@value": "2018-02-17", "@type": "xsd:date"},
+    {"@id": "http://example.com/iri"}
+  ]
+}

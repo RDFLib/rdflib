@@ -1,0 +1,7 @@
+@prefix :         <append.n3#> .
+
+:test1 a :success.
+:test2 :is (1 2 3 4 5 6).
+:test3 a :success.
+:test4 :is (1).
+:test5 :is (1 2 3 4).

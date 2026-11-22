@@ -1,0 +1,11 @@
+[{
+  "@type": ["ex:Outer"],
+  "ex:nested": [{
+    "@type": ["ex:Inner"],
+    "ex:foo": {"@type": "ex:Number", "@value": "1"},
+    "ex:bar": [
+      {"@id": "http://example/a"},
+      {"@id": "http://example/b"}
+    ]
+  }]
+}]

@@ -1,0 +1,3 @@
+_:bnode1 <http://xmlns.com/foaf/0.1/Friend> "Michele" <http://example.org/alice/foaf2.rdf> .
+<http://example.org/Kevin> <http://xmlns.com/foaf/0.1/Friend> _:bnode2 <http://example.org/alice/foaf3.rdf> .
+

@@ -1,0 +1,21 @@
+# Query6 - articulation simplification test
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#> 
+PREFIX : <http://example.org/test#>
+
+SELECT *
+WHERE
+{
+  ?X :p _:a.
+ _:a :q ?Y. 
+
+#  ?X :p ?Y.
+#  ?Y :q _:a. 
+
+#  ?X :p ?Y.
+#  ?Y rdf:type _:a. 
+#  _:a rdf:type owl:Restriction.
+#  _:a owl:onProperty :q.
+#  _:a owl:someValuesFrom owl:Thing.
+}

@@ -1,0 +1,37 @@
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix c2d: <http://josd.github.io/eye/reasoning/c2d#>.
+@prefix : <http://josd.github.io/eye/reasoning#>.
+
+{
+    ?S :answer (:expected ?U :predicted ?V :belief ?B :evidence ?E).
+} <= {
+    ?S :output1 ?U.
+    ?SCOPE e:findall (
+        (?P ?O ?C ?N)
+        {
+            (
+                :input1
+                :input2
+                :input3
+                :input4
+                :input5
+                :input10
+            ) list:member ?P.
+            ?S ?P ?O.
+            (?P ?O) c2d:model (:output1 ?C ?N).
+        }
+        ?POD
+    ).
+    (?POD 3.0 1.0) c2d:transformer (?E ?Q).
+    ?SCOPE e:optional {
+        ?Q math:greaterThan 0.5.
+        ("1") e:calculate ?V.
+        ("_Q" ?Q) e:calculate ?B.
+    }, {
+        ?Q math:notGreaterThan 0.5.
+        ("0") e:calculate ?V.
+        ("1-_Q" ?Q) e:calculate ?B.
+    }.
+}.

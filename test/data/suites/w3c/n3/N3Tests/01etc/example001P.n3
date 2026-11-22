@@ -1,0 +1,15 @@
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix fl: <http://eulersharp.sourceforge.net/2003/03swap/fl-rules#>.
+@prefix : <http://www.agfa.com/w3c/euler/case001#>.
+
+:Ann a :Person; :age 18.1666.
+
+{?P a :Person; :age ?A. ?A math:lessThan 17} => {(?P :ChildAge) fl:mu 1.0}.
+{?P a :Person; :age ?A. ?A math:notLessThan 17; math:lessThan 19. (?A 17) math:difference ?Y. (?Y 2) math:quotient ?X. (1.0 ?X) math:difference ?M} => {(?P :ChildAge) fl:mu ?M}.
+{?P a :Person; :age ?A. ?A math:notLessThan 19} => {(?P :ChildAge) fl:mu 0.0}.
+
+{?P a :Person; :age ?A. ?A math:lessThan 17} => {(?P :AdultAge) fl:mu 0.0}.
+{?P a :Person; :age ?A. ?A math:notLessThan 17; math:lessThan 19. (?A 17) math:difference ?X. (?X 2) math:quotient ?M} => {(?P :AdultAge) fl:mu ?M}.
+{?P a :Person; :age ?A. ?A math:notLessThan 19} => {(?P :AdultAge) fl:mu 1.0}.

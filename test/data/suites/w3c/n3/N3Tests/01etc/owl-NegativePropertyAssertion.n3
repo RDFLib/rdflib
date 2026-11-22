@@ -1,0 +1,4 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+{?X owl:sourceIndividual ?I1. ?X owl:assertionProperty ?P. ?X owl:targetIndividual ?I2. ?I1 ?P ?I2} => false.
+{?X owl:sourceIndividual ?I. ?X owl:assertionProperty ?P. ?X owl:targetValue ?LT. ?I ?P ?LT} => false.

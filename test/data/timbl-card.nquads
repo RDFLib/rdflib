@@ -1,0 +1,86 @@
+<file:///home/gjh/DesignIssues/Overview.html> <http://purl.org/dc/elements/1.1/title> "Design Issues for the World Wide Web" <urn:x-rdflib:default> .
+<file:///home/gjh/DesignIssues/Overview.html> <http://xmlns.com/foaf/0.1/maker> <https://www.w3.org/People/Berners-Lee/card#i> <urn:x-rdflib:default> .
+<file:///home/gjh/PyBench/rdflib-github-identifier-as-context/#i> <http://www.w3.org/ns/auth/cert#key> _:ub1bL214C17 <urn:x-rdflib:default> .
+<file:///home/gjh/PyBench/rdflib-github-identifier-as-context/> <http://creativecommons.org/ns#license> <http://creativecommons.org/licenses/by-nc/3.0/> <urn:x-rdflib:default> .
+<file:///home/gjh/PyBench/rdflib-github-identifier-as-context/> <http://purl.org/dc/elements/1.1/title> "Tim Berners-Lee's FOAF file" <urn:x-rdflib:default> .
+<file:///home/gjh/PyBench/rdflib-github-identifier-as-context/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/PersonalProfileDocument> <urn:x-rdflib:default> .
+<file:///home/gjh/PyBench/rdflib-github-identifier-as-context/> <http://xmlns.com/foaf/0.1/maker> <https://www.w3.org/People/Berners-Lee/card#i> <urn:x-rdflib:default> .
+<file:///home/gjh/PyBench/rdflib-github-identifier-as-context/> <http://xmlns.com/foaf/0.1/primaryTopic> <https://www.w3.org/People/Berners-Lee/card#i> <urn:x-rdflib:default> .
+<http://dig.csail.mit.edu/2005/ajar/ajaw/data#Tabulator> <http://usefulinc.com/ns/doap#developer> <https://www.w3.org/People/Berners-Lee/card#i> <urn:x-rdflib:default> .
+<http://dig.csail.mit.edu/2007/01/camp/data#course> <http://xmlns.com/foaf/0.1/maker> <https://www.w3.org/People/Berners-Lee/card#i> <urn:x-rdflib:default> .
+<http://dig.csail.mit.edu/breadcrumbs/blog/4> <http://purl.org/dc/elements/1.1/title> "timbl's blog on DIG" <urn:x-rdflib:default> .
+<http://dig.csail.mit.edu/breadcrumbs/blog/4> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://dig.csail.mit.edu/breadcrumbs/blog/feed/4> <urn:x-rdflib:default> .
+<http://dig.csail.mit.edu/breadcrumbs/blog/4> <http://xmlns.com/foaf/0.1/maker> <https://www.w3.org/People/Berners-Lee/card#i> <urn:x-rdflib:default> .
+<http://dig.csail.mit.edu/data#DIG> <http://xmlns.com/foaf/0.1/member> <https://www.w3.org/People/Berners-Lee/card#i> <urn:x-rdflib:default> .
+<http://wiki.ontoworld.org/index.php/_IRW2006> <http://purl.org/dc/elements/1.1/title> "Identity, Reference and the Web workshop 2006" <urn:x-rdflib:default> .
+<http://wiki.ontoworld.org/index.php/_IRW2006> <http://www.w3.org/2000/10/swap/pim/contact#participant> <https://www.w3.org/People/Berners-Lee/card#i> <urn:x-rdflib:default> .
+<http://www.ecs.soton.ac.uk/~dt2/dlstuff/www2006_data#panel-panelk01> <http://www.w3.org/2000/01/rdf-schema#label> "The Next Wave of the Web (Plenary Panel)" <urn:x-rdflib:default> .
+<http://www.ecs.soton.ac.uk/~dt2/dlstuff/www2006_data#panel-panelk01> <http://www.w3.org/2000/10/swap/pim/contact#participant> <https://www.w3.org/People/Berners-Lee/card#i> <urn:x-rdflib:default> .
+<http://www.w3.org/2000/10/swap/data#Cwm> <http://usefulinc.com/ns/doap#developer> <https://www.w3.org/People/Berners-Lee/card#i> <urn:x-rdflib:default> .
+<http://www.w3.org/2011/Talks/0331-hyderabad-tbl/data#talk> <http://purl.org/dc/terms/title> "Designing the Web for an Open Society" <urn:x-rdflib:default> .
+<http://www.w3.org/2011/Talks/0331-hyderabad-tbl/data#talk> <http://xmlns.com/foaf/0.1/maker> <https://www.w3.org/People/Berners-Lee/card#i> <urn:x-rdflib:default> .
+<http://www.w3.org/data#W3C> <http://xmlns.com/foaf/0.1/member> <https://www.w3.org/People/Berners-Lee/card#i> <urn:x-rdflib:default> .
+<https://timbl.com/timbl/Public/friends.ttl> <http://creativecommons.org/ns#license> <http://creativecommons.org/licenses/by-nc/3.0/> <urn:x-rdflib:default> .
+<https://timbl.com/timbl/Public/friends.ttl> <http://purl.org/dc/elements/1.1/title> "Tim Berners-Lee's editable profile" <urn:x-rdflib:default> .
+<https://timbl.com/timbl/Public/friends.ttl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/PersonalProfileDocument> <urn:x-rdflib:default> .
+<https://timbl.com/timbl/Public/friends.ttl> <http://xmlns.com/foaf/0.1/maker> <https://www.w3.org/People/Berners-Lee/card#i> <urn:x-rdflib:default> .
+<https://timbl.com/timbl/Public/friends.ttl> <http://xmlns.com/foaf/0.1/primaryTopic> <https://www.w3.org/People/Berners-Lee/card#i> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://rdfs.org/sioc/ns#avatar> <file:///home/gjh/PyBench/rdflib-github-identifier-as-context/images/timbl-image-by-Coz-cropped.jpg> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://schema.org/owns> <https://timblbot.inrupt.net/profile/card#me> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/10/swap/pim/contact#Male> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/2000/01/rdf-schema#label> "Tim Berners-Lee" <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://timbl.com/timbl/Public/friends.ttl> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/2000/10/swap/pim/contact#assistant> <https://www.w3.org/People/Berners-Lee/card#amy> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/2000/10/swap/pim/contact#homePage> <file:///home/gjh/PyBench/Berners-Lee/> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/2000/10/swap/pim/contact#office> _:ub1bL112C13 <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/2000/10/swap/pim/contact#preferredURI> "https://www.w3.org/People/Berners-Lee/card#i" <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/2000/10/swap/pim/contact#publicHomePage> <file:///home/gjh/PyBench/Berners-Lee/> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/2006/vcard/ns#fn> "Tim Berners-Lee" <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/2006/vcard/ns#hasAddress> _:ub1bL102C9 <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/ns/ldp#inbox> <https://timbl.com/timbl/Public/Inbox> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/ns/pim/space#preferencesFile> <https://timbl.com/timbl/Data/preferences.n3> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/ns/pim/space#storage> <https://timbl.com/timbl/Public/> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/ns/pim/space#storage> <https://timbl.inrupt.net/> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/ns/pim/space#storage> <https://timbl.solid.community/> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/ns/solid/terms#editableProfile> <https://timbl.com/timbl/Public/friends.ttl> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/ns/solid/terms#oidcIssuer> <https://timbl.com> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/ns/solid/terms#profileBackgroundColor> "#ffffff" <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/ns/solid/terms#profileHighlightColor> "#00467E" <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://www.w3.org/ns/solid/terms#publicTypeIndex> <https://timbl.com/timbl/Public/PublicTypeIndex.ttl> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://xmlns.com/foaf/0.1/account> <http://en.wikipedia.org/wiki/User:Timbl> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://xmlns.com/foaf/0.1/account> <http://twitter.com/timberners_lee> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://xmlns.com/foaf/0.1/account> <http://www.reddit.com/user/timbl/> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://xmlns.com/foaf/0.1/based_near> _:ub1bL131C21 <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://xmlns.com/foaf/0.1/family_name> "Berners-Lee" <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://xmlns.com/foaf/0.1/givenname> "Timothy" <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://xmlns.com/foaf/0.1/homepage> <https://www.w3.org/People/Berners-Lee/> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://xmlns.com/foaf/0.1/img> <https://www.w3.org/Press/Stock/Berners-Lee/2001-europaeum-eighth.jpg> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://xmlns.com/foaf/0.1/mbox> <mailto:timbl@w3.org> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://xmlns.com/foaf/0.1/mbox_sha1sum> "965c47c5a70db7407210cef6e4e6f5374a525c5c" <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://xmlns.com/foaf/0.1/name> "Timothy Berners-Lee" <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://xmlns.com/foaf/0.1/nick> "TimBL" <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://xmlns.com/foaf/0.1/nick> "timbl" <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://xmlns.com/foaf/0.1/openid> <https://www.w3.org/People/Berners-Lee/> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://xmlns.com/foaf/0.1/title> "Sir" <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://xmlns.com/foaf/0.1/weblog> <http://dig.csail.mit.edu/breadcrumbs/blog/4> <urn:x-rdflib:default> .
+<https://www.w3.org/People/Berners-Lee/card#i> <http://xmlns.com/foaf/0.1/workplaceHomepage> <https://www.w3.org/> <urn:x-rdflib:default> .
+_:ub1bL102C9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2006/vcard/ns#Work> <urn:x-rdflib:default> .
+_:ub1bL102C9 <http://www.w3.org/2006/vcard/ns#locality> "Cambridge" <urn:x-rdflib:default> .
+_:ub1bL102C9 <http://www.w3.org/2006/vcard/ns#postal-code> "02139" <urn:x-rdflib:default> .
+_:ub1bL102C9 <http://www.w3.org/2006/vcard/ns#region> "MA" <urn:x-rdflib:default> .
+_:ub1bL102C9 <http://www.w3.org/2006/vcard/ns#street-address> "32 Vassar Street" <urn:x-rdflib:default> .
+_:ub1bL112C13 <http://www.w3.org/2000/10/swap/pim/contact#address> _:ub1bL114C15 <urn:x-rdflib:default> .
+_:ub1bL112C13 <http://www.w3.org/2003/01/geo/wgs84_pos#location> _:ub1bL113C19 <urn:x-rdflib:default> .
+_:ub1bL113C19 <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.361860" <urn:x-rdflib:default> .
+_:ub1bL113C19 <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.091840" <urn:x-rdflib:default> .
+_:ub1bL114C15 <http://www.w3.org/2000/10/swap/pim/contact#city> "Cambridge" <urn:x-rdflib:default> .
+_:ub1bL114C15 <http://www.w3.org/2000/10/swap/pim/contact#country> "USA" <urn:x-rdflib:default> .
+_:ub1bL114C15 <http://www.w3.org/2000/10/swap/pim/contact#postalCode> "02139" <urn:x-rdflib:default> .
+_:ub1bL114C15 <http://www.w3.org/2000/10/swap/pim/contact#street2> "MIT CSAIL Building 32" <urn:x-rdflib:default> .
+_:ub1bL114C15 <http://www.w3.org/2000/10/swap/pim/contact#street> "32 Vassar Street" <urn:x-rdflib:default> .
+_:ub1bL131C21 <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.361860" <urn:x-rdflib:default> .
+_:ub1bL131C21 <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.091840" <urn:x-rdflib:default> .
+_:ub1bL214C17 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/auth/cert#RSAPublicKey> <urn:x-rdflib:default> .
+_:ub1bL214C17 <http://www.w3.org/ns/auth/cert#exponent> "65537"^^<http://www.w3.org/2001/XMLSchema#integer> <urn:x-rdflib:default> .
+_:ub1bL214C17 <http://www.w3.org/ns/auth/cert#modulus> "ebe99c737bd3670239600547e5e2eb1d1497da39947b6576c3c44ffeca32cf0f2f7cbee3c47001278a90fc7fc5bcf292f741eb1fcd6bbe7f90650afb519cf13e81b2bffc6e02063ee5a55781d420b1dfaf61c15758480e66d47fb0dcb5fa7b9f7f1052e5ccbd01beee9553c3b6b51f4daf1fce991294cd09a3d1d636bc6c7656e4455d0aff06daec740ed0084aa6866fcae1359de61cc12dbe37c8fa42e977c6e727a8258bb9a3f265b27e3766fe0697f6aa0bcc81c3f026e387bd7bbc81580dc1853af2daa099186a9f59da526474ef6ec0a3d84cf400be3261b6b649dea1f78184862d34d685d2d587f09acc14cd8e578fdd2283387821296f0af39b8d8845"^^<http://www.w3.org/2001/XMLSchema#hexBinary> <urn:x-rdflib:default> .

@@ -1,0 +1,17 @@
+@prefix string: <http://www.w3.org/2000/10/swap/string#>.
+@prefix : <#>.
+
+{ ("A green party" "green" "blue") string:replace "A blue party" } => { :test1 a :success }.
+
+{ ("fofof bar" "of" "baz") string:replace "fbazbaz bar"} => { :test2 a :success }.
+
+{ ("example 3" "example" "test") string:replace ?x} => {:test3 :is ?x }.
+
+{ ("fofof bar" :of :baz) string:replace "fbazbaz bar"} => { :test4 a :FAILURE }.
+
+# Variations with variable bindings
+:list :value ("A green party" "green" "blue") .
+:green :value "green" .
+
+{ [is :value of :list] string:replace "A blue party" } => { :test5a a :success}.
+{ ("A green party" [is :value of :green] "blue") string:replace "A blue party" } => { :test5b a :success}.

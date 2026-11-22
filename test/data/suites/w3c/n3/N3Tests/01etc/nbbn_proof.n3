@@ -1,0 +1,139 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/nbbn/nbbn-plugin.n3 http://josd.github.io/brain/nbbn/nbbn-model.n3 --query http://josd.github.io/brain/nbbn/nbbn-query.n3
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix bbn: <http://eulersharp.sourceforge.net/2006/02swap/nbbn-plugin#>.
+@prefix : <http://josd.github.io/brain#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:biconditional 0.21419642857142857 .
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:biconditional 0.21419642857142857 .
+  };
+  r:evidence (
+    <#lemma2>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0.21419642857142857];
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:biconditional 0.21419642857142857 .
+  };
+  r:evidence (
+    <#lemma4>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/nbbn/nbbn-plugin.n3> <http://josd.github.io/brain/nbbn/nbbn-model.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T})];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo {:Resistance :outcomeOf :FloxacinTreatment}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2003/03swap/log-rules#T"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T})];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 0.21419642857142857];
+  r:rule <#lemma5>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:biconditional var:x_0} => {({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:biconditional var:x_0}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/nbbn/nbbn-query.n3>].
+
+<#lemma4> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/nbbn/nbbn-plugin.n3> <http://josd.github.io/brain/nbbn/nbbn-model.n3>) 1) e:call {({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:firstRest ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T})).
+     ("if_then_else" {("nb_getval" "bnet" "done") e:derive true} true {() bbn:bnet true.
+      ("nb_setval" "bnet" "done") e:derive true}) e:derive true.
+     ({:Resistance :outcomeOf :FloxacinTreatment}) bbn:bvar true.
+     (e:T) bbn:bval true.
+     ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) 0.21419642857142857) bbn:nb true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:firstRest ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}))}]
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "bnet" "done") e:derive true} true {() bbn:bnet true.
+     ("nb_setval" "bnet" "done") e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {({:Resistance :outcomeOf :FloxacinTreatment}) bbn:bvar true}]
+    <#lemma6>
+    <#lemma7>
+  );
+  r:rule [ a r:Fact; r:gives {{({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:firstRest ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T})).
+    ("if_then_else" {("nb_getval" "bnet" "done") e:derive true} true {() bbn:bnet true.
+     ("nb_setval" "bnet" "done") e:derive true}) e:derive true.
+    ({:Resistance :outcomeOf :FloxacinTreatment}) bbn:bvar true.
+    (e:T) bbn:bval true.
+    ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) 0.21419642857142857) bbn:nb true} => {((<http://josd.github.io/brain/nbbn/nbbn-plugin.n3> <http://josd.github.io/brain/nbbn/nbbn-model.n3>) 1) e:call {({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:firstRest ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T})).
+     ("if_then_else" {("nb_getval" "bnet" "done") e:derive true} true {() bbn:bnet true.
+      ("nb_setval" "bnet" "done") e:derive true}) e:derive true.
+     ({:Resistance :outcomeOf :FloxacinTreatment}) bbn:bvar true.
+     (e:T) bbn:bval true.
+     ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) 0.21419642857142857) bbn:nb true}}}].
+
+<#lemma5> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5. {var:x_1 e:biconditional var:x_5} <= {var:x_0 e:call {var:x_1 e:firstRest ({var:x_2 e:boolean var:x_3} var:x_4).
+      ("if_then_else" {("nb_getval" "bnet" "done") e:derive true} true {() bbn:bnet true.
+       ("nb_setval" "bnet" "done") e:derive true}) e:derive true.
+      (var:x_2) bbn:bvar true.
+      (var:x_3) bbn:bval true.
+      ({var:x_2 e:boolean var:x_3} var:x_4 var:x_5) bbn:nb true}}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/nbbn/nbbn-plugin.n3>].
+
+<#lemma6> a r:Extraction;
+  r:gives {
+    (e:T) bbn:bval true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/nbbn/nbbn-plugin.n3>].
+
+<#lemma7> a r:Inference;
+  r:gives {
+    ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) 0.21419642857142857) bbn:nb true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:EscherichiaColiInfection :treatedBy :FloxacinTreatment} e:boolean e:T}) bbn:bcnd 0.17 .
+     ({{:EscherichiaColiInfection :treatedBy :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) 0.8660714285714286) bbn:nb true.
+     {{:EscherichiaColiInfection :treatedBy :FloxacinTreatment} e:boolean e:T} bbn:inverse {{:EscherichiaColiInfection :treatedBy :FloxacinTreatment} e:boolean e:F}.
+     ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:EscherichiaColiInfection :treatedBy :FloxacinTreatment} e:boolean e:F}) bbn:bcnd 0.5 .
+     ("_F*_E+(1-_F)*_H" 0.8660714285714286 0.17 0.5) e:calculate 0.21419642857142857} true {({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) _:sk_0) bbn:nc true.
+     {{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} bbn:inverse _:sk_1.
+     (_:sk_1 ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) _:sk_2) bbn:nc true.
+     ("1/(1+2**(_K-_I))" _:sk_2 _:sk_0) e:calculate 0.21419642857142857}) e:derive true}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.17];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo {{:EscherichiaColiInfection :treatedBy :FloxacinTreatment} e:boolean e:T}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T})];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0.8660714285714286];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo {{:EscherichiaColiInfection :treatedBy :FloxacinTreatment} e:boolean e:F}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 0.5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 0.21419642857142857];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:rule <#lemma8>.
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5, var:x_6, var:x_7, var:x_8, var:x_9, var:x_10. {(var:x_0 var:x_3 var:x_7) bbn:nb true} <= {("if_then_else" {(var:x_0 var:x_1) bbn:bcnd var:x_2.
+      (var:x_1 var:x_3 var:x_4) bbn:nb true.
+      var:x_1 bbn:inverse var:x_5.
+      (var:x_0 var:x_5) bbn:bcnd var:x_6.
+      ("_F*_E+(1-_F)*_H" var:x_4 var:x_2 var:x_6) e:calculate var:x_7} true {(var:x_0 var:x_3 var:x_8) bbn:nc true.
+      var:x_0 bbn:inverse var:x_9.
+      (var:x_9 var:x_3 var:x_10) bbn:nc true.
+      ("1/(1+2**(_K-_I))" var:x_10 var:x_8) e:calculate var:x_7}) e:derive true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/nbbn/nbbn-plugin.n3>].
+
+#2020-02-22T21:52:19.870Z in=19 out=1 ent=1 step=1 brake=2 inf=136231 sec=0.159 inf/sec=856799
+#ENDS
+

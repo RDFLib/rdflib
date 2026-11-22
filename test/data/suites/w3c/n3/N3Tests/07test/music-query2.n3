@@ -1,0 +1,3 @@
+@prefix : <test#>.
+
+{ ?Room :hasMusic true } => { ?Room :hasMusic true }.

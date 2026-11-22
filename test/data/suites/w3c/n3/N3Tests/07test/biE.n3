@@ -1,0 +1,121 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/biP.n3 --query http://eulersharp.sourceforge.net/2007/07test/biQ.n3
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix string: <http://www.w3.org/2000/10/swap/string#>.
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix time: <http://www.w3.org/2000/10/swap/time#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix med: <http://eulersharp.sourceforge.net/2006/02swap/med#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+@prefix fl: <http://eulersharp.sourceforge.net/2003/03swap/fl-rules#>.
+
+{{(55 66 72 87 56 77 73 69 74 56) e:avg _:sk_16. _:sk_16 math:equalTo 68.5} => {:ea1 :result true}} a :PASS.
+{{("1+1") e:calculate _:sk_17. _:sk_17 math:equalTo 2} => {:ec1 :result true}} a :PASS.
+{{_:sk_18 log:equalTo 3 . ("sqrt(_width^2+_length^2)" _:sk_18 4) e:calculate _:sk_19. _:sk_19 math:equalTo 5.0} => {:ec2 :result true}} a :PASS.
+{{("_period-250" "PT5M2S"^^xsd:dayTimeDuration) e:calculate _:sk_20. _:sk_20 math:equalTo 52.0} => {:ec3 :result true}} a :PASS.
+{{((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:cov _:sk_21. _:sk_21 math:equalTo 0.992777777777778} => {:eco1 :result true}} a :PASS.
+{{("atom_codes" "HOME" (72 79 77 69)) e:derive true} => {:epac1 :result true}} a :PASS.
+{{("date(1970, 1, 1, 0, 0, 0.0, 0, 'UTC', -)") e:compoundTerm _:sk_22. ("date_time_stamp" _:sk_22 _:sk_23) e:derive true. _:sk_23 math:equalTo 0.0} => {:epdts1 :result true}} a :PASS.
+{{("This is a ~w with number ~w and with an escaped linefeed \n" "test" 5) e:format "This is a test with number 5 and with an escaped linefeed \n"} => {:ef4 :result true}} a :PASS.
+{{({:a :b :c. :d :e :f} true) e:graphDifference {:a :b :c. :d :e :f}} => {:egd1 :result true}} a :PASS.
+{{(true {:d :e :f}) e:graphDifference true} => {:egd2 :result true}} a :PASS.
+{{({:a :b :c. :d :e :f} {:d :e :f}) e:graphDifference {:a :b :c}} => {:egd3 :result true}} a :PASS.
+{{({:a :b :c. :d :e :f. :g :h :i} {_:sk_24 :e :f}) e:graphDifference {:a :b :c. :g :h :i}} => {:egd4 :result true}} a :PASS.
+{{({:a :b :c} {:a :b :c. :u :v :w. :x :y :z}) e:graphDifference true} => {:egd5 :result true}} a :PASS.
+{{(true) e:graphIntersection true} => {:egi1 :result true}} a :PASS.
+{{(true {:d :e :f}) e:graphIntersection true} => {:egi2 :result true}} a :PASS.
+{{({:a :b :c. :d :e :f. :g :h :i} true) e:graphIntersection true} => {:egi3 :result true}} a :PASS.
+{{({:a :b :c. :d :e :f} {:d :e :f}) e:graphIntersection {:d :e :f}} => {:egi4 :result true}} a :PASS.
+{{({:a :b :c. :d :e :f. :g :h :i} {:g :h :i. _:sk_25 :e :f} {_:sk_25 :e :f. :g :h :i}) e:graphIntersection {_:sk_25 :e :f. :g :h :i}} => {:egi5 :result true}} a :PASS.
+{{((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:length 6} => {:el1 :result true}} a :PASS.
+{{(8 5 6 7 9 4) e:max 9} => {:em1 :result true}} a :PASS.
+{{(8 5 6 7 9 4) e:min 4} => {:em2 :result true}} a :PASS.
+{{(1 3 6 6 7 2 3) e:multisetEqualTo (3 3 7 6 6 2 1)} => {:eme1 :result true}} a :PASS.
+{{(1 3 6 6 7 2 3) e:multisetNotEqualTo (3 3 7 6 2 1)} => {:emn1 :result true}} a :PASS.
+{{((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.8 1.66)) e:pcc _:sk_26. _:sk_26 math:equalTo 0.9569729506311461} => {:ep1 :result true}} a :PASS.
+{{(10000000) e:random 5524830} => {:era1 :result true}} a :PASS.
+{{((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d)) e:reverse ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))} => {:erv1 :result true}} a :PASS.
+{{(55 66 72 87 56 77 73 69 74 56) e:rms _:sk_27. _:sk_27 math:equalTo 69.2105483289939} => {:erm1 :result true}} a :PASS.
+{{((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:sort ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))} => {:es1 :result true}} a :PASS.
+{{(9 3 8 3 5 7 7 9 9 2) e:sort (2 3 3 5 7 7 8 9 9 9)} => {:es2 :result true}} a :PASS.
+{{(55 66 72 87 56 77 73 69 74 56) e:std _:sk_28. _:sk_28 math:equalTo 10.426994879744703} => {:est1 :result true}} a :PASS.
+{{"\"test\n" e:stringEscape "\\\"test\\n"} => {:ese1 :result true}} a :PASS.
+{{("a-b/c-d/e" "-/") e:stringSplit ("a" "b" "c" "d" "e")} => {:ess1 :result true}} a :PASS.
+{{(1 2 3 4 5) e:subsequence (1 2 4)} => {:esl1 :result true}} a :PASS.
+{{() e:subsequence ()} => {:esl3 :result true}} a :PASS.
+{{((0 1) (2 3) (4 5)) e:transpose ((0 2 4) (1 3 5))} => {:et1 :result true}} a :PASS.
+{{_:sk_29 e:whenGround {:a :b :d}. :a :b _:sk_29} => {:ewg1 :result true}} a :PASS.
+{{"http://www.agfa.com/w3c/euler" e:wwwFormEncode "http%3a%2f%2fwww.agfa.com%2fw3c%2feuler"} => {:ew1 :result true}} a :PASS.
+{{"Hello World!" e:wwwFormEncode "Hello+World%21"} => {:ew2 :result true}} a :PASS.
+{{((:a :b :c) (:d :e)) list:append (:a :b :c :d :e)} => {:lista1 :result true}} a :PASS.
+{{(:a :b :c) list:first :a} => {:listf1 :result true}} a :PASS.
+{{:c list:in (:a :b :c)} => {:listi1 :result true}} a :PASS.
+{{(:a :b :c) list:last :c} => {:listl1 :result true}} a :PASS.
+{{(:a :b :c :d) list:member :b} => {:listm1 :result true}} a :PASS.
+{{(:a :b :c) list:rest (:b :c)} => {:listr1 :result true}} a :PASS.
+{{(true) log:conjunction true} => {:logc1 :result true}} a :PASS.
+{{(true {:u :v :w} {:x :y :z. :j :k :l}) log:conjunction {:u :v :w. :x :y :z. :j :k :l}} => {:logc2 :result true}} a :PASS.
+{{(true {:u :v :w} true true) log:conjunction {:u :v :w}} => {:logc3 :result true}} a :PASS.
+{{(:a _:sk_30) log:equalTo (_:sk_31 :b)} => {:loge1 :result true}} a :PASS.
+{{{:a :b :c} log:equalTo {:a :b :c}} => {:loged0 :result true}} a :PASS.
+{{{:a :b :_c} log:equalTo {:a :b _:sk_32}} => {:loged3 :result true}} a :PASS.
+{{<http://eulersharp.sourceforge.net/2007/07test/abc.n3> log:semantics _:sk_33. _:sk_33 log:equalTo {:a :b :c}} => {:loges0 :result true}} a :PASS.
+{{<http://eulersharp.sourceforge.net/2007/07test/ab_c.n3> log:semantics _:sk_34. _:sk_34 log:equalTo {:a :b _:sk_35}} => {:loges3 :result true}} a :PASS.
+{{{:b :a :c. :e :d :f. :h :g :i. :k :j :l} log:includes {:k :j :l. _:sk_36 :d _:sk_37}} => {:logi1 :result true}} a :PASS.
+{{<http://eulersharp.sourceforge.net/2007/07test/medic.n3> log:semantics _:sk_38. _:sk_38 log:includes {med:aspirinHighDose med:excludedFor med:AllergyForAspirin}} => {:logi3 :result true}} a :PASS.
+{{{:a :b :c} log:includes {:a :b :c}} => {:logid0 :result true}} a :PASS.
+{{{:a :b :c} log:includes {:a :b _:sk_39}} => {:logid1 :result true}} a :PASS.
+{{{:a :b :_c} log:includes {:a :b _:sk_40}} => {:logid3 :result true}} a :PASS.
+{{<http://eulersharp.sourceforge.net/2007/07test/abc.n3> log:semantics _:sk_41. _:sk_41 log:includes {:a :b :c}} => {:logis0 :result true}} a :PASS.
+{{<http://eulersharp.sourceforge.net/2007/07test/abc.n3> log:semantics _:sk_42. _:sk_42 log:includes {:a :b _:sk_43}} => {:logis1 :result true}} a :PASS.
+{{<http://eulersharp.sourceforge.net/2007/07test/ab_c.n3> log:semantics _:sk_44. _:sk_44 log:includes {:a :b _:sk_45}} => {:logis3 :result true}} a :PASS.
+{{:a log:notEqualTo :b} => {:logne1 :result true}} a :PASS.
+{{{:a :b :c} log:notEqualTo {:a :b :_c}} => {:logned1 :result true}} a :PASS.
+{{{:a :b :_c} log:notEqualTo {:a :b :c}} => {:logned2 :result true}} a :PASS.
+{{<http://eulersharp.sourceforge.net/2007/07test/medic.n3> log:semantics _:sk_46. _:sk_46 log:notIncludes {med:aspirinLowDose med:excludedFor med:SevereAsthma}} => {:logni3 :result true}} a :PASS.
+{{{:a :b :_c} log:notIncludes {:a :b :c}} => {:lognid2 :result true}} a :PASS.
+{{<http://eulersharp.sourceforge.net/2007/07test/ab_c.n3> log:semantics _:sk_47. _:sk_47 log:notIncludes {:a :b :c}} => {:lognis2 :result true}} a :PASS.
+{{<http://eulersharp.sourceforge.net/2007/07test/ab_c.n3> log:semantics _:sk_48. <http://eulersharp.sourceforge.net/2007/07test/abc.n3> log:semantics _:sk_49. _:sk_48 log:notIncludes _:sk_49} => {:lognis3 :result true}} a :PASS.
+{{med:Fever log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"} => {:logu1 :result true}} a :PASS.
+{{:betaBlocker log:uri "http://eulersharp.sourceforge.net/2007/07test#betaBlocker"} => {:logu2 :result true}} a :PASS.
+{{(1 1) math:difference 0} => {:mathd1 :result true}} a :PASS.
+{{("2009-01-25T12:00:00"^^xsd:dateTime "1970-01-01T00:00:00"^^xsd:dateTime) math:difference 1232884800} => {:mathd2 :result true}} a :PASS.
+{{(2 _:sk_50) math:exponentiation 8.0 . (4.0 _:sk_50) math:product 12.0} => {:mathe1 :result true}} a :PASS.
+{{2 math:greaterThan 1} => {:mathg1 :result true}} a :PASS.
+{{"02" math:greaterThan "1"} => {:mathg2 :result true}} a :PASS.
+{{(:u :v :u) math:memberCount 3} => {:mathm1 :result true}} a :PASS.
+{{{:s :p :o1. :s :p :o2. :s :p :o1} math:memberCount 2} => {:mathm2 :result true}} a :PASS.
+{{7 math:notLessThan 5} => {:mathnl1 :result true}} a :PASS.
+{{(1 1) math:sum 2} => {:maths1 :result true}} a :PASS.
+{{("1" "1") math:sum 2} => {:maths2 :result true}} a :PASS.
+{{("1970-01-01T00:00:00+01:00"^^xsd:dateTime) math:sum -3600} => {:maths3 :result true}} a :PASS.
+{{("P1D"^^xsd:duration) math:sum 86400.0} => {:maths4 :result true}} a :PASS.
+{{(:f :g) rdf:first :f} => {:rdff1 :result true}} a :PASS.
+{{(:f :g) rdf:rest (:g)} => {:rdfr1 :result true}} a :PASS.
+{{("eul" "er") string:concatenation "euler"} => {:strc1 :result true}} a :PASS.
+{{("€" "Ø"@en-US) string:concatenation "€Ø"} => {:strc2 :result true}} a :PASS.
+{{("test " "is \"ok\"") string:concatenation "test is \"ok\""} => {:strc3 :result true}} a :PASS.
+{{"Rob Smith" string:contains "Smith"} => {:strcn1 :result true}} a :PASS.
+{{"Rob Smith"@en string:contains "Smith"@en} => {:strcn2 :result true}} a :PASS.
+{{"Tim" string:containsIgnoringCase "IM"} => {:strci1 :result true}} a :PASS.
+{{"abracadabra" string:matches "(a|b|r|c|d)+"} => {:strm1 :result true}} a :PASS.
+{{("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:scrape "example.org"} => {:strs1 :result true}} a :PASS.
+{{("{x" "{(.)") string:scrape "x"} => {:strs2 :result true}} a :PASS.
+{{("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:search ("example.org" "1995")} => {:strs3 :result true}} a :PASS.
+{{"euler" string:startsWith "eu"} => {:strs4 :result true}} a :PASS.
+{{"2006-12-14"^^xsd:date time:day "14"} => {:timed1 :result true}} a :PASS.
+{{"2006-12-14"^^xsd:date time:month "12"} => {:timem1 :result true}} a :PASS.
+{{"2006-12-14"^^xsd:date time:year "2006"} => {:timey1 :result true}} a :PASS.
+{{_:sk_53 e:findall (_:sk_54 {:s :p _:sk_54} (:o1 :o2))} => {:ef1 :result true}} a :PASS.
+{{_:sk_55 e:findall (_:sk_56 {_:sk_56 a :Male} (:Socrates :Xanthippe :Xanthippe :Dan :Tim) _:sk_57). _:sk_55 e:findall (_:sk_56 {_:sk_56 a :Female} _:sk_57 _:sk_58). _:sk_55 e:findall (_:sk_56 {_:sk_56 a :Human} _:sk_58 (:Dan :Tim))} => {:ef3 :result true}} a :PASS.
+{{:a :b :d. _:sk_59 e:optional {:g :h :i}} => {:eo1 :result true}} a :PASS.
+{{_:sk_60 e:fail {(1 2 3 4 5) e:subsequence (4 2 1)}} => {:esl2 :result true}} a :PASS.
+
+#2018-04-18T08:27:43.106Z in=470 out=101 ent=149 step=949 brake=4 inf=319709 sec=0.071 inf/sec=4502944
+#ENDS
+

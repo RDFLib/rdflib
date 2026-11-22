@@ -1,0 +1,8 @@
+@prefix gps: <http://josd.github.io/brain/gps/gps-schema#>.
+@prefix : <http://josd.github.io/brain#>.
+
+{
+    ?SCOPE gps:findpath ({?SUBJECT :location :Oostende} ?PATH ?DURATION ?COST ?BELIEF ?COMFORT (3600.0 5.0 0.2 0.4 1)).
+} => {
+    ?SUBJECT gps:path (?PATH ?DURATION ?COST ?BELIEF ?COMFORT).
+}.

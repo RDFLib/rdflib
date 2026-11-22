@@ -1,0 +1,10 @@
+# $Id: dawg-tp-05.n3 491 2005-03-20 15:05:42Z josd $
+# PxButton | es  | euler --nope --think http://www.w3.org/2001/sw/DataAccess/tests/data/simple/data-03.n3 --query dawg-tp-05.n3
+# PxButton | cwm | python /w3ccvs/WWW/2000/10/swap/cwm.py http://www.w3.org/2001/sw/DataAccess/tests/data/simple/data-03.n3 --think --query"=dawg-tp-05.n3"
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://example.org/data/>.
+
+[]
+q:select {<> q:answer (?x ?q)};
+q:where  {?x :p ?q}.

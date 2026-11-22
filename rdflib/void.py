@@ -1,12 +1,19 @@
+from __future__ import annotations
+
 import collections
 
-from rdflib import URIRef, Graph, Literal
-from rdflib.namespace import VOID, RDF
+from rdflib.graph import Graph, _ObjectType, _PredicateType, _SubjectType
+from rdflib.namespace import RDF, VOID
+from rdflib.term import IdentifiedNode, Literal, URIRef
 
 
-def generateVoID(g, dataset=None, res=None, distinctForPartitions=True):
-    """
-    Returns a new graph with a VoID description of the passed dataset
+def generateVoID(  # noqa: N802
+    g: Graph,
+    dataset: IdentifiedNode | None = None,
+    res: Graph | None = None,
+    distinctForPartitions: bool = True,  # noqa: N803
+):
+    """Returns a new graph with a VoID description of the passed dataset
 
     For more info on Vocabulary of Interlinked Datasets (VoID), see:
     http://vocab.deri.ie/void
@@ -21,29 +28,33 @@ def generateVoID(g, dataset=None, res=None, distinctForPartitions=True):
     the distinctForPartitions parameter controls whether
     distinctSubjects/objects are tracked for each class/propertyPartition
     this requires more memory again
-
     """
 
-    typeMap = collections.defaultdict(set)
-    classes = collections.defaultdict(set)
+    typeMap: dict[_SubjectType, set[_SubjectType]] = (  # noqa: N806
+        collections.defaultdict(set)
+    )
+    classes: dict[_ObjectType, set[_SubjectType]] = collections.defaultdict(set)
     for e, c in g.subject_objects(RDF.type):
         classes[c].add(e)
         typeMap[e].add(c)
 
     triples = 0
-    subjects = set()
-    objects = set()
-    properties = set()
-    classCount = collections.defaultdict(int)
-    propCount = collections.defaultdict(int)
+    subjects: set[_SubjectType] = set()
+    objects: set[_ObjectType] = set()
+    properties: set[_PredicateType] = set()
+    class_count: collections.defaultdict[_SubjectType, int] = collections.defaultdict(
+        int
+    )
+    prop_count: collections.defaultdict[_PredicateType, int] = collections.defaultdict(
+        int
+    )
 
-    classProps = collections.defaultdict(set)
-    classObjects = collections.defaultdict(set)
-    propSubjects = collections.defaultdict(set)
-    propObjects = collections.defaultdict(set)
+    class_props = collections.defaultdict(set)
+    class_objects = collections.defaultdict(set)
+    prop_subjects = collections.defaultdict(set)
+    prop_objects = collections.defaultdict(set)
 
     for s, p, o in g:
-
         triples += 1
         subjects.add(s)
         properties.add(p)
@@ -52,16 +63,16 @@ def generateVoID(g, dataset=None, res=None, distinctForPartitions=True):
         # class partitions
         if s in typeMap:
             for c in typeMap[s]:
-                classCount[c] += 1
+                class_count[c] += 1
                 if distinctForPartitions:
-                    classObjects[c].add(o)
-                    classProps[c].add(p)
+                    class_objects[c].add(o)
+                    class_props[c].add(p)
 
         # property partitions
-        propCount[p] += 1
+        prop_count[p] += 1
         if distinctForPartitions:
-            propObjects[p].add(o)
-            propSubjects[p].add(s)
+            prop_objects[p].add(o)
+            prop_subjects[p].add(s)
 
     if not dataset:
         dataset = URIRef("http://example.org/Dataset")
@@ -84,7 +95,7 @@ def generateVoID(g, dataset=None, res=None, distinctForPartitions=True):
         res.add((dataset, VOID.classPartition, part))
         res.add((part, RDF.type, VOID.Dataset))
 
-        res.add((part, VOID.triples, Literal(classCount[c])))
+        res.add((part, VOID.triples, Literal(class_count[c])))
         res.add((part, VOID.classes, Literal(1)))
 
         res.add((part, VOID["class"], c))
@@ -93,26 +104,23 @@ def generateVoID(g, dataset=None, res=None, distinctForPartitions=True):
         res.add((part, VOID.distinctSubjects, Literal(len(classes[c]))))
 
         if distinctForPartitions:
-            res.add(
-                (part, VOID.properties, Literal(len(classProps[c]))))
-            res.add((part, VOID.distinctObjects,
-                    Literal(len(classObjects[c]))))
+            res.add((part, VOID.properties, Literal(len(class_props[c]))))
+            res.add((part, VOID.distinctObjects, Literal(len(class_objects[c]))))
 
     for i, p in enumerate(properties):
         part = URIRef(dataset + "_property%d" % i)
         res.add((dataset, VOID.propertyPartition, part))
         res.add((part, RDF.type, VOID.Dataset))
 
-        res.add((part, VOID.triples, Literal(propCount[p])))
+        res.add((part, VOID.triples, Literal(prop_count[p])))
         res.add((part, VOID.properties, Literal(1)))
 
         res.add((part, VOID.property, p))
 
         if distinctForPartitions:
-
             entities = 0
-            propClasses = set()
-            for s in propSubjects[p]:
+            propClasses = set()  # noqa: N806
+            for s in prop_subjects[p]:
                 if s in typeMap:
                     entities += 1
                 for c in typeMap[s]:
@@ -121,9 +129,7 @@ def generateVoID(g, dataset=None, res=None, distinctForPartitions=True):
             res.add((part, VOID.entities, Literal(entities)))
             res.add((part, VOID.classes, Literal(len(propClasses))))
 
-            res.add((part, VOID.distinctSubjects,
-                    Literal(len(propSubjects[p]))))
-            res.add((part, VOID.distinctObjects,
-                    Literal(len(propObjects[p]))))
+            res.add((part, VOID.distinctSubjects, Literal(len(prop_subjects[p]))))
+            res.add((part, VOID.distinctObjects, Literal(len(prop_objects[p]))))
 
     return res, dataset

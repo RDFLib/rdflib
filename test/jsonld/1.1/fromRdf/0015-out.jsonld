@@ -1,0 +1,11 @@
+[
+  {
+    "@id": "_:a",
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [ { "@value": "a" } ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest":  [ { "@value": "b" } ]
+  },
+  {
+    "@id": "http://example.com",
+    "http://example.com/property":  [ { "@id": "_:a" } ]
+  }
+]

@@ -1,0 +1,3 @@
+@prefix : <http://josd.github.io/brain#>.
+
+{:all :got :dinner} => {:all :got :dinner}.

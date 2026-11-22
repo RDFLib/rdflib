@@ -1,0 +1,6 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+### test framework
+{?P => {?S :result ?R}. ?S :result ?R. ?P e:labelvars ?P} => {{?P => {?S :result ?R}} a :PASS}.
+{?P => {?S :result ?R}. (?SRC 2) e:findall ((?R) {?S :result ?R} ()). ?P e:labelvars ?P} => {{?P => {?S :result ?R}} a :FAIL}.

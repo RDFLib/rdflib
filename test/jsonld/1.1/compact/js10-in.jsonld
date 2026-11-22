@@ -1,0 +1,6 @@
+[{
+  "http://example.org/vocab#string": [{
+    "@value": "string",
+    "@type": "@json"
+  }]
+}]

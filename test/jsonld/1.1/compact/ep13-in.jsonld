@@ -1,0 +1,3 @@
+{
+  "http://example/foo": {"@id": "http://example/foo", "http://example/bar": "bar"}
+}

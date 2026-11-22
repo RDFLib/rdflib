@@ -1,0 +1,8 @@
+{
+  "@context": {"@vocab": "http://schema.org/"},
+  "@id": "foo:bar-id",
+  "@type": "foo:bar-type",
+  "foo:bar": "is an absolute iri property",
+  "term": "is schema.org/term",
+  ":fish": "is schema.org/:fish"
+}

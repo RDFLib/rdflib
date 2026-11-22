@@ -1,0 +1,11 @@
+#  For All in the template for unification
+#
+@keywords is, a .
+
+Juno says  {@forAll y.  Mars fights y}.
+
+{ Juno says  {@forAll y. Mars fights y } } =>  { test a SUCCESS }.
+
+
+#ends
+

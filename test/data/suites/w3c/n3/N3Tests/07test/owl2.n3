@@ -1,0 +1,22 @@
+# a little bit of OWL 2
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+{ ?P owl:propertyChainAxiom (?Q ?R).
+  ?x ?Q ?O. ?O ?R ?y.
+} => { ?x ?P ?y }.
+# test case
+#uncle owl:propertyChainAxiom (parent brother).
+#sue parent [ brother bill ].
+
+owl:propertyDisjointWith a owl:SymmetricProperty.
+
+{ ?X ?Q ?Y.
+  ?Q owl:propertyDisjointWith ?P.
+  ?X ?P ?Z .
+} => { ?Y owl:differentFrom ?Z. }.
+
+
+# this is actually OWL 1...
+{ ?X a ?Y. ?Y owl:onProperty ?P; owl:minCardinality 1 }
+ => { ?X ?P [] }.
+

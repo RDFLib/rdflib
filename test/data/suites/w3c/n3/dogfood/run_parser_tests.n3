@@ -1,0 +1,146 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix mf:   <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdft: <http://www.w3.org/ns/rdftest#> .
+@prefix test: <https://w3c.github.io/N3/tests/test.n3#> .
+@prefix earl: <https://www.w3.org/TR/EARL10-Schema/#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+@prefix graph: <http://www.w3.org/2000/10/swap/graph#> .
+@prefix string: <http://www.w3.org/2000/10/swap/string#> .
+@prefix :     <#>.
+@base <http://example.org/> .
+
+test:N3System rdfs:subClassOf earl:Software .
+test:jen3 a test:N3System .
+
+test:N3SyntaxFailed rdfs:subClassOf earl:Fail .
+test:syntaxFailed a test:N3SyntaxFailed .
+test:missingStmts a test:N3SyntaxFailed .
+test:extraStmts a test:N3SyntaxFailed .
+
+test:N3SyntaxPass rdfs:subClassOf earl:Pass .
+test:syntaxPass a test:N3ReasonPass .
+
+
+# heavy lifting
+{	:tests :fileRoot ?fileRoot .
+
+	?syntaxTest a test:TestN3Syntax ;
+		mf:action ?testAction .
+	
+	?testAction log:uri ?testActionStr .
+	(?fileRoot ?testActionStr)!string:concatenation <-log:uri ?testActionPath .
+	
+	?testActionPath log:semanticsOrError ?testOutput 	
+	
+} => { ?syntaxTest :testOutput ?testOutput } .
+
+
+# positive tests
+
+{	?reasonSystem a test:N3System .
+
+	?syntaxTest a test:TestN3PositiveSyntax ;
+		:testOutput ?testOutput .
+	?testOutput log:rawType log:Literal .
+	
+} => { 
+	[ 	a earl:Assertion ;
+		earl:assertedBy <#> ;
+		earl:subject ?reasonSystem ;
+		earl:test ?syntaxTest ;
+		earl:result [ earl:outcome test:syntaxFailed ; rdf:value ?testOutput ]	
+	]
+} .
+
+{	?syntaxTest a test:TestN3PositiveSyntax ;
+		mf:result ?testResult ;
+		:testOutput ?testOutput .
+		
+	?testOutput log:rawType log:Formula .
+	
+	(?testOutput { <#> rdfs:comment ?someComment }) graph:difference ?actualStmts .
+	
+	:tests :fileRoot ?fileRoot .
+	(?fileRoot ?testResult)!string:concatenation <-log:uri ?testResultPath .
+	?testResultPath log:semantics ?expectedStmts .
+	
+	(?actualStmts ?expectedStmts) graph:difference ?extraStmts .	
+	(?expectedStmts ?actualStmts) graph:difference ?missingStmts .
+	
+} => { ?syntaxTest :hasExtra ?extraStmts ; :hasMissing ?missingStmts } .
+
+
+{	?syntaxTest :hasMissing ?missingStmts .
+	?missingStmts!graph:length math:equalTo 0 .
+	
+	?syntaxTest :hasExtra ?extraStmts .
+	?extraStmts!graph:length math:equalTo 0 .
+
+} => {
+	[ 	a earl:Assertion ;
+		earl:assertedBy <#> ;
+		earl:subject ?reasonSystem ;
+		earl:test ?syntaxTest ;
+		earl:result [ earl:outcome test:syntaxPass ]	
+	]
+} .
+
+{	?syntaxTest :hasMissing ?missingStmts .
+	?missingStmts!graph:length math:greaterThan 0 .
+
+} => {
+	[ 	a earl:Assertion ;
+		earl:assertedBy <#> ;
+		earl:subject ?reasonSystem ;
+		earl:test ?syntaxTest ;
+		earl:result [ earl:outcome test:missingStmts ; rdf:value ?missingStmts ]	
+	]
+} .
+
+{	?syntaxTest :hasExtra ?extraStmts .
+	?extraStmts!graph:length math:greaterThan 0 .
+
+} => {
+	[ 	a earl:Assertion ;
+		earl:assertedBy <#> ;
+		earl:subject ?reasonSystem ;
+		earl:test ?syntaxTest ;
+		earl:result [ earl:outcome test:extraStmts ; rdf:value ?extraStmts ]	
+	]
+} .
+
+
+# negative tests
+
+{	?reasonSystem a test:N3System .
+
+	?syntaxTest a test:TestN3NegativeSyntax ;
+		:testOutput ?testOutput .
+	?testOutput log:rawType log:Literal .
+	
+} => { 
+	[ 	a earl:Assertion ;
+		earl:assertedBy <#> ;
+		earl:subject ?reasonSystem ;
+		earl:test ?syntaxTest ;
+		earl:result [ earl:outcome test:syntaxPass ]	
+	]
+} .
+
+{	?reasonSystem a test:N3System .
+
+	?syntaxTest a test:TestN3NegativeSyntax ;
+		:testOutput ?testOutput .
+	?testOutput log:rawType log:Formula .
+	
+} => { 
+	[ 	a earl:Assertion ;
+		earl:assertedBy <#> ;
+		earl:subject ?reasonSystem ;
+		earl:test ?syntaxTest ;
+		earl:result [ earl:outcome test:syntaxFailed ; rdf:value ?testOutput ]	
+	]
+} .

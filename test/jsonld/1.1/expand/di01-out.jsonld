@@ -1,0 +1,7 @@
+[
+  {
+    "http://example.org/vocab#rtl": [{"@value": "rtl", "@direction": "rtl"}],
+    "http://example.org/vocab#ltr": [{"@value": "ltr", "@direction": "ltr"}],
+    "http://example.org/vocab#none": [{"@value": "no direction"}]
+  }
+]

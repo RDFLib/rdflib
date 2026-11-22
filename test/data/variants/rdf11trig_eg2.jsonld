@@ -1,0 +1,43 @@
+{
+  "@graph": [
+    {
+      "@graph": [
+        {
+          "@id": "http://example.org/bob",
+          "http://purl.org/dc/terms/publisher": "Bob"
+        },
+        {
+          "@id": "http://example.org/alice",
+          "http://purl.org/dc/terms/publisher": "Alice"
+        }
+      ]
+    },
+    {
+      "@graph": [
+        {
+          "@id": "_:a",
+          "http://xmlns.com/foaf/0.1/knows": {
+            "@id": "_:b"
+          },
+          "http://xmlns.com/foaf/0.1/mbox": {
+            "@id": "mailto:bob@oldcorp.example.org"
+          },
+          "http://xmlns.com/foaf/0.1/name": "Bob"
+        }
+      ],
+      "@id": "http://example.org/bob"
+    },
+    {
+      "@graph": [
+        {
+          "@id": "_:b",
+          "http://xmlns.com/foaf/0.1/mbox": {
+            "@id": "mailto:alice@work.example.org"
+          },
+          "http://xmlns.com/foaf/0.1/name": "Alice"
+        }
+      ],
+      "@id": "http://example.org/alice"
+    }
+  ]
+}

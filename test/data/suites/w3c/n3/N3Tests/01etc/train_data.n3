@@ -1,0 +1,12 @@
+@prefix : <http://josd.github.io/eye/reasoning#>.
+
+[] :input1 "abc"; :input2 40; :input3 (0 1); :input4 :v1; :input5 "b"; :output1 1.
+[] :input1 "abc"; :input3 (2 3); :input4 :v2; :input5 "c"; :output1 0.
+[] :input2 40; :input3 (2 3); :input4 :v1; :input5 "a"; :output1 1.
+[] :input1 "xyz"; :input2 60; :input3 (0 1); :output1 0.
+[] :input1 "abc"; :input2 60; :input4 :v4; :output1 1.
+[] :input1 "abc"; :input2 60; :input3 (2 3); :input4 :v3; :input5 "c"; :output1 0.
+[] :input2 60; :input3 (2 3); :input4 :v3; :input5 "a"; :output1 0.
+[] :input1 "xyz"; :input2 40; :input4 :v3; :input5 "b"; :output1 1.
+[] :input1 "xyz"; :input2 60; :input3 (0 1); :input4 :v2; :output1 1.
+[] :input1 "abc"; :input2 60; :input3 (0 1); :input4 :v4; :input5 "c"; :output1 0.

@@ -1,0 +1,5 @@
+[{
+  "http://example/idmap": [
+    {"http://example/label": [{"@value": "Object with no @id"}]}
+  ]
+}]

@@ -1,0 +1,11 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix : <http://example.org/try#>.
+
+{?g :p :o. ?g log:equalTo {?A :b :c}} => {:test1 :answer ?A}.
+
+{?g :p :o. ?g log:equalTo {:r ?S :t}} => {:test2 :answer ?S}.
+
+{?g :p :o. ?g log:equalTo {:d :e :f. :r ?S :t}} => {:test3 :answer ?S}.
+{?g :p :o. ?g log:equalTo {:d ?E :f. :r :s :t}} => {:test4 :answer ?E}.
+{?g :p :o. ?g log:equalTo {:d :e :f. :r :s :t. :d ?E :f}} => {:test5 :answer ?E}.
+{?g :p :o. {:d :e :f. :r :s :t. :d ?E :f} log:equalTo ?g} => {:test6 :answer ?E}.

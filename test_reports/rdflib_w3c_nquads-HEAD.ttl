@@ -1,0 +1,689 @@
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+
+<https://github.com/RDFLib/rdflib> a doap:Project ;
+    doap:description "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."@en ;
+    doap:homepage <https://github.com/RDFLib/rdflib> ;
+    doap:name "RDFLib" ;
+    doap:programming-language "Python" .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#comment_following_triple> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#langtagged_string> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#lantag_with_subtag> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal_all_controls> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal_all_punctuation> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal_ascii_boundaries> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal_with_2_dquotes> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal_with_2_squotes> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal_with_BACKSPACE> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal_with_CARRIAGE_RETURN> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal_with_CHARACTER_TABULATION> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal_with_FORM_FEED> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal_with_LINE_FEED> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal_with_REVERSE_SOLIDUS> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal_with_REVERSE_SOLIDUS2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal_with_UTF8_boundaries> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal_with_dquote> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal_with_numeric_escape4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal_with_numeric_escape8> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#literal_with_squote> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#minimal_whitespace> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nq-syntax-bad-literal-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nq-syntax-bad-literal-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nq-syntax-bad-literal-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nq-syntax-bad-quint-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nq-syntax-bad-uri-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nq-syntax-bnode-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nq-syntax-bnode-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nq-syntax-bnode-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nq-syntax-bnode-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nq-syntax-bnode-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nq-syntax-bnode-06> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nq-syntax-uri-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nq-syntax-uri-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nq-syntax-uri-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nq-syntax-uri-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nq-syntax-uri-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nq-syntax-uri-06> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-base-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-esc-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-esc-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:untested ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-esc-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-lang-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-num-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-num-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-num-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-prefix-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-string-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-string-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-string-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-string-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-string-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-string-06> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-string-07> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-struct-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-struct-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-uri-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-uri-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-uri-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-uri-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-uri-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-uri-06> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-uri-07> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-uri-08> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bad-uri-09> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bnode-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bnode-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-bnode-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-datatypes-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-datatypes-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-file-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-file-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-file-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-str-esc-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-str-esc-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-str-esc-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-string-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-string-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-string-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-subm-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-uri-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-uri-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-uri-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/NQuadsTests/#nt-syntax-uri-04> .
+

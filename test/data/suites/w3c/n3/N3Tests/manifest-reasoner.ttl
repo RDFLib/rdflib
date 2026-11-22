@@ -1,0 +1,734 @@
+# Notation3 Reasoner tests
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:   <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdft: <http://www.w3.org/ns/rdftest#> .
+@prefix test: <https://w3c.github.io/N3/tests/test.n3#>.
+@prefix :     <#>.
+
+<>  a mf:Manifest ;
+    mf:name "Notation3 Reasoner tests" ;
+    mf:entries
+    (
+      # From swap/test/crypto
+
+      # From swap/test/cwm
+
+      # From swap/test/delta
+
+      # From swap/test/i18n
+
+      # From swap/test/includes
+      :cwm_includes_listin :cwm_includes_bnode :cwm_includes_concat
+      :cwm_includes_conclusion_simple :cwm_includes_conclusion
+      :cwm_includes_conjunction
+      :cwm_includes_t1 :cwm_includes_t2 :cwm_includes_t3 :cwm_includes_t4:cwm_includes_t6 :cwm_includes_t8
+      :cwm_includes_builtins
+      :cwm_includes_t9br :cwm_includes_t10 :cwm_includes_t11
+      :cwm_includes_quantifiers_limited # Uses explicit quantifiers
+      :cwm_includes_quant-implies
+      :cwm_includes_xsd
+
+      # log
+      :log_content :log_dtlit :log_langlit :log_parsedAsN3
+
+      # math
+      :math_absoluteValue
+      :math_big
+      :math_ceiling
+      :math_combo
+      :math_corners
+      :math_difference
+      :math_exponentiation
+      :math_floor
+      :math_inf
+      :math_numbers
+      :math_product
+      :math_quotient
+      :math_remainder
+      :math_rounded
+      :math_strings
+      :math_sum
+      :math_trig
+
+      # From swap/test/norm
+      :cwm_norm_av1
+
+      # list
+      :list_in :list_iterate :list_length :list_member
+
+      # From swap/test/list
+      :cwm_list_bug1 :cwm_list_bug2 :cwm_list_r1 :cwm_list_unify2 :cwm_list_unify3 :cwm_list_unify4
+      :cwm_list_unify5 :cwm_list_append :cwm_list_first :cwm_list_last :cwm_list_builtin_generated_match
+
+      # From swap/test/paw
+
+      # From swap/test/ql
+
+      # From swap/test/reason
+      :cwm_reason_t1 :cwm_reason_t2 :cwm_reason_t3 :cwm_reason_t4 :cwm_reason_t5 :cwm_reason_t6
+      :cwm_reason_socrates :cwm_reason_t8
+      :cwm_reason_t9 :cwm_reason_double
+
+      # string
+      :string_startsWith :string_contains :string_concatenation
+      :string_containsIgnoringCase :string_equalIgnoringCase :string_format
+      :string_notEqualIgnoringCase
+      :string_greaterThan :string_lessThan :string_notGreaterThan :string_notLessThan
+      :string_matches :string_notMatches :string_replace :string_scrape
+
+      # From swap/test/string
+      :cwm_string_endsWith
+      :cwm_string_roughly :cwm_string_uriEncode
+
+      # From swap/test/supports
+      :cwm_supports_simple
+
+      # From swap/test/time
+      :cwm_time_t1
+
+      # From swap/test/unify
+      :cwm_unify_unify1
+      :cwm_unify_unify2 # Uses explicit quantifiers
+      :cwm_unify_reflexive
+
+    ) .
+
+# List tests from swap/tests/includes
+
+:cwm_includes_listin a test:TestN3Reason;
+  mf:name      "list membership" ;
+  rdfs:comment "Builtins for list membership, binding multiple values." ;
+  mf:action <cwm_includes/list-in.n3>;
+  mf:result <cwm_includes/list-in-ref.n3>;
+  test:options [test:think true; test:data true;] .
+
+:cwm_includes_bnode a test:TestN3Reason;
+  mf:name      "list membership" ;
+  rdfs:comment "Builtins for list membership, binding multiple values." ;
+  mf:action <cwm_includes/bnodeConclude.n3>;
+  mf:result <cwm_includes/bnode-conclude-ref.n3>;
+  test:options [test:think true; test:data true;] .
+
+:cwm_includes_concat a test:TestN3Reason;
+  mf:name      "list concatenation" ;
+  rdfs:comment "Builtins for list concatenation." ;
+  mf:action <cwm_includes/concat.n3>;
+  mf:result <cwm_includes/concat-ref.n3>;
+  test:options [test:think true; test:data true;] .
+
+:cwm_includes_conclusion_simple a test:TestN3Reason;
+  mf:name      "includes-conclusion-simple.n3" ;
+  rdfs:comment "Builtins for log:conclusion." ;
+  mf:action <cwm_includes/conclusion-simple.n3>;
+  mf:result <cwm_includes/conclusion-simple-ref.n3>;
+  test:options [test:think true;] .
+
+:cwm_includes_conclusion a test:TestN3Reason;
+  mf:name      "includes-conclusion.n3" ;
+  rdfs:comment "log:conclusion deductive closure." ;
+  mf:action <cwm_includes/conclusion.n3>;
+  mf:result <cwm_includes/conclusion-ref.n3>;
+  test:options [test:think true;] .
+
+:cwm_includes_conjunction a test:TestN3Reason;
+  mf:name      "includes-conjunction.n3" ;
+  rdfs:comment "Builtins for log:conjunction." ;
+  mf:action <cwm_includes/conjunction.n3>;
+  mf:result <cwm_includes/conjunction-ref.n3>;
+  test:options [test:rules true; test:conclusions true;] .
+
+:cwm_includes_t1 a test:TestN3Reason;
+  mf:name      "includes-t1.n3" ;
+  rdfs:comment "Simple use of log:includes." ;
+  mf:action <cwm_includes/t1.n3>;
+  mf:result <cwm_includes/t1-ref.n3>;
+  test:options [test:rules true; test:conclusions true;] .
+
+:cwm_includes_t2 a test:TestN3Reason;
+  mf:name      "includes-t2.n3" ;
+  rdfs:comment "Simple use of log:includes." ;
+  mf:action <cwm_includes/t2.n3>;
+  mf:result <cwm_includes/t2-ref.n3>;
+  test:options [test:rules true; test:conclusions true;] .
+
+:cwm_includes_t3 a test:TestN3Reason;
+  mf:name      "includes-t3.n3" ;
+  rdfs:comment "Simple use of log:includes." ;
+  mf:action <cwm_includes/t3.n3>;
+  mf:result <cwm_includes/t3-ref.n3>;
+  test:options [test:rules true; test:conclusions true;] .
+
+:cwm_includes_t4 a test:TestN3Reason;
+  mf:name      "includes-t4.n3" ;
+  rdfs:comment "Simple use of log:notIncludes." ;
+  mf:action <cwm_includes/t4.n3>;
+  mf:result <cwm_includes/t4-ref.n3>;
+  test:options [test:rules true; test:conclusions true;] .
+
+:cwm_includes_t6 a test:TestN3Reason;
+  mf:name      "includes-t6.n3" ;
+  rdfs:comment "Simple use of log:includes." ;
+  mf:action <cwm_includes/t6.n3>;
+  mf:result <cwm_includes/t6-ref.n3>;
+  test:options [test:rules true; test:conclusions true;] .
+
+:cwm_includes_t8 a test:TestN3Reason;
+  mf:name      "includes-t8.n3" ;
+  rdfs:comment "Simple use of string built-ins." ;
+  mf:action <cwm_includes/t8.n3>;
+  mf:result <cwm_includes/t8-ref.n3>;
+  test:options [test:rules true;] .
+
+:cwm_includes_builtins a test:TestN3Reason;
+  mf:name      "includes-builtins.n3" ;
+  rdfs:comment "Builtins and log:includes." ;
+  mf:action <cwm_includes/builtins.n3>;
+  mf:result <cwm_includes/builtins-ref.n3>;
+  test:options [test:rules true; test:data true] .
+
+:cwm_includes_t9br a test:TestN3Reason;
+  mf:name      "includes-t9br.n3" ;
+  rdfs:comment "Filter event by date using strcmp BI's." ;
+  mf:action <cwm_includes/t9br.n3>;
+  mf:result <cwm_includes/t9br-ref.n3>;
+  test:options [test:think true;] .
+
+:cwm_includes_t10 a test:TestN3Reason;
+  mf:name      "includes-t10.n3" ;
+  rdfs:comment "log:resolvesTo and log:includes." ;
+  mf:action <cwm_includes/t10.n3>;
+  mf:result <cwm_includes/t10-ref.n3>;
+  test:options [test:rules true; test:data true;] .
+
+:cwm_includes_t11 a test:TestN3Reason;
+  mf:name      "includes-t11.n3" ;
+  rdfs:comment "log:resolvesTo and log:includes - schema checking." ;
+  mf:action <cwm_includes/t11.n3>;
+  mf:result <cwm_includes/t11-ref.n3>;
+  test:options [test:rules true; test:data true;] .
+
+:cwm_includes_quantifiers_limited a test:TestN3Reason;
+  mf:name      "includes-quantifiers_limited.n3" ;
+  rdfs:comment "log:includes handling of univ./exist. quantifiers." ;
+  mf:action <cwm_includes/quantifiers_limited.n3>;
+  mf:result <cwm_includes/quantifiers_limited-ref.n3>;
+  test:options [test:rules true; test:data true;] ;
+  rdft:approval  rdft:Rejected .
+
+:cwm_includes_quant-implies a test:TestN3Reason;
+  mf:name      "includes-quant-implies.n3" ;
+  rdfs:comment "log:implies handling of quantifiers." ;
+  mf:action <cwm_includes/quant-implies.n3>;
+  mf:result <cwm_includes/quant-implies-ref.n3>;
+  test:options [test:rules true; test:data true;] .
+
+:cwm_includes_xsd a test:TestN3Reason;
+  mf:name      "includes-xsd.n3" ;
+  rdfs:comment "Cwm builtins should support most xsd datatypes." ;
+  mf:action <cwm_includes/xsd.n3>;
+  mf:result <cwm_includes/xsd-ref.txt>;
+  test:options [test:rules true; test:strings true;] .
+
+# Tests from log/
+:log_content a test:TestN3Reason;
+  mf:name      "log-content.n3" ;
+  rdfs:comment "Builtins for log:content." ;
+  mf:action <log/content.n3>;
+  mf:result <log/content-ref.n3>;
+  test:options [test:rules true; test:data true;] .
+
+:log_dtlit a test:TestN3Reason;
+  mf:name      "log-dtlit.n3" ;
+  rdfs:comment "Builtins for log:dtlit." ;
+  mf:action <log/dtlit.n3>;
+  mf:result <log/dtlit-ref.n3>;
+  test:options [test:rules true; test:data true;] .
+
+:log_langlit a test:TestN3Reason;
+  mf:name      "log-langlit.n3" ;
+  rdfs:comment "Builtins for log:langlit." ;
+  mf:action <log/langlit.n3>;
+  mf:result <log/langlit-ref.n3>;
+  test:options [test:rules true; test:data true;] .
+
+:log_parsedAsN3 a test:TestN3Reason;
+  mf:name      "log-parsedAsN3.n3" ;
+  rdfs:comment "Builtins for log:parsedAsN3." ;
+  mf:action <log/parsedAsN3.n3>;
+  mf:result <log/parsedAsN3-ref.n3>;
+  test:options [test:rules true; test:conclusions true;] .
+
+# Tests from swap/test/math
+:math_absoluteValue a test:TestN3Reason;
+  mf:name "absoluteValue.n3";
+  rdfs:comment   "Test math:absoluteValue";
+  mf:action <math/absoluteValue.n3>;
+  mf:result <math/absoluteValue-ref.n3>;
+  test:options [test:think true; test:data true;] .
+
+:math_ceiling a test:TestN3Reason;
+  mf:name "ceiling.n3";
+  rdfs:comment   "Test math:ceiling";
+  mf:action <math/ceiling.n3>;
+  mf:result <math/ceiling-ref.n3>;
+  test:options [test:think true; test:data true;] .
+
+:math_difference a test:TestN3Reason;
+  mf:name "difference.n3";
+  rdfs:comment   "Test math:difference";
+  mf:action <math/difference.n3>;
+  mf:result <math/difference-ref.n3>;
+  test:options [test:rules true; test:data true;] .
+
+:math_exponentiation a test:TestN3Reason;
+  mf:name "exponentiation.n3";
+  rdfs:comment   "Test math:exponentiation";
+  mf:action <math/exponentiation.n3>;
+  mf:result <math/exponentiation-ref.n3>;
+  test:options [test:think true; test:data true;] .
+
+:math_floor a test:TestN3Reason;
+  mf:name "floor.n3";
+  rdfs:comment   "Test math:floor";
+  mf:action <math/floor.n3>;
+  mf:result <math/floor-ref.n3>;
+  test:options [test:think true; test:data true;] .
+
+:math_product a test:TestN3Reason;
+  mf:name "product.n3";
+  rdfs:comment   "Test math:product";
+  mf:action <math/product.n3>;
+  mf:result <math/product-ref.n3>;
+  test:options [test:rules true; test:data true;] .
+
+:math_quotient a test:TestN3Reason;
+  mf:name "quotient.n3";
+  rdfs:comment   "Test math:quotient";
+  mf:action <math/quotient.n3>;
+  mf:result <math/quotient-ref.n3>;
+  test:options [test:rules true; test:data true;] .
+
+:math_remainder a test:TestN3Reason;
+  mf:name "remainder.n3";
+  rdfs:comment   "Test math:remainder";
+  mf:action <math/remainder.n3>;
+  mf:result <math/remainder-ref.n3>;
+  test:options [test:rules true; test:data true;] .
+
+:math_rounded a test:TestN3Reason;
+  mf:name "rounded.n3";
+  rdfs:comment   "Test math:rounded";
+  mf:action <math/rounded.n3>;
+  mf:result <math/rounded-ref.n3>;
+  test:options [test:rules true; test:data true;] .
+
+:math_sum a test:TestN3Reason;
+  mf:name "sum.n3";
+  rdfs:comment   "Test math:sum";
+  mf:action <math/sum.n3>;
+  mf:result <math/sum-ref.n3>;
+  test:options [test:rules true; test:data true;] .
+
+:math_inf a test:TestN3Reason;
+  mf:name "inf.n3";
+  rdfs:comment   "Test infinities and NaN";
+  mf:action <math/inf.n3>;
+  mf:result <math/inf-ref.n3>;
+  test:options [test:rules true; test:data true;] .
+
+:math_strings a test:TestN3Reason;
+  mf:name "strings.n3";
+  rdfs:comment   "Various math builtins with string inputs.";
+  mf:action <math/strings.n3>;
+  mf:result <math/strings-ref.n3>;
+  test:options [test:think true; test:data true;] .
+
+:math_numbers a test:TestN3Reason;
+  mf:name "numbers.n3";
+  rdfs:comment   "Various math builtins with numbers inputs.";
+  mf:action <math/numbers.n3>;
+  mf:result <math/numbers-ref.n3>;
+  test:options [test:think true; test:data true;] .
+
+:math_corners a test:TestN3Reason;
+  mf:name "corners.n3";
+  rdfs:comment   "Various math builtins corner cases.";
+  mf:action <math/corners.n3>;
+  mf:result <math/corners-ref.n3>;
+  test:options [test:think true; test:data true;] .
+
+:math_big a test:TestN3Reason;
+  mf:name "big.n3";
+  rdfs:comment   "Big math builtin test.";
+  mf:action <math/big.n3>;
+  mf:result <math/big-ref.n3>;
+  test:options [test:think true; test:data true;] .
+
+:math_combo a test:TestN3Reason;
+  mf:name "combo.n3";
+  rdfs:comment   "Math builtin combinatorial test.";
+  mf:action <math/combo.n3>;
+  mf:result <math/combo-ref.n3>;
+  test:options [test:think true; test:data true;] .
+
+:math_trig a test:TestN3Reason;
+  mf:name "math-trig.n3";
+  rdfs:comment   "Various trig builtins.";
+  mf:action <math/trig.n3>;
+  mf:result <math/trig-ref.n3>;
+  test:options [test:rules true; test:data true;] .
+
+# Tests from swap/test/norm
+:cwm_norm_av1 a test:TestN3Reason;
+  mf:name "norm-av1.n3";
+  rdfs:comment   "Bug with RDF output in bySubject mode";
+  mf:action <cwm_norm/av.n3>;
+  mf:result <cwm_norm/av-ref.n3>;
+  test:options [test:think true; test:data true;] .
+
+# List tests from swap/test/list
+
+:cwm_list_bug1 a test:TestN3Reason;
+  mf:name      "list-bug1.n3" ;
+  rdfs:comment "List processing bug check 1" ;
+  mf:action <cwm_list/list-bug1.n3>;
+  mf:result <cwm_list/list-bug1-ref.n3>;
+  test:options [test:think true; test:data true;] .
+
+:cwm_list_bug2 a test:TestN3Reason;
+  mf:name      "list-bug2.n3" ;
+  rdfs:comment "List processing bug check 2" ;
+  mf:action <cwm_list/list-bug2.n3>;
+  mf:result <cwm_list/list-bug2-ref.n3>;
+  test:options [test:think true; test:conclusions true;] .
+
+:list_in a test:TestN3Reason;
+  mf:name      "li-in.n3" ;
+  rdfs:comment "list:in" ;
+  mf:action <list/in.n3>;
+  mf:result <list/in-ref.n3>;
+  test:options [test:think true; test:conclusions true;] .
+
+:list_iterate a test:TestN3Reason;
+  mf:name      "li-iterate.n3" ;
+  rdfs:comment "list:iterate" ;
+  mf:action <list/iterate.n3>;
+  mf:result <list/iterate-ref.n3>;
+  test:options [test:conclusions true;] .
+
+:list_length a test:TestN3Reason;
+  mf:name      "li-length.n3" ;
+  rdfs:comment "list-:length" ;
+  mf:action <list/length.n3>;
+  mf:result <list/length-ref.n3>;
+  test:options [test:think true; test:conclusions true;] .
+
+:list_member a test:TestN3Reason;
+  mf:name      "li-member.n3" ;
+  rdfs:comment "list:member" ;
+  mf:action <list/member.n3>;
+  mf:result <list/member-ref.n3>;
+  test:options [test:think true; test:conclusions true;] .
+
+:cwm_list_r1 a test:TestN3Reason;
+  mf:name      "li-r1.n3" ;
+  rdfs:comment "Inference using lists" ;
+  mf:action <cwm_list/r1.n3>;
+  mf:result <cwm_list/r1-ref.n3>;
+  test:options [test:think true; test:data true;] .
+
+:cwm_list_unify2 a test:TestN3Reason;
+  mf:name      "list-unify2.n3" ;
+  rdfs:comment "List unification 2 - variable in list" ;
+  mf:action <cwm_list/unify2.n3>;
+  mf:result <cwm_list/unify2-ref.n3>;
+  test:options [test:think true; test:data true] .
+
+:cwm_list_unify3 a test:TestN3Reason;
+  mf:name      "list-unify3.n3" ;
+  rdfs:comment "List unification 3 - nested lists" ;
+  mf:action <cwm_list/unify3.n3>;
+  mf:result <cwm_list/unify3-ref.n3>;
+  test:options [test:think true; test:data true] .
+
+:cwm_list_unify4 a test:TestN3Reason;
+  mf:name      "list-unify4.n3" ;
+  rdfs:comment "List unification 4 - nested lists" ;
+  mf:action <cwm_list/unify4.n3>;
+  mf:result <cwm_list/unify4-ref.n3>;
+  test:options [test:think true; test:data true] .
+
+:cwm_list_unify5 a test:TestN3Reason;
+  mf:name      "list-unify5.n3" ;
+  rdfs:comment "List unification 5 - multiple values" ;
+  mf:action <cwm_list/unify5.n3>;
+  mf:result <cwm_list/unify5-ref.n3>;
+  test:options [test:think true; test:data true] .
+
+:cwm_list_append a test:TestN3Reason;
+  mf:name      "append-out.n3" ;
+  rdfs:comment "Iterative ops on lists" ;
+  mf:action <cwm_list/append.n3>;
+  mf:result <cwm_list/append-ref.n3>;
+  test:options [test:think true; test:conclusions true] .
+
+:cwm_list_first a test:TestN3Reason;
+  mf:name      "list-first.n3" ;
+  rdfs:comment "first, in builtins on lists" ;
+  mf:action <cwm_list/first.n3>;
+  mf:result <cwm_list/first-ref.n3>;
+  test:options [test:think true; test:conclusions true] .
+
+:cwm_list_last a test:TestN3Reason;
+  mf:name      "list-last.n3" ;
+  rdfs:comment "last, in builtins on lists" ;
+  mf:action <cwm_list/last.n3>;
+  mf:result <cwm_list/last-ref.n3>;
+  test:options [test:think true; test:conclusions true] .
+
+:cwm_list_builtin_generated_match a test:TestN3Reason;
+  mf:name      "list-builtin_generated_match.n3" ;
+  rdfs:comment "last, in builtins on lists" ;
+  mf:action <cwm_list/builtin_generated_match.n3>;
+  mf:result <cwm_list/builtin_generated_match-ref.n3>;
+  test:options [test:think true; test:data true] .
+
+# List tests from swap/test/reason
+
+:cwm_reason_t1 a test:TestN3Reason;
+  mf:name      "reason-t1.n3" ;
+  rdfs:comment "Proof for just loading a file" ;
+  mf:action <cwm_reason/t1.n3>;
+  mf:result <cwm_reason/t1-ref.n3>;
+  test:options [test:think true; test:data true] .
+
+:cwm_reason_t2 a test:TestN3Reason;
+  mf:name      "reason-t2.n3" ;
+  rdfs:comment "Proof for just loading a file" ;
+  mf:action <cwm_reason/t2.n3>;
+  mf:result <cwm_reason/t2-ref.n3>;
+  test:options [test:think true; test:data true] .
+
+:cwm_reason_t3 a test:TestN3Reason;
+  mf:name      "reason-t3.n3" ;
+  rdfs:comment "Proof for just loading a file" ;
+  mf:action <cwm_reason/t3.n3>;
+  mf:result <cwm_reason/t3-ref.n3>;
+  test:options [test:think true; test:data true] .
+
+:cwm_reason_t4 a test:TestN3Reason;
+  mf:name      "reason-t4.n3" ;
+  rdfs:comment "Proof for just loading a file" ;
+  mf:action <cwm_reason/t4.n3>;
+  mf:result <cwm_reason/t4-ref.n3>;
+  test:options [test:think true; test:data true] .
+
+:cwm_reason_t5 a test:TestN3Reason;
+  mf:name      "reason-t5.n3" ;
+  rdfs:comment "Proof for a little inference" ;
+  mf:action <cwm_reason/t5.n3>;
+  mf:result <cwm_reason/t5-ref.n3>;
+  test:options [test:think true; test:data true] .
+
+:cwm_reason_t6 a test:TestN3Reason;
+  mf:name      "reason-t6.n3" ;
+  rdfs:comment "Proof for a little inference" ;
+  mf:action <cwm_reason/t6.n3>;
+  mf:result <cwm_reason/t6-ref.n3>;
+  test:options [test:think true; test:data true] .
+
+# This is equiv of others but easier to explain with famous example
+:cwm_reason_socrates a test:TestN3Reason;
+  mf:name      "reason-socrates.n3" ;
+  rdfs:comment "Proof for a little inference" ;
+  mf:action <cwm_reason/socrates.n3>;
+  mf:result <cwm_reason/socrates-ref.n3>;
+  test:options [test:think true; test:data true] .
+
+:cwm_reason_t8 a test:TestN3Reason;
+  mf:name      "reason-t8.n3" ;
+  rdfs:comment "Proof for a little inference, --n3=B to name BNodes" ;
+  mf:action <cwm_reason/t8.n3>;
+  mf:result <cwm_reason/t8-ref.n3>;
+  test:options [test:think true; test:data true] .
+
+:cwm_reason_t9 a test:TestN3Reason;
+  mf:name      "reason-t9.n3" ;
+  rdfs:comment "Proof for a little inference - binding Bnode to symbol" ;
+  mf:action <cwm_reason/t9.n3>;
+  mf:result <cwm_reason/t9-ref.n3>;
+  test:options [test:think true; test:data true] .
+
+:cwm_reason_double  a test:TestN3Reason; # too unstable!
+  mf:name      "reason-double.n3" ;
+  rdfs:comment "Proof for a little inference - binding Bnode to symbol" ;
+  mf:action <cwm_reason/double.n3>;
+  mf:result <cwm_reason/double-ref.n3>;
+  test:options [test:think true; test:data true] .
+
+# List tests from swap/test/string
+
+:string_startsWith a test:TestN3Reason;
+  mf:name      "string-startsWith.n3" ;
+  rdfs:comment "string:startsWith" ;
+  mf:action <string/startsWith.n3>;
+  mf:result <string/startsWith-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+:cwm_string_endsWith a test:TestN3Reason;
+  mf:name      "string-endsWith.n3" ;
+  rdfs:comment "string:endsWith" ;
+  mf:action <cwm_string/endsWith.n3>;
+  mf:result <cwm_string/endsWith-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+:string_concatenation a test:TestN3Reason;
+  mf:name      "string-concatenation.n3" ;
+  rdfs:comment "string:concatenation with type casting." ;
+  mf:action <string/concatenation.n3>;
+  mf:result <string/concatenation-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+:string_contains a test:TestN3Reason;
+  mf:name      "string-contains.n3" ;
+  rdfs:comment "string:contains" ;
+  mf:action <string/contains.n3>;
+  mf:result <string/contains-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+:string_containsIgnoringCase a test:TestN3Reason;
+  mf:name      "string-containsIgnoringCase.n3" ;
+  rdfs:comment "string:containsIgnoringCase" ;
+  mf:action <string/containsIgnoringCase.n3>;
+  mf:result <string/containsIgnoringCase-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+:string_equalIgnoringCase a test:TestN3Reason;
+  mf:name      "string-equalIgnoringCase.n3" ;
+  rdfs:comment "string:equalIgnoringCase" ;
+  mf:action <string/equalIgnoringCase.n3>;
+  mf:result <string/equalIgnoringCase-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+:string_format a test:TestN3Reason;
+  mf:name      "string-format.n3" ;
+  rdfs:comment "string:format" ;
+  mf:action <string/format.n3>;
+  mf:result <string/format-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+:string_greaterThan a test:TestN3Reason;
+  mf:name      "string-greaterThan.n3" ;
+  rdfs:comment "string:greaterThan" ;
+  mf:action <string/greaterThan.n3>;
+  mf:result <string/greaterThan-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+:string_lessThan a test:TestN3Reason;
+  mf:name      "string-lessThan.n3" ;
+  rdfs:comment "string:lessThan" ;
+  mf:action <string/lessThan.n3>;
+  mf:result <string/lessThan-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+:string_matches a test:TestN3Reason;
+  mf:name      "string-matches.n3" ;
+  rdfs:comment "string:matches" ;
+  mf:action <string/matches.n3>;
+  mf:result <string/matches-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+:string_notEqualIgnoringCase a test:TestN3Reason;
+  mf:name      "string-notEqualIgnoringCase.n3" ;
+  rdfs:comment "string:notEqualIgnoringCase" ;
+  mf:action <string/notEqualIgnoringCase.n3>;
+  mf:result <string/notEqualIgnoringCase-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+:string_notGreaterThan a test:TestN3Reason;
+  mf:name      "string-notGreaterThan.n3" ;
+  rdfs:comment "string:notGreaterThan" ;
+  mf:action <string/notGreaterThan.n3>;
+  mf:result <string/notGreaterThan-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+:string_notLessThan a test:TestN3Reason;
+  mf:name      "string-notLessThan.n3" ;
+  rdfs:comment "string:notLessThan" ;
+  mf:action <string/notLessThan.n3>;
+  mf:result <string/notLessThan-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+:string_notMatches a test:TestN3Reason;
+  mf:name      "string-notMatches.n3" ;
+  rdfs:comment "string:notMatches" ;
+  mf:action <string/notMatches.n3>;
+  mf:result <string/notMatches-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+:string_replace a test:TestN3Reason;
+  mf:name      "string-replace.n3" ;
+  rdfs:comment "string:replace" ;
+  mf:action <string/replace.n3>;
+  mf:result <string/replace-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+:string_scrape a test:TestN3Reason;
+  mf:name      "string-scrape.n3" ;
+  rdfs:comment "string:scrape" ;
+  mf:action <string/scrape.n3>;
+  mf:result <string/scrape-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+:cwm_string_roughly a test:TestN3Reason;
+  mf:name      "string-roughly.n3" ;
+  rdfs:comment "string:containsRoughly ignores case smart whitespace" ;
+  mf:action <cwm_string/roughly.n3>;
+  mf:result <cwm_string/roughly-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+:cwm_string_uriEncode a test:TestN3Reason;
+  mf:name      "string-uriEncode.n3" ;
+  rdfs:comment "string:encodeForURI and encodeForFragID" ;
+  mf:action <cwm_string/uriEncode.n3>;
+  mf:result <cwm_string/uriEncode-out.n3>;
+  test:options [test:rules true; test:conclusions true] .
+
+# List tests from swap/test/supports
+:cwm_supports_simple a test:TestN3Reason;
+  mf:name      "supports-simple.n3" ;
+  rdfs:comment "A very simple use of log:supports" ;
+  mf:action <cwm_supports/simple.n3>;
+  mf:result <cwm_supports/simple-ref.n3>;
+  test:options [test:rules true; test:data true] .
+
+# Tests from swap/test/time
+:cwm_time_t1 a test:TestN3Reason;
+  mf:name      "time-t1.n3" ;
+  rdfs:comment "basic ISo time handling functions" ;
+  mf:action <cwm_time/t1.n3>;
+  mf:result <cwm_time/time1.n3>;
+  test:options [test:think true; test:data true] .
+
+# List tests from swap/test/unify
+:cwm_unify_unify1 a test:TestN3Reason;
+  mf:name      "unify-unify1.n3" ;
+  rdfs:comment "log:includes looking for @forAll" ;
+  mf:action <cwm_unify/unify1.n3>;
+  mf:result <cwm_unify/unify1-ref.n3>;
+  test:options [test:rules true; test:data true] .
+
+:cwm_unify_unify2 a test:TestN3Reason;
+  mf:name      "unify-unify2.n3" ;
+  rdfs:comment "Query looking for @forAll" ;
+  mf:action <cwm_unify/unify2.n3>;
+  mf:result <cwm_unify/unify2-ref.n3>;
+  test:options [test:rules true; test:data true] ;
+  rdft:approval  rdft:Rejected .
+
+:cwm_unify_reflexive a test:TestN3Reason;
+  mf:name      "unify-reflexive.n3" ;
+  rdfs:comment "Include using the same var twice" ;
+  mf:action <cwm_unify/reflexive.n3>;
+  mf:result <cwm_unify/reflexive-ref.n3>;
+  test:options [test:rules true; test:data true] .

@@ -1,0 +1,37 @@
+@prefix : <inf.n3#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:test1a :is :PASS .
+:test1b :is :PASS .
+:test1c :is :PASS .
+:test1d :is :PASS .
+:test1e :is :PASS .
+:test1f :is :PASS .
+
+:test2a :is :PASS .
+:test2b :is :PASS .
+:test2c :is :PASS .
+:test2d :is :PASS .
+
+:test3a :is :PASS .
+:test3b :is :PASS .
+:test3c :is :PASS .
+:test3d :is :PASS .
+:test3e :is "NaN"^^xsd:double .
+
+:test4a :is "NaN"^^xsd:double .
+:test4b :is "NaN"^^xsd:double .
+:test4c :is :PASS .
+:test4d :is :PASS .
+:test4e :is :PASS .
+:test4f :is :PASS .
+
+:test5a :is :PASS .
+:test5b :is :PASS .
+:test5c :is :PASS .
+:test5d :is :PASS .
+:test5e :is "NaN"^^xsd:double .
+:test5f :is "NaN"^^xsd:double .
+:test5g :is "NaN"^^xsd:double .
+:test5h :is "NaN"^^xsd:double .
+

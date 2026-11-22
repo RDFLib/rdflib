@@ -1,0 +1,21 @@
+# -----------------------
+# Basic Monadic Benchmark
+# -----------------------
+#
+# tested with input of 10^9 triples generated with http://eulersharp.sourceforge.net/2007/07test/graphgen1bt.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/graph#>.
+
+{	?D0 ?R ?D1.
+	?D1 ?R ?D2.
+	?D2 ?R ?D3.
+	?D3 ?R ?D4.
+	?D4 ?R ?D5.
+	?D5 ?R ?D6.
+	?D6 ?R ?D7.
+	?D7 ?R ?D8.
+	?D8 ?R ?D9.
+	?D9 ?R ?D0.
+} =>
+{	?R :cycle (?D0 ?D1 ?D2 ?D3 ?D4 ?D5 ?D6 ?D7 ?D8 ?D9).
+}.

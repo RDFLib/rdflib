@@ -1,0 +1,65 @@
+#Processed by Id: euler.yap 7292 2014-06-13 12:27:29Z josd
+#eye --quick-answer --no-branch http://eulersharp.sourceforge.net/2007/07test/desc_thumbnail.n3 http://eulersharp.sourceforge.net/2007/07test/desc_images.n3 http://eulersharp.sourceforge.net/2007/07test/agent_knowledge.n3 --query http://eulersharp.sourceforge.net/2007/07test/agent_goal.n3
+
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+@prefix dbpedia-owl: <http://dbpedia.org/ontology/>.
+@prefix ex: <http://example.org/image#>.
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+
+[ a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    <http://eulersharp.sourceforge.net/2007/07test/lena.jpg> <http://dbpedia.org/ontology/thumbnail> _:sk3.
+  }].
+
+<#lemma1> a r:Inference; r:gives {<http://eulersharp.sourceforge.net/2007/07test/lena.jpg> <http://dbpedia.org/ontology/thumbnail> _:sk3}; r:evidence (
+  <#lemma2>);
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference; r:gives {_:sk4 http:methodName "GET".
+  _:sk4 http:requestURI _:sk3.
+  _:sk4 http:resp _:sk5.
+  _:sk5 http:body _:sk3.
+  <http://eulersharp.sourceforge.net/2007/07test/lena.jpg> <http://dbpedia.org/ontology/thumbnail> _:sk3.
+  _:sk3 a <http://dbpedia.org/resource/Image>.
+  _:sk3 <http://dbpedia.org/ontology/height> 80.0}; r:evidence (
+  <#lemma4>);
+  r:rule <#lemma5>.
+
+<#lemma3> a r:Extraction; r:gives {{<http://eulersharp.sourceforge.net/2007/07test/lena.jpg> <http://dbpedia.org/ontology/thumbnail> ?x0} => {<http://eulersharp.sourceforge.net/2007/07test/lena.jpg> <http://dbpedia.org/ontology/thumbnail> ?x0}};
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/agent_goal.n3>].
+
+<#lemma4> a r:Inference; r:gives {_:sk0 http:methodName "POST".
+  _:sk0 http:requestURI "/images/".
+  _:sk0 http:body <http://eulersharp.sourceforge.net/2007/07test/lena.jpg>.
+  _:sk0 http:resp _:sk1.
+  _:sk1 http:body <http://eulersharp.sourceforge.net/2007/07test/lena.jpg>.
+  <http://eulersharp.sourceforge.net/2007/07test/lena.jpg> ex:comments _:sk2.
+  <http://eulersharp.sourceforge.net/2007/07test/lena.jpg> ex:smallThumbnail _:sk3}; r:evidence (
+  <#lemma6>);
+  r:rule <#lemma7>.
+
+<#lemma5> a r:Extraction; r:gives {{?x0 ex:smallThumbnail ?x1} => {?x2 http:methodName "GET".
+  ?x2 http:requestURI ?x1.
+  ?x2 http:resp ?x3.
+  ?x3 http:body ?x1.
+  ?x0 <http://dbpedia.org/ontology/thumbnail> ?x1.
+  ?x1 a <http://dbpedia.org/resource/Image>.
+  ?x1 <http://dbpedia.org/ontology/height> 80.0}};
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/desc_thumbnail.n3>].
+
+<#lemma6> a r:Extraction; r:gives {<http://eulersharp.sourceforge.net/2007/07test/lena.jpg> a <http://dbpedia.org/resource/Image>};
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/agent_knowledge.n3>].
+
+<#lemma7> a r:Extraction; r:gives {{?x0 a <http://dbpedia.org/resource/Image>} => {?x1 http:methodName "POST".
+  ?x1 http:requestURI "/images/".
+  ?x1 http:body ?x0.
+  ?x1 http:resp ?x2.
+  ?x2 http:body ?x0.
+  ?x0 ex:comments ?x3.
+  ?x0 ex:smallThumbnail ?x4}};
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/desc_images.n3>].
+
+#ENDS 1.114 [sec] TC=4 TP=5 BC=0 BP=0 PM=0 CM=0 FM=0 AM=0
+

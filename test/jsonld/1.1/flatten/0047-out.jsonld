@@ -1,0 +1,10 @@
+[
+  {
+    "@id": "_:b0",
+    "http://example.com/core/#associated": [
+      {
+        "@id": "http://example.com/#Light"
+      }
+    ]
+  }
+]

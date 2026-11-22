@@ -1,0 +1,3 @@
+<http://example.org/origin> <http://example.org/bar> _:b0 .
+_:b0 <http://example.org/foo> "Foo" .
+_:b1 <http://example.org/bar> _:b0 .

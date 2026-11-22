@@ -1,0 +1,50 @@
+[
+  {
+    "@id": "_:b1",
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [ { "@value": "b1" } ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "@list": [
+          { "@value": "b2" },
+          { "@value": "b3" }
+        ]
+      }
+    ]
+  },
+  {
+    "@id": "_:c1",
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [ { "@value": "c1" } ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "@list": [
+          { "@value": "c2" },
+          { "@value": "c3" }
+        ]
+      }
+    ]
+  },
+  {
+    "@id": "_:lista",
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [ { "@value": "a1" } ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "@list": [
+          { "@value": "a2" },
+          { "@value": "a3" }
+        ]
+      }
+    ]
+  },
+  {
+    "@id": "http://example.com",
+    "http://example.com/property": [
+      {
+        "@list": [
+          { "@id": "_:lista" },
+          { "@id": "_:b1" },
+          { "@id": "_:c1" }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,46 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/age_instance.n3 http://eulersharp.sourceforge.net/2003/03swap/organism.n3 http://eulersharp.sourceforge.net/2003/03swap/human.n3 http://eulersharp.sourceforge.net/2003/03swap/event.n3 http://eulersharp.sourceforge.net/2003/03swap/rdfs-subClassOf.n3 http://eulersharp.sourceforge.net/2003/03swap/owl-intersectionOf.n3 http://eulersharp.sourceforge.net/2003/03swap/rdfs-subPropertyOf.n3 http://eulersharp.sourceforge.net/2003/03swap/owl-propertyChainAxiom.n3 http://eulersharp.sourceforge.net/2003/03swap/age_rules.n3 --query http://eulersharp.sourceforge.net/2007/07test/age_query.n3
+
+@prefix i: <http://eulersharp.sourceforge.net/2007/07test/age_instance.n3#>.
+@prefix con: <http://www.w3.org/2000/10/swap/pim/contact#>.
+@prefix unicore: <http://purl.uniprot.org/core/>.
+@prefix physical: <http://eulersharp.sourceforge.net/2003/03swap/physicalResource#>.
+@prefix organism: <http://eulersharp.sourceforge.net/2003/03swap/organism#>.
+@prefix clinskosch: <http://www.agfa.com/w3c/2009/clinicalSKOSSchemes#>.
+@prefix doc: <http://eulersharp.sourceforge.net/2003/03swap/document#>.
+@prefix humanbody: <http://eulersharp.sourceforge.net/2003/03swap/humanBody#>.
+@prefix dct: <http://purl.org/dc/terms/>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>.
+@prefix fos: <http://eulersharp.sourceforge.net/2003/03swap/foster#>.
+@prefix space: <http://eulersharp.sourceforge.net/2003/03swap/space#>.
+@prefix time: <http://eulersharp.sourceforge.net/2003/03swap/time#>.
+@prefix quant: <http://eulersharp.sourceforge.net/2003/03swap/quantities#>.
+@prefix agent: <http://eulersharp.sourceforge.net/2003/03swap/agent#>.
+@prefix env: <http://eulersharp.sourceforge.net/2003/03swap/environment#>.
+@prefix clisko: <http://www.agfa.com/w3c/2009/clinicalSKOSSchemes#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix dce: <http://purl.org/dc/elements/1.1/>.
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix event: <http://eulersharp.sourceforge.net/2003/03swap/event#>.
+@prefix human: <http://eulersharp.sourceforge.net/2003/03swap/human#>.
+
+i:adult1 event:hasAge "P69Y8M"^^xsd:yearMonthDuration.
+i:adult2 event:hasAge "P24Y5M"^^xsd:yearMonthDuration.
+i:baby1 event:hasAge "P0Y4M"^^xsd:yearMonthDuration.
+i:adult3 event:hasAge "P56Y8M"^^xsd:yearMonthDuration.
+i:adult4 event:hasAge "P24Y5M"^^xsd:yearMonthDuration.
+i:baby4 event:hasAge "P0Y7M"^^xsd:yearMonthDuration.
+i:baby2 event:hasAge "P25DT21H55M0S"^^xsd:dayTimeDuration.
+i:baby3 event:hasAge "P0DT21H55M0S"^^xsd:dayTimeDuration.
+
+#2018-04-18T08:27:39.737Z in=3440 out=8 ent=1023 step=9084 brake=5 inf=504833 sec=0.106 inf/sec=4762575
+#ENDS
+

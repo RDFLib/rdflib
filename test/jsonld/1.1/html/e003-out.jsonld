@@ -1,0 +1,4 @@
+[
+  {"http://example.com/foo": [{"@value": "foo"}]},
+  {"http://example.com/bar": [{"@value": "bar"}]}
+]

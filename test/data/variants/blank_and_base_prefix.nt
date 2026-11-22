@@ -1,0 +1,6 @@
+<http://example.org/blank_prefix#subject0> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://example.org/blank_prefix#subject0> <http://www.w3.org/2000/01/rdf-schema#label> "subject0"@en .
+<http://example.org/blank_prefix#subject0> <http://example.org/blank_prefix#predicate00> <http://example.org/blank_prefix#object00> .
+<http://example.org/blank_prefix#subject1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://example.org/blank_prefix#subject1> <http://www.w3.org/2000/01/rdf-schema#label> "subject0"@en .
+<http://example.org/blank_prefix#subject1> <http://example.org/blank_prefix#predicate10> <http://example.org/blank_prefix#object10> .

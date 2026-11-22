@@ -1,0 +1,61 @@
+# $Id: easterP.n3 4238 2011-04-14 11:56:24Z josd $
+# original copy at http://www.w3.org/2000/10/swap/test/easter/easter.n3
+#
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <http://www.agfa.com/w3c/euler/easterP#>.
+
+<> rdfs:comment """
+              Divide            by      Quotient  Remainder
+        ---------------------------------------------------
+                 y               19                   j
+                 y              100        k          h
+                 k                4        m          n
+               k + 8             25        p
+             k - p + 1            3        q
+        19j + k - m - q + 15     30                   r
+                 h                4        s          u
+        32 + 2n + 2s - r - u      7                   v
+           j + 11r + 22v        451        w
+         r + v - 7w + 114        31        x          z
+
+Here x is the number of the month ond 1 + z is the day of that
+month upon which Easter Sunday falls in the year y. 
+""".
+
+2011 a :Year.
+2012 a :Year.
+2013 a :Year.
+2014 a :Year.
+2015 a :Year.
+2016 a :Year.
+2017 a :Year.
+2018 a :Year.
+2019 a :Year.
+2020 a :Year.
+
+{?Y a :Year.
+ (?Y 19) math:remainder ?J.
+ (?Y 100) math:integerQuotient ?K; math:remainder ?H.
+ (?K 4) math:integerQuotient ?M; math:remainder ?N.
+ ((?K 8)!math:sum 25) math:integerQuotient ?P.
+ (((?K ?P)!math:difference 1)!math:sum 3) math:integerQuotient ?Q.
+ ((((((19 ?J)!math:product ?K)!math:sum ?M)!math:difference
+      ?Q)!math:difference 15)!math:sum 30) math:remainder ?R.
+ (?H 4) math:integerQuotient ?S; math:remainder ?U.
+ ((32 (2 ?N)!math:product (2 ?S)!math:product ?R!math:negation
+      ?U!math:negation)!math:sum 7) math:remainder ?V.
+ ((?J (11 ?R)!math:product (22 ?V)!math:product)!math:sum 451)
+      math:integerQuotient ?W.
+ ((?R ?V (7 ?W)!math:product!math:negation 114)!math:sum 31)
+      math:integerQuotient ?X; math:remainder ?Z.
+ (?Z 1) math:sum ?DAY.
+} => {
+ ?Y :hasEasterOnDay ?DAY; :hasEasterOnMonth ?X
+}.

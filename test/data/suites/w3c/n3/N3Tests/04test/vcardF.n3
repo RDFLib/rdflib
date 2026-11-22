@@ -1,0 +1,9 @@
+# $Id: vcardF.n3 348 2004-08-18 17:19:49Z josd $
+# PxButton | es  | euler --nope --think vcardP.n3 --filter vcardF.n3
+# PxButton | cwm | cwm vcardP.n3 --think --filter"=vcardF.n3"
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/vcardP#>.
+
+{?S :employeeId "1234". ?S ?P ?O} => {?S :employeeId "1234". ?S ?P ?O}.
+{?S :employeeId "1234". ?S ?P ?O. ?O ?Q ?R} => {?S :employeeId "1234". ?S ?P ?O. ?O ?Q ?R}.

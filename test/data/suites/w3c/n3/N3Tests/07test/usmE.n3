@@ -1,0 +1,11 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope --tactic limited-answer 1 http://eulersharp.sourceforge.net/2007/07test/usmP.n3 --query http://eulersharp.sourceforge.net/2007/07test/usmQ.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/monadic#>.
+
+5 :state (_:sk_2 0).
+5 :instruction (:halt).
+
+#2018-04-18T08:28:58.009Z in=60 out=2 ent=24 step=88 brake=5 inf=19015 sec=0.021 inf/sec=905476
+#ENDS
+

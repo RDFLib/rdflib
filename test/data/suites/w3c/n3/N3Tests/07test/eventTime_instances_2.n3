@@ -1,0 +1,75 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix time: <http://eulersharp.sourceforge.net/2003/03swap/time#>.
+@prefix agent: <http://eulersharp.sourceforge.net/2003/03swap/agent#>.
+@prefix human: <http://eulersharp.sourceforge.net/2003/03swap/human#>.
+@prefix ther: <http://www.agfa.com/w3c/2009/therapy#>.
+@prefix heca: <http://www.agfa.com/w3c/2009/healthCare#>.
+@prefix urtrin: <http://www.agfa.com/w3c/2009/urinaryTractInfection#>.
+@prefix dis: <http://www.agfa.com/w3c/2009/humanDisorder#>.
+@prefix carfai: <http://www.agfa.com/w3c/2009/cardiacFailure#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+@prefix i: <#>.
+
+
+[a human:Human; agent:playsRole [a heca:Patient]; foaf:family_name """Peters"""@nl; foaf:firstName """Jan"""@nl;
+	agent:actsIn i:chronicCardiacFailure1, i:eColiLowerUrinaryTractInfection1, i:therapy1_1, i:therapy1_2].
+
+[a human:Human; agent:playsRole [a heca:Patient]; foaf:family_name """Peters"""@nl; foaf:firstName """Peter"""@nl;
+	agent:actsIn i:chronicCardiacFailure2, i:eColiLowerUrinaryTractInfection2, i:lowerUrinaryTractInfection2, i:therapy2_1, i:therapy2_2, i:therapy2_3].
+
+i:chronicCardiacFailure1
+	a carfai:ChronicCardiacFailure;
+	time:begins "2009-05-04T00:00:00+01:00"^^xsd:dateTime;
+	ther:treatedWith i:therapy1_1.
+
+i:eColiLowerUrinaryTractInfection1
+	a urtrin:EColiLowerUrinaryTractInfection;
+	time:begins "2009-05-04T00:00:00+01:00"^^xsd:dateTime;
+	time:ends "2009-05-24T00:00:00+01:00"^^xsd:dateTime;
+	ther:treatedWith i:therapy1_2.
+
+i:chronicCardiacFailure2
+	a carfai:ChronicCardiacFailure;
+	time:begins "2006-04-04T00:00:00+01:00"^^xsd:dateTime;
+	time:ends "2009-05-24T00:00:00+01:00"^^xsd:dateTime;
+	ther:treatedWith i:therapy2_1.
+
+i:eColiLowerUrinaryTractInfection2
+	a urtrin:EColiLowerUrinaryTractInfection;
+	time:begins "2009-05-04T00:00:00+01:00"^^xsd:dateTime;
+	time:ends "2009-05-24T00:00:00+01:00"^^xsd:dateTime;
+	ther:treatedWith i:therapy2_2.
+
+i:lowerUrinaryTractInfection2
+	a urtrin:LowerUrinaryTractInfection;
+	time:begins "2009-05-04T00:00:00+01:00"^^xsd:dateTime;
+	time:ends "2009-05-24T00:00:00+01:00"^^xsd:dateTime;
+	ther:treatedWith i:therapy2_3.
+
+i:therapy1_1
+	a ther:Therapy;
+	time:begins "2006-04-04T00:00:00+01:00"^^xsd:dateTime;
+	time:ends "2009-07-13T00:00:00+01:00"^^xsd:dateTime.
+
+i:therapy1_2
+	a ther:Therapy;
+	time:begins "2009-05-04T00:00:00+01:00"^^xsd:dateTime;
+	time:ends "2009-05-24T00:00:00+01:00"^^xsd:dateTime.
+
+i:therapy2_1
+	a ther:Therapy;
+	time:begins "2009-05-13T00:00:00+01:00"^^xsd:dateTime;
+	time:ends "2009-05-24T05:00:00+01:00"^^xsd:dateTime.
+
+i:therapy2_2
+	a ther:Therapy;
+	time:begins "2009-05-09T00:00:00+01:00"^^xsd:dateTime;
+	time:ends "2009-05-24T10:00:00+01:00"^^xsd:dateTime.
+
+i:therapy2_3
+	a ther:Therapy;
+	time:begins "2009-05-09T00:00:00+01:00"^^xsd:dateTime;
+	time:ends "2009-05-24T20:00:00+01:00"^^xsd:dateTime.

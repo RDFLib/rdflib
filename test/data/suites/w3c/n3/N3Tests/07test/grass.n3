@@ -1,0 +1,63 @@
+# Abductive reasoning test case
+# see http://en.wikipedia.org/wiki/Abductive_logic_programming#Example_1
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/try#>.
+
+
+# observations
+
+:obs1 :wetgrass true.
+:obs1 :sunshine true.
+
+
+# the sun was not shining OR it was not raining
+
+{	?OBS :sunshine true.
+} =>
+{	?OBS :rain false.
+}.
+
+{	?OBS :rain true.
+} =>
+{	?OBS :sunshine false.
+}.
+
+{	?OBS :sunshine true.
+	?OBS :rain true.
+} =>
+	false.
+
+
+# it was raining OR the sprinkler was on OR the grass is not wet
+
+{	?OBS :rain false.
+	?OBS :sprinkler false.
+} =>
+{	?OBS :wetgrass false.
+}.
+
+{	?OBS :sprinkler false.
+	?OBS :wetgrass true.
+} =>
+{	?OBS :rain true.
+}.
+
+{	?OBS :rain false.
+	?OBS :wetgrass true.
+} =>
+{	?OBS :sprinkler true.
+}.
+
+{	?OBS :rain false.
+	?OBS :sprinkler false.
+	?OBS :wetgrass true.
+} =>
+	false.
+
+
+# inconsistencies
+
+{	?SUBJ ?PRED true.
+	?SUBJ ?PRED false.
+} =>
+	false.

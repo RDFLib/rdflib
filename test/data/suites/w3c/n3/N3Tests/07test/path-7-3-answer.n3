@@ -1,0 +1,252 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --tactic limited-answer 1 http://eulersharp.sourceforge.net/2007/07test/initial.n3 http://eulersharp.sourceforge.net/2007/07test/path-7-3.n3 --query http://eulersharp.sourceforge.net/2007/07test/goal.n3
+
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix ex: <http://example.org/#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:relGoal <http://eulersharp.sourceforge.net/2007/07test/y>.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:relGoal <http://eulersharp.sourceforge.net/2007/07test/y>.
+  };
+  r:evidence (
+    <#lemma2>
+  );
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    _:sk_40 http:methodName "GET".
+    _:sk_40 http:requestURI <http://eulersharp.sourceforge.net/2007/07test/x>.
+    _:sk_40 http:resp _:sk_41.
+    _:sk_41 http:body <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel8 <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel8 <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel8 <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:relGoal <http://eulersharp.sourceforge.net/2007/07test/y>.
+  };
+  r:evidence (
+    <#lemma4>
+    <#lemma4>
+    <#lemma4>
+  );
+  r:rule <#lemma5>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    {<http://eulersharp.sourceforge.net/2007/07test/x> ex:relGoal <http://eulersharp.sourceforge.net/2007/07test/y>} => {<http://eulersharp.sourceforge.net/2007/07test/x> ex:relGoal <http://eulersharp.sourceforge.net/2007/07test/y>}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/goal.n3>].
+
+<#lemma4> a r:Inference;
+  r:gives {
+    _:sk_34 http:methodName "GET".
+    _:sk_34 http:requestURI <http://eulersharp.sourceforge.net/2007/07test/x>.
+    _:sk_34 http:resp _:sk_35.
+    _:sk_35 http:body <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel7 <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel7 <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel7 <http://eulersharp.sourceforge.net/2007/07test/y>.
+  };
+  r:evidence (
+    <#lemma6>
+    <#lemma6>
+    <#lemma6>
+  );
+  r:rule <#lemma7>.
+
+<#lemma5> a r:Extraction;
+  r:gives {
+    {?x_0_2 ex:rel7 ?x_1_2.
+     ?x_2_2 ex:rel7 ?x_3_2.
+     ?x_4_2 ex:rel7 ?x_5_2} => {_:x_6_2 http:methodName "GET".
+     _:x_6_2 http:requestURI ?x_0_2.
+     _:x_6_2 http:resp _:x_7_2.
+     _:x_7_2 http:body ?x_1_2.
+     ?x_0_2 ex:rel8 ?x_1_2.
+     ?x_2_2 ex:rel8 ?x_3_2.
+     ?x_4_2 ex:rel8 ?x_5_2.
+     ?x_0_2 ex:relGoal ?x_1_2}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/path-7-3.n3>].
+
+<#lemma6> a r:Inference;
+  r:gives {
+    _:sk_28 http:methodName "GET".
+    _:sk_28 http:requestURI <http://eulersharp.sourceforge.net/2007/07test/x>.
+    _:sk_28 http:resp _:sk_29.
+    _:sk_29 http:body <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel6 <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel6 <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel6 <http://eulersharp.sourceforge.net/2007/07test/y>.
+  };
+  r:evidence (
+    <#lemma8>
+    <#lemma8>
+    <#lemma8>
+  );
+  r:rule <#lemma9>.
+
+<#lemma7> a r:Extraction;
+  r:gives {
+    {?x_0_3 ex:rel6 ?x_1_3.
+     ?x_2_3 ex:rel6 ?x_3_3.
+     ?x_4_3 ex:rel6 ?x_5_3} => {_:x_6_3 http:methodName "GET".
+     _:x_6_3 http:requestURI ?x_0_3.
+     _:x_6_3 http:resp _:x_7_3.
+     _:x_7_3 http:body ?x_1_3.
+     ?x_0_3 ex:rel7 ?x_1_3.
+     ?x_2_3 ex:rel7 ?x_3_3.
+     ?x_4_3 ex:rel7 ?x_5_3}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/path-7-3.n3>].
+
+<#lemma8> a r:Inference;
+  r:gives {
+    _:sk_22 http:methodName "GET".
+    _:sk_22 http:requestURI <http://eulersharp.sourceforge.net/2007/07test/x>.
+    _:sk_22 http:resp _:sk_23.
+    _:sk_23 http:body <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel5 <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel5 <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel5 <http://eulersharp.sourceforge.net/2007/07test/y>.
+  };
+  r:evidence (
+    <#lemma10>
+    <#lemma10>
+    <#lemma10>
+  );
+  r:rule <#lemma11>.
+
+<#lemma9> a r:Extraction;
+  r:gives {
+    {?x_0_4 ex:rel5 ?x_1_4.
+     ?x_2_4 ex:rel5 ?x_3_4.
+     ?x_4_4 ex:rel5 ?x_5_4} => {_:x_6_4 http:methodName "GET".
+     _:x_6_4 http:requestURI ?x_0_4.
+     _:x_6_4 http:resp _:x_7_4.
+     _:x_7_4 http:body ?x_1_4.
+     ?x_0_4 ex:rel6 ?x_1_4.
+     ?x_2_4 ex:rel6 ?x_3_4.
+     ?x_4_4 ex:rel6 ?x_5_4}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/path-7-3.n3>].
+
+<#lemma10> a r:Inference;
+  r:gives {
+    _:sk_16 http:methodName "GET".
+    _:sk_16 http:requestURI <http://eulersharp.sourceforge.net/2007/07test/x>.
+    _:sk_16 http:resp _:sk_17.
+    _:sk_17 http:body <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel4 <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel4 <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel4 <http://eulersharp.sourceforge.net/2007/07test/y>.
+  };
+  r:evidence (
+    <#lemma12>
+    <#lemma12>
+    <#lemma12>
+  );
+  r:rule <#lemma13>.
+
+<#lemma11> a r:Extraction;
+  r:gives {
+    {?x_0_5 ex:rel4 ?x_1_5.
+     ?x_2_5 ex:rel4 ?x_3_5.
+     ?x_4_5 ex:rel4 ?x_5_5} => {_:x_6_5 http:methodName "GET".
+     _:x_6_5 http:requestURI ?x_0_5.
+     _:x_6_5 http:resp _:x_7_5.
+     _:x_7_5 http:body ?x_1_5.
+     ?x_0_5 ex:rel5 ?x_1_5.
+     ?x_2_5 ex:rel5 ?x_3_5.
+     ?x_4_5 ex:rel5 ?x_5_5}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/path-7-3.n3>].
+
+<#lemma12> a r:Inference;
+  r:gives {
+    _:sk_6 http:methodName "GET".
+    _:sk_6 http:requestURI <http://eulersharp.sourceforge.net/2007/07test/x>.
+    _:sk_6 http:resp _:sk_7.
+    _:sk_7 http:body <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel3 <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel3 <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel3 <http://eulersharp.sourceforge.net/2007/07test/y>.
+  };
+  r:evidence (
+    <#lemma14>
+    <#lemma14>
+    <#lemma14>
+  );
+  r:rule <#lemma15>.
+
+<#lemma13> a r:Extraction;
+  r:gives {
+    {?x_0_6 ex:rel3 ?x_1_6.
+     ?x_2_6 ex:rel3 ?x_3_6.
+     ?x_4_6 ex:rel3 ?x_5_6} => {_:x_6_6 http:methodName "GET".
+     _:x_6_6 http:requestURI ?x_0_6.
+     _:x_6_6 http:resp _:x_7_6.
+     _:x_7_6 http:body ?x_1_6.
+     ?x_0_6 ex:rel4 ?x_1_6.
+     ?x_2_6 ex:rel4 ?x_3_6.
+     ?x_4_6 ex:rel4 ?x_5_6}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/path-7-3.n3>].
+
+<#lemma14> a r:Inference;
+  r:gives {
+    _:sk_0 http:methodName "GET".
+    _:sk_0 http:requestURI <http://eulersharp.sourceforge.net/2007/07test/x>.
+    _:sk_0 http:resp _:sk_1.
+    _:sk_1 http:body <http://eulersharp.sourceforge.net/2007/07test/y>.
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel2 <http://eulersharp.sourceforge.net/2007/07test/y>.
+    _:sk_2 ex:rel2 _:sk_3.
+    _:sk_4 ex:rel2 _:sk_5.
+  };
+  r:evidence (
+    <#lemma16>
+  );
+  r:rule <#lemma17>.
+
+<#lemma15> a r:Extraction;
+  r:gives {
+    {?x_0_7 ex:rel2 ?x_1_7.
+     ?x_2_7 ex:rel2 ?x_3_7.
+     ?x_4_7 ex:rel2 ?x_5_7} => {_:x_6_7 http:methodName "GET".
+     _:x_6_7 http:requestURI ?x_0_7.
+     _:x_6_7 http:resp _:x_7_7.
+     _:x_7_7 http:body ?x_1_7.
+     ?x_0_7 ex:rel3 ?x_1_7.
+     ?x_2_7 ex:rel3 ?x_3_7.
+     ?x_4_7 ex:rel3 ?x_5_7}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/path-7-3.n3>].
+
+<#lemma16> a r:Extraction;
+  r:gives {
+    <http://eulersharp.sourceforge.net/2007/07test/x> ex:rel1 <http://eulersharp.sourceforge.net/2007/07test/y>.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/initial.n3>].
+
+<#lemma17> a r:Extraction;
+  r:gives {
+    {?x_0_8 ex:rel1 ?x_1_8} => {_:x_2_8 http:methodName "GET".
+     _:x_2_8 http:requestURI ?x_0_8.
+     _:x_2_8 http:resp _:x_3_8.
+     _:x_3_8 http:body ?x_1_8.
+     ?x_0_8 ex:rel2 ?x_1_8.
+     _:x_4_8 ex:rel2 _:x_5_8.
+     _:x_6_8 ex:rel2 _:x_7_8}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/path-7-3.n3>].
+
+#2018-04-18T08:28:20.351Z in=80 out=1 ent=167 step=164 brake=1 inf=64104 sec=0.027 inf/sec=2374222
+#ENDS
+

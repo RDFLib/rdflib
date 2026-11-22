@@ -1,0 +1,12 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --wcache http://josd.github.io/brain/cs . --nope http://josd.github.io/brain/cs/data-001.n3 http://josd.github.io/brain/cs/rules-001.n3 --query http://josd.github.io/brain/cs/query-001.n3
+
+@prefix : <http://josd.github.io/brain/cs#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+
+:actuator1 :control1 39.27346198678276 .
+:actuator2 :control1 26.08 .
+
+#2020-02-22T21:50:31.520Z in=15 out=2 ent=4 step=8 brake=2 inf=31080 sec=0.083 inf/sec=374458
+#ENDS
+

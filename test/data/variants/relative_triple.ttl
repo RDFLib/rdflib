@@ -1,0 +1,3 @@
+@prefix anchor: <path/> .
+
+anchor:subject anchor:predicate anchor:object .

@@ -1,0 +1,13 @@
+{
+ "@context": {
+   "compact-iris": {
+     "@id": "http://example.com/compact-iris#",
+     "@prefix": false
+   },
+   "property": "http://example.com/property"
+ },
+ "property": {
+   "@id": "http://example.com/compact-iris#are-considered",
+   "property": "@prefix false not really necessary, but doubly prevents term from being used as a prefix"
+ }
+}

@@ -1,0 +1,16 @@
+# $Id: anatomy-filter.n3 575 2005-07-17 20:51:15Z josd $
+# see http://idm.univ-rennes1.fr/~obierlai/anatomy/annexes/index.html
+#
+# PxButton | test with euler | bash .euler --step 800000 anatomy-facts.n3 anatomy-rules.n3 --nope --think --filter anatomy-filter.n3 
+# PxButton | test with cwm   | bash .cwm anatomy-facts.n3 anatomy-rules.n3 --think --filter"=anatomy-filter.n3"
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <http://idm.univ-rennes1.fr/~obierlai/anatomy#>.
+
+{?S :hasNoCommonPart :MAE3} => {?S :hasNoCommonPart :MAE3}.
+{?S a :MaterialAnatomicalEntity; :isMaterialAnatomicalEntityConnectedTo ?O} => {?S :isMaterialAnatomicalEntityConnectedTo ?O}.

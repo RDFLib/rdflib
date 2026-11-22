@@ -1,0 +1,5 @@
+@prefix : <test#>.
+
+:Room :contains :Radio1, :Radio2.
+:Radio1 :playing <rock.mp3>.
+:Radio2 :playing <jazz.mp3>.

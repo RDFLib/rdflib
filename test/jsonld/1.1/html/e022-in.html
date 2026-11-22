@@ -1,0 +1,20 @@
+<html>
+  <head>
+    <base href="http://a.example.com/base" />
+    <script id="first" type="application/ld+json">
+    {
+      "@context": {
+        "foo": {"@id": "http://example.com/foo"}
+      },
+      "foo": [{"@value": "bar"}]
+    }
+    </script>
+    <script id="second" type="application/ld+json">
+    {
+      "@context": {"ex": "http://example.com/"},
+      "@id": "",
+      "ex:bar": "foo"
+    }
+    </script>
+  </head>
+</html>

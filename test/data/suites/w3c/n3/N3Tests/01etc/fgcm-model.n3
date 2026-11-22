@@ -1,0 +1,380 @@
+@prefix fl: <http://eulersharp.sourceforge.net/2003/03swap/fl-rules#>.
+@prefix dco: <http://www.debugit.eu/ontology/1.0/dco.owl#>.
+
+# Define the relationship between clinical concepts and simple urinary infection
+
+(dco:FlankPain dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:Pregnant dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:Fever dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:UrineDipstickTest dco:SimpleUrinaryTractInfection) fl:sigma 1.
+(dco:ResidualBladder dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:Chills dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:VesicalUretralReflux dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:Urolithiasis dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:DisorderOfUrinaryTract dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:DiabetesMellitus dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:Immunosuppression dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:Kidneyinsuffiency dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:Male dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:PathologicalState dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:Old dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:Female dco:SimpleUrinaryTractInfection) fl:sigma 1.
+(dco:PathologicalState dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:HeartPulseRate dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:ImpairedGeneralHealthStatus dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:Vomiting dco:SimpleUrinaryTractInfection) fl:gsigma (0.0196078431 0.8305084746).
+(dco:Nausea dco:SimpleUrinaryTractInfection) fl:gsigma (0.3788819876 0.7876857749).
+(dco:Diarrhea dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:PainfulKidneysPalpation dco:SimpleUrinaryTractInfection) fl:sigma 0.
+(dco:Dysuria dco:SimpleUrinaryTractInfection) fl:sigma 1.
+(dco:VaginalDischarge dco:SimpleUrinaryTractInfection) fl:gsigma (0.2647058824 0.4117647059).
+(dco:PruritusVulvae dco:SimpleUrinaryTractInfection) fl:gsigma (0.3243243243 0.6138996139).
+(dco:UltrasonographyObstruction dco:SimpleUrinaryTractInfection) fl:sigma 0.
+
+{(?P dco:FlankPain) fl:mu 1.} =>
+        {
+                (dco:UrineDipstickTest dco:SimpleUrinaryTractInfection) fl:sigma 0.
+                (dco:Dysuria dco:SimpleUrinaryTractInfection) fl:sigma 0.
+                (dco:Female dco:SimpleUrinaryTractInfection) fl:sigma 0.
+        }.
+
+{(?P dco:Fever) fl:mu 1.} =>
+        {
+                (dco:UrineDipstickTest dco:SimpleUrinaryTractInfection) fl:sigma 0.
+                (dco:Dysuria dco:SimpleUrinaryTractInfection) fl:sigma 0.
+                (dco:Female dco:SimpleUrinaryTractInfection) fl:sigma 0.
+        }.
+
+{(?P dco:UltrasonographyObstruction) fl:mu 1.} =>
+        {
+                (dco:UrineDipstickTest dco:SimpleUrinaryTractInfection) fl:sigma 0.
+                (dco:Dysuria dco:SimpleUrinaryTractInfection) fl:sigma 0.
+                (dco:Female dco:SimpleUrinaryTractInfection) fl:sigma 0.
+        }.
+
+# Definition of the relationship between clinical concepts and complicated urinary tract infection
+
+(dco:FlankPain dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:Fever dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:Pregnant dco:ComplicatedUrinaryTractInfection) fl:sigma 0.
+(dco:Male dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:UrineDipstickTest dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:Female dco:ComplicatedUrinaryTractInfection) fl:sigma 0.8.
+(dco:UrineDipstickTest dco:SimpleAcuteCystitis) fl:sigma 1.
+(dco:VesicalUretralReflux dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:DisorderOfUrinaryTract dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:ResidualBladder dco:ComplicatedUrinaryTractInfection) fl:sigma 0.8.
+(dco:Chills dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:Urolithiasis dco:ComplicatedUrinaryTractInfection) fl:sigma 0.8.
+(dco:DiabetesMellitus dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:Immunosuppression dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:Kidneyinsuffiency dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:PathologicalState dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:Old dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:HeartPulseRate dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:ImpairedGeneralHealthStatus dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:Vomiting dco:ComplicatedUrinaryTractInfection) fl:sigma 0.8.
+(dco:Nausea dco:ComplicatedUrinaryTractInfection) fl:sigma 0.8.
+(dco:Diarrhea dco:ComplicatedUrinaryTractInfection) fl:sigma 0.8.
+(dco:PainfulKidneysPalpation dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:Dysuria dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:UrinaryFrequency dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:GrossHematuria dco:ComplicatedUrinaryTractInfection) fl:sigma 1.
+(dco:UltrasonographyObstruction dco:ComplicatedUrinaryTractInfection) fl:sigma 0.
+
+# Definition of the relationship between clinical concepts simple acute cystitis
+
+(dco:FlankPain dco:SimpleAcuteCystitis) fl:sigma 0.
+(dco:Fever dco:SimpleAcuteCystitis) fl:sigma 0.
+(dco:Pregnant dco:SimpleAcuteCystitis)     fl:sigma 0.
+(dco:UrineDipstickTest dco:SimpleAcuteCystitis) fl:sigma 1.
+(dco:ResidualBladder dco:SimpleAcuteCystitis) fl:sigma 0.
+(dco:Chills dco:SimpleAcuteCystitis) fl:sigma 0.
+(dco:VesicalUretralReflux dco:SimpleAcuteCystitis) fl:sigma 0.
+(dco:Urolithiasis dco:SimpleAcuteCystitis) fl:sigma 0.
+(dco:DisorderOfUrinaryTract dco:SimpleAcuteCystitis) fl:sigma 0.
+(dco:DiabetesMellitus dco:SimpleAcuteCystitis) fl:sigma 0.
+(dco:Immunosuppression dco:SimpleAcuteCystitis) fl:sigma 0.
+(dco:Kidneyinsuffiency dco:SimpleAcuteCystitis) fl:sigma 0.
+(dco:Male dco:SimpleAcuteCystitis) fl:sigma 0.
+(dco:PathologicalState dco:SimpleAcuteCystitis) fl:sigma 0.
+(dco:Old dco:SimpleAcuteCystitis) fl:sigma 0.2.
+(dco:HeartPulseRate dco:SimpleAcuteCystitis) fl:sigma 0.
+(dco:ImpairedGeneralHealthStatus dco:SimpleAcuteCystitis) fl:sigma 0.
+(dco:Vomiting dco:SimpleAcuteCystitis) fl:gsigma (0.0196078431 0.8305084746).
+(dco:Nausea dco:SimpleAcuteCystitis) fl:gsigma (0.3788819876 0.7876857749).
+(dco:Diarrhea dco:SimpleAcuteCystitis) fl:sigma 0.
+(dco:PainfulKidneysPalpation dco:SimpleAcuteCystitis) fl:sigma 0.
+(dco:Dysuria dco:SimpleAcuteCystitis) fl:sigma 1.
+(dco:UrinaryFrequency dco:SimpleAcuteCystitis) fl:sigma 0.8.
+(dco:Female dco:SimpleAcuteCystitis) fl:sigma 1.
+(dco:PruritusVulvae dco:SimpleAcuteCystitis) fl:gsigma (0.3243243243 0.6138996139).
+(dco:VaginalDischarge dco:SimpleAcuteCystitis) fl:gsigma (0.2647058824 0.4117647059).
+(dco:GrossHematuria dco:SimpleAcuteCystitis) fl:sigma 0.8.
+(dco:UltrasonographyObstruction dco:SimpleAcuteCystitis) fl:sigma 0.
+(dco:SuprapubicPain dco:SimpleAcuteCystitis) fl:sigma 1.
+
+{(?P dco:UltrasonographyObstruction) fl:mu 1.} =>
+        {
+                (dco:UrineDipstickTest dco:SimpleAcuteCystitis) fl:sigma 0.
+                (dco:Dysuria dco:SimpleAcuteCystitis) fl:sigma 0.
+                (dco:Female dco:SimpleAcuteCystitis) fl:sigma 0.
+                (dco:SuprapubicPain dco:SimpleAcuteCystitis) fl:sigma 0.
+                (dco:UrinaryFrequency dco:SimpleAcuteCystitis) fl:sigma 0.
+        }.
+
+{(?P dco:Fever) fl:mu 1.} =>
+        {
+                (dco:UrineDipstickTest dco:SimpleAcuteCystitis) fl:sigma 0.
+                (dco:Dysuria dco:SimpleAcuteCystitis) fl:sigma 0.
+                (dco:Female dco:SimpleAcuteCystitis) fl:sigma 0.
+                (dco:SuprapubicPain dco:SimpleAcuteCystitis) fl:sigma 0.
+                (dco:UrinaryFrequency dco:SimpleAcuteCystitis) fl:sigma 0.
+        }.
+
+{(?P dco:FlankPain) fl:mu 1.} =>
+        {
+                (dco:UrineDipstickTest dco:SimpleAcuteCystitis) fl:sigma 0.
+                (dco:Dysuria dco:SimpleAcuteCystitis) fl:sigma 0.
+                (dco:Female dco:SimpleAcuteCystitis) fl:sigma 0.
+                (dco:SuprapubicPain dco:SimpleAcuteCystitis) fl:sigma 0.
+                (dco:UrinaryFrequency dco:SimpleAcuteCystitis) fl:sigma 0.
+        }.
+
+# Definition of the relationship between clinical concepts acute prostatitis
+
+{(?P dco:Male) fl:mu 1} =>
+        {
+                (dco:FlankPain dco:AcuteProstatis) fl:sigma 0.8.
+                (dco:Fever dco:AcuteProstatis) fl:sigma 0.6.
+                (dco:Male dco:AcuteProstatis) fl:sigma 1.
+                (dco:Female dco:AcuteProstatis) fl:sigma 0.
+                (dco:UrineDipstickTest dco:AcuteProstatis) fl:sigma 1.
+                (dco:VesicalUretralReflux dco:AcuteProstatis) fl:sigma 1.
+                (dco:ResidualBladder dco:AcuteProstatis) fl:sigma 1.
+                (dco:VesicalUretralReflux dco:AcuteProstatis) fl:sigma 0.8.
+                (dco:Urolithiasis dco:AcuteProstatis) fl:sigma 0.
+                (dco:DisorderOfUrinaryTract dco:AcuteProstatis) fl:sigma 0.8.
+                (dco:DiabetesMellitus dco:AcuteProstatis) fl:sigma 0.8.
+                (dco:Immunosuppression dco:AcuteProstatis) fl:sigma 0.6.
+                (dco:Kidneyinsuffiency dco:AcuteProstatis) fl:sigma 0.6.
+                (dco:PathologicalState dco:AcuteProstatis) fl:sigma 0.6.
+                (dco:ImpairedGeneralHealthStatus dco:AcuteProstatis) fl:sigma 0.6.
+                (dco:DigitalRectalExamination dco:AcuteProstatis) fl:sigma 1.
+                (dco:Dysuria dco:AcuteProstatis) fl:sigma 1.
+                (dco:UrinaryFrequency dco:AcuteProstatis) fl:sigma 1.
+                (dco:Old dco:AcuteProstatis) fl:sigma 0.9.
+                (dco:UltrasonographyObstruction dco:AcuteProstatis) fl:sigma 0.
+        }.
+
+# Definition of the relationship between clinical concepts and Simple acute pyelonephritis
+(dco:FlankPain dco:SimpleAcutePyelonephritis) fl:sigma 1.
+(dco:Fever dco:SimpleAcutePyelonephritis) fl:sigma 1.
+(dco:Pregnant dco:SimpleAcutePyelonephritis) fl:sigma 0.
+(dco:UrineDipstickTest dco:SimpleAcutePyelonephritis) fl:sigma 1.
+(dco:PainfulKidneysPalpation dco:SimpleAcutePyelonephritis) fl:sigma 1.
+(dco:Male dco:SimpleAcutePyelonephritis) fl:sigma 0.
+(dco:Chills dco:SimpleAcutePyelonephritis) fl:sigma 1.
+(dco:Urolithiasis dco:SimpleAcutePyelonephritis) fl:sigma 0.
+(dco:UrinaryFrequency dco:SimpleAcutePyelonephritis) fl:sigma 0.4.
+(dco:HeartPulseRate dco:SimpleAcutePyelonephritis) fl:sigma 0.8.
+(dco:SuprapubicPain dco:SimpleAcutePyelonephritis) fl:sigma 0.5.
+(dco:Dysuria dco:SimpleAcutePyelonephritis) fl:sigma 0.6.
+(dco:SuprapubicPain dco:SimpleAcutePyelonephritis) fl:sigma 0.6.
+
+{(?P dco:FlankPain) fl:mu 0.} =>
+        {
+                (dco:FlankPain dco:SimpleAcutePyelonephritis) fl:sigma 0.
+                (dco:Fever dco:SimpleAcutePyelonephritis) fl:sigma 0.
+                (dco:UrineDipstickTest dco:SimpleAcutePyelonephritis) fl:sigma 0.
+                (dco:PainfulKidneysPalpation dco:SimpleAcutePyelonephritis) fl:sigma 0.
+                (dco:Chills dco:SimpleAcutePyelonephritis) fl:sigma 0.
+        }.
+
+{(?P dco:Fever) fl:mu 0.} =>
+        {
+                (dco:FlankPain dco:SimpleAcutePyelonephritis) fl:sigma 0.
+                (dco:Fever dco:SimpleAcutePyelonephritis) fl:sigma 0.
+                (dco:UrineDipstickTest dco:SimpleAcutePyelonephritis) fl:sigma 0.
+                (dco:PainfulKidneysPalpation dco:SimpleAcutePyelonephritis) fl:sigma 0.
+                (dco:Chills dco:SimpleAcutePyelonephritis) fl:sigma 0.
+        }.
+
+# Definition of the relationship between clinical concepts and complicated pyelonephritis
+
+(dco:FlankPain dco:ComplicatedAcutePyelonephritis) fl:sigma 1.
+(dco:Fever dco:ComplicatedAcutePyelonephritis) fl:sigma 1.
+(dco:Pregnant dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+(dco:Male dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+(dco:UrineDipstickTest dco:ComplicatedAcutePyelonephritis) fl:sigma 1.
+(dco:ResidualBladder dco:ComplicatedAcutePyelonephritis) fl:sigma 0.9.
+(dco:Chills dco:ComplicatedAcutePyelonephritis) fl:sigma 1.
+(dco:VesicalUretralReflux dco:ComplicatedAcutePyelonephritis) fl:sigma 0.9.
+(dco:Urolithiasis dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+(dco:DisorderOfUrinaryTract dco:ComplicatedAcutePyelonephritis) fl:sigma 0.9.
+(dco:DiabetesMellitus dco:ComplicatedAcutePyelonephritis) fl:sigma 1.
+(dco:Immunosuppression dco:ComplicatedAcutePyelonephritis) fl:sigma 1.
+(dco:Kidneyinsuffiency dco:ComplicatedAcutePyelonephritis) fl:sigma 1.
+(dco:PathologicalState dco:ComplicatedAcutePyelonephritis) fl:sigma 1.
+(dco:Old dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+(dco:UltrasonographyObstruction dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+(dco:Anorexia dco:ComplicatedAcutePyelonephritis) fl:sigma 1.
+
+{(?P dco:FlankPain) fl:mu 0.} =>
+        {
+                (dco:FlankPain dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:Fever dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:UrineDipstickTest dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:PainfulKidneysPalpation dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:Chills dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:DisorderOfUrinaryTract dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:DiabetesMellitus dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:Immunosuppression dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:Kidneyinsuffiency dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:PathologicalState dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+        }.
+
+{(?P dco:UltrasonographyObstruction) fl:mu 0.} =>
+        {
+                (dco:FlankPain dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:Fever dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:UrineDipstickTest dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:PainfulKidneysPalpation dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:Chills dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:DisorderOfUrinaryTract dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:DiabetesMellitus dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:Immunosuppression dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:Kidneyinsuffiency dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:PathologicalState dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+        }.
+
+{(?P dco:Fever) fl:mu 0.} =>
+        {
+                (dco:FlankPain dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:Fever dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:UrineDipstickTest dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:PainfulKidneysPalpation dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:Chills dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:DisorderOfUrinaryTract dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:DiabetesMellitus dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:Immunosuppression dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:Kidneyinsuffiency dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+                (dco:PathologicalState dco:ComplicatedAcutePyelonephritis) fl:sigma 0.
+        }.
+
+# Definition of the relationship between clinical concepts and urinary infection in pregnancy
+
+(dco:FlankPain dco:PregnancyUrinaryTractInfection) fl:sigma 0.
+(dco:Fever dco:PregnancyUrinaryTractInfection) fl:sigma 0.7.
+(dco:Pregnant dco:PregnancyUrinaryTractInfection) fl:sigma 1.
+(dco:UrineDipstickTest dco:PregnancyUrinaryTractInfection) fl:sigma 1.
+(dco:Urolithiasis dco:PregnancyUrinaryTractInfection) fl:sigma 0.
+(dco:Male dco:PregnancyUrinaryTractInfection) fl:sigma 0.
+(dco:Dysuria dco:PregnancyUrinaryTractInfection) fl:sigma 0.6.
+(dco:UrinaryFrequency dco:PregnancyUrinaryTractInfection) fl:sigma 0.6.
+
+{(?P dco:Pregnant) fl:mu 0} =>
+        {
+                (dco:Pregnant dco:PregnancyUrinaryTractInfection) fl:sigma 0.
+                (dco:UrineDipstickTest dco:PregnancyUrinaryTractInfection) fl:sigma 0.
+                (dco:Dysuria dco:PregnancyUrinaryTractInfection) fl:sigma 0.
+                (dco:UrinaryFrequency dco:PregnancyUrinaryTractInfection) fl:sigma 0.
+        }.
+
+# Definition of the relationship between clinical concepts obstructive uropathy
+
+(dco:FlankPain dco:ObstructiveUropathy) fl:sigma 1.
+(dco:Pregnant dco:ObstructiveUropathy) fl:sigma 0.
+(dco:Male dco:ObstructiveUropathy) fl:sigma 0.
+(dco:UrineDipstickTest dco:ObstructiveUropathy) fl:sigma 0.8.
+(dco:Female dco:ObstructiveUropathy) fl:sigma 1.
+(dco:ResidualBladder dco:ObstructiveUropathy) fl:sigma 0.6.
+(dco:VesicalUretralReflux dco:ObstructiveUropathy) fl:sigma 0.6.
+(dco:Urolithiasis dco:ObstructiveUropathy) fl:sigma 1.
+(dco:DisorderOfUrinaryTract dco:ObstructiveUropathy) fl:sigma 0.6.
+(dco:UltrasonographyObstruction dco:ObstructiveUropathy) fl:sigma 1.
+
+{(?P dco:UltrasonographyObstruction) fl:mu 0} =>
+        {
+                (dco:FlankPain dco:ObstructiveUropathy) fl:sigma 0.
+                (dco:UrineDipstickTest dco:ObstructiveUropathy) fl:sigma 0.
+                (dco:Urolithiasis dco:ObstructiveUropathy) fl:sigma 0.
+                (dco:UltrasonographyObstruction dco:ObstructiveUropathy) fl:sigma 0.
+        }.
+
+{(?P dco:Pregnant) fl:mu 1.} =>
+        {
+                (dco:FlankPain dco:ObstructiveUropathy) fl:sigma 0.
+                (dco:Fever dco:ObstructiveUropathy) fl:sigma 0.
+                (dco:Pregnant dco:ObstructiveUropathy) fl:sigma 0.
+                (dco:UrineDipstickTest dco:ObstructiveUropathy) fl:sigma 0.
+                (dco:Urolithiasis dco:ObstructiveUropathy) fl:sigma 0.
+                (dco:UltrasonographyObstruction dco:ObstructiveUropathy) fl:sigma 0.
+        }.
+
+# Definition of the relationship between clinical concepts obstructive uropathy in pregnancy
+
+(dco:FlankPain dco:PregnancyObstructiveUropathy) fl:sigma 0.9.
+(dco:Fever dco:PregnancyObstructiveUropathy) fl:sigma 0.6.
+(dco:Pregnant dco:PregnancyObstructiveUropathy) fl:sigma 1.
+(dco:Male dco:PregnancyObstructiveUropathy) fl:sigma 0.
+(dco:UrineDipstickTest dco:PregnancyObstructiveUropathy) fl:sigma 1.
+(dco:Chills dco:PregnancyObstructiveUropathy) fl:sigma 0.6.
+(dco:Urolithiasis dco:PregnancyObstructiveUropathy) fl:sigma 1.
+(dco:DisorderOfUrinaryTract dco:PregnancyObstructiveUropathy) fl:sigma 0.8.
+(dco:UltrasonographyObstruction dco:PregnancyObstructiveUropathy) fl:sigma 1.
+
+{(?P dco:Pregnant) fl:mu 0.} =>
+        {
+                (dco:FlankPain dco:PregnancyObstructiveUropathy) fl:sigma 0.
+                (dco:Fever dco:PregnancyObstructiveUropathy) fl:sigma 0.
+                (dco:Pregnant dco:PregnancyObstructiveUropathy) fl:sigma 0.
+                (dco:UrineDipstickTest dco:PregnancyObstructiveUropathy) fl:sigma 0.
+                (dco:Urolithiasis dco:PregnancyObstructiveUropathy) fl:sigma 0.
+                (dco:UltrasonographyObstruction dco:PregnancyObstructiveUropathy) fl:sigma 0.
+        }.
+
+{(?P dco:UltrasonographyObstruction) fl:mu 0} =>
+        {
+                (dco:FlankPain dco:PregnancyObstructiveUropathy) fl:sigma 0.
+                (dco:UrineDipstickTest dco:PregnancyObstructiveUropathy) fl:sigma 0.
+                (dco:Urolithiasis dco:PregnancyObstructiveUropathy) fl:sigma 0.
+                (dco:UltrasonographyObstruction dco:PregnancyObstructiveUropathy) fl:sigma 0.
+        }.
+
+# Definition of the relationship between clinical concepts and acute pyelonephritis gravidarum
+(dco:FlankPain dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 1.
+(dco:Fever dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 1.
+(dco:Pregnant dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 1.
+(dco:Male dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 0.
+(dco:UrineDipstickTest dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 1.
+(dco:ResidualBladder dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 0.8.
+(dco:Chills dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 1.
+(dco:VesicalUretralReflux dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 0.8.
+(dco:Urolithiasis dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 0.6.
+(dco:DisorderOfUrinaryTract dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 1.
+(dco:DiabetesMellitus dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 0.7.
+(dco:Immunosuppression dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 0.7.
+(dco:Kidneyinsuffiency dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 0.7.
+(dco:PathologicalState dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 0.7.
+(dco:Old dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 0.
+(dco:UltrasonographyObstruction dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 0.
+(dco:Anorexia dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 0.8.
+(dco:Dysuria dco:SimpleAcuteCystitis) fl:sigma 0.8.
+(dco:UrinaryFrequency dco:SimpleAcuteCystitis) fl:sigma 0.8.
+
+{(?P dco:Pregnant) fl:mu 0} =>
+        {
+                (dco:FlankPain dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 0.
+                (dco:Fever dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 0.
+                (dco:Pregnant dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 0.
+                (dco:UrineDipstickTest dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 0.
+                (dco:Chills dco:ComplicatedAcutePregnancyPyelonephritis) fl:sigma 0.
+        }.
+
+{(?P dco:Pregnant) fl:mu 0} =>
+        {
+                (?P dco:ComplicatedAcutePregnancyPyelonephritis) fl:pi 0.
+                (?P dco:PregnancyObstructiveUropathy) fl:pi 0.
+                (?P dco:PregnancyUrinaryTractInfection) fl:pi 0.
+        }.

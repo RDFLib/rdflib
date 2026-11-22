@@ -1,0 +1,40 @@
+#Processed by Id: euler.yap,v 1.156 2007/02/16 09:43:25 josd Exp 
+
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix var: <http://localhost/var#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix fn: <http://www.w3.org/2006/xpath-functions#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/gene#>.
+@prefix nsp0: <http://eulersharp.sourceforge.net/2004/04test/>.
+@prefix time: <http://www.w3.org/2000/10/swap/time#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+((:has_gene :chloe) e:T) e:depends ((((:has_gene :apollo) e:T) ((:has_gene :blaze) e:T)) 0.8).
+((:has_gene :flash) e:T) e:depends ((((:has_gene :dexter) e:T) ((:has_gene :ember) e:T)) 0.8).
+((:has_gene :galaxy) e:T) e:depends ((((:has_gene :flash) e:T) ((:has_gene :chloe) e:T)) 0.8).
+((:has_gene :chloe) e:T) e:depends ((((:has_gene :apollo) e:T) ((:has_gene :blaze) e:F)) 0.4).
+((:has_gene :flash) e:T) e:depends ((((:has_gene :dexter) e:T) ((:has_gene :ember) e:F)) 0.4).
+((:has_gene :galaxy) e:T) e:depends ((((:has_gene :flash) e:T) ((:has_gene :chloe) e:F)) 0.4).
+((:has_gene :chloe) e:T) e:depends ((((:has_gene :apollo) e:F) ((:has_gene :blaze) e:T)) 0.4).
+((:has_gene :flash) e:T) e:depends ((((:has_gene :dexter) e:F) ((:has_gene :ember) e:T)) 0.4).
+((:has_gene :galaxy) e:T) e:depends ((((:has_gene :flash) e:F) ((:has_gene :chloe) e:T)) 0.4).
+((:has_gene :chloe) e:T) e:depends ((((:has_gene :apollo) e:F) ((:has_gene :blaze) e:F)) 0.1).
+((:has_gene :flash) e:T) e:depends ((((:has_gene :dexter) e:F) ((:has_gene :ember) e:F)) 0.1).
+((:has_gene :galaxy) e:T) e:depends ((((:has_gene :flash) e:F) ((:has_gene :chloe) e:F)) 0.1).
+((:has_gene :apollo) e:T) e:depends (() 0.5).
+((:has_gene :dexter) e:T) e:depends (() 0.5).
+((:has_gene :blaze) e:T) e:depends (() 0.5).
+((:has_gene :ember) e:T) e:depends (() 0.5).
+((<http://eulersharp.sourceforge.net/2004/04test/gene.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/geneF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian ((((:has_gene :dexter) e:T)) (((:has_gene :galaxy) e:T)) 0.580331713854917).
+
+#ENDS 100 msec.
+

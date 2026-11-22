@@ -1,0 +1,20 @@
+# $Id: sethP.n3 264 2004-04-18 14:08:48Z josd $
+
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix dc: <http://purl.org/dc/elements/1.0/>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/sethP#>.
+    
+:Foo a owl:Class.
+
+dc:subject a owl:DatatypeProperty;
+           rdfs:range xsd:string.
+
+:foo a owl:Thing;
+       dc:subject "foo"^^xsd:string.
+
+[ a owl:Restriction;
+  owl:equivalentClass :Foo;
+  owl:hasValue "foo"^^xsd:string;
+  owl:onProperty dc:subject ].

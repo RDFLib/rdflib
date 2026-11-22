@@ -1,0 +1,29 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix string: <http://www.w3.org/2000/10/swap/string#>.
+@prefix : <#>.
+
+{"Tim" string:containsIgnoringCase "IM"} log:implies { :test1 a :success }.
+
+{ "asdfghjkl" string:containsIgnoringCase "JKLL" } log:implies { :test2 a :FAILURE }.
+
+{ "JKL" string:containsIgnoringCase "jkl" } log:implies { :test3 a :success }.
+
+{ "asdfghjkl" string:containsIgnoringCase "DFG" } log:implies { :test4 a :success }.
+
+{ "asdfjhkh" string:containsIgnoringCase "hkh" } log:implies { :test5 a :success }.
+
+{ "foobar" string:containsIgnoringCase "" } log:implies { :test6 a :success }.
+
+{ "" string:containsIgnoringCase "" } log:implies { :test7 a :success }.
+
+# Variations with variable bindings
+:Tim :value "Tim".
+:im :value "IM".
+
+{ [is :value of :Tim] string:containsIgnoringCase "IM" } log:implies { :test8a a :success }.
+
+{ "Tim" string:containsIgnoringCase [is :value of :im] } log:implies { :test8b a :success }.
+
+{ :Tim :value ?a. ?a string:containsIgnoringCase "IM" } log:implies { :test8c a :success }.
+
+{ :im :value ?a. "Tim" string:containsIgnoringCase ?a } log:implies { :test8d a :success }.

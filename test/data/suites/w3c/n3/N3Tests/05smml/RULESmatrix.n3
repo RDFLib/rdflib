@@ -1,0 +1,321 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix list: <http://www.co-ode.org/ontologies/lists/2008/09/11/list.owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix inst: <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> . 
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix matrix: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/matrix#>.
+
+#
+# MATRIX PRODUCT
+#
+
+{
+  (?matrix1 ?matrix2) matrix:product ?matrix3.
+  ?matrix1 a matrix:matrix3x3.
+  ?matrix2 a matrix:matrix3x3.
+  ?matrix1 matrix:elements (?a11 ?a12 ?a13 ?a21 ?a22 ?a23 ?a31 ?a32 ?a33).
+  ?matrix2 matrix:elements (?b11 ?b12 ?b13 ?b21 ?b22 ?b23 ?b31 ?b32 ?b33).
+  
+  (?a11 ?b11) math:product ?a11b11.
+  (?a12 ?b21) math:product ?a12b21.
+  (?a13 ?b31) math:product ?a13b31.
+  (?a11b11 ?a12b21 ?a13b31) math:sum ?c11.
+  (?a11 ?b12) math:product ?a11b12.
+  (?a12 ?b22) math:product ?a12b22.
+  (?a13 ?b32) math:product ?a13b32.
+  (?a11b12 ?a12b22 ?a13b32) math:sum ?c12.
+  (?a11 ?b13) math:product ?a11b13.
+  (?a12 ?b23) math:product ?a12b23.
+  (?a13 ?b33) math:product ?a13b33.
+  (?a11b13 ?a12b23 ?a13b33) math:sum ?c13.
+  (?a21 ?b11) math:product ?a21b11.
+  (?a22 ?b21) math:product ?a22b21.
+  (?a23 ?b31) math:product ?a23b31.
+  (?a21b11 ?a22b21 ?a23b31) math:sum ?c21.
+  (?a21 ?b12) math:product ?a21b12.
+  (?a22 ?b22) math:product ?a22b22.
+  (?a23 ?b32) math:product ?a23b32.
+  (?a21b12 ?a22b22 ?a23b32) math:sum ?c22.
+  (?a21 ?b13) math:product ?a21b13.
+  (?a22 ?b23) math:product ?a22b23.
+  (?a23 ?b33) math:product ?a23b33.
+  (?a21b13 ?a22b23 ?a23b33) math:sum ?c23.
+  (?a31 ?b11) math:product ?a31b11.
+  (?a32 ?b21) math:product ?a32b21.
+  (?a33 ?b31) math:product ?a33b31.
+  (?a31b11 ?a32b21 ?a33b31) math:sum ?c31.
+  (?a31 ?b12) math:product ?a31b12.
+  (?a32 ?b22) math:product ?a32b22.
+  (?a33 ?b32) math:product ?a33b32.
+  (?a31b12 ?a32b22 ?a33b32) math:sum ?c32.
+  (?a31 ?b13) math:product ?a31b13.
+  (?a32 ?b23) math:product ?a32b23.
+  (?a33 ?b33) math:product ?a33b33.
+  (?a31b13 ?a32b23 ?a33b33) math:sum ?c33
+}
+=>
+{
+  ?matrix3 matrix:elements (?c11 ?c12 ?c13 ?c21 ?c22 ?c23 ?c31 ?c32 ?c33).
+  ?matrix3 a matrix:matrix3x3
+}.
+
+
+{
+  (?matrix1 ?matrix2) matrix:product ?matrix3.
+  ?matrix1 a matrix:matrix3x3.
+  ?matrix2 a matrix:matrix3x1.
+  ?matrix1 matrix:elements (?a11 ?a12 ?a13 ?a21 ?a22 ?a23 ?a31 ?a32 ?a33).
+  ?matrix2 matrix:elements (?b11 ?b21 ?b31).
+  
+  (?a11 ?b11) math:product ?a11b11.
+  (?a12 ?b21) math:product ?a12b21.
+  (?a13 ?b31) math:product ?a13b31.
+  (?a11b11 ?a12b21 ?a13b31) math:sum ?c11.
+  (?a21 ?b11) math:product ?a21b11.
+  (?a22 ?b21) math:product ?a22b21.
+  (?a23 ?b31) math:product ?a23b31.
+  (?a21b11 ?a22b21 ?a23b31) math:sum ?c21.
+  (?a31 ?b11) math:product ?a31b11.
+  (?a32 ?b21) math:product ?a32b21.
+  (?a33 ?b31) math:product ?a33b31.
+  (?a31b11 ?a32b21 ?a33b31) math:sum ?c31
+}
+=>
+{
+  ?matrix3 matrix:elements (?c11 ?c21 ?c31).
+  ?matrix3 a matrix:matrix3x1
+}.
+
+
+{
+  (?matrix1 ?matrix2) matrix:product ?matrix3.
+  ?matrix1 a matrix:matrix2x2.
+  ?matrix2 a matrix:matrix2x2.
+  ?matrix1 matrix:elements (?a11 ?a12 ?a21 ?a22).
+  ?matrix2 matrix:elements (?b11 ?b12 ?b21 ?b22).
+ 
+  (?a11 ?b11) math:product ?a11b11.
+  (?a12 ?b21) math:product ?a12b21.
+  (?a11b11 ?a12b21) math:sum ?c11.
+  (?a11 ?b12) math:product ?a11b12.
+  (?a12 ?b22) math:product ?a12b22.
+  (?a11b12 ?a12b22) math:sum ?c12.
+  (?a21 ?b11) math:product ?a21b11.
+  (?a22 ?b21) math:product ?a22b21.
+  (?a21b11 ?a22b21) math:sum ?c21.
+  (?a21 ?b12) math:product ?a21b12.
+  (?a22 ?b22) math:product ?a22b22.
+  (?a21b12 ?a22b22) math:sum ?c22
+}
+=>
+{
+  ?matrix3 matrix:elements (?c11 ?c12 ?c21 ?c22).
+  ?matrix3 a matrix:matrix2x2
+}.
+
+
+{
+  (?matrix1 ?matrix2) matrix:product ?matrix3.
+  ?matrix1 a matrix:matrix2x2.
+  ?matrix2 a matrix:matrix2x1.
+  ?matrix1 matrix:elements (?a11 ?a12 ?a21 ?a22).
+  ?matrix2 matrix:elements (?b11 ?b21).
+ 
+  (?a11 ?b11) math:product ?a11b11.
+  (?a12 ?b21) math:product ?a12b21.
+  (?a11b11 ?a12b21) math:sum ?c11.
+  (?a21 ?b11) math:product ?a21b11.
+  (?a22 ?b21) math:product ?a22b21.
+  (?a21b11 ?a22b21) math:sum ?c21
+}
+=>
+{
+  ?matrix3 matrix:elements (?c11 ?c21).
+  ?matrix3 a matrix:matrix2x1
+}.
+
+
+#
+# MATRIX SUM
+#
+
+{
+  (?matrix1 ?matrix2) matrix:sum ?matrix3.
+  ?matrix1 a matrix:matrix3x3.
+  ?matrix2 a matrix:matrix3x3.
+  ?matrix1 matrix:elements (?a11 ?a12 ?a13 ?a21 ?a22 ?a23 ?a31 ?a32 ?a33).
+  ?matrix2 matrix:elements (?b11 ?b12 ?b13 ?b21 ?b22 ?b23 ?b31 ?b32 ?b33).
+  
+  (?a11 ?b11) math:sum ?c11.
+  (?a12 ?b12) math:sum ?c12.
+  (?a13 ?b13) math:sum ?c13.
+  (?a21 ?b21) math:sum ?c21.
+  (?a22 ?b22) math:sum ?c22.
+  (?a23 ?b23) math:sum ?c23.
+  (?a31 ?b31) math:sum ?c31.
+  (?a32 ?b32) math:sum ?c32.
+  (?a33 ?b33) math:sum ?c33
+}
+=>
+{
+  ?matrix3 matrix:elements (?c11 ?c12 ?c13 ?c21 ?c22 ?c23 ?c31 ?c32 ?c33).
+  ?matrix3 a matrix:matrix3x3
+}.
+
+{
+  (?matrix1 ?matrix2) matrix:sum ?matrix3.
+  ?matrix1 a matrix:matrix2x2.
+  ?matrix2 a matrix:matrix2x2.
+  ?matrix1 matrix:elements (?a11 ?a12 ?a21 ?a22).
+  ?matrix2 matrix:elements (?b11 ?b12 ?b21 ?b22).
+  
+  (?a11 ?b11) math:sum ?c11.
+  (?a12 ?b12) math:sum ?c12.
+  (?a21 ?b21) math:sum ?c21.
+  (?a22 ?b22) math:sum ?c22
+}
+=>
+{
+  ?matrix3 matrix:elements (?c11 ?c12 ?c21 ?c22).
+  ?matrix3 a matrix:matrix2x2
+}.
+
+{
+  (?matrix1 ?matrix2) matrix:sum ?matrix3.
+  ?matrix1 a matrix:matrix3x1.
+  ?matrix2 a matrix:matrix3x1.
+  ?matrix1 matrix:elements (?a11 ?a21 ?a31).
+  ?matrix2 matrix:elements (?b11 ?b21 ?b31).
+  
+  (?a11 ?b11) math:sum ?c11.
+  (?a21 ?b21) math:sum ?c21.
+  (?a31 ?b31) math:sum ?c31
+}
+=>
+{
+  ?matrix3 matrix:elements (?c11 ?c21 ?c31).
+  ?matrix3 a matrix:matrix3x1
+}.
+
+
+#
+# MATRIX DETERMINANT (calculated automatically)
+#
+
+{
+  ?matrix1 a matrix:matrix3x3.
+  ?matrix1 matrix:elements (?a11 ?a12 ?a13 ?a21 ?a22 ?a23 ?a31 ?a32 ?a33).
+  
+  (?a11 ?a22 ?a33) math:product ?d1.
+  (?a12 ?a23 ?a31) math:product ?d2.
+  (?a13 ?a21 ?a32) math:product ?d3.
+  (?a13 ?a22 ?a31 -1) math:product ?e1.
+  (?a12 ?a21 ?a33 -1) math:product ?e2.
+  (?a11 ?a23 ?a32 -1) math:product ?e3.
+  (?d1 ?d2 ?d3 ?e1 ?e2 ?e3) math:sum ?det
+}
+=>
+{
+  ?matrix1 matrix:determinant ?det
+}.
+
+{
+  ?matrix1 a matrix:matrix2x2.
+  ?matrix1 matrix:elements (?a11 ?a12 ?a21 ?a22).
+  
+  (?a11 ?a22) math:product ?d1.
+  (?a12 ?a21 -1) math:product ?e1.
+  (?d1 ?e1) math:sum ?det
+}
+=>
+{
+  ?matrix1 matrix:determinant ?det
+}.
+
+
+#
+# MATRIX INVERSE
+#
+
+{
+  ?matrix1 matrix:inverse ?matrix1inv.
+  ?matrix1 a matrix:matrix3x3.
+  ?matrix1 matrix:determinant ?det.
+  ?det math:notEqualTo 0.
+  ?matrix1 matrix:elements (?a11 ?a12 ?a13 ?a21 ?a22 ?a23 ?a31 ?a32 ?a33).
+  
+  (?a22 ?a33) math:product ?cf11a.
+  (?a23 ?a32) math:product ?cf11b.
+  (?cf11a ?cf11b) math:difference ?cf11.
+  (?cf11 ?det) math:quotient ?i11.
+  
+  (?a13 ?a32) math:product ?cf12a.
+  (?a12 ?a33) math:product ?cf12b.
+  (?cf12a ?cf12b) math:difference ?cf12.
+  (?cf12 ?det) math:quotient ?i12.
+  
+  (?a12 ?a23) math:product ?cf13a.
+  (?a13 ?a22) math:product ?cf13b.
+  (?cf13a ?cf13b) math:difference ?cf13.
+  (?cf13 ?det) math:quotient ?i13.
+  
+  (?a23 ?a31) math:product ?cf21a.
+  (?a21 ?a33) math:product ?cf21b.
+  (?cf21a ?cf21b) math:difference ?cf21.
+  (?cf21 ?det) math:quotient ?i21.
+  
+  (?a11 ?a33) math:product ?cf22a.
+  (?a13 ?a31) math:product ?cf22b.
+  (?cf22a ?cf22b) math:difference ?cf22.
+  (?cf22 ?det) math:quotient ?i22.
+  
+  (?a13 ?a21) math:product ?cf23a.
+  (?a11 ?a23) math:product ?cf23b.
+  (?cf23a ?cf23b) math:difference ?cf23.
+  (?cf23 ?det) math:quotient ?i23.
+  
+  (?a21 ?a32) math:product ?cf31a.
+  (?a22 ?a31) math:product ?cf31b.
+  (?cf31a ?cf31b) math:difference ?cf31.
+  (?cf31 ?det) math:quotient ?i31.
+  
+  (?a12 ?a31) math:product ?cf32a.
+  (?a11 ?a32) math:product ?cf32b.
+  (?cf32a ?cf32b) math:difference ?cf32.
+  (?cf32 ?det) math:quotient ?i32.
+  
+  (?a11 ?a22) math:product ?cf33a.
+  (?a12 ?a21) math:product ?cf33b.
+  (?cf33a ?cf33b) math:difference ?cf33.
+  (?cf33 ?det) math:quotient ?i33
+}
+=>
+{
+  ?matrix1inv matrix:elements (?i11 ?i12 ?i13 ?i21 ?i22 ?i23 ?i31 ?i32 ?i33).
+  ?matrix1inv a matrix:matrix3x3
+}.
+
+{
+  ?matrix1 matrix:inverse ?matrix1inv.
+  ?matrix1 a matrix:matrix2x2.
+  ?matrix1 matrix:determinant ?det.
+  ?det math:notEqualTo 0.
+  ?matrix1 matrix:elements (?a11 ?a12 ?a21 ?a22).
+  
+  (?a22 ?det) math:quotient ?i11.
+  (?a12 -1) math:product ?a12neg.
+  (?a12neg ?det) math:quotient ?i12.
+  (?a21 -1) math:product ?a21neg.
+  (?a21neg ?det) math:quotient ?i21.
+  (?a11 ?det) math:quotient ?i22
+}
+=>
+{
+  ?matrix1inv matrix:elements (?i11 ?i12 ?i21 ?i22).
+  ?matrix1inv a matrix:matrix2x2
+}.

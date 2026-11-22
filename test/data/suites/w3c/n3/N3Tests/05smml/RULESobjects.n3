@@ -1,0 +1,143 @@
+@prefix : <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/ifctox3d#>.
+@prefix x3d: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologyx3d20091015#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix inst: <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> . 
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix stl:     <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101#> .
+@prefix matrix: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/matrix#>.
+@prefix we: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/wingededge#>.
+
+  # List of all triangles
+  {
+	   ?y e:findall (?TriangleA {?TriangleA a stl:StlTriangle} ?ANSWER).
+  }
+  =>
+  {
+     ?A we:listofalltraingles ?ANSWER.
+  }.
+  
+  
+  # List of used and available triangles
+  {
+     ?x e:findall (?TriangleA {?TriangleA we:available 0. ?x e:findall (?TriangleA {?TriangleA we:partofobject ?obj} ()).} ?Used).
+     ?y e:findall (?TriangleB {?TriangleB a stl:StlTriangle. ?y e:findall (?TriangleB {?TriangleB we:available 0} ()).} ?Available).
+  }
+  =>
+  {
+     ?A we:listofusedtriangles ?Used.
+     ?A we:complementlist ?B.
+     ?B we:listofavailabletriangles ?Available.
+  }.
+  
+  
+  # Add first triangle to objecttriangleslist.
+  {
+     ?A we:listofalltraingles ?loat.
+     ?loat list:first ?t1.
+  }
+  =>
+  {
+     ?t1 we:available 0.
+  }.
+  
+  
+  # Add new triangles to listofusedtriangles IF they are a neighbour of a member of the listofusedtriangles AND IF they are still available AND IF they are not yet part of an object.
+  {
+     ?A we:listofusedtriangles ?lout.
+     ?lout list:member ?TriangleA.
+     ?B we:listofavailabletriangles ?loat.
+     ?loat list:member ?TriangleX.
+     ?TriangleA we:neighbourtriangle ?TriangleX.
+  }
+  =>
+  {
+     ?TriangleX we:available 0.
+  }. 
+  
+  
+  # Bij elke triangle meegeven welke de grootste lijst is waarin hij zich bevindt.
+  {
+	   ?X a stl:StlTriangle.
+	   ?y e:findall (?length {?ojb we:listofusedtriangles ?Neighbourtriangleslist. ?Neighbourtriangleslist list:member ?X. ?Neighbourtriangleslist e:length ?length.} ?ANSWER).
+     ?ANSWER e:max ?max.   
+  }
+  =>
+  {
+     ?X we:sizeofmaxlist ?max.
+  }.   
+     
+  
+
+    # Zoek de grootste lijst met objecttriangles waarvan driehoekX een element is. = Zoek lijst waarvan driehoekX een element is waarbij geen grotere te vinden is.
+    # Geef die de eigenschap: is finalobject
+    
+  {
+	   ?X we:sizeofmaxlist ?max.
+     ?ojb we:listofusedtriangles ?Neighbourtriangleslist.
+	   ?Neighbourtriangleslist list:member ?X.
+	   ?Neighbourtriangleslist e:length ?length.
+	   ?length math:equalTo ?max.
+  }
+  =>
+  {
+     ?ojb rdf:type we:FinalObject.
+  }.
+  
+  
+  {
+	   ?ojb rdf:type we:FinalObject.
+	   ?ojb we:listofusedtriangles ?lout.
+	   ?lout e:length ?count.
+	   ?lout list:member ?X.
+  }
+  =>
+  {
+     ?X we:partofobject ?ojb.
+     ?ojb we:objecttriangles ?lout.
+     ?ojb we:trianglescount ?count.
+  }.
+  
+  # Als er een FinalObject gevonden is, stop de resterende driehoeken (driehoek die niet getagd zijn als partofobject) dan in een nieuwe listofalltriangles.
+  {
+     ?y e:findall (?TriangleB {?TriangleB a stl:StlTriangle. ?y e:findall (?TriangleB {?TriangleB we:partofobject ?obj} ()).} ?CompListTriangles).
+  }
+  =>
+  {
+     ?X we:listofalltraingles ?CompListTriangles.
+  }.
+  
+  
+  
+  
+  # Detect closed objects.
+  {
+	   ?obj a we:FinalObject.
+     ?y e:findall (?TriangleX {
+	   ?obj we:objecttriangles ?objectTrianglesList.
+	   ?objectTrianglesList list:member ?TriangleX.
+	   ?TriangleX we:neighbourcount ?NC.
+     ?NC math:notEqualTo 3
+     } ()).
+  }
+  =>
+  {
+     ?obj we:objectProperties we:ClosedObject.
+  }.
+  
+  # Detect non-closed objects.
+  {
+	   ?obj a we:FinalObject.
+     ?y e:findall (?TriangleX {?obj we:objectProperties we:ClosedObject.} ()).
+  }
+  =>
+  {
+     ?obj we:objectProperties we:NonClosedObject.
+  }.

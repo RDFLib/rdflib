@@ -1,0 +1,25 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@language": "en",
+    "@direction": "rtl",
+    "ex": "http://example.org/vocab#",
+    "ex:ltr": { "@direction": "ltr" },
+    "ex:none": { "@direction": null },
+    "ex:german": { "@language": "de" },
+    "ex:nolang": { "@language": null },
+    "ex:german_ltr": { "@language": "de", "@direction": "ltr" },
+    "ex:nolang_ltr": { "@language": null, "@direction": "ltr" },
+    "ex:none_none": { "@language": null, "@direction": null },
+    "ex:german_none": { "@language": "de", "@direction": null }
+  },
+  "ex:rtl": "rtl en",
+  "ex:ltr": "ltr en",
+  "ex:none": "no direction en",
+  "ex:german": "german rtl",
+  "ex:nolang": "no language rtl",
+  "ex:german_ltr": "german ltr",
+  "ex:nolang_ltr": "no language ltr",
+  "ex:none_none": "no language or direction",
+  "ex:german_none": "german no direction"
+}

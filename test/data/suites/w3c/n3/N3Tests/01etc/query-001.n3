@@ -1,0 +1,9 @@
+@prefix : <http://josd.github.io/brain/cs#>.
+
+{
+    ?O :control1 ?C.
+}
+=>
+{
+    ?O :control1 ?C.
+}.

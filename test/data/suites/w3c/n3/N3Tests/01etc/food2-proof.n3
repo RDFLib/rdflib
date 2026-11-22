@@ -1,0 +1,427 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/preduction/food-example.n3 http://josd.github.io/brain/preduction/food2.n3 --query http://josd.github.io/brain/preduction/food-query.n3
+
+@prefix food: <http://www.w3.org/2002/03owlt/miscellaneous/consistent002#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix p: <http://josd.github.io/brain/preduction#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:component <#lemma3>;
+  r:component <#lemma4>;
+  r:component <#lemma5>;
+  r:component <#lemma6>;
+  r:component <#lemma7>;
+  r:component <#lemma8>;
+  r:component <#lemma9>;
+  r:component <#lemma10>;
+  r:component <#lemma11>;
+  r:component <#lemma12>;
+  r:component <#lemma13>;
+  r:component <#lemma14>;
+  r:component <#lemma15>;
+  r:component <#lemma16>;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_g_1> a food:Grape.
+    <http://josd.github.io/.well-known/genid/#e_cnd_1> a food:CheeseNutsDessert.
+    <http://josd.github.io/.well-known/genid/#e_pwlcs_1> a food:PastaWithLightCreamSauce.
+    <http://josd.github.io/.well-known/genid/#e_ct_1> a food:ConsumableThing.
+    <http://josd.github.io/.well-known/genid/#e_m_1> a food:Meal.
+    <http://josd.github.io/.well-known/genid/#e_g_1> a food:SweetFruit.
+    <http://josd.github.io/.well-known/genid/#e_pwlcs_1> a food:PastaWithWhiteSauce.
+    <http://josd.github.io/.well-known/genid/#e_m_1> a food:ConsumableThing.
+    <http://josd.github.io/.well-known/genid/#e_g_1> a food:EdibleThing.
+    <http://josd.github.io/.well-known/genid/#e_cnd_1> a food:Dessert.
+    <http://josd.github.io/.well-known/genid/#e_g_1> a food:ConsumableThing.
+    <http://josd.github.io/.well-known/genid/#e_pwlcs_1> a food:Pasta.
+    <http://josd.github.io/.well-known/genid/#e_cnd_1> a food:EdibleThing.
+    <http://josd.github.io/.well-known/genid/#e_cnd_1> a food:ConsumableThing.
+    <http://josd.github.io/.well-known/genid/#e_pwlcs_1> a food:EdibleThing.
+    <http://josd.github.io/.well-known/genid/#e_pwlcs_1> a food:ConsumableThing.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_g_1> a food:Grape.
+  };
+  r:evidence (
+    <#lemma17>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_g_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#Grape"]];
+  r:rule <#lemma18>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_cnd_1> a food:CheeseNutsDessert.
+  };
+  r:evidence (
+    <#lemma19>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_cnd_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#CheeseNutsDessert"]];
+  r:rule <#lemma18>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_pwlcs_1> a food:PastaWithLightCreamSauce.
+  };
+  r:evidence (
+    <#lemma20>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_pwlcs_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#PastaWithLightCreamSauce"]];
+  r:rule <#lemma18>.
+
+<#lemma4> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_ct_1> a food:ConsumableThing.
+  };
+  r:evidence (
+    <#lemma21>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_ct_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#ConsumableThing"]];
+  r:rule <#lemma18>.
+
+<#lemma5> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_m_1> a food:Meal.
+  };
+  r:evidence (
+    <#lemma22>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_m_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#Meal"]];
+  r:rule <#lemma18>.
+
+<#lemma6> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_g_1> a food:SweetFruit.
+  };
+  r:evidence (
+    <#lemma23>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_g_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#SweetFruit"]];
+  r:rule <#lemma18>.
+
+<#lemma7> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_pwlcs_1> a food:PastaWithWhiteSauce.
+  };
+  r:evidence (
+    <#lemma24>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_pwlcs_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#PastaWithWhiteSauce"]];
+  r:rule <#lemma18>.
+
+<#lemma8> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_m_1> a food:ConsumableThing.
+  };
+  r:evidence (
+    <#lemma25>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_m_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#ConsumableThing"]];
+  r:rule <#lemma18>.
+
+<#lemma9> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_g_1> a food:EdibleThing.
+  };
+  r:evidence (
+    <#lemma26>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_g_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#EdibleThing"]];
+  r:rule <#lemma18>.
+
+<#lemma10> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_cnd_1> a food:Dessert.
+  };
+  r:evidence (
+    <#lemma27>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_cnd_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#Dessert"]];
+  r:rule <#lemma18>.
+
+<#lemma11> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_g_1> a food:ConsumableThing.
+  };
+  r:evidence (
+    <#lemma28>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_g_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#ConsumableThing"]];
+  r:rule <#lemma18>.
+
+<#lemma12> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_pwlcs_1> a food:Pasta.
+  };
+  r:evidence (
+    <#lemma29>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_pwlcs_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#Pasta"]];
+  r:rule <#lemma18>.
+
+<#lemma13> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_cnd_1> a food:EdibleThing.
+  };
+  r:evidence (
+    <#lemma30>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_cnd_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#EdibleThing"]];
+  r:rule <#lemma18>.
+
+<#lemma14> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_cnd_1> a food:ConsumableThing.
+  };
+  r:evidence (
+    <#lemma31>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_cnd_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#ConsumableThing"]];
+  r:rule <#lemma18>.
+
+<#lemma15> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_pwlcs_1> a food:EdibleThing.
+  };
+  r:evidence (
+    <#lemma32>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_pwlcs_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#EdibleThing"]];
+  r:rule <#lemma18>.
+
+<#lemma16> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_pwlcs_1> a food:ConsumableThing.
+  };
+  r:evidence (
+    <#lemma33>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_pwlcs_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#ConsumableThing"]];
+  r:rule <#lemma18>.
+
+<#lemma17> a r:Extraction;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_g_1> a food:Grape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/preduction/food-example.n3>].
+
+<#lemma18> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 a var:x_1} => {var:x_0 a var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/preduction/food-query.n3>].
+
+<#lemma19> a r:Extraction;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_cnd_1> a food:CheeseNutsDessert.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/preduction/food-example.n3>].
+
+<#lemma20> a r:Extraction;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_pwlcs_1> a food:PastaWithLightCreamSauce.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/preduction/food-example.n3>].
+
+<#lemma21> a r:Extraction;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_ct_1> a food:ConsumableThing.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/preduction/food-example.n3>].
+
+<#lemma22> a r:Extraction;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_m_1> a food:Meal.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/preduction/food-example.n3>].
+
+<#lemma23> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_g_1> a food:SweetFruit.
+  };
+  r:evidence (
+    <#lemma17>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_g_1"]];
+  r:rule <#lemma34>.
+
+<#lemma24> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_pwlcs_1> a food:PastaWithWhiteSauce.
+  };
+  r:evidence (
+    <#lemma20>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_pwlcs_1"]];
+  r:rule <#lemma35>.
+
+<#lemma25> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_m_1> a food:ConsumableThing.
+  };
+  r:evidence (
+    <#lemma22>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_m_1"]];
+  r:rule <#lemma36>.
+
+<#lemma26> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_g_1> a food:EdibleThing.
+  };
+  r:evidence (
+    <#lemma23>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_g_1"]];
+  r:rule <#lemma37>.
+
+<#lemma27> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_cnd_1> a food:Dessert.
+  };
+  r:evidence (
+    <#lemma19>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_cnd_1"]];
+  r:rule <#lemma38>.
+
+<#lemma28> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_g_1> a food:ConsumableThing.
+  };
+  r:evidence (
+    <#lemma26>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_g_1"]];
+  r:rule <#lemma39>.
+
+<#lemma29> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_pwlcs_1> a food:Pasta.
+  };
+  r:evidence (
+    <#lemma24>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_pwlcs_1"]];
+  r:rule <#lemma40>.
+
+<#lemma30> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_cnd_1> a food:EdibleThing.
+  };
+  r:evidence (
+    <#lemma27>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_cnd_1"]];
+  r:rule <#lemma41>.
+
+<#lemma31> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_cnd_1> a food:ConsumableThing.
+  };
+  r:evidence (
+    <#lemma30>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_cnd_1"]];
+  r:rule <#lemma39>.
+
+<#lemma32> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_pwlcs_1> a food:EdibleThing.
+  };
+  r:evidence (
+    <#lemma29>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_pwlcs_1"]];
+  r:rule <#lemma42>.
+
+<#lemma33> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#e_pwlcs_1> a food:ConsumableThing.
+  };
+  r:evidence (
+    <#lemma32>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_pwlcs_1"]];
+  r:rule <#lemma39>.
+
+<#lemma34> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 a food:Grape} => {var:x_0 a food:SweetFruit}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/preduction/food2.n3>].
+
+<#lemma35> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 a food:PastaWithLightCreamSauce} => {var:x_0 a food:PastaWithWhiteSauce}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/preduction/food2.n3>].
+
+<#lemma36> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 a food:Meal} => {var:x_0 a food:ConsumableThing}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/preduction/food2.n3>].
+
+<#lemma37> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 a food:SweetFruit} => {var:x_0 a food:EdibleThing}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/preduction/food2.n3>].
+
+<#lemma38> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 a food:CheeseNutsDessert} => {var:x_0 a food:Dessert}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/preduction/food2.n3>].
+
+<#lemma39> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 a food:EdibleThing} => {var:x_0 a food:ConsumableThing}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/preduction/food2.n3>].
+
+<#lemma40> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 a food:PastaWithWhiteSauce} => {var:x_0 a food:Pasta}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/preduction/food2.n3>].
+
+<#lemma41> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 a food:Dessert} => {var:x_0 a food:EdibleThing}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/preduction/food2.n3>].
+
+<#lemma42> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 a food:Pasta} => {var:x_0 a food:EdibleThing}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/preduction/food2.n3>].
+
+#2020-02-22T21:52:32.381Z in=41 out=16 ent=27 step=115 brake=5 inf=85026 sec=0.123 inf/sec=691268
+#ENDS
+

@@ -1,0 +1,20 @@
+{
+    "@id": "https://example.org/root-object",
+    "https://schema.org/author": [
+        {
+            "@id": "https://example.org/ invalid url 1",
+            "https://schema.org/name": "Jane Doe"
+        },
+        {
+            "@id": "https://example.org/ invalid url 1",
+            "https://schema.org/givenName": "Jane",
+            "https://schema.org/familyName": "Doe"
+        },
+        {
+            "@id": "https://example.org/ invalid url 2",
+            "https://schema.org/name": "John Doe",
+            "https://schema.org/givenName": "John",
+            "https://schema.org/familyName": "Doe"
+        }
+    ]
+}

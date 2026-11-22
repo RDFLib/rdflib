@@ -1,0 +1,89 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# RDFS semantics without the boring bits
+# $Id: rdfs-nice.n3,v 1.1 2006/05/28 16:14:45 connolly Exp $
+
+rdfs:Resource a rdfs:Class.
+rdfs:Literal a rdfs:Class.
+rdfs:Class a rdfs:Class.
+#rdf:Property a rdfs:Class. # derived
+
+# rdf:type a rdf:Property. # derived
+#rdf:type rdfs:domain rdfs:Resource.
+rdf:type rdfs:range rdfs:Class.
+
+
+rdfs:domain a rdf:Property.
+rdfs:domain rdfs:domain rdf:Property.
+rdfs:domain rdfs:range rdfs:Class.
+
+
+rdfs:range a rdf:Property.
+rdfs:range rdfs:domain rdf:Property.
+rdfs:range rdfs:range rdfs:Class.
+
+
+rdfs:subPropertyOf a rdf:Property.
+rdfs:subPropertyOf rdfs:domain rdf:Property.
+rdfs:subPropertyOf rdfs:range rdf:Property.
+
+
+rdfs:subClassOf a rdf:Property.
+rdfs:subClassOf rdfs:domain rdfs:Class.
+rdfs:subClassOf rdfs:range rdfs:Class.
+
+# Apply the following rules recursively to generate all legal RDF triples (i.e. until none of the rules apply or the graph is unchanged.) Here, xxx, yyy and zzz stand for any uriref, bNode or literal, aaa for any uriref, and uuu for any uriref or bNode (but not a literal).
+
+@prefix : <rdfs-rules#>.
+@prefix rr: <rdfs-rules#>. # hint
+
+#rdf1
+
+# cwm won't grok this
+#{ ?xxx ?aaa ?yyy } => { ?aaa a rdf:Property }.
+
+#rdfs2
+
+{ ?xxx ?ppp []. ?ppp rdfs:domain ?zzz } => { ?xxx a ?zzz }.
+
+#rdfs3
+
+{ [] ?ppp ?uuu. ?ppp rdfs:range ?zzz } => { ?uuu a ?zzz }.
+
+#rdfs4a
+#{ ?xxx ?aaa ?yyy} => { ?xxx a rdfs:Resource }.
+
+#rdfs4b
+#{ ?xxx ?aaa ?uuu} => { ?uuu a rdfs:Resource }.
+
+#rdfs5
+# boring
+#{ ?aaa rdfs:subPropertyOf [
+#    rdfs:subPropertyOf ?ccc]. } => { ?aaa rdfs:subPropertyOf ?ccc }.
+
+# rdfs8 from ter Horst
+#hmm... boring
+#{ ?x a rdf:Property } => { ?x s:subPropertyOf ?x }.
+#{ ?x a rdf:Class } => { ?x s:subClassOf ?x }.
+
+#rdfs6
+
+{ ?xxx ?ppp ?yyy. ?ppp rdfs:subPropertyOf ?bbb } => { ?xxx ?bbb ?yyy }.
+
+#rdfs7 superfluous/boring
+#{ ?xxx a rdfs:Class } => { ?xxx rdfs:subClassOf rdfs:Resource }.
+
+#rdfs8
+
+{ ?xxx rdfs:subClassOf [ rdfs:subClassOf ?zzz].
+ } => { ?xxx rdfs:subClassOf ?zzz }.
+
+#rdfs9
+
+{ ?aaa a ?xxx. ?xxx rdfs:subClassOf ?yyy } => { ?aaa a ?yyy }.
+
+
+# rdfs13
+{ ?v a rdfs:Datatype } => { ?v rdfs:subClassOf rdfs:Literal }.
+

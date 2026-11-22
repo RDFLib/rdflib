@@ -1,0 +1,13 @@
+@prefix : <iterate.n3#>.
+
+:test1a a :SUCCESS.
+:test1b a :SUCCESS.
+:test1c a :SUCCESS.
+:test1d a :SUCCESS.
+
+:test2a :has (0 1), (1 2), (2 3), (3 4).
+:test2b :has (0 1), (1 2), (2 3), (3 4).
+
+:test3a :has (2 "c").
+:test3b :has (2 "c"), (3 "c").
+:test3c a :SUCCESS.

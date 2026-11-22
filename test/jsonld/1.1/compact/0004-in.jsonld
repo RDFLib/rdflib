@@ -1,0 +1,12 @@
+{
+  "@id": "http://example.org/id",
+  "http://example.com/mylist1": {"@list": []},
+  "http://example.com/myset2": {"@set": []},
+  "http://example.com/myset3": "v1",
+  "http://example.org/list1": {"@list": []},
+  "http://example.org/list2": {"@list": [null]},
+  "http://example.org/set1": {"@set": []},
+  "http://example.org/set2": {"@set": [null]},
+  "http://example.org/set3": [],
+  "http://example.org/set4": [null]
+}

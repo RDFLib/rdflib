@@ -1,0 +1,6 @@
+{
+  "@context": {
+    "@vocab": "http://example.com/subdir/",
+    "vocab/date": { "@type": "vocab/types/dateTime" }
+  }
+}

@@ -1,0 +1,7 @@
+# $Id: icalR.n3 493 2005-03-20 18:13:06Z josd $
+
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix op: <http://www.w3.org/2004/07/xpath-functions#>.
+
+{?A^^xsd:dateTime math:greaterThan ?B^^xsd:dateTime} => {?A^^xsd:dateTime op:dateTime-greater-than ?B^^xsd:dateTime}.

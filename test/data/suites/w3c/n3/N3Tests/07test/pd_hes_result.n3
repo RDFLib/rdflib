@@ -1,0 +1,767 @@
+#Processed by Id: euler.yap 7292 2014-06-13 12:27:29Z josd
+#eye --nope --quiet --quick-false --quick-answer http://eulersharp.sourceforge.net/2007/07test/pd_hes_tactic.n3 http://eulersharp.sourceforge.net/2007/07test/pd_hes_theory.n3 --query http://eulersharp.sourceforge.net/2007/07test/pd_hes_query.n3
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/pd_hes#>.
+
+
+[ e:falseModel {:a2 :p :ab. :a1 :p :ab. :a2b2 :l _:sk0}
+; e:because [ e:integrityConstraint {{:a2 :p :a1} => false}
+  ; e:selected [ e:triple {:a2 :p :a1}
+    ]
+  ]
+].
+
+[ e:falseModel {:c2 :p :b2. :b2 :p _:sk3. :b2 :p _:sk1. :b2 :p :o. :a2b2 :l :oa. :a1 :p :ab. :a2b2 :l _:sk0}
+; e:because [ e:integrityConstraint {{:a2 :i :a2b2. :b2 :i :a2b2. :c2 :i :a2b2} => false}
+  ; e:selected [ e:triple {:a2 :i :a2b2}
+    ]
+  ; e:selected [ e:triple {:b2 :i :a2b2}
+    ]
+  ; e:selected [ e:triple {:c2 :i :a2b2}
+    ]
+  ]
+].
+
+[ e:possibleModel {:c1 :p :bc. :b2c2 :l :oc. :b2 :p _:sk3. :b2 :p _:sk1. :b2 :p :o. :a2b2 :l :oa. :a1 :p :ab. :a2b2 :l _:sk0}
+; e:gives {
+    :bc :i :a1c1.
+    :ac :i :a1c1.
+    :ab :i :a1c1.
+  }
+].
+
+[ e:falseModel {:b1c1 :l :oc. :b2c2 :l :oc. :b2 :p _:sk3. :b2 :p _:sk1. :b2 :p :o. :a2b2 :l :oa. :a1 :p :ab. :a2b2 :l _:sk0}
+; e:because [ e:integrityConstraint {{:b1c1 :l :b2c2} => false}
+  ; e:selected [ e:triple {:b1c1 :l :b2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:c2 :p :b2. :a1 :p _:sk5. :b2 :p _:sk3. :a1 :p _:sk6. :a2b2 :l _:sk4. :b2 :p _:sk1. :b2 :p :o. :a2b2 :l :oa. :a1 :p :ab. :a2b2 :l _:sk0}
+; e:because [ e:integrityConstraint {{:a2 :i :a2b2. :b2 :i :a2b2. :c2 :i :a2b2} => false}
+  ; e:selected [ e:triple {:a2 :i :a2b2}
+    ]
+  ; e:selected [ e:triple {:b2 :i :a2b2}
+    ]
+  ; e:selected [ e:triple {:c2 :i :a2b2}
+    ]
+  ]
+].
+
+[ e:possibleModel {:c1 :p :bc. :b2c2 :l :oc. :a1 :p _:sk5. :b2 :p _:sk3. :a1 :p _:sk6. :a2b2 :l _:sk4. :b2 :p _:sk1. :b2 :p :o. :a2b2 :l :oa. :a1 :p :ab. :a2b2 :l _:sk0}
+; e:gives {
+    :bc :i :a1c1.
+    :ac :i :a1c1.
+    :ab :i :a1c1.
+  }
+].
+
+[ e:falseModel {:b1c1 :l :oc. :b2c2 :l :oc. :a1 :p _:sk5. :b2 :p _:sk3. :a1 :p _:sk6. :a2b2 :l _:sk4. :b2 :p _:sk1. :b2 :p :o. :a2b2 :l :oa. :a1 :p :ab. :a2b2 :l _:sk0}
+; e:because [ e:integrityConstraint {{:b1c1 :l :b2c2} => false}
+  ; e:selected [ e:triple {:b1c1 :l :b2c2}
+    ]
+  ]
+].
+
+[ e:possibleModel {:a1c1 :l :oa. :b2 :p _:sk3. :a1 :p _:sk6. :a2b2 :l _:sk4. :b2 :p _:sk1. :b2 :p :o. :a2b2 :l :oa. :a1 :p :ab. :a2b2 :l _:sk0}
+; e:gives {
+    :b2 :i :a1c1.
+  }
+].
+
+[ e:falseModel {:a2 :p :ab. :a2 :p :ac. :a2b2 :l _:sk2. :a1 :p _:sk6. :a2b2 :l _:sk4. :b2 :p _:sk1. :b2 :p :o. :a2b2 :l :oa. :a1 :p :ab. :a2b2 :l _:sk0}
+; e:because [ e:integrityConstraint {{:a2 :p :a1} => false}
+  ; e:selected [ e:triple {:a2 :p :a1}
+    ]
+  ]
+].
+
+[ e:possibleModel {:a2b2 :l :a1c1. :a2 :p :ac. :a2b2 :l _:sk2. :a1 :p _:sk6. :a2b2 :l _:sk4. :b2 :p _:sk1. :b2 :p :o. :a2b2 :l :oa. :a1 :p :ab. :a2b2 :l _:sk0}
+; e:gives {
+    :b2 :i :a1c1.
+  }
+].
+
+[ e:falseModel {:a2b2 :l :a2c2. :a2b2 :l _:sk2. :a1 :p _:sk6. :a2b2 :l _:sk4. :b2 :p _:sk1. :b2 :p :o. :a2b2 :l :oa. :a1 :p :ab. :a2b2 :l _:sk0}
+; e:because [ e:integrityConstraint {{:a2 :i :a2c2. :b2 :i :a2c2. :c2 :i :a2c2} => false}
+  ; e:selected [ e:triple {:a2 :i :a2c2}
+    ]
+  ; e:selected [ e:triple {:b2 :i :a2c2}
+    ]
+  ; e:selected [ e:triple {:c2 :i :a2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1b1 :l :oa. :a2b2 :l _:sk4. :b2 :p _:sk1. :b2 :p :o. :a2b2 :l :oa. :a1 :p :ab. :a2b2 :l _:sk0}
+; e:because [ e:integrityConstraint {{:a1b1 :l :a2b2} => false}
+  ; e:selected [ e:triple {:a1b1 :l :a2b2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a2b2 :l :oc. :b2 :p :o. :a2b2 :l :oa. :a1 :p :ab. :a2b2 :l _:sk0}
+; e:because [ e:integrityConstraint {{:a2 :i :oc. :b2 :i :oc. :c2 :i :oc} => false}
+  ; e:selected [ e:triple {:a2 :i :oc}
+    ]
+  ; e:selected [ e:triple {:b2 :i :oc}
+    ]
+  ; e:selected [ e:triple {:c2 :i :oc}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1 :p :b1. :a2b2 :l :ob. :a2b2 :l :oa. :a1 :p :ab. :a2b2 :l _:sk0}
+; e:because [ e:integrityConstraint {{:a1 :i :b1c1. :b1 :i :b1c1. :c1 :i :b1c1} => false}
+  ; e:selected [ e:triple {:a1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:b1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:c1 :i :b1c1}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1b1 :l :oa. :a2b2 :l :ob. :a2b2 :l :oa. :a1 :p :ab. :a2b2 :l _:sk0}
+; e:because [ e:integrityConstraint {{:a1b1 :l :a2b2} => false}
+  ; e:selected [ e:triple {:a1b1 :l :a2b2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1b1 :l _:sk0. :a2b2 :l _:sk0}
+; e:because [ e:integrityConstraint {{:a1b1 :l :a2b2} => false}
+  ; e:selected [ e:triple {:a1b1 :l :a2b2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a2 :p :b2. :a2 :p :o. :c1 :p :ac. :a2c2 :l :oc}
+; e:because [ e:integrityConstraint {{:a2 :i :b2c2. :b2 :i :b2c2. :c2 :i :b2c2} => false}
+  ; e:selected [ e:triple {:a2 :i :b2c2}
+    ]
+  ; e:selected [ e:triple {:b2 :i :b2c2}
+    ]
+  ; e:selected [ e:triple {:c2 :i :b2c2}
+    ]
+  ]
+].
+
+[ e:possibleModel {:b1 :p :ab. :a2b2 :l :ob. :a2 :p :o. :c1 :p :ac. :a2c2 :l :oc}
+; e:gives {
+    :bc :i :b1c1.
+    :ac :i :b1c1.
+    :ab :i :b1c1.
+  }
+].
+
+[ e:falseModel {:a1b1 :l :ob. :a2b2 :l :ob. :a2 :p :o. :c1 :p :ac. :a2c2 :l :oc}
+; e:because [ e:integrityConstraint {{:a1b1 :l :a2b2} => false}
+  ; e:selected [ e:triple {:a1b1 :l :a2b2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1 :p :c1. :a2c2 :l :oa. :c1 :p :ac. :a2c2 :l :oc}
+; e:because [ e:integrityConstraint {{:a1 :i :b1c1. :b1 :i :b1c1. :c1 :i :b1c1} => false}
+  ; e:selected [ e:triple {:a1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:b1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:c1 :i :b1c1}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1c1 :l :oa. :a2c2 :l :oa. :c1 :p :ac. :a2c2 :l :oc}
+; e:because [ e:integrityConstraint {{:a1c1 :l :a2c2} => false}
+  ; e:selected [ e:triple {:a1c1 :l :a2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1c1 :l :oc. :a2c2 :l :oc}
+; e:because [ e:integrityConstraint {{:a1c1 :l :a2c2} => false}
+  ; e:selected [ e:triple {:a1c1 :l :a2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1 :p :b1. :a1 :p :o. :a1c1 :l _:sk4}
+; e:because [ e:integrityConstraint {{:a1 :i :b1c1. :b1 :i :b1c1. :c1 :i :b1c1} => false}
+  ; e:selected [ e:triple {:a1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:b1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:c1 :i :b1c1}
+    ]
+  ]
+].
+
+[ e:possibleModel {:a1 :p :b2. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l _:sk4}
+; e:gives {
+    :a1 :i :b2c2.
+    :b2 :i :a1c1.
+  }
+].
+
+[ e:falseModel {:a1 :p :c1. :b2 :p :ab. :a1 :p _:sk1. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l _:sk4}
+; e:because [ e:integrityConstraint {{:a1 :i :b1c1. :b1 :i :b1c1. :c1 :i :b1c1} => false}
+  ; e:selected [ e:triple {:a1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:b1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:c1 :i :b1c1}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1 :p :ab. :a1 :p _:sk3. :a1 :p :ac. :a1c1 :l :oc. :b2 :p :ab. :a1 :p _:sk1. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l _:sk4}
+; e:because [ e:integrityConstraint {{:a2 :i :a2c2. :b2 :i :a2c2. :c2 :i :a2c2} => false}
+  ; e:selected [ e:triple {:a2 :i :a2c2}
+    ]
+  ; e:selected [ e:triple {:b2 :i :a2c2}
+    ]
+  ; e:selected [ e:triple {:c2 :i :a2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1b1 :l :a2b2. :a1 :p _:sk3. :a1 :p :ac. :a1c1 :l :oc. :b2 :p :ab. :a1 :p _:sk1. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l _:sk4}
+; e:because [ e:integrityConstraint {{:a1b1 :l :a2b2} => false}
+  ; e:selected [ e:triple {:a1b1 :l :a2b2}
+    ]
+  ]
+].
+
+[ e:possibleModel {:a1 :p :c2. :a1c1 :l _:sk2. :a1 :p :ac. :a1c1 :l :oc. :b2 :p :ab. :a1 :p _:sk1. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l _:sk4}
+; e:gives {
+    :bc :i :b2c2.
+    :ac :i :b2c2.
+    :ab :i :b2c2.
+    :a1 :i :b2c2.
+  }
+].
+
+[ e:falseModel {:a1c1 :l :a2c2. :a1c1 :l _:sk2. :a1 :p :ac. :a1c1 :l :oc. :b2 :p :ab. :a1 :p _:sk1. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l _:sk4}
+; e:because [ e:integrityConstraint {{:a1c1 :l :a2c2} => false}
+  ; e:selected [ e:triple {:a1c1 :l :a2c2}
+    ]
+  ]
+].
+
+[ e:possibleModel {:c2 :p :ac. :a1c1 :l _:sk2. :a1c1 :l :oc. :b2 :p :ab. :a1 :p _:sk1. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l _:sk4}
+; e:gives {
+    :bc :i :b2c2.
+    :ac :i :b2c2.
+    :ab :i :b2c2.
+  }
+].
+
+[ e:falseModel {:a2c2 :l :oc. :a1c1 :l _:sk2. :a1c1 :l :oc. :b2 :p :ab. :a1 :p _:sk1. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l _:sk4}
+; e:because [ e:integrityConstraint {{:a1c1 :l :a2c2} => false}
+  ; e:selected [ e:triple {:a1c1 :l :a2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a2b2 :l :ob. :a1 :p _:sk1. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l _:sk4}
+; e:because [ e:integrityConstraint {{:a1b1 :l :a2b2} => false}
+  ; e:selected [ e:triple {:a1b1 :l :a2b2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1b1 :l :oc. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l _:sk4}
+; e:because [ e:integrityConstraint {{:a1 :i :oc. :b1 :i :oc. :c1 :i :oc} => false}
+  ; e:selected [ e:triple {:a1 :i :oc}
+    ]
+  ; e:selected [ e:triple {:b1 :i :oc}
+    ]
+  ; e:selected [ e:triple {:c1 :i :oc}
+    ]
+  ]
+].
+
+[ e:falseModel {:c1 :p :b1. :a2 :p :ac. :c1 :p :o. :a2 :p _:sk3. :a1c1 :l :oa. :a1c1 :l _:sk4}
+; e:because [ e:integrityConstraint {{:a1 :i :a1b1. :b1 :i :a1b1. :c1 :i :a1b1} => false}
+  ; e:selected [ e:triple {:a1 :i :a1b1}
+    ]
+  ; e:selected [ e:triple {:b1 :i :a1b1}
+    ]
+  ; e:selected [ e:triple {:c1 :i :a1b1}
+    ]
+  ]
+].
+
+[ e:possibleModel {:b2 :p :bc. :b1c1 :l :ob. :a2 :p :ac. :c1 :p :o. :a2 :p _:sk3. :a1c1 :l :oa. :a1c1 :l _:sk4}
+; e:gives {
+    :bc :i :a2b2.
+    :ac :i :a2b2.
+    :ab :i :a2b2.
+  }
+].
+
+[ e:falseModel {:b2c2 :l :ob. :b1c1 :l :ob. :a2 :p :ac. :c1 :p :o. :a2 :p _:sk3. :a1c1 :l :oa. :a1c1 :l _:sk4}
+; e:because [ e:integrityConstraint {{:b1c1 :l :b2c2} => false}
+  ; e:selected [ e:triple {:b1c1 :l :b2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a2c2 :l :oa. :c1 :p :o. :a2 :p _:sk3. :a1c1 :l :oa. :a1c1 :l _:sk4}
+; e:because [ e:integrityConstraint {{:a1c1 :l :a2c2} => false}
+  ; e:selected [ e:triple {:a1c1 :l :a2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1 :p _:sk3. :a1 :p :ac. :a1 :p _:sk1. :a1c1 :l :oc. :a2 :p _:sk3. :a1c1 :l :oa. :a1c1 :l _:sk4}
+; e:because [ e:integrityConstraint {{:a2 :p :a1} => false}
+  ; e:selected [ e:triple {:a2 :p :a1}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1 :p _:sk3. :a1c1 :l _:sk2. :a1 :p :ac. :a1 :p _:sk1. :a1c1 :l :oc. :a2 :p _:sk3. :a1c1 :l :oa. :a1c1 :l _:sk4}
+; e:because [ e:integrityConstraint {{:a2 :p :a1} => false}
+  ; e:selected [ e:triple {:a2 :p :a1}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1c1 :l :a2c2. :a1c1 :l _:sk2. :a1 :p :ac. :a1 :p _:sk1. :a1c1 :l :oc. :a2 :p _:sk3. :a1c1 :l :oa. :a1c1 :l _:sk4}
+; e:because [ e:integrityConstraint {{:a1c1 :l :a2c2} => false}
+  ; e:selected [ e:triple {:a1c1 :l :a2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a2 :p :c2. :a1c1 :l _:sk2. :a1 :p _:sk1. :a1c1 :l :oc. :a2 :p _:sk3. :a1c1 :l :oa. :a1c1 :l _:sk4}
+; e:because [ e:integrityConstraint {{:a2 :i :b2c2. :b2 :i :b2c2. :c2 :i :b2c2} => false}
+  ; e:selected [ e:triple {:a2 :i :b2c2}
+    ]
+  ; e:selected [ e:triple {:b2 :i :b2c2}
+    ]
+  ; e:selected [ e:triple {:c2 :i :b2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a2c2 :l :oa. :a1c1 :l _:sk2. :a1 :p _:sk1. :a1c1 :l :oc. :a2 :p _:sk3. :a1c1 :l :oa. :a1c1 :l _:sk4}
+; e:because [ e:integrityConstraint {{:a1c1 :l :a2c2} => false}
+  ; e:selected [ e:triple {:a1c1 :l :a2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1c1 :l _:sk0. :a1c1 :l :oc. :a2 :p _:sk3. :a1c1 :l :oa. :a1c1 :l _:sk4}
+; e:because [ e:integrityConstraint {{:a2 :i _:sk0. :b2 :i _:sk0. :c2 :i _:sk0} => false}
+  ; e:selected [ e:triple {:a2 :i _:sk0}
+    ]
+  ; e:selected [ e:triple {:b2 :i _:sk0}
+    ]
+  ; e:selected [ e:triple {:c2 :i _:sk0}
+    ]
+  ]
+].
+
+[ e:possibleModel {:a2b2 :l :oa. :a1c1 :l :oa. :a1c1 :l _:sk4}
+; e:gives {
+    :b2 :i :a1c1.
+  }
+].
+
+[ e:falseModel {:c2 :p :b2. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a2 :i :a2b2. :b2 :i :a2b2. :c2 :i :a2b2} => false}
+  ; e:selected [ e:triple {:a2 :i :a2b2}
+    ]
+  ; e:selected [ e:triple {:b2 :i :a2b2}
+    ]
+  ; e:selected [ e:triple {:c2 :i :a2b2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1 :p :c1. :oc :l _:sk0. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a1 :i :b1c1. :b1 :i :b1c1. :c1 :i :b1c1} => false}
+  ; e:selected [ e:triple {:a1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:b1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:c1 :i :b1c1}
+    ]
+  ]
+].
+
+[ e:possibleModel {:a1c1 :l _:sk0. :oc :l _:sk0. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:gives {
+    :b2 :i :a1c1.
+  }
+].
+
+[ e:possibleModel {:a1 :p _:sk5. _:sk4 :l :a1b1. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:gives {
+    :a1 :i :b2c2.
+  }
+].
+
+[ e:falseModel {:a1b1 :l :a1c1. _:sk4 :l :a1b1. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a1 :i :a1c1. :b1 :i :a1c1. :c1 :i :a1c1} => false}
+  ; e:selected [ e:triple {:a1 :i :a1c1}
+    ]
+  ; e:selected [ e:triple {:b1 :i :a1c1}
+    ]
+  ; e:selected [ e:triple {:c1 :i :a1c1}
+    ]
+  ]
+].
+
+[ e:falseModel {:b2c2 :l :b1c1. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:b1c1 :l :b2c2} => false}
+  ; e:selected [ e:triple {:b1c1 :l :b2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a2b2 :l :a1b1. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a1b1 :l :a2b2} => false}
+  ; e:selected [ e:triple {:a1b1 :l :a2b2}
+    ]
+  ]
+].
+
+[ e:possibleModel {:a1 :p :ac. :c2 :p :ac. :c2 :p _:sk1. :b2c2 :l _:sk8. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:gives {
+    :a1 :i :b2c2.
+  }
+].
+
+[ e:possibleModel {:a1c1 :l _:sk0. :c2 :p :ac. :c2 :p _:sk1. :b2c2 :l _:sk8. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:gives {
+    :b2 :i :a1c1.
+  }
+].
+
+[ e:falseModel {:c2 :p :b2. :a2 :p _:sk3. :a2c2 :l _:sk2. :c2 :p _:sk1. :b2c2 :l _:sk8. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a2 :i :a2b2. :b2 :i :a2b2. :c2 :i :a2b2} => false}
+  ; e:selected [ e:triple {:a2 :i :a2b2}
+    ]
+  ; e:selected [ e:triple {:b2 :i :a2b2}
+    ]
+  ; e:selected [ e:triple {:c2 :i :a2b2}
+    ]
+  ]
+].
+
+[ e:possibleModel {:b2c2 :l _:sk0. :a2 :p _:sk3. :a2c2 :l _:sk2. :c2 :p _:sk1. :b2c2 :l _:sk8. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:gives {
+    :a1 :i :b2c2.
+  }
+].
+
+[ e:falseModel {:a2b2 :l :a2c2. :a2c2 :l _:sk2. :c2 :p _:sk1. :b2c2 :l _:sk8. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a2 :i :a2c2. :b2 :i :a2c2. :c2 :i :a2c2} => false}
+  ; e:selected [ e:triple {:a2 :i :a2c2}
+    ]
+  ; e:selected [ e:triple {:b2 :i :a2c2}
+    ]
+  ; e:selected [ e:triple {:c2 :i :a2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a2 :p :b2. :b2 :p :o. :c1 :p :bc. :c1 :p _:sk5. :b2c2 :l :oc. :b2c2 :l _:sk8. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a2 :i :b2c2. :b2 :i :b2c2. :c2 :i :b2c2} => false}
+  ; e:selected [ e:triple {:a2 :i :b2c2}
+    ]
+  ; e:selected [ e:triple {:b2 :i :b2c2}
+    ]
+  ; e:selected [ e:triple {:c2 :i :b2c2}
+    ]
+  ]
+].
+
+[ e:possibleModel {:a1 :p :ab. :a2b2 :l :oa. :b2 :p :o. :c1 :p :bc. :c1 :p _:sk5. :b2c2 :l :oc. :b2c2 :l _:sk8. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:gives {
+    :bc :i :a1c1.
+    :ac :i :a1c1.
+    :ab :i :a1c1.
+  }
+].
+
+[ e:falseModel {:a1b1 :l :oa. :a2b2 :l :oa. :b2 :p :o. :c1 :p :bc. :c1 :p _:sk5. :b2c2 :l :oc. :b2c2 :l _:sk8. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a1b1 :l :a2b2} => false}
+  ; e:selected [ e:triple {:a1b1 :l :a2b2}
+    ]
+  ]
+].
+
+[ e:falseModel {:c1 :p :b1. :b1 :p _:sk7. :b2c2 :l :ob. :c1 :p :bc. :c1 :p _:sk5. :b2c2 :l :oc. :b2c2 :l _:sk8. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a1 :i :a1b1. :b1 :i :a1b1. :c1 :i :a1b1} => false}
+  ; e:selected [ e:triple {:a1 :i :a1b1}
+    ]
+  ; e:selected [ e:triple {:b1 :i :a1b1}
+    ]
+  ; e:selected [ e:triple {:c1 :i :a1b1}
+    ]
+  ]
+].
+
+[ e:falseModel {:b1c1 :l :oc. :b1 :p _:sk7. :b2c2 :l :ob. :c1 :p :bc. :c1 :p _:sk5. :b2c2 :l :oc. :b2c2 :l _:sk8. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:b1c1 :l :b2c2} => false}
+  ; e:selected [ e:triple {:b1c1 :l :b2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1b1 :l :ob. :b2c2 :l :ob. :c1 :p :bc. :c1 :p _:sk5. :b2c2 :l :oc. :b2c2 :l _:sk8. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a1 :i :ob. :b1 :i :ob. :c1 :i :ob} => false}
+  ; e:selected [ e:triple {:a1 :i :ob}
+    ]
+  ; e:selected [ e:triple {:b1 :i :ob}
+    ]
+  ; e:selected [ e:triple {:c1 :i :ob}
+    ]
+  ]
+].
+
+[ e:falseModel {:b1c1 :l :oc. :c1 :p _:sk5. :b2c2 :l :oc. :b2c2 :l _:sk8. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:b1c1 :l :b2c2} => false}
+  ; e:selected [ e:triple {:b1c1 :l :b2c2}
+    ]
+  ]
+].
+
+[ e:possibleModel {:a1c1 :l :oc. :b2c2 :l :oc. :b2c2 :l _:sk8. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:gives {
+    :a1 :i :b2c2.
+    :b2 :i :a1c1.
+  }
+].
+
+[ e:falseModel {:a1 :p :c1. :a1 :p _:sk7. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a1 :i :b1c1. :b1 :i :b1c1. :c1 :i :b1c1} => false}
+  ; e:selected [ e:triple {:a1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:b1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:c1 :i :b1c1}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1 :p :b1. :a1 :p :o. :a1c1 :l :oc. :a1 :p _:sk7. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a1 :i :b1c1. :b1 :i :b1c1. :c1 :i :b1c1} => false}
+  ; e:selected [ e:triple {:a1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:b1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:c1 :i :b1c1}
+    ]
+  ]
+].
+
+[ e:possibleModel {:a1 :p :b2. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l :oc. :a1 :p _:sk7. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:gives {
+    :a1 :i :b2c2.
+    :b2 :i :a1c1.
+  }
+].
+
+[ e:possibleModel {:a1 :p _:sk5. :b2 :p :ab. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l :oc. :a1 :p _:sk7. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:gives {
+    :a1 :i :b2c2.
+  }
+].
+
+[ e:possibleModel {:c2 :p :ac. :a1c1 :l _:sk4. :b2 :p :ab. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l :oc. :a1 :p _:sk7. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:gives {
+    :bc :i :b2c2.
+    :ac :i :b2c2.
+    :ab :i :b2c2.
+    :bc :i _:sk6.
+    :ac :i _:sk6.
+    :ab :i _:sk6.
+  }
+].
+
+[ e:falseModel {:a2c2 :l :oc. :a1c1 :l _:sk4. :b2 :p :ab. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l :oc. :a1 :p _:sk7. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a1c1 :l :a2c2} => false}
+  ; e:selected [ e:triple {:a1c1 :l :a2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a2b2 :l :ob. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l :oc. :a1 :p _:sk7. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a1b1 :l :a2b2} => false}
+  ; e:selected [ e:triple {:a1b1 :l :a2b2}
+    ]
+  ]
+].
+
+[ e:possibleModel {:a1 :p _:sk5. :a2 :p _:sk3. :a1c1 :l :oa. :a1c1 :l :oc. :a1 :p _:sk7. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:gives {
+    :a1 :i :b2c2.
+  }
+].
+
+[ e:falseModel {:a2 :p :c2. :a1c1 :l _:sk4. :a2 :p _:sk3. :a1c1 :l :oa. :a1c1 :l :oc. :a1 :p _:sk7. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a2 :i :b2c2. :b2 :i :b2c2. :c2 :i :b2c2} => false}
+  ; e:selected [ e:triple {:a2 :i :b2c2}
+    ]
+  ; e:selected [ e:triple {:b2 :i :b2c2}
+    ]
+  ; e:selected [ e:triple {:c2 :i :b2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a2c2 :l :oa. :a1c1 :l _:sk4. :a2 :p _:sk3. :a1c1 :l :oa. :a1c1 :l :oc. :a1 :p _:sk7. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a1c1 :l :a2c2} => false}
+  ; e:selected [ e:triple {:a1c1 :l :a2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a2b2 :l :oa. :a1c1 :l :oa. :a1c1 :l :oc. :a1 :p _:sk7. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a2 :i :oa. :b2 :i :oa. :c2 :i :oa} => false}
+  ; e:selected [ e:triple {:a2 :i :oa}
+    ]
+  ; e:selected [ e:triple {:b2 :i :oa}
+    ]
+  ; e:selected [ e:triple {:c2 :i :oa}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1 :p :c1. :b1 :p :bc. :a1b1 :l _:sk8. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a1 :i :b1c1. :b1 :i :b1c1. :c1 :i :b1c1} => false}
+  ; e:selected [ e:triple {:a1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:b1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:c1 :i :b1c1}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1 :p :b1. :a1 :p :o. :a1c1 :l :oc. :b1 :p :bc. :a1b1 :l _:sk8. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a1 :i :b1c1. :b1 :i :b1c1. :c1 :i :b1c1} => false}
+  ; e:selected [ e:triple {:a1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:b1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:c1 :i :b1c1}
+    ]
+  ]
+].
+
+[ e:possibleModel {:a1 :p :b2. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l :oc. :b1 :p :bc. :a1b1 :l _:sk8. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:gives {
+    :a1 :i :b2c2.
+    :b2 :i :a1c1.
+  }
+].
+
+[ e:falseModel {:b1 :p :b2. :a1 :p _:sk7. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l :oc. :b1 :p :bc. :a1b1 :l _:sk8. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:b2 :p :b1} => false}
+  ; e:selected [ e:triple {:b2 :p :b1}
+    ]
+  ]
+].
+
+[ e:possibleModel {:a1b1 :l :b2c2. :a1 :p _:sk7. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l :oc. :b1 :p :bc. :a1b1 :l _:sk8. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:gives {
+    :a1 :i :b2c2.
+  }
+].
+
+[ e:possibleModel {:a1 :p _:sk5. :a1 :p _:sk3. :a1b1 :l _:sk4. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l :oc. :b1 :p :bc. :a1b1 :l _:sk8. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:gives {
+    :a1 :i :b2c2.
+  }
+].
+
+[ e:falseModel {:a1b1 :l :a1c1. :a1 :p _:sk3. :a1b1 :l _:sk4. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l :oc. :b1 :p :bc. :a1b1 :l _:sk8. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a1 :i :a1c1. :b1 :i :a1c1. :c1 :i :a1c1} => false}
+  ; e:selected [ e:triple {:a1 :i :a1c1}
+    ]
+  ; e:selected [ e:triple {:b1 :i :a1c1}
+    ]
+  ; e:selected [ e:triple {:c1 :i :a1c1}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1b1 :l :a1c1. :a1b1 :l _:sk4. :a1b1 :l _:sk0. :a1b1 :l :ob. :a1 :p :o. :a1c1 :l :oc. :b1 :p :bc. :a1b1 :l _:sk8. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a1 :i :a1c1. :b1 :i :a1c1. :c1 :i :a1c1} => false}
+  ; e:selected [ e:triple {:a1 :i :a1c1}
+    ]
+  ; e:selected [ e:triple {:b1 :i :a1c1}
+    ]
+  ; e:selected [ e:triple {:c1 :i :a1c1}
+    ]
+  ]
+].
+
+[ e:falseModel {:a2 :p :c2. :a2 :p _:sk3. :a1c1 :l :oa. :a1c1 :l :oc. :b1 :p :bc. :a1b1 :l _:sk8. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a2 :i :b2c2. :b2 :i :b2c2. :c2 :i :b2c2} => false}
+  ; e:selected [ e:triple {:a2 :i :b2c2}
+    ]
+  ; e:selected [ e:triple {:b2 :i :b2c2}
+    ]
+  ; e:selected [ e:triple {:c2 :i :b2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a2c2 :l :oa. :a2 :p _:sk3. :a1c1 :l :oa. :a1c1 :l :oc. :b1 :p :bc. :a1b1 :l _:sk8. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a1c1 :l :a2c2} => false}
+  ; e:selected [ e:triple {:a1c1 :l :a2c2}
+    ]
+  ]
+].
+
+[ e:falseModel {:a2b2 :l :oa. :a1c1 :l :oa. :a1c1 :l :oc. :b1 :p :bc. :a1b1 :l _:sk8. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a2 :i :oa. :b2 :i :oa. :c2 :i :oa} => false}
+  ; e:selected [ e:triple {:a2 :i :oa}
+    ]
+  ; e:selected [ e:triple {:b2 :i :oa}
+    ]
+  ; e:selected [ e:triple {:c2 :i :oa}
+    ]
+  ]
+].
+
+[ e:falseModel {:a1b1 :l :b1c1. :a1b1 :l _:sk8. :a1 :p _:sk1. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:because [ e:integrityConstraint {{:a1 :i :b1c1. :b1 :i :b1c1. :c1 :i :b1c1} => false}
+  ; e:selected [ e:triple {:a1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:b1 :i :b1c1}
+    ]
+  ; e:selected [ e:triple {:c1 :i :b1c1}
+    ]
+  ]
+].
+
+[ e:possibleModel {:a1c1 :l _:sk0. :a1c1 :l _:sk2. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:gives {
+    :b2 :i :a1c1.
+  }
+].
+
+[ e:possibleModel {_:sk9 :l _:sk9. :ab :i _:sk9. :bc :i _:sk9. :ac :i _:sk9. _:sk8 :l _:sk8. _:sk1 :i _:sk8. _:sk7 :i _:sk8. :bc :i _:sk8. :b2c2 :l _:sk6. _:sk6 :l _:sk6. :b2 :i _:sk6. :c2 :i _:sk6. _:sk5 :i _:sk6}
+; e:gives {
+    :bc :i _:sk9.
+    :ac :i _:sk9.
+    :ab :i _:sk9.
+  }
+].
+
+[ e:inductivity 1; e:evidentiality 0.29213483146067415; e:applicability 0.29213483146067415; e:possibleModels 26; e:counterModels 0; e:falseModels 63; e:allModels 89].
+
+#ENDS 3.069 [sec] TC=19 TP=292 BC=2861 BP=499319 PM=26 CM=0 FM=63 AM=89
+

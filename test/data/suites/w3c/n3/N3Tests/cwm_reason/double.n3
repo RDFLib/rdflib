@@ -1,0 +1,9 @@
+@prefix : <gmpbnode#>.
+
+:dan a :Man; :home [].
+
+{ ?WHO :home ?WHERE.
+  ?WHERE :in ?REGION } => { ?WHO :homeRegion ?REGION }.
+
+
+{ :dan :home ?WHERE} => {?WHERE :in :Texas} . 

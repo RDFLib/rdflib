@@ -1,5 +1,0 @@
-prefix : <http://example.org/ns#>
-select ?x where {
-    ?x :p "foo" .
-    FILTER (true) .
-}

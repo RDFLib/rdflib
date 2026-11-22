@@ -1,0 +1,11 @@
+{
+  "@context": {
+    "@base": "http://example.org/",
+    "@vocab": "http://example.org/vocab/",
+    "at": {"@reverse": "@"},
+    "foo.bar": {"@reverse": "@foo.bar"}
+  },
+  "@id": "foo",
+  "at": {"@id": "allowed"},
+  "foo.bar": {"@id": "allowed"}
+}

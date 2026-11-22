@@ -1,0 +1,5 @@
+<http://example.com/people/markus> <http://xmlns.com/foaf/0.1/name> "Markus Lanthaler" .
+_:b0 <http://xmlns.com/foaf/0.1/knows> <http://example.com/people/markus> .
+_:b0 <http://xmlns.com/foaf/0.1/name> "Dave Longley" .
+_:b1 <http://xmlns.com/foaf/0.1/knows> <http://example.com/people/markus> .
+_:b1 <http://xmlns.com/foaf/0.1/name> "Gregg Kellogg" .

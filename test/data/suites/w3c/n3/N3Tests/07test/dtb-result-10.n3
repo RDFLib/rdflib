@@ -1,0 +1,11 @@
+#Processed by EYE-Autumn15 12111500Z josd
+#eye --nope http://eulersharp.sourceforge.net/2009/12dtb/test-facts.n3 http://eulersharp.sourceforge.net/2007/07test/test-strela-10.n3 --query http://eulersharp.sourceforge.net/2009/12dtb/test-query.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2009/12dtb/test#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+
+:TestVariable a :A2.
+
+#ENDS 0.814 [sec] IO=34/1 TC=29 TP=58 BC=0 BP=0 PM=0 CM=0 FM=0 AM=0
+

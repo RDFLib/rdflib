@@ -1,0 +1,8 @@
+{
+  "@context": {"@base": "http://abc/d:f/ghi", "urn:ex:p": {"@type": "@id"}},
+  "@graph": [
+    {"@id": "urn:ex:s304", "urn:ex:p": "xyz"},
+    {"@id": "urn:ex:s305", "urn:ex:p": "./xyz"},
+    {"@id": "urn:ex:s306", "urn:ex:p": "../xyz"}
+  ]
+}

@@ -1,0 +1,10 @@
+# From swap/tests/crypto/parsedAsN3-ref.n3
+@prefix : <parsedAsN3.n3#> .
+@prefix acc: <http://www.w3.org/2000/10/swap/test/crypto/acc.n3#> .
+
+{
+  acc:foo acc:credential <access-tina-cert.n3>;
+          acc:forDocument <http://www.w3.org/Member>;
+          acc:junk "32746213462187364732164732164321" .
+} a :result .
+

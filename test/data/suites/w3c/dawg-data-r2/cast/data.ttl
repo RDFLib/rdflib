@@ -1,0 +1,9 @@
+@prefix : <http://example.org/> .
+
+:iri :p :z .
+:str :p "string" .
+:fltdbl :p "-10.2E3" .
+:decimal :p "+33.3300" .
+:int :p "13" .
+:dT :p "2002-10-10T17:00:00Z" .
+:bool :p "true" .

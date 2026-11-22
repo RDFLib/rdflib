@@ -1,4 +1,4 @@
-__doc__ = """
+"""
 Dirt Simple Events
 
 A Dispatcher (or a subclass of Dispatcher) stores event handlers that
@@ -6,26 +6,40 @@ are 'fired' simple event objects when interesting things happen.
 
 Create a dispatcher:
 
-  >>> d = Dispatcher()
+```python
+>>> d = Dispatcher()
+
+```
 
 Now create a handler for the event and subscribe it to the dispatcher
 to handle Event events.  A handler is a simple function or method that
 accepts the event as an argument:
 
-  >>> def handler1(event): print(repr(event))
-  >>> d.subscribe(Event, handler1)
+```python
+>>> def handler1(event): print(repr(event))
+>>> d.subscribe(Event, handler1) # doctest: +ELLIPSIS
+<rdflib.events.Dispatcher object at ...>
+
+```
 
 Now dispatch a new event into the dispatcher, and see handler1 get
 fired:
 
-  >>> d.dispatch(Event(foo='bar', data='yours', used_by='the event handlers'))
-  <rdflib.events.Event ['data', 'foo', 'used_by']>
+```python
+>>> d.dispatch(Event(foo='bar', data='yours', used_by='the event handlers'))
+<rdflib.events.Event ['data', 'foo', 'used_by']>
+
+```
 """
 
-__all__ = ['Event', 'Dispatcher']
+from __future__ import annotations
+
+from typing import Any
+
+__all__ = ["Event", "Dispatcher"]
 
 
-class Event(object):
+class Event:
     """
     An event is a container for attributes.  The source of an event
     creates this object, or a subclass, gives it any kind of data that
@@ -42,52 +56,47 @@ class Event(object):
         self.__dict__.update(kw)
 
     def __repr__(self):
-        attrs = self.__dict__.keys()
-        attrs.sort()
-        return '<rdflib.events.Event %s>' % ([a for a in attrs],)
+        attrs = sorted(self.__dict__.keys())
+        return "<rdflib.events.Event %s>" % ([a for a in attrs],)
 
 
-class Dispatcher(object):
+class Dispatcher:
     """
     An object that can dispatch events to a privately managed group of
     subscribers.
     """
 
-    _dispatch_map = None
+    _dispatch_map: dict[Any, Any] | None = None
 
-    def set_map(self, amap):
+    def set_map(self, amap: dict[Any, Any]):
         self._dispatch_map = amap
+        return self
 
     def get_map(self):
         return self._dispatch_map
 
     def subscribe(self, event_type, handler):
-        """ Subscribe the given handler to an event_type.  Handlers
+        """Subscribe the given handler to an event_type.  Handlers
         are called in the order they are subscribed.
         """
         if self._dispatch_map is None:
             self.set_map({})
-        lst = self._dispatch_map.get(event_type, None)
+        # type error: error: Item "None" of "Optional[dict[Any, Any]]" has no attribute "get"
+        lst = self._dispatch_map.get(event_type, None)  # type: ignore[union-attr]
         if lst is None:
             lst = [handler]
         else:
             lst.append(handler)
-        self._dispatch_map[event_type] = lst
+        # type error: Unsupported target for indexed assignment ("Optional[dict[Any, Any]]")
+        self._dispatch_map[event_type] = lst  # type: ignore[index]
+        return self
 
     def dispatch(self, event):
-        """ Dispatch the given event to the subscribed handlers for
+        """Dispatch the given event to the subscribed handlers for
         the event's type"""
         if self._dispatch_map is not None:
             lst = self._dispatch_map.get(type(event), None)
             if lst is None:
                 raise ValueError("unknown event type: %s" % type(event))
-            for l in lst:
-                l(event)
-
-
-def test():
-    import doctest
-    doctest.testmod()
-
-if __name__ == '__main__':
-    test()
+            for l_ in lst:
+                l_(event)

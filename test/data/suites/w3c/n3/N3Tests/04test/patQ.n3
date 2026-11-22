@@ -1,0 +1,9 @@
+# $Id: patQ.n3 435 2004-12-19 22:36:39Z josd $
+# PxButton | es  | euler --nope --think pat.n3 --query patQ.n3
+# PxButton | cwm | cwm pat.n3 --think --query"=patQ.n3"
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://www.example.org/> .
+
+[] q:select {?x :knows ?y};
+   q:where {?x :loves ?y}.

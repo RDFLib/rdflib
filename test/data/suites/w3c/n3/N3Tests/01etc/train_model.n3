@@ -1,0 +1,30 @@
+#Processed by EYE v20.0225.2300 josd
+#eye --no-genid --wcache http://josd.github.io/eye/reasoning/c2d . --nope http://josd.github.io/eye/reasoning/c2d/train_data.n3 http://josd.github.io/eye/reasoning/c2d/background_rules.n3 http://josd.github.io/eye/reasoning/c2d/train_rules.n3 --query http://josd.github.io/eye/reasoning/c2d/train_query.n3
+
+@prefix : <http://josd.github.io/eye/reasoning#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix c2d: <http://josd.github.io/eye/reasoning/c2d#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+
+(:input1 "abc") c2d:model (:output1 2 3).
+(:input1 "xyz") c2d:model (:output1 2 1).
+(:input2 40) c2d:model (:output1 3 0).
+(:input2 60) c2d:model (:output1 2 4).
+(:input3 (0 1)) c2d:model (:output1 2 2).
+(:input3 (2 3)) c2d:model (:output1 1 3).
+(:input4 :v1) c2d:model (:output1 2 0).
+(:input4 :v2) c2d:model (:output1 1 1).
+(:input4 :v4) c2d:model (:output1 1 1).
+(:input4 :v3) c2d:model (:output1 1 2).
+(:input5 "b") c2d:model (:output1 2 0).
+(:input5 "c") c2d:model (:output1 0 3).
+(:input5 "a") c2d:model (:output1 1 1).
+(:input10 ("abc" 40)) c2d:model (:output1 1 0).
+(:input10 ("xyz" 60)) c2d:model (:output1 1 1).
+(:input10 ("abc" 60)) c2d:model (:output1 1 2).
+(:input10 ("xyz" 40)) c2d:model (:output1 1 0).
+
+#2020-03-01T20:09:01.416Z in=54 out=17 ent=24 step=110 brake=2 inf=51154 sec=0.090 inf/sec=568378
+#ENDS
+

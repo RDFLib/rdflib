@@ -1,0 +1,78 @@
+@prefix : <http://smartlab.elis.ugent.be/aimontologies/geometry/instancesSTLTest#>.
+@prefix x3d: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologyx3d20091015#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix list: <http://www.co-ode.org/ontologies/lists/2008/09/11/list.owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix inst: <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> . 
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix stl:     <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101#> .
+@prefix matrix: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/matrix#>.
+@prefix we: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/wingededge#>.
+
+
+  # Search edges of a triangle.
+	{
+  ?Triangle rdf:type stl:StlTriangle.
+  ?Triangle stl:normal (?nx ?ny ?nz).
+  ?Triangle stl:vertex1 (?v1x ?v1y ?v1z).
+  ?Triangle stl:vertex2 (?v2x ?v2y ?v2z).
+  ?Triangle stl:vertex3 (?v3x ?v3y ?v3z).
+  }
+  =>
+  {
+  ?Triangle we:edge (?edge1 ?edge2 ?edge3).
+  ?edge1 we:vertexStart (?v1x ?v1y ?v1z).
+  ?edge1 we:vertexEnd (?v2x ?v2y ?v2z).
+  ?edge1 we:isEdgeOf ?Triangle.
+  ?edge2 we:vertexStart (?v2x ?v2y ?v2z).
+  ?edge2 we:vertexEnd (?v3x ?v3y ?v3z).
+  ?edge2 we:isEdgeOf ?Triangle.
+  ?edge3 we:vertexStart (?v3x ?v3y ?v3z).
+  ?edge3 we:vertexEnd (?v1x ?v1y ?v1z).
+  ?edge3 we:isEdgeOf ?Triangle.
+  }.
+  
+  
+  # Edge Length.
+	{
+  ?edge1 we:isEdgeOf ?Triangle.
+  ?edge1 we:vertexStart (?v1x ?v1y ?v1z).
+  ?edge1 we:vertexEnd (?v2x ?v2y ?v2z).
+  (?v2x ?v1x) math:difference ?v2xminv1x.
+  (?v2y ?v1y) math:difference ?v2yminv1y.
+  (?v2z ?v1z) math:difference ?v2zminv1z.
+  (?v2xminv1x 2) math:exponentiation ?expx.
+  (?v2yminv1y 2) math:exponentiation ?expy.
+  (?v2zminv1z 2) math:exponentiation ?expz.
+  (?expx ?expy ?expz) math:sum ?sum.
+  (?sum 0.5) math:exponentiation ?distance.
+  }
+  =>
+  {
+  ?edge1 we:length ?distance.
+  }.
+  
+  # Edge Vector.
+	{
+  ?edge1 we:isEdgeOf ?Triangle.
+  ?edge1 we:vertexStart (?v1x ?v1y ?v1z).
+  ?edge1 we:vertexEnd (?v2x ?v2y ?v2z).
+  ?edge1 we:length ?length.
+  (?v2x ?v1x) math:difference ?v2xminv1x.
+  (?v2y ?v1y) math:difference ?v2yminv1y.
+  (?v2z ?v1z) math:difference ?v2zminv1z.
+  (?v2xminv1x ?length) math:quotient ?vectorx.
+  (?v2yminv1y ?length) math:quotient ?vectory.
+  (?v2zminv1z ?length) math:quotient ?vectorz.
+
+  }
+  =>
+  {
+  ?edge1 we:normalizedvector (?vectorx ?vectory ?vectorz).
+  }.
+  

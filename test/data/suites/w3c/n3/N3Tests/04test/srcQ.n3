@@ -1,0 +1,14 @@
+# $Id: srcQ.n3 490 2005-03-09 14:25:31Z josd $
+# PxButton | es   | euler --nope --think a.n3 b.n3 --query srcQ.n3
+# PxButton | cwm  | cwm a.n3 b.n3 --think --query"=srcQ.n3"
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+
+[]
+q:select {<> q:answer (?O <a.n3>)};
+q:where  {<a.n3>!log:semantics log:includes {?S ?P ?O}}.
+
+[]
+q:select {<> q:answer (?O <b.n3>)};
+q:where  {<b.n3>!log:semantics log:includes {?S ?P ?O}}.

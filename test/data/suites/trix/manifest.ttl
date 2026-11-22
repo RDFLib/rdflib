@@ -1,0 +1,726 @@
+# TriX tests
+## Distributed under both the W3C Test Suite License[1] and the W3C 3-
+## clause BSD License[2]. To contribute to a W3C Test Suite, see the
+## policies and contribution forms [3]
+##
+## 1. http://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## 2. http://www.w3.org/Consortium/Legal/2008/03-bsd-license
+## 3. http://www.w3.org/2004/10/27-testcases
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix rdft:   <http://www.w3.org/ns/rdftest#> .
+
+<>  rdf:type mf:Manifest ;
+    mf:name "TriX tests" ;
+    mf:entries
+    (
+
+      # Collected tests
+      <#trix-aperture>
+      <#trix-bnode-context-obj-bnodes>
+      <#trix-bnode-context>
+      <#trix-example>
+
+      <#trix-nokia-example-2010>
+      <#trix-nokia-example>
+      <#trix-nquads-example>
+
+      <#trix-jena-01>
+      <#trix-jena-02>
+      <#trix-jena-03>
+      <#trix-jena-04>
+      <#trix-jena-05>
+      <#trix-jena-06>
+      <#trix-jena-10>
+      <#trix-jena-11>
+      <#trix-jena-12>
+      <#trix-jena-13>
+      <#trix-jena-14>
+      <#trix-jena-15>
+
+      <#trix-jena-w3c-1>
+      <#trix-jena-w3c-2>
+
+      <#trix-jena-ns-1>
+      <#trix-jena-ns-2>
+
+      <#trix-jena-ex-1>
+      <#trix-jena-ex-2>
+      <#trix-jena-ex-3>
+      <#trix-jena-ex-4>
+      <#trix-jena-ex-5>
+
+
+      <#trix-ng4j-test-01>
+      <#trix-ng4j-test-02>
+
+      <#trix-test1>
+      <#trix-test2>
+      <#trix-test3>
+      <#trix-test4>
+      <#trix-test5>
+
+      <#trix-ng4j-emptynamedgraph>
+      <#trix-ng4j-minimal>
+      <#trix-ng4j-namedgraphs>
+      <#trix-ng4j-twoemptygraphs>
+      <#trix-ng4j-alternateencoding>
+      <#trix-ng4j-blanknodes2>
+      <#trix-ng4j-blanknodes>
+      <#trix-ng4j-escape>
+      <#trix-ng4j-extended>
+      <#trix-ng4j-ignoremultiplegraphs>
+      <#trix-ng4j-ignorexmlcomments>
+      <#trix-ng4j-missingnamespace>
+      <#trix-ng4j-objectnodetypes>
+      <#trix-ng4j-relativeuris>
+      <#trix-ng4j-singletriple>
+      <#trix-ng4j-specialchars>
+
+
+      # Negative syntax tests
+
+      <#trix-ng4j-datatyperequired>
+      <#trix-ng4j-malformed>
+      <#trix-ng4j-malformedgraphuri>
+      <#trix-ng4j-malformedobjecturi>
+      <#trix-ng4j-malformedpredicateuri>
+      <#trix-ng4j-malformedsubjecturi>
+
+
+      <#trix-jena-bad-00>
+      <#trix-jena-bad-01>
+      <#trix-jena-bad-02>
+      <#trix-jena-bad-03>
+      <#trix-jena-bad-04>
+      <#trix-jena-bad-05>
+      <#trix-jena-bad-06>
+      <#trix-jena-bad-07>
+      <#trix-jena-bad-08>
+      <#trix-jena-bad-09>
+      <#trix-jena-bad-10>
+
+      # Skipped, NYI
+      <#trix-jena-star-1>
+      <#trix-jena-star-2>
+      <#trix-jena-star-bad-asserted-1>
+      <#trix-jena-star-bad-asserted-2>
+      <#trix-jena-star-bad-emb-1>
+      <#trix-jena-star-bad-emb-2>
+      <#trix-jena-star-bad-emb-nested-1>
+      <#trix-jena-star-bad-emb-nested-2>
+      <#trix-jena-star-bad-emb-nested-3>
+    ) .
+
+# TriX tests
+
+<#trix-jena-01> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-01" ;
+   rdfs:comment "Blank source, rubric only" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-01.trix> ;
+   mf:result    <trix-jena-01.nq> ;
+   .
+
+<#trix-jena-02> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-02" ;
+   rdfs:comment "Empty default graph element" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-02.trix> ;
+   mf:result    <trix-jena-02.nq> ;
+   .
+
+<#trix-jena-03> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-03" ;
+   rdfs:comment "Empty named graph" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-03.trix> ;
+   mf:result    <trix-jena-03.nq> ;
+   .
+
+<#trix-jena-04> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-04" ;
+   rdfs:comment "Default graph containing one triple" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-04.trix> ;
+   mf:result    <trix-jena-04.nq> ;
+   .
+
+<#trix-jena-05> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-05" ;
+   rdfs:comment "Named graph containing one triple" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-05.trix> ;
+   mf:result    <trix-jena-05.nq> ;
+   .
+
+<#trix-jena-06> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-06" ;
+   rdfs:comment "BNode-named graph containing one triple" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-06.trix> ;
+   mf:result    <trix-jena-06.nq> ;
+   .
+
+<#trix-jena-10> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-10" ;
+   rdfs:comment "Default graph, with range of object types" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-10.trix> ;
+   mf:result    <trix-jena-10.nq> ;
+   .
+
+<#trix-jena-11> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-11" ;
+   rdfs:comment "Default graph with typedLiteral object" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-11.trix> ;
+   mf:result    <trix-jena-11.nq> ;
+   .
+
+<#trix-jena-12> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-12" ;
+   rdfs:comment "Default graph, typedLiteral XMLLiteral object has “Words,<b>tags</b> and white space”" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-12.trix> ;
+   mf:result    <trix-jena-12.nq> ;
+   .
+
+<#trix-jena-13> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-13" ;
+   rdfs:comment "Default graph typedLiteral XMLLiteral object with namespace" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-13.trix> ;
+   mf:result    <trix-jena-13.nq> ;
+   .
+
+<#trix-jena-14> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-14" ;
+   rdfs:comment "Default graph typedLiteral XMLLiteral object with white space and namespaces" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-14.trix> ;
+   mf:result    <trix-jena-14.nq> ;
+   .
+
+<#trix-jena-15> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-15" ;
+   rdfs:comment "Default graph with plain- and typed-Literal XMLLiteral objects with ampersanded content" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-15.trix> ;
+   mf:result    <trix-jena-15.nq> ;
+   .
+
+<#trix-jena-w3c-1> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-jena-w3c-1" ;
+   rdfs:comment "W3C example, blank content, rubric only" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-w3c-1.trix> ;
+   mf:result    <trix-jena-w3c-1.nq> ;
+   .
+
+<#trix-jena-w3c-2> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-jena-w3c-2" ;
+   rdfs:comment "W3C example, default graph containing one triple" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-w3c-2.trix> ;
+   mf:result    <trix-jena-w3c-2.nq> ;
+   .
+
+<#trix-jena-ns-1> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-jena-ns-1" ;
+   rdfs:comment "TriX with namespaces 1" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-ns-1.trix> ;
+   mf:result    <trix-jena-ns-1.nq> ;
+   .
+
+<#trix-jena-ns-2> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-jena-ns-2" ;
+   rdfs:comment "TriX with namespaces 2" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-ns-2.trix> ;
+   mf:result    <trix-jena-ns-2.nq> ;
+   .
+
+<#trix-jena-ex-1> rdf:type rdft:TestTrixPositiveSyntax ;
+   mf:name      "trix-jena-ex-1" ;
+   rdfs:comment "Example 1 from the Carroll paper http://www.hpl.hp.com/techreports/2004/HPL-2004-56.html" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-ex-1.trix> ;
+   .
+
+<#trix-jena-ex-2> rdf:type rdft:TestTrixPositiveSyntax ;
+   mf:name      "trix-jena-ex-2" ;
+   rdfs:comment "Example 2 from the Carroll paper http://www.hpl.hp.com/techreports/2004/HPL-2004-56.html" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-ex-2.trix> ;
+   .
+
+<#trix-jena-ex-3> rdf:type rdft:TestTrixPositiveSyntax ;
+   mf:name      "trix-jena-ex-3" ;
+   rdfs:comment "Example 3 from the Carroll paper http://www.hpl.hp.com/techreports/2004/HPL-2004-56.html" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-ex-3.trix> ;
+   .
+
+<#trix-jena-ex-4> rdf:type rdft:TestTrixPositiveSyntax ;
+   mf:name      "trix-jena-ex-4" ;
+   rdfs:comment "Example 4 from the Carroll paper http://www.hpl.hp.com/techreports/2004/HPL-2004-56.html" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-ex-4.trix> ;
+   .
+
+<#trix-jena-ex-5> rdf:type rdft:TestTrixPositiveSyntax ;
+   mf:name      "trix-jena-ex-5" ;
+   rdfs:comment "Example 5 from the Carroll paper http://www.hpl.hp.com/techreports/2004/HPL-2004-56.html" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-ex-5.trix> ;
+   .
+
+# TriX tests
+<#trix-aperture> rdf:type rdft:TestTrixEval ;
+   mf:name      "aperture" ;
+   rdfs:comment "aperture" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-aperture.trix> ;
+   mf:result    <trix-aperture.nq> ;
+   .
+
+<#trix-bnode-context-obj-bnodes> rdf:type rdft:TestTrixEval ;
+   mf:name      "bnode-context-obj-bnodes" ;
+   rdfs:comment "bnode-context-obj-bnodes" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-bnode-context-obj-bnodes.trix> ;
+   mf:result    <trix-bnode-context-obj-bnodes.nq> ;
+   .
+
+<#trix-bnode-context> rdf:type rdft:TestTrixEval ;
+   mf:name      "bnode-context" ;
+   rdfs:comment "bnode-context" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-bnode-context.trix> ;
+   mf:result    <trix-bnode-context.nq> ;
+   .
+
+<#trix-example> rdf:type rdft:TestTrixEval ;
+   mf:name      "example" ;
+   rdfs:comment "bibliographica content example" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-example.trix> ;
+   mf:result    <trix-example.nq> ;
+   .
+
+
+<#trix-ng4j-test-01> rdf:type rdft:TestTrixEval ;
+   mf:name      "ng4j-test-01" ;
+   rdfs:comment "Test fixture data copied from ng4j documentation http://wbsg.informatik.uni-mannheim.de/bizer/ng4j/example_output.txt" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-test-01.trix> ;
+   mf:result    <trix-ng4j-test-01.nq> ;
+   .
+
+<#trix-ng4j-test-02> rdf:type rdft:TestTrixEval ;
+   mf:name      "ng4j-test-02" ;
+   rdfs:comment "Test fixture data copied from ng4j sources" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-test-02.trix> ;
+   mf:result    <trix-ng4j-test-02.nq> ;
+   .
+
+<#trix-nokia-example-2010> rdf:type rdft:TestTrixEval ;
+   mf:name      "nokia-example-2010" ;
+   rdfs:comment "Nokia example content updated in 2010, see https://web.archive.org/web/20100223084922/http://sw.nokia.com/trix/examples.xml" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-nokia-example-2010.trix> ;
+   mf:result    <trix-nokia-example-2010.nq> ;
+   .
+
+<#trix-nokia-example> rdf:type rdft:TestTrixEval ;
+   mf:name      "nokia-example" ;
+   rdfs:comment "Examples from “https://www.hpl.hp.com/techreports/2004/HPL-2004-56.pdf” published by Nokia (https://web.archive.org/web/20040604190103/http://sw.nokia.com/trix/examples.xml)" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-nokia-example.trix> ;
+   mf:result    <trix-nokia-example.nq> ;
+   .
+
+<#trix-nquads-example> rdf:type rdft:TestTrixEval ;
+   mf:name      "nquads-example" ;
+   rdfs:comment "Real-world output http://bibliographica.org" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-nquads-example.trix> ;
+   mf:result    <trix-nquads-example.nq> ;
+   .
+
+<#trix-test1> rdf:type rdft:TestTrixEval ;
+   mf:name      "test1" ;
+   rdfs:comment "NQuads test data serialized as TriX" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-test1.trix> ;
+   mf:result    <trix-test1.nq> ;
+   .
+
+<#trix-test2> rdf:type rdft:TestTrixEval ;
+   mf:name      "test2" ;
+   rdfs:comment "unirioja rkb explorer listing" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-test2.trix> ;
+   mf:result    <trix-test2.nq> ;
+   .
+
+<#trix-test3> rdf:type rdft:TestTrixEval ;
+   mf:name      "test3" ;
+   rdfs:comment "NQuads test data serialized as TriX" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-test3.trix> ;
+   mf:result    <trix-test3.nq> ;
+   .
+
+<#trix-test4> rdf:type rdft:TestTrixEval ;
+   mf:name      "test4" ;
+   rdfs:comment "Real-world output" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-test4.trix> ;
+   mf:result    <trix-test4.nq> ;
+   .
+
+<#trix-test5> rdf:type rdft:TestTrixEval ;
+   mf:name      "test5" ;
+   rdfs:comment "Real-world output from http://linkeddata.few.vu.nl/googleart" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-test5.trix> ;
+   mf:result    <trix-test5.nq> ;
+   .
+
+# Named Graphs for Jena
+
+<#trix-ng4j-emptynamedgraph> rdf:type rdft:TestTrixPositiveSyntax ;
+   mf:name      "trix-ng4j-emptynamedgraph" ;
+   rdfs:comment "trix-ng4j-emptynamedgraph" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-emptynamedgraph.trix> ;
+   .
+
+<#trix-ng4j-minimal> rdf:type rdft:TestTrixPositiveSyntax ;
+   mf:name      "trix-ng4j-minimal" ;
+   rdfs:comment "trix-ng4j-minimal" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-minimal.trix> ;
+   .
+
+<#trix-ng4j-namedgraphs> rdf:type rdft:TestTrixPositiveSyntax ;
+   mf:name      "trix-ng4j-namedgraphs" ;
+   rdfs:comment "trix-ng4j-namedgraphs" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-namedgraphs.trix> ;
+   .
+
+<#trix-ng4j-twoemptygraphs> rdf:type rdft:TestTrixPositiveSyntax ;
+   mf:name      "trix-ng4j-twoemptygraphs" ;
+   rdfs:comment "trix-ng4j-twoemptygraphs" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-twoemptygraphs.trix> ;
+   .
+
+<#trix-ng4j-alternateencoding> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-ng4j-alternateencoding" ;
+   rdfs:comment "trix-ng4j-alternateencoding" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-alternateencoding.trix> ;
+   mf:result    <trix-ng4j-alternateencoding.nq> ;
+   .
+
+<#trix-ng4j-blanknodes2> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-ng4j-blanknodes2" ;
+   rdfs:comment "trix-ng4j-blanknodes2" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-blanknodes2.trix> ;
+   mf:result    <trix-ng4j-blanknodes2.nq> ;
+   .
+
+<#trix-ng4j-blanknodes> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-ng4j-blanknodes" ;
+   rdfs:comment "trix-ng4j-blanknodes" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-blanknodes.trix> ;
+   mf:result    <trix-ng4j-blanknodes.nq> ;
+   .
+
+<#trix-ng4j-escape> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-ng4j-escape" ;
+   rdfs:comment "trix-ng4j-escape" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-escape.trix> ;
+   mf:result    <trix-ng4j-escape.nq> ;
+   .
+
+<#trix-ng4j-extended> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-ng4j-extended" ;
+   rdfs:comment "trix-ng4j-extended" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-extended.trix> ;
+   mf:result    <trix-ng4j-extended.nq> ;
+   .
+
+<#trix-ng4j-ignoremultiplegraphs> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-ng4j-ignoremultiplegraphs" ;
+   rdfs:comment "trix-ng4j-ignoremultiplegraphs" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-ignoremultiplegraphs.trix> ;
+   mf:result    <trix-ng4j-ignoremultiplegraphs.nq> ;
+   .
+
+<#trix-ng4j-ignorexmlcomments> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-ng4j-ignorexmlcomments" ;
+   rdfs:comment "trix-ng4j-ignorexmlcomments" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-ignorexmlcomments.trix> ;
+   mf:result    <trix-ng4j-ignorexmlcomments.nq> ;
+   .
+
+<#trix-ng4j-missingnamespace> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-ng4j-missingnamespace" ;
+   rdfs:comment "trix-ng4j-missingnamespace" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-missingnamespace.trix> ;
+   mf:result    <trix-ng4j-missingnamespace.nq> ;
+   .
+
+<#trix-ng4j-objectnodetypes> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-ng4j-objectnodetypes" ;
+   rdfs:comment "trix-ng4j-objectnodetypes" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-objectnodetypes.trix> ;
+   mf:result    <trix-ng4j-objectnodetypes.nq> ;
+   .
+
+<#trix-ng4j-relativeuris> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-ng4j-relativeuris" ;
+   rdfs:comment "trix-ng4j-relativeuris" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-relativeuris.trix> ;
+   mf:result    <trix-ng4j-relativeuris.nq> ;
+   .
+
+<#trix-ng4j-singletriple> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-ng4j-singletriple" ;
+   rdfs:comment "trix-ng4j-singletriple" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-singletriple.trix> ;
+   mf:result    <trix-ng4j-singletriple.nq> ;
+   .
+
+<#trix-ng4j-specialchars> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-ng4j-specialchars" ;
+   rdfs:comment "trix-ng4j-specialchars" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-specialchars.trix> ;
+   mf:result    <trix-ng4j-specialchars.nq> ;
+   .
+
+# Negative syntax tests
+
+<#trix-ng4j-subjectnodetypes> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-ng4j-subjectnodetypes" ;
+   rdfs:comment "plain and typed Literals as subject nodes" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-subjectnodetypes.trix> ;
+   .
+
+<#trix-ng4j-datatyperequired> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-ng4j-datatyperequired" ;
+   rdfs:comment "typedLiteral without datatype" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-datatyperequired.trix> ;
+   .
+
+<#trix-ng4j-malformed> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-ng4j-malformed" ;
+   rdfs:comment "trix-ng4j-malformed" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-malformed.trix> ;
+   .
+
+<#trix-ng4j-malformedgraphuri> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-ng4j-malformedgraphuri" ;
+   rdfs:comment "trix-ng4j-malformedgraphuri" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-malformedgraphuri.trix> ;
+   .
+
+<#trix-ng4j-malformedobjecturi> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-ng4j-malformedobjecturi" ;
+   rdfs:comment "trix-ng4j-malformedobjecturi" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-malformedobjecturi.trix> ;
+   .
+
+<#trix-ng4j-malformedpredicateuri> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-ng4j-malformedpredicateuri" ;
+   rdfs:comment "trix-ng4j-malformedpredicateuri" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-malformedpredicateuri.trix> ;
+   .
+
+<#trix-ng4j-malformedsubjecturi> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-ng4j-malformedsubjecturi" ;
+   rdfs:comment "trix-ng4j-malformedsubjecturi" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-malformedsubjecturi.trix> ;
+   .
+
+<#trix-ng4j-namedgraphs> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-ng4j-namedgraphs" ;
+   rdfs:comment "A named graph and a doubly-named graph" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-ng4j-namedgraphs.trix> ;
+   .
+
+
+
+
+
+<#trix-jena-bad-00> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-bad-00" ;
+   rdfs:comment "trix-jena-bad-00" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-bad-00.trix> ;
+   .
+
+<#trix-jena-bad-01> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-bad-01" ;
+   rdfs:comment "trix-jena-bad-01" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-bad-01.trix> ;
+   .
+
+<#trix-jena-bad-02> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-bad-02" ;
+   rdfs:comment "trix-jena-bad-02" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-bad-02.trix> ;
+   .
+
+<#trix-jena-bad-03> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-bad-03" ;
+   rdfs:comment "trix-jena-bad-03" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-bad-03.trix> ;
+   .
+
+<#trix-jena-bad-04> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-bad-04" ;
+   rdfs:comment "trix-jena-bad-04" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-bad-04.trix> ;
+   .
+
+<#trix-jena-bad-05> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-bad-05" ;
+   rdfs:comment "trix-jena-bad-05" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-bad-05.trix> ;
+   .
+
+<#trix-jena-bad-06> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-bad-06" ;
+   rdfs:comment "trix-jena-bad-06" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-bad-06.trix> ;
+   .
+
+<#trix-jena-bad-07> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-bad-07" ;
+   rdfs:comment "trix-jena-bad-07" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-bad-07.trix> ;
+   .
+
+<#trix-jena-bad-08> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-bad-08" ;
+   rdfs:comment "trix-jena-bad-08" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-bad-08.trix> ;
+   .
+
+<#trix-jena-bad-09> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-bad-09" ;
+   rdfs:comment "trix-jena-bad-09" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-bad-09.trix> ;
+   .
+
+<#trix-jena-bad-10> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-bad-10" ;
+   rdfs:comment "trix-jena-bad-10" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-bad-10.trix> ;
+   .
+
+<#trix-jena-star-1> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-jena-star-1" ;
+   rdfs:comment "trix-jena-star-1" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-star-1.trix> ;
+   mf:result    <trix-jena-star-1.nq> ;
+   .
+
+<#trix-jena-star-2> rdf:type rdft:TestTrixEval ;
+   mf:name      "trix-jena-star-2" ;
+   rdfs:comment "trix-jena-star-2" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-star-2.trix> ;
+   mf:result    <trix-jena-star-2.nq> ;
+   .
+
+<#trix-jena-star-bad-asserted-1> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-star-bad-asserted-1" ;
+   rdfs:comment "trix-jena-star-bad-asserted-1" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-star-bad-asserted-1.trix> ;
+   .
+
+<#trix-jena-star-bad-asserted-2> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-star-bad-asserted-2" ;
+   rdfs:comment "trix-jena-star-bad-asserted-2" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-star-bad-asserted-2.trix> ;
+   .
+
+<#trix-jena-star-bad-emb-1> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-star-bad-emb-1" ;
+   rdfs:comment "trix-jena-star-bad-emb-1" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-star-bad-emb-1.trix> ;
+   .
+
+<#trix-jena-star-bad-emb-2> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-star-bad-emb-2" ;
+   rdfs:comment "trix-jena-star-bad-emb-2" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-star-bad-emb-2.trix> ;
+   .
+
+<#trix-jena-star-bad-emb-nested-1> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-star-bad-emb-nested-1" ;
+   rdfs:comment "trix-jena-star-bad-emb-nested-1" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-star-bad-emb-nested-1.trix> ;
+   .
+
+<#trix-jena-star-bad-emb-nested-2> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-star-bad-emb-nested-2" ;
+   rdfs:comment "trix-jena-star-bad-emb-nested-2" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-star-bad-emb-nested-2.trix> ;
+   .
+
+<#trix-jena-star-bad-emb-nested-3> rdf:type rdft:TestTrixNegativeSyntax ;
+   mf:name      "trix-jena-star-bad-emb-nested-3" ;
+   rdfs:comment "trix-jena-star-bad-emb-nested-3" ;
+   rdft:approval rdft:Approved ;
+   mf:action    <trix-jena-star-bad-emb-nested-3.trix> ;
+   .

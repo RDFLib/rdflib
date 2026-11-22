@@ -1,0 +1,13 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@vocab": "http://example.org/"
+  },
+  "prop": "value",
+  "@included": {
+    "prop": "value2",
+    "@included": {
+      "prop": "value3"
+    }
+  }
+}

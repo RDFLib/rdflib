@@ -1,8 +1,0 @@
-PREFIX : <http://example.org/>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-SELECT ?x
-WHERE {
-  ?x foaf:name "John Smith" ;
-       a foaf:Womble .
-}
-

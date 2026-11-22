@@ -1,0 +1,16 @@
+{
+  "@context": {
+    "@vocab": "http://example.com/",
+    "@version": 1.1,
+    "@protected": true,
+    "@import": "so07-context.jsonld"
+  },
+  "protected1": {
+    "@context": {
+      "protected1": "http://example.com/something-else",
+      "protected2": "http://example.com/something-else"
+    },
+    "protected1": "error / property http://example.com/protected1",
+    "protected2": "error / property http://example.com/protected2"
+  }
+}

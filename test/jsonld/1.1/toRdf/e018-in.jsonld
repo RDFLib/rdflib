@@ -1,0 +1,24 @@
+{
+  "@context": {
+    "ex": "http://example.org/vocab#",
+    "@language": "en",
+    "de": { "@id": "ex:german", "@language": "de" },
+    "nolang": { "@id": "ex:nolang", "@language": null }
+  },
+  "@id": "http://example.org/test",
+  "ex:test-default": [
+    "hello",
+    1,
+    true
+  ],
+  "de": [
+    "hallo",
+    2,
+    true
+  ],
+  "nolang": [
+    "no language",
+    3,
+    false
+  ]
+}

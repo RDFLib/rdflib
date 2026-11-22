@@ -1,0 +1,6 @@
+{
+    "@context": {
+      "ex": "http://example.org/",
+      "@base": "http://localhost/"
+    }
+}

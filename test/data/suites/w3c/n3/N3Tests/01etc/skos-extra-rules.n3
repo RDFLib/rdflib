@@ -1,0 +1,35 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix dce: <http://purl.org/dc/elements/1.1/>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+
+
+<http://eulersharp.sourceforge.net/2003/03swap/skos-extra-rules>
+    dce:title "SKOS Extra Rules"@en;
+    dce:creator "Hong Sun"@en;
+    dce:contributor "Giovanni Mels, Jos De Roo"@en;
+    dce:publisher "Agfa Healthcare/Belgium"@en;
+    dce:description "Rules for extra SKOS constraint check"@en;
+    skos:note "Rules to take constraint check for those patterns which are not explicitly stated as non-consistent in SKOS specification, but are considered as bad practice (according to SKOS)."@en;
+    rdfs:seeAlso <http://eulersharp.sourceforge.net/2003/03swap/skos-rules>.
+    
+
+#
+# SKOS Extra Integrity Constraints
+#
+
+# skos:exactMatch, skos:broaderTransitive are disjoint.
+# This constraint is added according to the decision made in http://www.w3.org/2006/07/SWD/track/issues/73
+# "2008-07-01: [rrs] RESOLVED: issue-73 is resolved by skos:exactMatch is disjoint with skos:broaderTransitive and skos:related -- http://www.w3.org/2008/07/01-swd-minutes.html#item05"
+# SKOS Specification considers skos:exactMatch, skos:broadMatch as disjoint, corresponding constraint check rule is contained in http://eulersharp.sourceforge.net/2003/03swap/skos-rules.
+
+{ ?x skos:exactMatch ?y. ?x skos:broaderTransitive ?y. } => @false.
+
+
+# Detect the cycle in the hierarchical relation.
+# "For many applications where knowledge organization systems are used, a cycle in the hierarchical relation represents a potential problem."
+# However, in SKOS specification, "there is no condition requiring that skos:broaderTransitive be irreflexive. "
+# Nevertheless, in the spec, it is suggested to use the form X skos:broaderTransitive X for finding cycles in the hierarchical relation.
+# see details in: http://www.w3.org/TR/skos-reference/#L2484
+# This rule is better use together with SKOS inference rule, e.g. http://eulersharp.sourceforge.net/2003/03swap/skos-rules
+
+{ ?x skos:broaderTransitive ?x. } => @false.

@@ -1,0 +1,376 @@
+# https://taskfile.dev/usage/
+# https://pkg.go.dev/text/template
+# https://go-task.github.io/slim-sprig/
+version: "3"
+
+vars:
+  TASKFILE_DIR:
+    sh: pwd
+  UV: uv
+  # The prefix to use when running dev commands
+  RUN_PREFIX: "{{.UV}} run --frozen"
+  # The python to use for running in the venv
+  VENV_PYTHON: "{{.RUN_PREFIX}} python"
+    # The python interpreter to use.
+  PYTHON: python
+  # Truthish values ("true", "1", etc.) results in java being installed as a
+  # system dependency.
+  INSTALL_SYSTEM_DEPS_JAVA: "false"
+  # Truthish values ("true", "1", etc.) results in extras being installed with
+  # pip.
+  INSTALL_EXTRAS: "false"
+  # Truthish values ("true", "1", etc.) results in extensive tests being ran and
+  # dependencies for extensive tests being installed.
+  EXTENSIVE: "false"
+  # The python version for which tox should run, empty string does not restrict
+  # python versions.
+  TOX_PYTHON_VERSION: ""
+  TEST_HARNESS: '{{if (and (mustFromJson .EXTENSIVE) (not (eq OS "windows")))}}./with-fuseki.sh{{end}} '
+  # Truthish values ("true", "1", etc.) results in github specific things being
+  # done.
+  WITH_GITHUB_ACTIONS: "false"
+  # Truthish values ("true", "1", etc.) results in coverage being generated for
+  # relevant commands.
+  WITH_COVERAGE: "false"
+  PIP_COMPILE: pip-compile
+  DOCKER: docker
+  OCI_REFERENCE: ghcr.io/rdflib/rdflib
+  MYPY_VARIANT: '{{ env "MYPY_VARIANT" | default "mypy" }}'
+tasks:
+  install:system-deps:
+    desc: Install system dependencies
+    cmds:
+      - echo "OS = {{OS}}"
+      - echo "ARCH = {{ARCH}}"
+      - |
+        {{if (and (mustFromJson .EXTENSIVE) (or (eq OS "linux") (eq OS "ubuntu-latest")))}}
+          if type apt-get >/dev/null 2>&1
+          then
+            sudo apt-get install -y libdb-dev
+          elif type dnf >/dev/null 2>&1
+          then
+            sudo dnf install -y libdb-devel
+          fi
+        {{else if (and (mustFromJson .EXTENSIVE) (or (eq OS "darwin") (eq OS "macos-latest")))}}
+          brew install berkeley-db@4
+        {{end}}
+
+  install:tox:
+    desc: Install tox
+    cmds:
+      - '{{.UV}} tool install "tox>=4,<5"'
+
+  uv:configure:
+    desc: Configure the environment for development with uv
+    cmds:
+      - '{{.UV}} sync --all-groups {{if .UV_PYTHON}}--python {{.UV_PYTHON}}{{end}} {{if (or (mustFromJson .INSTALL_EXTRAS) (mustFromJson .EXTENSIVE))}}--all-extras{{end}} {{.CLI_ARGS}}'
+
+  configure:
+    desc: Configure the environment for development
+    cmds:
+      - task: venv:install
+
+  venv:install:
+    desc: Create and install a venv
+    cmds:
+      - task: uv:configure
+
+  venv:clean:
+    desc: Clean the virtual environment
+    cmds:
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: ".venv" }
+
+  venv:run:
+    desc: Run a command inside the venv
+    cmds:
+      - cmd: |
+          {{.RUN_PREFIX}} {{.CLI_ARGS}}
+
+  run:
+    desc: Run a command. If WITH_VENV is truthish, the command will be run inside the virtual environment.
+    cmds:
+      - task: venv:run
+
+  tox:
+    desc: Run tox
+    cmds:
+      - echo "TOXENV=${TOXENV}"
+      - |
+        {{if .TOX_PYTEST_ARGS}}TOX_PYTEST_ARGS={{shellQuote .TOX_PYTEST_ARGS}}{{end}} \
+        {{if .TOX_JUNIT_XML_PREFIX}}TOX_JUNIT_XML_PREFIX={{shellQuote .TOX_JUNIT_XML_PREFIX}}{{end}} \
+        {{if .COVERAGE_FILE}}COVERAGE_FILE={{shellQuote .COVERAGE_FILE}}{{end}} \
+        {{.TEST_HARNESS}} \
+        tox \
+          {{.CLI_ARGS}}
+    env:
+      TOXENV: '{{if .TOX_PYTHON_VERSION}}py{{mustRegexReplaceAll "^([0-9]+)[.]([0-9]+).*" .TOX_PYTHON_VERSION "${1}${2}"}}{{if (mustFromJson .EXTENSIVE)}}-extensive{{end}}{{.TOXENV_SUFFIX | default ""}}{{end}}'
+  test:
+    desc: Run tests
+    cmds:
+      - '{{.TEST_HARNESS}}{{.RUN_PREFIX}} pytest {{if (mustFromJson .WITH_COVERAGE)}}--cov --cov-report={{end}} {{.CLI_ARGS}}'
+  ruff:
+    desc: Lint Python and sort imports with Ruff
+    cmds:
+      - '{{.RUN_PREFIX}} ruff check {{if (mustFromJson (.FIX | default "false"))}}--fix {{end}}{{.CLI_ARGS | default "."}}'
+  ruff:format:
+    desc: Format Python with Ruff
+    cmds:
+      - '{{.RUN_PREFIX}} ruff format {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
+  mypy:
+    desc: Run mypy
+    cmds:
+      - task: "mypy:{{ .MYPY_VARIANT }}"
+  mypy:mypy:
+    desc: Run mypy
+    cmds:
+      - "{{.VENV_PYTHON}} -m mypy --show-error-context --show-error-codes {{.CLI_ARGS}}"
+  mypy:dmypy:
+    desc: Run dmypy
+    cmds:
+      - "{{.RUN_PREFIX}} dmypy run {{.CLI_ARGS}}"
+  lint:fix:
+    desc: Fix auto-fixable linting errors
+    cmds:
+      - task: ruff
+        vars: { FIX: "true" }
+      - task: ruff:format
+
+  lint:
+    desc: Perform linting
+    cmds:
+      - task: ruff
+      - task: ruff:format
+        vars: { CHECK: "true" }
+
+  validate:static:
+    desc: Perform static validation
+    cmds:
+      - task: lint
+      - task: mypy
+
+  validate:fix:
+    desc: Fix auto-fixable validation errors.
+    cmds:
+      - task: lint:fix
+
+  validate:
+    desc: Perform all validation
+    cmds:
+      - task: validate:static
+      - task: test
+
+  docs:clean:
+    desc: Clean generated documentation
+    cmds:
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: "site/" }
+
+  docs:
+    desc: Build documentation
+    cmds:
+      - echo "PYTHONPATH=${PYTHONPATH}"
+      - "{{.VENV_PYTHON}} docs/gen_ref_pages.py"
+      - "{{.VENV_PYTHON}} -m zensical build {{.CLI_ARGS}}"
+
+  docs:live-server:
+    desc: Run a live server on generated docs
+    cmds:
+      - 'echo "NOTE: Docs must be built for this to work"'
+      - npx -p live-server live-server site/ {{.CLI_ARGS}}
+
+  default:
+    desc: Run validate
+    cmds:
+      - task: validate
+
+  clean:mypy:
+    desc: Clean mypy cache
+    cmds:
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: ".mypy_cache" }
+      - task: clean:tox:mypy
+
+  clean:tox:
+    desc: Clean tox environments
+    cmds:
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: ".tox" }
+
+  clean:tox:mypy:
+    desc: Clean mypy cache inside tox environments
+    cmds:
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: ".tox/*/.mypy_cache/" }
+
+  clean:
+    desc: Clean everything
+    cmds:
+      - task: docs:clean
+      - task: clean:tox
+      - task: clean:mypy
+      - task: venv:clean
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: ".var/devcontainer" }
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: "var/test-sdist" }
+
+  test:data:fetch:
+    desc: Fetch test data.
+    cmds:
+      - "{{.VENV_PYTHON}} test/data/fetcher.py {{.CLI_ARGS}}"
+
+  pre-commit:install:
+    desc: Install pre-commit hooks
+    cmds:
+      - pre-commit install {{.CLI_ARGS}}
+
+  pre-commit:run:
+    desc: Run pre-commit
+    cmds:
+      - pre-commit run {{.CLI_ARGS}}
+
+  pre-commit:run:all-files:
+    desc: Run pre-commit on all files
+    cmds:
+      - pre-commit run --all-files  {{.CLI_ARGS}}
+
+  gha:validate:
+    desc: GitHub Actions Validation Workflow
+    cmds:
+      - task: install:system-deps
+      - task: install:tox
+        vars:
+          WITH_GITHUB_ACTIONS: "true"
+      - task: tox
+        vars:
+          COVERAGE_FILE: ".coverage.{{.OS}}-{{.TOX_PYTHON_VERSION}}{{.MATRIX_SUFFIX}}"
+
+  gha:lint:
+    desc: GitHub Actions lint workflow
+    cmds:
+    - "{{.UV}} sync --locked --only-group lint --no-install-project"
+    - task: lint
+
+  cmd:rdfpipe:
+    desc: Run rdfpipe
+    cmds:
+      - cmd: "{{.VENV_PYTHON}} -m rdflib.tools.rdfpipe {{.CLI_ARGS}}"
+
+  pip-compile:
+    cmds:
+      - cmd: "{{.PIP_COMPILE}} --quiet --annotate --emit-options --resolver=backtracking --no-strip-extras {{.CLI_ARGS}}"
+
+  docker:prepare:
+    cmds:
+      - task: pip-compile
+        vars: { CLI_ARGS: "docker/latest/requirements.in" }
+  docker:unstable:
+    desc: ...
+    cmds:
+      - cmd: |
+          # fetch for caching ...
+          {{.DOCKER}} image pull {{.OCI_REFERENCE}}:unstable || :
+
+          set -eo pipefail
+          mkdir -vp var
+          {{.UV}} export --frozen --no-dev --no-emit-project -o var/requirements.txt
+          {{.UV}} build --wheel
+          {{.DOCKER}} buildx build \
+            --cache-to=type=inline \
+            --cache-from=type=registry,ref={{.OCI_REFERENCE}}:unstable \
+            --tag {{.OCI_REFERENCE}}:unstable \
+            --progress plain \
+            -f docker/unstable/Dockerfile \
+            {{.DOCKER_BUILD_ARGS}} \
+            .
+
+          if {{.DOCKER_PUSH | default "false"}}
+          then
+            {{.DOCKER}} image push {{.OCI_REFERENCE}}:unstable
+          fi
+  docker:latest:
+    desc: ...
+    cmds:
+      - cmd: |
+          # fetch for caching ...
+          {{.DOCKER}} image pull {{.OCI_REFERENCE}}:latest || :
+
+          set -eo pipefail
+
+          {{.DOCKER}} buildx build \
+            --cache-to=type=inline \
+            --cache-from=type=registry,ref={{.OCI_REFERENCE}}:latest \
+            --tag {{.OCI_REFERENCE}}:latest \
+            --progress plain \
+            -f docker/latest/Dockerfile \
+            {{.DOCKER_BUILD_ARGS}} \
+            .
+
+          _latest_rdflib_version=$({{.DOCKER}} run --entrypoint= {{.OCI_REFERENCE}}:latest bash -c 'pip show rdflib | sed -n "s/^Version: //gp"')
+          echo "_latest_rdflib_version=${_latest_rdflib_version}"
+
+          {{.DOCKER}} image tag {{.OCI_REFERENCE}}:latest {{.OCI_REFERENCE}}:${_latest_rdflib_version}
+
+          if {{.DOCKER_PUSH | default "false"}}
+          then
+            {{.DOCKER}} image push {{.OCI_REFERENCE}}:latest
+            {{.DOCKER}} image push {{.OCI_REFERENCE}}:${_latest_rdflib_version}
+          fi
+
+  docs:build-diagrams:
+    desc: Build documentation diagrams
+    cmds:
+      - cmd: |
+          shopt -s globstar;
+          for plantuml_file in ./**/*.plantuml
+          do
+            cat "${plantuml_file}" \
+              | docker run --rm -i plantuml/plantuml -tsvg -pipe \
+              > "${plantuml_file%.*}.svg"
+          done
+
+  test:sdist:
+    desc: Run tests on the sdist artifact
+    cmds:
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: "dist" }
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: "var/test-sdist" }
+      - uv build
+      - python -c 'import tarfile, glob; tarfile.open(glob.glob("dist/*.tar.gz")[0]).extractall("var/test-sdist")'
+      - |
+        cd var/test-sdist/rdflib-*
+        uv sync --all-groups
+        uv run mypy --show-error-context --show-error-codes -p rdflib
+        uv run python docs/gen_ref_pages.py
+        uv run zensical build
+        uv run pytest
+
+  test:no_internet:
+    desc: Run tests without internet access
+    cmds:
+      - |
+        {{.TEST_HARNESS}}{{.RUN_PREFIX}} firejail --net=none -- pytest -m "not webtest" {{.CLI_ARGS}}
+  _rimraf:
+    # This task is a utility task for recursively removing directories, it is
+    # similar to rm -rf but not identical, and it should work wherever there is
+    # a python interpreter. The name is inspired by
+    # <https://www.npmjs.com/package/rimraf>.
+    - cmd: |
+        {{.PYTHON}} -c '
+        from pathlib import Path;
+        import sys, shutil;
+        for path in sys.argv[1:]:
+          if Path(path).exists():
+            sys.stderr.write(f"removing {path}\n")
+            shutil.rmtree(path, ignore_errors=True)
+        ' {{.RIMRAF_TARGET}}
+
+  test:rdf4j:
+    desc: Run fast tests against rdflib.contrib.rdf4j package
+    cmd: '{{.TEST_HARNESS}}{{.RUN_PREFIX}} pytest -m "not (testcontainer or webtest)" test/test_rdf4j'
+
+  test:rdf4j:all:
+    desc: Run all tests against rdflib.contrib.rdf4j package
+    cmd: '{{.TEST_HARNESS}}{{.RUN_PREFIX}} pytest test/test_rdf4j'

@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "@vocab": "http://example.org/",
+    "input": {"@container": "@graph"}
+  },
+  "input": {
+    "@id": "http://example.org/gid",
+    "@graph": {"value": "x"}
+  }
+}

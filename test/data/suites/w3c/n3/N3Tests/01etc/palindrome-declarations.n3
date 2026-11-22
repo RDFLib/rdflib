@@ -1,0 +1,11 @@
+# Palindrome fold/unfold declarations - The Art of Prolog Chapter 18
+
+@prefix p: <http://josd.github.io/brain/preduction#>.
+@prefix : <http://josd.github.io/brain#>.
+
+{(?Xs) :accept true} p:should_fold {(?Xs) :palindrome true}.
+{(?Q ?Xs ?Q1) :accept true} p:should_fold {(?Q ?Xs ?Q1) :palindrome true}.
+
+{(?A) :initial true} p:should_unfold true.
+{(?A) :final true} p:should_unfold true.
+{(?A ?B ?C ?D ?E) :delta true} p:should_unfold true.

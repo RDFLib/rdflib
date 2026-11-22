@@ -1,0 +1,19 @@
+@prefix : <http://josd.github.io/brain/cs#>.
+
+# input
+:input1 :measurement1 (6 11).
+:input2 :measurement2 true.
+:input3 :measurement3 56967.
+
+# disturbance
+:disturbance1 :measurement3 35766.
+:disturbance2 :measurement1 (45 39).
+
+# state
+:state1 :observation1 80.
+:state2 :observation2 false.
+:state3 :observation3 22.
+
+# output
+:output2 :measurement4 24.
+:output2 :target2 29.

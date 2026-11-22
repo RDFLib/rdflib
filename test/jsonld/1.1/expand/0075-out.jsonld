@@ -1,0 +1,7 @@
+[
+  {
+    "@id": "ex:node1",
+    "_:b1": [ { "@value": "blank node property 1" } ],
+    "_:b2": [ { "@value": "blank node property 1" } ]
+  }
+]

@@ -1,0 +1,439 @@
+# N3Logic Rules for Probabilistic Reasoning
+# See http://espace.library.uq.edu.au/view/UQ:344936/s4086748_phd_submission.pdf
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#>.
+
+#Storage_jar
+
+:Neck_amphora a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :oval].} => {(?g :Neck_amphora "rule1") e:weight 100}.
+{?g :has_part [a :Mouth; :has_characteristic :thick].} => {(?g :Neck_amphora "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Neck_amphora "rule3") e:weight 100}.
+{?g :has_part [a :Neck; :offset_with [a :Shoulder]].} => {(?g :Neck_amphora "rule4") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :heavy].} => {(?g :Neck_amphora "rule5") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 200]].} => {(?g :Neck_amphora "rule6") e:weight 100}.
+
+:Nolan_amphora a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :oval].} => {(?g :Nolan_amphora "rule1") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Nolan_amphora "rule2") e:weight 100}.
+{?g :has_part [a :Neck; :has_characteristic :flaring].} => {(?g :Nolan_amphora "rule3") e:weight 100}.
+{?g :has_part [a :Neck; :offset_with [a :Shoulder]].} => {(?g :Nolan_amphora "rule4") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :heavy].} => {(?g :Nolan_amphora "rule5") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 200]].} => {(?g :Nolan_amphora "rule6") e:weight 100}.
+
+:Panathenaic_amphora a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :taper_downward].} => {(?g :Panathenaic_amphora "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :broad].} => {(?g :Panathenaic_amphora "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :cylindrical].} => {(?g :Panathenaic_amphora "rule3") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Panathenaic_amphora "rule4") e:weight 100}.
+{?g :has_part [a :Neck; :offset_with [a :Shoulder]].} => {(?g :Panathenaic_amphora "rule5") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :small].} => {(?g :Panathenaic_amphora "rule6") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 550;math:lessThan 850]].} => {(?g :Panathenaic_amphora "rule7") e:weight 100}.
+
+:Pointed_amphora a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :round].} => {(?g :Pointed_amphora "rule1") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :cylindrical].} => {(?g :Pointed_amphora "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Pointed_amphora "rule3") e:weight 100}.
+{?g :has_part [a :Neck; :offset_with [a :Shoulder]].} => {(?g :Pointed_amphora "rule4") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :small].} => {(?g :Pointed_amphora "rule5") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :knob].} => {(?g :Pointed_amphora "rule6") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 500;math:lessThan 600]].} => {(?g :Pointed_amphora "rule7") e:weight 100}.
+
+:Nikosthenic_amphora a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :oval].} => {(?g :Nikosthenic_amphora "rule1") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :broad].} => {(?g :Nikosthenic_amphora "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Nikosthenic_amphora "rule3") e:weight 100}.
+{?g :has_part [a :Neck; :offset_with [a :Shoulder]].} => {(?g :Nikosthenic_amphora "rule4") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :flaring].} => {(?g :Nikosthenic_amphora "rule5") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 250;math:lessThan 350]].} => {(?g :Nikosthenic_amphora "rule6") e:weight 100}.
+
+:Belly_amphora a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :oval].} => {(?g :Belly_amphora "rule1") e:weight 100}.
+{?g :has_part [a :Body; :form_continuous_curve_between [a :Lip],[a :Foot]].} => {(?g :Belly_amphora "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Belly_amphora "rule3") e:weight 100}.
+{?g :has_part [a :Neck; :offset_with [a :Shoulder]].} => {(?g :Belly_amphora "rule4") e:weight 100}.
+{?g :has_part [a :Foot].} => {(?g :Belly_amphora "rule5") e:weight 100}.
+{?g :has_part [a :Lip].} => {(?g :Belly_amphora "rule6") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 250;math:lessThan 350]].} => {(?g :Belly_amphora "rule7") e:weight 100}.
+
+:Pelike a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :round].} => {(?g :Pelike "rule1") e:weight 100}.
+{?g :has_part [a :Body; :with_the_widest_portion_towards [a :Base]].} => {(?g :Pelike "rule2") e:weight 100}.
+{?g :has_part [a :Neck; :form_continuous_curve_with [a :Body]].} => {(?g :Pelike "rule3") e:weight 100}.
+{?g :has_part [a :Base].} => {(?g :Pelike "rule4") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 200;math:lessThan 500]].} => {(?g :Pelike "rule5") e:weight 100}.
+
+:Stamnos a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :round].} => {(?g :Stamnos "rule1") e:weight 100}.
+{?g :has_part [a :Mouth; :has_characteristic :wide].} => {(?g :Stamnos "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :curve_upward].} => {(?g :Stamnos "rule3") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :loop].} => {(?g :Stamnos "rule4") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Stamnos "rule5") e:weight 100}.
+{?g :has_part [a :Neck; :has_characteristic :short].} => {(?g :Stamnos "rule6") e:weight 100}.
+{?g :has_part [a :Neck; :offset_with [a :Shoulder]].} => {(?g :Stamnos "rule7") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :heavy].} => {(?g :Stamnos "rule8") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 300;math:lessThan 600]].} => {(?g :Stamnos "rule9") e:weight 100}.
+
+:Transport_amphora a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :tall].} => {(?g :Transport_amphora "rule1") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :knob].} => {(?g :Transport_amphora "rule2") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 500;math:lessThan 700]].} => {(?g :Transport_amphora "rule3") e:weight 100}.
+
+#Mixing bowl
+
+:Volute_krater a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :round].} => {(?g :Volute_krater "rule1") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Volute_krater "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :spiral].} => {(?g :Volute_krater "rule3") e:weight 100}.
+{?g :has_part [a :Neck; :offset_with [a :Shoulder]].} => {(?g :Volute_krater "rule4") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :heavy].} => {(?g :Volute_krater "rule5") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 650]].} => {(?g :Volute_krater "rule6") e:weight 100}.
+
+:Column_krater a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :round].} => {(?g :Column_krater "rule1") e:weight 100}.
+{?g :has_part [a :Handle; :attached_to [a :Lip]].} => {(?g :Column_krater "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :cylindrical_stem].} => {(?g :Column_krater "rule3") e:weight 100}.
+{?g :has_part [a :Neck; :offset_with [a :Shoulder]].} => {(?g :Column_krater "rule4") e:weight 100}.
+{?g :has_part [a :Lip; :has_characteristic :thick].} => {(?g :Column_krater "rule5") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :heavy].} => {(?g :Column_krater "rule6") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 400;math:lessThan 500]].} => {(?g :Column_krater "rule7") e:weight 100}.
+
+:Calyx_krater a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :deep].} => {(?g :Calyx_krater "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :lower_convex].} => {(?g :Calyx_krater "rule2") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :upper_concave].} => {(?g :Calyx_krater "rule3") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :curve_upward].} => {(?g :Calyx_krater "rule4") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :heavy].} => {(?g :Calyx_krater "rule5") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 400;math:lessThan 500]].} => {(?g :Calyx_krater "rule6") e:weight 100}.
+
+:Bell_krater a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :bell-shape].} => {(?g :Bell_krater "rule1") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :curve_upward].} => {(?g :Bell_krater "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :loop].} => {(?g :Bell_krater "rule3") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :heavy].} => {(?g :Bell_krater "rule4") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 400;math:lessThan 500]].} => {(?g :Bell_krater "rule5") e:weight 100}.
+
+:Skyphoid_krater a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :round].} => {(?g :Skyphoid_krater "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Skyphoid_krater "rule2") e:weight 100}.
+{?g :has_part [a :Lid; :has_characteristic :conical].} => {(?g :Skyphoid_krater "rule3") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :small].} => {(?g :Skyphoid_krater "rule4") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :tall].} => {(?g :Skyphoid_krater "rule5") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 950;math:lessThan 1050]].} => {(?g :Skyphoid_krater "rule6") e:weight 100}.
+
+:Lebes_dinos a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :deep].} => {(?g :Lebes_dinos"rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Lebes_dinos"rule2") e:weight 100}.
+{?g :has_part [a :Base; :has_characteristic :round].} => {(?g :Lebes_dinos"rule3") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 150;math:lessThan 250]].} => {(?g :Lebes_dinos"rule4") e:weight 100}.
+
+#Water jug
+
+:Hydria a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :oval].} => {(?g :Hydria "rule1") e:weight 100}.
+{?g :has_part [a :Mouth; :has_characteristic :round].} => {(?g :Hydria "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Hydria "rule3") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Hydria "rule4") e:weight 100}.
+{?g :has_part [a :Neck; :offset_with [a :Shoulder]].} => {(?g :Hydria "rule5") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 400;math:lessThan 500]].} => {(?g :Hydria "rule6") e:weight 100}.
+
+:Kalpis a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :round].} => {(?g :Kalpis "rule1") e:weight 100}.
+{?g :has_part [a :Body; :form_continous_curve_between [a :Mouth],[a :Foot]].} => {(?g :Kalpis "rule2") e:weight 100}.
+{?g :has_part [a :Mouth; :has_characteristic :round].} => {(?g :Kalpis "rule3") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Kalpis "rule4") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Kalpis "rule5") e:weight 100}.
+{?g :has_part [a :Neck; :offset_with [a :Shoulder]].} => {(?g :Kalpis "rule6") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 300;math:lessThan 600]].} => {(?g :Kalpis "rule7") e:weight 100}.
+
+#Oil flask
+
+:Deianira_lekythos a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :tall].} => {(?g :Deianira_lekythos "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :oval].} => {(?g :Deianira_lekythos "rule2") e:weight 100}.
+{?g :has_part [a :Mouth; :has_characteristic :heavy].} => {(?g :Deianira_lekythos "rule3") e:weight 100}.
+{?g :has_part [a :Mouth; :has_characteristic :cup-shape].} => {(?g :Deianira_lekythos "rule4") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :heavy].} => {(?g :Deianira_lekythos "rule5") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Deianira_lekythos "rule6") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 150;math:lessThan 250]].} => {(?g :Deianira_lekythos "rule7") e:weight 100}.
+
+:Standard_lekythos a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :tall].} => {(?g :Standard_lekythos "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :cylindrical].} => {(?g :Standard_lekythos "rule2") e:weight 100}.
+{?g :has_part [a :Mouth; :has_characteristic :heavy].} => {(?g :Standard_lekythos "rule3") e:weight 100}.
+{?g :has_part [a :Shoulder; :offset_with [a :Body]].} => {(?g :Standard_lekythos "rule4") e:weight 100}.
+{?g :has_part [a :Neck; :has_characteristic :tall].} => {(?g :Standard_lekythos "rule5") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Standard_lekythos "rule6") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :heavy].} => {(?g :Standard_lekythos "rule7") e:weight 100}.
+{?g :has_largest_diameter_on [a :Body].} => {(?g :Standard_lekythos "rule8") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:lessThan 300]].} => {(?g :Standard_lekythos "rule9") e:weight 100}.
+
+:Secondary_lekythos a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :tall].} => {(?g :Secondary_lekythos "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :cylindrical].} => {(?g :Secondary_lekythos "rule2") e:weight 100}.
+{?g :has_part [a :Mouth; :has_characteristic :heavy].} => {(?g :Secondary_lekythos "rule3") e:weight 100}.
+{?g :has_part [a :Shoulder; :offset_with [a :Body]].} => {(?g :Secondary_lekythos "rule4") e:weight 100}.
+{?g :has_part [a :Neck; :has_characteristic :tall].} => {(?g :Secondary_lekythos "rule5") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Secondary_lekythos "rule6") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :heavy].} => {(?g :Secondary_lekythos "rule7") e:weight 100}.
+{?g :has_largest_diameter_on [a :Shoulder].} => {(?g :Secondary_lekythos "rule8") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 150;math:lessThan 250]].} => {(?g :Secondary_lekythos "rule9") e:weight 100}.
+
+:Squat_lekythos a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :round].} => {(?g :Squat_lekythos "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :squat].} => {(?g :Squat_lekythos "rule2") e:weight 100}.
+{?g :has_part [a :Mouth; :has_characteristic :heavy].} => {(?g :Squat_lekythos "rule3") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Squat_lekythos "rule4") e:weight 100}.
+{?g :has_part [a :Neck; :offset_with [a :Shoulder]].} => {(?g :Squat_lekythos "rule5") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:lessThan 250]].} => {(?g :Squat_lekythos "rule6") e:weight 100}.
+
+:Acorn_lekythos a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :tall].} => {(?g :Acorn_lekythos "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :acorn].} => {(?g :Acorn_lekythos "rule2") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :squat].} => {(?g :Acorn_lekythos "rule3") e:weight 100}.
+{?g :has_part [a :Mouth; :has_characteristic :heavy].} => {(?g :Acorn_lekythos "rule4") e:weight 100}.
+{?g :has_part [a :Neck; :has_characteristic :tall].} => {(?g :Acorn_lekythos "rule5") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :heavy].} => {(?g :Acorn_lekythos "rule6") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Acorn_lekythos "rule7") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 150;math:lessThan 250]].} => {(?g :Acorn_lekythos "rule8") e:weight 100}.
+
+:Aryballos a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :round].} => {(?g :Aryballos "rule1") e:weight 200}.
+{?g :has_part [a :Mouth; :has_characteristic :disk].} => {(?g :Aryballos "rule2") e:weight 100}.
+{?g :has_part [a :Handle].} => {(?g :Aryballos "rule3") e:weight 50}.
+{?g :has_measurement [:has_height_value[math:greaterThan 50;math:lessThan 100]].} => {(?g :Aryballos "rule4") e:weight 100}.
+
+:Alabastron a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :tall].} => {(?g :Alabastron "rule1") e:weight 100}.
+{?g :has_part [a :Mouth; :has_characteristic :small].} => {(?g :Alabastron "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :string_hole].} => {(?g :Alabastron "rule3") e:weight 25}.
+{?g :has_part [a :Base; :has_characteristic :round].} => {(?g :Alabastron "rule4") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 50;math:lessThan 150]].} => {(?g :Alabastron "rule5") e:weight 100}.
+
+:Askos a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :circular].} => {(?g :Askos "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :convex].} => {(?g :Askos "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :arch].} => {(?g :Askos "rule3") e:weight 100}.
+{?g :has_part [a :Spout].} => {(?g :Askos "rule4") e:weight 200}.
+{?g :has_measurement [:has_diameter_value[math:greaterThan 50;math:lessThan 200]].} => {(?g :Askos "rule5") e:weight 100}.
+
+:Kothon a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :shallow].} => {(?g :Kothon "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Kothon "rule2") e:weight 100}.
+{?g :has_part [a :Lip; :has_characteristic :turned_in].} => {(?g :Kothon "rule3") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :broad].} => {(?g :Kothon "rule4") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 50;math:lessThan 150]].} => {(?g :Kothon "rule5") e:weight 100}.
+
+:Plemochoe a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :shallow].} => {(?g :Plemochoe "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :broad].} => {(?g :Plemochoe "rule2") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Plemochoe "rule3") e:weight 100}.
+{?g :has_part [a :Lip; :has_characteristic :turned_in].} => {(?g :Plemochoe "rule4") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :tall].} => {(?g :Plemochoe "rule5") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 100;math:lessThan 200]].} => {(?g :Plemochoe "rule6") e:weight 100}.
+
+:Lydion a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :round].} => {(?g :Lydion "rule1") e:weight 100}.
+{?g :has_part [a :Mouth; :has_characteristic :disk].} => {(?g :Lydion "rule2") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :tall].} => {(?g :Lydion "rule3") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 50;math:lessThan 100]].} => {(?g :Lydion "rule4") e:weight 100}.
+
+#Drinking cup
+
+:Komast_cup a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :deep].} => {(?g :Komast_cup "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Komast_cup "rule2") e:weight 100}.
+{?g :has_part [a :Lip; :has_characteristic :concave].} => {(?g :Komast_cup "rule3") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :short].} => {(?g :Komast_cup "rule4") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Komast_cup "rule5") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :short].} => {(?g :Komast_cup "rule6") e:weight 100}.
+{?g :has_measurement [:has_diameter_value[math:greaterThan 150;math:lessThan 250]].} => {(?g :Komast_cup "rule7") e:weight 100}.
+
+:Siana_cup a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :deep].} => {(?g :Siana_cup "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Siana_cup "rule2") e:weight 100}.
+{?g :has_part [a :Lip; :has_characteristic :tall].} => {(?g :Siana_cup "rule3") e:weight 100}.
+{?g :has_part [a :Lip; :has_characteristic :concave].} => {(?g :Siana_cup "rule4") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :short].} => {(?g :Siana_cup "rule5") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Siana_cup "rule6") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :short].} => {(?g :Siana_cup "rule7") e:weight 100}.
+{?g :has_measurement [:has_diameter_value[math:greaterThan 200;math:lessThan 300]].} => {(?g :Siana_cup "rule8") e:weight 100}.
+
+:Gordion_cup a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Gordion_cup "rule1") e:weight 100}.
+{?g :has_part [a :Lip; :has_characteristic :convex].} => {(?g :Gordion_cup "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :short].} => {(?g :Gordion_cup "rule3") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Gordion_cup "rule4") e:weight 100}.
+{?g :has_part [a :Foot].} => {(?g :Gordion_cup "rule5") e:weight 50}.
+{?g :has_measurement [:has_diameter_value[math:greaterThan 200;math:lessThan 300]].} => {(?g :Gordion_cup "rule6") e:weight 100}.
+
+:Little_master_cup a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :shallow].} => {(?g :Little_master_cup "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Little_master_cup "rule1") e:weight 100}.
+{?g :has_part [a :Lip; :has_characteristic :concave].} => {(?g :Little_master_cup "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Little_master_cup "rule4") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :tall].} => {(?g :Little_master_cup "rule5") e:weight 100}.
+{?g :has_measurement [:has_diameter_value[math:greaterThan 200;math:lessThan 300]].} => {(?g :Little_master_cup "rule6") e:weight 100}.
+
+:Droop_cup a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :shallow].} => {(?g :Droop_cup "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Droop_cup "rule2") e:weight 100}.
+{?g :has_part [a :Lip; :has_characteristic :concave].} => {(?g :Droop_cup "rule3") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Droop_cup "rule4") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :short].} => {(?g :Droop_cup "rule5") e:weight 100}.
+{?g :has_measurement [:has_diameter_value[math:greaterThan 150;math:lessThan 250]].} => {(?g :Droop_cup "rule6") e:weight 100}.
+
+:Chalkidizing_cup a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Chalkidizing_cup "rule1") e:weight 100}.
+{?g :has_part [a :Body; :form_continous_curve_with [a :Lip]].} => {(?g :Chalkidizing_cup "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Chalkidizing_cup "rule3") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :short].} => {(?g :Chalkidizing_cup "rule4") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :thick].} => {(?g :Chalkidizing_cup "rule5") e:weight 100}.
+{?g :has_measurement [:has_diameter_value[math:greaterThan 200;math:lessThan 300]].} => {(?g :Chalkidizing_cup "rule6") e:weight 100}.
+
+:Merrythought_cup a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Merrythought_cup "rule1") e:weight 100}.
+{?g :has_part [a :Body; :form_continous_curve_with [a :Lip]].} => {(?g :Merrythought_cup "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Merrythought_cup "rule3") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :broad].} => {(?g :Kylix_type_A "rule4") e:weight 100}.
+{?g :has_measurement [:has_diameter_value[math:greaterThan 200;math:lessThan 300]].} => {(?g :Merrythought_cup "rule5") e:weight 100}.
+
+:Kylix_type_A a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Kylix_type_A "rule1") e:weight 100}.
+{?g :has_part [a :Body; :form_continous_curve_with [a :Lip]].} => {(?g :Kylix_type_A "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Kylix_type_A "rule3") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :broad].} => {(?g :Kylix_type_A "rule4") e:weight 100}.
+{?g :has_measurement [:has_diameter_value[math:greaterThan 200;math:lessThan 300]].} => {(?g :Kylix_type_A "rule5") e:weight 100}.
+
+:Kylix_type_B a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Kylix_type_B "rule1") e:weight 100}.
+{?g :has_part [a :Body; :form_continous_curve_between [a :Lip],[a :Foot]].} => {(?g :Kylix_type_B "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Kylix_type_B "rule3") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :broad].} => {(?g :Kylix_type_B "rule4") e:weight 100}.
+{?g :has_measurement [:has_diameter_value[math:greaterThan 200;math:lessThan 300]].} => {(?g :Kylix_type_B "rule5") e:weight 100}.
+
+:Corinthian_skyphos a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Corinthian_skyphos "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :deep].} => {(?g :Corinthian_skyphos "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Corinthian_skyphos "rule3") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :small].} => {(?g :Corinthian_skyphos "rule4") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 100;math:lessThan 200]].} => {(?g :Corinthian_skyphos "rule5") e:weight 100}.
+
+:Hermogenean_skyphos a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Hermogenean_skyphos "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :deep].} => {(?g :Hermogenean_skyphos "rule2") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :flaring].} => {(?g :Hermogenean_skyphos "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :extended_upward].} => {(?g :Hermogenean_skyphos "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Hermogenean_skyphos "rule3") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :small].} => {(?g :Hermogenean_skyphos "rule4") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 100;math:lessThan 200]].} => {(?g :Hermogenean_skyphos "rule5") e:weight 100}.
+
+:Skyphos_heron_type a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Skyphos_heron_type "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :deep].} => {(?g :Skyphos_heron_type "rule2") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :flaring].} => {(?g :Skyphos_heron_type "rule3") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :extended_upward].} => {(?g :Skyphos_heron_type "rule4") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Skyphos_heron_type "rule5") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :heavy].} => {(?g :Skyphos_heron_type "rule6") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 150;math:lessThan 200]].} => {(?g :Skyphos_heron_type "rule7") e:weight 100}.
+
+:Cup_skyphos a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Cup_skyphos "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :shallow].} => {(?g :Cup_skyphos "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :extended_upward].} => {(?g :Cup_skyphos "rule3") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Cup_skyphos "rule4") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :heavy].} => {(?g :Cup_skyphos "rule5") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 150;math:lessThan 200]].} => {(?g :Cup_skyphos "rule6") e:weight 100}.
+
+:Skyphos_type_A a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :small].} => {(?g :Skyphos_type_A "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :deep].} => {(?g :Skyphos_type_A "rule2") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Skyphos_type_A "rule3") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Skyphos_type_A "rule4") e:weight 100}.
+{[e:findall (?N {?g :has_part [a :Handle; :attached_along :vertical].} ())]} => {(?g :Skyphos_type_A "rule5") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 50;math:lessThan 150]].} => {(?g :Skyphos_type_A "rule6") e:weight 100}.
+
+:Skyphos_type_B a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :small].} => {(?g :Skyphos_type_B "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :deep].} => {(?g :Skyphos_type_B "rule2") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Skyphos_type_B "rule3") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Skyphos_type_B "rule4") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Skyphos_type_B "rule5") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 50;math:lessThan 150]].} => {(?g :Skyphos_type_B "rule6") e:weight 100}.
+
+:Kantharos a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Kantharos "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :deep].} => {(?g :Kantharos "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :high].} => {(?g :Kantharos "rule3") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Kantharos "rule4") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :tall].} => {(?g :Kantharos "rule5") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 200;math:lessThan 300]].} => {(?g :Kantharos "rule6") e:weight 100}.
+
+:Rhyton a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :animal-head].} => {(?g :Rhyton "rule1") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Rhyton "rule2") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 150;math:lessThan 250]].} => {(?g :Rhyton "rule3") e:weight 100}.
+
+:Mastos a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :woman_breast_shape].} => {(?g :Mastos "rule1") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :vertical].} => {(?g :Mastos "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Mastos "rule3") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 100;math:lessThan 200]].} => {(?g :Mastos "rule4") e:weight 100}.
+
+:Chalice a :Greek_Pottery_Shape.
+
+{?g :has_part [a :Body; :has_characteristic :bowl].} => {(?g :Chalice "rule1") e:weight 100}.
+{?g :has_part [a :Body; :has_characteristic :deep].} => {(?g :Chalice "rule2") e:weight 100}.
+{?g :has_part [a :Handle; :has_characteristic :extended_upward].} => {(?g :Chalice "rule3") e:weight 100}.
+{?g :has_part [a :Handle; :attached_along :horizontal].} => {(?g :Chalice "rule4") e:weight 100}.
+{?g :has_part [a :Foot; :has_characteristic :flaring].} => {(?g :Chalice "rule5") e:weight 100}.
+{?g :has_measurement [:has_height_value[math:greaterThan 150;math:lessThan 200]].} => {(?g :Chalice "rule6") e:weight 100}.
+

@@ -1,0 +1,20 @@
+#Processed by Id: euler.yap,v 1.156 2007/02/16 09:43:25 josd Exp 
+
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix var: <http://localhost/var#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix fn: <http://www.w3.org/2006/xpath-functions#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/alarm#>.
+@prefix time: <http://www.w3.org/2000/10/swap/time#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+((<http://eulersharp.sourceforge.net/2004/04test/alarm.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/alarmF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:burglary e:T)) ((:marycalls e:T)) 0.0561174540389149).

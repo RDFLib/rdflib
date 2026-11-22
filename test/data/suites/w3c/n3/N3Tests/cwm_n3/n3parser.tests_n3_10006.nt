@@ -1,0 +1,212 @@
+_:g70128318988780 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10001> .
+_:g70128318988780 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128318991800 .
+_:g70128318991800 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10002> .
+_:g70128318991800 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128318994420 .
+_:g70128318994420 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10003> .
+_:g70128318994420 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128318932080 .
+_:g70128318932080 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10004> .
+_:g70128318932080 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128318935700 .
+_:g70128318935700 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10005> .
+_:g70128318935700 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128318938380 .
+_:g70128318938380 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10006> .
+_:g70128318938380 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128318943300 .
+_:g70128318943300 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10007> .
+_:g70128318943300 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128318947160 .
+_:g70128318947160 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10008> .
+_:g70128318947160 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128318950900 .
+_:g70128318950900 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10009> .
+_:g70128318950900 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128318953820 .
+_:g70128318953820 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10010> .
+_:g70128318953820 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128318957240 .
+_:g70128318957240 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10011> .
+_:g70128318957240 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128318962400 .
+_:g70128318962400 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10012> .
+_:g70128318962400 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128326706700 .
+_:g70128326706700 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10013> .
+_:g70128326706700 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128326710660 .
+_:g70128326710660 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10014> .
+_:g70128326710660 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128326754340 .
+_:g70128326754340 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10015> .
+_:g70128326754340 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128326758220 .
+_:g70128326758220 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10016> .
+_:g70128326758220 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128326760860 .
+_:g70128326760860 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10017> .
+_:g70128326760860 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128326805700 .
+_:g70128326805700 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10018> .
+_:g70128326805700 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128326808960 .
+_:g70128326808960 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10019> .
+_:g70128326808960 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128326878980 .
+_:g70128326878980 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10020> .
+_:g70128326878980 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128326883380 .
+_:g70128326883380 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10021> .
+_:g70128326883380 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128326771940 .
+_:g70128326771940 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10025> .
+_:g70128326771940 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128326775780 .
+_:g70128326775780 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10026> .
+_:g70128326775780 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128326778820 .
+_:g70128326778820 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10027> .
+_:g70128326778820 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128330960460 .
+_:g70128330960460 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_10028> .
+_:g70128330960460 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128330963620 .
+_:g70128330963620 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_20000> .
+_:g70128330963620 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128330967300 .
+_:g70128330967300 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_20001> .
+_:g70128330967300 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128330970840 .
+_:g70128330970840 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_20002> .
+_:g70128330970840 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128302268900 .
+_:g70128302268900 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_20003> .
+_:g70128302268900 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128302271880 .
+_:g70128302271880 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_20004> .
+_:g70128302271880 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70128302275940 .
+_:g70128302275940 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3c.github.io/N3/tests/#n3_20005> .
+_:g70128302275940 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+<https://w3c.github.io/N3/tests/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#Manifest> .
+<https://w3c.github.io/N3/tests/> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "Notation3 Parser tests" .
+<https://w3c.github.io/N3/tests/> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#entries> _:g70128318988780 .
+<https://w3c.github.io/N3/tests/#n3_10001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10001> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10001> <http://www.w3.org/2000/01/rdf-schema#comment> "An N3 file with no final newline character" .
+<https://w3c.github.io/N3/tests/#n3_10001> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/no-last-nl.n3> .
+<https://w3c.github.io/N3/tests/#n3_10001> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10001.nt> .
+<https://w3c.github.io/N3/tests/#n3_10002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10002> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10002> <http://www.w3.org/2000/01/rdf-schema#comment> "combinations of - and _ in identifiers" .
+<https://w3c.github.io/N3/tests/#n3_10002> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10002.nt> .
+<https://w3c.github.io/N3/tests/#n3_10002> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/dot-dash.n3> .
+<https://w3c.github.io/N3/tests/#n3_10003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10003> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10003> <http://www.w3.org/2000/01/rdf-schema#comment> "@keywords in n3" .
+<https://w3c.github.io/N3/tests/#n3_10003> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10003.nt> .
+<https://w3c.github.io/N3/tests/#n3_10003> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/keywords1.n3> .
+<https://w3c.github.io/N3/tests/#n3_10004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10004> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10004> <http://www.w3.org/2000/01/rdf-schema#comment> "using no keywords in n3" .
+<https://w3c.github.io/N3/tests/#n3_10004> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10004.nt> .
+<https://w3c.github.io/N3/tests/#n3_10004> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/keywords2.n3> .
+<https://w3c.github.io/N3/tests/#n3_10005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10005> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10005> <http://www.w3.org/2000/01/rdf-schema#comment> "djb noticed a:b was parsed as rdf:type token" .
+<https://w3c.github.io/N3/tests/#n3_10005> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10005.nt> .
+<https://w3c.github.io/N3/tests/#n3_10005> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/djb1a.n3> .
+<https://w3c.github.io/N3/tests/#n3_10006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10006> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10006> <http://www.w3.org/2000/01/rdf-schema#comment> "we might as well be nice and self-referential" .
+<https://w3c.github.io/N3/tests/#n3_10006> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10006.nt> .
+<https://w3c.github.io/N3/tests/#n3_10006> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/> .
+<https://w3c.github.io/N3/tests/#n3_10007> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10007> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10007> <http://www.w3.org/2000/01/rdf-schema#comment> "Parse and generate simple contexts" .
+<https://w3c.github.io/N3/tests/#n3_10007> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10007.nt> .
+<https://w3c.github.io/N3/tests/#n3_10007> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/contexts.n3> .
+<https://w3c.github.io/N3/tests/#n3_10008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10008> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10008> <http://www.w3.org/2000/01/rdf-schema#comment> "Parse and regen anonymous property" .
+<https://w3c.github.io/N3/tests/#n3_10008> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10008.nt> .
+<https://w3c.github.io/N3/tests/#n3_10008> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/anon-prop.n3> .
+<https://w3c.github.io/N3/tests/#n3_10009> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10009> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10009> <http://www.w3.org/2000/01/rdf-schema#comment> "N3 string quoting with escaping" .
+<https://w3c.github.io/N3/tests/#n3_10009> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10009.nt> .
+<https://w3c.github.io/N3/tests/#n3_10009> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/strquot.n3> .
+<https://w3c.github.io/N3/tests/#n3_10010> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3PositiveSyntax> .
+<https://w3c.github.io/N3/tests/#n3_10010> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10010> <http://www.w3.org/2000/01/rdf-schema#comment> "N3 string, qname and IRI with utf-8 non-ascii characters" .
+<https://w3c.github.io/N3/tests/#n3_10010> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_i18n/hiragana.n3> .
+<https://w3c.github.io/N3/tests/#n3_10011> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10011> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10011> <http://www.w3.org/2000/01/rdf-schema#comment> "Path syntax, simple" .
+<https://w3c.github.io/N3/tests/#n3_10011> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10011.nt> .
+<https://w3c.github.io/N3/tests/#n3_10011> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/path1.n3> .
+<https://w3c.github.io/N3/tests/#n3_10012> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10012> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10012> <http://www.w3.org/2000/01/rdf-schema#comment> "Path syntax, more" .
+<https://w3c.github.io/N3/tests/#n3_10012> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10012.nt> .
+<https://w3c.github.io/N3/tests/#n3_10012> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/path2.n3> .
+<https://w3c.github.io/N3/tests/#n3_10013> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10013> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10013> <http://www.w3.org/2000/01/rdf-schema#comment> "Number syntax" .
+<https://w3c.github.io/N3/tests/#n3_10013> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10013.nt> .
+<https://w3c.github.io/N3/tests/#n3_10013> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/numbers.n3> .
+<https://w3c.github.io/N3/tests/#n3_10014> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10014> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10014> <http://www.w3.org/2000/01/rdf-schema#comment> "Quick variable syntax, simple" .
+<https://w3c.github.io/N3/tests/#n3_10014> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10014.nt> .
+<https://w3c.github.io/N3/tests/#n3_10014> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/qvars1.n3> .
+<https://w3c.github.io/N3/tests/#n3_10015> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10015> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10015> <http://www.w3.org/2000/01/rdf-schema#comment> "Quick variable syntax, more" .
+<https://w3c.github.io/N3/tests/#n3_10015> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10015.nt> .
+<https://w3c.github.io/N3/tests/#n3_10015> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/qvars2.n3> .
+<https://w3c.github.io/N3/tests/#n3_10016> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10016> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10016> <http://www.w3.org/2000/01/rdf-schema#comment> "N3 string nested triple quoting" .
+<https://w3c.github.io/N3/tests/#n3_10016> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10016.nt> .
+<https://w3c.github.io/N3/tests/#n3_10016> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/lstring.n3> .
+<https://w3c.github.io/N3/tests/#n3_10017> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10017> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10017> <http://www.w3.org/2000/01/rdf-schema#comment> "parsing and generation of N3 list syntax" .
+<https://w3c.github.io/N3/tests/#n3_10017> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10017.nt> .
+<https://w3c.github.io/N3/tests/#n3_10017> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_lists.n3> .
+<https://w3c.github.io/N3/tests/#n3_10018> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10018> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10018> <http://www.w3.org/2000/01/rdf-schema#comment> "Propertylists can end in trailing semicolon." .
+<https://w3c.github.io/N3/tests/#n3_10018> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10018.nt> .
+<https://w3c.github.io/N3/tests/#n3_10018> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/trailing-semicolon.n3> .
+<https://w3c.github.io/N3/tests/#n3_10019> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3NegativeSyntax> .
+<https://w3c.github.io/N3/tests/#n3_10019> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10019> <http://www.w3.org/2000/01/rdf-schema#comment> "Can still read the old 'this log:forSome' syntax?" .
+<https://w3c.github.io/N3/tests/#n3_10019> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10019.nt> .
+<https://w3c.github.io/N3/tests/#n3_10019> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/this-quantifiers.n3> .
+<https://w3c.github.io/N3/tests/#n3_10020> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3NegativeSyntax> .
+<https://w3c.github.io/N3/tests/#n3_10020> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10020> <http://www.w3.org/2000/01/rdf-schema#comment> "Can still read the old 'this log:forAll' syntax" .
+<https://w3c.github.io/N3/tests/#n3_10020> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10020.nt> .
+<https://w3c.github.io/N3/tests/#n3_10020> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/this-rules.n3> .
+<https://w3c.github.io/N3/tests/#n3_10021> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3PositiveSyntax> .
+<https://w3c.github.io/N3/tests/#n3_10021> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10021> <http://www.w3.org/2000/01/rdf-schema#comment> "Are we exceeding a maximum recursion limit or two?" .
+<https://w3c.github.io/N3/tests/#n3_10021> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/too-nested.n3> .
+<https://w3c.github.io/N3/tests/#n3_10025> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10025> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10025> <http://www.w3.org/2000/01/rdf-schema#comment> "The = keyword" .
+<https://w3c.github.io/N3/tests/#n3_10025> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10020.nt> .
+<https://w3c.github.io/N3/tests/#n3_10025> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/equals1.n3> .
+<https://w3c.github.io/N3/tests/#n3_10026> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10026> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10026> <http://www.w3.org/2000/01/rdf-schema#comment> "The = keyword" .
+<https://w3c.github.io/N3/tests/#n3_10026> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10020.nt> .
+<https://w3c.github.io/N3/tests/#n3_10026> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/equals2.n3> .
+<https://w3c.github.io/N3/tests/#n3_10027> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3Eval> .
+<https://w3c.github.io/N3/tests/#n3_10027> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10027> <http://www.w3.org/2000/01/rdf-schema#comment> "A statement that says nothing at all" .
+<https://w3c.github.io/N3/tests/#n3_10027> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10020.nt> .
+<https://w3c.github.io/N3/tests/#n3_10027> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/zero-predicates.n3> .
+<https://w3c.github.io/N3/tests/#n3_10028> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3NegativeSyntax> .
+<https://w3c.github.io/N3/tests/#n3_10028> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_10028> <http://www.w3.org/2000/01/rdf-schema#comment> "A statement that says nothing at all" .
+<https://w3c.github.io/N3/tests/#n3_10028> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result> <https://w3c.github.io/N3/tests/n3/n3parser.tests_n3_10020.nt> .
+<https://w3c.github.io/N3/tests/#n3_10028> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/zero-objects.n3> .
+<https://w3c.github.io/N3/tests/#n3_20000> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3NegativeSyntax> .
+<https://w3c.github.io/N3/tests/#n3_20000> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_20000> <http://www.w3.org/2000/01/rdf-schema#comment> "something that isn't n3" .
+<https://w3c.github.io/N3/tests/#n3_20000> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/tests-work.txt> .
+<https://w3c.github.io/N3/tests/#n3_20001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3NegativeSyntax> .
+<https://w3c.github.io/N3/tests/#n3_20001> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_20001> <http://www.w3.org/2000/01/rdf-schema#comment> "@keywords is not a valid predicate" .
+<https://w3c.github.io/N3/tests/#n3_20001> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/neg-keywords3.n3> .
+<https://w3c.github.io/N3/tests/#n3_20002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3NegativeSyntax> .
+<https://w3c.github.io/N3/tests/#n3_20002> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_20002> <http://www.w3.org/2000/01/rdf-schema#comment> "single quoted strings are illegal" .
+<https://w3c.github.io/N3/tests/#n3_20002> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/neg-single-quote.n3> .
+<https://w3c.github.io/N3/tests/#n3_20003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3NegativeSyntax> .
+<https://w3c.github.io/N3/tests/#n3_20003> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_20003> <http://www.w3.org/2000/01/rdf-schema#comment> "The `this' keyword is no longer legal " .
+<https://w3c.github.io/N3/tests/#n3_20003> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/neg-thisadoc.n3> .
+<https://w3c.github.io/N3/tests/#n3_20004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3NegativeSyntax> .
+<https://w3c.github.io/N3/tests/#n3_20004> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_20004> <http://www.w3.org/2000/01/rdf-schema#comment> "A predicate cannot be a literal, I hope" .
+<https://w3c.github.io/N3/tests/#n3_20004> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/neg-literal-predicate.n3> .
+<https://w3c.github.io/N3/tests/#n3_20005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/N3/tests/test.n3#TestN3NegativeSyntax> .
+<https://w3c.github.io/N3/tests/#n3_20005> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name> "no-last-nl.n3" .
+<https://w3c.github.io/N3/tests/#n3_20005> <http://www.w3.org/2000/01/rdf-schema#comment> "A predicate cannot be a formula, I hope" .
+<https://w3c.github.io/N3/tests/#n3_20005> <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/neg-formula-predicate.n3> .

@@ -1,0 +1,19 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope --tactic limited-answer 1 http://eulersharp.sourceforge.net/2007/07test/hanoi.n3 --pass
+
+# Move top disk from <http://eulersharp.sourceforge.net/2007/07test/hanoi#left> to <http://eulersharp.sourceforge.net/2007/07test/hanoi#right>
+# Move top disk from <http://eulersharp.sourceforge.net/2007/07test/hanoi#left> to <http://eulersharp.sourceforge.net/2007/07test/hanoi#center>
+# Move top disk from <http://eulersharp.sourceforge.net/2007/07test/hanoi#right> to <http://eulersharp.sourceforge.net/2007/07test/hanoi#center>
+# Move top disk from <http://eulersharp.sourceforge.net/2007/07test/hanoi#left> to <http://eulersharp.sourceforge.net/2007/07test/hanoi#right>
+# Move top disk from <http://eulersharp.sourceforge.net/2007/07test/hanoi#center> to <http://eulersharp.sourceforge.net/2007/07test/hanoi#left>
+# Move top disk from <http://eulersharp.sourceforge.net/2007/07test/hanoi#center> to <http://eulersharp.sourceforge.net/2007/07test/hanoi#right>
+# Move top disk from <http://eulersharp.sourceforge.net/2007/07test/hanoi#left> to <http://eulersharp.sourceforge.net/2007/07test/hanoi#right>
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/hanoi#>.
+
+3 :answer (:left :right :center).
+
+#2018-04-18T08:28:01.835Z in=13 out=1 ent=2 step=2 brake=1 inf=12855 sec=0.020 inf/sec=642750
+#ENDS
+

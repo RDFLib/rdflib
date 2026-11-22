@@ -1,0 +1,86 @@
+{
+  "@context": {
+    "property": "http://example.com/property",
+    "indexContainer": { "@id": "http://example.com/container", "@container": "@index" }
+  },
+  "@id": "http://example.org/indexTest",
+  "indexContainer": {
+    "A": [
+      {
+        "@id": "http://example.org/nodeWithoutIndexA"
+      },
+      1,
+      true,
+      false,
+      "simple string A",
+      {
+        "@value": "typed literal A",
+        "@type": "http://example.org/type"
+      },
+      {
+        "@value": "language-tagged string A",
+        "@language": "en"
+      }
+    ],
+    "this overrides the 'A' index from the container": {
+      "@id": "http://example.org/nodeWithIndexA"
+    },
+    "B": "simple string B",
+    "C": [
+      {
+        "@id": "http://example.org/nodeWithoutIndexC"
+      },
+      3,
+      true,
+      false,
+      "simple string C",
+      {
+        "@value": "typed literal C",
+        "@type": "http://example.org/type"
+      },
+      {
+        "@value": "language-tagged string C",
+        "@language": "en"
+      }
+    ],
+    "this overrides the 'C' index from the container": {
+      "@id": "http://example.org/nodeWithIndexC"
+    }
+  },
+  "property": [
+    {
+      "@id": "http://example.org/nodeWithoutIndexProp"
+    },
+    {
+      "@id": "http://example.org/nodeWithIndexProp",
+      "@index": "prop"
+    },
+    {
+      "@value": 3,
+      "@index": "prop"
+    },
+    {
+      "@value": true,
+      "@index": "prop"
+    },
+    {
+      "@value": false,
+      "@index": "prop"
+    },
+    "simple string no index",
+    {
+      "@value": "typed literal Prop",
+      "@type": "http://example.org/type",
+      "@index": "prop"
+    },
+    {
+      "@value": "language-tagged string Prop",
+      "@language": "en",
+      "@index": "prop"
+    },
+    {
+      "@value": "index using an array with just one element (automatic recovery)",
+      "@index": "prop"
+    }
+  ]
+}

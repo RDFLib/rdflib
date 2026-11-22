@@ -1,0 +1,9 @@
+<TriX>
+  <graph>
+    <triple>
+      <uri>http://example.org/s</uri>
+      <uri>http://example.org/p</uri>
+      <uri>http://example.org/o</uri>
+    </triple>
+  </graph>
+</TriX>

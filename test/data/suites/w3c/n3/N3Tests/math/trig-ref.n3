@@ -1,0 +1,28 @@
+@prefix : <trig.n3#>.
+
+:test1a :subject 0; :SIN 0.0e0 .
+:test1b :subject 0; :ASIN 0.0e0 .
+:test1c :subject 0; :SINH 0.0e0 .
+:test1d :subject 0; :COS 1.0e0 .
+:test1e :subject 0; :COSH 1.0e0 .
+:test1f :subject 0; :TAN 0.0e0 .
+:test1g :subject 0; :ATAN 0.0e0 .
+:test1h :subject 0; :TANH 0.0e0 .
+
+:test2 :subject 3.14159265358979323846; :COS -1.0e0 .
+
+:test3a a :SUCCESS .
+:test3b a :SUCCESS .
+:test3c a :SUCCESS .
+:test3d a :SUCCESS .
+:test3e a :SUCCESS .
+:test3f a :SUCCESS .
+:test3g a :SUCCESS .
+:test3h a :SUCCESS .
+:test3i a :SUCCESS .
+:test3j a :SUCCESS .
+:test3k a :SUCCESS .
+
+:test4a :object 0;  :ASIN 0.0e0 .
+:test4b :object 0;  :ACOS 0.0e0 .
+:test4c :object 0;  :ATAN 0.0e0 .

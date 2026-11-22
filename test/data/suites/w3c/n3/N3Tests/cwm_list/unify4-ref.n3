@@ -1,0 +1,34 @@
+#Processed by Id: cwm.py,v 1.197 2007-12-13 15:38:39 syosi Exp 
+        #    using base test-files/unify4.n3
+        
+#  Notation3 generation by
+#       notation3.py,v 1.201 2010-10-23 04:14:48 timbl Exp
+
+#   Base was: file:///Users/gregg/Projects/rdf-n3/spec/test-files/unify4.n3
+     @prefix : <unify4.n3#> .
+    
+    2     a :RESULT .
+      ( 1
+        13 )
+         :crinks  (
+        2
+        14 ) .
+      ( 1
+        14 )
+         :crinks  (
+        2
+        13 ) .
+      ( 1
+        2 )
+         :crinks  (
+        7
+        2 ) .
+      ( 1
+        3 )
+         :crinks  (
+        999
+        999 ) .
+    
+    :THIS_TEST     a :SUCCESS .
+    
+#ENDS

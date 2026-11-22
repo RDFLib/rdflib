@@ -1,0 +1,30 @@
+#Processed by Id: euler.yap 4235 2011-04-13 19:46:00Z josd
+#eye --nope http://eulersharp.sourceforge.net/2004/04test/easterP.n3 --query http://eulersharp.sourceforge.net/2004/04test/easterF.n3
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <http://www.agfa.com/w3c/euler/easterP#>.
+@prefix var: <http://localhost/var#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+2011 :hasEasterOnDay 24 . 2011 :hasEasterOnMonth 4 .
+2012 :hasEasterOnDay 8 . 2012 :hasEasterOnMonth 4 .
+2013 :hasEasterOnDay 31 . 2013 :hasEasterOnMonth 3 .
+2014 :hasEasterOnDay 20 . 2014 :hasEasterOnMonth 4 .
+2015 :hasEasterOnDay 5 . 2015 :hasEasterOnMonth 4 .
+2016 :hasEasterOnDay 27 . 2016 :hasEasterOnMonth 3 .
+2017 :hasEasterOnDay 16 . 2017 :hasEasterOnMonth 4 .
+2018 :hasEasterOnDay 1 . 2018 :hasEasterOnMonth 4 .
+2019 :hasEasterOnDay 21 . 2019 :hasEasterOnMonth 4 .
+2020 :hasEasterOnDay 12 . 2020 :hasEasterOnMonth 4 .
+
+
+#ENDS 0 [msec] TC=20 TP=60 BC=0 BP=21 PM=0 CM=0 FM=0 AM=0
+

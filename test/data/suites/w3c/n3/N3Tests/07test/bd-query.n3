@@ -1,0 +1,5 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <bd#>.
+
+{:a :b ?C} => {:a :b ?C}.
+

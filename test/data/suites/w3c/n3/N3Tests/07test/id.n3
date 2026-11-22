@@ -1,0 +1,14 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/id#>.
+
+:a :r :b.
+:b :r :c.
+:c :r :d.
+
+({?X :r ?Y} {?X :t ?Z. ?Z :t ?Y})!e:disjunction => {?X :t ?Y}.
+{?X :t ?Y} => ({?X :r ?Y} {?X :t ?Z. ?Z :t ?Y})!e:disjunction.
+
+:f :t :a.
+{:f :r ?X} => false.
+
+{{?X :t ?Y} => ({?X :r ?Y} {?X :t ?Z. ?Z :t ?Y})!e:disjunction} e:tactic (() _:G).

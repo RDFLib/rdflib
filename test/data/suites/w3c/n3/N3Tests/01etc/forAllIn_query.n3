@@ -1,0 +1,11 @@
+@prefix n3: <https://www.w3.org/ns/n3#>.
+@prefix : <http://example.org/test#>.
+
+{
+    ?T a :CompositeTask.
+    ({?T :subTask ?ST} {?ST a :Completed}) n3:forAllIn <http://josd.github.io/brain/n3c/subtasks.n3>.
+}
+    =>
+{
+    ?T a :AllTasksCompleted.
+}.

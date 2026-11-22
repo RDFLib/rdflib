@@ -1,0 +1,28 @@
+PREFIX :    <http://example/>
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+# Find sets that have exactly the same members.
+# Find all (s1,s2) such that (s1 subset of s) and (s2 subset of s1).
+
+SELECT DISTINCT ?s1 ?s2
+WHERE
+{
+    # All pairs of sets (no duplicates, not reveres pairs)
+    ?s2 rdf:type :Set .
+    ?s1 rdf:type :Set .
+    FILTER(str(?s1) < str(?s2))
+    MINUS 
+    {
+        ?s1 rdf:type :Set .
+        ?s2 rdf:type :Set .
+        ?s1 :member ?x .
+        FILTER NOT EXISTS { ?s2 :member ?x . }
+    }
+    MINUS 
+    {
+        ?s1 rdf:type :Set .
+        ?s2 rdf:type :Set .
+        ?s2 :member ?x .
+        FILTER NOT EXISTS { ?s1 :member ?x . }
+    }
+}

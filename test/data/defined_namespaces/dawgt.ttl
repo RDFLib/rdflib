@@ -1,0 +1,116 @@
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+
+# RDF Core tests
+@prefix rct:    <http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#> .
+
+dawgt:   rdfs:comment     "Vocabulary for DAWG test cases" ;
+    dc:creator       "Andy Seaborne" ;
+    dc:subject       "" ;
+    dc:publisher     "W3C RDF Data Access Working Group" ;
+    dc:title         "Vocabulary for DAWG test cases" ;
+    dc:description   "Vocabulary for DAWG test cases" ;
+    dc:date          "2004-07" ;
+    dc:format        "RDF" ;
+    dc:identifier    dawgt: ;
+    .
+
+
+## ---- Classes ----
+
+dawgt:ResultForm    rdf:type rdfs:Class ;
+    rdfs:comment    "Super class of all result forms" ;
+    .
+
+dawgt:Status    rdf:type rdfs:Class ;
+    rdfs:comment     "Super class of all test status classes" ;
+    .
+
+## ---- Properties ----
+
+# Could be a subPropertyOf rdf:type
+# or could just use rdf:type.
+dawgt:resultForm    rdf:type rdf:Property ;
+    rdfs:range          dawgt:ResultForm ;
+    rdfs:isDefinedBy    dawgt: ;
+    .
+
+#dawgt:status   rdf:type rdf:Property ;
+#    rdfs:range          dawgt:Status ;
+#    rdfs:isDefinedBy    dawgt: ;
+#    rdfs:label          "Status" ;
+#    .
+
+dawgt:approval rdf:type rdf:Property ;
+    rdfs:range          dawgt:Status ;
+    rdfs:isDefinedBy    dawgt: ;
+    rdfs:comment        "The approval status of the test with respect to the working group." ;
+    rdfs:label          "Approval" ;
+    .
+
+dawgt:approvedBy rdf:type rdf:Property ;
+    rdfs:comment        "Contains a reference to the minutes of the RDF Data Access Working Group where the test case status was last changed." ;
+    rdfs:label          "Approval" ;
+    owl:sameAs          rct:approval ;
+    .
+
+dawgt:description rdf:type rdf:Property ;
+    rdfs:comment        "A human-readable summary of the test case.";
+    rdfs:label          "Description" ;
+    owl:sameAs          rct:description ;
+    .
+
+dawgt:issue     rdf:type rdf:Property ;
+    rdfs:comment        "Contains a pointer to the associated issue on the RDF Data Access Working Group Tracking document.";
+    owl:sameAs          rct:issue ;
+    rdfs:label          "Issue" .
+
+dawgt:warning   rdf:type rdf:Property;
+    rdfs:comment        "Indicates that while the test should pass, it may generate a warning.";
+    owl:sameAs          rct:warning ;
+    rdfs:label          "Warning" .
+
+## ---- Defined terms ----
+
+## ---- Test statuses
+
+dawgt:NotClassified     rdfs:subClassOf dawgt:Status ;
+    rdfs:comment        "Class of tests that have not been classified" ;
+    rdfs:label          "NotClassified" .
+
+dawgt:Approved          rdfs:subClassOf dawgt:Status ;
+    rdfs:comment        "Class of tests that are Approved" ;
+    rdfs:label          "Approved" .
+
+dawgt:Rejected          rdfs:subClassOf dawgt:Status ;
+    rdfs:comment        "Class of tests that are Rejected" ;
+    rdfs:label          "Rejected" .
+
+dawgt:Obsoleted         rdfs:subClassOf dawgt:Status ;
+    rdfs:comment        "Class of tests that are Obsolete" ;
+    rdfs:label          "Obsoleted" .
+
+dawgt:Withdrawn         rdfs:subClassOf dawgt:Status ;
+    rdfs:comment        "Class of tests that have been Withdrawn" ;
+    rdfs:label          "Withdrawn" .
+
+
+## ---- Result forms
+## The result may still be encoded in RDF - classifying it helps
+## check for expected form.
+
+dawgt:ResultSet         rdfs:subClassOf dawgt:ResultForm ;
+    rdfs:comment        "Class of result expected to be from a SELECT query" ;
+    rdfs:label          "Result Set" .
+ 
+dawgt:ResultGraph       rdfs:subClassOf dawgt:ResultForm ;
+    rdfs:comment        "Class of result expected to be a graph" ;
+    rdfs:label          "Graph Result" .
+ 
+dawgt:ResultBoolean     rdfs:subClassOf dawgt:ResultForm ;
+    rdfs:comment        "Class of result expected to be a boolean" ;
+    rdfs:label          "Boolean Result" .

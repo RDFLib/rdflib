@@ -1,0 +1,4 @@
+_:b4 <foo:value> "y" _:b3 .
+_:b0 <foo:input> _:b3 .
+_:b0 <foo:input> _:b1 .
+_:b2 <foo:value> "x" _:b1 .

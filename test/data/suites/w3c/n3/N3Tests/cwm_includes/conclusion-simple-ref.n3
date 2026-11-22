@@ -1,0 +1,12 @@
+@prefix : <conclusion-simple.n3#>.
+
+{{<a> <b> <c>}=>{<test> a <SUCCESS> }.
+  <a> <b> <c>.
+}   a :TestRule.
+
+{   ?x a :TestRule; log:conclusion ?y }  => { ?y a :TestResult }.
+
+{{<a> <b> <c>}=>{<test> a <SUCCESS> }.
+  <a> <b> <c>.
+  <test> a <SUCCESS> .
+} a :TestResult.

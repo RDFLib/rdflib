@@ -1,0 +1,44 @@
+@prefix string: <http://www.w3.org/2000/10/swap/string#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <#>.
+
+:s01 :p :z .
+:s02 :p "string" .
+:s03 :p "-10.2E3" .
+:s04 :p "+33.3300" .
+:s05 :p "0.0" .
+:s06 :p "0" .
+:s07 :p "0E1" .
+:s08 :p "1.5" .
+:s09 :p "1" .
+:s10 :p "1E0" .
+:s11 :p "13" .
+:s12 :p "2002-10-10T17:00:00Z" .
+:s13 :p "false" .
+:s14 :p "true" .
+
+:b01 :p true .
+:b02 :p false .
+:b03 :p "0"^^xsd:boolean .
+
+:n01 :p 0 .
+:n02 :p 1 .
+:n03 :p -1 .
+:n04 :p 0.0 .
+:n05 :p 1.0 .
+:n06 :p -1.0 .
+:n07 :p 0E1 .
+:n08 :p 1E0 .
+:n09 :p "0E1"^^xsd:float .
+:n10 :p "1E0"^^xsd:float .
+:n11 :p "1.25"^^xsd:float .
+:n12 :p "-7.875"^^xsd:float .
+:n13 :p 2.5 .
+:n14 :p -2.5 .
+:n15 :p 1.23E3 .
+
+{
+  ([is :p of ?x]) string:concatenation ?z .
+} => {
+  ?x :is ?z
+} .

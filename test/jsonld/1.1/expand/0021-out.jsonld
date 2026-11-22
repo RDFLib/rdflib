@@ -1,0 +1,46 @@
+[
+  {
+    "http://purl.org/dc/elements/1.1/title": [ {"@value": "My first graph"} ],
+    "@graph": [
+      {
+        "@id": "http://example.org/test#jane",
+        "http://xmlns.com/foaf/0.1/name": [ {"@value": "Jane"} ],
+        "http://example.org/vocab#authored": [
+          {
+            "@graph": [
+              {
+                "@id": "http://example.org/test#chapter1",
+                "http://purl.org/dc/elements/1.1/description": [ {"@value": "Fun"} ],
+                "http://purl.org/dc/elements/1.1/title": [ {"@value": "Chapter One"} ]
+              },
+              {
+                "@id": "http://example.org/test#chapter2",
+                "http://purl.org/dc/elements/1.1/description": [ {"@value": "More fun"} ],
+                "http://purl.org/dc/elements/1.1/title": [ {"@value": "Chapter Two"} ]
+              },
+              {
+                "@id": "http://example.org/test#chapter3",
+                "http://purl.org/dc/elements/1.1/title": [ {"@value": "Chapter Three"} ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://example.org/test#john",
+        "http://xmlns.com/foaf/0.1/name": [ {"@value": "John"} ]
+      },
+      {
+        "@id": "http://example.org/test#library",
+        "http://example.org/vocab#contains": [
+          {
+            "@id": "http://example.org/test#book",
+            "http://example.org/vocab#contains": [ { "@id": "http://example.org/test#chapter" } ],
+            "http://purl.org/dc/elements/1.1/contributor": [ {"@value": "Writer"} ],
+            "http://purl.org/dc/elements/1.1/title": [ {"@value": "My Book"} ]
+          }
+        ]
+      }
+    ]
+  }
+]

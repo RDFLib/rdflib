@@ -1,0 +1,36 @@
+#Processed by Id: EulerLibrary.java 1506 2007-09-07 14:42:47Z josd 
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix nsp0: <http://eulersharp.sourceforge.net/2007/07test/gmpbnode.n3#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix fn: <http://www.w3.org/2006/xpath-functions#>.
+@prefix time: <http://www.w3.org/2000/10/swap/time#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/gmpbnode#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix var: <http://localhost/var#>.
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix p0nsp0: <http://eulersharp.sourceforge.net/2007/07test/gmpbnodeF.n3#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+{#e:possibility
+    {:dan :homeRegion :Texas} e:because {
+        {:dan :home var:e236827_12_} a e:Fact; e:source nsp0:pos_51_line_4.
+        {var:e236827_12_ :in :Texas} a e:Fact; e:source nsp0:pos_58_line_4.
+        {var:X_e10609 e:true 1} a e:Builtin.
+    }; e:source nsp0:pos_126_line_7.
+    {:dan :homeRegion :Texas} a e:Lemma.
+} e:possibility 1.
+
+{:dan :homeRegion :Texas. 1 e:true 1} => {:dan :homeRegion :Texas}.
+[ e:premises {:dan :homeRegion :Texas. 1 e:true 1}; e:conclusion {:dan :homeRegion :Texas}; e:beliefValue 1; e:informationValue 1].
+
+
+#ENDS 5 msec.
+

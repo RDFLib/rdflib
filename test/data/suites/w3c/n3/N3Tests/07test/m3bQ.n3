@@ -1,0 +1,5 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+{:B e:boolean e:T} => {:A e:boolean ?Y}.
+{:C e:boolean e:T. :B e:boolean e:T} => {:A e:boolean ?Y}.

@@ -1,0 +1,28 @@
+@prefix :        <http://www.w3.org/2003/11/swrl#> .
+@prefix swrl:    <http://www.w3.org/2003/11/swrl#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<http://owldl.com/ontologies/dl-safe.owl#BadChildRule>
+      a       swrl:Imp ;
+      swrl:body ([ a       swrl:ClassAtom ;
+                  swrl:argument1 <http://owldl.com/ontologies/dl-safe.owl#x> ;
+                  swrl:classPredicate <http://owldl.com/ontologies/dl-safe.owl#Grandchild>
+                ] [ a       swrl:IndividualPropertyAtom ;
+                  swrl:argument1 <http://owldl.com/ontologies/dl-safe.owl#x> ;
+                  swrl:argument2 <http://owldl.com/ontologies/dl-safe.owl#y> ;
+                  swrl:propertyPredicate
+                          <http://owldl.com/ontologies/dl-safe.owl#sibling>
+                ] [ a       swrl:IndividualPropertyAtom ;
+                  swrl:argument1 <http://owldl.com/ontologies/dl-safe.owl#x> ;
+                  swrl:argument2 <http://owldl.com/ontologies/dl-safe.owl#y> ;
+                  swrl:propertyPredicate
+                          <http://owldl.com/ontologies/dl-safe.owl#hates>
+                ]) ;
+      swrl:head ([ a       swrl:ClassAtom ;
+                  swrl:argument1 <http://owldl.com/ontologies/dl-safe.owl#x> ;
+                  swrl:classPredicate <http://owldl.com/ontologies/dl-safe.owl#BadChild>
+                ]) .
+
+<http://owldl.com/ontologies/dl-safe.owl>
+      a       owl:Ontology .

@@ -1,0 +1,9 @@
+[
+  {
+    "@id": "http://example.com/vocab#class",
+    "@type": [ "http://www.w3.org/2000/01/rdf-schema#Class" ],
+    "http://www.w3.org/2000/01/rdf-schema#subClassOf": [
+      { "@id": "http://example.com/vocab#someOtherClass"}
+    ]
+  }
+]

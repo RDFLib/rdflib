@@ -1,0 +1,6 @@
+@prefix : <replace.n3#> .
+:test1     a :success .
+:test2     a :success .
+:test3     :is "test 3" .
+:test5a    a :success .
+:test5b    a :success .

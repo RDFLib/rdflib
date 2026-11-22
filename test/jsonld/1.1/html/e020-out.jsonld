@@ -1,0 +1,4 @@
+[{
+  "@id": "http://a.example.com/base",
+  "http://example.com/foo": [{"@value": "bar"}]
+}]

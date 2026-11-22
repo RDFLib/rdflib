@@ -1,0 +1,16 @@
+PREFIX config: <tag:rdf4j.org,2023:config/>
+
+[]    a config:Repository ;
+    config:rep.id "test-repo" ;
+    config:rep.impl
+        [
+            config:rep.type "openrdf:SailRepository" ;
+            config:sail.impl
+                [
+                    config:native.tripleIndexers "spoc,posc" ;
+                    config:sail.defaultQueryEvaluationMode "STANDARD" ;
+                    config:sail.iterationCacheSyncThreshold "10000" ;
+                    config:sail.type "openrdf:NativeStore" ;
+                ] ;
+        ] ;
+.

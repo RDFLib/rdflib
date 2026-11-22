@@ -1,0 +1,12 @@
+#Processed by Id: euler.yap 8281 2015-07-14 08:26:02Z josd
+#eye --nope --single-answer http://eulersharp.sourceforge.net/2007/07test/bench.n3 --query http://eulersharp.sourceforge.net/2007/07test/benchQ.n3
+
+# 17638691 lips (100000 nrevs in 2.812 sec)
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix prolog: <http://eulersharp.sourceforge.net/2003/03swap/prolog#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/bench#>.
+
+100000 :bench 17638691 .
+
+#ENDS 3.331 [sec] IO=9/1 TC=1 TP=1 BC=0 BP=0 PM=0 CM=0 FM=0 AM=0
+

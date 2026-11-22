@@ -1,8 +1,0 @@
-PREFIX : <http://example/>
-
-SELECT *
-{ 
-  ?X  :name "paul"
-  {?Y :name "george" . OPTIONAL { ?X :email ?Z } }
-}
-

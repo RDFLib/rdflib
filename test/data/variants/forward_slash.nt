@@ -1,0 +1,4 @@
+<http://example.org/ontology/core/MyClassA> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://example.org/kb/individual-a> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/ontology/core/MyClassA> .
+<http://example.org/ontology/core/MyClassB> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://example.org/kb/individual-b> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/ontology/core/MyClassB> .

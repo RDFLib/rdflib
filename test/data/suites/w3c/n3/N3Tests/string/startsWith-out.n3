@@ -1,0 +1,6 @@
+@prefix : <startsWith.n3#> .
+
+:test1     a :success .
+:test3     a :success .
+:test6     a :success .
+:test7     a :success .

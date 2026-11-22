@@ -1,0 +1,4 @@
+<http://example.com/a> <http://example.org/label> _:cl1 .
+_:cl1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "en-US" .
+_:cl1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#language> "en-us" .
+_:cl1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#direction> "rtl" .

@@ -1,0 +1,15 @@
+# Test unshortenable strict qnames no predicates for xml sanity check
+
+@prefix :       <http://example.org/here#> .
+@prefix evil1:   <http://example.org/1> .
+@prefix evil2:   <http://example.org/prefix/1#> .
+
+# Test namespace generation
+
+evil1: :x :y .
+:x :y evil1: .
+
+# Test existing namespace
+
+evil2:1 :x :y .
+:x :y evil2:1 .

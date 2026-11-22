@@ -1,0 +1,142 @@
+@prefix : <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/ifctox3d#>.
+@prefix x3d: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologyx3d20091015#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix inst: <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> . 
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix stl:     <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101#> .
+@prefix matrix: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/matrix#>.
+@prefix we: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/wingededge#>.
+
+  # List of all faceedges
+  {
+	   ?y e:findall (?edge1 {?edge1 a we:faceedge} ?ANSWER).
+	   ?ANSWER e:length ?count.
+  }
+  =>
+  {
+     ?A we:listofallfaceedges ?ANSWER.
+     ?A we:totalfaceedgescount ?count.
+  }.
+  
+  
+  # List of used and available faceedges
+  {
+     ?x e:findall (?edge1 {?edge1 we:available 0. ?x e:findall (?edge1 {?edge1 we:partoftotalfaceedge ?obj} ()).} ?Used).
+     ?y e:findall (?edge2 {?edge2 a we:faceedge. ?y e:findall (?edge2 {?edge2 we:available 0} ()).} ?Available).
+  }
+  =>
+  {
+     ?A we:listofusedfaceedges ?Used.
+     ?A we:complementlist ?B.
+     ?B we:listofavailablefaceedges ?Available.
+  }.
+  
+  
+  # Add first faceedge to faceedgeslist.
+  {
+     ?A we:listofallfaceedges ?loat.
+     ?loat list:first ?fe1.
+  }
+  =>
+  {
+     ?fe1 we:available 0.
+  }.
+  
+  
+  # Add new faceedges to listofusedfaceedges IF they are a neighbour of a member of the listofusedtriangles AND IF they have the same normal AND IF they are still available AND IF they are not yet part of a face.
+  {
+     ?A we:listofusedfaceedges ?lout.
+     ?lout list:member ?edge1.
+     
+     ?B we:listofavailablefaceedges ?loat.
+     ?loat list:member ?edge2.
+     
+     ?edge1 we:neighbourfaceedge ?edge2.   
+  }
+  =>
+  {
+     ?edge2 we:available 0.
+  }. 
+  
+  
+  # Bij elke faceedge meegeven welke de grootste lijst is waarin hij zich bevindt.
+  {
+	   ?X a we:faceedge.
+	   ?y e:findall (?length {?ojb we:listofusedfaceedges ?Neighbourtriangleslist. ?Neighbourtriangleslist list:member ?X. ?Neighbourtriangleslist e:length ?length.} ?ANSWER).
+     ?ANSWER e:max ?max.   
+  }
+  =>
+  {
+     ?X we:sizeofmaxlist ?max.
+  }.   
+     
+  
+
+    # Zoek de grootste lijst met objecttriangles waarvan driehoekX een element is. = Zoek lijst waarvan driehoekX een element is waarbij geen grotere te vinden is.
+    # Geef die de eigenschap: is FinalFace
+    
+  {
+	   ?X we:sizeofmaxlist ?max.
+     ?ojb we:listofusedfaceedges ?Neighbourtriangleslist.
+	   ?Neighbourtriangleslist list:member ?X.
+	   ?Neighbourtriangleslist e:length ?length.
+	   ?length math:equalTo ?max.
+  }
+  =>
+  {
+     ?ojb rdf:type we:FinalFaceEdge.
+  }.
+  
+  
+  {
+	   ?ojb rdf:type we:FinalFaceEdge.
+	   ?ojb we:listofusedfaceedges ?lout.
+	   ?lout e:length ?count.
+	   ?lout list:member ?X.
+  }
+  =>
+  {
+     ?X we:partoftotalfaceedge ?ojb.
+     ?ojb we:faceedges ?lout.
+     ?ojb we:faceedgescount ?count.
+  }.
+  
+  # Als er een FinalFaceEdge gevonden is, stop de resterende driehoeken (driehoek die niet getagd zijn als partofface) dan in een nieuwe listofalltriangles.
+  {
+     ?y e:findall (?TriangleB {?TriangleB a we:faceedge. ?y e:findall (?TriangleB {?TriangleB we:partoftotalfaceedge ?obj} ()).} ?CompListTriangles).
+  }
+  =>
+  {
+     ?X we:listofallfaceedges ?CompListTriangles.
+  }.
+  
+  # Edge vector toevoegen
+  {
+     ?FaceEdge a we:FinalFaceEdge.
+     ?edge we:partoftotalfaceedge ?FaceEdge.
+     ?edge we:normalizedvector ?NV.
+  }
+  =>
+  {
+     ?FaceEdge we:normalizedvector ?NV.
+  }.
+  
+  # Faceedgelength.
+	{
+  ?faceedge a we:FinalFaceEdge.
+  ?y e:findall (?length {?edge we:partoftotalfaceedge ?faceedge. ?edge we:length ?length.} ?ANSWER).
+  ?ANSWER math:sum ?finalfaceedgelength.
+  }
+  =>
+  {
+  ?faceedge we:length ?finalfaceedgelength.
+  }.
+  

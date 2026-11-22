@@ -1,0 +1,7 @@
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX : <http://example.org/book/>
+
+select * where {
+	{ :book1 dc:title|rdfs:label ?displayString }
+} limit 100

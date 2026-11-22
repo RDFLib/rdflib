@@ -1,0 +1,19 @@
+<http://example.org/rules/rdf1> <http://example.org/conclusion> <http://example.org/rules/rdf1/conclusion> .
+<http://example.org/rules/rdf1> <http://example.org/premise> <http://example.org/rules/rdf1/premise> .
+<http://example.org/Widget> <http://example.org/dimensions> _:B35e4f4f1a94bd47ea504ae537ada4c96 .
+<http://example.org/tests/language-tag-case-not-significant> <http://example.org/conclusion> <http://example.org/tests/graph2> .
+<http://example.org/tests/language-tag-case-not-significant> <http://example.org/premise> <http://example.org/tests/graph1> .
+<http://example.org/tests/language-tag-case-not-significant> <http://example.org/entailmentRules> <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+_:B35e4f4f1a94bd47ea504ae537ada4c96 <http://example.org/width> "46"^^<http://example.org/int> .
+_:B35e4f4f1a94bd47ea504ae537ada4c96 <http://example.org/length> "12"^^<http://example.org/int> .
+<http://example.org/Bob> <http://example.org/name> "Bob" .
+<http://example.org/Bob> <http://example.org/wife> <http://example.org/Mary> .
+<http://example.org/Mary> <http://example.org/age> "32"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:B35e4f4f1a94bd47ea504ae537ada4c96 <http://example.org/property> "a"@en-us <http://example.org/tests/graph1> .
+_:B35e4f4f1a94bd47ea504ae537ada4c96 <http://example.org/property> "a"@en-US <http://example.org/tests/graph2> .
+<http://example.org/rules/rdf1/variables/aaa> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> <http://example.org/rules/rdf1/conclusion> .
+<http://example.org/aBook> <http://www.w3.org/2000/01/rdf-schema#comment> "This is a really good book!"@en <http://example.org/binfo> .
+<http://example.org/aBook> <http://purl.org/dc/elements/1.1/title> "<ex:title>A Good Book</ex:title>"^^<http://www.w3.org/2000/01/rdf-schema#XMLLiteral> <http://example.org/binfo> .
+<http://example.org/book-description.rdf> <http://example.org/authority> <http://example.org/Bob> <http://example.org/binfo> .
+_:B3ca3c249c891bdd84936c44db3809944 <http://example.org/source> <http://example.org/book-description.rdf> <http://example.org/binfo> .
+<http://example.org/rules/rdf1/variables/aaa> <http://example.org/rules/rdf1/variables/uuu> <http://example.org/rules/rdf1/variables/yyy> <http://example.org/rules/rdf1/premise> .

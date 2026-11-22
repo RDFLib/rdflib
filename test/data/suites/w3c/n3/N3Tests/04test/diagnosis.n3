@@ -1,0 +1,74 @@
+# Base: http://protege.stanford.edu/swbp/diagnosis.n3#
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix :        <diagnosis#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+
+:Breast_Tumor_Christine
+      a       :Disease .
+
+:diagnosis_probability
+      a       owl:ObjectProperty , owl:FunctionalProperty .
+
+:Christine
+      a       :Person ;
+      :has_diagnosis _:Diagnosis_Relation_1 .
+
+:has_diagnosis
+      a       owl:ObjectProperty ;
+      rdfs:range :Diagnosis_Relation .
+
+:Disease
+      a       owl:Class .
+
+:Diagnosis_Relation
+      a       owl:Class ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Probability_value ;
+                owl:onProperty :diagnosis_probability
+              ] ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:onProperty :diagnosis_value ;
+                owl:someValuesFrom :Disease
+              ] .
+
+:MEDIUM
+      a       :Probability_value .
+
+[]    a       owl:AllDifferent ;
+      owl:distinctMembers (:HIGH :LOW :MEDIUM) .
+
+:Person
+      a       owl:Class ;
+      rdfs:subClassOf
+              [ a       owl:Restriction ;
+                owl:allValuesFrom :Diagnosis_Relation ;
+                owl:onProperty :has_diagnosis
+              ] .
+
+:HIGH
+      a       :Probability_value .
+
+:LOW  a       :Probability_value .
+
+_:Diagnosis_Relation_1
+      a       :Diagnosis_Relation ;
+      :diagnosis_probability :HIGH;
+      :diagnosis_value :Breast_Tumor_Christine .
+
+:Probability_value
+      a       owl:Class ;
+      owl:equivalentClass
+              [ a       owl:Class ;
+                owl:oneOf (:HIGH :MEDIUM :LOW)
+              ] .
+
+:diagnosis_value
+      a       owl:ObjectProperty , owl:FunctionalProperty ;
+      rdfs:subPropertyOf rdf:value ;
+      rdfs:range :Disease .
+
+<http://protege.stanford.edu/swbp/diagnosis>
+      a       owl:Ontology .

@@ -1,0 +1,10 @@
+#  Two variables and some bnodes
+#
+
+:Juno :says  { :Mars :too :Successful }.
+
+{ :Juno :says  { :Mars :too ?x } } =>  { :test :a ?x }.
+
+
+#ends
+

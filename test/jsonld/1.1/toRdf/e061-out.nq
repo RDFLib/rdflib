@@ -1,0 +1,4 @@
+_:b0 <http://example.com/property> "1"^^<http://example.com/datatype> .
+_:b0 <http://example.com/property> "5.1E0"^^<http://example.com/datatype> .
+_:b0 <http://example.com/property> "false"^^<http://example.com/datatype> .
+_:b0 <http://example.com/property> "true"^^<http://example.com/datatype> .

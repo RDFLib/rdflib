@@ -1,0 +1,12 @@
+# $Id: nciOncologyQ.n3 454 2005-01-04 00:03:00Z josd $
+# PxButton | euler | euler --nope --think /2004/acw/nci/nciOncology.n3 --query nciOncologyQ.n3
+# PxButton | cwm   | cwm /2004/acw/nci/nciOncology.n3 --think --query"=nciOncologyQ.n3"
+
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix nci: <http://www.mindswap.org/2003/nciOncology.owl#>.
+
+[]
+q:select {nci:FGFR3_Gene rdfs:subClassOf nci:Fibroblast_Growth_Factor_Receptor_Family_Gene};
+q:where  {nci:FGFR3_Gene rdfs:subClassOf nci:Fibroblast_Growth_Factor_Receptor_Family_Gene}.
+

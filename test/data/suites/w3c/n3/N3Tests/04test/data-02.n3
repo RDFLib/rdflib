@@ -1,0 +1,9 @@
+# $Id: data-02.n3 368 2004-09-07 20:02:25Z josd $
+
+@prefix : <http://example.org/data/> .
+
+
+:y :y :x .
+:x :y :y .
+:y :x :y .
+

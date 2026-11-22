@@ -4,29 +4,67 @@ format
 
 You can draw the graph of an RDFS file directly:
 
-.. code-block: bash
-
-   rdf2dot my_rdfs_file.rdf | dot -Tpng | display
+```bash
+rdf2dot my_rdfs_file.rdf | dot -Tpng | display
+```
 """
 
-import rdflib.extras.cmdlineutils
+from __future__ import annotations
 
-import sys
-import itertools
 import collections
+import itertools
+import sys
 
+import rdflib.extras.cmdlineutils
+from rdflib import RDF, RDFS, XSD
+from rdflib.term import Identifier
 
-from rdflib import XSD, RDF, RDFS
-
-
-XSDTERMS = [XSD[x] for x in (
-    "anyURI", "base64Binary", "boolean", "byte", "date", "dateTime", "decimal",
-    "double", "duration", "float", "gDay", "gMonth", "gMonthDay", "gYear",
-    "gYearMonth", "hexBinary", "ID", "IDREF", "IDREFS", "int", "integer",
-    "language", "long", "Name", "NCName", "negativeInteger", "NMTOKEN",
-    "NMTOKENS", "nonNegativeInteger", "nonPositiveInteger", "normalizedString",
-    "positiveInteger", "QName", "short", "string", "time", "token",
-    "unsignedByte", "unsignedInt", "unsignedLong", "unsignedShort")]
+XSDTERMS = [
+    XSD[x]
+    for x in (
+        "anyURI",
+        "base64Binary",
+        "boolean",
+        "byte",
+        "date",
+        "dateTime",
+        "decimal",
+        "double",
+        "duration",
+        "float",
+        "gDay",
+        "gMonth",
+        "gMonthDay",
+        "gYear",
+        "gYearMonth",
+        "hexBinary",
+        "ID",
+        "IDREF",
+        "IDREFS",
+        "int",
+        "integer",
+        "language",
+        "long",
+        "Name",
+        "NCName",
+        "negativeInteger",
+        "NMTOKEN",
+        "NMTOKENS",
+        "nonNegativeInteger",
+        "nonPositiveInteger",
+        "normalizedString",
+        "positiveInteger",
+        "QName",
+        "short",
+        "string",
+        "time",
+        "token",
+        "unsignedByte",
+        "unsignedInt",
+        "unsignedLong",
+        "unsignedShort",
+    )
+]
 
 EDGECOLOR = "blue"
 NODECOLOR = "black"
@@ -40,25 +78,23 @@ def rdfs2dot(g, stream, opts={}):
     """
 
     fields = collections.defaultdict(set)
-    nodes = {}
+    nodes: dict[Identifier, str] = {}
 
-    def node(x):
+    def node(nd):
+        if nd not in nodes:
+            nodes[nd] = "node%d" % len(nodes)
+        return nodes[nd]
 
-        if x not in nodes:
-            nodes[x] = "node%d" % len(nodes)
-        return nodes[x]
-
-    def label(x, g):
-
-        l = g.value(x, RDFS.label)
-        if l is None:
+    def label(xx, grf):
+        lbl = grf.value(xx, RDFS.label)
+        if lbl is None:
             try:
-                l = g.namespace_manager.compute_qname(x)[2]
-            except:
+                lbl = grf.namespace_manager.compute_qname(xx)[2]
+            except Exception:
                 pass  # bnodes and some weird URIs cannot be split
-        return l
+        return lbl
 
-    stream.write(u"digraph { \n node [ fontname=\"DejaVu Sans\" ] ; \n")
+    stream.write('digraph { \n node [ fontname="DejaVu Sans" ] ; \n')
 
     for x in g.subjects(RDF.type, RDFS.Class):
         n = node(x)
@@ -66,31 +102,37 @@ def rdfs2dot(g, stream, opts={}):
     for x, y in g.subject_objects(RDFS.subClassOf):
         x = node(x)
         y = node(y)
-        stream.write(u"\t%s -> %s [ color=%s ] ;\n" % (y, x, ISACOLOR))
+        stream.write("\t%s -> %s [ color=%s ] ;\n" % (y, x, ISACOLOR))
 
     for x in g.subjects(RDF.type, RDF.Property):
         for a, b in itertools.product(
-                g.objects(x, RDFS.domain), g.objects(x, RDFS.range)):
+            g.objects(x, RDFS.domain), g.objects(x, RDFS.range)
+        ):
             if b in XSDTERMS or b == RDFS.Literal:
-                l = label(b, g)
+                l_ = label(b, g)
                 if b == RDFS.Literal:
-                    l = "literal"
-                fields[node(a)].add((label(x, g), l))
+                    l_ = "literal"
+                fields[node(a)].add((label(x, g), l_))
             else:
-    #            if a in nodes and b in nodes:
+                #            if a in nodes and b in nodes:
                 stream.write(
-                    "\t%s -> %s [ color=%s, label=\"%s\" ];\n" % (
-                        node(a), node(b), EDGECOLOR, label(x, g)))
+                    '\t%s -> %s [ color=%s, label="%s" ];\n'
+                    % (node(a), node(b), EDGECOLOR, label(x, g))
+                )
 
     for u, n in nodes.items():
-        stream.write(u"# %s %s\n" % (u, n))
-        f = [u"<tr><td align='left'>%s</td><td>%s</td></tr>" %
-             x for x in sorted(fields[n])]
-        opstr = u"%s [ shape=none, color=%s label=< <table color='#666666'" + \
-                u" cellborder=\"0\" cellspacing='0' border=\"1\"><tr>" + \
-                u"<td colspan=\"2\" bgcolor='grey'><B>%s</B></td>" + \
-                u"</tr>%s</table> > ] \n"
-        stream.write(opstr % (n, NODECOLOR, label(u, g), u"".join(f)))
+        stream.write("# %s %s\n" % (u, n))
+        f = [
+            "<tr><td align='left'>%s</td><td>%s</td></tr>" % x
+            for x in sorted(fields[n])
+        ]
+        opstr = (
+            "%s [ shape=none, color=%s label=< <table color='#666666'"
+            + " cellborder='0' cellspacing='0' border='1'><tr>"
+            + "<td colspan='2' bgcolor='grey'><B>%s</B></td>"
+            + "</tr>%s</table> > ] \n"
+        )
+        stream.write(opstr % (n, NODECOLOR, label(u, g), "".join(f)))
 
     stream.write("}\n")
 
@@ -108,5 +150,6 @@ DOT language to stdout
 def main():
     rdflib.extras.cmdlineutils.main(rdfs2dot, _help)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

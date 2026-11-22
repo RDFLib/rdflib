@@ -1,0 +1,21 @@
+[
+  {
+    "@id": "http://example.com/node",
+    "http://example.com/vocab/property": [
+      {
+        "@id": "http://example.com/propertyValueNode",
+        "http://example.com/vocab/indexMap": [
+          {
+            "@value": "simple string",
+            "@language": "en",
+            "@index": "expands to english string"
+          }
+        ]
+      },
+      {
+        "@value": "einfacher String",
+        "@language": "de"
+      }
+    ]
+  }
+]

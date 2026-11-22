@@ -1,0 +1,15 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/pi.n3 --query http://eulersharp.sourceforge.net/2007/07test/pi-query.n3
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/pi#>.
+
+(10 3.141839618929402) :pi true.
+(100 3.1415929035585526) :pi true.
+(1000 3.141592653839793) :pi true.
+(10000 3.141592653590042) :pi true.
+(100000 3.141592653589792) :pi true.
+
+#2018-04-18T08:28:32.144Z in=34 out=5 ent=5 step=5 brake=1 inf=10124156 sec=1.168 inf/sec=8667942
+#ENDS
+

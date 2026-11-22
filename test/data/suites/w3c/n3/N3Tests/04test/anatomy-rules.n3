@@ -1,0 +1,462 @@
+# $Id: anatomy-rules.n3 9618 2017-09-08 22:03:34Z josd $
+# see http://idm.univ-rennes1.fr/~obierlai/anatomy/annexes/index.html
+#
+# PxButton | check with cwm   | bash .cwm anatomy-rules.n3 
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <http://idm.univ-rennes1.fr/~obierlai/anatomy#>.
+
+### classes
+
+:AnatomicalEntity rdfs:subClassOf :Top.
+:MaterialAnatomicalEntity rdfs:subClassOf :AnatomicalEntity.
+:Hemisphere rdfs:subClassOf :MaterialAnatomicalEntity.
+:Lobe rdfs:subClassOf :MaterialAnatomicalEntity.
+:Gyrus rdfs:subClassOf :MaterialAnatomicalEntity.
+:Pars rdfs:subClassOf :MaterialAnatomicalEntity.
+:NonMaterialAnatomicalEntity rdfs:subClassOf :AnatomicalEntity.
+:SulcalFold rdfs:subClassOf :NonMaterialAnatomicalEntity.
+:Sulcus rdfs:subClassOf :SulcalFold.
+:SulcusSegment rdfs:subClassOf :SulcalFold.
+:GyriConnection rdfs:subClassOf :NonMaterialAnatomicalEntity.
+:ConventionalSeparation rdfs:subClassOf :GyriConnection.
+:PliDePassage rdfs:subClassOf :GyriConnection.
+:Operculus rdfs:subClassOf :GyriConnection.
+:SulciConnection rdfs:subClassOf :NonMaterialAnatomicalEntity.
+
+### properties
+
+:hasAnatomicalPart rdfs:domain :MaterialAnatomicalEntity;
+    rdfs:range :MaterialAnatomicalEntity;
+    owl:inverseOf :isAnatomicalPartOf;
+    a owl:TransitiveProperty.
+:hasDirectAnatomicalPart rdfs:domain :MaterialAnatomicalEntity;
+    rdfs:range :MaterialAnatomicalEntity;
+    owl:inverseOf :isDirectAnatomicalPartOf;
+    a owl:InverseFunctionalProperty.
+:hasAnatomicalPartList rdfs:domain :MaterialAnatomicalEntity;
+    rdfs:range rdf:List.
+
+:hasSegment rdfs:domain :SulcalFold;
+    rdfs:range :SulcalFold;
+    owl:inverseOf :isSegmentOf;
+    a owl:TransitiveProperty.
+:hasDirectSegment rdfs:domain :SulcalFold;
+    rdfs:range :SulcalFold;
+    owl:inverseOf :isDirectSegmentOf;
+    a owl:InverseFunctionalProperty.
+:hasSegmentList rdfs:domain :SulcalFold;
+    rdfs:range rdf:List.
+
+:isMaterialAnatomicalEntityBoundedBy rdfs:domain :MaterialAnatomicalEntity;
+    rdfs:range [ owl:unionOf (:SulcalFold :GyriConnection) ];
+    owl:inverseOf :MaterialAnatomicalEntityBounds.
+:isSulcalFoldBoundedBy rdfs:domain :SulcalFold;
+    rdfs:range :SulciConnection;
+    owl:inverseOf :SulcalFoldBounds.
+:isInterruptedBy rdfs:domain :SulcalFold;
+    rdfs:range [ owl:unionOf (:PliDePassage :Operculus) ];
+    owl:inverseOf :interrupts.
+:isMaterialAnatomicalEntityConnectedTo rdfs:domain :MaterialAnatomicalEntity;
+    rdfs:range :MaterialAnatomicalEntity;
+    a owl:SymmetricProperty.
+:isSulcalFoldConnectedTo rdfs:domain :SulcalFold;
+    rdfs:range :SulcalFold; 
+    a owl:SymmetricProperty.
+:isMaterialAnatomicalEntityContiguousTo rdfs:domain :MaterialAnatomicalEntity;
+    rdfs:range :MaterialAnatomicalEntity;
+    a owl:SymmetricProperty.
+:isSulcalFoldContiguousTo rdfs:domain :SulcalFold;
+    rdfs:range :SulcalFold;
+    a owl:SymmetricProperty.
+
+
+### rules
+
+{?X :separates (?Z ?Y).
+ ?X a :AnatomicalEntity.
+ ?Y a :AnatomicalEntity.
+ ?Z a :AnatomicalEntity}
+ => {?X :separates (?Y ?Z)}.
+
+{?X :connects (?Z ?Y).
+ ?X a :AnatomicalEntity.
+ ?Y a :AnatomicalEntity.
+ ?Z a :AnatomicalEntity}
+ => {?X :connects (?Y ?Z)}.
+
+{?M1 :hasAnatomicalPartList ?L1.
+ ?M2 :hasAnatomicalPartList ?L2.
+ ?L1 :hasNoAnatomicalPartInList ?L2.
+ ?M1 a :MaterialAnatomicalEntity.
+ ?M2 a :MaterialAnatomicalEntity}
+ => {?M1 :hasNoCommonPart ?M2}.
+
+{?M :hasAnatomicalPartList ?L.
+ ?S :separatesMaterialAnatomicalEntity (?M1 ?M2).
+ ?L :hasNoAnatomicalPartInList (?M1 ?M2).
+ ?M a :MaterialAnatomicalEntity.
+ ?S a :SulcalFold}
+ => {?S :isNotContainedIn ?M}.
+
+{?M :hasAnatomicalPartList ?L.
+ ?S :separatesMaterialAnatomicalEntity (?M1 ?M2).
+ ?L :hasNoAnatomicalPartInList (?M1 ?M2).
+ ?M a :MaterialAnatomicalEntity.
+ ?S a :GyriConnection}
+ => {?S :isNotContainedIn ?M}.
+
+{?S :separatesMaterialAnatomicalEntity (?M1 ?M2).
+ ?M1 a :MaterialAnatomicalEntity.
+ ?M2 a :MaterialAnatomicalEntity.
+ ?S a :SulcalFold}
+ => {?M1 :isMaterialAnatomicalEntityBoundedBy ?S}.
+
+{?S :separatesMaterialAnatomicalEntity (?M1 ?M2).
+ ?M1 a :MaterialAnatomicalEntity.
+ ?M2 a :MaterialAnatomicalEntity.
+ ?S a :SulcalFold}
+ => {?M1 :isMaterialAnatomicalEntityContiguousTo ?M2}.
+
+{?M :isMaterialAnatomicalEntityBoundedBy ?SS.
+ ?S :hasSegment ?SS.
+ ?S a :SulcalFold.
+ ?SS a :SulcalFold.
+ ?M a :MaterialAnatomicalEntity} 
+ => {?M :isMaterialAnatomicalEntityBoundedBy ?S}.
+
+{?SM :isMaterialAnatomicalEntityBoundedBy ?S.
+ ?M :hasAnatomicalPart ?SM.
+ ?S :isNotContainedIn ?M.
+ ?S a :SulcalFold.
+ ?SM a :MaterialAnatomicalEntity.
+ ?M a :MaterialAnatomicalEntity} 
+ => {?M :isMaterialAnatomicalEntityBoundedBy ?S}.
+
+{?SM :isMaterialAnatomicalEntityBoundedBy ?S.
+ ?M :hasAnatomicalPart ?SM.
+ ?S :isNotContainedIn ?M.
+ ?S a :GyriConnection.
+ ?SM a :MaterialAnatomicalEntity.
+ ?M a :MaterialAnatomicalEntity} 
+ => {?M :isMaterialAnatomicalEntityBoundedBy ?S}.
+
+{?M1 :isMaterialAnatomicalEntityContiguousTo ?M2.
+ ?M2 :hasAnatomicalPart ?SM2.
+ ?M1 :isMaterialAnatomicalEntityBoundedBy ?S.
+ ?M2 :isMaterialAnatomicalEntityBoundedBy ?S.
+ ?SM2 :isMaterialAnatomicalEntityBoundedBy ?S.
+ ?M1 a :MaterialAnatomicalEntity.
+ ?M2 a :MaterialAnatomicalEntity.
+ ?SM2 a :MaterialAnatomicalEntity.
+ ?S a :SulcalFold}
+ => {?M1 :isMaterialAnatomicalEntityContiguousTo ?SM2}.
+
+{?M1 :isMaterialAnatomicalEntityContiguousTo ?SM2.
+ ?M2 :hasAnatomicalPart ?SM2.
+ ?M1 :hasNoCommonPart ?M2.
+ ?M1 a :MaterialAnatomicalEntity.
+ ?M2 a :MaterialAnatomicalEntity.
+ ?SM2 a :MaterialAnatomicalEntity}
+ => {?M1 :isMaterialAnatomicalEntityContiguousTo ?M2}.
+
+{?S :separatesMaterialAnatomicalEntity (?M1 ?M2).
+ ?M2 :hasAnatomicalPart ?SM2.
+ ?SM2 :isMaterialAnatomicalEntityBoundedBy ?S.
+ ?S a :SulcalFold.
+ ?M1 a :MaterialAnatomicalEntity.
+ ?M2 a :MaterialAnatomicalEntity.
+ ?SM2 a :MaterialAnatomicalEntity}
+ => {?S :separatesMaterialAnatomicalEntity (?M1 ?SM2)}.
+
+{?S :separatesMaterialAnatomicalEntity (?M1 ?SM2).
+ ?M2 :hasAnatomicalPart ?SM2.
+ ?M1 :hasNoCommonPart ?M2.
+ ?S a :SulcalFold.
+ ?M1 a :MaterialAnatomicalEntity.
+ ?M2 a :MaterialAnatomicalEntity.
+ ?SM2 a :MaterialAnatomicalEntity}
+ => {?S :separatesMaterialAnatomicalEntity (?M1 ?M2)}.
+
+{?SS :separatesMaterialAnatomicalEntity (?M1 ?M2).
+ ?S :hasSegment ?SS.
+ ?S a :SulcalFold.
+ ?SS a :SulcalFold.
+ ?M1 a :MaterialAnatomicalEntity.
+ ?M2 a :MaterialAnatomicalEntity}
+ => {?S :separatesMaterialAnatomicalEntity (?M1 ?M2)}.
+
+{?S :separatesMaterialAnatomicalEntity (?M1 ?M2).
+ ?S :hasSegment ?SS.
+ ?M1 :isMaterialAnatomicalEntityBoundedBy ?SS.
+ ?M2 :isMaterialAnatomicalEntityBoundedBy ?SS.
+ ?S a :SulcalFold.
+ ?SS a :SulcalFold.
+ ?M1 a :MaterialAnatomicalEntity.
+ ?M2 a :MaterialAnatomicalEntity}
+ => {?SS :separatesMaterialAnatomicalEntity (?M1 ?M2)}.
+
+{?S :separatesSulcalFold (?N1 ?N2).
+ ?N1 a :SulcalFold.
+ ?N2 a :SulcalFold.
+ ?S a :OperculusOrPliDePassage}
+ => {?N1 :isInterruptedBy ?S}.
+
+{?S :separatesSulcalFold (?N1 ?N2).
+ ?N1 a :SulcalFold.
+ ?N2 a :SulcalFold.
+ ?S a :OperculusOrPliDePassage}
+ => {?N1 :isSulcalFoldContiguousTo ?N2}.
+
+{?N1 :isInterruptedBy ?S.
+ ?N2 :isInterruptedBy ?S.
+ ?S a :OperculusOrPliDePassage.
+ ?N1 a :SulcalFold.
+ ?N2 a :SulcalFold}
+ => {?N1 :isSulcalFoldContiguousTo ?N2}.
+
+{?N1 :isInterruptedBy ?S.
+ ?N2 :isInterruptedBy ?S.
+ ?S a :OperculusOrPliDePassage.
+ ?N1 a :SulcalFold.
+ ?N2 a :SulcalFold}
+ => {?S :separatesSulcalFold (?N1 ?N2)}.
+
+{?SN :isInterruptedBy ?S.
+ ?N :hasSegment ?SN.
+ ?S :separatesSulcalFold (?SN ?N0).
+ ?N :hasNoSegment ?N0.
+ ?N a :SulcalFold.
+ ?SN a :SulcalFold.
+ ?S a :OperculusOrPliDePassage}
+ => {?N :isInterruptedBy ?S}.
+
+{?S :separatesSulcalFold (?SN1 ?N2).
+ ?N1 :hasSegment ?SN1.
+ ?N1 :hasNoSegment ?N2.
+ ?S a :OperculusOrPliDePassage.
+ ?N1 a :SulcalFold.
+ ?N2 a :SulcalFold.
+ ?SN1 a :SulcalFold}
+ => {?S :separatesSulcalFold (?N1 ?N2)}.
+
+{?S :separatesSulcalFold (?N1 ?N2).
+ ?N1 :hasSegment ?SN1.
+ ?SN1 :isInterruptedBy ?S.
+ ?N1 a :SulcalFold.
+ ?N2 a :SulcalFold.
+ ?SN1 a :SulcalFold.
+ ?S a :OperculusOrPliDePassage}
+ => {?S :separatesSulcalFold (?SN1 ?N2)}.
+
+{?S :connectsMaterialAnatomicalEntity (?M1 ?M2).
+ ?M1 a :MaterialAnatomicalEntity.
+ ?M2 a :MaterialAnatomicalEntity.
+ ?S a :GyriConnection}
+ => {?M1 :isMaterialAnatomicalEntityBoundedBy ?S}.
+
+{?S :connectsMaterialAnatomicalEntity (?M1 ?M2).
+ ?M1 a :MaterialAnatomicalEntity.
+ ?M2 a :MaterialAnatomicalEntity.
+ ?S a :GyriConnection}
+ => {?M1 :isMaterialAnatomicalEntityConnectedTo ?M2}.
+
+{?M1 :isMaterialAnatomicalEntityBoundedBy ?S.
+ ?M2 :isMaterialAnatomicalEntityBoundedBy ?S.
+ ?M1 a :MaterialAnatomicalEntity.
+ ?M2 a :MaterialAnatomicalEntity.
+ ?S a :GyriConnection}
+ => {?M1 :isMaterialAnatomicalEntityConnectedTo ?M2}.
+
+{?M1 :isMaterialAnatomicalEntityBoundedBy ?S.
+ ?M2 :isMaterialAnatomicalEntityBoundedBy ?S.
+ ?M1 a :MaterialAnatomicalEntity.
+ ?M2 a :MaterialAnatomicalEntity.
+ ?S a :GyriConnection}
+ => {?S :connectsMaterialAnatomicalEntity (?M1 ?M2)}.
+
+{?S :connectsMaterialAnatomicalEntity (?M1 ?SM2).
+ ?M2 :hasAnatomicalPart ?SM2.
+ ?M1 :hasNoCommonPart ?M2.
+ ?S a :GyriConnection.
+ ?M1 a :MaterialAnatomicalEntity.
+ ?M2 a :MaterialAnatomicalEntity.
+ ?SM2 a :MaterialAnatomicalEntity}
+ => {?S :connectsMaterialAnatomicalEntity (?M1 ?M2)}.
+
+{?M1 :isMaterialAnatomicalEntityConnectedTo ?SM2.
+ ?M2 :hasAnatomicalPart ?SM2.
+ ?M1 :hasNoCommonPart ?M2.
+ ?M1 a :MaterialAnatomicalEntity.
+ ?M2 a :MaterialAnatomicalEntity.
+ ?SM2 a :MaterialAnatomicalEntity}
+ => {?M1 :isMaterialAnatomicalEntityConnectedTo ?M2}.
+
+{?S :connectsMaterialAnatomicalEntity (?M1 ?M2).
+ ?M2 :hasAnatomicalPart ?SM2.
+ ?SM2 :isMaterialAnatomicalEntityBoundedBy ?S.
+ ?S a :GyriConnection.
+ ?M1 a :MaterialAnatomicalEntity.
+ ?M2 a :MaterialAnatomicalEntity.
+ ?SM2 a :MaterialAnatomicalEntity}
+ => {?S :connectsMaterialAnatomicalEntity (?M1 ?SM2)}.
+
+{?M1 :isMaterialAnatomicalEntityConnectedTo ?M2.
+ ?M2 :hasAnatomicalPart ?SM2.
+ ?M1 :isMaterialAnatomicalEntityBoundedBy ?S.
+ ?SM2 :isMaterialAnatomicalEntityBoundedBy ?S.
+ ?M1 a :MaterialAnatomicalEntity.
+ ?M2 a :MaterialAnatomicalEntity.
+ ?SM2 a :MaterialAnatomicalEntity.
+ ?S a :GyriConnection}
+ => {?M1 :isMaterialAnatomicalEntityConnectedTo ?SM2}.
+
+{?S :connectsSulcalFold (?N1 ?N2).
+ ?N1 a :SulcalFold.
+ ?N2 a :SulcalFold.
+ ?S a :SulciConnection}
+ => {?N1 :isSulcalFoldBoundedBy ?S}.
+
+{?S :connectsSulcalFold (?N1 ?N2).
+ ?N1 a :SulcalFold.
+ ?N2 a :SulcalFold.
+ ?S a :SulciConnection}
+ => {?N1 :isSulcalFoldConnected ?N2}.
+
+{?N1 :isSulcalFoldBoundedBy ?S.
+ ?N2 :isSulcalFoldBoundedBy ?S.
+ ?N1 a :SulcalFold.
+ ?N2 a :SulcalFold.
+ ?S a :SulciConnection}
+ => {?N1 :isSulcalFoldConnectedTo ?N2}.
+
+{?N1 :isSulcalFoldBoundedBy ?S.
+ ?N2 :isSulcalFoldBoundedBy ?S.
+ ?N1 a :SulcalFold.
+ ?N2 a :SulcalFold.
+ ?S a :SulciConnection}
+ => {?S :connects (?N1 ?N2)}.
+
+{?SN1 :isSulcalFoldBoundedBy ?S.
+ ?N1 :hasSegment ?SN1.
+ ?S :connectsSulcalFold (?SN1 ?N0).
+ ?N1 :hasNoSegment ?N0.
+ ?N1 a :SulcalFold.
+ ?SN1 a :SulcalFold.
+ ?N0 a :SulcalFold.
+ ?S a :SulciConnection}
+ => {?N1 :isSulcalFoldBoundedBy ?S}.
+
+{?S :connectsSulcalFold (?N1 ?SN2).
+ ?N2 :hasSegment ?SN2.
+ ?N2 :hasNoSegment ?N1.
+ ?N1 a :SulcalFold.
+ ?N2 a :SulcalFold.
+ ?SN2 a :SulcalFold.
+ ?S a :SulciConnection}
+ => {?S :connectsSulcalFold (?N1 ?N2)}.
+
+{?N1 :isSulcalFoldConnectedTo ?SN2.
+ ?N2 :hasSegment ?SN2.
+ ?N2 :hasNoSegment ?N1.
+ ?N1 a :SulcalFold.
+ ?N2 a :SulcalFold.
+ ?SN2 a :SulcalFold}
+ => {?N1 :isSulcalFoldConnectedTo ?N2}.
+
+
+### support
+
+{?A rdfs:subClassOf ?B.
+ ?S a ?A}
+ => {?S a ?B}.
+
+{?P owl:inverseOf ?Q.
+ ?S ?P ?O}
+ => {?O ?Q ?S}.
+
+{?P rdf:type owl:SymmetricProperty.
+ ?S ?P ?O}
+ => {?O ?P ?S}.
+
+{?P rdf:type owl:TransitiveProperty.
+ ?X ?P ?O.
+ ?S ?P ?X}
+ => {?S ?P ?O}.
+
+{?X owl:differentFrom ?Y}
+ => {?Y owl:differentFrom ?X}.
+
+{?S a :Operculus}
+ => {?S a :OperculusOrPliDePassage}.
+
+{?S a :PliDePassage}
+ => {?S a :OperculusOrPliDePassage}.
+
+{?M :hasAnatomicalPartList ?X.
+ ?X :hasItem ?I}
+ => {?M :hasAnatomicalPart ?I}.
+
+{?L2 a rdf:List}
+ => {() :hasNoAnatomicalPartInList ?L2}.
+
+{?L1 rdf:first ?A;
+     a rdf:List.
+ ?A :hasAnatomicalPartList ?L3.
+ ?L3 :hasNoAnatomicalPartInList ?L2.
+ ?L2 :hasNoAnatomicalPart ?A.
+ ?L1 rdf:rest ?B.
+ ?B :hasNoAnatomicalPartInList ?L2}
+ => {?L1 :hasNoAnatomicalPartInList ?L2}.
+
+{?X a :MaterialAnatomicalEntity}
+ => {() :hasNoAnatomicalPart ?X}.
+
+{?L rdf:first ?A;
+    a rdf:List.
+ ?A :hasAnatomicalPartList ?M.
+ ?M :hasNoAnatomicalPart ?X.
+ ?A owl:differentFrom ?X.
+ ?L rdf:rest ?B.
+ ?B :hasNoAnatomicalPart ?X}
+ => {?L :hasNoAnatomicalPart ?X}.
+
+{?M :hasSegmentList ?X.
+ ?X :hasItem ?I}
+ => {?M :hasSegment ?I}.
+
+{?X a :SulcalFold}
+ => {() :hasNoSegment ?X}.
+
+{?L rdf:first ?A;
+    a rdf:List.
+ ?A :hasSegmentList ?M.
+ ?M :hasNoSegment ?X.
+ ?A owl:differentFrom ?X.
+ ?L rdf:rest ?B.
+ ?B :hasNoSegment ?X}
+ => {?L :hasNoSegment ?X}.
+
+{?M :hasAnatomicalPartList ?X}
+ => {?X a rdf:List}.
+
+{?M :hasSegmentList ?X}
+ => {?X a rdf:List}.
+
+{?L rdf:rest ?X;
+    a rdf:List}
+ => {?X a rdf:List}.
+
+{?L rdf:first ?I;
+    a rdf:List}
+ => {?L :hasItem ?I}.
+
+{?L rdf:rest ?R;
+    a rdf:List.
+ ?R :hasItem ?I}
+ => {?L :hasItem ?I}.

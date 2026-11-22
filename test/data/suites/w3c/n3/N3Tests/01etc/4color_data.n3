@@ -1,0 +1,30 @@
+@prefix : <http://josd.github.io/brain/4color#>.
+
+:Austria :neighbours (:Czech_Republic :Germany :Hungary :Italy :Slovenia :Slovakia).
+:Belgium :neighbours (:France :Netherlands :Luxemburg :Germany :United_Kingdom).
+:Bulgaria :neighbours (:Romania :Greece).
+:Croatia :neighbours (:Slovenia :Hungary).
+:Cyprus :neighbours (:Greece).
+:Czech_Republic :neighbours (:Germany :Poland :Slovakia :Austria).
+:Denmark :neighbours (:Germany :Sweden).
+:Estonia :neighbours (:Finland :Latvia :Lithuania).
+:Finland :neighbours (:Estonia :Sweden).
+:France :neighbours (:Spain :Belgium :Luxemburg :Germany :Italy :United_Kingdom).
+:Germany :neighbours (:Netherlands :Belgium :Luxemburg :Denmark :France :Austria :Poland :Czech_Republic).
+:Greece :neighbours (:Bulgaria :Cyprus).
+:Hungary :neighbours (:Austria :Slovakia :Romania :Croatia :Slovenia).
+:Ireland :neighbours (:United_Kingdom).
+:Italy :neighbours (:France :Austria :Slovenia).
+:Latvia :neighbours (:Estonia :Lithuania).
+:Lithuania :neighbours (:Estonia :Latvia :Poland).
+:Luxemburg :neighbours (:Belgium :France :Germany).
+:Malta :neighbours ().
+:Netherlands :neighbours (:Belgium :Germany :United_Kingdom).
+:Poland :neighbours (:Germany :Czech_Republic :Slovakia :Lithuania).
+:Portugal :neighbours (:Spain).
+:Romania :neighbours (:Hungary :Bulgaria).
+:Slovakia :neighbours (:Czech_Republic :Poland :Hungary :Austria).
+:Slovenia :neighbours (:Austria :Italy :Hungary :Croatia).
+:Spain :neighbours (:France :Portugal).
+:Sweden :neighbours (:Finland :Denmark).
+:United_Kingdom :neighbours (:Ireland :Netherlands :Belgium :France).

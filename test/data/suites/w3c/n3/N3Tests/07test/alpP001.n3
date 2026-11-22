@@ -1,0 +1,11 @@
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/mona#>.
+
+# knowledge base from http://artint.info/html/ArtInt_133.html
+{?P :ascribed :influenza} => {?P :ascribed :bronchitis}.
+{?P :ascribed :smokes} => {?P :ascribed :bronchitis}.
+{?P :ascribed :bronchitis} => {?P :ascribed :coughing}.
+{?P :ascribed :bronchitis} => {?P :ascribed :wheezing}.
+{?P :ascribed :influenza} => {?P :ascribed :fever}.
+{?P :ascribed :influenza} => {?P :ascribed :soreThroat}.
+{?P :ascribed :smokes. ?P :ascribed :nonsmoker} => false.
+

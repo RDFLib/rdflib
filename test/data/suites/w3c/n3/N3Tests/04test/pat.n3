@@ -1,0 +1,6 @@
+# $Id: pat.n3 435 2004-12-19 22:36:39Z josd $
+
+@prefix : <http://www.example.org/> .
+
+<bill> :loves _:who.
+<joe> :loves _:who.

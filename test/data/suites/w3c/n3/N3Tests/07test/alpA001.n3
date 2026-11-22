@@ -1,0 +1,6 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/mona#>.
+
+# assumables from http://artint.info/html/ArtInt_133.html
+true => ({:Peter :ascribed :smokes} {:Peter :ascribed :nonsmoker} {:Peter :ascribed :influenza})!e:disjunction.
+

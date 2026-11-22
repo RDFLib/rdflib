@@ -1,0 +1,17 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@base": "http://example.com/",
+    "@vocab": "http://example.com/",
+    "author": {"@type": "@id", "@container": "@index", "@index": "prop"},
+    "prop": {"@type": "@vocab"}
+  },
+  "@id": "http://example.com/article",
+  "author": {
+    "@none": {"@id": "person/1"},
+    "guest": [
+      {"@id": "person/2"},
+      {"@id": "person/3"}
+    ]
+  }
+}

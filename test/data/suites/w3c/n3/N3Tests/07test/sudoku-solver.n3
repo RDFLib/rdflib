@@ -1,0 +1,46 @@
+# --------------------------------------------
+# N3 Sudoku Solver               -- Jos De Roo
+# see http://www.swi-prolog.org/man/clpfd.html
+# --------------------------------------------
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/sudoku#>.
+
+# load library clpfd
+true <= {
+	("=.." ?M ("library" "clpfd")) e:derive true.
+	("use_module" ?M) e:derive true
+}.
+
+{?Rows :sudoku ?Rows} <= {
+	("append" ?Rows ?Vs) e:derive true.
+	("=.." ?N (".." 1 9)) e:derive true.
+	("ins" ?Vs ?N) e:derive true.
+	("maplist" "all_distinct" ?Rows) e:derive true.
+	("transpose" ?Rows ?Columns) e:derive true.
+	("maplist" "all_distinct" ?Columns) e:derive true.
+	("=" ?Rows (?A ?B ?C ?D ?E ?F ?G ?H ?I)) e:derive true.
+	(?A ?B ?C) :blocks true.
+	(?D ?E ?F) :blocks true.
+	(?G ?H ?I) :blocks true.
+	("maplist" "label" ?Rows) e:derive true.
+}.
+
+{(() () ()) :blocks true} <= true.
+
+{(?B1 ?B2 ?B3) :blocks true} <= {
+	?J1 e:firstRest (?A ?K1).
+	?K1 e:firstRest (?B ?L1).
+	?L1 e:firstRest (?C ?Bs1).
+	("=" ?B1 ?J1) e:derive true.
+	?J2 e:firstRest (?D ?K2).
+	?K2 e:firstRest (?E ?L2).
+	?L2 e:firstRest (?F ?Bs2).
+	("=" ?B2 ?J2) e:derive true.
+	?J3 e:firstRest (?G ?K3).
+	?K3 e:firstRest (?H ?L3).
+	?L3 e:firstRest (?I ?Bs3).
+	("=" ?B3 ?J3) e:derive true.
+	("all_distinct" (?A ?B ?C ?D ?E ?F ?G ?H ?I)) e:derive true.
+	(?Bs1 ?Bs2 ?Bs3) :blocks true.
+}.

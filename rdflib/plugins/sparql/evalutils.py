@@ -1,13 +1,32 @@
-import collections
+from __future__ import annotations
 
-from rdflib.term import Variable, Literal, BNode, URIRef
+import collections
+from collections.abc import Generator, Iterable, Mapping
+from typing import (
+    Any,
+    TypeVar,
+    Union,
+    overload,
+)
 
 from rdflib.plugins.sparql.operators import EBV
-from rdflib.plugins.sparql.parserutils import Expr, CompValue, value
-from rdflib.plugins.sparql.sparql import SPARQLError, NotBoundError
+from rdflib.plugins.sparql.parserutils import CompValue, Expr
+from rdflib.plugins.sparql.sparql import (
+    FrozenBindings,
+    FrozenDict,
+    NotBoundError,
+    QueryContext,
+    SPARQLError,
+)
+from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
+
+_ContextType = Union[FrozenBindings, QueryContext]
+_FrozenDictT = TypeVar("_FrozenDictT", bound=FrozenDict)
 
 
-def _diff(a, b, expr):
+def _diff(
+    a: Iterable[_FrozenDictT], b: Iterable[_FrozenDictT], expr
+) -> set[_FrozenDictT]:
     res = set()
 
     for x in a:
@@ -17,22 +36,36 @@ def _diff(a, b, expr):
     return res
 
 
-def _minus(a, b):
+def _minus(
+    a: Iterable[_FrozenDictT], b: Iterable[_FrozenDictT]
+) -> Generator[_FrozenDictT, None, None]:
     for x in a:
         if all((not x.compatible(y)) or x.disjointDomain(y) for y in b):
             yield x
 
 
+@overload
+def _join(
+    a: Iterable[FrozenBindings], b: Iterable[Mapping[Identifier, Identifier]]
+) -> Generator[FrozenBindings, None, None]: ...
 
-def _join(a, b):
+
+@overload
+def _join(
+    a: Iterable[FrozenDict], b: Iterable[Mapping[Identifier, Identifier]]
+) -> Generator[FrozenDict, None, None]: ...
+
+
+def _join(
+    a: Iterable[FrozenDict], b: Iterable[Mapping[Identifier, Identifier]]
+) -> Generator[FrozenDict, None, None]:
     for x in a:
         for y in b:
             if x.compatible(y):
                 yield x.merge(y)
 
 
-def _ebv(expr, ctx):
-
+def _ebv(expr: Union[Literal, Variable, Expr], ctx: FrozenDict) -> bool:
     """
     Return true/false for the given expr
     Either the expr is itself true/false
@@ -50,18 +83,38 @@ def _ebv(expr, ctx):
             return EBV(expr.eval(ctx))
         except SPARQLError:
             return False  # filter error == False
-    elif isinstance(expr, CompValue):
-        raise Exception(
-            "Weird - filter got a CompValue without evalfn! %r" % expr)
+    # type error: Subclass of "Literal" and "CompValue" cannot exist: would have incompatible method signatures
+    elif isinstance(expr, CompValue):  # type: ignore[unreachable]
+        raise Exception("Weird - filter got a CompValue without evalfn! %r" % expr)
     elif isinstance(expr, Variable):
         try:
             return EBV(ctx[expr])
-        except:
+        except:  # noqa: E722
             return False
     return False
 
 
-def _eval(expr, ctx, raise_not_bound_error=True):
+@overload
+def _eval(
+    expr: Union[Literal, URIRef],
+    ctx: FrozenBindings,
+    raise_not_bound_error: bool = ...,
+) -> Union[Literal, URIRef]: ...
+
+
+@overload
+def _eval(
+    expr: Union[Variable, Expr],
+    ctx: FrozenBindings,
+    raise_not_bound_error: bool = ...,
+) -> Union[Any, SPARQLError]: ...
+
+
+def _eval(
+    expr: Union[Literal, URIRef, Variable, Expr],
+    ctx: FrozenBindings,
+    raise_not_bound_error: bool = True,
+) -> Any:
     if isinstance(expr, (Literal, URIRef)):
         return expr
     if isinstance(expr, Expr):
@@ -74,28 +127,31 @@ def _eval(expr, ctx, raise_not_bound_error=True):
                 raise NotBoundError("Variable %s is not bound" % expr)
             else:
                 return None
-    elif isinstance(expr, CompValue):
-        raise Exception(
-            "Weird - _eval got a CompValue without evalfn! %r" % expr)
+    elif isinstance(expr, CompValue):  # type: ignore[unreachable]
+        raise Exception("Weird - _eval got a CompValue without evalfn! %r" % expr)
     else:
         raise Exception("Cannot eval thing: %s (%s)" % (expr, type(expr)))
 
 
-def _filter(a, expr):
+def _filter(
+    a: Iterable[FrozenDict], expr: Union[Literal, Variable, Expr]
+) -> Generator[FrozenDict, None, None]:
     for c in a:
         if _ebv(expr, c):
             yield c
 
 
-def _fillTemplate(template, solution):
-
+def _fillTemplate(
+    template: Iterable[tuple[Identifier, Identifier, Identifier]],
+    solution: _ContextType,
+) -> Generator[tuple[Identifier, Identifier, Identifier], None, None]:
     """
     For construct/deleteWhere and friends
 
     Fill a triple template with instantiated variables
     """
 
-    bnodeMap = collections.defaultdict(BNode)
+    bnodeMap: collections.defaultdict[BNode, BNode] = collections.defaultdict(BNode)
     for t in template:
         s, p, o = t
 
@@ -104,17 +160,19 @@ def _fillTemplate(template, solution):
         _o = solution.get(o)
 
         # instantiate new bnodes for each solution
-        _s, _p, _o = [bnodeMap[x] if isinstance(
-            x, BNode) else y for x, y in zip(t, (_s, _p, _o))]
+        _s, _p, _o = [
+            bnodeMap[x] if isinstance(x, BNode) else y for x, y in zip(t, (_s, _p, _o))
+        ]
 
-        if _s is not None and \
-                _p is not None and \
-                _o is not None:
-
+        if _s is not None and _p is not None and _o is not None:
             yield (_s, _p, _o)
 
-def _val(v):
-    """ utilitity for ordering things"""
+
+_ValueT = TypeVar("_ValueT", Variable, BNode, URIRef, Literal)
+
+
+def _val(v: _ValueT) -> tuple[int, _ValueT]:
+    """utilitity for ordering things"""
     if isinstance(v, Variable):
         return (0, v)
     elif isinstance(v, BNode):

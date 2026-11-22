@@ -1,0 +1,15 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+### m3 belief rules
+
+{_: e:true 0.01 } => {:A e:boolean e:T}.
+
+{:A e:boolean e:T. _: e:true 0.67} => {:B e:boolean e:T}.
+{:A e:boolean e:F. _: e:true 0.01} => {:B e:boolean e:T}.
+{:C e:boolean e:T} => {:B e:boolean e:T}.
+
+{:A e:boolean e:T. :B e:boolean e:T. _: e:true 0.88} => {:C e:boolean e:T}.
+{:A e:boolean e:F. _: e:true 0} => {:C e:boolean e:T}.
+{:B e:boolean e:F. _: e:true 0} => {:C e:boolean e:T}.
+

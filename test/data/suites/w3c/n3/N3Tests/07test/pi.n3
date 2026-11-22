@@ -1,0 +1,22 @@
+# Calculate pi using Nilakantha series
+# see http://www.wikihow.com/Calculate-Pi
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/pi#>.
+
+{(?N ?Pi) :pi true} <=
+{	(1 ?N 0 ?P 1) :pi true.
+	(3 (4 ?P)!math:product) math:sum ?Pi.
+}.
+
+
+{(?N ?N ?P ?P ?S) :pi true} <= true.
+
+{(?K ?N ?P0 ?P ?S) :pi true} <=
+{	?K math:notEqualTo ?N.
+	(?K 1) math:sum ?K1.
+	(2 ?K) math:product ?K2.
+	(?P0 (?S (?K2 (?K2 1)!math:sum (?K2 2)!math:sum)!math:product)!math:quotient) math:sum ?P1.
+	?S math:negation ?S1.
+	(?K1 ?N ?P1 ?P ?S1) :pi true.
+}.

@@ -1,0 +1,46 @@
+{
+  "@context": {
+    "type1": "http://example.com/t1",
+    "type2": "http://example.com/t2",
+    "@language": "de",
+    "termL": { "@id": "http://example.com/termLanguage" },
+    "termLL0": { "@id": "http://example.com/termLanguage", "@container": "@list" },
+    "termLL1": { "@id": "http://example.com/termLanguage", "@container": "@list", "@language": "en" },
+    "termLL2": { "@id": "http://example.com/termLanguage", "@container": "@list", "@language": null },
+    "termT": { "@id": "http://example.com/termType" },
+    "termTL0": { "@id": "http://example.com/termType", "@container": "@list" },
+    "termTL1": { "@id": "http://example.com/termType", "@container": "@list", "@type": "type1" },
+    "termTL2": { "@id": "http://example.com/termType", "@container": "@list", "@type": "type2" }
+  },
+  "@id": "http://example.com/id1",
+  "termLL0": [
+    "termLL0.1",
+    "termLL0.2"
+  ],
+  "termLL1": [
+    "termLL1.1",
+    "termLL1.2"
+  ],
+  "termLL2": [
+    "termLL2.1",
+    "termLL2.2"
+  ],
+  "termTL0": [
+    {
+      "@type": "type1",
+      "@value": "termTL0.1"
+    },
+    {
+      "@type": "type2",
+      "@value": "termTL0.2"
+    }
+  ],
+  "termTL1": [
+    "termTL1.1",
+    "termTL1.2"
+  ],
+  "termTL2": [
+    "termTL2.1",
+    "termTL2.2"
+  ]
+}

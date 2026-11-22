@@ -1,0 +1,24 @@
+@prefix : <rounded.n3#> .
+
+:test1a :is -1 .
+:test1b :is 0 .
+:test1c :is 1 .
+:test1d :is 1 .
+
+:test2a :is -3.0.
+:test2b :is -2.0.
+:test2c :is -2.0.
+:test2d :is 1.0.
+:test2e :is 1.0.
+:test2f :is 3.0.
+:test2g :is 3.0.
+:test2h :is 2.0.
+
+:test3a a :SUCCESS.
+:test3b a :SUCCESS.
+:test3c a :SUCCESS.
+:test3d a :SUCCESS.
+:test3e a :SUCCESS.
+:test3f a :SUCCESS.
+:test3g a :SUCCESS.
+:test3h a :SUCCESS.

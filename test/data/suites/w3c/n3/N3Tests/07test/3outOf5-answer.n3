@@ -1,0 +1,13 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/3outOf5-sample.n3 --query http://eulersharp.sourceforge.net/2007/07test/3outOf5-query.n3
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+:s a <http://eulersharp.sourceforge.net/2007/07test#3outOf5>.
+
+#2018-04-18T08:27:34.632Z in=34 out=1 ent=1 step=1 brake=2 inf=21278 sec=0.026 inf/sec=818385
+#ENDS
+

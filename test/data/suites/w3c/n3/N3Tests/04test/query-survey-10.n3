@@ -1,0 +1,10 @@
+# PxButton | e   | bash .euler http://www.w3.org/2001/sw/DataAccess/tests/data/survey/survey-sample.ttl http://eulersharp.sourceforge.net/2003/03swap/rdfs-rules.n3 --nope --think --query query-survey-10.n3
+
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+[]
+q:select {<> q:answer (?R)};
+q:where {?R ?x ?y; log:uri ?S. ?S str:matches "http://example\.org/.*"}.

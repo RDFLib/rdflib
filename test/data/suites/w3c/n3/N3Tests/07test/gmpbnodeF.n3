@@ -1,0 +1,4 @@
+@prefix : <gmpbnode#>.
+
+{ ?WHO :homeRegion ?REGION } => { ?WHO :homeRegion ?REGION }.
+

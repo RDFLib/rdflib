@@ -1,0 +1,12 @@
+[
+  {
+    "http://example.com/idlist": [{"@list": [{"@id": "http://example.org/id"}]}],
+    "http://example.com/datelist": [{"@list": [{"@value": "2012-04-12","@type": "http://www.w3.org/2001/XMLSchema#date"}]}],
+    "http://example.com/idprop": [{"@list": [{"@id": "http://example.org/id"}]}],
+    "http://example.com/dateprop": [{"@list": [{"@value": "2012-04-12","@type": "http://www.w3.org/2001/XMLSchema#date"}]}],
+    "http://example.com/idset": [{"@id": "http://example.org/id"}],
+    "http://example.com/dateset": [{"@value": "2012-04-12","@type": "http://www.w3.org/2001/XMLSchema#date"}],
+    "http://example.com/idprop2": [{"@id": "http://example.org/id"}],
+    "http://example.com/dateprop2": [{"@value": "2012-04-12","@type": "http://www.w3.org/2001/XMLSchema#date"}]
+  }
+]

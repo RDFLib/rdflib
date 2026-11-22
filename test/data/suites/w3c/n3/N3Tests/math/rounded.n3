@@ -1,0 +1,27 @@
+@prefix : <#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+
+{ -1 math:rounded ?x } => {:test1a :is ?x}.
+{ 0 math:rounded ?x } => {:test1b :is ?x}.
+{ 1 math:rounded ?x } => {:test1c :is ?x}.
+{ "1" math:rounded ?x } => {:test1d :is ?x}.
+
+{ -2.6 math:rounded ?x } => {:test2a :is ?x}.
+{ -2.5 math:rounded ?x } => {:test2b :is ?x}.
+{ -2.4 math:rounded ?x } => {:test2c :is ?x}.
+{ "0.5" math:rounded ?x } => {:test2d :is ?x}.
+{ 0.5 math:rounded ?x } => {:test2e :is ?x}.
+{ 2.6 math:rounded ?x } => {:test2f :is ?x}.
+{ 2.5 math:rounded ?x } => {:test2g :is ?x}.
+{ 2.4 math:rounded ?x } => {:test2h :is ?x}.
+
+{ -2.6e0 math:rounded -3.0e0 } => {:test3a a :SUCCESS}.
+{ -2.5e0 math:rounded -2.0e0 } => {:test3b a :SUCCESS}.
+{ -2.4e0 math:rounded -2.0e0 } => {:test3c a :SUCCESS}.
+{ "0.5e0" math:rounded 1.0e0 } => {:test3d a :SUCCESS}.
+{ 0.5e0 math:rounded 1.0e0 } => {:test3e a :SUCCESS}.
+{ 2.6e0 math:rounded 3.0e0 } => {:test3f a :SUCCESS}.
+{ 2.5e0 math:rounded 3.0e0 } => {:test3g a :SUCCESS}.
+{ 2.4e0 math:rounded 2.0e0 } => {:test3h a :SUCCESS}.
+
+{ (1) math:rounded ?x } => {:test4a a :FAILURE}.

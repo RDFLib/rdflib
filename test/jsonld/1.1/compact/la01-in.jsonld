@@ -1,0 +1,48 @@
+{
+
+  "@context": {
+    "type1": "http://example.com/t1",
+    "type2": "http://example.com/t2"
+  },
+  "@id": "http://example.com/id1",
+  "http://example.com/termLanguage": [
+    {
+      "@list": [
+        { "@value": "termLL0.1", "@language": "de" },
+        { "@value": "termLL0.2", "@language": "de" }
+      ]
+    },
+    {
+      "@list": [
+        { "@value": "termLL1.1", "@language": "en" },
+        { "@value": "termLL1.2", "@language": "en" }
+      ]
+    },
+    {
+      "@list": [
+        "termLL2.1",
+        "termLL2.2"
+      ]
+    }
+  ],
+  "http://example.com/termType": [
+    {
+      "@list": [
+        { "@value": "termTL0.1", "@type": "type1" },
+        { "@value": "termTL0.2", "@type": "type2" }
+      ]
+    },
+    {
+      "@list": [
+        { "@value": "termTL1.1", "@type": "type1" },
+        { "@value": "termTL1.2", "@type": "type1" }
+      ]
+    },
+    {
+      "@list": [
+        { "@value": "termTL2.1", "@type": "type2" },
+        { "@value": "termTL2.2", "@type": "type2" }
+      ]
+    }
+  ]
+}

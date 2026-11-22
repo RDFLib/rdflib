@@ -1,0 +1,9 @@
+[{
+  "http://example.com/protected": [{"@value": "p === http://example.com/protected"}],
+  "http://example.com/unprotected": [{
+    "http://example.com/protected": [{
+        "@value": "p === http://example.com/protected",
+        "@language": "en"
+    }]
+  }]
+}]

@@ -1,0 +1,109 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --no-genid http://eulersharp.sourceforge.net/2007/07test/arc.n3 --proof http://eulersharp.sourceforge.net/2007/07test/witchE.n3 --query http://eulersharp.sourceforge.net/2007/07test/arc-goal.n3
+
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/witch#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    :GIRL a :FLOATINGWOMAN.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    :GIRL a :FLOATINGWOMAN.
+  };
+  r:evidence (
+    <#lemma2>
+  );
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    :GIRL a :FLOATINGWOMAN.
+  };
+  r:evidence (
+    <#lemma4>
+    <#lemma5>
+  );
+  r:rule <#lemma6>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    {?x_0_1 a :FLOATINGWOMAN} => {?x_0_1 a :FLOATINGWOMAN}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/arc-goal.n3>].
+
+<#lemma4> a r:Inference;
+  r:gives {
+    :GIRL a :FLOATS.
+  };
+  r:evidence (
+    <#lemma7>
+    <#lemma8>
+    [ a r:Fact; r:gives {{:GIRL a :FLOATS} <http://eulersharp.sourceforge.net/2003/03swap/log-rules#graphMember> {:GIRL a :FLOATS}}]
+  );
+  r:rule <#lemma9>.
+
+<#lemma5> a r:Inference;
+  r:gives {
+    :GIRL a :WOMAN.
+  };
+  r:evidence (
+    <#lemma10>
+    <#lemma11>
+    [ a r:Fact; r:gives {{:GIRL a :WOMAN} <http://eulersharp.sourceforge.net/2003/03swap/log-rules#graphMember> {:GIRL a :WOMAN}}]
+  );
+  r:rule <#lemma12>.
+
+<#lemma6> a r:Extraction;
+  r:gives {
+    {?x_0_2 a :FLOATS.
+     ?x_0_2 a :WOMAN} => {?x_0_2 a :FLOATINGWOMAN}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/arc.n3>].
+
+<#lemma7> a r:Extraction;
+  r:gives {
+    <http://eulersharp.sourceforge.net/2007/07test/witchE.n3#lemma9> a r:Inference.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witchE.n3>].
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    <http://eulersharp.sourceforge.net/2007/07test/witchE.n3#lemma9> r:gives {:GIRL a :FLOATS}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witchE.n3>].
+
+<#lemma9> a r:Extraction;
+  r:gives {
+    {?x_0_3 a r:Inference.
+     ?x_0_3 r:gives ?x_1_3.
+     ?x_1_3 <http://eulersharp.sourceforge.net/2003/03swap/log-rules#graphMember> {?x_3_3 ?x_2_3 ?x_4_3}} => {?x_3_3 ?x_2_3 ?x_4_3}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2003/03swap/proof-lemma>].
+
+<#lemma10> a r:Extraction;
+  r:gives {
+    <http://eulersharp.sourceforge.net/2007/07test/witchE.n3#lemma5> a r:Extraction.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witchE.n3>].
+
+<#lemma11> a r:Extraction;
+  r:gives {
+    <http://eulersharp.sourceforge.net/2007/07test/witchE.n3#lemma5> r:gives {:GIRL a :WOMAN}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witchE.n3>].
+
+<#lemma12> a r:Extraction;
+  r:gives {
+    {?x_0_4 a r:Extraction.
+     ?x_0_4 r:gives ?x_1_4.
+     ?x_1_4 <http://eulersharp.sourceforge.net/2003/03swap/log-rules#graphMember> {?x_3_4 ?x_2_4 ?x_4_4}} => {?x_3_4 ?x_2_4 ?x_4_4}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2003/03swap/proof-lemma>].
+
+#2018-04-18T08:27:41.095Z in=97 out=1 ent=10 step=43 brake=3 inf=39919 sec=0.028 inf/sec=1425679
+#ENDS
+

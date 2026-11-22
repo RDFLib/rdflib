@@ -1,0 +1,17 @@
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix c2d: <http://josd.github.io/eye/reasoning/c2d#>.
+@prefix : <http://josd.github.io/eye/reasoning#>.
+
+{   
+    (
+        :input1
+        :input2
+        :input3
+        :input4
+        :input5
+        :input10
+    ) list:member ?IN.
+    ?S ?IN ?IV.
+} => {
+    (?IN ?IV) c2d:output :output1.
+}.

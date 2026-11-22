@@ -1,0 +1,14 @@
+# $Id: D2Q.n3 490 2005-03-09 14:25:31Z josd $
+# PxButton | es  | euler --nope --think D2.n3 --query D2Q.n3
+# PxButton | cwm | python /w3ccvs/WWW/2000/10/swap/cwm.py D2.n3 --think --query"=D2Q.n3"
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/sample#>.
+
+@forAll <#X>, <#Y>, <#Z>.
+[]
+q:select {<> q:answer (<#X> <#Y> <#Z>)};
+q:where  {<#X> foaf:knows <#Y>.
+          <D2.n3>!log:semantics log:includes {<#Y> foaf:age <#Z>}}.

@@ -1,0 +1,14 @@
+# cwm http://www.w3.org/2000/10/swap/test/EricNeumann/exdata.n3 --think --filter=http://eulersharp.sourceforge.net/2004/04test/exonQ.n3
+# eye --nope http://www.w3.org/2000/10/swap/test/EricNeumann/exdata.n3 --query http://eulersharp.sourceforge.net/2004/04test/exonQ.n3
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix x: <http://example.com/exon/#>.
+
+@forAll <#T1>, <#T2>, <#E>.
+{<http://www.w3.org/2000/10/swap/test/EricNeumann/exdata.n3> log:semantics ?F.
+ <#T1> a x:Transcript.
+ <#T2> a x:Transcript.
+ ?F log:includes {<#T1> x:hasExon <#E>}.
+ ?F log:notIncludes {<#T2> x:hasExon <#E>}}
+ => {<> q:answer (<#E>)}.

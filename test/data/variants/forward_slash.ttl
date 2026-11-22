@@ -1,0 +1,10 @@
+@prefix kb: <http://example.org/kb/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+<http://example.org/ontology/core/MyClassA> a owl:Class .
+
+kb:individual-a a <http://example.org/ontology/core/MyClassA> .
+
+<http://example.org/ontology/core/MyClassB> a owl:Class .
+
+kb:individual-b a <http://example.org/ontology/core/MyClassB> .

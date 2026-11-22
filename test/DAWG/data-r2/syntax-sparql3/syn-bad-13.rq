@@ -1,3 +1,0 @@
-# Multiple DOTs
-SELECT * WHERE
-{ ?s ?p ?o . ?s1 ?p1 ?o1 .. }

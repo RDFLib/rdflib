@@ -1,0 +1,19 @@
+---
+ci:
+  # https://pre-commit.ci/#configuration
+  autoupdate_schedule: weekly
+  autofix_prs: false
+
+# https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # WARNING: Ruff version should be the same as in `pyproject.toml`
+    rev: v0.17.0
+    hooks:
+      - id: ruff-check
+        args: ["--fix"]
+      - id: ruff-format
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.9.1
+    hooks:
+    - id: uv-lock

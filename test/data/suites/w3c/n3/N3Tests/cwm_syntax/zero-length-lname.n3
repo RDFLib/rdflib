@@ -1,0 +1,8 @@
+#  Can one have a zero-length qname?
+#
+
+@prefix foo: <#>.
+
+foo:  foo: foo:.
+
+#ends

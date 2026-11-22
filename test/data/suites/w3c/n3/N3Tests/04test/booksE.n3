@@ -1,0 +1,19 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix : <http://www.example.org/>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+<http://example.org/book/book1> dc:creator _:e0_. 
+<http://example.org/book/book2> dc:creator _:e1_. 
+<http://example.org/book/book3> dc:creator _:e2_. 
+<http://example.org/book/book4> dc:creator _:e3_. 
+<http://example.org/book/book5> dc:creator _:e4_. 
+<http://example.org/book/book1> a :Book. 
+<http://example.org/book/book2> a :Book. 
+<http://example.org/book/book3> a :Book. 
+<http://example.org/book/book4> a :Book. 
+<http://example.org/book/book5> a :Book. 
+

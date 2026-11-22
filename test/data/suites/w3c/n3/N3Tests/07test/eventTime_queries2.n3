@@ -1,0 +1,21 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix time: <http://eulersharp.sourceforge.net/2003/03swap/time#>.
+@prefix agent: <http://eulersharp.sourceforge.net/2003/03swap/agent#>.
+@prefix human: <http://eulersharp.sourceforge.net/2003/03swap/human#>.
+@prefix humdis: <http://www.agfa.com/w3c/2009/humanDisorder#>.
+@prefix ther: <http://www.agfa.com/w3c/2009/therapy#>.
+@prefix heca: <http://www.agfa.com/w3c/2009/healthCare#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix digproc: <http://eulersharp.sourceforge.net/2003/03swap/digitalProcedure#>.
+@prefix : <#>.
+
+
+{	[a human:Human; agent:playsRole [a heca:Patient]; foaf:family_name ?familyName; foaf:firstName ?firstName].
+	?SCOPE e:findall ((?disorder ther:treatedWith ?therapy) {
+		[a human:Human; foaf:family_name ?familyName; foaf:firstName ?firstName; agent:actsIn ?disorder, ?therapy].
+		?disorder a humdis:Disorder; ther:treatedWith ?therapy. ?therapy a ther:Therapy} ?treatedDiseases).
+	?SCOPE e:findall ({?event1 ?timeRelatedTo ?event2} {
+		?event1 ?timeRelatedTo ?event2. ?timeRelatedTo rdfs:subPropertyOf time:timeRelatedTo.
+		[a human:Human; foaf:family_name ?familyName; foaf:firstName ?firstName; agent:actsIn ?event1, ?event2]} ?eventTimeRelations).}
+=> {	:answer digproc:hasSelected (?familyName ?firstName ?treatedDiseases ?eventTimeRelations)}.

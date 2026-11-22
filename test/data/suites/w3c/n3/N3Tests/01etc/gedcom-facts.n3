@@ -1,0 +1,64 @@
+# $Id: gedcom-facts.n3,v 1.16 2004/04/18 20:03:59 amdus Exp $
+
+@prefix gc: <http://www.daml.org/2001/01/gedcom/gedcom#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix : <http://www.agfa.com/w3c/euler/gedcom-facts#>.
+
+:Frans gc:spouseIn :dp; gc:sex gc:Male.
+:Maria gc:spouseIn :dp; gc:sex gc:Female.
+:Jos gc:childIn :dp; gc:sex gc:Male.
+:Rita gc:childIn :dp; gc:sex gc:Female.
+:Geert gc:childIn :dp; gc:sex gc:Male.
+:Caroline gc:childIn :dp; gc:sex gc:Female.
+:Dirk gc:childIn :dp; gc:sex gc:Male.
+:Greta gc:childIn :dp; gc:sex gc:Female.
+:Frans owl:differentFrom :Maria.
+:dp owl:distinctMembers (:Jos :Rita :Geert :Caroline :Dirk :Greta).
+
+:Jos gc:spouseIn :dt; gc:sex gc:Male.
+:Maaike gc:spouseIn :dt; gc:sex gc:Female.
+:Goedele gc:childIn :dt; gc:sex gc:Female.
+:Veerle gc:childIn :dt; gc:sex gc:Female.
+:Nele gc:childIn :dt; gc:sex gc:Female.
+:Karel gc:childIn :dt; gc:sex gc:Male.
+:Jos owl:differentFrom :Maaike.
+:dt owl:distinctMembers (:Goedele :Veerle :Nele :Karel).
+
+:Paul gc:spouseIn :gd; gc:sex gc:Male.
+:Rita gc:spouseIn :gd; gc:sex gc:Female.
+:Ann gc:childIn :gd; gc:sex gc:Female.
+:Bart gc:childIn :gd; gc:sex gc:Male.
+:Paul owl:differentFrom :Rita.
+:gd owl:distinctMembers (:Ann :Bart).
+
+:Geert gc:spouseIn :dv; gc:sex gc:Male.
+:Christine gc:spouseIn :dv; gc:sex gc:Female.
+:Ann_Sophie gc:childIn :dv; gc:sex gc:Female.
+:Valerie gc:childIn :dv; gc:sex gc:Female.
+:Stephanie gc:childIn :dv; gc:sex gc:Female.
+:Louise gc:childIn :dv; gc:sex gc:Female.
+:Geert owl:differentFrom :Christine.
+:dv owl:distinctMembers (:Ann_Sophie :Valerie :Stephanie :Louise).
+
+:Hendrik gc:spouseIn :cd; gc:sex gc:Male.
+:Caroline gc:spouseIn :cd; gc:sex gc:Female.
+:Bieke gc:childIn :cd; gc:sex gc:Female.
+:Tineke gc:childIn :cd; gc:sex gc:Female.
+:Hendrik owl:differentFrom :Caroline.
+:cd owl:distinctMembers (:Bieke :Tineke).
+
+:Dirk gc:spouseIn :dc; gc:sex gc:Male.
+:Karolien gc:spouseIn :dc; gc:sex gc:Female.
+:Frederik gc:childIn :dc; gc:sex gc:Male.
+:Stefanie gc:childIn :dc; gc:sex gc:Female.
+:Stijn gc:childIn :dc; gc:sex gc:Male.
+:Dirk owl:differentFrom :Karolien.
+:dc owl:distinctMembers (:Frederik :Stefanie :Stijn).
+
+:Marc gc:spouseIn :sd; gc:sex gc:Male.
+:Greta gc:spouseIn :sd; gc:sex gc:Female.
+:Lien gc:childIn :sd; gc:sex gc:Female.
+:Tom gc:childIn :sd; gc:sex gc:Male.
+:Marc owl:differentFrom :Greta.
+:sd owl:distinctMembers (:Lien :Tom).

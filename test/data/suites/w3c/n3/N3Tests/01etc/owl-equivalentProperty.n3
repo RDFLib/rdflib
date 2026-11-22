@@ -1,0 +1,9 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+
+{?P owl:equivalentProperty ?Q. ?S ?P ?O} => {?S ?Q ?O}.
+{?P owl:equivalentProperty ?Q. ?S ?Q ?O} => {?S ?P ?O}.
+{?P owl:equivalentProperty ?Q} => {?Q owl:equivalentProperty ?P}.
+{?P owl:equivalentProperty ?Q. ?Q owl:equivalentProperty ?R} => {?P owl:equivalentProperty ?R}.
+{?P owl:equivalentProperty ?Q} => {?P rdfs:subPropertyOf ?Q. ?Q rdfs:subPropertyOf ?P}.
+{?P rdfs:subPropertyOf ?Q. ?Q rdfs:subPropertyOf ?P} => {?P owl:equivalentProperty ?Q}.

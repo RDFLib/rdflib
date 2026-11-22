@@ -1,0 +1,83 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/socrates/socrates.n3 --query http://josd.github.io/brain/socrates/socratesF.n3
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <http://www.agfa.com/w3c/euler/socrates#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:gives {
+    :Socrates a :Man.
+    :Socrates a :Mortal.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    :Socrates a :Man.
+  };
+  r:evidence (
+    <#lemma3>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/socrates#Socrates"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/socrates#Man"]];
+  r:rule <#lemma4>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    :Socrates a :Mortal.
+  };
+  r:evidence (
+    <#lemma5>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/socrates#Socrates"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/socrates#Mortal"]];
+  r:rule <#lemma4>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    :Socrates a :Man.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/socrates/socrates.n3>].
+
+<#lemma4> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 a var:x_1} => {var:x_0 a var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/socrates/socratesF.n3>].
+
+<#lemma5> a r:Inference;
+  r:gives {
+    :Socrates a :Mortal.
+  };
+  r:evidence (
+    <#lemma6>
+    <#lemma3>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/socrates#Man"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/socrates#Mortal"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/socrates#Socrates"]];
+  r:rule <#lemma7>.
+
+<#lemma6> a r:Extraction;
+  r:gives {
+    :Man rdfs:subClassOf :Mortal.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/socrates/socrates.n3>].
+
+<#lemma7> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2. {var:x_0 rdfs:subClassOf var:x_1.
+     var:x_2 a var:x_0} => {var:x_2 a var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/socrates/socrates.n3>].
+
+#2020-02-22T21:52:51.419Z in=4 out=2 ent=3 step=6 brake=2 inf=22512 sec=0.084 inf/sec=268000
+#ENDS
+

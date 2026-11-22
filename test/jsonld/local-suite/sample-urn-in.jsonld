@@ -1,0 +1,12 @@
+{
+    "@context": {
+        "@vocab": "urn:example:1:",
+        "": "urn:example:2:",
+        "x": "urn:example:",
+        "y": "x:3:"
+    },
+    "@id": ":nsvocab",
+    "@type": "nsthing",
+    "foo": ":bar",
+    "y:baz": ":qwerty"
+}

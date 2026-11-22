@@ -1,0 +1,14 @@
+# $Id: icalQ002.n3 493 2005-03-20 18:13:06Z josd $
+# PxButton | es  | euler --nope --think icalD001.n3 icalR.n3 --query icalQ002.n3
+# PxButton | cwm | cwm icalD001.n3 icalR.n3 --think --query"=icalQ002.n3"
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix ical: <http://www.w3.org/2002/12/cal/ical#>.
+@prefix op: <http://www.w3.org/2004/07/xpath-functions#>.
+
+[]
+q:select { <> q:answer ( ?uri ?summary ?dtstart ) };
+q:where  { ?uri ical:summary ?summary.
+           ?uri ical:dtstart ?dtstart.
+           ?dtstart^^xsd:dateTime op:dateTime-greater-than "2000-06-01T00:00:00Z"^^xsd:dateTime }.

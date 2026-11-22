@@ -1,0 +1,4 @@
+@prefix : <http://josd.github.io/brain#>.
+
+# assuming the negation of the query so that it can be discharged when the query succeeds
+_:anon :not_saying :C.

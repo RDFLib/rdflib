@@ -1,0 +1,79 @@
+@keywords is, of, a.
+@prefix : <time#>.
+
+@prefix cyc: <http://sw.opencyc.org/2009/04/07/concept/en/>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix s: <http://www.w3.org/2000/01/rdf-schema#> .
+
+cyc:after a owl:TransitiveProperty;
+  s:subPropertyOf owl:differentFrom;
+  s:domain cyc:TimePoint;
+  s:range cyc:TimePoint.
+
+cyc:simultaneousWith s:subPropertyOf owl:sameAs;
+  s:domain cyc:TimePoint;
+  s:range cyc:TimePoint.
+
+cyc:TemporalThing s:subClassOf
+  [ owl:onProperty cyc:startingPoint; owl:minCardinality 1 ],
+  [ owl:onProperty cyc:endingPoint; owl:minCardinality 1 ].
+cyc:startingPoint s:domain cyc:TemporalThing; s:range cyc:TimePoint.
+cyc:endingPoint s:domain cyc:TemporalThing; s:range cyc:TimePoint.
+
+# you'd think this could be reduced to primitives, but
+# without some sort of 'contains' relationship between
+# TemporalThings and TimePoints, I don't see how.
+cyc:temporallyDisjoint owl:propertyDisjointWith cyc:temporallyIntersects.
+
+cyc:temporallyIntersects a owl:SymmetricProperty;
+  s:domain cyc:TemporalThing;
+  s:range cyc:TemporalThing.
+cyc:temporallyDisjoint a owl:SymmetricProperty;
+  s:domain cyc:TemporalThing;
+  s:range cyc:TemporalThing.
+
+cyc:temporallySubsumes a owl:TransitiveProperty;
+  s:subPropertyOf cyc:temporallyIntersects,
+    [ owl:inverseOf cyc:endsNoLaterThanEndingOf ],
+    [ owl:inverseOf cyc:startsNoEarlierThanStartingOf ].
+
+cyc:endsNoLaterThanEndingOf a owl:TransitiveProperty;
+  s:domain cyc:TemporalThing;
+  s:range cyc:TemporalThing.
+
+cyc:startsNoEarlierThanStartingOf a owl:TransitiveProperty;
+  s:domain cyc:TemporalThing;
+  s:range cyc:TemporalThing.
+
+{
+ ?TOBJ1 cyc:endsNoLaterThanEndingOf ?T1. ?T1 xsd:date ?TMAX.
+ ?TOBJ2 cyc:startsNoEarlierThanStartingOf ?T2. ?T2 xsd:date ?TMIN.
+ ?TMAX str:lessThan ?TMIN.
+} => { ?TOBJ1 cyc:temporallyDisjoint ?TOBJ2 }.
+
+cyc:dateOfDeath s:subPropertyOf
+#... cyc:objectEndingDate.
+# cyc:objectEndingDate s:subPropertyOf cyc:endingDate.
+# cyc:endingDate s:subPropertyOf ...
+ cyc:endsNoLaterThanEndingOf.
+
+cyc:publicationDate_IBO s:subPropertyOf
+# ... cyc:startingDate. # a bit of a stretch
+# cyc:startingDate s:subPropertyOf ...
+cyc:startsNoEarlierThanStartingOf.
+
+
+# the performer and perceived thing of an event temporally subsume the event.
+# maybe a bit of a stretch for performer.
+#cyc:perceivedThings s:subPropertyOf [ owl:inverseOf cyc:temporallySubsumes ].
+#cyc:performer s:subPropertyOf [ owl:inverseOf cyc:temporallySubsumes ].
+cyc:perceives s:subPropertyOf cyc:temporallyIntersects.
+
+########## need these? not today...
+# startingPoint is a function over TemporalThing
+#
+# { ?THING cyc:startingDate ?DATE; cyc:startingPoint ?WHEN }
+#  => { ?DATE cyc:temporallySubsumes ?WHEN }.
+

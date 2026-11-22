@@ -1,0 +1,11 @@
+@prefix : <#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+
+{ "1" math:absoluteValue 1 } => {:test1a a :SUCCESS}.
+{ 1 math:absoluteValue 1 } => {:test1b a :SUCCESS}.
+{ "-1" math:absoluteValue 1 } => {:test1c a :SUCCESS}.
+{ -1 math:absoluteValue 1 } => {:test1d a :SUCCESS}.
+
+{ -8.1 math:absoluteValue ?x } => {:test2a :is 8.1}.
+
+{ (1) math:absoluteValue ?x } => {:test2a a :FAILURE}.

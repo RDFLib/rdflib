@@ -1,0 +1,16 @@
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://josd.github.io/brain/4color#>.
+
+{() :places true} <= true.
+
+{?PLACES :places true} <= {
+    ?PLACES e:firstRest ((?PLACE ?COLOR) ?TAIL).
+    ?TAIL :places true.
+    ?PLACE :neighbours ?NEIGHBOURS.
+    (:red :green :blue :yellow) list:member ?COLOR.
+    ?SCOPE e:fail {
+        ?TAIL list:member (?NEIGHBOUR ?COLOR).
+        ?NEIGHBOURS list:member ?NEIGHBOUR.
+    }.
+}.

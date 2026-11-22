@@ -1,0 +1,18 @@
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix p0: <http://eulersharp.sourceforge.net/2003/03swap/rdfs-rules#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/sample#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix acm: <http://daml.umbc.edu/ontologies/topic-ont#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+<http://eulersharp.sourceforge.net/2004/04test/QuantificationQ.n3> q:answer (:Paper <http://www.cs.vu.nl/~jbroeks/>). 
+<http://eulersharp.sourceforge.net/2004/04test/QuantificationQ.n3> q:answer (:Paper <http://www.aifb.uni-karlsruhe.de/WBS/aeb>). 
+<http://eulersharp.sourceforge.net/2004/04test/QuantificationQ.n3> q:answer (:Paper <http://www.aifb.uni-karlsruhe.de/WBS/pha>). 
+<http://eulersharp.sourceforge.net/2004/04test/QuantificationQ.n3> q:answer (:Paper <http://www.aifb.uni-karlsruhe.de/WBS/rvo>). 
+

@@ -1,0 +1,10 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix test: <https://w3c.github.io/N3/tests/test.n3#> .
+@prefix : <#> .
+
+test:TestN3Syntax rdfs:subClassOf test:TestN3 .
+test:TestN3Positive rdfs:subClassOf test:TestN3 .
+test:TestN3Negative rdfs:subClassOf test:TestN3 .
+test:TestN3Reason rdfs:subClassOf test:TestN3Positive, test:TestN3 .
+test:TestN3PositiveSyntax rdfs:subClassOf test:TestN3Positive, test:TestN3Syntax .
+test:TestN3NegativeSyntax rdfs:subClassOf test:TestN3Negative, test:TestN3Syntax .

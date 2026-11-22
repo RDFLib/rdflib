@@ -1,0 +1,111 @@
+from __future__ import annotations
+
+import typing as t
+from unittest.mock import Mock
+
+import pytest
+
+from rdflib.contrib.rdf4j import has_httpx
+from rdflib.contrib.rdf4j.exceptions import RepositoryResponseFormatError
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
+from rdflib.term import BNode, IdentifiedNode, URIRef
+
+pytestmark = pytest.mark.skipif(
+    not has_httpx, reason="skipping rdf4j tests, httpx not available"
+)
+
+if has_httpx:
+    import httpx2 as httpx
+
+    from rdflib.contrib.rdf4j.client import (
+        Repository,
+    )
+
+
+@pytest.mark.parametrize(
+    "graph_name, expected_graph_name_param",
+    [
+        [DATASET_DEFAULT_GRAPH_ID, "null"],
+        ["http://example.com/graph", "<http://example.com/graph>"],
+        [URIRef("http://example.com/graph"), "<http://example.com/graph>"],
+        [BNode("blank"), "_:blank"],
+        [[URIRef("urn:named"), BNode("blank")], ["<urn:named>", "_:blank"]],
+        [None, None],
+    ],
+)
+def test_repo_size_graph_name(
+    repo: Repository,
+    monkeypatch: pytest.MonkeyPatch,
+    graph_name: IdentifiedNode | t.Iterable[IdentifiedNode] | str | None,
+    expected_graph_name_param: str | list[str] | None,
+):
+    """
+    Test that graph_name is passed as a query parameter and correctly handles the
+    different type variations.
+    """
+    mock_response = Mock(spec=httpx.Response, text="0")
+    mock_httpx_get = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
+    if graph_name is None:
+        params = {}
+    else:
+        params = {"context": expected_graph_name_param}
+    size = repo.size(graph_name=graph_name)
+    mock_httpx_get.assert_called_once_with(
+        "/repositories/test-repo/size",
+        params=params,
+    )
+    assert size == 0
+
+
+def test_repo_size_contexts_transport() -> None:
+    def respond(request: httpx.Request) -> httpx.Response:
+        assert request.url.path == "/repositories/test-repo/size"
+        assert request.url.params.get_list("context") == [
+            "<urn:named>",
+            "_:blank",
+            "null",
+        ]
+        return httpx.Response(200, text="6")
+
+    with httpx.Client(
+        base_url="http://rdf4j.invalid/", transport=httpx.MockTransport(respond)
+    ) as http_client:
+        repo = Repository("test-repo", http_client)
+        assert (
+            repo.size([URIRef("urn:named"), BNode("blank"), DATASET_DEFAULT_GRAPH_ID])
+            == 6
+        )
+
+
+@pytest.mark.parametrize(
+    "response_value, expected_parsed_value",
+    [
+        ["0", 0],
+        ["123", 123],
+        ["-100", RepositoryResponseFormatError],
+        ["foo", RepositoryResponseFormatError],
+    ],
+)
+def test_repo_size_values(
+    repo: Repository,
+    monkeypatch: pytest.MonkeyPatch,
+    response_value: str,
+    expected_parsed_value: int | type[RepositoryResponseFormatError],
+):
+    """Test that the return value of the response is correctly parsed."""
+    mock_response = Mock(spec=httpx.Response, text=response_value)
+    mock_httpx_get = Mock(return_value=mock_response)
+    monkeypatch.setattr(httpx.Client, "get", mock_httpx_get)
+
+    if isinstance(expected_parsed_value, int):
+        size = repo.size()
+        assert size == expected_parsed_value
+    else:
+        with pytest.raises(expected_parsed_value):
+            repo.size()
+
+    mock_httpx_get.assert_called_once_with(
+        "/repositories/test-repo/size",
+        params={},
+    )

@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@vocab": "http://example.org/",
+    "input": {"@container": ["@graph", "@index"], "@index": "prop"}
+  },
+  "input": {
+    "g1": {"value": "x"}
+  }
+}

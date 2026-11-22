@@ -1,0 +1,10 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/witch.n3 --query http://eulersharp.sourceforge.net/2007/07test/witch-goal.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/witch#>.
+
+:GIRL a :WITCH.
+
+#2018-04-18T08:28:59.411Z in=20 out=1 ent=7 step=25 brake=5 inf=13609 sec=0.020 inf/sec=680450
+#ENDS
+

@@ -1,0 +1,17 @@
+{
+  "slots": [
+    {
+      "name": "type",
+      "slot_uri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+    }
+  ],
+  "@context": [
+    {
+      "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+      "@vocab": "https://w3id.org/linkml/",
+      "slot_uri": {
+        "@type": "@id"
+      }
+    }
+  ]
+}

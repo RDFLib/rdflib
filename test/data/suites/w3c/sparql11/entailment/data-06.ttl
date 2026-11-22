@@ -1,0 +1,24 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> . 
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix :  <http://example.org/test#> .
+
+_:sparql-dl a owl:Ontology .
+
+:p rdf:type owl:ObjectProperty .
+:t rdf:type owl:ObjectProperty .
+:s rdf:type owl:ObjectProperty .
+:r rdf:type owl:ObjectProperty .
+
+:a rdf:type owl:NamedIndividual .
+:aa rdf:type owl:NamedIndividual .
+:bb rdf:type owl:NamedIndividual .
+:cc rdf:type owl:NamedIndividual .
+:dd rdf:type owl:NamedIndividual .
+:ee rdf:type owl:NamedIndividual .
+
+:a :p :aa.
+:dd :t :bb.
+:bb :s :aa.
+:cc :r :dd.
+:aa :r :ee.

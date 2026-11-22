@@ -1,0 +1,15 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@vocab": "http://example.org/",
+    "nest": {
+      "@id": "@nest",
+      "@context": {
+        "@vocab": "http://example.org/nest/"
+      }
+    }
+  },
+  "nest": {
+    "property": "should be in /nest"
+  }
+}

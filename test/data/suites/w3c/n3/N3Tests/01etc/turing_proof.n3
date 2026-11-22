@@ -1,0 +1,494 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/turing/turing.n3 --query http://josd.github.io/brain/turing/turingQ.n3
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://josd.github.io/brain#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    ((1 1 1) (1 1 1 1)) :turing true.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    ((1 1 1) (1 1 1 1)) :turing true.
+  };
+  r:evidence (
+    <#lemma2>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 1 1 1)];
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    ((1 1 1) (1 1 1 1)) :turing true.
+  };
+  r:evidence (
+    <#lemma4>
+    <#lemma5>
+    <#lemma6>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 1 1 1)];
+  r:rule <#lemma7>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {((1 1 1) var:x_0) :turing true} => {((1 1 1) var:x_0) :turing true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/turing/turingQ.n3>].
+
+<#lemma4> a r:Inference;
+  r:gives {
+    (:q0 () (1 1 1) (1 1 1) (1)) :perform true.
+  };
+  r:evidence (
+    <#lemma8>
+    <#lemma9>
+    [ a r:Fact; r:gives {(1 1 1) e:firstRest (1 (1 1))}]
+    <#lemma10>
+    <#lemma11>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain#q0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain#q0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ n3:uri "http://josd.github.io/brain#right"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_12"]; r:boundTo (1)];
+  r:rule <#lemma12>.
+
+<#lemma5> a r:Inference;
+  r:gives {
+    ((1 1 1) (1 1 1)) :reverse true.
+  };
+  r:evidence (
+    <#lemma13>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 1 1)];
+  r:rule <#lemma14>.
+
+<#lemma6> a r:Inference;
+  r:gives {
+    ((1 1 1) (1) (1 1 1 1)) :append true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1 1) e:firstRest (1 (1 1))}]
+    [ a r:Fact; r:gives {(1 1 1 1) e:firstRest (1 (1 1 1))}]
+    <#lemma15>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1)];
+  r:rule <#lemma16>.
+
+<#lemma7> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4. {(var:x_1 var:x_4) :turing true} <= {(:q0 () var:x_0 var:x_1 var:x_2) :perform true.
+     (var:x_0 var:x_3) :reverse true.
+     (var:x_3 var:x_2 var:x_4) :append true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/turing/turing.n3>].
+
+<#lemma8> a r:Inference;
+  r:gives {
+    ((1 1 1) 1 (1 1)) :symbol true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1 1) e:firstRest (1 (1 1))}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (1 1)];
+  r:rule <#lemma17>.
+
+<#lemma9> a r:Extraction;
+  r:gives {
+    (:q0 1 :q0 1 :right) :rule true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/turing/turing.n3>].
+
+<#lemma10> a r:Inference;
+  r:gives {
+    (:right () (1) (1 1 1) (1 1)) :action true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1) e:firstRest (1 ())}]
+    [ a r:Fact; r:gives {(1 1 1) e:firstRest (1 (1 1))}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 1)];
+  r:rule <#lemma18>.
+
+<#lemma11> a r:Inference;
+  r:gives {
+    (:q0 (1) (1 1 1) (1 1) (1)) :perform true.
+  };
+  r:evidence (
+    <#lemma19>
+    <#lemma9>
+    [ a r:Fact; r:gives {(1 1) e:firstRest (1 (1))}]
+    <#lemma20>
+    <#lemma21>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain#q0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain#q0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ n3:uri "http://josd.github.io/brain#right"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_12"]; r:boundTo (1)];
+  r:rule <#lemma12>.
+
+<#lemma12> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5, var:x_6, var:x_7, var:x_8, var:x_9, var:x_10, var:x_11, var:x_12. {(var:x_3 var:x_8 var:x_11 var:x_0 var:x_12) :perform true} <= {(var:x_0 var:x_1 var:x_2) :symbol true.
+     (var:x_3 var:x_1 var:x_4 var:x_5 var:x_6) :rule true.
+     var:x_7 e:firstRest (var:x_5 var:x_2).
+     (var:x_6 var:x_8 var:x_9 var:x_7 var:x_10) :action true.
+     (var:x_4 var:x_9 var:x_11 var:x_10 var:x_12) :perform true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/turing/turing.n3>].
+
+<#lemma13> a r:Inference;
+  r:gives {
+    ((1 1 1) () (1 1 1)) :reverse true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1 1) e:firstRest (1 (1 1))}]
+    [ a r:Fact; r:gives {(1) e:firstRest (1 ())}]
+    <#lemma22>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 1 1)];
+  r:rule <#lemma23>.
+
+<#lemma14> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {(var:x_0 var:x_1) :reverse true} <= {(var:x_0 () var:x_1) :reverse true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/turing/turing.n3>].
+
+<#lemma15> a r:Inference;
+  r:gives {
+    ((1 1) (1) (1 1 1)) :append true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1) e:firstRest (1 (1))}]
+    [ a r:Fact; r:gives {(1 1 1) e:firstRest (1 (1 1))}]
+    <#lemma24>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1)];
+  r:rule <#lemma16>.
+
+<#lemma16> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5. {(var:x_0 var:x_5 var:x_3) :append true} <= {var:x_0 e:firstRest (var:x_1 var:x_2).
+     var:x_3 e:firstRest (var:x_1 var:x_4).
+     (var:x_2 var:x_5 var:x_4) :append true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/turing/turing.n3>].
+
+<#lemma17> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2. {(var:x_0 var:x_1 var:x_2) :symbol true} <= {var:x_0 e:firstRest (var:x_1 var:x_2)}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/turing/turing.n3>].
+
+<#lemma18> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4. {(:right var:x_2 var:x_0 var:x_3 var:x_4) :action true} <= {var:x_0 e:firstRest (var:x_1 var:x_2).
+     var:x_3 e:firstRest (var:x_1 var:x_4)}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/turing/turing.n3>].
+
+<#lemma19> a r:Inference;
+  r:gives {
+    ((1 1) 1 (1)) :symbol true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1) e:firstRest (1 (1))}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (1)];
+  r:rule <#lemma17>.
+
+<#lemma20> a r:Inference;
+  r:gives {
+    (:right (1) (1 1) (1 1) (1)) :action true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1) e:firstRest (1 (1))}]
+    [ a r:Fact; r:gives {(1 1) e:firstRest (1 (1))}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1)];
+  r:rule <#lemma18>.
+
+<#lemma21> a r:Inference;
+  r:gives {
+    (:q0 (1 1) (1 1 1) (1) (1)) :perform true.
+  };
+  r:evidence (
+    <#lemma25>
+    <#lemma9>
+    [ a r:Fact; r:gives {(1) e:firstRest (1 ())}]
+    <#lemma26>
+    <#lemma27>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain#q0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain#q0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ n3:uri "http://josd.github.io/brain#right"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_12"]; r:boundTo (1)];
+  r:rule <#lemma12>.
+
+<#lemma22> a r:Inference;
+  r:gives {
+    ((1 1) (1) (1 1 1)) :reverse true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1) e:firstRest (1 (1))}]
+    [ a r:Fact; r:gives {(1 1) e:firstRest (1 (1))}]
+    <#lemma28>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 1 1)];
+  r:rule <#lemma23>.
+
+<#lemma23> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5. {(var:x_0 var:x_4 var:x_5) :reverse true} <= {var:x_0 e:firstRest (var:x_1 var:x_2).
+     var:x_3 e:firstRest (var:x_1 var:x_4).
+     (var:x_2 var:x_3 var:x_5) :reverse true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/turing/turing.n3>].
+
+<#lemma24> a r:Inference;
+  r:gives {
+    ((1) (1) (1 1)) :append true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1) e:firstRest (1 ())}]
+    [ a r:Fact; r:gives {(1 1) e:firstRest (1 (1))}]
+    <#lemma29>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1)];
+  r:rule <#lemma16>.
+
+<#lemma25> a r:Inference;
+  r:gives {
+    ((1) 1 ()) :symbol true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1) e:firstRest (1 ())}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo ()];
+  r:rule <#lemma17>.
+
+<#lemma26> a r:Inference;
+  r:gives {
+    (:right (1 1) (1 1 1) (1) ()) :action true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1 1) e:firstRest (1 (1 1))}]
+    [ a r:Fact; r:gives {(1) e:firstRest (1 ())}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo ()];
+  r:rule <#lemma18>.
+
+<#lemma27> a r:Inference;
+  r:gives {
+    (:q0 (1 1 1) (1 1 1) () (1)) :perform true.
+  };
+  r:evidence (
+    <#lemma30>
+    <#lemma31>
+    [ a r:Fact; r:gives {(1) e:firstRest (1 ())}]
+    <#lemma32>
+    <#lemma33>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain#b"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain#q0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain#qf"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ n3:uri "http://josd.github.io/brain#stay"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_12"]; r:boundTo (1)];
+  r:rule <#lemma12>.
+
+<#lemma28> a r:Inference;
+  r:gives {
+    ((1) (1 1) (1 1 1)) :reverse true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1) e:firstRest (1 ())}]
+    [ a r:Fact; r:gives {(1 1 1) e:firstRest (1 (1 1))}]
+    <#lemma34>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 1 1)];
+  r:rule <#lemma23>.
+
+<#lemma29> a r:Inference;
+  r:gives {
+    (() (1) (1)) :append true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives true]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1)];
+  r:rule <#lemma35>.
+
+<#lemma30> a r:Inference;
+  r:gives {
+    (() :b ()) :symbol true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives true]
+  );
+  r:rule <#lemma36>.
+
+<#lemma31> a r:Extraction;
+  r:gives {
+    (:q0 :b :qf 1 :stay) :rule true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/turing/turing.n3>].
+
+<#lemma32> a r:Inference;
+  r:gives {
+    (:stay (1 1 1) (1 1 1) (1) (1)) :action true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives true]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1)];
+  r:rule <#lemma37>.
+
+<#lemma33> a r:Inference;
+  r:gives {
+    (:qf (1 1 1) (1 1 1) (1) (1)) :perform true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives true]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1)];
+  r:rule <#lemma38>.
+
+<#lemma34> a r:Inference;
+  r:gives {
+    (() (1 1 1) (1 1 1)) :reverse true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives true]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 1 1)];
+  r:rule <#lemma39>.
+
+<#lemma35> a r:Extraction;
+  r:gives {
+    @forSome var:x_0. {(() var:x_0 var:x_0) :append true} <= true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/turing/turing.n3>].
+
+<#lemma36> a r:Extraction;
+  r:gives {
+    {(() :b ()) :symbol true} <= true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/turing/turing.n3>].
+
+<#lemma37> a r:Extraction;
+  r:gives {
+    @forSome var:x_0, var:x_1. {(:stay var:x_0 var:x_0 var:x_1 var:x_1) :action true} <= true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/turing/turing.n3>].
+
+<#lemma38> a r:Extraction;
+  r:gives {
+    @forSome var:x_0, var:x_1. {(:qf var:x_0 var:x_0 var:x_1 var:x_1) :perform true} <= true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/turing/turing.n3>].
+
+<#lemma39> a r:Extraction;
+  r:gives {
+    @forSome var:x_0. {(() var:x_0 var:x_0) :reverse true} <= true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/turing/turing.n3>].
+
+#2020-02-22T21:53:13.780Z in=18 out=1 ent=1 step=1 brake=1 inf=99422 sec=0.135 inf/sec=736459
+#ENDS
+

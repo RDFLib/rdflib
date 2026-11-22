@@ -1,102 +1,137 @@
-
 """
 Converting the 'parse-tree' output of pyparsing to a SPARQL Algebra expression
 
 http://www.w3.org/TR/sparql11-query/#sparqlQuery
-
 """
 
+from __future__ import annotations
+
+import collections
 import functools
 import operator
-import collections
-
-from rdflib import Literal, Variable, URIRef, BNode
-
-from rdflib.plugins.sparql.sparql import Prologue, Query
-from rdflib.plugins.sparql.parserutils import CompValue, Expr
-from rdflib.plugins.sparql.operators import (
-    and_, TrueFilter, simplify as simplifyFilters)
-from rdflib.paths import (
-    InvPath, AlternativePath, SequencePath, MulPath, NegatedPath)
+import typing
+from collections.abc import Callable, Iterable, Mapping
+from functools import reduce
+from typing import (
+    Any,
+    overload,
+)
 
 from pyparsing import ParseResults
 
+from rdflib.namespace import RDF
+from rdflib.paths import (
+    AlternativePath,
+    InvPath,
+    MulPath,
+    NegatedPath,
+    Path,
+    SequencePath,
+)
+from rdflib.plugins.sparql.operators import TrueFilter, and_
+from rdflib.plugins.sparql.operators import simplify as simplifyFilters
+from rdflib.plugins.sparql.parserutils import CompValue, Expr
+from rdflib.plugins.sparql.sparql import Prologue, Query, Update
 
 # ---------------------------
 # Some convenience methods
-def OrderBy(p, expr):
-    return CompValue('OrderBy', p=p, expr=expr)
+from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
 
-def ToMultiSet(p):
-    return CompValue('ToMultiSet', p=p)
+def OrderBy(p: CompValue, expr: list[CompValue]) -> CompValue:
+    return CompValue("OrderBy", p=p, expr=expr)
 
 
-def Union(p1, p2):
-    return CompValue('Union', p1=p1, p2=p2)
+def ToMultiSet(p: typing.Union[list[dict[Variable, str]], CompValue]) -> CompValue:
+    return CompValue("ToMultiSet", p=p)
 
 
-def Join(p1, p2):
-    return CompValue('Join', p1=p1, p2=p2)
+def Union(p1: CompValue, p2: CompValue) -> CompValue:
+    return CompValue("Union", p1=p1, p2=p2)
 
 
-def Minus(p1, p2):
-    return CompValue('Minus', p1=p1, p2=p2)
+def Join(p1: CompValue, p2: CompValue | None) -> CompValue:
+    return CompValue("Join", p1=p1, p2=p2)
 
 
-def Graph(term, graph):
-    return CompValue('Graph', term=term, p=graph)
+def Minus(p1: CompValue, p2: CompValue) -> CompValue:
+    return CompValue("Minus", p1=p1, p2=p2)
 
 
-def BGP(triples=None):
-    return CompValue('BGP', triples=triples or [])
+def Graph(term: Identifier, graph: CompValue) -> CompValue:
+    return CompValue("Graph", term=term, p=graph)
 
 
-def LeftJoin(p1, p2, expr):
-    return CompValue('LeftJoin', p1=p1, p2=p2, expr=expr)
+def BGP(
+    triples: list[tuple[Identifier, Identifier, Identifier]] | None = None,
+) -> CompValue:
+    return CompValue("BGP", triples=triples or [])
 
 
-def Filter(expr, p):
-    return CompValue('Filter', expr=expr, p=p)
+def LeftJoin(p1: CompValue, p2: CompValue, expr) -> CompValue:
+    return CompValue("LeftJoin", p1=p1, p2=p2, expr=expr)
 
 
-def Extend(p, expr, var):
-    return CompValue('Extend', p=p, expr=expr, var=var)
-
-def Values(res):
-    return CompValue('values', res=res)
-
-def Project(p, PV):
-    return CompValue('Project', p=p, PV=PV)
+def Filter(expr: Expr, p: CompValue) -> CompValue:
+    return CompValue("Filter", expr=expr, p=p)
 
 
-def Group(p, expr=None):
-    return CompValue('Group', p=p, expr=expr)
+def Extend(
+    p: CompValue, expr: typing.Union[Identifier, Expr], var: Variable
+) -> CompValue:
+    return CompValue("Extend", p=p, expr=expr, var=var)
 
 
-def _knownTerms(triple, varsknown, varscount):
-    return (len(filter(None, (x not in varsknown and
-                              isinstance(
-                                  x, (Variable, BNode)) for x in triple))),
-            -sum(varscount.get(x, 0) for x in triple),
-            not isinstance(triple[2], Literal),
-            )
+def Values(res: list[dict[Variable, str]]) -> CompValue:
+    return CompValue("values", res=res)
 
 
-def reorderTriples(l):
+def Project(p: CompValue, PV: list[Variable]) -> CompValue:
+    return CompValue("Project", p=p, PV=PV)
+
+
+def Group(p: CompValue, expr: list[Variable] | None = None) -> CompValue:
+    return CompValue("Group", p=p, expr=expr)
+
+
+def _knownTerms(
+    triple: tuple[Identifier, Identifier, Identifier],
+    varsknown: set[typing.Union[BNode, Variable]],
+    varscount: dict[Identifier, int],
+) -> tuple[int, int, bool]:
+    return (
+        len(
+            [
+                x
+                for x in triple
+                if x not in varsknown and isinstance(x, (Variable, BNode))
+            ]
+        ),
+        -sum(varscount.get(x, 0) for x in triple),
+        not isinstance(triple[2], Literal),
+    )
+
+
+def reorderTriples(
+    l_: Iterable[tuple[Identifier, Identifier, Identifier]],
+) -> list[tuple[Identifier, Identifier, Identifier]]:
     """
     Reorder triple patterns so that we execute the
     ones with most bindings first
     """
 
-    def _addvar(term, varsknown):
+    def _addvar(term: str, varsknown: set[typing.Union[Variable, BNode]]):
         if isinstance(term, (Variable, BNode)):
             varsknown.add(term)
 
-    l = [(None, x) for x in l]
-    varsknown = set()
-    varscount = collections.defaultdict(int)
-    for t in l:
+    # NOTE on type errors: most of these are because the same variable is used
+    # for different types.
+
+    # type error: List comprehension has incompatible type list[tuple[None, tuple[Identifier, Identifier, Identifier]]]; expected list[tuple[Identifier, Identifier, Identifier]]
+    l_ = [(None, x) for x in l_]  # type: ignore[misc]
+    varsknown: set[typing.Union[BNode, Variable]] = set()
+    varscount: dict[Identifier, int] = collections.defaultdict(int)
+    for t in l_:
         for c in t[1]:
             if isinstance(c, (Variable, BNode)):
                 varscount[c] += 1
@@ -109,91 +144,114 @@ def reorderTriples(l):
 
     # we sort by decorate/undecorate, since we need the value of the sort keys
 
-    while i < len(l):
-        l[i:] = sorted((_knownTerms(x[
-                       1], varsknown, varscount), x[1]) for x in l[i:])
-        t = l[i][0][0]  # top block has this many terms bound
+    while i < len(l_):
+        # type error: Generator has incompatible item type "tuple[Any, Identifier]"; expected "tuple[Identifier, Identifier, Identifier]"
+        # type error: Argument 1 to "_knownTerms" has incompatible type "Identifier"; expected "tuple[Identifier, Identifier, Identifier]"
+        l_[i:] = sorted((_knownTerms(x[1], varsknown, varscount), x[1]) for x in l_[i:])  # type: ignore[misc,arg-type]
+        # type error: Incompatible types in assignment (expression has type "str", variable has type "tuple[Identifier, Identifier, Identifier]")
+        t = l_[i][0][0]  # type: ignore[assignment] # top block has this many terms bound
         j = 0
-        while i+j < len(l) and l[i+j][0][0] == t:
-            for c in l[i+j][1]:
+        while i + j < len(l_) and l_[i + j][0][0] == t:
+            for c in l_[i + j][1]:  # type: ignore[unreachable]
                 _addvar(c, varsknown)
             j += 1
         i += 1
 
-    return [x[1] for x in l]
+    # type error: List comprehension has incompatible type list[Identifier]; expected list[tuple[Identifier, Identifier, Identifier]]
+    return [x[1] for x in l_]  # type: ignore[misc]
 
 
-def triples(l):
+def triples(
+    l: typing.Union[  # noqa: E741
+        list[list[Identifier]], list[tuple[Identifier, Identifier, Identifier]]
+    ],
+) -> list[tuple[Identifier, Identifier, Identifier]]:
+    _l = reduce(lambda x, y: x + y, l)
+    if (len(_l) % 3) != 0:
+        raise Exception("these aint triples")
+    return reorderTriples((_l[x], _l[x + 1], _l[x + 2]) for x in range(0, len(_l), 3))
 
-    l = reduce(lambda x, y: x + y, l)
-    if (len(l) % 3) != 0:
-        raise Exception('these aint triples')
-    return reorderTriples((l[x], l[x + 1], l[x + 2])
-                          for x in range(0, len(l), 3))
 
-
-def translatePName(p, prologue):
+# type error: Missing return statement
+def translatePName(  # type: ignore[return]
+    p: typing.Union[CompValue, str], prologue: Prologue
+) -> Identifier | None:
     """
     Expand prefixed/relative URIs
     """
     if isinstance(p, CompValue):
-        if p.name == 'pname':
-            return prologue.absolutize(p)
-        if p.name == 'literal':
-            return Literal(p.string, lang=p.lang,
-                           datatype=prologue.absolutize(p.datatype))
+        if p.name == "pname":
+            # type error: Incompatible return value type (got "Union[CompValue, str, None]", expected "Optional[Identifier]")
+            return prologue.absolutize(p)  # type: ignore[return-value]
+        if p.name == "literal":
+            # type error: Argument "datatype" to "Literal" has incompatible type "Union[CompValue, str, None]"; expected "Optional[str]"
+            return Literal(
+                p.string,
+                lang=p.lang,
+                datatype=prologue.absolutize(p.datatype),  # type: ignore[arg-type]
+            )
     elif isinstance(p, URIRef):
-        return prologue.absolutize(p)
+        # type error: Incompatible return value type (got "Union[CompValue, str, None]", expected "Optional[Identifier]")
+        return prologue.absolutize(p)  # type: ignore[return-value]
 
 
-def translatePath(p):
+@overload
+def translatePath(p: URIRef) -> None: ...
 
+
+@overload
+def translatePath(p: CompValue) -> Path: ...
+
+
+# type error: Missing return statement
+def translatePath(p: typing.Union[CompValue, URIRef]) -> Path | None:  # type: ignore[return]
     """
     Translate PropertyPath expressions
     """
 
     if isinstance(p, CompValue):
-        if p.name == 'PathAlternative':
+        if p.name == "PathAlternative":
             if len(p.part) == 1:
                 return p.part[0]
             else:
                 return AlternativePath(*p.part)
 
-        elif p.name == 'PathSequence':
+        elif p.name == "PathSequence":
             if len(p.part) == 1:
                 return p.part[0]
             else:
                 return SequencePath(*p.part)
 
-        elif p.name == 'PathElt':
+        elif p.name == "PathElt":
             if not p.mod:
                 return p.part
             else:
                 if isinstance(p.part, list):
                     if len(p.part) != 1:
-                        raise Exception('Denkfehler!')
+                        raise Exception("Denkfehler!")
 
                     return MulPath(p.part[0], p.mod)
                 else:
                     return MulPath(p.part, p.mod)
 
-        elif p.name == 'PathEltOrInverse':
+        elif p.name == "PathEltOrInverse":
             if isinstance(p.part, list):
                 if len(p.part) != 1:
-                    raise Exception('Denkfehler!')
+                    raise Exception("Denkfehler!")
                 return InvPath(p.part[0])
             else:
                 return InvPath(p.part)
 
-        elif p.name == 'PathNegatedPropertySet':
+        elif p.name == "PathNegatedPropertySet":
             if isinstance(p.part, list):
                 return NegatedPath(AlternativePath(*p.part))
             else:
                 return NegatedPath(p.part)
 
 
-def translateExists(e):
-
+def translateExists(
+    e: typing.Union[Expr, Literal, Variable, URIRef],
+) -> typing.Union[Expr, Literal, Variable, URIRef]:
     """
     Translate the graph pattern used by EXISTS and NOT EXISTS
     http://www.w3.org/TR/sparql11-query/#sparqlCollectFilters
@@ -201,9 +259,9 @@ def translateExists(e):
 
     def _c(n):
         if isinstance(n, CompValue):
-            if n.name in ('Builtin_EXISTS', 'Builtin_NOTEXISTS'):
+            if n.name in ("Builtin_EXISTS", "Builtin_NOTEXISTS"):
                 n.graph = translateGroupGraphPattern(n.graph)
-                if n.graph.name == 'Filter':
+                if n.graph.name == "Filter":
                     # filters inside (NOT) EXISTS can see vars bound outside
                     n.graph.no_isolated_scope = True
 
@@ -212,11 +270,8 @@ def translateExists(e):
     return e
 
 
-def collectAndRemoveFilters(parts):
-
-    """
-
-    FILTER expressions apply to the whole group graph pattern in which
+def collectAndRemoveFilters(parts: list[CompValue]) -> Expr | None:
+    """FILTER expressions apply to the whole group graph pattern in which
     they appear.
 
     http://www.w3.org/TR/sparql11-query/#sparqlCollectFilters
@@ -227,20 +282,21 @@ def collectAndRemoveFilters(parts):
     i = 0
     while i < len(parts):
         p = parts[i]
-        if p.name == 'Filter':
+        if p.name == "Filter":
             filters.append(translateExists(p.expr))
             parts.pop(i)
         else:
             i += 1
 
     if filters:
-        return and_(*filters)
+        # type error: Argument 1 to "and_" has incompatible type "*list[Union[Expr, Literal, Variable]]"; expected "Expr"
+        return and_(*filters)  # type: ignore[arg-type]
 
     return None
 
 
-def translateGroupOrUnionGraphPattern(graphPattern):
-    A = None
+def translateGroupOrUnionGraphPattern(graphPattern: CompValue) -> CompValue | None:
+    A: CompValue | None = None
 
     for g in graphPattern.graph:
         g = translateGroupGraphPattern(g)
@@ -251,33 +307,41 @@ def translateGroupOrUnionGraphPattern(graphPattern):
     return A
 
 
-def translateGraphGraphPattern(graphPattern):
-    return Graph(graphPattern.term,
-                 translateGroupGraphPattern(graphPattern.graph))
+def translateGraphGraphPattern(graphPattern: CompValue) -> CompValue:
+    return Graph(graphPattern.term, translateGroupGraphPattern(graphPattern.graph))
 
 
-def translateInlineData(graphPattern):
+def translateInlineData(graphPattern: CompValue) -> CompValue:
     return ToMultiSet(translateValues(graphPattern))
 
 
-def translateGroupGraphPattern(graphPattern):
+def translateGroupGraphPattern(graphPattern: CompValue) -> CompValue:
     """
     http://www.w3.org/TR/sparql11-query/#convertGraphPattern
     """
 
-    if graphPattern.name == 'SubSelect':
-        return ToMultiSet(translate(graphPattern)[0])
+    if graphPattern.translated:
+        # This occurs if it is attempted to translate a group graph pattern twice,
+        # which occurs with nested (NOT) EXISTS filters. Simply return the already
+        # translated pattern instead.
+        return graphPattern
+    if graphPattern.name == "SubSelect":
+        # The first output from translate cannot be None for a subselect query
+        # as it can only be None for certain DESCRIBE queries.
+        # type error: Argument 1 to "ToMultiSet" has incompatible type "Optional[CompValue]";
+        #   expected "Union[list[dict[Variable, str]], CompValue]"
+        return ToMultiSet(translate(graphPattern)[0])  # type: ignore[arg-type]
 
     if not graphPattern.part:
         graphPattern.part = []  # empty { }
 
     filters = collectAndRemoveFilters(graphPattern.part)
 
-    g = []
+    g: list[CompValue] = []
     for p in graphPattern.part:
-        if p.name == 'TriplesBlock':
+        if p.name == "TriplesBlock":
             # merge adjacent TripleBlocks
-            if not (g and g[-1].name == 'BGP'):
+            if not (g and g[-1].name == "BGP"):
                 g.append(BGP())
             g[-1]["triples"] += triples(p.triples)
         else:
@@ -285,45 +349,55 @@ def translateGroupGraphPattern(graphPattern):
 
     G = BGP()
     for p in g:
-        if p.name == 'OptionalGraphPattern':
+        if p.name == "OptionalGraphPattern":
             A = translateGroupGraphPattern(p.graph)
-            if A.name == 'Filter':
+            if A.name == "Filter":
                 G = LeftJoin(G, A.p, A.expr)
             else:
                 G = LeftJoin(G, A, TrueFilter)
-        elif p.name == 'MinusGraphPattern':
+        elif p.name == "MinusGraphPattern":
             G = Minus(p1=G, p2=translateGroupGraphPattern(p.graph))
-        elif p.name == 'GroupOrUnionGraphPattern':
+        elif p.name == "GroupOrUnionGraphPattern":
             G = Join(p1=G, p2=translateGroupOrUnionGraphPattern(p))
-        elif p.name == 'GraphGraphPattern':
+        elif p.name == "GraphGraphPattern":
             G = Join(p1=G, p2=translateGraphGraphPattern(p))
-        elif p.name == 'InlineData':
+        elif p.name == "InlineData":
             G = Join(p1=G, p2=translateInlineData(p))
-        elif p.name == 'ServiceGraphPattern':
+        elif p.name == "ServiceGraphPattern":
             G = Join(p1=G, p2=p)
-        elif p.name in ('BGP', 'Extend'):
+        elif p.name in ("BGP", "Extend"):
             G = Join(p1=G, p2=p)
-        elif p.name == 'Bind':
-            G = Extend(G, p.expr, p.var)
+        elif p.name == "Bind":
+            # translateExists will translate the expression if it is EXISTS, and otherwise return
+            # the expression as is. This is needed because EXISTS has a graph pattern
+            # which must be translated to work properly during evaluation.
+            G = Extend(G, translateExists(p.expr), p.var)
 
         else:
-            raise Exception('Unknown part in GroupGraphPattern: %s - %s' %
-                            (type(p), p.name))
+            raise Exception(
+                "Unknown part in GroupGraphPattern: %s - %s" % (type(p), p.name)
+            )
 
     if filters:
         G = Filter(expr=filters, p=G)
 
+    # Mark this graph pattern as translated
+    G.translated = True
+
     return G
 
 
-class StopTraversal(Exception):
-    def __init__(self, rv):
+class StopTraversal(Exception):  # noqa: N818
+    def __init__(self, rv: bool):
         self.rv = rv
 
 
-def _traverse(e, visitPre=lambda n: None, visitPost=lambda n: None):
-    """
-    Traverse a parse-tree, visit each node
+def _traverse(
+    e: Any,
+    visitPre: Callable[[Any], Any] = lambda n: None,
+    visitPost: Callable[[Any], Any] = lambda n: None,
+):
+    """Traverse a parse-tree, visit each node
 
     if visit functions return a value, replace current node
     """
@@ -340,7 +414,7 @@ def _traverse(e, visitPre=lambda n: None, visitPost=lambda n: None):
         return tuple([_traverse(x, visitPre, visitPost) for x in e])
 
     elif isinstance(e, CompValue):
-        for k, val in e.iteritems():
+        for k, val in e.items():
             e[k] = _traverse(val, visitPre, visitPost)
 
     _e = visitPost(e)
@@ -350,7 +424,7 @@ def _traverse(e, visitPre=lambda n: None, visitPost=lambda n: None):
     return e
 
 
-def _traverseAgg(e, visitor=lambda n, v: None):
+def _traverseAgg(e: Any, visitor: Callable[[Any, Any], Any] = lambda n, v: None):
     """
     Traverse a parse-tree, visit each node
 
@@ -361,18 +435,20 @@ def _traverseAgg(e, visitor=lambda n, v: None):
 
     if isinstance(e, (list, ParseResults, tuple)):
         res = [_traverseAgg(x, visitor) for x in e]
-
     elif isinstance(e, CompValue):
-        for k, val in e.iteritems():
-            if val != None:
+        for k, val in e.items():
+            if val is not None:
                 res.append(_traverseAgg(val, visitor))
 
     return visitor(e, res)
 
 
 def traverse(
-        tree, visitPre=lambda n: None,
-        visitPost=lambda n: None, complete=None):
+    tree,
+    visitPre: Callable[[Any], Any] = lambda n: None,
+    visitPost: Callable[[Any], Any] = lambda n: None,
+    complete: bool | None = None,
+) -> Any:
     """
     Traverse tree, visit each node with visit function
     visit function may raise StopTraversal to stop traversal
@@ -384,22 +460,23 @@ def traverse(
         if complete is not None:
             return complete
         return r
-    except StopTraversal, st:
+    except StopTraversal as st:
         return st.rv
 
 
-def _hasAggregate(x):
+def _hasAggregate(x) -> None:
     """
     Traverse parse(sub)Tree
     return true if any aggregates are used
     """
 
     if isinstance(x, CompValue):
-        if x.name.startswith('Aggregate_'):
+        if x.name.startswith("Aggregate_"):
             raise StopTraversal(True)
 
 
-def _aggs(e, A):
+# type error: Missing return statement
+def _aggs(e, A) -> Variable | None:  # type: ignore[return]
     """
     Collect Aggregates in A
     replaces aggregates with variable references
@@ -407,14 +484,15 @@ def _aggs(e, A):
 
     # TODO: nested Aggregates?
 
-    if isinstance(e, CompValue) and e.name.startswith('Aggregate_'):
+    if isinstance(e, CompValue) and e.name.startswith("Aggregate_"):
         A.append(e)
-        aggvar = Variable('__agg_%d__' % len(A))
+        aggvar = Variable("__agg_%d__" % len(A))
         e["res"] = aggvar
         return aggvar
 
 
-def _findVars(x, res):
+# type error: Missing return statement
+def _findVars(x, res: set[Variable]) -> CompValue | None:  # type: ignore[return]
     """
     Find all variables in a tree
     """
@@ -424,13 +502,14 @@ def _findVars(x, res):
         if x.name == "Bind":
             res.add(x.var)
             return x  # stop recursion and finding vars in the expr
-        elif x.name == 'SubSelect':
+        elif x.name == "SubSelect":
             if x.projection:
                 res.update(v.var or v.evar for v in x.projection)
+
             return x
 
 
-def _addVars(x, children):
+def _addVars(x, children: list[set[Variable]]) -> set[Variable]:
     """
     find which variables may be bound by this part of the query
     """
@@ -441,12 +520,16 @@ def _addVars(x, children):
             x["_vars"] = set()
         elif x.name == "Extend":
             # vars only used in the expr for a bind should not be included
-            x["_vars"] = reduce(operator.or_, [ child for child,part in zip(children,x) if part!='expr' ], set())
+            x["_vars"] = reduce(
+                operator.or_,
+                [child for child, part in zip(children, x) if part != "expr"],
+                set(),
+            )
 
         else:
             x["_vars"] = set(reduce(operator.or_, children, set()))
 
-            if x.name == 'SubSelect':
+            if x.name == "SubSelect":
                 if x.projection:
                     s = set(v.var or v.evar for v in x.projection)
                 else:
@@ -459,7 +542,11 @@ def _addVars(x, children):
     return reduce(operator.or_, children, set())
 
 
-def _sample(e, v=None):
+# type error: Missing return statement
+def _sample(  # type: ignore[return]
+    e: typing.Union[CompValue, list[Expr], Expr, list[str], Variable],
+    v: Variable | None = None,
+) -> CompValue | None:
     """
     For each unaggregated variable V in expr
     Replace V with Sample(V)
@@ -467,17 +554,19 @@ def _sample(e, v=None):
     if isinstance(e, CompValue) and e.name.startswith("Aggregate_"):
         return e  # do not replace vars in aggregates
     if isinstance(e, Variable) and v != e:
-        return CompValue('Aggregate_Sample', vars=e)
+        return CompValue("Aggregate_Sample", vars=e)
 
 
-def _simplifyFilters(e):
+def _simplifyFilters(e: Any) -> Any:
     if isinstance(e, Expr):
         return simplifyFilters(e)
 
 
-def translateAggregates(q, M):
-    E = []
-    A = []
+def translateAggregates(
+    q: CompValue, M: CompValue
+) -> tuple[CompValue, list[tuple[Variable, Variable]]]:
+    E: list[tuple[Variable, Variable]] = []
+    A: list[CompValue] = []
 
     # collect/replace aggs in :
     #    select expr as ?var
@@ -487,9 +576,8 @@ def translateAggregates(q, M):
                 v.expr = traverse(v.expr, functools.partial(_sample, v=v.evar))
                 v.expr = traverse(v.expr, functools.partial(_aggs, A=A))
 
-
     # having clause
-    if traverse(q.having, _hasAggregate, complete=False):
+    if traverse(q.having, _hasAggregate, complete=True):
         q.having = traverse(q.having, _sample)
         traverse(q.having, functools.partial(_aggs, A=A))
 
@@ -503,24 +591,25 @@ def translateAggregates(q, M):
     if q.projection:
         for v in q.projection:
             if v.var:
-                rv = Variable('__agg_%d__' % (len(A) + 1))
-                A.append(CompValue('Aggregate_Sample', vars=v.var, res=rv))
+                rv = Variable("__agg_%d__" % (len(A) + 1))
+                A.append(CompValue("Aggregate_Sample", vars=v.var, res=rv))
                 E.append((rv, v.var))
 
-    return CompValue('AggregateJoin', A=A, p=M), E
+    return CompValue("AggregateJoin", A=A, p=M), E
 
 
-def translateValues(v):
+def translateValues(
+    v: CompValue,
+) -> typing.Union[list[dict[Variable, str]], CompValue]:
     # if len(v.var)!=len(v.value):
     #     raise Exception("Unmatched vars and values in ValueClause: "+str(v))
 
-    res = []
+    res: list[dict[Variable, str]] = []
     if not v.var:
         return res
     if not v.value:
         return res
     if not isinstance(v.value[0], list):
-
         for val in v.value:
             res.append({v.var[0]: val})
     else:
@@ -530,10 +619,9 @@ def translateValues(v):
     return Values(res)
 
 
-def translate(q):
+def translate(q: CompValue) -> tuple[CompValue | None, list[Variable]]:
     """
     http://www.w3.org/TR/sparql11-query/#convertSolMod
-
     """
 
     _traverse(q, _simplifyFilters)
@@ -541,10 +629,29 @@ def translate(q):
     q.where = traverse(q.where, visitPost=translatePath)
 
     # TODO: Var scope test
-    VS = set()
-    traverse(q.where, functools.partial(_findVars, res=VS))
+    VS: set[Variable] = set()
 
-    # all query types have a where part
+    # All query types have a WHERE clause EXCEPT some DESCRIBE queries
+    # where only explicit IRIs are provided.
+    if q.name == "DescribeQuery":
+        # For DESCRIBE queries, use the vars provided in q.var.
+        # If there is no WHERE clause, vars should be explicit IRIs to describe.
+        # If there is a WHERE clause, vars can be any combination of explicit IRIs
+        # and variables.
+        VS = set(q.var)
+
+        # If there is no WHERE clause, just return the vars projected
+        if q.where is None:
+            return None, list(VS)
+
+        # Otherwise, evaluate the WHERE clause like SELECT DISTINCT
+        else:
+            q.modifier = "DISTINCT"
+
+    else:
+        traverse(q.where, functools.partial(_findVars, res=VS))
+
+    # depth-first recursive generation of mapped query tree
     M = translateGroupGraphPattern(q.where)
 
     aggregate = False
@@ -552,25 +659,35 @@ def translate(q):
         conditions = []
         # convert "GROUP BY (?expr as ?var)" to an Extend
         for c in q.groupby.condition:
-            if isinstance(c, CompValue) and c.name == 'GroupAs':
+            if isinstance(c, CompValue) and c.name == "GroupAs":
                 M = Extend(M, c.expr, c.var)
                 c = c.var
             conditions.append(c)
 
         M = Group(p=M, expr=conditions)
         aggregate = True
-    elif traverse(q.having, _hasAggregate, complete=False) or \
-            traverse(q.orderby, _hasAggregate, complete=False) or \
-            any(traverse(x.expr, _hasAggregate, complete=False)
-                for x in q.projection or [] if x.evar):
+    elif (
+        traverse(q.having, _hasAggregate, complete=False)
+        or traverse(q.orderby, _hasAggregate, complete=False)
+        or any(
+            traverse(x.expr, _hasAggregate, complete=False)
+            for x in q.projection or []
+            if x.evar
+        )
+    ):
         # if any aggregate is used, implicit group by
         M = Group(p=M)
         aggregate = True
 
     if aggregate:
-        M, E = translateAggregates(q, M)
+        M, aggregateAliases = translateAggregates(q, M)
     else:
-        E = []
+        aggregateAliases = []
+
+    # Need to remove the aggregate var aliases before joining to VALUES;
+    # else the variable names won't match up correctly when aggregating.
+    for alias, var in aggregateAliases:
+        M = Extend(M, alias, var)
 
     # HAVING
     if q.having:
@@ -582,8 +699,15 @@ def translate(q):
 
     if not q.projection:
         # select *
+
+        # Find the first child projection in each branch of the mapped query tree,
+        # then include the variables it projects out in our projected variables.
+        for child_projection in _find_first_child_projections(M):
+            VS |= set(child_projection.PV)
+
         PV = list(VS)
     else:
+        E = list()
         PV = list()
         for v in q.projection:
             if v.var:
@@ -597,52 +721,73 @@ def translate(q):
             else:
                 raise Exception("I expected a var or evar here!")
 
-    for e, v in E:
-        M = Extend(M, e, v)
+        for e, v in E:
+            M = Extend(M, e, v)
 
     # ORDER BY
     if q.orderby:
-        M = OrderBy(M, [CompValue('OrderCondition', expr=c.expr,
-                    order=c.order) for c in q.orderby.condition])
+        M = OrderBy(
+            M,
+            [
+                CompValue("OrderCondition", expr=c.expr, order=c.order)
+                for c in q.orderby.condition
+            ],
+        )
 
     # PROJECT
     M = Project(M, PV)
 
     if q.modifier:
-        if q.modifier == 'DISTINCT':
-            M = CompValue('Distinct', p=M)
-        elif q.modifier == 'REDUCED':
-            M = CompValue('Reduced', p=M)
+        if q.modifier == "DISTINCT":
+            M = CompValue("Distinct", p=M)
+        elif q.modifier == "REDUCED":
+            M = CompValue("Reduced", p=M)
 
     if q.limitoffset:
         offset = 0
-        if q.limitoffset.offset != None:
+        if q.limitoffset.offset is not None:
             offset = q.limitoffset.offset.toPython()
 
-        if q.limitoffset.limit != None:
-            M = CompValue('Slice', p=M, start=offset,
-                          length=q.limitoffset.limit.toPython())
+        if q.limitoffset.limit is not None:
+            M = CompValue(
+                "Slice", p=M, start=offset, length=q.limitoffset.limit.toPython()
+            )
         else:
-            M = CompValue('Slice', p=M, start=offset)
+            M = CompValue("Slice", p=M, start=offset)
 
     return M, PV
 
 
-def simplify(n):
+def _find_first_child_projections(M: CompValue) -> Iterable[CompValue]:
+    """
+    Recursively find the first child instance of a Projection operation in each of
+    the branches of the query execution plan/tree.
+    """
+
+    for child_op in M.values():
+        if isinstance(child_op, CompValue):
+            if child_op.name == "Project":
+                yield child_op
+            else:
+                for child_projection in _find_first_child_projections(child_op):
+                    yield child_projection
+
+
+# type error: Missing return statement
+def simplify(n: Any) -> CompValue | None:  # type: ignore[return]
     """Remove joins to empty BGPs"""
     if isinstance(n, CompValue):
-        if n.name == 'Join':
-            if n.p1.name == 'BGP' and len(n.p1.triples) == 0:
+        if n.name == "Join":
+            if n.p1.name == "BGP" and len(n.p1.triples) == 0:
                 return n.p2
-            if n.p2.name == 'BGP' and len(n.p2.triples) == 0:
+            if n.p2.name == "BGP" and len(n.p2.triples) == 0:
                 return n.p1
-        elif n.name == 'BGP':
+        elif n.name == "BGP":
             n["triples"] = reorderTriples(n.triples)
             return n
 
 
-def analyse(n, children):
-
+def analyse(n: Any, children: Any) -> bool:
     """
     Some things can be lazily joined.
     This propegates whether they can up the tree
@@ -650,10 +795,10 @@ def analyse(n, children):
     """
 
     if isinstance(n, CompValue):
-        if n.name == 'Join':
+        if n.name == "Join":
             n["lazy"] = all(children)
             return False
-        elif n.name in ('Slice', 'Distinct'):
+        elif n.name in ("Slice", "Distinct"):
             return False
         else:
             return all(children)
@@ -661,33 +806,45 @@ def analyse(n, children):
         return True
 
 
-def translatePrologue(p, base, initNs=None, prologue=None):
-
+def translatePrologue(
+    p: ParseResults,
+    base: str | None,
+    initNs: Mapping[str, Any] | None = None,
+    prologue: Prologue | None = None,
+) -> Prologue:
     if prologue is None:
         prologue = Prologue()
         prologue.base = ""
     if base:
         prologue.base = base
     if initNs:
-        for k, v in initNs.iteritems():
+        for k, v in initNs.items():
             prologue.bind(k, v)
 
+    x: CompValue
     for x in p:
-        if x.name == 'Base':
+        if x.name == "Base":
             prologue.base = x.iri
-        elif x.name == 'PrefixDecl':
+        elif x.name == "PrefixDecl":
             prologue.bind(x.prefix, prologue.absolutize(x.iri))
 
     return prologue
 
 
-def translateQuads(quads):
+def translateQuads(
+    quads: CompValue,
+) -> tuple[
+    list[tuple[Identifier, Identifier, Identifier]],
+    collections.defaultdict[str, list[tuple[Identifier, Identifier, Identifier]]],
+]:
     if quads.triples:
         alltriples = triples(quads.triples)
     else:
         alltriples = []
 
-    allquads = collections.defaultdict(list)
+    allquads: collections.defaultdict[
+        str, list[tuple[Identifier, Identifier, Identifier]]
+    ] = collections.defaultdict(list)
 
     if quads.quadsNotTriples:
         for q in quads.quadsNotTriples:
@@ -697,57 +854,64 @@ def translateQuads(quads):
     return alltriples, allquads
 
 
-def translateUpdate1(u, prologue):
-    if u.name in ('Load', 'Clear', 'Drop', 'Create'):
+def translateUpdate1(u: CompValue, prologue: Prologue) -> CompValue:
+    if u.name in ("Load", "Clear", "Drop", "Create"):
         pass  # no translation needed
-    elif u.name in ('Add', 'Move', 'Copy'):
+    elif u.name in ("Add", "Move", "Copy"):
         pass
-    elif u.name in ('InsertData', 'DeleteData', 'DeleteWhere'):
+    elif u.name in ("InsertData", "DeleteData", "DeleteWhere"):
         t, q = translateQuads(u.quads)
         u["quads"] = q
         u["triples"] = t
-        if u.name in ('DeleteWhere', 'DeleteData'):
+        if u.name in ("DeleteWhere", "DeleteData"):
             pass  # TODO: check for bnodes in triples
-    elif u.name == 'Modify':
+    elif u.name == "Modify":
         if u.delete:
-            u.delete["triples"], u.delete[
-                "quads"] = translateQuads(u.delete.quads)
+            u.delete["triples"], u.delete["quads"] = translateQuads(u.delete.quads)
         if u.insert:
-            u.insert["triples"], u.insert[
-                "quads"] = translateQuads(u.insert.quads)
+            u.insert["triples"], u.insert["quads"] = translateQuads(u.insert.quads)
         u["where"] = translateGroupGraphPattern(u.where)
     else:
-        raise Exception('Unknown type of update operation: %s' % u)
+        raise Exception("Unknown type of update operation: %s" % u)
 
     u.prologue = prologue
     return u
 
 
-def translateUpdate(q, base=None, initNs=None):
+def translateUpdate(
+    q: CompValue,
+    base: str | None = None,
+    initNs: Mapping[str, Any] | None = None,
+) -> Update:
     """
     Returns a list of SPARQL Update Algebra expressions
     """
 
-    res = []
+    res: list[CompValue] = []
     prologue = None
     if not q.request:
-        return res
+        # type error: Incompatible return value type (got "list[CompValue]", expected "Update")
+        return res  # type: ignore[return-value]
     for p, u in zip(q.prologue, q.request):
         prologue = translatePrologue(p, base, initNs, prologue)
 
         # absolutize/resolve prefixes
-        u = traverse(
-            u, visitPost=functools.partial(translatePName, prologue=prologue))
+        u = traverse(u, visitPost=functools.partial(translatePName, prologue=prologue))
         u = _traverse(u, _simplifyFilters)
 
         u = traverse(u, visitPost=translatePath)
 
         res.append(translateUpdate1(u, prologue))
 
-    return res
+    # type error: Argument 1 to "Update" has incompatible type "Optional[Any]"; expected "Prologue"
+    return Update(prologue, res)  # type: ignore[arg-type]
 
 
-def translateQuery(q, base=None, initNs=None):
+def translateQuery(
+    q: ParseResults,
+    base: str | None = None,
+    initNs: Mapping[str, Any] | None = None,
+) -> Query:
     """
     Translate a query-parsetree to a SPARQL Algebra Expression
 
@@ -760,17 +924,15 @@ def translateQuery(q, base=None, initNs=None):
 
     # absolutize/resolve prefixes
     q[1] = traverse(
-        q[1], visitPost=functools.partial(translatePName, prologue=prologue))
+        q[1], visitPost=functools.partial(translatePName, prologue=prologue)
+    )
 
     P, PV = translate(q[1])
     datasetClause = q[1].datasetClause
-    if q[1].name == 'ConstructQuery':
-
+    if q[1].name == "ConstructQuery":
         template = triples(q[1].template) if q[1].template else None
 
-        res = CompValue(q[1].name, p=P,
-                        template=template,
-                        datasetClause=datasetClause)
+        res = CompValue(q[1].name, p=P, template=template, datasetClause=datasetClause)
     else:
         res = CompValue(q[1].name, p=P, datasetClause=datasetClause, PV=PV)
 
@@ -781,7 +943,843 @@ def translateQuery(q, base=None, initNs=None):
     return Query(prologue, res)
 
 
-def pprintAlgebra(q):
+class ExpressionNotCoveredException(Exception):  # noqa: N818
+    pass
+
+
+def _select_expressions(project: CompValue) -> list[CompValue]:
+    """
+    Find the Extends that come from the SELECT clause of a Project, top first.
+    The other Extends below it are BINDs or GROUP BY expressions.
+    """
+    node = project.p
+    if node.name == "OrderBy":
+        node = node.p
+    # In an aggregate query, every Extend above the AggregateJoin comes from the
+    # SELECT clause, with HAVING and the VALUES clause in between.
+    extends = []
+    below = node
+    while isinstance(below, CompValue) and below.name in ("Extend", "Filter", "Join"):
+        if below.name == "Extend":
+            extends.append(below)
+        below = below.p1 if below.name == "Join" else below.p
+    if not (isinstance(below, CompValue) and below.name == "AggregateJoin"):
+        # Otherwise they are the Extends just below the Project. A BIND at the end
+        # of the WHERE clause looks the same and means the same, as long as the
+        # SELECT clause can list it in the order it is evaluated in.
+        extends = []
+        position = len(project.PV)
+        while node.name == "Extend" and node.var in project.PV[:position]:
+            position = project.PV.index(node.var)
+            extends.append(node)
+            node = node.p
+    return extends
+
+
+def _is_values_clause_of_group(join: CompValue) -> bool:
+    """
+    Whether a Join is the VALUES clause of a grouped SELECT, which joins its
+    values to the groups.
+    """
+    values = join.p2
+    if not (
+        isinstance(values, CompValue)
+        and values.name == "ToMultiSet"
+        and isinstance(values.p, CompValue)
+        and values.p.name == "values"
+    ):
+        return False
+    # Between the groups and the VALUES clause are HAVING and the Extends that
+    # name the aggregates.
+    below = join.p1
+    while below.name in ("Extend", "Filter"):
+        below = below.p
+    return below.name == "AggregateJoin"
+
+
+def _copy_parse_tree(tree: Any) -> Any:
+    """
+    Copy the CompValues and lists of a parse tree, so that translating the copy
+    leaves the tree as it was. The terms are shared.
+    """
+    if isinstance(tree, (list, ParseResults)):
+        return [_copy_parse_tree(part) for part in tree]
+    if isinstance(tree, Expr):
+        copied: CompValue = Expr(
+            tree.name, tree._evalfn.__func__ if tree._evalfn else None
+        )
+    elif isinstance(tree, CompValue):
+        copied = CompValue(tree.name)
+    else:
+        return tree
+    for key, value in tree.items():
+        copied[key] = _copy_parse_tree(value)
+    return copied
+
+
+class _AlgebraTranslator:
+    """Translator of a Query's algebra to its equivalent SPARQL (string).
+
+    Coded as a class to support storage of state during the translation process,
+    without use of a file.
+
+    Anticipated Usage:
+
+    ```python
+    translated_query = _AlgebraTranslator(query).translateAlgebra()
+    ```
+
+    An external convenience function which wraps the above call,
+    `translateAlgebra`, is supplied, so this class does not need to be
+    referenced by client code at all in normal use.
+    """
+
+    def __init__(self, query_algebra: Query):
+        self.query_algebra = query_algebra
+        self._alg_translation: str = ""
+        # The SELECTs being translated, innermost last, so that a GROUP BY or
+        # HAVING fills the placeholder of its own SELECT (see Project below).
+        self._select_ids: list[int] = []
+        # The Extends that a Project rendered into its SELECT clause, by id. Every
+        # other Extend is a BIND. Holding them keeps their ids from going to the
+        # nodes of a SERVICE body converted later.
+        self._select_expressions_by_id: dict[int, CompValue] = {}
+
+    def _clause_placeholder(self, clause: str) -> str:
+        """Placeholder for a clause, such as GroupBy, of the innermost SELECT."""
+        return "{%s_%d}" % (clause, self._select_ids[-1])
+
+    def _group_part(self, node: CompValue) -> str:
+        """
+        Placeholder for a pattern that shares a group with others. A Filter keeps
+        braces of its own, so that its FILTER does not see the others' variables.
+        """
+        if node.name == "Filter":
+            return "{{" + node.name + "}}"
+        return "{" + node.name + "}"
+
+    def _values_placeholder(self, select: CompValue) -> str:
+        """
+        Placeholder for the VALUES clause of a SELECT, given the node at its top.
+        It follows all the other clauses, LIMIT and OFFSET among them.
+        """
+        while select.name != "Project":
+            select = select.p
+        return "{Values_%d}" % id(select)
+
+    def _values_clause(self, values: CompValue) -> str:
+        columns = []
+        for key in values.res[0].keys():
+            if isinstance(key, Identifier):
+                columns.append(key.n3())
+            else:
+                raise ExpressionNotCoveredException(
+                    "The expression {0} might not be covered yet.".format(key)
+                )
+
+        rows = ""
+        for elem in values.res:
+            row = []
+            for term in elem.values():
+                if isinstance(term, Identifier):
+                    row.append(
+                        term.n3()
+                    )  # n3() is not part of Identifier class but every subclass has it
+                elif isinstance(term, str):
+                    row.append(term)
+                else:
+                    raise ExpressionNotCoveredException(
+                        "The expression {0} might not be covered yet.".format(term)
+                    )
+            rows += "(" + " ".join(row) + ")"
+
+        return "VALUES (" + " ".join(columns) + "){" + rows + "}"
+
+    def _replace(self, old: str, new: str, count: int = 1):
+        self._alg_translation = self._alg_translation.replace(old, new, count)
+
+    def convert_node_arg(
+        self, node_arg: typing.Union[Identifier, CompValue, Expr, str]
+    ) -> str:
+        if isinstance(node_arg, Identifier):
+            return node_arg.n3()
+        elif isinstance(node_arg, CompValue):
+            return "{" + node_arg.name + "}"
+        elif isinstance(node_arg, str):
+            return node_arg
+        else:
+            raise ExpressionNotCoveredException(
+                "The expression {0} might not be covered yet.".format(node_arg)
+            )
+
+    def sparql_query_text(self, node):
+        """<https://www.w3.org/TR/sparql11-query/#sparqlSyntax>"""
+
+        if isinstance(node, CompValue):
+            # 18.2 Query Forms
+            if node.name == "SelectQuery":
+                self._alg_translation = (
+                    "SELECT {" + node.p.name + "}" + self._values_placeholder(node.p)
+                )
+
+            # 18.2 Graph Patterns
+            elif node.name == "BGP":
+                # Identifiers or Paths
+                # Negated path throws a type error. Probably n3() method of negated paths should be fixed
+                triples = "".join(
+                    triple[0].n3() + " " + triple[1].n3() + " " + triple[2].n3() + "."
+                    for triple in node.triples
+                )
+                self._replace("{BGP}", triples)
+            elif node.name == "Join":
+                if _is_values_clause_of_group(node):
+                    # It is joined after GROUP BY and HAVING, so it cannot go
+                    # into the WHERE clause.
+                    self._replace("{Join}", "{" + node.p1.name + "}")
+                    self._replace(
+                        self._clause_placeholder("Values"),
+                        " " + self._values_clause(node.p2.p),
+                    )
+                    traverse(node.p1, visitPre=self.sparql_query_text)
+                    return node
+                self._replace(
+                    "{Join}", self._group_part(node.p1) + self._group_part(node.p2)
+                )
+            elif node.name == "LeftJoin":
+                # The FILTER of an OPTIONAL group becomes the LeftJoin's expr.
+                condition = ""
+                if not (
+                    isinstance(node.expr, CompValue) and node.expr.name == "TrueFilter"
+                ):
+                    condition = " FILTER(" + self.convert_node_arg(node.expr) + ")"
+                self._replace(
+                    "{LeftJoin}",
+                    self._group_part(node.p1)
+                    + "OPTIONAL{"
+                    + self._group_part(node.p2)
+                    + condition
+                    + "}",
+                )
+            elif node.name == "Filter":
+                expr = self.convert_node_arg(node.expr)
+                if not node.p:
+                    raise ExpressionNotCoveredException(
+                        "A Filter with no graph pattern might not be covered yet."
+                    )
+                # Filter with p=AggregateJoin = Having. Each projected group variable
+                # puts an Extend between them.
+                below = node.p
+                while below.name == "Extend":
+                    below = below.p
+                if below.name == "AggregateJoin":
+                    self._replace("{Filter}", "{" + node.p.name + "}")
+                    self._replace(
+                        self._clause_placeholder("Having"),
+                        "HAVING(" + expr + ")",
+                    )
+                else:
+                    self._replace(
+                        "{Filter}", "FILTER(" + expr + ") {" + node.p.name + "}"
+                    )
+
+            elif node.name == "Union":
+                self._replace(
+                    "{Union}", "{{" + node.p1.name + "}}UNION{{" + node.p2.name + "}}"
+                )
+            elif node.name == "Graph":
+                expr = "GRAPH " + node.term.n3() + " {{" + node.p.name + "}}"
+                self._replace("{Graph}", expr)
+            elif node.name == "Extend":
+                if id(node) in self._select_expressions_by_id:
+                    # The Project handler has already rendered the expression.
+                    self._replace("{Extend}", "{" + node.p.name + "}")
+                    traverse(node.p, visitPre=self.sparql_query_text)
+                    return node
+                self._replace(
+                    "{Extend}",
+                    self._group_part(node.p)
+                    + " BIND("
+                    + self.convert_node_arg(node.expr)
+                    + " as "
+                    + node.var.n3()
+                    + ")",
+                )
+            elif node.name == "Minus":
+                expr = self._group_part(node.p1) + "MINUS{{" + node.p2.name + "}}"
+                self._replace("{Minus}", expr)
+            elif node.name == "Group":
+                group_by_vars = []
+                if node.expr:
+                    for var in node.expr:
+                        if isinstance(var, Identifier):
+                            group_by_vars.append(var.n3())
+                        else:
+                            raise ExpressionNotCoveredException(
+                                "This expression might not be covered yet."
+                            )
+                    self._replace("{Group}", "{" + node.p.name + "}")
+                    self._replace(
+                        self._clause_placeholder("GroupBy"),
+                        "GROUP BY " + " ".join(group_by_vars) + " ",
+                    )
+                else:
+                    self._replace("{Group}", "{" + node.p.name + "}")
+            elif node.name == "AggregateJoin":
+                self._replace("{AggregateJoin}", "{" + node.p.name + "}")
+                for agg_func in node.A:
+                    if isinstance(agg_func.res, Identifier):
+                        identifier = agg_func.res.n3()
+                    else:
+                        raise ExpressionNotCoveredException(
+                            "This expression might not be covered yet."
+                        )
+                    agg_func_name = agg_func.name.split("_")[1]
+                    distinct = ""
+                    if agg_func.distinct:
+                        distinct = agg_func.distinct + " "
+                    if agg_func_name == "GroupConcat":
+                        separator = ""
+                        if agg_func.separator is not None:
+                            separator = ";SEPARATOR=" + agg_func.separator.n3()
+                        self._replace(
+                            identifier,
+                            "GROUP_CONCAT"
+                            + "("
+                            + distinct
+                            + self.convert_node_arg(agg_func.vars)
+                            + separator
+                            + ")",
+                        )
+                    else:
+                        self._replace(
+                            identifier,
+                            agg_func_name.upper()
+                            + "("
+                            + distinct
+                            + self.convert_node_arg(agg_func.vars)
+                            + ")",
+                        )
+                    # For non-aggregated variables the aggregation function "sample" is automatically assigned.
+                    # However, we do not want to have "sample" wrapped around non-aggregated variables. That is
+                    # why we replace it. If "sample" is used on purpose it will not be replaced as the alias
+                    # must be different from the variable in this case.
+                    self._replace(
+                        "(SAMPLE({0}) as {0})".format(
+                            self.convert_node_arg(agg_func.vars)
+                        ),
+                        self.convert_node_arg(agg_func.vars),
+                    )
+            # 18.2 Solution modifiers
+            elif node.name == "ToList":
+                raise ExpressionNotCoveredException(
+                    "This expression might not be covered yet."
+                )
+            elif node.name == "OrderBy":
+                order_conditions = []
+                for c in node.expr:
+                    if isinstance(c.expr, Identifier):
+                        var = c.expr.n3()
+                        if c.order is not None:
+                            cond = c.order + "(" + var + ")"
+                        else:
+                            cond = var
+                        order_conditions.append(cond)
+                    else:
+                        raise ExpressionNotCoveredException(
+                            "This expression might not be covered yet."
+                        )
+                self._replace("{OrderBy}", "{" + node.p.name + "}")
+                self._replace("{OrderConditions}", " ".join(order_conditions) + " ")
+            elif node.name == "Project":
+                select_expressions = _select_expressions(node)
+                # A grouped variable projected twice has an Extend for each
+                # occurrence. The first one renders it, and the rest are plain.
+                select_expression_of: dict[Identifier, CompValue] = {}
+                for select_expression in select_expressions:
+                    select_expression_of.setdefault(
+                        select_expression.var, select_expression
+                    )
+                project_variables = []
+                expressions = []
+                for var in node.PV:
+                    if isinstance(var, Identifier):
+                        extend = select_expression_of.pop(var, None)
+                        if extend is None:
+                            project_variables.append(var.n3())
+                        else:
+                            expressions.append(extend.expr)
+                            project_variables.append(
+                                "("
+                                + self.convert_node_arg(extend.expr)
+                                + " as "
+                                + var.n3()
+                                + ")"
+                            )
+                    else:
+                        raise ExpressionNotCoveredException(
+                            "This expression might not be covered yet."
+                        )
+                order_by_pattern = ""
+                if node.p.name == "OrderBy":
+                    order_by_pattern = "ORDER BY {OrderConditions}"
+                self._select_ids.append(id(node))
+                self._replace(
+                    "{Project}",
+                    # SELECT * with no variables in scope projects none.
+                    (" ".join(project_variables) or "*")
+                    + "{{"
+                    + node.p.name
+                    + "}}"
+                    + self._clause_placeholder("GroupBy")
+                    + self._clause_placeholder("Having")
+                    + order_by_pattern,
+                )
+                # The expressions come before node.p in the text, so render them
+                # first. Otherwise node.p could fill their placeholders, and the
+                # AggregateJoin in node.p would fill in aggregates before the
+                # expressions had put them in the text.
+                for expr in expressions:
+                    traverse(expr, visitPre=self.sparql_query_text)
+                self._select_expressions_by_id.update(
+                    (id(extend), extend) for extend in select_expressions
+                )
+                traverse(node.p, visitPre=self.sparql_query_text)
+                # Without a GROUP BY, HAVING or VALUES, this SELECT's placeholders
+                # are still there.
+                self._replace(self._clause_placeholder("GroupBy"), "")
+                self._replace(self._clause_placeholder("Having"), "")
+                self._replace(self._clause_placeholder("Values"), "")
+                self._select_ids.pop()
+                return node
+            elif node.name == "Distinct":
+                self._replace("{Distinct}", "DISTINCT {" + node.p.name + "}")
+            elif node.name == "Reduced":
+                self._replace("{Reduced}", "REDUCED {" + node.p.name + "}")
+            elif node.name == "Slice":
+                slice = "OFFSET " + str(node.start)
+                if node.length is not None:
+                    slice += " LIMIT " + str(node.length)
+                self._replace("{Slice}", "{" + node.p.name + "}" + slice)
+            elif node.name == "ToMultiSet":
+                if node.p.name == "values":
+                    self._replace("{ToMultiSet}", "{{" + node.p.name + "}}")
+                else:
+                    self._replace(
+                        "{ToMultiSet}",
+                        "{SELECT {"
+                        + node.p.name
+                        + "}"
+                        + self._values_placeholder(node.p)
+                        + "}",
+                    )
+
+            # 18.2 Property Path
+
+            # 17 Expressions and Testing Values
+            # # 17.3 Operator Mapping
+            elif node.name == "RelationalExpression":
+                expr = self.convert_node_arg(node.expr)
+                op = node.op
+                if isinstance(node.other, list):
+                    other = (
+                        "("
+                        + ", ".join(self.convert_node_arg(expr) for expr in node.other)
+                        + ")"
+                    )
+                elif op in ("IN", "NOT IN") and node.other == RDF.nil:
+                    # The parser gives an empty list as rdf:nil.
+                    other = "()"
+                else:
+                    other = self.convert_node_arg(node.other)
+                condition = "({left} {operator} {right})".format(
+                    left=expr, operator=op, right=other
+                )
+                self._replace("{RelationalExpression}", condition)
+            elif node.name == "ConditionalAndExpression":
+                inner_nodes = " && ".join(
+                    [self.convert_node_arg(expr) for expr in node.other]
+                )
+                self._replace(
+                    "{ConditionalAndExpression}",
+                    "(" + self.convert_node_arg(node.expr) + " && " + inner_nodes + ")",
+                )
+            elif node.name == "ConditionalOrExpression":
+                inner_nodes = " || ".join(
+                    [self.convert_node_arg(expr) for expr in node.other]
+                )
+                self._replace(
+                    "{ConditionalOrExpression}",
+                    "(" + self.convert_node_arg(node.expr) + " || " + inner_nodes + ")",
+                )
+            elif node.name in ("MultiplicativeExpression", "AdditiveExpression"):
+                # In brackets, as an operand of a tighter operator needs them.
+                operation = self.convert_node_arg(node.expr)
+                for operator, operand in zip(node.op, node.other):
+                    operation += " " + operator + " " + self.convert_node_arg(operand)
+                self._replace("{" + node.name + "}", "(" + operation + ")")
+            elif node.name in ("UnaryNot", "UnaryMinus", "UnaryPlus"):
+                # In brackets, as only a bracketed expression can follow another
+                # unary operator.
+                operator = {"UnaryNot": "!", "UnaryMinus": "-", "UnaryPlus": "+"}
+                self._replace(
+                    "{" + node.name + "}",
+                    "(" + operator[node.name] + self.convert_node_arg(node.expr) + ")",
+                )
+
+            # # 17.4 Function Definitions
+            # # # 17.4.1 Functional Forms
+            elif node.name.endswith("BOUND"):
+                bound_var = self.convert_node_arg(node.arg)
+                self._replace("{Builtin_BOUND}", "bound(" + bound_var + ")")
+            elif node.name.endswith("IF"):
+                arg2 = self.convert_node_arg(node.arg2)
+                arg3 = self.convert_node_arg(node.arg3)
+
+                if_expression = (
+                    "IF(" + "{" + node.arg1.name + "}, " + arg2 + ", " + arg3 + ")"
+                )
+                self._replace("{Builtin_IF}", if_expression)
+            elif node.name.endswith("COALESCE"):
+                self._replace(
+                    "{Builtin_COALESCE}",
+                    "COALESCE("
+                    + ", ".join(self.convert_node_arg(arg) for arg in node.arg)
+                    + ")",
+                )
+            elif node.name in ("Builtin_EXISTS", "Builtin_NOTEXISTS"):
+                # The algebra keeps the graph pattern of an EXISTS outside a
+                # FILTER or BIND as it was parsed. Convert a copy of it to
+                # algebra, as converting changes the parse tree.
+                graph = node.graph
+                if graph.name in ("GroupGraphPatternSub", "SubSelect"):
+                    graph = translateGroupGraphPattern(_copy_parse_tree(graph))
+                keyword = "EXISTS" if node.name == "Builtin_EXISTS" else "NOT EXISTS"
+                self._replace(
+                    "{" + node.name + "}", keyword + " {{" + graph.name + "}}"
+                )
+                traverse(graph, visitPre=self.sparql_query_text)
+                return node
+            # # # # 17.4.1.5 logical-or: Covered in "RelationalExpression"
+            # # # # 17.4.1.6 logical-and: Covered in "RelationalExpression"
+            # # # # 17.4.1.7 RDFterm-equal: Covered in "RelationalExpression"
+            elif node.name.endswith("sameTerm"):
+                self._replace(
+                    "{Builtin_sameTerm}",
+                    "SAMETERM("
+                    + self.convert_node_arg(node.arg1)
+                    + ", "
+                    + self.convert_node_arg(node.arg2)
+                    + ")",
+                )
+            # # # # IN: Covered in "RelationalExpression"
+            # # # # NOT IN: Covered in "RelationalExpression"
+
+            # # # 17.4.2 Functions on RDF Terms
+            elif node.name.endswith("Builtin_isIRI"):
+                self._replace(
+                    "{Builtin_isIRI}", "isIRI(" + self.convert_node_arg(node.arg) + ")"
+                )
+            elif node.name.endswith("Builtin_isBLANK"):
+                self._replace(
+                    "{Builtin_isBLANK}",
+                    "isBLANK(" + self.convert_node_arg(node.arg) + ")",
+                )
+            elif node.name.endswith("Builtin_isLITERAL"):
+                self._replace(
+                    "{Builtin_isLITERAL}",
+                    "isLITERAL(" + self.convert_node_arg(node.arg) + ")",
+                )
+            elif node.name.endswith("Builtin_isNUMERIC"):
+                self._replace(
+                    "{Builtin_isNUMERIC}",
+                    "isNUMERIC(" + self.convert_node_arg(node.arg) + ")",
+                )
+            elif node.name.endswith("Builtin_STR"):
+                self._replace(
+                    "{Builtin_STR}", "STR(" + self.convert_node_arg(node.arg) + ")"
+                )
+            elif node.name.endswith("Builtin_LANG"):
+                self._replace(
+                    "{Builtin_LANG}", "LANG(" + self.convert_node_arg(node.arg) + ")"
+                )
+            elif node.name.endswith("Builtin_DATATYPE"):
+                self._replace(
+                    "{Builtin_DATATYPE}",
+                    "DATATYPE(" + self.convert_node_arg(node.arg) + ")",
+                )
+            elif node.name.endswith("Builtin_IRI"):
+                self._replace(
+                    "{Builtin_IRI}", "IRI(" + self.convert_node_arg(node.arg) + ")"
+                )
+            elif node.name.endswith("Builtin_BNODE"):
+                self._replace(
+                    "{Builtin_BNODE}", "BNODE(" + self.convert_node_arg(node.arg) + ")"
+                )
+            elif node.name.endswith("STRDT"):
+                self._replace(
+                    "{Builtin_STRDT}",
+                    "STRDT("
+                    + self.convert_node_arg(node.arg1)
+                    + ", "
+                    + self.convert_node_arg(node.arg2)
+                    + ")",
+                )
+            elif node.name.endswith("Builtin_STRLANG"):
+                self._replace(
+                    "{Builtin_STRLANG}",
+                    "STRLANG("
+                    + self.convert_node_arg(node.arg1)
+                    + ", "
+                    + self.convert_node_arg(node.arg2)
+                    + ")",
+                )
+            elif node.name.endswith("Builtin_UUID"):
+                self._replace("{Builtin_UUID}", "UUID()")
+            elif node.name.endswith("Builtin_STRUUID"):
+                self._replace("{Builtin_STRUUID}", "STRUUID()")
+
+            # # # 17.4.3 Functions on Strings
+            elif node.name.endswith("Builtin_STRLEN"):
+                self._replace(
+                    "{Builtin_STRLEN}",
+                    "STRLEN(" + self.convert_node_arg(node.arg) + ")",
+                )
+            elif node.name.endswith("Builtin_SUBSTR"):
+                args = [self.convert_node_arg(node.arg), node.start]
+                if node.length:
+                    args.append(node.length)
+                expr = "SUBSTR(" + ", ".join(args) + ")"
+                self._replace("{Builtin_SUBSTR}", expr)
+            elif node.name.endswith("Builtin_UCASE"):
+                self._replace(
+                    "{Builtin_UCASE}", "UCASE(" + self.convert_node_arg(node.arg) + ")"
+                )
+            elif node.name.endswith("Builtin_LCASE"):
+                self._replace(
+                    "{Builtin_LCASE}", "LCASE(" + self.convert_node_arg(node.arg) + ")"
+                )
+            elif node.name.endswith("Builtin_STRSTARTS"):
+                self._replace(
+                    "{Builtin_STRSTARTS}",
+                    "STRSTARTS("
+                    + self.convert_node_arg(node.arg1)
+                    + ", "
+                    + self.convert_node_arg(node.arg2)
+                    + ")",
+                )
+            elif node.name.endswith("Builtin_STRENDS"):
+                self._replace(
+                    "{Builtin_STRENDS}",
+                    "STRENDS("
+                    + self.convert_node_arg(node.arg1)
+                    + ", "
+                    + self.convert_node_arg(node.arg2)
+                    + ")",
+                )
+            elif node.name.endswith("Builtin_CONTAINS"):
+                self._replace(
+                    "{Builtin_CONTAINS}",
+                    "CONTAINS("
+                    + self.convert_node_arg(node.arg1)
+                    + ", "
+                    + self.convert_node_arg(node.arg2)
+                    + ")",
+                )
+            elif node.name.endswith("Builtin_STRBEFORE"):
+                self._replace(
+                    "{Builtin_STRBEFORE}",
+                    "STRBEFORE("
+                    + self.convert_node_arg(node.arg1)
+                    + ", "
+                    + self.convert_node_arg(node.arg2)
+                    + ")",
+                )
+            elif node.name.endswith("Builtin_STRAFTER"):
+                self._replace(
+                    "{Builtin_STRAFTER}",
+                    "STRAFTER("
+                    + self.convert_node_arg(node.arg1)
+                    + ", "
+                    + self.convert_node_arg(node.arg2)
+                    + ")",
+                )
+            elif node.name.endswith("Builtin_ENCODE_FOR_URI"):
+                self._replace(
+                    "{Builtin_ENCODE_FOR_URI}",
+                    "ENCODE_FOR_URI(" + self.convert_node_arg(node.arg) + ")",
+                )
+            elif node.name.endswith("Builtin_CONCAT"):
+                expr = "CONCAT({vars})".format(
+                    vars=", ".join(self.convert_node_arg(elem) for elem in node.arg)
+                )
+                self._replace("{Builtin_CONCAT}", expr)
+            elif node.name.endswith("Builtin_LANGMATCHES"):
+                self._replace(
+                    "{Builtin_LANGMATCHES}",
+                    "LANGMATCHES("
+                    + self.convert_node_arg(node.arg1)
+                    + ", "
+                    + self.convert_node_arg(node.arg2)
+                    + ")",
+                )
+            elif node.name.endswith("REGEX"):
+                args = [
+                    self.convert_node_arg(node.text),
+                    self.convert_node_arg(node.pattern),
+                ]
+                expr = "REGEX(" + ", ".join(args) + ")"
+                self._replace("{Builtin_REGEX}", expr)
+            elif node.name.endswith("REPLACE"):
+                self._replace(
+                    "{Builtin_REPLACE}",
+                    "REPLACE("
+                    + self.convert_node_arg(node.arg)
+                    + ", "
+                    + self.convert_node_arg(node.pattern)
+                    + ", "
+                    + self.convert_node_arg(node.replacement)
+                    + ")",
+                )
+
+            # # # 17.4.4 Functions on Numerics
+            elif node.name == "Builtin_ABS":
+                self._replace(
+                    "{Builtin_ABS}", "ABS(" + self.convert_node_arg(node.arg) + ")"
+                )
+            elif node.name == "Builtin_ROUND":
+                self._replace(
+                    "{Builtin_ROUND}", "ROUND(" + self.convert_node_arg(node.arg) + ")"
+                )
+            elif node.name == "Builtin_CEIL":
+                self._replace(
+                    "{Builtin_CEIL}", "CEIL(" + self.convert_node_arg(node.arg) + ")"
+                )
+            elif node.name == "Builtin_FLOOR":
+                self._replace(
+                    "{Builtin_FLOOR}", "FLOOR(" + self.convert_node_arg(node.arg) + ")"
+                )
+            elif node.name == "Builtin_RAND":
+                self._replace("{Builtin_RAND}", "RAND()")
+
+            # # # 17.4.5 Functions on Dates and Times
+            elif node.name == "Builtin_NOW":
+                self._replace("{Builtin_NOW}", "NOW()")
+            elif node.name == "Builtin_YEAR":
+                self._replace(
+                    "{Builtin_YEAR}", "YEAR(" + self.convert_node_arg(node.arg) + ")"
+                )
+            elif node.name == "Builtin_MONTH":
+                self._replace(
+                    "{Builtin_MONTH}", "MONTH(" + self.convert_node_arg(node.arg) + ")"
+                )
+            elif node.name == "Builtin_DAY":
+                self._replace(
+                    "{Builtin_DAY}", "DAY(" + self.convert_node_arg(node.arg) + ")"
+                )
+            elif node.name == "Builtin_HOURS":
+                self._replace(
+                    "{Builtin_HOURS}", "HOURS(" + self.convert_node_arg(node.arg) + ")"
+                )
+            elif node.name == "Builtin_MINUTES":
+                self._replace(
+                    "{Builtin_MINUTES}",
+                    "MINUTES(" + self.convert_node_arg(node.arg) + ")",
+                )
+            elif node.name == "Builtin_SECONDS":
+                self._replace(
+                    "{Builtin_SECONDS}",
+                    "SECONDS(" + self.convert_node_arg(node.arg) + ")",
+                )
+            elif node.name == "Builtin_TIMEZONE":
+                self._replace(
+                    "{Builtin_TIMEZONE}",
+                    "TIMEZONE(" + self.convert_node_arg(node.arg) + ")",
+                )
+            elif node.name == "Builtin_TZ":
+                self._replace(
+                    "{Builtin_TZ}", "TZ(" + self.convert_node_arg(node.arg) + ")"
+                )
+
+            # # # 17.4.6 Hash functions
+            elif node.name == "Builtin_MD5":
+                self._replace(
+                    "{Builtin_MD5}", "MD5(" + self.convert_node_arg(node.arg) + ")"
+                )
+            elif node.name == "Builtin_SHA1":
+                self._replace(
+                    "{Builtin_SHA1}", "SHA1(" + self.convert_node_arg(node.arg) + ")"
+                )
+            elif node.name == "Builtin_SHA256":
+                self._replace(
+                    "{Builtin_SHA256}",
+                    "SHA256(" + self.convert_node_arg(node.arg) + ")",
+                )
+            elif node.name == "Builtin_SHA384":
+                self._replace(
+                    "{Builtin_SHA384}",
+                    "SHA384(" + self.convert_node_arg(node.arg) + ")",
+                )
+            elif node.name == "Builtin_SHA512":
+                self._replace(
+                    "{Builtin_SHA512}",
+                    "SHA512(" + self.convert_node_arg(node.arg) + ")",
+                )
+
+            # Other
+            elif node.name == "values":
+                self._replace("{values}", self._values_clause(node))
+            elif node.name == "ServiceGraphPattern":
+                # The algebra keeps the body of a SERVICE pattern as it was
+                # parsed. Convert a copy of it to algebra, as converting changes
+                # the parse tree.
+                if node.graph.name not in ("GroupGraphPatternSub", "SubSelect"):
+                    raise ExpressionNotCoveredException(
+                        "The SERVICE body {0} might not be covered yet.".format(
+                            node.graph.name
+                        )
+                    )
+                graph = translateGroupGraphPattern(_copy_parse_tree(node.graph))
+                # A subquery writes its own braces. In another pair, the endpoint
+                # would get it inside SELECT REDUCED, which can drop rows.
+                if node.graph.name == "SubSelect":
+                    body = "{" + graph.name + "}"
+                else:
+                    body = "{{" + graph.name + "}}"
+                self._replace(
+                    "{ServiceGraphPattern}",
+                    "SERVICE "
+                    + ("SILENT " if node.silent else "")
+                    + self.convert_node_arg(node.term)
+                    + body,
+                )
+                traverse(graph, visitPre=self.sparql_query_text)
+                return node
+            # else:
+            #     raise ExpressionNotCoveredException("The expression {0} might not be covered yet.".format(node.name))
+
+    def translateAlgebra(self) -> str:
+        traverse(self.query_algebra.algebra, visitPre=self.sparql_query_text)
+        return self._alg_translation
+
+
+def translateAlgebra(query_algebra: Query) -> str:
+    """
+    Translates a SPARQL 1.1 algebra tree into the corresponding query string.
+
+    Args:
+        query_algebra: An algebra returned by `translateQuery`.
+
+    Returns:
+        The query form generated from the SPARQL 1.1 algebra tree for
+            SELECT queries.
+    """
+    query_from_algebra = _AlgebraTranslator(
+        query_algebra=query_algebra
+    ).translateAlgebra()
+    return query_from_algebra
+
+
+def pprintAlgebra(q) -> None:
     def pp(p, ind="    "):
         # if isinstance(p, list):
         #     print "[ "
@@ -789,13 +1787,20 @@ def pprintAlgebra(q):
         #     print "%s ]"%ind
         #     return
         if not isinstance(p, CompValue):
-            print p
+            print(p)
             return
-        print "%s(" % (p.name, )
+        print("%s(" % (p.name,))
         for k in p:
-            print "%s%s =" % (ind, k,),
+            print(
+                "%s%s ="
+                % (
+                    ind,
+                    k,
+                ),
+                end=" ",
+            )
             pp(p[k], ind + "    ")
-        print "%s)" % ind
+        print("%s)" % ind)
 
     try:
         pp(q.algebra)
@@ -803,18 +1808,3 @@ def pprintAlgebra(q):
         # it's update, just a list
         for x in q:
             pp(x)
-
-if __name__ == '__main__':
-    import sys
-    from rdflib.plugins.sparql import parser
-    import os.path
-
-    if os.path.exists(sys.argv[1]):
-        q = file(sys.argv[1])
-    else:
-        q = sys.argv[1]
-
-    pq = parser.parseQuery(q)
-    print pq
-    tq = translateQuery(pq)
-    print pprintAlgebra(tq)

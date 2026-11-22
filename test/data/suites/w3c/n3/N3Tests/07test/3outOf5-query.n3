@@ -1,0 +1,16 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+{
+	?SCOPE e:optional {:s :p1 true. ?C1 log:equalTo 1}, {?C1 log:equalTo 0}.
+	?SCOPE e:optional {:s :p2 true. ?C2 log:equalTo 1}, {?C2 log:equalTo 0}.
+	?SCOPE e:optional {:s :p3 true. ?C3 log:equalTo 1}, {?C3 log:equalTo 0}.
+	?SCOPE e:optional {:s :p4 true. ?C4 log:equalTo 1}, {?C4 log:equalTo 0}.
+	?SCOPE e:optional {:s :p5 true. ?C5 log:equalTo 1}, {?C5 log:equalTo 0}.
+	(?C1 ?C2 ?C3 ?C4 ?C5) math:sum ?C.
+	?C math:notLessThan 3.
+} => {
+	:s a :3outOf5.
+}.

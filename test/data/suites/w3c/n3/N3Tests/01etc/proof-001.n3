@@ -1,0 +1,189 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --wcache http://josd.github.io/brain/cs . http://josd.github.io/brain/cs/data-001.n3 http://josd.github.io/brain/cs/rules-001.n3 --query http://josd.github.io/brain/cs/query-001.n3
+
+@prefix : <http://josd.github.io/brain/cs#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:gives {
+    :actuator1 :control1 39.27346198678276 .
+    :actuator2 :control1 26.08 .
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    :actuator1 :control1 39.27346198678276 .
+  };
+  r:evidence (
+    <#lemma3>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/cs#actuator1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 39.27346198678276];
+  r:rule <#lemma4>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    :actuator2 :control1 26.08 .
+  };
+  r:evidence (
+    <#lemma5>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/cs#actuator2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 26.08];
+  r:rule <#lemma4>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    :actuator1 :control1 39.27346198678276 .
+  };
+  r:evidence (
+    <#lemma6>
+    <#lemma7>
+    <#lemma8>
+    [ a r:Fact; r:gives {(2.23606797749979 19.6) math:product 43.82693235899588}]
+    [ a r:Fact; r:gives {(10 4.553470372213121) math:exponentiation 35766}]
+    [ a r:Fact; r:gives {(43.82693235899588 4.553470372213121) math:difference 39.27346198678276}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 2.23606797749979];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 35766];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 43.82693235899588];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 4.553470372213121];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 39.27346198678276];
+  r:rule <#lemma9>.
+
+<#lemma4> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 :control1 var:x_1} => {var:x_0 :control1 var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/cs/query-001.n3>].
+
+<#lemma5> a r:Inference;
+  r:gives {
+    :actuator2 :control1 26.08 .
+  };
+  r:evidence (
+    <#lemma10>
+    <#lemma11>
+    <#lemma12>
+    <#lemma13>
+    [ a r:Fact; r:gives {(29 24) math:difference 5}]
+    [ a r:Fact; r:gives {(22 24) math:difference -2}]
+    [ a r:Fact; r:gives {(5.8 5) math:product 29.0}]
+    [ a r:Fact; r:gives {(7.3 5) math:quotient 1.46}]
+    [ a r:Fact; r:gives {(1.46 -2) math:product -2.92}]
+    [ a r:Fact; r:gives {(29.0 -2.92) math:sum 26.08}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 56967];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 22];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 24];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 29];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo -2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 29.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 1.46];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo -2.92];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 26.08];
+  r:rule <#lemma14>.
+
+<#lemma6> a r:Inference;
+  r:gives {
+    :input1 :measurement10 2.23606797749979 .
+  };
+  r:evidence (
+    <#lemma15>
+    [ a r:Fact; r:gives {6 math:lessThan 11}]
+    [ a r:Fact; r:gives {(11 6) math:difference 5}]
+    [ a r:Fact; r:gives {(5 0.5) math:exponentiation 2.23606797749979}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/cs#input1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 6];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 11];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 5];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 2.23606797749979];
+  r:rule <#lemma16>.
+
+<#lemma7> a r:Extraction;
+  r:gives {
+    :input2 :measurement2 true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/cs/data-001.n3>].
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    :disturbance1 :measurement3 35766 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/cs/data-001.n3>].
+
+<#lemma9> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4. {:input1 :measurement10 var:x_0.
+     :input2 :measurement2 true.
+     :disturbance1 :measurement3 var:x_1.
+     (var:x_0 19.6) math:product var:x_2.
+     (10 var:x_3) math:exponentiation var:x_1.
+     (var:x_2 var:x_3) math:difference var:x_4} => {:actuator1 :control1 var:x_4}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/cs/rules-001.n3>].
+
+<#lemma10> a r:Extraction;
+  r:gives {
+    :input3 :measurement3 56967 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/cs/data-001.n3>].
+
+<#lemma11> a r:Extraction;
+  r:gives {
+    :state3 :observation3 22 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/cs/data-001.n3>].
+
+<#lemma12> a r:Extraction;
+  r:gives {
+    :output2 :measurement4 24 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/cs/data-001.n3>].
+
+<#lemma13> a r:Extraction;
+  r:gives {
+    :output2 :target2 29 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/cs/data-001.n3>].
+
+<#lemma14> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5, var:x_6, var:x_7, var:x_8, var:x_9. {:input3 :measurement3 var:x_0.
+     :state3 :observation3 var:x_1.
+     :output2 :measurement4 var:x_2.
+     :output2 :target2 var:x_3.
+     (var:x_3 var:x_2) math:difference var:x_4.
+     (var:x_1 var:x_2) math:difference var:x_5.
+     (5.8 var:x_4) math:product var:x_6.
+     (7.3 var:x_4) math:quotient var:x_7.
+     (var:x_7 var:x_5) math:product var:x_8.
+     (var:x_6 var:x_8) math:sum var:x_9} => {:actuator2 :control1 var:x_9}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/cs/rules-001.n3>].
+
+<#lemma15> a r:Extraction;
+  r:gives {
+    :input1 :measurement1 (6 11).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/cs/data-001.n3>].
+
+<#lemma16> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4. {var:x_0 :measurement10 var:x_4} <= {var:x_0 :measurement1 (var:x_1 var:x_2).
+     var:x_1 math:lessThan var:x_2.
+     (var:x_2 var:x_1) math:difference var:x_3.
+     (var:x_3 0.5) math:exponentiation var:x_4}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/cs/rules-001.n3>].
+
+#2020-02-22T21:50:31.740Z in=15 out=2 ent=4 step=8 brake=2 inf=50498 sec=0.092 inf/sec=548891
+#ENDS
+

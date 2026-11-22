@@ -1,0 +1,56 @@
+#Processed by Id: euler.yap 4653 2011-10-30 11:01:47Z josd
+#eye --nope --no-span http://eulersharp.sourceforge.net/2010/05smml/FACTSneighbourtriangles.n3 http://eulersharp.sourceforge.net/2010/05smml/RULESobjects.n3 --query http://eulersharp.sourceforge.net/2010/05smml/QUERYobjects.n3
+
+@prefix : <http://smartlab.elis.ugent.be/aimontologies/geometry/instancesSTLBox#>.
+@prefix stl: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix ns1: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/ifctox3d#>.
+@prefix x3d: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologyx3d20091015#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix list: <http://www.co-ode.org/ontologies/lists/2008/09/11/list.owl#>.
+@prefix inst: <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix matrix: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/matrix#>.
+@prefix we: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/wingededge#>.
+@prefix var: <http://localhost/var#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+:Triangle1 we:partofobject _:sk13.
+:Triangle3 we:partofobject _:sk13.
+:Triangle4 we:partofobject _:sk13.
+:Triangle18 we:partofobject _:sk13.
+:Triangle2 we:partofobject _:sk13.
+:Triangle24 we:partofobject _:sk13.
+:Triangle14 we:partofobject _:sk13.
+:Triangle23 we:partofobject _:sk13.
+:Triangle21 we:partofobject _:sk13.
+:Triangle8 we:partofobject _:sk13.
+:Triangle17 we:partofobject _:sk13.
+:Triangle27 we:partofobject _:sk13.
+:Triangle15 we:partofobject _:sk13.
+:Triangle22 we:partofobject _:sk13.
+:Triangle5 we:partofobject _:sk13.
+:Triangle28 we:partofobject _:sk13.
+:Triangle13 we:partofobject _:sk13.
+:Triangle19 we:partofobject _:sk13.
+:Triangle20 we:partofobject _:sk13.
+:Triangle7 we:partofobject _:sk13.
+:Triangle25 we:partofobject _:sk13.
+:Triangle26 we:partofobject _:sk13.
+:Triangle16 we:partofobject _:sk13.
+:Triangle6 we:partofobject _:sk13.
+:Triangle9 we:partofobject _:sk13.
+:Triangle10 we:partofobject _:sk13.
+:Triangle12 we:partofobject _:sk13.
+:Triangle11 we:partofobject _:sk13.
+_:sk13 a we:FinalObject. _:sk13 we:objecttriangles (:Triangle1 :Triangle3 :Triangle4 :Triangle18 :Triangle2 :Triangle24 :Triangle14 :Triangle23 :Triangle21 :Triangle8 :Triangle17 :Triangle27 :Triangle15 :Triangle22 :Triangle5 :Triangle28 :Triangle13 :Triangle19 :Triangle20 :Triangle7 :Triangle25 :Triangle26 :Triangle16 :Triangle6 :Triangle9 :Triangle10 :Triangle12 :Triangle11). _:sk13 we:trianglescount 28 . _:sk13 we:objectProperties we:ClosedObject.
+
+
+#ENDS 552 [msec] TC=125 TP=32927 BC=0 BP=966 PM=0 CM=0 FM=0 AM=0
+

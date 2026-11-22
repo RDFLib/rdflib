@@ -1,0 +1,20 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <http://eulersharp.sourceforge.net/try#>.
+
+:s :p1 :u001.
+:s :p2 :u002.
+:s :p3 "v003".
+:s :p4 404.
+:s :p5 "v005"^^:t005.
+:s :p6 "v006,w006".
+:s :p7 "".
+:s :p8 "\"8\"".
+:s :p9 "\tthis is a\ntest".
+:s :p10 "abc010".
+:s :p11 " def011  ".
+:s :p12 _:a012.
+:s :p13 [].
+:s :p14 "14"^^xsd:integer.
+:s :p15 1.555555555555555.
+:s :p16 "2016-08-10T20:16:53+02:00"^^xsd:dateTime.
+:s :p17 "case 17"@en-US.

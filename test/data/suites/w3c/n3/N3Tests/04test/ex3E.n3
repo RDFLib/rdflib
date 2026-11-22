@@ -1,0 +1,12 @@
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix ns: <http://example.org/ns#>.
+@prefix : <http://example.org/book/>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+<http://eulersharp.sourceforge.net/2004/04test/ex3Q.n3> q:answer ("The Semantic Web" 23). 
+

@@ -1,0 +1,13 @@
+@prefix crypto: <http://www.w3.org/2000/10/swap/crypto#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+
+### test cases
+{"blargh" crypto:md5 "ef15c9bd4c7836612b1567f4c8396726"} => {:md5 :result true}.
+{"blargh" crypto:sha "d1e670385f40ee942a059f949c761214872ac35f"} => {:sha :result true}.
+
+
+### test framework
+{?P => {?S :result ?R}. ?S :result ?R} => {?P a :PASS}.
+{?P => {?S :result ?R}. ?SCOPE e:findall ((?R) {?S :result ?R} ())} => {?P a :FAIL}.

@@ -1,0 +1,9 @@
+[
+  {
+    "@id": "_:node1",
+    "@type": [ "_:type" ],
+    "_:property": [
+      { "@value": "all these IRIs remain unchanged because they are interpreted as blank node identifiers" }
+    ]
+  }
+]

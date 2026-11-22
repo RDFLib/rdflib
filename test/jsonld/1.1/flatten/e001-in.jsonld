@@ -1,0 +1,10 @@
+[
+  {
+    "@id": "http://example/foo",
+    "@index": "bar"
+  },
+  {
+    "@id": "http://example/foo",
+    "@index": "baz"
+  }
+]

@@ -1,0 +1,30 @@
+# $Id: books.n3 410 2004-11-25 11:21:07Z josd $
+
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+
+<http://example.org/book/book1>
+      dc:creator "J.K. Rowling" ;
+      dc:title "Harry Potter and the Philosopher's Stone" .
+
+<http://example.org/book/book2>
+      dc:creator _:b2 ;
+      dc:title "Harry Potter and the Chamber of Secrets" .
+
+<http://example.org/book/book3>
+      dc:creator _:b2 ;
+      dc:title "Harry Potter And The Prisoner Of Azkaban" .
+
+<http://example.org/book/book4>
+      dc:title "Harry Potter and the Goblet of Fire" .
+
+<http://example.org/book/book5>
+      dc:title "Harry Potter and the Order of the Phoenix" .
+
+_:b2  <http://www.w3.org/2001/vcard-rdf/3.0#FN>
+              "J.K. Rowling" ;
+      <http://www.w3.org/2001/vcard-rdf/3.0#N>
+              [ <http://www.w3.org/2001/vcard-rdf/3.0#Family>
+                        "Rowling" ;
+                <http://www.w3.org/2001/vcard-rdf/3.0#Given>
+                        "Joanna"
+              ] .

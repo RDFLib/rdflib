@@ -1,0 +1,21 @@
+#  Two variables and some bnodes
+#  And multiple values
+#
+@keywords is, a .
+
+fred siblings  (  [ parents (Zeus Juno), (Alice Bob), (Jane Joe) ]  Aphrodite ).
+
+
+
+{ fred siblings (  []   ?x ) } =>   { ?x  a ShouldBeAphrodite }.
+
+{ fred siblings (  ?y   ?x ) } =>   { ?y  a BnodeExtractedError }.
+
+
+{ fred siblings  (  [ parents ([] ?y) ]  ?x ) } =>
+
+	{ ?x   a ShouldBeAphrodite2.  ?y a ShouldBeJunoBobJoe }.
+
+
+#ends
+

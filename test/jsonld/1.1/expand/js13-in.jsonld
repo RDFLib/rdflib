@@ -1,0 +1,16 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "e": {"@id": "http://example.org/vocab#c14n", "@type": "@json"}
+  },
+  "e": {
+    "\u20ac": "Euro Sign",
+    "\r": "Carriage Return",
+    "\u000a": "Newline",
+    "1": "One",
+    "\u0080": "Control\u007f",
+    "\ud83d\ude02": "Smiley",
+    "\u00f6": "Latin Small Letter O With Diaeresis",
+    "</script>": "Browser Challenge"
+  }
+}

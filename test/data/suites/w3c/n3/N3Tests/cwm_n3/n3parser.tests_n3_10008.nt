@@ -1,0 +1,5 @@
+    
+    <https://w3c.github.io/N3/tests/anon-prop.n3#anySubj>     _:L12C12 <https://w3c.github.io/N3/tests/anon-prop.n3#anyObj> .
+    
+    _:L12C12     <https://w3c.github.io/N3/tests/anon-prop.n3#propProp> "red" .
+    

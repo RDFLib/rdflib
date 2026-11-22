@@ -1,0 +1,48 @@
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix gps: <http://josd.github.io/brain/gps/gps-schema#>.
+@prefix : <http://josd.github.io/brain#>.
+
+# current state
+:i1 :a :b.
+:i1 :x :y1.
+:i1 :x :y2.
+:i1 :x :y3.
+:i1 :x :y4.
+:i1 :x :y5.
+:i1 :z -20.
+
+# map 1a
+{:map1a gps:description ({?S :a :b} true {?S :b :c. ?S :n :o. ?S :j :k} :action1a 3.0 0.5 0.96 0.97)} <= true.
+{:map1a gps:description ({?S :a ?O} true {?S :c 5} :action2a 3.0 0.0 0.95 0.96)} <= {?SCOPE e:fail {?S :x :y}}.
+{:map1a gps:description ({?S :n :o. ?S :b :c} true {?S :d :e} :action3a 4.0 1.5 0.98 0.99)} <= true.
+{:map1a gps:description ({?S :c ?O} true {?S :d :e} :action4a 90.0 -0.2 0.96 0.97)} <= {?O math:notGreaterThan 9}.
+{:map1a gps:description ({?S :d :e} true {?S :e 38.7} :action5a 12.8 0.8 0.85 0.86)} <= true.
+{:map1a gps:description ({?S :e ?O; :y :z1, :z2, :z3, :z4, :z5} true {?S :e 37; :f :g} :action6a 4.0 0.6 0.98 0.99)} <= {37 math:notGreaterThan ?O}.
+{:map1a gps:description ({?S :d :e} true {?S :g :h} :action7a 2.0 3.5 0.97 0.98)} <= true.
+{:map1a gps:description ({?S :i :j} true {?S :e 37.2} :action8a 4.0 0.01 0.99 1.0)} <= true.
+{:map1a gps:description ({?S :g :h} true {?S a :H} :action9a 0.0 0.0 1.0 1.0)} <= true.
+{:map1a gps:description ({?S a :H} true {?S :i :j} :action10a 0.0 0.0 1.0 1.0)} <= {?S a :K}.
+{:map1a gps:description ({?S :x :y1} true {?S :y :z1} :action11a 3.0 0.5 0.96 0.97)} <= {?S :e ?O}.
+{:map1a gps:description ({?S :x :y2} true {?S :y :z2} :action12a 3.0 0.5 0.96 0.97)} <= {?S :y :z1}.
+{:map1a gps:description ({?S :x :y3} true {?S :y :z3} :action13a 3.0 0.5 0.96 0.97)} <= {?S :y :z2}.
+{:map1a gps:description ({?S :x :y4} true {?S :y :z4} :action14a 3.0 0.5 0.96 0.97)} <= {?S :y :z3}.
+{:map1a gps:description ({?S :x :y5} true {?S :y :z5} :action15a 3.0 0.5 0.96 0.97)} <= {?S :y :z4}.
+
+# map 1b
+{:map1b gps:description ({?S :a :b} true {?S :b :c. ?S :n :o. ?S :j :k} :action1b 3.0 0.5 0.968 0.97)} <= true.
+{:map1b gps:description ({?S :a ?O} true {?S :c 5} :action2b 3.0 0.0 0.958 0.96)} <= {?SCOPE e:fail {?S :x :y}}.
+{:map1b gps:description ({?S :n :o. ?S :b :c} true {?S :d :e} :action3b 4.0 1.5 0.988 0.99)} <= true.
+{:map1b gps:description ({?S :i :j} true {?S :e 37.2} :action8b 4.0 0.01 0.998 1.0)} <= true.
+{:map1b gps:description ({?S :g :h} true {?S a :H} :action9b 0.0 0.0 1.0 1.0)} <= true.
+{:map1b gps:description ({?S a :H} true {?S :i :j} :action10b 0.0 0.0 1.0 1.0)} <= {?S a :K}.
+{:map1b gps:description ({?S :x :y1} true {?S :y :z1} :action11b 3.0 0.5 0.968 0.97)} <= {?S :e ?O}.
+{:map1b gps:description ({?S :x :y2} true {?S :y :z2} :action12b 3.0 0.5 0.968 0.97)} <= {?S :y :z1}.
+{:map1b gps:description ({?S :x :y3} true {?S :y :z3} :action13b 3.0 0.5 0.968 0.97)} <= {?S :y :z2}.
+{:map1b gps:description ({?S :x :y4} true {?S :y :z4} :action14b 3.0 0.5 0.968 0.97)} <= {?S :y :z3}.
+{:map1b gps:description ({?S :x :y5} true {?S :y :z5} :action15b 3.0 0.5 0.968 0.97)} <= {?S :y :z4}.
+
+# background theory
+{?S a :I} <= {?S a :H}.
+{?S a :J} <= {?S a :I}.
+{?S a :K} <= {?S a :J}.

@@ -1,0 +1,4 @@
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+
+<lena.jpg> a dbpedia:Image.
+

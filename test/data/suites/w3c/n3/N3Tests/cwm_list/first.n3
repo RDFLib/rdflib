@@ -1,0 +1,18 @@
+# From swap/test/list/last.n3
+@prefix : <#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+
+{ ( 1 2 3 4 5 6 ) list:first 1 } => { :test1 a :SUCCESS }.
+
+{ ( "Z" 1 2 3 4 5 ) list:first "Z" } => { :test2 a :SUCCESS }.
+
+{ ( "Success" "wrong"  "WongAgain" ) list:first ?x }=>{ :test3 :isa ?x}.
+
+:thing1 :prop1 ( :test5a :test5b :test5c ) .
+{ [ is :prop1 of :thing1 ] list:first ?item } => { ?item a :SUCCESS } .
+
+( :foo :bar :baz ) :prop2 :test6a .
+( :foo ) :prop2 :test6b .
+( :bar :baz ) :prop2 :trap4 .
+{ ?a_list list:first :foo .
+  ?a_list :prop2 ?thing } => { ?thing a :SUCCESS } .

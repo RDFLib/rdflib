@@ -1,0 +1,29 @@
+PREFIX :    <http://example/>
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT (?s1 AS ?subset) (?s2 AS ?superset)
+WHERE
+{
+    # All pairs of sets
+    ?s2 rdf:type :Set .
+    ?s1 rdf:type :Set .
+
+    MINUS {
+        ?s1 rdf:type :Set .
+        ?s2 rdf:type :Set .
+        # Assumes ?s1 has at least one member 
+        ?s1 :member ?x .
+        # If we want to exclude A as a subset of A.
+        # This is not perfect as "?s1 = ?s2" is not a
+        # contents based comparison.
+        FILTER ( ?s1 = ?s2 || NOT EXISTS { ?s2 :member ?x . } )
+    }
+    MINUS {
+        # If we don't want the empty set being a subset of itself.
+        ?s1 rdf:type :Set .
+        ?s2 rdf:type :Set .
+        # Choose the pair (empty set, empty set)
+        FILTER ( NOT EXISTS { ?s1 :member ?y . } )
+        FILTER ( NOT EXISTS { ?s2 :member ?y . } )
+    }
+}

@@ -1,0 +1,16 @@
+[
+  {
+    "@id": "http://example.com/some/deep/directory/and/file/relativePropertyIris",
+    "http://example.com/some/deep/directory/and/file/#fragment-works": [{"@value": "#fragment-works"}],
+    "http://example.com/some/deep/directory/and/file/../": [{"@value": "../"}],
+    "http://example.com/some/deep/directory/and/file/../../../../../still-root": [{"@value": "../../../../../still-root"}],
+    "http://example.com/some/deep/directory/and/file/../.././.././../../too-many-dots": [{"@value": "../.././.././../../too-many-dots"}],
+    "http://example.com/some/deep/directory/and/file/../../parent-parent-eq-root": [{"@value": "../../parent-parent-eq-root"}],
+    "http://example.com/some/deep/directory/and/file/../parent": [{"@value": "../parent"}],
+    "http://example.com/some/deep/directory/and/file/./": [{"@value": "./"}],
+    "http://example.com/some/deep/directory/and/file///example.org/scheme-relative": [{"@value": "//example.org/scheme-relative"}],
+    "http://example.com/some/deep/directory/and/file//absolute": [{"@value": "/absolute"}],
+    "http://example.com/some/deep/directory/and/file/?query=works": [{"@value": "?query=works"}],
+    "http://example.com/some/deep/directory/and/file/link": [{"@value": "link"}]
+  }
+]

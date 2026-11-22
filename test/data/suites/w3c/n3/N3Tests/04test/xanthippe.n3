@@ -1,0 +1,7 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/xanthippe#>.
+
+:me :says {:Tim a :Man. :Dan a :Man}.
+:he :says {:Socrates a :Man. :Xanthippe a :Woman}.
+
+{?ANYONE :says ?WHAT. ?WHAT log:includes {?WHO a :Woman}} => {?WHO a :MortalWoman}.

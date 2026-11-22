@@ -1,0 +1,9 @@
+[{
+  "@type": ["ex:Outer"],
+  "ex:nested": [{
+    "@graph": [{
+      "@type": ["ex:Inner"],
+      "ex:foo": [{"@value": "bar"}]
+    }]
+  }]
+}]

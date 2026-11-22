@@ -1,0 +1,23 @@
+{
+  "@context": {
+    "name": "http://xmlns.com/foaf/0.1/name",
+    "homepage": {
+      "@id": "http://xmlns.com/foaf/0.1/homepage",
+      "@type": "@id"
+    },
+    "know": "http://xmlns.com/foaf/0.1/knows",
+    "@iri": "@id"
+  },
+  "@id": "#me",
+  "know": [
+    {
+      "@id": "http://example.com/bob#me",
+      "name": "Bob",
+      "homepage": "http://example.com/bob"
+    }, {
+      "@id": "http://example.com/alice#me",
+      "name": "Alice",
+      "homepage": "http://example.com/alice"
+    }
+  ]
+}

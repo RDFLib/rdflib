@@ -1,0 +1,15 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "foo": "http://example/foo",
+    "Type": {
+      "@context": [
+        null
+      ]
+    }
+  },
+  "foo": "will-exist",
+  "p": {
+    "@type": "Type"
+  }
+}

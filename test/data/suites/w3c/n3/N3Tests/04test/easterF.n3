@@ -1,0 +1,4 @@
+@prefix : <http://www.agfa.com/w3c/euler/easterP#>.
+
+{?A a :Year; :hasEasterOnDay ?B; :hasEasterOnMonth ?C} => {?A :hasEasterOnDay ?B; :hasEasterOnMonth ?C}.
+

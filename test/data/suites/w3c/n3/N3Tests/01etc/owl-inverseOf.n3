@@ -1,0 +1,5 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+{?P owl:inverseOf ?Q. ?S ?P ?O} => {?O ?Q ?S}.
+{?P owl:inverseOf ?Q. ?S ?Q ?O} => {?O ?P ?S}.
+{?P owl:inverseOf ?Q} => {?Q owl:inverseOf ?P}.

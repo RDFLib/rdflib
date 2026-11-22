@@ -1,0 +1,19 @@
+# From swap/ref/math1.n3
+@prefix : <strings.n3#> .
+
+-3 :valueOf "3 negated" .
+1 :valueOf "7 % 2" .
+
+3 :valueOf "what -3's the - of" .
+
+3.5 :valueOf "7 / 2" .
+
+5 :valueOf "8 - 3" .
+
+8 :valueOf "3 + 5" .
+
+30 :valueOf "5 * 3 * 2" .
+
+1024 :valueOf "2^10" .
+
+:test10 a :success .

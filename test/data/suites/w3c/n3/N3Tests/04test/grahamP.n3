@@ -1,0 +1,44 @@
+# $Id: grahamP.n3 521 2005-05-05 12:25:45Z josd $
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/grahamP#>.
+
+_:weatherToday a :WeatherReport; :hourlyTemperatures
+    ( "10"^^xsd:integer "12"^^xsd:integer "15"^^xsd:integer
+      "16"^^xsd:integer "14"^^xsd:integer "17"^^xsd:integer
+      "13"^^xsd:integer "12"^^xsd:integer "10"^^xsd:integer
+      "9"^^xsd:integer  "7"^^xsd:integer  "6"^^xsd:integer ) .
+
+{?W :hourlyTemperatures ?L. ?L :maxNumber ?N} => {?W :maxTemperature ?N}.
+
+{?A rdf:first ?M; rdf:rest rdf:nil} => {?A :maxNumber ?M}.
+{?A rdf:first ?M; rdf:rest ?B. ?B :maxNumber ?N. ?M math:greaterThan ?N} => {?A :maxNumber ?M}.
+{?A rdf:first ?M; rdf:rest ?B. ?B :maxNumber ?N. ?M math:notGreaterThan ?N} => {?A :maxNumber ?N}.
+
+{?W :hourlyTemperatures ?L. ?L :minNumber ?N} => {?W :minTemperature ?N}.
+
+{?A rdf:first ?M; rdf:rest rdf:nil} => {?A :minNumber ?M}.
+{?A rdf:first ?M; rdf:rest ?B. ?B :minNumber ?N. ?M math:lessThan ?N} => {?A :minNumber ?M}.
+{?A rdf:first ?M; rdf:rest ?B. ?B :minNumber ?N. ?M math:notLessThan ?N} => {?A :minNumber ?N}.
+
+
+_:experiment a :Experiment; :samples
+    ( _:s1 _:s2 _:s3 _:s4 ) .
+_:s1 :value "10"^^xsd:integer ;
+     :freq  "2"^^xsd:integer .
+_:s2 :value "20"^^xsd:integer ;
+     :freq  "5"^^xsd:integer .
+_:s3 :value "30"^^xsd:integer ;
+     :freq  "6"^^xsd:integer .
+_:s4 :value "40"^^xsd:integer ;
+     :freq  "3"^^xsd:integer .
+
+{?E :samples ?L. ?L :cumValue ?C; :cumFreq ?D. (?C ?D) math:integerQuotient ?M} => {?E :meanValue ?M}.
+
+rdf:nil :cumValue "0"^^xsd:integer.
+{?A rdf:first ?M; rdf:rest ?B. ?M :value ?V; :freq ?F. ?B :cumValue ?N. ((?V ?F)!math:product ?N) math:sum ?C} => {?A :cumValue ?C}.
+
+rdf:nil :cumFreq "0"^^xsd:integer.
+{?A rdf:first ?M; rdf:rest ?B. ?M :freq ?F. ?B :cumFreq ?N. (?F ?N) math:sum ?C} => {?A :cumFreq ?C}.

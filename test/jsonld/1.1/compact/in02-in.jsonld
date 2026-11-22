@@ -1,0 +1,6 @@
+[{
+  "http://example.org/prop": [{"@value": "value"}],
+  "@included": [{
+    "http://example.org/prop": [{"@value": "value2"}]
+  }]
+}]

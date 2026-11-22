@@ -1,0 +1,58 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/gv-example.n3 http://eulersharp.sourceforge.net/2007/07test/gv-mln.n3 http://eulersharp.sourceforge.net/2006/02swap/mmln-component.n3 --query http://eulersharp.sourceforge.net/2007/07test/gv-query.n3
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#>.
+
+_:t_0 :has_shape (0.16666666666666666 :Neck_amphora).
+_:t_0 :has_shape (0.16666666666666666 :Nolan_amphora).
+_:t_0 :has_shape (0.14285714285714285 :Panathenaic_amphora).
+_:t_0 :has_shape (0.14285714285714285 :Pointed_amphora).
+_:t_0 :has_shape (0.16666666666666666 :Nikosthenic_amphora).
+_:t_0 :has_shape (0.14285714285714285 :Belly_amphora).
+_:t_0 :has_shape (0 :Pelike).
+_:t_0 :has_shape (0.1111111111111111 :Stamnos).
+_:t_0 :has_shape (0 :Transport_amphora).
+_:t_0 :has_shape (0.16666666666666666 :Volute_krater).
+_:t_0 :has_shape (0 :Column_krater).
+_:t_0 :has_shape (0.16666666666666666 :Calyx_krater).
+_:t_0 :has_shape (0 :Bell_krater).
+_:t_0 :has_shape (0 :Skyphoid_krater).
+_:t_0 :has_shape (0.25 :Lebes_dinos).
+_:t_0 :has_shape (0.3333333333333333 :Hydria).
+_:t_0 :has_shape (0.2857142857142857 :Kalpis).
+_:t_0 :has_shape (0.14285714285714285 :Deianira_lekythos).
+_:t_0 :has_shape (0.2222222222222222 :Standard_lekythos).
+_:t_0 :has_shape (0.1111111111111111 :Secondary_lekythos).
+_:t_0 :has_shape (0.3333333333333333 :Squat_lekythos).
+_:t_0 :has_shape (0.125 :Acorn_lekythos).
+_:t_0 :has_shape (0.1111111111111111 :Aryballos).
+_:t_0 :has_shape (0.23529411764705882 :Alabastron).
+_:t_0 :has_shape (0 :Askos).
+_:t_0 :has_shape (0.2 :Kothon).
+_:t_0 :has_shape (0 :Plemochoe).
+_:t_0 :has_shape (0 :Lydion).
+_:t_0 :has_shape (0.2857142857142857 :Komast_cup).
+_:t_0 :has_shape (0.25 :Siana_cup).
+_:t_0 :has_shape (0.18181818181818182 :Gordion_cup).
+_:t_0 :has_shape (0.16666666666666666 :Little_master_cup).
+_:t_0 :has_shape (0.16666666666666666 :Droop_cup).
+_:t_0 :has_shape (0.16666666666666666 :Chalkidizing_cup).
+_:t_0 :has_shape (0.25 :Merrythought_cup).
+_:t_0 :has_shape (0.16666666666666666 :Kylix_type_A).
+_:t_0 :has_shape (0.2 :Kylix_type_B).
+_:t_0 :has_shape (0.4 :Corinthian_skyphos).
+_:t_0 :has_shape (0.2857142857142857 :Hermogenean_skyphos).
+_:t_0 :has_shape (0.2857142857142857 :Skyphos_heron_type).
+_:t_0 :has_shape (0.16666666666666666 :Cup_skyphos).
+_:t_0 :has_shape (0.6666666666666666 :Skyphos_type_A).
+_:t_0 :has_shape (0.8333333333333334 :Skyphos_type_B).
+_:t_0 :has_shape (0.3333333333333333 :Kantharos).
+_:t_0 :has_shape (0.3333333333333333 :Rhyton).
+_:t_0 :has_shape (0.5 :Mastos).
+_:t_0 :has_shape (0.3333333333333333 :Chalice).
+
+#2018-04-18T08:28:01.471Z in=1546 out=47 ent=105 step=330 brake=4 inf=1303678 sec=0.201 inf/sec=6485960
+#ENDS
+

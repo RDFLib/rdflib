@@ -1,0 +1,1305 @@
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+
+<https://github.com/RDFLib/rdflib> a doap:Project ;
+    doap:description "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."@en ;
+    doap:homepage <https://github.com/RDFLib/rdflib> ;
+    doap:name "RDFLib" ;
+    doap:programming-language "Python" .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#amp-in-url-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#datatypes-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#datatypes-test002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-charmod-literals-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-charmod-uris-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-charmod-uris-test002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-containers-syntax-vs-schema-error001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-containers-syntax-vs-schema-error002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-containers-syntax-vs-schema-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-containers-syntax-vs-schema-test002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-containers-syntax-vs-schema-test003> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-containers-syntax-vs-schema-test004> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-containers-syntax-vs-schema-test006> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-containers-syntax-vs-schema-test007> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-containers-syntax-vs-schema-test008> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-element-not-mandatory-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-ns-prefix-confusion-test0001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-ns-prefix-confusion-test0003> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-ns-prefix-confusion-test0004> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-ns-prefix-confusion-test0005> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-ns-prefix-confusion-test0006> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-ns-prefix-confusion-test0009> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-ns-prefix-confusion-test0010> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-ns-prefix-confusion-test0011> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-ns-prefix-confusion-test0012> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-ns-prefix-confusion-test0013> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdf-ns-prefix-confusion-test0014> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-abouteach-error001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-abouteach-error002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-difference-between-ID-and-about-error1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-difference-between-ID-and-about-test1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-difference-between-ID-and-about-test2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-difference-between-ID-and-about-test3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-duplicate-member-props-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-error001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-error002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-test002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-test004> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-test005> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-test006> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-test007> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-test008> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-test010> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-test011> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-test012> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-test013> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-test014> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-test015> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-test016> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-test017> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-identity-anon-resources-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-identity-anon-resources-test002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-identity-anon-resources-test003> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-identity-anon-resources-test004> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-identity-anon-resources-test005> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-not-id-and-resource-attr-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-not-id-and-resource-attr-test002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-not-id-and-resource-attr-test004> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-not-id-and-resource-attr-test005> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-para196-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-id-error001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-id-error002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-id-error003> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-id-error004> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-id-error005> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-id-error006> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-id-error007> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-003> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-004> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-005> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-006> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-007> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-008> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-009> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-010> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-011> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-012> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-013> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-014> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-015> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-016> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-017> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-018> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-019> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-error-020> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-003> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-004> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-005> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-006> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-007> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-008> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-009> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-010> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-011> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-012> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-013> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-014> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-015> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-016> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-017> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-018> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-019> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-020> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-021> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-022> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-023> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-024> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-025> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-026> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-027> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-028> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-029> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-030> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-031> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-032> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-033> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-034> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-035> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-036> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-test-037> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-warn-001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-warn-002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-rdf-names-use-warn-003> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-reification-required-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-seq-representation-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-syntax-incomplete-error001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-syntax-incomplete-error002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-syntax-incomplete-error003> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-syntax-incomplete-error004> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-syntax-incomplete-error005> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-syntax-incomplete-error006> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-syntax-incomplete-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-syntax-incomplete-test002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-syntax-incomplete-test003> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-syntax-incomplete-test004> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-uri-substructure-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-xmllang-test003> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-xmllang-test004> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-xmllang-test005> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-xmllang-test006> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfs-domain-and-range-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfs-domain-and-range-test002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#unrecognised-xml-attributes-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#unrecognised-xml-attributes-test002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#xml-canon-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#xmlbase-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#xmlbase-test002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#xmlbase-test003> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#xmlbase-test004> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#xmlbase-test006> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#xmlbase-test007> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#xmlbase-test008> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#xmlbase-test009> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#xmlbase-test010> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#xmlbase-test011> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#xmlbase-test013> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#xmlbase-test014> .
+

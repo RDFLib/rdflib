@@ -1,12 +1,6 @@
-"""
-============
-rdflib.store
-============
+"""## Types of store
 
-Types of store
---------------
-
-``Context-aware``: An RDF store capable of storing statements within contexts
+`Context-aware`: An RDF store capable of storing statements within contexts
 is considered context-aware. Essentially, such a store is able to partition
 the RDF model it represents into individual, named, and addressable
 sub-graphs.
@@ -14,297 +8,397 @@ sub-graphs.
 Relevant Notation3 reference regarding formulae, quoted statements, and such:
 http://www.w3.org/DesignIssues/Notation3.html
 
-``Formula-aware``: An RDF store capable of distinguishing between statements
+`Formula-aware`: An RDF store capable of distinguishing between statements
 that are asserted and statements that are quoted is considered formula-aware.
 
-``Transaction-capable``: capable of providing transactional integrity to the
+`Transaction-capable`: capable of providing transactional integrity to the
 RDF operations performed on it.
 
-``Graph-aware``: capable of keeping track of empty graphs.
-
-------
+`Graph-aware`: capable of keeping track of empty graphs.
 """
+
+from __future__ import annotations
+
+import pickle
+from collections.abc import Generator, Iterable, Iterator, Mapping
+from io import BytesIO
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Union,
+)
+
+from rdflib.events import Dispatcher, Event
+
+if TYPE_CHECKING:
+    from rdflib.graph import (
+        Graph,
+        _ContextType,
+        _QuadType,
+        _TripleChoiceType,
+        _TriplePatternType,
+        _TripleType,
+    )
+    from rdflib.plugins.sparql.sparql import Query, Update
+    from rdflib.query import Result
+    from rdflib.term import Identifier, Node, URIRef
+
 
 # Constants representing the state of a Store (returned by the open method)
 VALID_STORE = 1
 CORRUPTED_STORE = 0
 NO_STORE = -1
-UNKNOWN = None
-
-from rdflib.events import Dispatcher, Event
-from rdflib.term import URIRef, BNode, Literal, Variable, Statement, Identifier
+UNKNOWN: None = None
 
 
+Pickler = pickle.Pickler
+Unpickler = pickle.Unpickler
+UnpicklingError = pickle.UnpicklingError
 
-__all__ = ['StoreCreatedEvent', 'TripleAddedEvent', 'TripleRemovedEvent',
-           'NodePickler', 'Store']
+__all__ = [
+    "StoreCreatedEvent",
+    "TripleAddedEvent",
+    "TripleRemovedEvent",
+    "NodePickler",
+    "Store",
+]
 
 
 class StoreCreatedEvent(Event):
-    """
-    This event is fired when the Store is created, it has the following
-    attribute:
+    """This event is fired when the Store is created.
 
-      - ``configuration``: string used to create the store
-
+    Attributes:
+        configuration: String used to create the store
     """
 
 
 class TripleAddedEvent(Event):
-    """
-    This event is fired when a triple is added, it has the following
-    attributes:
+    """This event is fired when a triple is added.
 
-      - the ``triple`` added to the graph
-      - the ``context`` of the triple, if any
-      - the ``graph`` to which the triple was added
+    Attributes:
+        triple: The triple added to the graph.
+        context: The context of the triple, if any.
+        graph: The graph to which the triple was added.
     """
 
 
 class TripleRemovedEvent(Event):
+    """This event is fired when a triple is removed.
+
+    Attributes:
+        triple: The triple removed from the graph.
+        context: The context of the triple, if any.
+        graph: The graph from which the triple was removed.
     """
-    This event is fired when a triple is removed, it has the following
-    attributes:
-
-      - the ``triple`` removed from the graph
-      - the ``context`` of the triple, if any
-      - the ``graph`` from which the triple was removed
-    """
-
-from cPickle import Pickler, Unpickler, UnpicklingError
-try:
-    from io import BytesIO
-    assert BytesIO
-except ImportError:
-    from cStringIO import StringIO as BytesIO
 
 
-class NodePickler(object):
-    def __init__(self):
-        self._objects = {}
-        self._ids = {}
+class NodePickler:
+    def __init__(self) -> None:
+        self._objects: dict[str, Any] = {}
+        self._ids: dict[Any, str] = {}
         self._get_object = self._objects.__getitem__
 
-    def _get_ids(self, key):
+    def _get_ids(self, key: Any) -> str | None:
         try:
             return self._ids.get(key)
         except TypeError:
             return None
 
-    def register(self, object, id):
+    def register(self, object: Any, id: str) -> None:
         self._objects[id] = object
         self._ids[object] = id
 
-    def loads(self, s):
+    def loads(self, s: bytes) -> Node:
         up = Unpickler(BytesIO(s))
-        up.persistent_load = self._get_object
+        # NOTE on type error: https://github.com/python/mypy/issues/2427
+        # type error: Cannot assign to a method
+        up.persistent_load = self._get_object  # type: ignore[method-assign]
         try:
             return up.load()
-        except KeyError, e:
+        except KeyError as e:
             raise UnpicklingError("Could not find Node class for %s" % e)
 
-    def dumps(self, obj, protocol=None, bin=None):
+    def dumps(self, obj: Node, protocol: Any | None = None, bin: Any | None = None):
         src = BytesIO()
         p = Pickler(src)
-        p.persistent_id = self._get_ids
+        # NOTE on type error: https://github.com/python/mypy/issues/2427
+        # type error: Cannot assign to a method
+        p.persistent_id = self._get_ids  # type: ignore[method-assign]
         p.dump(obj)
         return src.getvalue()
 
-    def __getstate__(self):
+    def __getstate__(self) -> Mapping[str, Any]:
         state = self.__dict__.copy()
-        del state['_get_object']
-        state.update({
-            '_ids': tuple(self._ids.items()),
-            '_objects': tuple(self._objects.items())
-            })
+        del state["_get_object"]
+        state.update(
+            {"_ids": tuple(self._ids.items()), "_objects": tuple(self._objects.items())}
+        )
         return state
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: Mapping[str, Any]) -> None:
         self.__dict__.update(state)
         self._ids = dict(self._ids)
         self._objects = dict(self._objects)
         self._get_object = self._objects.__getitem__
 
 
-class Store(object):
+class Store:
     # Properties
-    context_aware = False
-    formula_aware = False
-    transaction_aware = False
-    graph_aware = False
+    context_aware: bool = False
+    formula_aware: bool = False
+    transaction_aware: bool = False
+    graph_aware: bool = False
 
-    def __init__(self, configuration=None, identifier=None):
+    def __init__(
+        self,
+        configuration: str | None = None,
+        identifier: Identifier | None = None,
+    ):
+        """Initialize the Store.
+
+        Args:
+            configuration: String containing information open can use to
+                connect to datastore.
+            identifier: URIRef of the Store. Defaults to CWD
         """
-        identifier: URIRef of the Store. Defaults to CWD
-        configuration: string containing infomation open can use to
-        connect to datastore.
-        """
-        self.__node_pickler = None
+        self.__node_pickler: NodePickler | None = None
         self.dispatcher = Dispatcher()
         if configuration:
             self.open(configuration)
 
-    def __get_node_pickler(self):
+    @property
+    def node_pickler(self) -> NodePickler:
         if self.__node_pickler is None:
-            self.__node_pickler = np = NodePickler()
-            from rdflib.graph import QuotedGraph # here to avoid circular import
+            from rdflib.graph import Graph, QuotedGraph
+            from rdflib.term import BNode, Literal, URIRef, Variable
 
+            self.__node_pickler = np = NodePickler()
             np.register(self, "S")
             np.register(URIRef, "U")
             np.register(BNode, "B")
             np.register(Literal, "L")
+            np.register(Graph, "G")
             np.register(QuotedGraph, "Q")
             np.register(Variable, "V")
-            np.register(Statement, "s")
         return self.__node_pickler
-    node_pickler = property(__get_node_pickler)
 
     # Database management methods
-    def create(self, configuration):
-        self.dispatcher.dispatch(
-            StoreCreatedEvent(configuration=configuration))
+    # NOTE: Can't find any stores using this, we should consider deprecating it.
+    def create(self, configuration: str) -> None:
+        self.dispatcher.dispatch(StoreCreatedEvent(configuration=configuration))
 
-    def open(self, configuration, create=False):
-        """
-        Opens the store specified by the configuration string. If
-        create is True a store will be created if it does not already
-        exist. If create is False and a store does not already exist
-        an exception is raised. An exception is also raised if a store
-        exists, but there is insufficient permissions to open the
-        store.  This should return one of:
-        VALID_STORE, CORRUPTED_STORE, or NO_STORE
+    def open(
+        self, configuration: Union[str, tuple[str, str]], create: bool = False
+    ) -> int | None:
+        """Opens the store specified by the configuration string.
+
+        Args:
+            configuration: Store configuration string
+            create: If True, a store will be created if it doesn't exist.
+                If False and the store doesn't exist, an exception is raised.
+
+        Returns:
+            One of: VALID_STORE, CORRUPTED_STORE, or NO_STORE
+
+        Raises:
+            Exception: If there are insufficient permissions to open the store.
         """
         return UNKNOWN
 
-    def close(self, commit_pending_transaction=False):
-        """
-        This closes the database connection. The commit_pending_transaction
-        parameter specifies whether to commit all pending transactions before
-        closing (if the store is transactional).
+    def close(self, commit_pending_transaction: bool = False) -> None:
+        """Closes the database connection.
+
+        Args:
+            commit_pending_transaction: Whether to commit all pending
+                transactions before closing (if the store is transactional).
         """
 
-    def destroy(self, configuration):
-        """
-        This destroys the instance of the store identified by the
-        configuration string.
+    def destroy(self, configuration: str) -> None:
+        """Destroys the instance of the store.
+
+        Args:
+            configuration: The configuration string identifying the store instance.
         """
 
-    def gc(self):
-        """
-        Allows the store to perform any needed garbage collection
-        """
+    def gc(self) -> None:
+        """Allows the store to perform any needed garbage collection."""
         pass
 
     # RDF APIs
-    def add(self, (subject, predicate, object), context, quoted=False):
-        """
-        Adds the given statement to a specific context or to the model. The
-        quoted argument is interpreted by formula-aware stores to indicate
-        this statement is quoted/hypothetical It should be an error to not
-        specify a context and have the quoted argument be True. It should also
-        be an error for the quoted argument to be True when the store is not
-        formula-aware.
-        """
-        if not isinstance(context, Identifier): raise Exception("Trying to add to a context that isn't an identifier: %s"%context)
+    def add(
+        self,
+        triple: _TripleType,
+        context: _ContextType,
+        quoted: bool = False,
+    ) -> None:
+        """Adds the given statement to a specific context or to the model.
 
-        self.dispatcher.dispatch(
-            TripleAddedEvent(
-                triple=(subject, predicate, object), context=context))
+        Args:
+            triple: The triple to add
+            context: The context to add the triple to
+            quoted: If True, indicates this statement is quoted/hypothetical
+                (for formula-aware stores)
 
-    def addN(self, quads):
+        Note:
+            It should be an error to not specify a context and have the quoted
+            argument be True. It should also be an error for the quoted argument
+            to be True when the store is not formula-aware.
         """
-        Adds each item in the list of statements to a specific context. The
-        quoted argument is interpreted by formula-aware stores to indicate this
-        statement is quoted/hypothetical. Note that the default implementation
-        is a redirect to add
+        self.dispatcher.dispatch(TripleAddedEvent(triple=triple, context=context))
+
+    def addN(self, quads: Iterable[_QuadType]) -> None:  # noqa: N802
+        """Adds each item in the list of statements to a specific context.
+
+        The quoted argument is interpreted by formula-aware stores to indicate this
+        statement is quoted/hypothetical.
+
+        Note:
+            The default implementation is a redirect to add.
+
+        Args:
+            quads: An iterable of quads to add
         """
         for s, p, o, c in quads:
-            assert c is not None, \
-                "Context associated with %s %s %s is None!" % (s, p, o)
+            assert c is not None, "Context associated with %s %s %s is None!" % (
+                s,
+                p,
+                o,
+            )
             self.add((s, p, o), c)
 
-    def remove(self, (subject, predicate, object), context=None):
-        """ Remove the set of triples matching the pattern from the store """
-        if not isinstance(context, Identifier): raise Exception("Trying to remove from a context that isn't an identifier: %s"%context)
+    def remove(
+        self,
+        triple: _TriplePatternType,
+        context: _ContextType | None = None,
+    ) -> None:
+        """Remove the set of triples matching the pattern from the store"""
+        self.dispatcher.dispatch(TripleRemovedEvent(triple=triple, context=context))
 
-        self.dispatcher.dispatch(
-            TripleRemovedEvent(
-                triple=(subject, predicate, object), context=context))
-
-    def triples_choices(self, (subject, predicate, object_), context=None):
+    def triples_choices(
+        self,
+        triple: _TripleChoiceType,
+        context: _ContextType | None = None,
+    ) -> Generator[tuple[_TripleType, Iterator[_ContextType | None]], None, None]:
         """
         A variant of triples that can take a list of terms instead of a single
         term in any slot.  Stores can implement this to optimize the response
         time from the default 'fallback' implementation, which will iterate
         over each term in the list and dispatch to triples
         """
+        subject, predicate, object_ = triple
         if isinstance(object_, list):
-            assert not isinstance(
-                subject, list), "object_ / subject are both lists"
-            assert not isinstance(
-                predicate, list), "object_ / predicate are both lists"
+            assert not isinstance(subject, list), "object_ / subject are both lists"
+            assert not isinstance(predicate, list), "object_ / predicate are both lists"
             if object_:
                 for obj in object_:
                     for (s1, p1, o1), cg in self.triples(
-                            (subject, predicate, obj), context):
+                        (subject, predicate, obj), context
+                    ):
                         yield (s1, p1, o1), cg
             else:
                 for (s1, p1, o1), cg in self.triples(
-                        (subject, predicate, None), context):
+                    (subject, predicate, None), context
+                ):
                     yield (s1, p1, o1), cg
 
         elif isinstance(subject, list):
-            assert not isinstance(
-                predicate, list), "subject / predicate are both lists"
+            assert not isinstance(predicate, list), "subject / predicate are both lists"
             if subject:
                 for subj in subject:
                     for (s1, p1, o1), cg in self.triples(
-                            (subj, predicate, object_), context):
+                        (subj, predicate, object_), context
+                    ):
                         yield (s1, p1, o1), cg
             else:
                 for (s1, p1, o1), cg in self.triples(
-                        (None, predicate, object_), context):
+                    (None, predicate, object_), context
+                ):
                     yield (s1, p1, o1), cg
 
         elif isinstance(predicate, list):
-            assert not isinstance(
-                subject, list), "predicate / subject are both lists"
+            assert not isinstance(subject, list), "predicate / subject are both lists"
             if predicate:
                 for pred in predicate:
                     for (s1, p1, o1), cg in self.triples(
-                            (subject, pred, object_), context):
+                        (subject, pred, object_), context
+                    ):
                         yield (s1, p1, o1), cg
             else:
-                for (s1, p1, o1), cg in self.triples(
-                        (subject, None, object_), context):
+                for (s1, p1, o1), cg in self.triples((subject, None, object_), context):
                     yield (s1, p1, o1), cg
 
-    def triples(self, triple_pattern, context=None):
+    # type error: Missing return statement
+    def triples(  # type: ignore[return]
+        self,
+        triple_pattern: _TriplePatternType,
+        context: _ContextType | None = None,
+    ) -> Iterator[tuple[_TripleType, Iterator[_ContextType | None]]]:
         """
         A generator over all the triples matching the pattern. Pattern can
         include any objects for used for comparing against nodes in the store,
         for example, REGEXTerm, URIRef, Literal, BNode, Variable, Graph,
         QuotedGraph, Date? DateRange?
 
-        :param context: A conjunctive query can be indicated by either
-        providing a value of None, or a specific context can be
-        queries by passing a Graph instance (if store is context aware).
+        Args:
+            context: A conjunctive query can be indicated by either
+                providing a value of None, or a specific context can be
+                queries by passing a Graph instance (if store is context aware).
         """
         subject, predicate, object = triple_pattern
 
     # variants of triples will be done if / when optimization is needed
 
-    def __len__(self, context=None):
+    # type error: Missing return statement
+    def __len__(self, context: _ContextType | None = None) -> int:  # type: ignore[empty-body]
         """
         Number of statements in the store. This should only account for non-
         quoted (asserted) statements if the context is not specified,
         otherwise it should return the number of statements in the formula or
         context given.
 
-        :param context: a graph instance to query or None
+        Args:
+            context: a graph instance to query or None
         """
 
-    def contexts(self, triple=None):
+    def quad_count(self) -> int:
+        """Return the number of non-quoted statement memberships in the store.
+
+        Count each graph occurrence separately, including the default graph.
+        Empty graphs contribute zero. This does not change the behavior of
+        [`Store.__len__()`][rdflib.store.Store.__len__].
+
+        Stores can override this operation with an equivalent native count.
+        The fallback scans asserted memberships for formula-aware stores and
+        otherwise enumerates contexts and sums their lengths. The latter may
+        require a remote request per graph, plus context enumeration.
+        """
+        if not self.context_aware:
+            return self.__len__()
+        if self.formula_aware:
+            # Quoted and asserted graphs can share an identifier, so a graph's
+            # type and length cannot distinguish their statement memberships.
+            return sum(
+                1 for _, contexts in self.triples((None, None, None)) for _ in contexts
+            )
+
+        from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph
+
+        count = 0
+        default_graph_seen = False
+        for context in self.contexts():
+            # Some stores return identifiers rather than Graph objects.
+            identifier = context.identifier if isinstance(context, Graph) else context
+            graph = Graph(self, identifier=identifier)
+            count += self.__len__(graph)
+            default_graph_seen |= graph.identifier == DATASET_DEFAULT_GRAPH_ID
+        if not default_graph_seen:
+            count += self.__len__(Graph(self, identifier=DATASET_DEFAULT_GRAPH_ID))
+        return count
+
+    # type error: Missing return statement
+    def contexts(  # type: ignore[empty-body]
+        self, triple: _TripleType | None = None
+    ) -> Generator[_ContextType, None, None]:
         """
         Generator over all contexts in the graph. If triple is specified,
         a generator over all contexts the triple is in.
@@ -314,78 +408,99 @@ class Store(object):
         :returns: a generator over Nodes
         """
 
-    def query(self, query, initNs, initBindings, queryGraph, **kwargs):
-        """
-        If stores provide their own SPARQL implementation, override this.
+    # TODO FIXME: the result of query is inconsistent.
+    def query(
+        self,
+        query: Query | str,
+        initNs: Mapping[str, Any],  # noqa: N803
+        initBindings: Mapping[str, Identifier],  # noqa: N803
+        queryGraph: str,  # noqa: N803
+        **kwargs: Any,
+    ) -> Result:
+        """If stores provide their own SPARQL implementation, override this.
 
-        queryGraph is None, a URIRef or '__UNION__'
+        queryGraph is None, a URIRef or `__UNION__`
         If None the graph is specified in the query-string/object
         If URIRef it specifies the graph to query,
-        If  '__UNION__' the union of all named graphs should be queried
+        If  `__UNION__` the union of all named graphs should be queried
         (This is used by ConjunctiveGraphs
         Values other than None obviously only makes sense for
         context-aware stores.)
-
         """
 
         raise NotImplementedError
 
-    def update(self, update, initNs, initBindings, queryGraph, **kwargs):
-        """
-        If stores provide their own (SPARQL) Update implementation,
-        override this.
+    def update(
+        self,
+        update: Update | str,
+        initNs: Mapping[str, Any],  # noqa: N803
+        initBindings: Mapping[str, Identifier],  # noqa: N803
+        queryGraph: str,  # noqa: N803
+        **kwargs: Any,
+    ) -> None:
+        """If stores provide their own (SPARQL) Update implementation, override this.
 
-        queryGraph is None, a URIRef or '__UNION__'
+        queryGraph is None, a URIRef or `__UNION__`
         If None the graph is specified in the query-string/object
         If URIRef it specifies the graph to query,
-        If  '__UNION__' the union of all named graphs should be queried
+        If  `__UNION__` the union of all named graphs should be queried
         (This is used by ConjunctiveGraphs
         Values other than None obviously only makes sense for
         context-aware stores.)
-
         """
 
         raise NotImplementedError
 
     # Optional Namespace methods
 
-    def bind(self, prefix, namespace):
+    def bind(self, prefix: str, namespace: URIRef, override: bool = True) -> None:
+        """Bind a namespace to a prefix.
+
+        Args:
+            prefix: The prefix to bind the namespace to.
+            namespace: The URIRef of the namespace to bind.
+            override: If True, rebind even if the given namespace is already bound
+                to another prefix
+        """
+
+    def prefix(self, namespace: URIRef) -> str | None:
+        """"""
+
+    def namespace(self, prefix: str) -> URIRef | None:
         """ """
 
-    def prefix(self, namespace):
+    def namespaces(self) -> Iterator[tuple[str, URIRef]]:
         """ """
-
-    def namespace(self, prefix):
-        """ """
-
-    def namespaces(self):
-        """ """
+        # This is here so that the function becomes an empty generator.
+        # See https://stackoverflow.com/q/13243766 and
+        # https://www.python.org/dev/peps/pep-0255/#why-a-new-keyword-for-yield-why-not-a-builtin-function-instead
         if False:
-            yield None
+            yield None  # type: ignore[unreachable]
 
     # Optional Transactional methods
 
-    def commit(self):
+    def commit(self) -> None:
         """ """
 
-    def rollback(self):
+    def rollback(self) -> None:
         """ """
 
     # Optional graph methods
 
-    def add_graph(self, graph):
-        """
-        Add a graph to the store, no effect if the graph already
+    def add_graph(self, graph: Graph) -> None:
+        """Add a graph to the store, no effect if the graph already
         exists.
-        :param graph: a Graph instance
+
+        Args:
+            graph: a Graph instance
         """
         raise Exception("Graph method called on non-graph_aware store")
 
-    def remove_graph(self, graph):
-        """
-        Remove a graph from the store, this shoud also remove all
+    def remove_graph(self, graph: Graph) -> None:
+        """Remove a graph from the store, this should also remove all
         triples in the graph
 
-        :param graphid: a Graph instance
+        Args:
+            graph: a Graph instance
         """
         raise Exception("Graph method called on non-graph_aware store")

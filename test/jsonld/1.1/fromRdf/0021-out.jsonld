@@ -1,0 +1,31 @@
+[
+  {
+    "@id": "http://www.example.com/G",
+    "@graph": [
+      {
+        "@id": "_:z0",
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [ { "@value": "cell-A" } ],
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+          {
+            "@list": [
+              { "@value": "cell-B" }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://www.example.com/z",
+        "http://www.example.com/q": [ { "@id": "_:z0" } ]
+      }
+    ]
+  },
+  {
+    "@id": "http://www.example.com/G1",
+    "@graph": [
+      {
+        "@id": "http://www.example.com/z",
+        "http://www.example.com/q": [ { "@id": "_:z0" } ]
+      }
+    ]
+  }
+]

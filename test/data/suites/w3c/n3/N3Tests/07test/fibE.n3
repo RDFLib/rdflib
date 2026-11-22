@@ -1,0 +1,11 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope --tactic limited-answer 1 http://eulersharp.sourceforge.net/2007/07test/fib.n3 --query http://eulersharp.sourceforge.net/2007/07test/fibQ.n3
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/try#>.
+
+(100) :fib 354224848179261915075 .
+
+#2018-04-18T08:27:58.998Z in=14 out=1 ent=1 step=1 brake=1 inf=14535 sec=0.020 inf/sec=726750
+#ENDS
+

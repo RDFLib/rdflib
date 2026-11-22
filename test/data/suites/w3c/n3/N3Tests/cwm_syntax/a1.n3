@@ -1,0 +1,38 @@
+# Test the cwm builtins
+
+#@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+#@prefix s: <http://www.w3.org/2000/01/rdf-schema#> .
+#@prefix daml:  <http://www.daml.org/2000/10/daml-ont#> .
+#@prefix dpo:  <http://www.daml.org/2001/03/daml+oil#> .
+#@prefix ex:   <http://www.daml.org/2000/10/daml-ex#> .
+#@prefix log:  <http://www.w3.org/2000/10/swap/log#> .
+
+@prefix : <foo.n3#>.  # Local stuff
+@prefix foo: <foo.n3#>.  # Local stuff
+
+# Usage:   cwm a1.n3 ; cwm a1.n3 -flat
+#
+# Output should conclude all test* a :success and no failures.
+#
+
+""" The idea is that each _:xxx style qname should be taken as an implicitly
+declared anonymous variable.""" :isAbout <>.
+
+:joe :livesIn _:h.
+_:h :in :texas.
+
+:joe :address _:a.
+	_:a  :street "Accacia Avenue".
+ _:a  :number "17".
+ _:a  :town    "anytown USA".
+
+_:p a :phone.
+_:p :areacode "555".
+_:p :otherdigits "555-1212".
+_:p :owner :joe.
+_:p :location _:a.
+
+
+ 
+
+#ends

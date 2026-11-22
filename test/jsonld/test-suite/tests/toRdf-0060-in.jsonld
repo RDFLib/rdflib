@@ -1,0 +1,51 @@
+{
+  "@context": {
+    "authored": {
+      "@id": "http://example.org/vocab#authored",
+      "@type": "@id"
+    },
+    "contains": {
+      "@id": "http://example.org/vocab#contains",
+      "@type": "@id"
+    },
+    "contributor": "http://purl.org/dc/elements/1.1/contributor",
+    "description": "http://purl.org/dc/elements/1.1/description",
+    "name": "http://xmlns.com/foaf/0.1/name",
+    "title": {
+      "@id": "http://purl.org/dc/elements/1.1/title"
+    }
+  },
+  "@graph": [
+    {
+      "@id": "http://example.org/test#jane",
+      "name": "Jane",
+      "authored": {
+        "@graph": [
+          {
+            "@id": "http://example.org/test#chapter1",
+            "description": "Fun",
+            "title": "Chapter One"
+          },
+          {
+            "@id": "http://example.org/test#chapter2",
+            "description": "More fun",
+            "title": "Chapter Two"
+          }
+        ]
+      }
+    },
+    {
+      "@id": "http://example.org/test#john",
+      "name": "John"
+    },
+    {
+      "@id": "http://example.org/test#library",
+      "contains": {
+        "@id": "http://example.org/test#book",
+        "contains": "http://example.org/test#chapter",
+        "contributor": "Writer",
+        "title": "My Book"
+      }
+    }
+  ]
+}

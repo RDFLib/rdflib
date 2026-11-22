@@ -1,0 +1,13 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/grass.n3 --pass
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/try#>.
+
+:obs1 :wetgrass true.
+:obs1 :sunshine true.
+:obs1 :rain false.
+:obs1 :sprinkler true.
+
+#2018-04-18T08:27:59.411Z in=30 out=4 ent=2 step=4 brake=2 inf=13744 sec=0.019 inf/sec=723368
+#ENDS
+

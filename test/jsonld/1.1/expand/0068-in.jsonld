@@ -1,0 +1,8 @@
+{
+  "@context": {
+    "_": "http://example.com/this-prefix-would-overwrite-all-blank-node-identifiers"
+  },
+  "@id": "_:node1",
+  "@type": "_:type",
+  "_:property": "all these IRIs remain unchanged because they are interpreted as blank node identifiers"
+}

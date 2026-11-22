@@ -1,0 +1,2 @@
+_:b0 <http://example/foo> _:b1 .
+_:b1 <http://example.org/bar> "baz" .

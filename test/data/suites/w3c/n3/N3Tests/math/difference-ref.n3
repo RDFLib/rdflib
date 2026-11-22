@@ -1,0 +1,24 @@
+@prefix : <difference.n3#> .
+
+:test1a a :SUCCESS .
+:test1b a :SUCCESS .
+:test1c a :SUCCESS .
+:test1d a :SUCCESS .
+:test1e a :SUCCESS .
+:test1f a :SUCCESS .
+:test1g a :SUCCESS .
+:test1h a :SUCCESS .
+
+:test2a a :SUCCESS .
+:test2b a :SUCCESS .
+:test2c a :SUCCESS .
+:test2d a :SUCCESS .
+:test2e a :SUCCESS .
+:test2f a :SUCCESS .
+:test2g a :SUCCESS .
+:test2h a :SUCCESS .
+
+:test3a a :SUCCESS.
+:test3b a :SUCCESS.
+:test3c a :SUCCESS.
+:test3d a :SUCCESS.

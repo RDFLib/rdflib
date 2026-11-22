@@ -1,0 +1,19 @@
+[{
+  "@id": "_:b0",
+  "http://example.com/foo": [{"@list": [
+    {"@list": [{"@id": "http://example/a"}]},
+    {"@id": "http://example/b"}
+  ]}]
+},
+{
+  "@id": "http://example/a",
+  "@type": [
+    "http://example/Bar"
+  ]
+},
+{
+  "@id": "http://example/b",
+  "@type": [
+    "http://example/Baz"
+  ]
+}]

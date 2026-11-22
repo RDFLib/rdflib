@@ -1,0 +1,1687 @@
+
+#  Notation3 generation by
+#       notation3.py,v 1.166 2004/10/28 17:41:59 timbl Exp
+
+     @prefix : <http://www.w3.org/2004/11/n3test#> .
+    
+     @forSome <#_g0>,
+                <#_g1>,
+                <#_g2>,
+                <#_g3>,
+                <#_g4>,
+                <#_g5>,
+                <#_g6>,
+                <#_g7>,
+                <#_g8>,
+                <#_g9>,
+                <#_g10>,
+                <#_g11>,
+                <#_g12>,
+                <#_g13>,
+                <#_g14>,
+                <#_g15>,
+                <#_g16>,
+                <#_g17>,
+                <#_g18>,
+                <#_g19>,
+                <#_g20>,
+                <#_g21>,
+                <#_g22>,
+                <#_g23>,
+                <#_g24>,
+                <#_g25>,
+                <#_g26>,
+                <#_g27>,
+                <#_g28>,
+                <#_g29>,
+                <#_g30>,
+                <#_g31>,
+                <#_g32>,
+                <#_g33>,
+                <#_g34>,
+                <#_g35>,
+                <#_g36>,
+                <#_g37>,
+                <#_g38>,
+                <#_g39>,
+                <#_g40>,
+                <#_g41>,
+                <#_g42>,
+                <#_g43>,
+                <#_g44>,
+                <#_g45>,
+                <#_g46>,
+                <#_g47>,
+                <#_g48>,
+                <#_g49>,
+                <#_g50>,
+                <#_g51>,
+                <#_g52>,
+                <#_g53>,
+                <#_g54>,
+                <#_g55>,
+                <#_g56>,
+                <#_g57>,
+                <#_g58>,
+                <#_g59>,
+                <#_g60>,
+                <#_g61>,
+                <#_g62>,
+                <#_g63>,
+                <#_g64>,
+                <#_g65>,
+                <#_g66>,
+                <#_g67>,
+                <#_g68>,
+                <#_g69>,
+                <#_g70>,
+                <#_g71>,
+                <#_g72>,
+                <#_g73>,
+                <#_g74>,
+                <#_g75>,
+                <#_g76>,
+                <#_g77>,
+                <#_g78>,
+                <#_g79>,
+                <#_g80>,
+                <#_g81>,
+                <#_g82> .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-02.n3?rev=1.1>     a :Input;
+         :description "Test compounds in anon nodes";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10002a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g20> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-02.nt?rev=1.1> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100027cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g63> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-02.nt?rev=1.1> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-03.n3?rev=1.1>     a :Input;
+         :description "Test anon nodes";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile () ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100037cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g64> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-03.nt?rev=1.1> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-04.n3?rev=1.1>     a :Input;
+         :description "Test shared bNode";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10004a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g21> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-04.nt?rev=1.1> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100047cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g65> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-04.nt?rev=1.1> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-05.n3?rev=1.1>     a :Input;
+         :description "Tests <> as a prefix and as a triple node";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10005a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g22> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-05.nt?rev=1.1> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100057cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g66> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-05.nt?rev=1.1> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-06.n3?rev=1.1>     a :Input;
+         :description "Tests <#> as a prefix and a triple node";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10006a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g23> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-06.nt?rev=1.1> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100067cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g67> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-06.nt?rev=1.1> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-07.n3?rev=1.1>     a :Input;
+         :description "Tests reverse properties";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10007a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g24> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-07.nt?rev=1.1> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100077cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g68> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-07.nt?rev=1.1> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-08.n3?rev=1.1>     a :Input;
+         :description "newline conversion. Will fail on cwm";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile () ];
+         <#_g43>  [
+             :isFile () ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-09.n3?rev=1.2>     a :Input;
+         :description "Lists";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10009a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g25> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-09.nt?rev=1.3> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100097cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g69> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-09.nt?rev=1.3> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-10.n3?rev=1.1>     a :Input;
+         :description "Test named anon nodes. Will fail on cwm";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10010a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g26> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-10.nt?rev=1.2> ];
+         <#_g43>  [
+             :isFile () ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-11.n3?rev=1.1>     a :Input;
+         :description "Test the syntactic items for abbreviation.";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10011a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g27> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-11.nt?rev=1.1> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100117cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g70> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-11.nt?rev=1.1> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-12.n3?rev=1.1>     a :Input;
+         :description "Test defining _ as a prefix. Undecided";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10012a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g28> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-12.nt?rev=1.1> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100127cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g71> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-12.nt?rev=1.1> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-13.n3?rev=1.1>     a :Input;
+         :description "Test redefining a prefix";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10013a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g29> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-13.nt?rev=1.1> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100137cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g72> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-13.nt?rev=1.1> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-14.n3?rev=1.1>     a :Input;
+         :description """Test the "is ... of" constuct""";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10014a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g30> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-14.nt?rev=1.1> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100147cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g73> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-14.nt?rev=1.1> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2>     a :Input;
+         :description "Forward paths. Note that `.' is depricated";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10015a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g31> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-15.nt?rev=1.2> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100157cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g74> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-15.nt?rev=1.2> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-16.n3?rev=1.1>     a :Input;
+         :description "Backward paths";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10016a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g32> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-16.nt?rev=1.1> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100167cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g75> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-16.nt?rev=1.1> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-17.n3?rev=1.1>     a :Input;
+         :description "Mixed paths and paths as objects";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10017a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g33> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-17.nt?rev=1.1> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100177cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g76> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-17.nt?rev=1.1> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-18.n3?rev=1.1>     a :Input;
+         :description "Mixed lists and paths";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10018a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g34> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-18.nt?rev=1.3> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100187cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g77> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-18.nt?rev=1.3> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-19.n3?rev=1.1>     a :Input;
+         :description "Named DAML lists. Will fail on cwm.";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10019a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g35> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-19.nt?rev=1.3> ];
+         <#_g43>  [
+             :isFile () ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-20.n3?rev=1.1>     a :Input;
+         :description "Named DAML lists. Will fail on cwm.";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10020a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g36> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-20.nt?rev=1.3> ];
+         <#_g43>  [
+             :isFile () ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-21.n3?rev=1.1>     a :Input;
+         :description "Datatypes";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10021a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g37> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-21.nt?rev=1.1> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100217cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g78> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-21.nt?rev=1.1> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-22.n3?rev=1.1>     a :Input;
+         :description "Language tags";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10022a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g38> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-22.nt?rev=1.1> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100227cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g79> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-22.nt?rev=1.1> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-23.n3?rev=1.1>     a :Input;
+         :description "XML literals";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10023a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g39> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-23.nt?rev=1.1> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100237cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g80> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-23.nt?rev=1.1> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-24.n3?rev=1.1>     a :Input;
+         :description "Language tags and datatypes. This test is invalid by the grammar";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile () ];
+         <#_g43>  [
+             :isFile () ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-25.n3?rev=1.3>     a :Input;
+         :description "Numerical formats";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile () ];
+         <#_g43>  [
+             :isFile () ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-26.n3?rev=1.2>     a :Input;
+         :description "Some i18n";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10026a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g40> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-26.nt?rev=1.1> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100267cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g81> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-26.nt?rev=1.1> ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-27.n3?rev=1.2>     a :Input;
+         :description "More i18n. What is the status of this?";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10027a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g41> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-27.nt?rev=1.1> ];
+         <#_g43>  [
+             :isFile () ] .
+    
+    <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-28.n3?rev=1.1>     a :Input;
+         :description "Strange xsd:interges and xsd:doubles";
+         :expected "Undecided";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_10028a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g42> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-28.nt?rev=1.1> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3_jena.tests_jena_100287cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g82> <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-result-28.nt?rev=1.1> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/anon-prop.n3>     a :Input;
+         :description "Parse and regen anonymous property";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10008a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g8> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10008.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100087cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g51> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10008.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/contexts.n3>     a :Input;
+         :description "Parse and generate simple contexts";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10007a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g7> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10007.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100077cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g50> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10007.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/i18n/hiragana.n3>     a :Input;
+         :description "N3 string, qname and IRI with utf-8 non-ascii characters";
+         :expected "Positive";
+         <#_g0>  [
+             :doesNotMatch ();
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10010a9f3e361e44af294de94e47bfb5b4e15.out> ];
+         <#_g43>  [
+             :isFile () ] .
+    
+    <http://www.w3.org/2000/10/swap/test/lists.n3>     a :Input;
+         :description "parsing and generation of N3 list syntax";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10017a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g16> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10017.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100177cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g59> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10017.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/n3parser.tests>     a :Input;
+         :description "we might as well be nice and self-referential";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10006a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g6> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10006.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100067cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g49> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10006.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/strquot.n3>     a :Input;
+         :description "N3 string quoting with escaping";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10009a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g9> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10009.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100097cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g52> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10009.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/djb1a.n3>     a :Input;
+         :description "djb noticed a:b was parsed as rdf:type token";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10005a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g5> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10005.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100057cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g48> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10005.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/dot-dash.n3>     a :Input;
+         :description "combinations of - and _ in identifiers";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10002a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g2> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10002.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100027cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g45> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10002.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/keywords1.n3>     a :Input;
+         :description "@keywords in n3";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10003a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g3> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10003.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100037cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g46> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10003.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/keywords2.n3>     a :Input;
+         :description "using no keywords in n3";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10004a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g4> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10004.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100047cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g47> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10004.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/lstring.n3>     a :Input;
+         :description "N3 string nested triple quoting";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10016a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g15> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10016.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100167cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g58> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10016.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/neg-keywords3.n3>     a :Input;
+         :description "@keywords is not a valid predicate";
+         :expected "Negative";
+         <#_g0>  [
+             :isFile () ];
+         <#_g43>  [
+             :isFile () ] .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/neg-single-quote.n3>     a :Input;
+         :description "single quoted strings are illegal";
+         :expected "Negative";
+         <#_g0>  [
+             :isFile () ];
+         <#_g43>  [
+             :isFile () ] .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/neg-thisadoc.n3>     a :Input;
+         :description "single quoted strings are illegal";
+         :expected "Negative";
+         <#_g0>  [
+             :isFile () ];
+         <#_g43>  [
+             :doesNotMatch ();
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_200037cca2956528df3852a1ef4ea1f5edb5b.out> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/no-last-nl.n3>     a :Input;
+         :description "An N3 file with no final newline character";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10001a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g1> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10001.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100017cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g44> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10001.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/numbers.n3>     a :Input;
+         :description "Number syntax";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10013a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g12> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10013.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100137cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g55> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10013.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/path1.n3>     a :Input;
+         :description "Path syntax, simple";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10011a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g10> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10011.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100117cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g53> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10011.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/path2.n3>     a :Input;
+         :description "Path syntax, more";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10012a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g11> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10012.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100127cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g54> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10012.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/qvars1.n3>     a :Input;
+         :description "Quick variable syntax, simple";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10014a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g13> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10014.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100147cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g56> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10014.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/qvars2.n3>     a :Input;
+         :description "Quick variable syntax, more";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10015a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g14> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10015.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100157cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g57> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10015.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/this-quantifiers.n3>     a :Input;
+         :description "Can still read the old 'this log:forSome' syntax";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10019a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g18> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10019.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100197cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g61> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10019.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3>     a :Input;
+         :description "Can still read the old 'this log:forAll' syntax";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10020a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g19> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10020.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100207cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g62> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10020.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3>     a :Input;
+         :description "Propertylists can end in trailing semicolon.";
+         :expected "Positive";
+         <#_g0>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_10018a9f3e361e44af294de94e47bfb5b4e15.out>;
+             <#_g17> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10018.nt> ];
+         <#_g43>  [
+             :isFile <file:/devel/WWW/2000/10/swap/test/n3/,temp/n3parser.tests_n3_100187cca2956528df3852a1ef4ea1f5edb5b.out>;
+             <#_g60> <http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10018.nt> ] .
+    
+    <http://www.w3.org/2000/10/swap/test/tests-work.txt>     a :Input;
+         :description "something that isn't n3";
+         :expected "Negative";
+         <#_g0>  [
+             :isFile () ];
+         <#_g43>  [
+             :isFile () ] .
+    
+    <#_g0>     a :N3Parser;
+         :command "$SWAP/cwm.py %s --ntriples";
+         :failsParsing <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-03.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-08.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-24.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-25.n3?rev=1.3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/neg-keywords3.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/neg-single-quote.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/neg-thisadoc.n3>,
+                <http://www.w3.org/2000/10/swap/test/tests-work.txt>;
+         :parses <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-02.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-04.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-05.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-06.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-07.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-09.n3?rev=1.2>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-10.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-11.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-12.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-13.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-14.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-16.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-17.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-18.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-19.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-20.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-21.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-22.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-23.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-26.n3?rev=1.2>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-27.n3?rev=1.2>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-28.n3?rev=1.1>,
+                <http://www.w3.org/2000/10/swap/test/anon-prop.n3>,
+                <http://www.w3.org/2000/10/swap/test/contexts.n3>,
+                <http://www.w3.org/2000/10/swap/test/i18n/hiragana.n3>,
+                <http://www.w3.org/2000/10/swap/test/lists.n3>,
+                <http://www.w3.org/2000/10/swap/test/n3parser.tests>,
+                <http://www.w3.org/2000/10/swap/test/strquot.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/djb1a.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/dot-dash.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/keywords1.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/keywords2.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/lstring.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/no-last-nl.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/numbers.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/path1.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/path2.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/qvars1.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/qvars2.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/this-quantifiers.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3> .
+    
+    <#_g1>     a :Diff;
+         :diffString """- &lt;http://www.w3.org/2000/10/swap/test/syntax/a&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/b&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/c&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/a&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/b&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/c&gt;.
+""" .
+    
+    <#_g2>     a :Diff;
+         :diffString "" .
+    
+    <#_g3>     a :Diff;
+         :diffString """- &lt;http://www.w3.org/2000/10/swap/test/syntax/keywords1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#x&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/keywords1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#y&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/keywords1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#z&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/keywords1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#x&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/keywords1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#y&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/keywords1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#z&gt;.
+""" .
+    
+    <#_g4>     a :Diff;
+         :diffString """- &lt;http://www.w3.org/2000/10/swap/test/syntax/keywords2.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#x&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/keywords2.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#y&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/keywords2.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#z&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/keywords2.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#x&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/keywords2.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#y&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/keywords2.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#z&gt;.
+""" .
+    
+    <#_g5>     a :Diff;
+         :diffString "" .
+    
+    <#_g6>     a :Diff;
+         :diffString """- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10001&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10001&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;An N3 file with no final newline character&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10001&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/no-last-nl.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10001&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10001.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10002&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10002&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;combinations of - and _ in identifiers&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10002&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/dot-dash.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10002&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10002.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10003&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10003&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;@keywords in n3&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10003&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/keywords1.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10003&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10003.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10004&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10004&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;using no keywords in n3&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10004&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/keywords2.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10004&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10004.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10005&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10005&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;djb noticed a:b was parsed as rdf:type token&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10005&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/djb1a.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10005&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10005.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10006&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10006&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;we might as well be nice and self-referential&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10006&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10006&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10006.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10007&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10007&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Parse and generate simple contexts&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10007&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/contexts.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10007&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10007.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10008&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10008&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Parse and regen anonymous property&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10008&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/anon-prop.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10008&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10008.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10009&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10009&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;N3 string quoting with escaping&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10009&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/strquot.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10009&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10009.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10010&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10010&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;N3 string, qname and IRI with utf-8 non-ascii characters&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10010&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/i18n/hiragana.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10011&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10011&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Path syntax, simple&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10011&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/path1.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10011&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10011.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10012&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10012&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Path syntax, more&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10012&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/path2.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10012&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10012.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10013&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10013&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Number syntax&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10013&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/numbers.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10013&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10013.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10014&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10014&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Quick variable syntax, simple&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10014&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/qvars1.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10014&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10014.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10015&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10015&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Quick variable syntax, more&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10015&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/qvars2.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10015&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10015.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10016&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10016&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;N3 string nested triple quoting&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10016&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/lstring.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10016&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10016.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10017&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10017&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;parsing and generation of N3 list syntax&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10017&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/lists.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10017&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10017.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10018&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10018&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Propertylists can end in trailing semicolon.&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10018&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10018&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10018.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10019&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10019&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Can still read the old 'this log:forSome' syntax&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10019&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/this-quantifiers.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10019&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10019.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10020&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10020&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Can still read the old 'this log:forAll' syntax&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10020&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_10020&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/n3/n3parser.tests_n3_10020.nt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_20000&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#NegativeParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_20000&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;something that isn't n3&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_20000&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/tests-work.txt&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_20001&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#NegativeParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_20001&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;@keywords is not a valid predicate&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_20001&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/neg-keywords3.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_20002&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#NegativeParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_20002&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;single quoted strings are illegal&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_20002&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/neg-single-quote.n3&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_20003&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#NegativeParserTest&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_20003&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;single quoted strings are illegal&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/n3parser.tests#n3_20003&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/neg-thisadoc.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10001&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10001&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;An N3 file with no final newline character&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10001&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/no-last-nl.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10001&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10001.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10002&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10002&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;combinations of - and _ in identifiers&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10002&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/dot-dash.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10002&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10002.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10003&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10003&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;@keywords in n3&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10003&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/keywords1.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10003&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10003.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10004&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10004&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;using no keywords in n3&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10004&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/keywords2.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10004&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10004.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10005&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10005&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;djb noticed a:b was parsed as rdf:type token&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10005&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/djb1a.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10005&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10005.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10006&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10006&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;we might as well be nice and self-referential&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10006&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10006&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10006.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10007&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10007&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Parse and generate simple contexts&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10007&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/contexts.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10007&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10007.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10008&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10008&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Parse and regen anonymous property&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10008&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/anon-prop.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10008&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10008.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10009&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10009&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;N3 string quoting with escaping&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10009&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10009&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10009.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10010&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10010&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;N3 string, qname and IRI with utf-8 non-ascii characters&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10010&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/i18n/hiragana.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10011&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10011&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Path syntax, simple&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10011&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/path1.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10011&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10011.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10012&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10012&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Path syntax, more&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10012&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/path2.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10012&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10012.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10013&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10013&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Number syntax&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10013&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10013&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10013.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10014&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10014&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Quick variable syntax, simple&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10014&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars1.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10014&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10014.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10015&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10015&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Quick variable syntax, more&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10015&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars2.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10015&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10015.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10016&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10016&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;N3 string nested triple quoting&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10016&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/lstring.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10016&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10016.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10017&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10017&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;parsing and generation of N3 list syntax&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10017&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/lists.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10017&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10017.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10018&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10018&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Propertylists can end in trailing semicolon.&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10018&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10018&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10018.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10019&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10019&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Can still read the old 'this log:forSome' syntax&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10019&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-quantifiers.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10019&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10019.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10020&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10020&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Can still read the old 'this log:forAll' syntax&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10020&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10020&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10020.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20000&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#NegativeParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20000&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;something that isn't n3&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20000&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/tests-work.txt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20001&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#NegativeParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20001&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;@keywords is not a valid predicate&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20001&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/neg-keywords3.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20002&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#NegativeParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20002&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;single quoted strings are illegal&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20002&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/neg-single-quote.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20003&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#NegativeParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20003&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;single quoted strings are illegal&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20003&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/neg-thisadoc.n3&gt;.
+""" .
+    
+    <#_g7>     a :Diff;
+         :diffString "" .
+    
+    <#_g8>     a :Diff;
+         :diffString """- &lt;http://www.w3.org/2000/10/swap/test/anon-prop.n3#anySubj&gt; __:c0 &lt;http://www.w3.org/2000/10/swap/test/anon-prop.n3#anyObj&gt;.
+- __:c0 &lt;http://www.w3.org/2000/10/swap/test/anon-prop.n3#propProp&gt; &quot;red&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/anon-prop.n3#anySubj&gt; __:c0 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/anon-prop.n3#anyObj&gt;.
++ __:c0 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/anon-prop.n3#propProp&gt; &quot;red&quot;.
+""" .
+    
+    <#_g9>     a :Diff;
+         :diffString """- &lt;http://www.w3.org/2000/10/swap/test/strquot.n3#martin&gt; &lt;http://www.w3.org/2000/10/swap/test/strquot.n3#surname&gt; &quot;D\\u00FCrst&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/strquot.n3#x&gt; &lt;http://www.w3.org/2000/10/swap/test/strquot.n3#prop&gt; &quot;simple string&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/strquot.n3#y&gt; &lt;http://www.w3.org/2000/10/swap/test/strquot.n3#prop&gt; &quot;triple quoted\\nstring with newlines in it.&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/strquot.n3#z&gt; &lt;http://www.w3.org/2000/10/swap/test/strquot.n3#prop&gt; &quot;string with \\&quot; escaped quote marks&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/strquot.n3#zz&gt; &lt;http://www.w3.org/2000/10/swap/test/strquot.n3#escapes&gt; &quot;\\\\\\&quot;\\a\\b\\f\\r\\t\\v&quot;.
+- &lt;http://www.w3.org/2000/10/swap/test/strquot.n3&gt; &lt;http://purl.org/dc/elements/1.1/description&gt; &quot;testing string parsing in N3.\\nHmm... how much of this is in the primer?\\nHow much should be there?\\n@@ Holding off on unicode until support\\nin python is sufficiently deployed\\n(e.g. python on tux doesn't grok,\\nnor does pythonwin on TimBL's laptop).\\n$Id: test_results.n3,v 1.7 2004/12/31 19:12:31 timbl Exp $\\n&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#martin&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#surname&gt; &quot;D\\u00FCrst&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#x&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#prop&gt; &quot;simple string&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#y&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#prop&gt; &quot;triple quoted\\nstring with newlines in it.&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#z&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#prop&gt; &quot;string with \\&quot; escaped quote marks&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#zz&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#escapes&gt; &quot;\\\\\\&quot;\\a\\b\\f\\r\\t\\v&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3&gt; &lt;http://purl.org/dc/elements/1.1/description&gt; &quot;testing string parsing in N3.\\nHmm... how much of this is in the primer?\\nHow much should be there?\\n@@ Holding off on unicode until support\\nin python is sufficiently deployed\\n(e.g. python on tux doesn't grok,\\nnor does pythonwin on TimBL's laptop).\\n$Id: test_results.n3,v 1.7 2004/12/31 19:12:31 timbl Exp $\\n&quot;.
+""" .
+    
+    <#_g10>     a :Diff;
+         :diffString """- &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#albert&gt; &lt;http://www.daml.example.org/2001/03/fam#mother&gt; __:c1.
+- __:c0 &lt;http://www.daml.example.org/2001/03/fam#father&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#albert&gt;.
+- __:c0 &lt;http://www.daml.example.org/2001/03/fam#sister&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#nieceBertha&gt;.
+- __:c1 &lt;http://www.daml.example.org/2001/03/fam#sister&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#auntieAnne&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#albert&gt; &lt;http://www.daml.example.org/2001/03/fam#mother&gt; __:c1.
++ __:c0 &lt;http://www.daml.example.org/2001/03/fam#father&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#albert&gt;.
++ __:c0 &lt;http://www.daml.example.org/2001/03/fam#sister&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#nieceBertha&gt;.
++ __:c1 &lt;http://www.daml.example.org/2001/03/fam#sister&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#auntieAnne&gt;.
+""" .
+    
+    <#_g11>     a :Diff;
+         :diffString """- &lt;http://www.w3.org/2000/10/swap/test/syntax/a&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/b&gt; __:c13.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/e&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/f&gt; __:c9.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#admires&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#converse&gt; __:c11.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#albert&gt; &lt;http://www.daml.example.org/2001/03/fam#mother&gt; __:c10.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#albert&gt; __:c11 &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#grumpy&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#mentor&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#inverse&gt; __:c12.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#x&gt; &lt;http://www.w3.org/2000/01/rdf-schema#label&gt; __:c0.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#x&gt; &lt;http://www.w3.org/2000/01/rdf-schema#label&gt; __:c1.
+- __:c0 &lt;http://www.daml.example.org/2000/10/lang#eng&gt; &quot;Help!&quot;.
+- __:c1 &lt;http://www.daml.example.org/2000/10/lang#fr&gt; &quot;foo&quot;.
+- __:c10 __:c12 &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#auntieAnne&gt;.
+- __:c2 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &quot;1&quot;.
+- __:c2 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c3.
+- __:c2 &lt;http://www.w3.org/2000/10/swap/math#sum&gt; __:c7.
+- __:c3 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &quot;2&quot;.
+- __:c3 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
+- __:c4 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; __:c8.
+- __:c4 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
+- __:c5 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; __:c14.
+- __:c5 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
+- __:c6 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; __:c13.
+- __:c6 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c4.
+- __:c6 &lt;http://www.w3.org/2000/10/swap/test/syntax/path2.n3#relatedTo&gt; __:c5.
+- __:c7 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/foo.n3#THREE&gt;.
+- __:c8 &lt;http://www.w3.org/2000/10/swap/test/syntax/d&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/c&gt;.
+- __:c9 &lt;http://www.w3.org/2000/10/swap/test/syntax/g&gt; __:c14.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/a&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/b&gt; __:c14.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/e&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/f&gt; __:c1.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#admires&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#converse&gt; __:c11.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#albert&gt; &lt;http://www.daml.example.org/2001/03/fam#mother&gt; __:c10.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#albert&gt; __:c11 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#grumpy&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#mentor&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#inverse&gt; __:c12.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#x&gt; &lt;http://www.w3.org/2000/01/rdf-schema#label&gt; __:c3.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#x&gt; &lt;http://www.w3.org/2000/01/rdf-schema#label&gt; __:c4.
++ __:c0 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/d&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/c&gt;.
++ __:c1 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/g&gt; __:c13.
++ __:c10 __:c12 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#auntieAnne&gt;.
++ __:c2 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/path2.n3#relatedTo&gt; __:c7.
++ __:c2 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; __:c14.
++ __:c2 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c8.
++ __:c3 &lt;http://www.daml.example.org/2000/10/lang#eng&gt; &quot;Help!&quot;.
++ __:c4 &lt;http://www.daml.example.org/2000/10/lang#fr&gt; &quot;foo&quot;.
++ __:c5 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &quot;1&quot;.
++ __:c5 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c6.
++ __:c5 &lt;http://www.w3.org/2000/10/swap/math#sum&gt; __:c9.
++ __:c6 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &quot;2&quot;.
++ __:c6 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c7 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; __:c13.
++ __:c7 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c8 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; __:c0.
++ __:c8 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c9 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#THREE&gt;.
+""" .
+    
+    <#_g12>     a :Diff;
+         :diffString """- &quot;-2&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The integer -2&quot;.
+- &quot;0&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;Zero&quot;.
+- &quot;2&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The integer 2 expressed with leading zeroes&quot;.
+- &quot;2&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The integer 2&quot;.
+- &quot;2.0&quot;^^&lt;http://www.w3.org/2001/XMLSchema#double&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The number 2.0 expressed with extra trailing zeroes&quot;.
+- &quot;2.0&quot;^^&lt;http://www.w3.org/2001/XMLSchema#double&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The number 2.0&quot;.
+- &quot;2000.0&quot;^^&lt;http://www.w3.org/2001/XMLSchema#double&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The double precision floating point 2.0e3&quot;.
+- &quot;800/600&quot;^^&lt;http://example.com/types#rational&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;800/600 with datatype http://example.com/types#rational&quot;.
+- &quot;Le chat&quot;@fr &lt;http://www.w3.org/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The french phrase 'Le chat'&quot;.
++ &quot;-2&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The integer -2&quot;.
++ &quot;0&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;Zero&quot;.
++ &quot;2&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The integer 2 expressed with leading zeroes&quot;.
++ &quot;2&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The integer 2&quot;.
++ &quot;2.0&quot;^^&lt;http://www.w3.org/2001/XMLSchema#double&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The number 2.0 expressed with extra trailing zeroes&quot;.
++ &quot;2.0&quot;^^&lt;http://www.w3.org/2001/XMLSchema#double&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The number 2.0&quot;.
++ &quot;2000.0&quot;^^&lt;http://www.w3.org/2001/XMLSchema#double&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The double precision floating point 2.0e3&quot;.
++ &quot;800/600&quot;^^&lt;http://example.com/types#rational&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;800/600 with datatype http://example.com/types#rational&quot;.
++ &quot;Le chat&quot;@fr &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The french phrase 'Le chat'&quot;.
+""" .
+    
+    <#_g13>     a :Diff;
+         :diffString """- &lt;http://www.w3.org/2000/10/swap/test/syntax/qvars1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/qvars1.n3#a&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/qvars1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/qvars1.n3#b&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/qvars1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/qvars1.n3#c&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars1.n3#a&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars1.n3#b&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars1.n3#c&gt;.
+""" .
+    
+    <#_g14>     a :Diff;
+         :diffString """- &lt;http://www.w3.org/2000/10/swap/test/syntax/qvars2.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/qvars2.n3#b&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/qvars2.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/qvars2.n3#c&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars2.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars2.n3#b&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars2.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars2.n3#c&gt;.
+""" .
+    
+    <#_g15>     a :Diff;
+         :diffString """- &quot;     @prefix : &lt;http://www.w3.org/2000/10/swap/test/crypto/acc.n3#&gt; .\\n     @prefix crypto: &lt;http://www.w3.org/2000/10/swap/crypto#&gt; .\\n     @prefix log: &lt;http://www.w3.org/2000/10/swap/log#&gt; .\\n     @prefix os: &lt;http://www.w3.org/2000/10/swap/os#&gt; .\\n     @prefix string: &lt;http://www.w3.org/2000/10/swap/string#&gt; .\\n    \\n    \\&quot;\\&quot;\\&quot;\\nMzE5MDcKCjM2ODkyMzAyMDE1MzgwMjY2NTU5MzgzNjMyMDQyOTM1Mjc4MDk3MzAwNzE4ODMzOTY3\\nNTY3NTk1Njg5MjE2Mjk0NzkyMzUyNTQ3OTQzMjI4MjM2MDEwNjQwMTAyMjcxODk0OTY2MzgzNjQ1\\nNDQyODQ5Njg3MzUzOTM2NzAyMTI5NDgxNDg4MzIxMzUyODEyMTc1NjIxNjE0NjE5Mzk2MDY4MjE2\\nNzk1MzY0NjAxNjE0MzM5NDYzOTIyMDMwMDE4NTEyODMyMTg0NDIyMzI3MzcxNzE5MjcxMzY0ODY1\\nMjEzMzU1OTc4Nzk0OTIyMzQ4NDU5NTUxMTQ2MTcyNjE0MTk3ODI2NTg0NDA2Mzg2OTQwMTcwNTE4\\nOTY0MDQzNzMxNzEyODc1OTk3NjAyNjE4ODUzNDQ1Mw=3D=3D\\n\\&quot;\\&quot;\\&quot;     a :RequestKey;\\n         :authorityName &lt;Tiina&gt;;\\n         :junk \\&quot;327462sjsdfjsakdhfkjsafd32164321\\&quot; .\\n&quot; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/lstring.n3#test_string&gt;.
++ &quot;     @prefix : &lt;http://www.w3.org/2000/10/swap/test/crypto/acc.n3#&gt; .\\n     @prefix crypto: &lt;http://www.w3.org/2000/10/swap/crypto#&gt; .\\n     @prefix log: &lt;http://www.w3.org/2000/10/swap/log#&gt; .\\n     @prefix os: &lt;http://www.w3.org/2000/10/swap/os#&gt; .\\n     @prefix string: &lt;http://www.w3.org/2000/10/swap/string#&gt; .\\n    \\n    \\&quot;\\&quot;\\&quot;\\nMzE5MDcKCjM2ODkyMzAyMDE1MzgwMjY2NTU5MzgzNjMyMDQyOTM1Mjc4MDk3MzAwNzE4ODMzOTY3\\nNTY3NTk1Njg5MjE2Mjk0NzkyMzUyNTQ3OTQzMjI4MjM2MDEwNjQwMTAyMjcxODk0OTY2MzgzNjQ1\\nNDQyODQ5Njg3MzUzOTM2NzAyMTI5NDgxNDg4MzIxMzUyODEyMTc1NjIxNjE0NjE5Mzk2MDY4MjE2\\nNzk1MzY0NjAxNjE0MzM5NDYzOTIyMDMwMDE4NTEyODMyMTg0NDIyMzI3MzcxNzE5MjcxMzY0ODY1\\nMjEzMzU1OTc4Nzk0OTIyMzQ4NDU5NTUxMTQ2MTcyNjE0MTk3ODI2NTg0NDA2Mzg2OTQwMTcwNTE4\\nOTY0MDQzNzMxNzEyODc1OTk3NjAyNjE4ODUzNDQ1Mw=3D=3D\\n\\&quot;\\&quot;\\&quot;     a :RequestKey;\\n         :authorityName &lt;Tiina&gt;;\\n         :junk \\&quot;327462sjsdfjsakdhfkjsafd32164321\\&quot; .\\n&quot; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/lstring.n3#test_string&gt;.
+""" .
+    
+    <#_g16>     a :Diff;
+         :diffString """- &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt; &lt;http://www.w3.org/2000/10/swap/test/test#verb0&gt; &lt;http://www.w3.org/2000/10/swap/test/test#object0&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/test#emptyList&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/test#listOf2Empties&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; __:c7.
+- &lt;http://www.w3.org/2000/10/swap/test/test#nested&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; __:c11.
+- &lt;http://www.w3.org/2000/10/swap/test/test#threeItems&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; __:c8.
+- &lt;http://www.w3.org/2000/10/swap/test/test#twoAnons&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; __:c17.
+- &lt;http://www.w3.org/2000/10/swap/test/test#twoFormulae&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; __:c4.
+- __:c0 &lt;http://www.w3.org/2000/10/swap/test/lists.n3#linksEqualLists&gt; __:c0.
+- __:c1 &lt;http://www.w3.org/2000/10/swap/test/test#verb1&gt; &lt;http://www.w3.org/2000/10/swap/test/test#object1&gt;.
+- __:c10 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;http://www.w3.org/2000/10/swap/test/test#d&gt;.
+- __:c11 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;http://www.w3.org/2000/10/swap/test/test#first&gt;.
+- __:c11 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c15.
+- __:c12 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;http://www.w3.org/2000/10/swap/test/test#fourth&gt;.
+- __:c13 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;http://www.w3.org/2000/10/swap/test/test#left3&gt;.
+- __:c13 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c14.
+- __:c14 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;http://www.w3.org/2000/10/swap/test/test#right3&gt;.
+- __:c15 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;http://www.w3.org/2000/10/swap/test/test#second&gt;.
+- __:c15 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c18.
+- __:c18 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; __:c13.
+- __:c18 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c12.
+- __:c19 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2000/10/swap/test/test#father&gt;.
+- __:c2 &lt;http://www.w3.org/2000/10/swap/test/test#verb2&gt; &lt;http://www.w3.org/2000/10/swap/test/test#object2&gt;.
+- __:c20 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2000/10/swap/test/test#mother&gt;.
+- __:c4 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/devel/WWW/2000/10/swap/test/n3/.run-1103827662.739646p11965#_g5&gt;.
+- __:c5 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/devel/WWW/2000/10/swap/test/n3/.run-1103827662.739646p11965#_g6&gt;.
+- __:c6 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
+- __:c6 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
+- __:c7 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
+- __:c7 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c6.
+- __:c8 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;http://www.w3.org/2000/10/swap/test/test#b&gt;.
+- __:c8 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c9.
+- __:c9 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;http://www.w3.org/2000/10/swap/test/test#c&gt;.
+- __:c9 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c10.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#emptyList&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#listOf2Empties&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; __:c15.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#nested&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; __:c9.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#threeItems&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; __:c6.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#twoAnons&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; __:c17.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#twoFormulae&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; __:c4.
++ &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#verb0&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#object0&gt;.
++ __:c0 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/lists.n3#linksEqualLists&gt; __:c0.
++ __:c1 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#verb1&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#object1&gt;.
++ __:c10 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#fourth&gt;.
++ __:c11 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#left3&gt;.
++ __:c11 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c12.
++ __:c12 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#right3&gt;.
++ __:c13 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#second&gt;.
++ __:c13 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c18.
++ __:c14 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c15 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c15 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c14.
++ __:c18 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; __:c11.
++ __:c18 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c10.
++ __:c19 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#father&gt;.
++ __:c2 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#verb2&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#object2&gt;.
++ __:c20 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#mother&gt;.
++ __:c4 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/.run-1100818951.269227p32593#_g5&gt;.
++ __:c5 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/.run-1100818951.269227p32593#_g6&gt;.
++ __:c6 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#b&gt;.
++ __:c6 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c7.
++ __:c7 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#c&gt;.
++ __:c7 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c8.
++ __:c8 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#d&gt;.
++ __:c8 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c9 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#first&gt;.
++ __:c9 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c13.
+""" .
+    
+    <#_g17>     a :Diff;
+         :diffString """- &lt;http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#b&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#c&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#d&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#e&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#f&gt; __:c0.
+- __:c0 &lt;http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#g&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#h&gt;.
+- __:c0 &lt;http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#i&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#j&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#b&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#c&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#d&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#e&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#f&gt; __:c0.
++ __:c0 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#g&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#h&gt;.
++ __:c0 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#i&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#j&gt;.
+""" .
+    
+    <#_g18>     a :Diff;
+         :diffString "" .
+    
+    <#_g19>     a :Diff;
+         :diffString """- &lt;http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#a&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#b&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#p&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#ancestor&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.daml.org/2001/03/daml+oil#TransitiveProperty&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#bill&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#ancestor&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#pa&gt;.
+- &lt;http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#pa&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#ancestor&gt; &lt;http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#granpa&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#a&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#b&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#p&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#ancestor&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.daml.org/2001/03/daml+oil#TransitiveProperty&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#bill&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#ancestor&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#pa&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#pa&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#ancestor&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#granpa&gt;.
+""" .
+    
+    <#_g20>     a :Diff;
+         :diffString """Syntax error:     _:a_g0     &lt;http://one.net/ns1#bp1&gt; &lt;http://one.net/ns1#bv1&gt; .
+
+""" .
+    
+    <#_g21>     a :Diff;
+         :diffString """Syntax error:     _:a_ga     &lt;http://one.net/ns#prop1&gt; &quot;anon1&quot; .
+
+""" .
+    
+    <#_g22>     a :Diff;
+         :diffString """- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-05.n3?rev=1.1&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-05.n3?rev=1.1a&gt;.
++ &lt;file:///base/rdf-test-05.n3&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;file:///base/rdf-test-05.n3a&gt;.
+""" .
+    
+    <#_g23>     a :Diff;
+         :diffString """- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-06.n3?rev=1.1#&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-06.n3?rev=1.1#p&gt; &quot;v&quot;.
++ &lt;file:///base/rdf-test-06.n3#&gt; &lt;file:///base/rdf-test-06.n3#p&gt; &quot;v&quot;.
+""" .
+    
+    <#_g24>     a :Diff;
+         :diffString """- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-07.n3?rev=1.1#b&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-07.n3?rev=1.1#prop&gt; &quot;value&quot;.
++ &lt;file:///base/rdf-test-07.n3#b&gt; &lt;file:///base/rdf-test-07.n3#prop&gt; &quot;value&quot;.
+""" .
+    
+    <#_g25>     a :Diff;
+         :diffString """Syntax error:     _:a_g1     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:///base/rdf-test-09.n3b&gt; .
+
+""" .
+    
+    <#_g26>     a :Diff;
+         :diffString "" .
+    
+    <#_g27>     a :Diff;
+         :diffString """Syntax error:     _:a_ga     &lt;http://www.daml.org/2001/03/daml+oil#equivalentTo&gt; _:a_gb .
+
+""" .
+    
+    <#_g28>     a :Diff;
+         :diffString """Syntax error:     _:a_ga     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;file:///base/rdf-test-12.n3#p&gt; .
+
+""" .
+    
+    <#_g29>     a :Diff;
+         :diffString "" .
+    
+    <#_g30>     a :Diff;
+         :diffString """- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-14.n3?rev=1.1#s1&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-14.n3?rev=1.1#prop&gt; &quot;value2&quot;.
+- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-14.n3?rev=1.1#s2&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-14.n3?rev=1.1#prop&gt; &quot;value2&quot;.
+- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-14.n3?rev=1.1#s&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-14.n3?rev=1.1#prop&gt; &quot;value1&quot;.
++ &lt;file:///base/rdf-test-14.n3#s1&gt; &lt;file:///base/rdf-test-14.n3#prop&gt; &quot;value2&quot;.
++ &lt;file:///base/rdf-test-14.n3#s2&gt; &lt;file:///base/rdf-test-14.n3#prop&gt; &quot;value2&quot;.
++ &lt;file:///base/rdf-test-14.n3#s&gt; &lt;file:///base/rdf-test-14.n3#prop&gt; &quot;value1&quot;.
+""" .
+    
+    <#_g31>     a :Diff;
+         :diffString """- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#a1&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#b1&gt; __:c2.
+- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#a2&gt; &lt;http://a/ns#b2&gt; __:c0.
+- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#o&gt; &lt;http://a/ns#p1&gt; __:c1.
+- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#r&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#p&gt; __:c7.
+- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#x1&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#y1&gt; __:c3.
+- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#x2&gt; &lt;http://a/ns#y2&gt; __:c4.
+- __:c0 &lt;http://a/ns#c2&gt; __:c5.
+- __:c1 &lt;http://a/ns#p2&gt; __:c7.
+- __:c2 &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#c1&gt; __:c6.
+- __:c3 &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#p1&gt; &quot;3&quot;.
+- __:c4 &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#p2&gt; &quot;3&quot;.
+- __:c5 &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#q1&gt; &quot;3&quot;.
+- __:c5 &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#q2&gt; &quot;4&quot;.
+- __:c5 &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#q2&gt; &quot;5&quot;.
+- __:c6 &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#q1&gt; &quot;3&quot;.
+- __:c6 &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#q2&gt; &quot;4&quot;.
+- __:c6 &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2#q2&gt; &quot;5&quot;.
++ &lt;file:///base/rdf-test-15.n3#a1&gt; &lt;file:///base/rdf-test-15.n3#b1&gt; __:c0.
++ &lt;file:///base/rdf-test-15.n3#a2&gt; &lt;http://a/ns#b2&gt; __:c5.
++ &lt;file:///base/rdf-test-15.n3#o&gt; &lt;http://a/ns#p1&gt; __:c6.
++ &lt;file:///base/rdf-test-15.n3#r&gt; &lt;file:///base/rdf-test-15.n3#p&gt; __:c7.
++ &lt;file:///base/rdf-test-15.n3#x1&gt; &lt;file:///base/rdf-test-15.n3#y1&gt; __:c1.
++ &lt;file:///base/rdf-test-15.n3#x2&gt; &lt;http://a/ns#y2&gt; __:c2.
++ __:c0 &lt;file:///base/rdf-test-15.n3#c1&gt; __:c3.
++ __:c1 &lt;file:///base/rdf-test-15.n3#p1&gt; &quot;3&quot;.
++ __:c2 &lt;file:///base/rdf-test-15.n3#p2&gt; &quot;3&quot;.
++ __:c3 &lt;file:///base/rdf-test-15.n3#q1&gt; &quot;3&quot;.
++ __:c3 &lt;file:///base/rdf-test-15.n3#q2&gt; &quot;4&quot;.
++ __:c3 &lt;file:///base/rdf-test-15.n3#q2&gt; &quot;5&quot;.
++ __:c4 &lt;file:///base/rdf-test-15.n3#q1&gt; &quot;3&quot;.
++ __:c4 &lt;file:///base/rdf-test-15.n3#q2&gt; &quot;4&quot;.
++ __:c4 &lt;file:///base/rdf-test-15.n3#q2&gt; &quot;5&quot;.
++ __:c5 &lt;http://a/ns#c2&gt; __:c4.
++ __:c6 &lt;http://a/ns#p2&gt; __:c7.
+""" .
+    
+    <#_g32>     a :Diff;
+         :diffString """Syntax error:     _:a_g1     &lt;file:///base/rdf-test-16.n3#b&gt; &lt;file:///base/rdf-test-16.n3#a&gt; .
+
+""" .
+    
+    <#_g33>     a :Diff;
+         :diffString """Syntax error:     _:a_g8     &lt;file:///base/rdf-test-17.n3#e3&gt; &lt;file:///base/rdf-test-17.n3#d3&gt; .
+
+""" .
+    
+    <#_g34>     a :Diff;
+         :diffString """Syntax error:     _:a_g1     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; _:a_g0 .
+
+""" .
+    
+    <#_g35>     a :Diff;
+         :diffString """Syntax error:     _:a_g1     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &quot;2&quot; .
+
+""" .
+    
+    <#_g36>     a :Diff;
+         :diffString """Syntax error:     _:a_g1     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &quot;2&quot; .
+
+""" .
+    
+    <#_g37>     a :Diff;
+         :diffString """- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-21.n3?rev=1.1#a&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-21.n3?rev=1.1#p&gt; &quot;11&quot;.
+- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-21.n3?rev=1.1#a&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-21.n3?rev=1.1#p&gt; &quot;11&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt;.
+- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-21.n3?rev=1.1#a&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-21.n3?rev=1.1#q2&gt; &quot;99&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt;.
+- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-21.n3?rev=1.1#a&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-21.n3?rev=1.1#q2&gt; &quot;99&quot;^^&lt;http://www.w3.org/2001/XMLSchema#string&gt;.
+- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-21.n3?rev=1.1#a&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-21.n3?rev=1.1#q&gt; &quot;12&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt;.
++ &lt;file:///base/rdf-test-21.n3#a&gt; &lt;file:///base/rdf-test-21.n3#p&gt; &quot;11&quot;.
++ &lt;file:///base/rdf-test-21.n3#a&gt; &lt;file:///base/rdf-test-21.n3#p&gt; &quot;11&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt;.
++ &lt;file:///base/rdf-test-21.n3#a&gt; &lt;file:///base/rdf-test-21.n3#q2&gt; &quot;99&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt;.
++ &lt;file:///base/rdf-test-21.n3#a&gt; &lt;file:///base/rdf-test-21.n3#q2&gt; &quot;99&quot;^^&lt;http://www.w3.org/2001/XMLSchema#string&gt;.
++ &lt;file:///base/rdf-test-21.n3#a&gt; &lt;file:///base/rdf-test-21.n3#q&gt; &quot;12&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt;.
+""" .
+    
+    <#_g38>     a :Diff;
+         :diffString "" .
+    
+    <#_g39>     a :Diff;
+         :diffString """- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-23.n3?rev=1.1#a&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-23.n3?rev=1.1#q1&gt; &quot;&lt;foo&gt;bar&lt;/foo&gt;&quot;.
+- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-23.n3?rev=1.1#a&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-23.n3?rev=1.1#q1&gt; &quot;&lt;foo&gt;bar&lt;/foo&gt;&quot;^^&lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral&gt;.
++ &lt;file:///base/rdf-test-23.n3#a&gt; &lt;file:///base/rdf-test-23.n3#q1&gt; &quot;&lt;foo&gt;bar&lt;/foo&gt;&quot;.
++ &lt;file:///base/rdf-test-23.n3#a&gt; &lt;file:///base/rdf-test-23.n3#q1&gt; &quot;&lt;foo&gt;bar&lt;/foo&gt;&quot;^^&lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral&gt;.
+""" .
+    
+    <#_g40>     a :Diff;
+         :diffString """- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-26.n3?rev=1.2#x&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-26.n3?rev=1.2#y1&gt; &quot;\\u03B1&quot;.
+- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-26.n3?rev=1.2#x&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-26.n3?rev=1.2#y2&gt; &quot;\\u00E9&quot;.
+- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-26.n3?rev=1.2#x&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-26.n3?rev=1.2#y3&gt; &quot;\\u00E9&quot;.
++ &lt;file:///base/rdf-test-26.n3#x&gt; &lt;file:///base/rdf-test-26.n3#y1&gt; &quot;\\u03B1&quot;.
++ &lt;file:///base/rdf-test-26.n3#x&gt; &lt;file:///base/rdf-test-26.n3#y2&gt; &quot;\\u00E9&quot;.
++ &lt;file:///base/rdf-test-26.n3#x&gt; &lt;file:///base/rdf-test-26.n3#y3&gt; &quot;\\u00E9&quot;.
+""" .
+    
+    <#_g41>     a :Diff;
+         :diffString "" .
+    
+    <#_g42>     a :Diff;
+         :diffString """- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-28.n3?rev=1.1#x&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-28.n3?rev=1.1#p1&gt; &quot;abc&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt;.
+- &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-28.n3?rev=1.1#x&gt; &lt;http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-28.n3?rev=1.1#p2&gt; &quot;ab.c&quot;^^&lt;http://www.w3.org/2001/XMLSchema#double&gt;.
++ &lt;file:///base/rdf-test-28.n3#x&gt; &lt;file:///base/rdf-test-28.n3#p1&gt; &quot;abc&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt;.
++ &lt;file:///base/rdf-test-28.n3#x&gt; &lt;file:///base/rdf-test-28.n3#p2&gt; &quot;ab.c&quot;^^&lt;http://www.w3.org/2001/XMLSchema#double&gt;.
+""" .
+    
+    <#_g43>     a :N3Parser;
+         :command "python $SWAP/grammar/predictiveParser.py --grammar=$SWAP/grammar/n3-selectors.n3  --as=http://www.w3.org/2000/10/swap/grammar/n3#document --parse=%s";
+         :failsParsing <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-08.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-10.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-19.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-20.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-24.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-25.n3?rev=1.3>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-27.n3?rev=1.2>,
+                <http://www.w3.org/2000/10/swap/test/i18n/hiragana.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/neg-keywords3.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/neg-single-quote.n3>,
+                <http://www.w3.org/2000/10/swap/test/tests-work.txt>;
+         :parses <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-02.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-03.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-04.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-05.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-06.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-07.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-09.n3?rev=1.2>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-11.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-12.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-13.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-14.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-15.n3?rev=1.2>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-16.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-17.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-18.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-21.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-22.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-23.n3?rev=1.1>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-26.n3?rev=1.2>,
+                <http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/testing/N3/rdf-test-28.n3?rev=1.1>,
+                <http://www.w3.org/2000/10/swap/test/anon-prop.n3>,
+                <http://www.w3.org/2000/10/swap/test/contexts.n3>,
+                <http://www.w3.org/2000/10/swap/test/lists.n3>,
+                <http://www.w3.org/2000/10/swap/test/n3parser.tests>,
+                <http://www.w3.org/2000/10/swap/test/strquot.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/djb1a.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/dot-dash.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/keywords1.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/keywords2.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/lstring.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/neg-thisadoc.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/no-last-nl.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/numbers.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/path1.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/path2.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/qvars1.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/qvars2.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/this-quantifiers.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3>,
+                <http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3> .
+    
+    <#_g44>     a :Diff;
+         :diffString """+ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/a&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/b&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/c&gt;.
+""" .
+    
+    <#_g45>     a :Diff;
+         :diffString """+ &lt;http://example.com/foo#a&gt; &lt;http://example.com/foo#b&gt; &lt;http://example.com/foo#c&gt;.
++ &lt;http://example.com/foo#hyphen-ated&gt; &lt;http://example.com/foo#dot.ted&gt; &lt;http://example.com/foo#hyphen-and.dot&gt;.
++ &lt;http://example.com/foo#minus-_underscore&gt; &lt;http://example.com/foo#under_score&gt; &lt;http://example.com/foo#underscore_-minus&gt;.
+""" .
+    
+    <#_g46>     a :Diff;
+         :diffString """+ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/keywords1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#x&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/keywords1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#y&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/keywords1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#z&gt;.
++ __:c0 __:c1 __:c2.
+""" .
+    
+    <#_g47>     a :Diff;
+         :diffString """+ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/keywords2.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#x&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/keywords2.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#y&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/keywords2.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#z&gt;.
++ __:c0 __:c1 __:c2.
+""" .
+    
+    <#_g48>     a :Diff;
+         :diffString """+ &lt;http://example.org/base2#a&gt; &lt;http://example.org/base2#b&gt; &lt;http://example.org/base2#c&gt;.
+""" .
+    
+    <#_g49>     a :Diff;
+         :diffString """+ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10001&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10001&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;An N3 file with no final newline character&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10001&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/no-last-nl.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10001&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10001.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10002&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10002&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;combinations of - and _ in identifiers&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10002&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/dot-dash.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10002&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10002.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10003&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10003&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;@keywords in n3&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10003&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/keywords1.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10003&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10003.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10004&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10004&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;using no keywords in n3&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10004&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/keywords2.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10004&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10004.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10005&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10005&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;djb noticed a:b was parsed as rdf:type token&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10005&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/djb1a.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10005&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10005.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10006&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10006&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;we might as well be nice and self-referential&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10006&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10006&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10006.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10007&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10007&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Parse and generate simple contexts&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10007&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/contexts.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10007&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10007.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10008&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10008&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Parse and regen anonymous property&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10008&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/anon-prop.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10008&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10008.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10009&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10009&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;N3 string quoting with escaping&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10009&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10009&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10009.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10010&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10010&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;N3 string, qname and IRI with utf-8 non-ascii characters&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10010&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/i18n/hiragana.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10011&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10011&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Path syntax, simple&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10011&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/path1.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10011&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10011.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10012&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10012&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Path syntax, more&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10012&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/path2.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10012&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10012.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10013&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10013&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Number syntax&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10013&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10013&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10013.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10014&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10014&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Quick variable syntax, simple&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10014&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars1.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10014&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10014.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10015&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10015&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Quick variable syntax, more&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10015&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars2.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10015&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10015.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10016&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10016&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;N3 string nested triple quoting&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10016&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/lstring.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10016&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10016.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10017&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10017&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;parsing and generation of N3 list syntax&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10017&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/lists.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10017&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10017.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10018&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10018&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Propertylists can end in trailing semicolon.&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10018&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10018&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10018.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10019&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10019&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Can still read the old 'this log:forSome' syntax&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10019&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-quantifiers.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10019&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10019.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10020&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#PositiveParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10020&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;Can still read the old 'this log:forAll' syntax&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10020&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_10020&gt; &lt;http://www.w3.org/2004/11/n3test#outputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/n3parser.tests_n3_10020.nt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20000&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#NegativeParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20000&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;something that isn't n3&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20000&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/tests-work.txt&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20001&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#NegativeParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20001&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;@keywords is not a valid predicate&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20001&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/neg-keywords3.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20002&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#NegativeParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20002&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;single quoted strings are illegal&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20002&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/neg-single-quote.n3&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20003&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2004/11/n3test#NegativeParserTest&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20003&gt; &lt;http://www.w3.org/2004/11/n3test#description&gt; &quot;single quoted strings are illegal&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3parser.tests#n3_20003&gt; &lt;http://www.w3.org/2004/11/n3test#inputDocument&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/neg-thisadoc.n3&gt;.
+""" .
+    
+    <#_g50>     a :Diff;
+         :diffString "" .
+    
+    <#_g51>     a :Diff;
+         :diffString """+ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/anon-prop.n3#anySubj&gt; __:c0 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/anon-prop.n3#anyObj&gt;.
++ __:c0 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/anon-prop.n3#propProp&gt; &quot;red&quot;.
+""" .
+    
+    <#_g52>     a :Diff;
+         :diffString """+ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#martin&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#familyName&gt; &quot;D\\u00FCrst&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#x&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#prop&gt; &quot;simple string&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#y&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#prop&gt; &quot;triple quoted\\nstring with newlines in it.&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#z&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#prop&gt; &quot;string with \\&quot; escaped quote marks&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#zz&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#escapes&gt; &quot;\\\\\\&quot;\\a\\b\\f\\r\\t\\v&quot;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3&gt; &lt;http://purl.org/dc/elements/1.1/description&gt; &quot;testing string parsing in N3.\\nHmm... how much of this is in the primer?\\nHow much should be there?\\n@@ Holding off on unicode until support\\nin python is sufficiently deployed\\n(e.g. python on tux doesn't grok,\\nnor does pythonwin on TimBL's laptop).\\n$Id: test_results.n3,v 1.7 2004/12/31 19:12:31 timbl Exp $\\n&quot;.
+""" .
+    
+    <#_g53>     a :Diff;
+         :diffString """+ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#albert&gt; &lt;http://www.daml.example.org/2001/03/fam#mother&gt; __:c1.
++ __:c0 &lt;http://www.daml.example.org/2001/03/fam#father&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#albert&gt;.
++ __:c0 &lt;http://www.daml.example.org/2001/03/fam#sister&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#nieceBertha&gt;.
++ __:c1 &lt;http://www.daml.example.org/2001/03/fam#sister&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#auntieAnne&gt;.
+""" .
+    
+    <#_g54>     a :Diff;
+         :diffString """+ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/a&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/b&gt; __:c14.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/e&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/f&gt; __:c1.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#admires&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#converse&gt; __:c11.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#albert&gt; &lt;http://www.daml.example.org/2001/03/fam#mother&gt; __:c10.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#albert&gt; __:c11 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#grumpy&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#mentor&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#inverse&gt; __:c12.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#x&gt; &lt;http://www.w3.org/2000/01/rdf-schema#label&gt; __:c3.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#x&gt; &lt;http://www.w3.org/2000/01/rdf-schema#label&gt; __:c4.
++ __:c0 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/d&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/c&gt;.
++ __:c1 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/g&gt; __:c13.
++ __:c10 __:c12 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#auntieAnne&gt;.
++ __:c2 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/path2.n3#relatedTo&gt; __:c7.
++ __:c2 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; __:c14.
++ __:c2 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c8.
++ __:c3 &lt;http://www.daml.example.org/2000/10/lang#eng&gt; &quot;Help!&quot;.
++ __:c4 &lt;http://www.daml.example.org/2000/10/lang#fr&gt; &quot;foo&quot;.
++ __:c5 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &quot;1&quot;.
++ __:c5 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c6.
++ __:c5 &lt;http://www.w3.org/2000/10/swap/math#sum&gt; __:c9.
++ __:c6 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &quot;2&quot;.
++ __:c6 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c7 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; __:c13.
++ __:c7 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c8 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; __:c0.
++ __:c8 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c9 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/foo.n3#THREE&gt;.
+""" .
+    
+    <#_g55>     a :Diff;
+         :diffString """+ &quot;-2&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The integer -2&quot;.
++ &quot;0&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;Zero&quot;.
++ &quot;2&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The integer 2 expressed with leading zeroes&quot;.
++ &quot;2&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The integer 2&quot;.
++ &quot;2.0&quot;^^&lt;http://www.w3.org/2001/XMLSchema#double&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The number 2.0 expressed with extra trailing zeroes&quot;.
++ &quot;2.0&quot;^^&lt;http://www.w3.org/2001/XMLSchema#double&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The number 2.0&quot;.
++ &quot;2000.0&quot;^^&lt;http://www.w3.org/2001/XMLSchema#double&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The double precision floating point 2.0e3&quot;.
++ &quot;800/600&quot;^^&lt;http://example.com/types#rational&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;800/600 with datatype http://example.com/types#rational&quot;.
++ &quot;Le chat&quot;@fr &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/numbers.n3#is&gt; &quot;The french phrase 'Le chat'&quot;.
+""" .
+    
+    <#_g56>     a :Diff;
+         :diffString """+ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars1.n3#a&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars1.n3#b&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars1.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars1.n3#c&gt;.
+""" .
+    
+    <#_g57>     a :Diff;
+         :diffString """+ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars2.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars2.n3#b&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars2.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/qvars2.n3#c&gt;.
+""" .
+    
+    <#_g58>     a :Diff;
+         :diffString """+ &quot;     @prefix : &lt;http://www.w3.org/2000/10/swap/test/crypto/acc.n3#&gt; .\\n     @prefix crypto: &lt;http://www.w3.org/2000/10/swap/crypto#&gt; .\\n     @prefix log: &lt;http://www.w3.org/2000/10/swap/log#&gt; .\\n     @prefix os: &lt;http://www.w3.org/2000/10/swap/os#&gt; .\\n     @prefix string: &lt;http://www.w3.org/2000/10/swap/string#&gt; .\\n    \\n    \\&quot;\\&quot;\\&quot;\\nMzE5MDcKCjM2ODkyMzAyMDE1MzgwMjY2NTU5MzgzNjMyMDQyOTM1Mjc4MDk3MzAwNzE4ODMzOTY3\\nNTY3NTk1Njg5MjE2Mjk0NzkyMzUyNTQ3OTQzMjI4MjM2MDEwNjQwMTAyMjcxODk0OTY2MzgzNjQ1\\nNDQyODQ5Njg3MzUzOTM2NzAyMTI5NDgxNDg4MzIxMzUyODEyMTc1NjIxNjE0NjE5Mzk2MDY4MjE2\\nNzk1MzY0NjAxNjE0MzM5NDYzOTIyMDMwMDE4NTEyODMyMTg0NDIyMzI3MzcxNzE5MjcxMzY0ODY1\\nMjEzMzU1OTc4Nzk0OTIyMzQ4NDU5NTUxMTQ2MTcyNjE0MTk3ODI2NTg0NDA2Mzg2OTQwMTcwNTE4\\nOTY0MDQzNzMxNzEyODc1OTk3NjAyNjE4ODUzNDQ1Mw=3D=3D\\n\\&quot;\\&quot;\\&quot;     a :RequestKey;\\n         :authorityName &lt;Tiina&gt;;\\n         :junk \\&quot;327462sjsdfjsakdhfkjsafd32164321\\&quot; .\\n&quot; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/lstring.n3#test_string&gt;.
+""" .
+    
+    <#_g59>     a :Diff;
+         :diffString """+ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#emptyList&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#listOf2Empties&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; __:c15.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#nested&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; __:c9.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#threeItems&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; __:c6.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#twoAnons&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; __:c17.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#twoFormulae&gt; &lt;http://www.w3.org/2002/07/owl#sameAs&gt; __:c4.
++ &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#verb0&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#object0&gt;.
++ __:c0 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/lists.n3#linksEqualLists&gt; __:c0.
++ __:c0 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &quot;1&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt;.
++ __:c0 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c1 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#verb1&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#object1&gt;.
++ __:c1 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &quot;subj1&quot;.
++ __:c1 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c10 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#fourth&gt;.
++ __:c10 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c11 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#left3&gt;.
++ __:c11 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c12.
++ __:c12 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#right3&gt;.
++ __:c12 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c13 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#second&gt;.
++ __:c13 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c18.
++ __:c14 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c14 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c15 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c15 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c14.
++ __:c16 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; __:c19.
++ __:c16 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c17 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; __:c20.
++ __:c17 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c16.
++ __:c18 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; __:c11.
++ __:c18 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c10.
++ __:c19 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#father&gt;.
++ __:c2 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#verb2&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#object2&gt;.
++ __:c2 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &quot;subj2a&quot;.
++ __:c2 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c3.
++ __:c20 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#mother&gt;.
++ __:c3 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &quot;subj2b&quot;.
++ __:c3 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c4 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/.run-1100818951.269227p32593#_g5&gt;.
++ __:c4 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c5.
++ __:c5 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/n3/.run-1100818951.269227p32593#_g6&gt;.
++ __:c5 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c6 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#b&gt;.
++ __:c6 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c7.
++ __:c7 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#c&gt;.
++ __:c7 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c8.
++ __:c8 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#d&gt;.
++ __:c8 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&gt;.
++ __:c9 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/test#first&gt;.
++ __:c9 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest&gt; __:c13.
+""" .
+    
+    <#_g60>     a :Diff;
+         :diffString """+ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#b&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#c&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#d&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#e&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#f&gt; __:c0.
++ __:c0 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#g&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#h&gt;.
++ __:c0 &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#i&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/trailing-semicolon.n3#j&gt;.
+""" .
+    
+    <#_g61>     a :Diff;
+         :diffString """+ &lt;http://www.w3.org/2000/10/swap/log#implies&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/2000/10/swap/log#Chaff&gt;.
+""" .
+    
+    <#_g62>     a :Diff;
+         :diffString """+ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#a&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#b&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#_work&gt; &lt;http://www.w3.org/2000/10/swap/log#forAll&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#p&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#ancestor&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.daml.org/2001/03/daml+oil#TransitiveProperty&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#bill&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#ancestor&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#pa&gt;.
++ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#pa&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#ancestor&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/syntax/this-rules.n3#granpa&gt;.
+""" .
+    
+    <#_g63>     a :Diff;
+         :diffString """Syntax error:     _:a_g0     &lt;http://one.net/ns1#bp1&gt; &lt;http://one.net/ns1#bv1&gt; .
+
+""" .
+    
+    <#_g64>     a :Diff;
+         :diffString """Syntax error:     _:a_g0     &lt;http://namespace.net/p1&gt; &lt;http://namespace.net/v1&gt; .
+
+""" .
+    
+    <#_g65>     a :Diff;
+         :diffString """Syntax error:     _:a_ga     &lt;http://one.net/ns#prop1&gt; &quot;anon1&quot; .
+
+""" .
+    
+    <#_g66>     a :Diff;
+         :diffString """+ &lt;file:///base/rdf-test-05.n3&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;file:///base/rdf-test-05.n3a&gt;.
+""" .
+    
+    <#_g67>     a :Diff;
+         :diffString """+ &lt;file:///base/rdf-test-06.n3#&gt; &lt;file:///base/rdf-test-06.n3#p&gt; &quot;v&quot;.
+""" .
+    
+    <#_g68>     a :Diff;
+         :diffString """+ &lt;file:///base/rdf-test-07.n3#b&gt; &lt;file:///base/rdf-test-07.n3#prop&gt; &quot;value&quot;.
+""" .
+    
+    <#_g69>     a :Diff;
+         :diffString """Syntax error:     _:a_g1     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; &lt;file:///base/rdf-test-09.n3b&gt; .
+
+""" .
+    
+    <#_g70>     a :Diff;
+         :diffString """Syntax error:     _:a_ga     &lt;http://www.daml.org/2001/03/daml+oil#equivalentTo&gt; _:a_gb .
+
+""" .
+    
+    <#_g71>     a :Diff;
+         :diffString """Syntax error:     _:a_ga     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;file:///base/rdf-test-12.n3#p&gt; .
+
+""" .
+    
+    <#_g72>     a :Diff;
+         :diffString """+ &lt;http://host/A#b&gt; &lt;http://host/A#p&gt; &lt;http://host/A#v&gt;.
++ &lt;http://host/Z#b&gt; &lt;http://host/Z#p&gt; &lt;http://host/Z#v&gt;.
+""" .
+    
+    <#_g73>     a :Diff;
+         :diffString """+ &lt;file:///base/rdf-test-14.n3#s1&gt; &lt;file:///base/rdf-test-14.n3#prop&gt; &quot;value2&quot;.
++ &lt;file:///base/rdf-test-14.n3#s2&gt; &lt;file:///base/rdf-test-14.n3#prop&gt; &quot;value2&quot;.
++ &lt;file:///base/rdf-test-14.n3#s&gt; &lt;file:///base/rdf-test-14.n3#prop&gt; &quot;value1&quot;.
+""" .
+    
+    <#_g74>     a :Diff;
+         :diffString """+ &lt;file:///base/rdf-test-15.n3#a1&gt; &lt;file:///base/rdf-test-15.n3#b1&gt; __:c0.
++ &lt;file:///base/rdf-test-15.n3#a2&gt; &lt;http://a/ns#b2&gt; __:c5.
++ &lt;file:///base/rdf-test-15.n3#o&gt; &lt;http://a/ns#p1&gt; __:c6.
++ &lt;file:///base/rdf-test-15.n3#r&gt; &lt;file:///base/rdf-test-15.n3#p&gt; __:c7.
++ &lt;file:///base/rdf-test-15.n3#x1&gt; &lt;file:///base/rdf-test-15.n3#y1&gt; __:c1.
++ &lt;file:///base/rdf-test-15.n3#x2&gt; &lt;http://a/ns#y2&gt; __:c2.
++ __:c0 &lt;file:///base/rdf-test-15.n3#c1&gt; __:c3.
++ __:c1 &lt;file:///base/rdf-test-15.n3#p1&gt; &quot;3&quot;.
++ __:c2 &lt;file:///base/rdf-test-15.n3#p2&gt; &quot;3&quot;.
++ __:c3 &lt;file:///base/rdf-test-15.n3#q1&gt; &quot;3&quot;.
++ __:c3 &lt;file:///base/rdf-test-15.n3#q2&gt; &quot;4&quot;.
++ __:c3 &lt;file:///base/rdf-test-15.n3#q2&gt; &quot;5&quot;.
++ __:c4 &lt;file:///base/rdf-test-15.n3#q1&gt; &quot;3&quot;.
++ __:c4 &lt;file:///base/rdf-test-15.n3#q2&gt; &quot;4&quot;.
++ __:c4 &lt;file:///base/rdf-test-15.n3#q2&gt; &quot;5&quot;.
++ __:c5 &lt;http://a/ns#c2&gt; __:c4.
++ __:c6 &lt;http://a/ns#p2&gt; __:c7.
+""" .
+    
+    <#_g75>     a :Diff;
+         :diffString """Syntax error:     _:a_g1     &lt;file:///base/rdf-test-16.n3#b&gt; &lt;file:///base/rdf-test-16.n3#a&gt; .
+
+""" .
+    
+    <#_g76>     a :Diff;
+         :diffString """Syntax error:     _:a_g8     &lt;file:///base/rdf-test-17.n3#e3&gt; &lt;file:///base/rdf-test-17.n3#d3&gt; .
+
+""" .
+    
+    <#_g77>     a :Diff;
+         :diffString """Syntax error:     _:a_g1     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#first&gt; _:a_g0 .
+
+""" .
+    
+    <#_g78>     a :Diff;
+         :diffString """+ &lt;file:///base/rdf-test-21.n3#a&gt; &lt;file:///base/rdf-test-21.n3#p&gt; &quot;11&quot;.
++ &lt;file:///base/rdf-test-21.n3#a&gt; &lt;file:///base/rdf-test-21.n3#p&gt; &quot;11&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt;.
++ &lt;file:///base/rdf-test-21.n3#a&gt; &lt;file:///base/rdf-test-21.n3#q2&gt; &quot;99&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt;.
++ &lt;file:///base/rdf-test-21.n3#a&gt; &lt;file:///base/rdf-test-21.n3#q2&gt; &quot;99&quot;^^&lt;http://www.w3.org/2001/XMLSchema#string&gt;.
++ &lt;file:///base/rdf-test-21.n3#a&gt; &lt;file:///base/rdf-test-21.n3#q&gt; &quot;12&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt;.
+""" .
+    
+    <#_g79>     a :Diff;
+         :diffString """+ __:c0 &lt;http://host/ns#q1&gt; &quot;UK-English&quot;@en-uk.
++ __:c0 &lt;http://host/ns#q2&gt; &quot;French&quot;@fr.
++ __:c0 &lt;http://host/ns#q3&gt; &quot;aaaa&quot;@any.
+""" .
+    
+    <#_g80>     a :Diff;
+         :diffString """+ &lt;file:///base/rdf-test-23.n3#a&gt; &lt;file:///base/rdf-test-23.n3#q1&gt; &quot;&lt;foo&gt;bar&lt;/foo&gt;&quot;.
++ &lt;file:///base/rdf-test-23.n3#a&gt; &lt;file:///base/rdf-test-23.n3#q1&gt; &quot;&lt;foo&gt;bar&lt;/foo&gt;&quot;^^&lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral&gt;.
+""" .
+    
+    <#_g81>     a :Diff;
+         :diffString """+ &lt;file:///base/rdf-test-26.n3#x&gt; &lt;file:///base/rdf-test-26.n3#y1&gt; &quot;\\u03B1&quot;.
++ &lt;file:///base/rdf-test-26.n3#x&gt; &lt;file:///base/rdf-test-26.n3#y2&gt; &quot;\\u00E9&quot;.
++ &lt;file:///base/rdf-test-26.n3#x&gt; &lt;file:///base/rdf-test-26.n3#y3&gt; &quot;\\u00E9&quot;.
+""" .
+    
+    <#_g82>     a :Diff;
+         :diffString """+ &lt;file:///base/rdf-test-28.n3#x&gt; &lt;file:///base/rdf-test-28.n3#p1&gt; &quot;abc&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt;.
++ &lt;file:///base/rdf-test-28.n3#x&gt; &lt;file:///base/rdf-test-28.n3#p2&gt; &quot;ab.c&quot;^^&lt;http://www.w3.org/2001/XMLSchema#double&gt;.
+""" .
+    
+#ENDS

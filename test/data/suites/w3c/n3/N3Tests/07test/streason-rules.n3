@@ -1,0 +1,7 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+{?S ?P ?O} => {?O ?P ?S}.
+{?S ?P ?O} => {?S ?P [ :p ?O, 4], "s5", true}.
+{?S ?P ?O. ?R log:equalTo :r10} => {?S ?P [ :q ?O, 9], ?R, false}.
+

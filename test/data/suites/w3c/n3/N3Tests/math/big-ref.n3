@@ -1,0 +1,4 @@
+# From swap/ref/math1.n3
+@prefix : <big.n3#> .
+
+9.5  :valueOf "(7 / 2) + ((7 % 2)^10000000) + 5 [should be 9.5]" .

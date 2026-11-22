@@ -1,0 +1,7 @@
+{
+  "ex:p": {
+    "@value": "v",
+    "@type": "ex:t",
+    "@direction": "rtl"
+  }
+}

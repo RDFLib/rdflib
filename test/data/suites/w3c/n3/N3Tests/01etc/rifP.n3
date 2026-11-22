@@ -1,0 +1,470 @@
+@prefix func: <http://www.w3.org/2007/rif-builtin-function#>.
+@prefix pred: <http://www.w3.org/2007/rif-builtin-predicate#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+### test cases
+# 4.1.1.1 pred:literal-not-identical
+{("chat"@fr "chien"@fr) pred:literal-not-identical true} => {:literal-not-identical-1 :result true}.
+
+# 4.4.4 pred:iri-string
+{(:case "http://eulersharp.sourceforge.net/2007/07test#case") pred:iri-string true} => {:iri-string-1 :result true}.
+
+# 4.5.1 Numeric Functions
+{(1 1) func:numeric-add 2} => {:numeric-add-1 :result true}.
+{(5 2) func:numeric-subtract 3} => {:numeric-subtract-1 :result true}.
+{(5 2) func:numeric-multiply 10} => {:numeric-multiply-1 :result true}.
+{(5 2) func:numeric-divide 2.5} => {:numeric-divide-1 :result true}.
+{(5 2) func:numeric-integer-divide 2} => {:numeric-integer-divide-1 :result true}.
+{(10 3) func:numeric-mod 1} => {:numeric-mod-1 :result true}.
+{(6 -2) func:numeric-mod 0} => {:numeric-mod-2 :result true}.
+{(4.5 1.2) func:numeric-mod 0.9000000000000004} => {:numeric-mod-3 :result true}.
+{(1.23E2 0.6E1) func:numeric-mod 3.0E0} => {:numeric-mod-4 :result true}.
+
+# 4.5.2.1 pred:numeric-equal
+{(1 1.0) pred:numeric-equal true} => {:numeric-equal-1 :result true}.
+
+# 4.5.2.2 pred:numeric-less-than
+{(2.0 3) pred:numeric-less-than true} => {:numeric-less-than-1 :result true}.
+
+# 4.5.2.3 pred:numeric-greater-than
+{(1.0 0) pred:numeric-greater-than true} => {:numeric-greater-than-1 :result true}.
+
+# 4.5.2.4 pred:numeric-not-equal
+{(1 1.01) pred:numeric-not-equal true} => {:numeric-not-equal-1 :result true}.
+
+# 4.5.2.5 pred:numeric-less-than-or-equal
+{(3 5.0) pred:numeric-less-than-or-equal true} => {:numeric-less-than-or-equal-1 :result true}.
+
+# 4.5.2.6 pred:numeric-greater-than-or-equal
+{(1.0 1) pred:numeric-greater-than-or-equal true} => {:numeric-greater-than-or-equal-1 :result true}.
+
+# 4.6.1.1 func:not
+{("false"^^xsd:boolean) func:not true} => {:not-1 :result true}.
+{(true) func:not "false"^^xsd:boolean} => {:not-2 :result true}.
+
+# 4.6.2.1 pred:boolean-equal
+{("false"^^xsd:boolean false) pred:boolean-equal true} => {:boolean-equal-1 :result true}.
+
+# 4.6.2.2 pred:boolean-less-than
+{("false"^^xsd:boolean true) pred:boolean-less-than true} => {:boolean-less-than-1 :result true}.
+
+# 4.6.2.2 pred:boolean-greater-than
+{("true"^^xsd:boolean "false"^^xsd:boolean) pred:boolean-greater-than true} => {:boolean-greater-than-1 :result true}.
+
+# 4.7.1.1 func:compare
+{("abc" "abc") func:compare 0} => {:compare-1 :result true}.
+{("Straßen" "Straße") func:compare 1} => {:compare-2 :result true}.
+
+# 4.7.1.2 func:concat
+{("Ingratitude, " "thou " "marble-hearted" " fiend!") func:concat "Ingratitude, thou marble-hearted fiend!"} => {:concat-1 :result true}.
+
+# 4.7.1.3 func:string-join
+{(("Now" "is" "the" "time" "...") " ") func:string-join "Now is the time ..."} => {:string-join-1 :result true}.
+{(("Blow, " "blow, " "thou " "winter " "wind!") "") func:string-join "Blow, blow, thou winter wind!"} => {:string-join-2 :result true}.
+{(() "separator") func:string-join ""} => {:string-join-3 :result true}.
+
+# 4.7.1.4 func:substring
+{("motor car" 6) func:substring " car"} => {:substring-1 :result true}.
+{("metadata" 4 3) func:substring "ada"} => {:substring-2 :result true}.
+{("12345" 1.5 2.6) func:substring "234"} => {:substring-3 :result true}.
+{("12345" 0 3) func:substring "12"} => {:substring-4 :result true}.
+{("12345" 5 -3) func:substring ""} => {:substring-5 :result true}.
+{("12345" -3 5) func:substring "1"} => {:substring-6 :result true}.
+
+# 4.7.1.5 func:string-length
+{("Harp not on that string, madam; that is past.") func:string-length 45} => {:string-length-1 :result true}.
+{(""@en) func:string-length 0} => {:string-length-2 :result true}.
+
+# 4.7.1.6 func:upper-case
+{("abCd0") func:upper-case "ABCD0"} => {:upper-case-1 :result true}.
+
+# 4.7.1.7 func:lower-case
+{("ABc!D") func:lower-case "abc!d"} => {:lower-case-1 :result true}.
+
+# 4.7.1.8 func:encode-for-uri
+{("00/Weather/CA/Los%20Angeles#ocean") func:encode-for-uri "00%2fWeather%2fCA%2fLos%2520Angeles%23ocean"} => {:encode-for-uri-1 :result true}.
+{("~bébé") func:encode-for-uri "~b%c3%a9b%c3%a9"} => {:encode-for-uri-2 :result true}.
+{("100% organic") func:encode-for-uri "100%25%20organic"} => {:encode-for-uri-3 :result true}.
+
+# 4.7.1.11 func:substring-before
+{("tattoo" "attoo") func:substring-before "t"} => {:substring-before-1 :result true}.
+{("tattoo" "tatto") func:substring-before ""} => {:substring-before-2 :result true}.
+
+# 4.7.1.12 func:substring-after
+{("tattoo" "tat") func:substring-after "too"} => {:substring-after-1 :result true}.
+{("tattoo" "tattoo") func:substring-after ""} => {:substring-after-2 :result true}.
+
+# 4.7.2.1 pred:contains
+{("tattoo" "t") pred:contains true} => {:contains-1 :result true}.
+
+# 4.7.2.2 pred:starts-with
+{("tattoo" "tat") pred:starts-with true} => {:starts-with-1 :result true}.
+
+# 4.7.2.3 pred:ends-with
+{("tattoo" "tattoo") pred:ends-with true} => {:ends-with-1 :result true}.
+
+# 4.7.2.4 pred:matches
+{("abracadabra" "bra") pred:matches true} => {:matches-1 :result true}.
+{("abracadabra" "^a.*a$") pred:matches true} => {:matches-2 :result true}.
+
+# 4.8.1.1 func:year-from-dateTime
+{("1999-05-31T13:20:00-05:00"^^xsd:dateTime) func:year-from-dateTime 1999} => {:year-from-dateTime-1 :result true}.
+
+# 4.8.1.2 func:month-from-dateTime
+{("1999-05-31T13:20:00-05:00"^^xsd:dateTime) func:month-from-dateTime 5} => {:month-from-dateTime-1 :result true}.
+
+# 4.8.1.3 func:day-from-dateTime
+{("1999-05-31T13:20:00-05:00"^^xsd:dateTime) func:day-from-dateTime 31} => {:day-from-dateTime-1 :result true}.
+
+# 4.8.1.4 func:hours-from-dateTime
+{("1999-05-31T13:20:00-05:00"^^xsd:dateTime) func:hours-from-dateTime 13} => {:hours-from-dateTime-1 :result true}.
+
+# 4.8.1.5 func:minutes-from-dateTime
+{("1999-05-31T13:20:00-05:00"^^xsd:dateTime) func:minutes-from-dateTime 20} => {:minutes-from-dateTime-1 :result true}.
+
+# 4.8.1.6 func:seconds-from-dateTime
+{("1999-05-31T13:20:00-05:00"^^xsd:dateTime) func:seconds-from-dateTime 0} => {:seconds-from-dateTime-1 :result true}.
+
+# 4.8.1.7 func:year-from-date
+{("1999-05-31-05:00"^^xsd:date) func:year-from-date 1999} => {:year-from-date-1 :result true}.
+
+# 4.8.1.8 func:month-from-date
+{("1999-05-31-05:00"^^xsd:date) func:month-from-date 5} => {:month-from-date-1 :result true}.
+
+# 4.8.1.9 func:day-from-date
+{("1999-05-31-05:00"^^xsd:date) func:day-from-date 31} => {:day-from-date-1 :result true}.
+
+# 4.8.1.10 func:hours-from-time
+{("13:20:00-05:00"^^xsd:time) func:hours-from-time 13} => {:hours-from-time-1 :result true}.
+
+# 4.8.1.11 func:minutes-from-time
+{("13:20:00-05:00"^^xsd:time) func:minutes-from-time 20} => {:minutes-from-time-1 :result true}.
+
+# 4.8.1.12 func:seconds-from-time
+{("13:20:00-05:00"^^xsd:time) func:seconds-from-time 0} => {:seconds-from-time-1 :result true}.
+
+# 4.8.1.13 func:years-from-duration
+{("P20Y15M"^^xsd:yearMonthDuration) func:years-from-duration 21} => {:years-from-duration-1 :result true}.
+{("-P15M"^^xsd:yearMonthDuration) func:years-from-duration -1} => {:years-from-duration-2 :result true}.
+{("-P2DT15H"^^xsd:dayTimeDuration) func:years-from-duration 0} => {:years-from-duration-3 :result true}.
+
+# 4.8.1.14 func:months-from-duration
+{("P20Y15M"^^xsd:yearMonthDuration) func:months-from-duration 3} => {:months-from-duration-1 :result true}.
+{("-P20Y18M"^^xsd:yearMonthDuration) func:months-from-duration -6} => {:months-from-duration-2 :result true}.
+{("-P2DT15H0M0S"^^xsd:dayTimeDuration) func:months-from-duration 0} => {:months-from-duration-3 :result true}.
+
+# 4.8.1.15 func:days-from-duration
+{("P3DT10H"^^xsd:dayTimeDuration) func:days-from-duration 3} => {:days-from-duration-1 :result true}.
+{("P3DT55H"^^xsd:dayTimeDuration) func:days-from-duration 5} => {:days-from-duration-2 :result true}.
+{("P3Y5M"^^xsd:yearMonthDuration) func:days-from-duration 0} => {:days-from-duration-3 :result true}.
+
+# 4.8.1.16 func:hours-from-duration
+{("P3DT10H"^^xsd:dayTimeDuration) func:hours-from-duration 10} => {:hours-from-duration-1 :result true}.
+{("P3DT12H32M12S"^^xsd:dayTimeDuration) func:hours-from-duration 12} => {:hours-from-duration-2 :result true}.
+{("PT123H"^^xsd:dayTimeDuration) func:hours-from-duration 3} => {:hours-from-duration-3 :result true}.
+{("-P3DT10H"^^xsd:dayTimeDuration) func:hours-from-duration -10} => {:hours-from-duration-4 :result true}.
+
+# 4.8.1.17 func:minutes-from-duration
+{("P3DT10H"^^xsd:dayTimeDuration) func:minutes-from-duration 0} => {:minutes-from-duration-1 :result true}.
+{("-P5DT12H30M"^^xsd:dayTimeDuration) func:minutes-from-duration -30} => {:minutes-from-duration-2 :result true}.
+
+# 4.8.1.18 func:seconds-from-duration
+{("P3DT10H12.5S"^^xsd:dayTimeDuration) func:seconds-from-duration 12.5} => {:seconds-from-duration-1 :result true}.
+{("-PT256S"^^xsd:dayTimeDuration) func:seconds-from-duration -16.0} => {:seconds-from-duration-2 :result true}.
+
+# 4.8.1.19 func:timezone-from-dateTime
+{("1999-05-31T13:20:00-05:00"^^xsd:dateTime) func:timezone-from-dateTime "-PT5H"^^xsd:dayTimeDuration} => {:timezone-from-dateTime-1 :result true}.
+{("2000-06-12T13:20:00Z"^^xsd:dateTime) func:timezone-from-dateTime "PT0S"^^xsd:dayTimeDuration} => {:timezone-from-dateTime-2 :result true}.
+
+# 4.8.1.20 func:timezone-from-date
+{("1999-05-31-05:00"^^xsd:date) func:timezone-from-date "-PT5H"^^xsd:dayTimeDuration} => {:timezone-from-date-1 :result true}.
+{("2000-06-12Z"^^xsd:date) func:timezone-from-date "PT0S"^^xsd:dayTimeDuration} => {:timezone-from-date-2 :result true}.
+
+# 4.8.1.21 func:timezone-from-time
+{("13:20:00-05:00"^^xsd:time) func:timezone-from-time "-PT5H"^^xsd:dayTimeDuration} => {:timezone-from-time-1 :result true}.
+{("13:20:00Z"^^xsd:time) func:timezone-from-time "PT0S"^^xsd:dayTimeDuration} => {:timezone-from-time-2 :result true}.
+
+# 4.8.1.22 func:subtract-dateTimes
+{("2000-10-30T06:12:00-05:00"^^xsd:dateTime "1999-11-28T09:00:00Z"^^xsd:dateTime) func:subtract-dateTimes "P337DT2H12M"^^xsd:dayTimeDuration} => {:subtract-dateTimes-1 :result true}.
+
+# 4.8.1.23 func:subtract-dates
+{("2000-10-30Z"^^xsd:date "1999-11-28Z"^^xsd:date) func:subtract-dates "P337D"^^xsd:dayTimeDuration} => {:subtract-dates-1 :result true}.
+
+# 4.8.1.24 func:subtract-times
+{("11:12:00Z"^^xsd:time "04:00:00-05:00"^^xsd:time) func:subtract-times "PT2H12M"^^xsd:dayTimeDuration} => {:subtract-times-1 :result true}.
+{("11:00:00-05:00"^^xsd:time "21:30:00+05:30"^^xsd:time) func:subtract-times "PT0S"^^xsd:dayTimeDuration} => {:subtract-times-2 :result true}.
+{("17:00:00-06:00"^^xsd:time "08:00:00+09:00"^^xsd:time) func:subtract-times "P1D"^^xsd:dayTimeDuration} => {:subtract-times-3 :result true}.
+{("24:00:00"^^xsd:time "23:59:59"^^xsd:time) func:subtract-times "-PT23H59M59S"^^xsd:dayTimeDuration} => {:subtract-times-4 :result true}.
+
+# 4.8.1.25 func:add-yearMonthDurations
+{("P2Y11M"^^xsd:yearMonthDuration "P3Y3M"^^xsd:yearMonthDuration) func:add-yearMonthDurations "P6Y2M"^^xsd:yearMonthDuration} => {:add-yearMonthDurations-1 :result true}.
+
+# 4.8.1.26 func:subtract-yearMonthDurations
+{("P2Y11M"^^xsd:yearMonthDuration "P3Y3M"^^xsd:yearMonthDuration) func:subtract-yearMonthDurations "-P4M"^^xsd:yearMonthDuration} => {:subtract-yearMonthDurations-1 :result true}.
+
+# 4.8.1.27 func:multiply-yearMonthDuration
+{("P2Y11M"^^xsd:yearMonthDuration 2.3) func:multiply-yearMonthDuration "P6Y9M"^^xsd:yearMonthDuration} => {:multiply-yearMonthDuration-1 :result true}.
+
+# 4.8.1.28 func:divide-yearMonthDuration
+{("P2Y11M"^^xsd:yearMonthDuration 1.5) func:divide-yearMonthDuration "P1Y11M"^^xsd:yearMonthDuration} => {:divide-yearMonthDuration-1 :result true}.
+
+# 4.8.1.29 func:divide-yearMonthDuration-by-yearMonthDuration
+{("P3Y4M"^^xsd:yearMonthDuration "-P1Y4M"^^xsd:yearMonthDuration) func:divide-yearMonthDuration-by-yearMonthDuration -2.5} => {:divide-yearMonthDuration-by-yearMonthDuration-1 :result true}.
+
+# 4.8.1.30 func:add-dayTimeDurations
+{("P2DT12H5M"^^xsd:dayTimeDuration "P5DT12H"^^xsd:dayTimeDuration) func:add-dayTimeDurations "P8DT5M"^^xsd:dayTimeDuration} => {:add-dayTimeDurations-1 :result true}.
+
+# 4.8.1.31 func:subtract-dayTimeDurations
+{("P2DT12H"^^xsd:dayTimeDuration "P1DT10H30M"^^xsd:dayTimeDuration) func:subtract-dayTimeDurations "P1DT1H30M"^^xsd:dayTimeDuration} => {:subtract-dayTimeDurations-1 :result true}.
+
+# 4.8.1.32 func:multiply-dayTimeDuration
+{("PT2H10M"^^xsd:dayTimeDuration 2.1) func:multiply-dayTimeDuration "PT4H33M"^^xsd:dayTimeDuration} => {:multiply-dayTimeDuration-1 :result true}.
+
+# 4.8.1.33 func:divide-dayTimeDuration
+{("P1DT2H30M10.5S"^^xsd:dayTimeDuration 1.5) func:divide-dayTimeDuration "PT17H40M7S"^^xsd:dayTimeDuration} => {:divide-dayTimeDuration-1 :result true}.
+
+# 4.8.1.34 func:divide-dayTimeDuration-by-dayTimeDuration
+{("PT4H33M"^^xsd:dayTimeDuration "PT2H10M"^^xsd:dayTimeDuration) func:divide-dayTimeDuration-by-dayTimeDuration 2.1} => {:divide-dayTimeDuration-by-dayTimeDuration-1 :result true}.
+
+# 4.8.1.35 func:add-yearMonthDuration-to-dateTime
+{("2000-10-30T11:12:00Z"^^xsd:dateTime "P1Y2M"^^xsd:yearMonthDuration) func:add-yearMonthDuration-to-dateTime "2001-12-30T11:12:00Z"^^xsd:dateTime} => {:add-yearMonthDuration-to-dateTime-1 :result true}.
+
+# 4.8.1.36 func:add-yearMonthDuration-to-date
+{("2000-10-30Z"^^xsd:date "P1Y2M"^^xsd:yearMonthDuration) func:add-yearMonthDuration-to-date "2001-12-30Z"^^xsd:date} => {:add-yearMonthDuration-to-date-1 :result true}.
+
+# 4.8.1.37 func:add-dayTimeDuration-to-dateTime
+{("2000-10-30T11:12:00Z"^^xsd:dateTime "P3DT1H15M"^^xsd:dayTimeDuration) func:add-dayTimeDuration-to-dateTime "2000-11-02T12:27:00Z"^^xsd:dateTime} => {:add-dayTimeDuration-to-dateTime-1 :result true}.
+
+# 4.8.1.38 func:add-dayTimeDuration-to-date
+{("2004-10-30Z"^^xsd:date "P2DT2H30M0S"^^xsd:dayTimeDuration) func:add-dayTimeDuration-to-date "2004-11-01Z"^^xsd:date} => {:add-dayTimeDuration-to-date-1 :result true}.
+
+# 4.8.1.39 func:add-dayTimeDuration-to-time
+{("11:12:00Z"^^xsd:time "P3DT1H15M"^^xsd:dayTimeDuration) func:add-dayTimeDuration-to-time "12:27:00Z"^^xsd:time} => {:add-dayTimeDuration-to-time-1 :result true}.
+
+# 4.8.1.40 func:subtract-yearMonthDuration-from-dateTime
+{("2000-10-30T11:12:00Z"^^xsd:dateTime "P1Y2M"^^xsd:yearMonthDuration) func:subtract-yearMonthDuration-from-dateTime "1999-08-30T11:12:00Z"^^xsd:dateTime} => {:subtract-yearMonthDuration-from-dateTime-1 :result true}.
+
+# 4.8.1.41 func:subtract-yearMonthDuration-from-date
+{("2000-10-30Z"^^xsd:date "P1Y2M"^^xsd:yearMonthDuration) func:subtract-yearMonthDuration-from-date "1999-08-30Z"^^xsd:date} => {:subtract-yearMonthDuration-from-date-1 :result true}.
+
+# 4.8.1.42 func:subtract-dayTimeDuration-from-dateTime
+{("2000-10-30T11:12:00Z"^^xsd:dateTime "P3DT1H15M"^^xsd:dayTimeDuration) func:subtract-dayTimeDuration-from-dateTime "2000-10-27T09:57:00Z"^^xsd:dateTime} => {:subtract-dayTimeDuration-from-dateTime-1 :result true}.
+
+# 4.8.1.43 func:subtract-dayTimeDuration-from-date
+{("2000-10-30Z"^^xsd:date "P3DT1H15M"^^xsd:dayTimeDuration) func:subtract-dayTimeDuration-from-date "2000-10-26Z"^^xsd:date} => {:subtract-dayTimeDuration-from-date-1 :result true}.
+
+# 4.8.1.44 func:subtract-dayTimeDuration-from-time
+{("11:12:00Z"^^xsd:time "P3DT1H15M"^^xsd:dayTimeDuration) func:subtract-dayTimeDuration-from-time "09:57:00Z"^^xsd:time} => {:subtract-dayTimeDuration-from-time-1 :result true}.
+{("08:20:00-05:00"^^xsd:time "P23DT10H10M"^^xsd:dayTimeDuration) func:subtract-dayTimeDuration-from-time "22:10:00-05:00"^^xsd:time} => {:subtract-dayTimeDuration-from-time-2 :result true}.
+
+# 4.8.2.1 pred:dateTime-equal
+{("2002-04-02T12:00:00-01:00"^^xsd:dateTime "2002-04-02T17:00:00+04:00"^^xsd:dateTime) pred:dateTime-equal true} => {:dateTime-equal-1 :result true}.
+{("2002-04-02T12:00:00-05:00"^^xsd:dateTime "2002-04-02T23:00:00+06:00"^^xsd:dateTime) pred:dateTime-equal true} => {:dateTime-equal-2 :result true}.
+{("2002-04-02T12:00:00-05:00"^^xsd:dateTime "2002-04-02T17:00:00-05:00"^^xsd:dateTime) pred:dateTime-equal false} => {:dateTime-equal-3 :result true}.
+{("2002-04-02T12:00:00-05:00"^^xsd:dateTime "2002-04-02T12:00:00-05:00"^^xsd:dateTime) pred:dateTime-equal true} => {:dateTime-equal-4 :result true}.
+{("2002-04-02T23:00:00-04:00"^^xsd:dateTime "2002-04-03T02:00:00-01:00"^^xsd:dateTime) pred:dateTime-equal true} => {:dateTime-equal-5 :result true}.
+{("1999-12-31T24:00:00-05:00"^^xsd:dateTime "2000-01-01T00:00:00-05:00"^^xsd:dateTime) pred:dateTime-equal true} => {:dateTime-equal-6 :result true}.
+{("2005-04-04T24:00:00-05:00"^^xsd:dateTime "2005-04-04T00:00:00-05:00"^^xsd:dateTime) pred:dateTime-equal false} => {:dateTime-equal-7 :result true}.
+
+# 4.8.2.2 pred:dateTime-less-than
+{("2002-04-02T12:00:00-01:00"^^xsd:dateTime "2010-04-02T17:00:00+04:00"^^xsd:dateTime) pred:dateTime-less-than true} => {:dateTime-less-than-1 :result true}.
+
+# 4.8.2.3 pred:dateTime-greater-than
+{("2010-04-02T12:00:00-01:00"^^xsd:dateTime "2002-04-02T17:00:00+04:00"^^xsd:dateTime) pred:dateTime-greater-than true} => {:dateTime-greater-than-1 :result true}.
+
+# 4.8.2.4 pred:date-equal
+{("2004-12-25Z"^^xsd:date "2004-12-25+07:00"^^xsd:date) pred:date-equal false} => {:date-equal-1 :result true}.
+{("2004-12-25-12:00"^^xsd:date "2004-12-26+12:00"^^xsd:date) pred:date-equal true} => {:date-equal-2 :result true}.
+
+# 4.8.2.5 pred:date-less-than
+{("2004-12-25Z"^^xsd:date "2004-12-25-05:00"^^xsd:date) pred:date-less-than true} => {:date-less-than-1 :result true}.
+{("2004-12-25-12:00"^^xsd:date "2004-12-26+12:00"^^xsd:date) pred:date-less-than false} => {:date-less-than-2 :result true}.
+
+# 4.8.2.6 pred:date-greater-than
+{("2004-12-25Z"^^xsd:date "2004-12-25+07:00"^^xsd:date) pred:date-greater-than true} => {:date-greater-than-1 :result true}.
+{("2004-12-25-12:00"^^xsd:date "2004-12-26+12:00"^^xsd:date) pred:date-greater-than false} => {:date-greater-than-2 :result true}.
+
+# 4.8.2.7 pred:time-equal
+{("08:00:00+09:00"^^xsd:time "17:00:00-06:00"^^xsd:time) pred:time-equal false} => {:time-equal-1 :result true}.
+{("21:30:00+10:30"^^xsd:time "06:00:00-05:00"^^xsd:time) pred:time-equal true} => {:time-equal-2 :result true}.
+{("24:00:00+01:00"^^xsd:time "00:00:00+01:00"^^xsd:time) pred:time-equal true} => {:time-equal-3 :result true}.
+
+# 4.8.2.8 pred:time-less-than
+{("12:00:00-05:00"^^xsd:time "23:00:00+06:00"^^xsd:time) pred:time-less-than false} => {:time-less-than-1 :result true}.
+{("11:00:00-05:00"^^xsd:time "17:00:00Z"^^xsd:time) pred:time-less-than true} => {:time-less-than-2 :result true}.
+{("23:59:59-05:00"^^xsd:time "24:00:00-05:00"^^xsd:time) pred:time-less-than false} => {:time-less-than-3 :result true}.
+
+# 4.8.2.9 pred:time-greater-than
+{("08:00:00+09:00"^^xsd:time "17:00:00-06:00"^^xsd:time) pred:time-greater-than false} => {:time-greater-than-1 :result true}.
+
+# 4.8.2.10 pred:duration-equal
+{("P1Y"^^xsd:duration "P12M"^^xsd:duration) pred:duration-equal true} => {:duration-equal-1 :result true}.
+{("PT24H"^^xsd:duration "P1D"^^xsd:duration) pred:duration-equal true} => {:duration-equal-2 :result true}.
+{("P1Y"^^xsd:duration "P365D"^^xsd:duration) pred:duration-equal false} => {:duration-equal-3 :result true}.
+{("P2Y0M0DT0H0M0S"^^xsd:duration "P24M"^^xsd:duration) pred:duration-equal true} => {:duration-equal-4 :result true}.
+
+# 4.8.2.11 pred:dayTimeDuration-less-than
+{("P1DT1M"^^xsd:dayTimeDuration "P3DT1H15M"^^xsd:dayTimeDuration) pred:dayTimeDuration-less-than true} => {:dayTimeDuration-less-than-1 :result true}.
+
+# 4.8.2.12 pred:dayTimeDuration-greater-than
+{("P1DT1M"^^xsd:dayTimeDuration "P3DT1H15M"^^xsd:dayTimeDuration) pred:dayTimeDuration-greater-than false} => {:dayTimeDuration-greater-than-1 :result true}.
+
+# 4.8.2.13 pred:yearMonthDuration-less-than
+{("P1Y1M"^^xsd:yearMonthDuration "P3Y"^^xsd:yearMonthDuration) pred:yearMonthDuration-less-than true} => {:yearMonthDuration-less-than-1 :result true}.
+
+# 4.8.2.14 pred:yearMonthDuration-greater-than
+{("P1Y1M"^^xsd:yearMonthDuration "P3Y"^^xsd:yearMonthDuration) pred:yearMonthDuration-greater-than false} => {:yearMonthDuration-greater-than-1 :result true}.
+
+# 4.8.2.15 pred:dateTime-not-equal
+{("2002-04-02T12:00:00-01:00"^^xsd:dateTime "2002-04-02T17:00:00+04:00"^^xsd:dateTime) pred:dateTime-not-equal false} => {:dateTime-not-equal-1 :result true}.
+
+# 4.8.2.16 pred:dateTime-less-than-or-equal
+{("2002-04-02T12:00:00-01:00"^^xsd:dateTime "2002-04-02T17:00:00+04:00"^^xsd:dateTime) pred:dateTime-less-than-or-equal true} => {:dateTime-less-than-or-equal-1 :result true}.
+
+# 4.8.2.17 pred:dateTime-greater-than-or-equal
+{("2010-04-02T12:00:00-01:00"^^xsd:dateTime "2010-04-02T17:00:00+04:00"^^xsd:dateTime) pred:dateTime-greater-than-or-equal true} => {:dateTime-greater-than-or-equal-1 :result true}.
+
+# 4.8.2.18 pred:date-not-equal
+{("2004-12-25Z"^^xsd:date "2004-12-25+07:00"^^xsd:date) pred:date-not-equal true} => {:date-not-equal-1 :result true}.
+
+# 4.8.2.19 pred:date-less-than-or-equal
+{("2004-12-25Z"^^xsd:date "2004-12-25+07:00"^^xsd:date) pred:date-less-than-or-equal false} => {:date-less-than-or-equal-1 :result true}.
+
+# 4.8.2.20 pred:date-greater-than-or-equal
+{("2004-12-25Z"^^xsd:date "2004-12-25+07:00"^^xsd:date) pred:date-greater-than-or-equal true} => {:date-greater-than-or-equal-1 :result true}.
+
+# 4.8.2.21 pred:time-not-equal
+{("08:00:00+09:00"^^xsd:time "17:00:00-06:00"^^xsd:time) pred:time-not-equal true} => {:time-not-equal-1 :result true}.
+
+# 4.8.2.22 pred:time-less-than-or-equal
+{("08:00:00+09:00"^^xsd:time "17:00:00-06:00"^^xsd:time) pred:time-less-than-or-equal true} => {:time-less-than-or-equal-1 :result true}.
+
+# 4.8.2.23 pred:time-greater-than-or-equal
+{("08:00:00+09:00"^^xsd:time "17:00:00-06:00"^^xsd:time) pred:time-greater-than-or-equal false} => {:time-greater-than-or-equal-1 :result true}.
+
+# 4.8.2.24 pred:duration-not-equal
+{("P1Y"^^xsd:duration "P12M"^^xsd:duration) pred:duration-not-equal false} => {:duration-not-equal-1 :result true}.
+
+# 4.8.2.25 pred:dayTimeDuration-less-than-or-equal
+{("P1DT1M"^^xsd:dayTimeDuration "P3DT1H15M"^^xsd:dayTimeDuration) pred:dayTimeDuration-less-than-or-equal true} => {:dayTimeDuration-less-than-or-equal-1 :result true}.
+
+# 4.8.2.26 pred:dayTimeDuration-greater-than-or-equal
+{("P1DT1M"^^xsd:dayTimeDuration "P3DT1H15M"^^xsd:dayTimeDuration) pred:dayTimeDuration-greater-than-or-equal false} => {:dayTimeDuration-greater-than-or-equal-1 :result true}.
+
+# 4.8.2.27 pred:yearMonthDuration-less-than-or-equal
+{("P1Y1M"^^xsd:yearMonthDuration "P3Y"^^xsd:yearMonthDuration) pred:yearMonthDuration-less-than-or-equal true} => {:yearMonthDuration-less-than-or-equal-1 :result true}.
+
+# 4.8.2.28 pred:yearMonthDuration-greater-than-or-equal
+{("P1Y1M"^^xsd:yearMonthDuration "P3Y"^^xsd:yearMonthDuration) pred:yearMonthDuration-greater-than-or-equal false} => {:yearMonthDuration-greater-than-or-equal-1 :result true}.
+
+# 4.10.1.1 func:PlainLiteral-from-string-lang
+{("Family Guy") func:PlainLiteral-from-string-lang "Family Guy"} => {:PlainLiteral-from-string-lang-1 :result true}.
+{("Family Guy" "EN") func:PlainLiteral-from-string-lang "Family Guy"@en} => {:PlainLiteral-from-string-lang-2 :result true}.
+
+# 4.10.1.2 func:string-from-PlainLiteral
+{("Family Guy") func:string-from-PlainLiteral "Family Guy"} => {:string-from-PlainLiteral-1 :result true}.
+{("Family Guy"@en) func:string-from-PlainLiteral "Family Guy"} => {:string-from-PlainLiteral-2 :result true}.
+
+# 4.10.1.3 func:lang-from-PlainLiteral
+{("Family Guy") func:lang-from-PlainLiteral ""} => {:lang-from-PlainLiteral-1 :result true}.
+{("Family Guy"@en) func:lang-from-PlainLiteral "en"} => {:lang-from-PlainLiteral-2 :result true}.
+
+# 4.10.1.4 func:PlainLiteral-compare
+{("Family Guy" "Mother") func:PlainLiteral-compare -1} => {:PlainLiteral-compare-1 :result true}.
+{("Family Guy"@en "Brother"@en) func:PlainLiteral-compare 1} => {:PlainLiteral-compare-2 :result true}.
+
+# 4.10.1.5 func:PlainLiteral-length
+{("Family Guy") func:PlainLiteral-length 10} => {:PlainLiteral-length-1 :result true}.
+{("Family Guy"@en) func:PlainLiteral-length 10} => {:PlainLiteral-length-2 :result true}.
+
+# 4.10.2.1 pred:matches-language-range
+{("Family Guy"@en "en") pred:matches-language-range true} => {:matches-language-range-1 :result true}.
+{("Family Guy"@en-US "en-*") pred:matches-language-range true} => {:matches-language-range-2 :result true}.
+
+# 4.11.3.1 pred:is-list
+{((:a :b :c :d)) pred:is-list true} => {:is-list-1 :result true}.
+
+# 4.11.3.2 pred:list-contains
+{((:a :b :c :d) :b) pred:list-contains true} => {:list-contains-1 :result true}.
+
+# 4.11.4.1 func:make-list
+{(:a :b :c :d) func:make-list (:a :b :c :d)} => {:make-list-1 :result true}.
+
+# 4.11.4.2 func:count
+{((:a :b :c :d)) func:count 4} => {:count-1 :result true}.
+
+# 4.11.4.3 func:get
+{((:a :b :c :d) 3) func:get :d} => {:get-1 :result true}.
+
+# 4.11.4.4 func:sublist
+{((0 1 2 3 4) 0 0) func:sublist ()} => {:sublist-1 :result true}.
+{((0 1 2 3 4) 0 1) func:sublist (0)} => {:sublist-2 :result true}.
+{((0 1 2 3 4) 0 4) func:sublist (0 1 2 3)} => {:sublist-3 :result true}.
+{((0 1 2 3 4) 0 5) func:sublist (0 1 2 3 4)} => {:sublist-4 :result true}.
+{((0 1 2 3 4) 0 10) func:sublist (0 1 2 3 4)} => {:sublist-5 :result true}.
+{((0 1 2 3 4) 0 -2) func:sublist (0 1 2)} => {:sublist-6 :result true}.
+{((0 1 2 3 4) 2 4) func:sublist (2 3)} => {:sublist-7 :result true}.
+{((0 1 2 3 4) 2 -2) func:sublist (2)} => {:sublist-9 :result true}.
+{((0 1 2 3 4) 0) func:sublist (0 1 2 3 4)} => {:sublist-9 :result true}.
+{((0 1 2 3 4) 3) func:sublist (3 4)} => {:sublist-10 :result true}.
+{((0 1 2 3 4) -2) func:sublist (3 4)} => {:sublist-11 :result true}.
+
+# 4.11.4.5 func:append
+{((0 1 2) 3) func:append (0 1 2 3)} => {:append-1 :result true}.
+{((0 1 2) 3 4) func:append (0 1 2 3 4)} => {:append-2 :result true}.
+{((1 1) (1) (1) ((1))) func:append (1 1 (1) (1) ((1)))} => {:append-3 :result true}.
+{(() 1) func:append (1)} => {:append-4 :result true}.
+
+# 4.11.4.6 func:concatenate
+{((0 1 2) (3 4 5)) func:concatenate (0 1 2 3 4 5)} => {:concatenate-1 :result true}.
+{((1 1) (1) (1)) func:concatenate (1 1 1 1)} => {:concatenate-2 :result true}.
+{(()) func:concatenate ()} => {:concatenate-3 :result true}.
+{(() (1) () (2) ((3))) func:concatenate (1 2 (3))} => {:concatenate-4 :result true}.
+
+# 4.11.4.7 func:insert-before
+{((0 1 2 3 4) 0 99) func:insert-before (99 0 1 2 3 4)} => {:insert-before-1 :result true}.
+{((0 1 2 3 4) 1 99) func:insert-before (0 99 1 2 3 4)} => {:insert-before-2 :result true}.
+{((0 1 2 3 4) -1 99) func:insert-before (0 1 2 3 99 4)} => {:insert-before-3 :result true}.
+{((0 1 2 3 4) -5 99) func:insert-before (99 0 1 2 3 4)} => {:insert-before-4 :result true}.
+
+# 4.11.4.8 func:remove
+{((0 1 2 3 4) 0) func:remove (1 2 3 4)} => {:remove-1 :result true}.
+{((0 1 2 3 4) 1) func:remove (0 2 3 4)} => {:remove-2 :result true}.
+{((0 1 2 3 4) 4) func:remove (0 1 2 3)} => {:remove-3 :result true}.
+{((0 1 2 3 4) -1) func:remove (0 1 2 3)} => {:remove-4 :result true}.
+{((0 1 2 3 4) -5) func:remove (1 2 3 4)} => {:remove-5 :result true}.
+
+# 4.11.4.9 func:reverse
+{((0 1 2 3 4)) func:reverse (4 3 2 1 0)} => {:reverse-1 :result true}.
+{((1)) func:reverse (1)} => {:reverse-2 :result true}.
+{(()) func:reverse ()} => {:reverse-3 :result true}.
+
+# 4.11.4.10 func:index-of
+{((0 1 2 3 4) 2) func:index-of (2)} => {:index-of-1 :result true}.
+{((0 1 2 3 4 5 2 2) 2) func:index-of (2 6 7)} => {:index-of-2 :result true}.
+{((2 2 3 4 5 2 2) 2) func:index-of (0 1 5 6)} => {:index-of-3 :result true}.
+{((2 2 3 4 5 2 2) 1) func:index-of ()} => {:index-of-4 :result true}.
+
+# 4.11.4.11 func:union
+{((0 1 2 4) (3 4 5 6)) func:union (0 1 2 4 3 5 6)} => {:union-1 :result true}.
+{((0 1 2 3) (4)) func:union (0 1 2 3 4)} => {:union-2 :result true}.
+{((0 1 2 3) (3)) func:union (0 1 2 3)} => {:union-3 :result true}.
+{((0 2 1 0)) func:union (0 2 1)} => {:union-4 :result true}.
+
+# 4.11.4.12 func:distinct-values
+{((0 1 2 3 4)) func:distinct-values (0 1 2 3 4)} => {:distinct-values-1 :result true}.
+{((0 1 2 3 4 0 4)) func:distinct-values (0 1 2 3 4)} => {:distinct-values-2 :result true}.
+{((3 3 3)) func:distinct-values (3)} => {:distinct-values-3 :result true}.
+
+# 4.11.4.13 func:intersect
+{((0 1 2 3 4) (1 3)) func:intersect (1 3)} => {:intersect-1 :result true}.
+{((0 1 2 3 4) (3 1)) func:intersect (1 3)} => {:intersect-2 :result true}.
+{((0 1 2 3 4) ()) func:intersect ()} => {:intersect-3 :result true}.
+{((0 1 2 3 4) (0 1 2 3 4 5 6)) func:intersect (0 1 2 3 4)} => {:intersect-4 :result true}.
+
+# 4.11.4.14 func:except
+{((0 1 2 3 4) (1 3)) func:except (0 2 4)} => {:except-1 :result true}.
+{((0 1 2 3 4) ()) func:except (0 1 2 3 4)} => {:except-2 :result true}.
+{((0 1 2 3 4) (0 1 2 3 4)) func:except ()} => {:except-3 :result true}.

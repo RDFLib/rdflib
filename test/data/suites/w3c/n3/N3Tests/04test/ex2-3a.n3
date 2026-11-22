@@ -1,0 +1,6 @@
+# $Id: ex2-3a.n3 436 2004-12-19 22:40:26Z josd $
+
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+
+_:a  foaf:name   "Johnny Lee Outlaw" .
+_:a  foaf:mbox   <mailto:jlow@example.com> .

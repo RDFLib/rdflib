@@ -1,0 +1,9 @@
+[{
+  "http://example.org/p1": [{"@value": "v1"}],
+  "http://example.org/p2": [
+    {"@value": "v2"},
+    {"@value": "v3"},
+    {"@value": "v4"},
+    {"@value": "v5"}
+  ]
+}]

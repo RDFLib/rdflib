@@ -1,0 +1,206 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix s: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# owl pD* per ter Horst's paper, with some wrinkles
+
+#
+# H.J. ter Horst, Completeness, Decidability and Complexity of Entailment for RDF
+# Schema and a Semantic Extension Involving the OWL Vocabulary, Revised and
+# extended version of [11], Journal of Web Semantics 3 (2005) 79-115.
+# http://www.websemanticsjournal.org/ps/pub/2005-15
+
+### Axioms
+
+owl:FunctionalProperty s:subClassOf rdf:Property .
+owl:InverseFunctionalProperty s:subClassOf rdf:Property .
+owl:SymmetricProperty s:subClassOf rdf:Property .
+owl:TransitiveProperty s:subClassOf rdf:Property .
+owl:sameAs a rdf:Property .
+owl:inverseOf a rdf:Property ;
+ s:domain rdf:Property;
+ s:range rdf:Property .
+owl:equivalentClass a rdf:Property ;
+ s:domain s:Class ;
+ s:range s:Class .
+owl:equivalentProperty a rdf:Property ;
+ s:domain rdf:Property ;
+ s:range rdf:Property .
+owl:Restriction s:subClassOf s:Class .
+owl:onProperty s:domain owl:Restriction ;
+ s:range rdf:Property .
+owl:hasValue s:domain owl:Restriction .
+owl:someValuesFrom s:domain owl:Restriction ;
+ s:range s:Class .
+owl:allValuesFrom s:domain owl:Restriction ;
+ s:range s:Class .
+owl:differentFrom a rdf:Property.
+owl:disjointWith s:domain s:Class ; 
+ s:range s:Class . 
+
+###
+
+owl:complementOf s:subPropertyOf owl:disjointWith.
+
+# p-clash
+#{ ?v owl:differentFrom ?w; owl:sameAs ?w } => { (?v ?w) a Pclash }.
+
+#{ ?v owl:disjointWith ?w.
+#  ?u rdf:type ?v.
+#  ?u rdf:type ?w } => { (?v ?w ?u) a Pclash }.
+
+#hmm... why not just ?w owl:differentFrom ?w ?
+# along with: { ?v owl:sameAs ?w. ?v ?p ?x } => { ?w ?p ?x }.
+# and:
+{ ?u is rdf:type of ?x. ?u owl:disjointWith ?v. ?v is rdf:type of ?y }
+   => { ?x owl:differentFrom ?y }.
+owl:disjointWith a owl:SymmetricProperty.
+owl:differentFrom a owl:SymmetricProperty.
+
+
+# rdfp1
+{ ?p a owl:FunctionalProperty.
+  ?u ?p ?v.
+  ?u ?p ?w.
+} => { ?v = ?w }.
+
+# rdfp2
+{ ?p a owl:InverseFunctionalProperty.
+  ?u ?p ?w.
+  ?v ?p ?w.
+} => { ?u = ?v }.
+
+# rdfp3
+{ ?p a owl:SymmetricProperty.
+  ?v ?p ?w
+} => { ?w ?p ?v }.
+  
+# rdfp4
+{ ?p a owl:TransitiveProperty.
+  ?u ?p ?v. ?v ?p ?w
+} => { ?u ?p ?w }.
+
+# rdfp5a
+# @@ cwm won't fire these
+#{ ?v ?p ?w } => { ?v = ?v }.
+# rdfp5b
+#{ ?v ?p ?w } => { ?w = ?w }.
+
+#rdfp6
+# hmm... why not...
+owl:sameAs a owl:SymmetricProperty.
+#{ ?v = ?w } => { ?w = ?v }.
+
+
+# rdfp7
+owl:sameAs a owl:TransitiveProperty.
+# { ?u = [ = ?w ] } => { ?u = ?w }.
+
+#rdfp8ax
+{ ?v ?p ?w. ?p owl:inverseOf ?q } => { ?w ?q ?v}.
+#rdfp8bx
+{ ?v ?q ?w. ?q is owl:inverseOf of ?p } => { ?w ?p ?v}.
+
+# rdfp9
+{ ?v a s:Class.
+  ?v = ?w } => { ?v s:subClassOf ?w }.
+
+#rdfp10
+{ ?p a rdf:Property.
+  ?p = ?q } => { ?p s:subPropertyOf ?q }.
+
+#rdfp11
+# nifty... rather than 2 rules, exploit
+# that = is reflexive...
+#{ ?u ?p ?v.
+#  ?u = ?uu.
+#  ?v = ?vv
+#} => { ?uu ?p ?vv }.
+# but cwm won't find many of the reflexive formulas.
+{ ?u = ?uu. ?u ?p ?v. } => { ?uu ?p ?v }.
+{ ?u ?p ?v. ?v = ?vv } => { ?u ?p ?vv }.
+
+#rdfp12a,b summarized
+owl:equivalentClass a owl:SymmetricProperty;
+  s:subPropertyOf s:subClassOf.
+
+#rdfp12c
+{ ?v s:subClassOf ?w.
+  ?w s:subClassOf ?v
+} => { ?v owl:equivalentClass ?w }.
+
+#rdfp13a,b summarized
+owl:equivalentProperty a owl:SymmetricProperty;
+  s:subPropertyOf s:subPropertyOf.
+
+#rdf14bx
+{ ?v owl:hasValue ?w.
+  ?v owl:onProperty ?p.
+  ?u ?p ?w.
+} => { ?u a ?v }.
+
+#rdf15
+{ ?v owl:someValuesFrom ?w.
+  ?v owl:onProperty ?p.
+  ?u ?p ?o. ?o a ?w.
+} => { ?u a ?v }.
+
+#rdfp16
+{ ?u a ?r. ?r owl:allValuesFrom ?w; owl:onProperty ?p.
+  ?u ?p ?x.
+} => { ?x a ?w }.
+
+
+
+#########
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+
+# if x is in the intersection of of c1...cn, then it's in c1...cn
+{ ?x a ?u. ?u owl:intersectionOf ?v. ?v list:member ?C } => { ?x a ?C }.
+
+{
+# if x is in all of c1...cn, then it's in their intersection
+# Since we don't have a comprehension axiom for intersections,
+# we'll induct over lists...
+{ ?X list:_inall ?L. ?C owl:intersectionOf ?L } => { ?X a ?C }.
+{ ?X a ?Y } => { ?X list:_inall () }.
+{
+  ?L rdf:first ?C1; rdf:rest ?R.
+  ?X a ?C1; list:_inall ?R.
+} => { ?X list:_inall ?L }.
+} a list:_Broken.
+
+#@@special case for 2:
+{ ?CL owl:intersectionOf (?C1 ?C2). ?X a ?C1, ?C2 } => { ?X a ?CL }.
+
+# "It can be expressed that the union of the classes c1, . . . , cn
+# is contained in a class c by saying that each class cj is a subclass of c. "
+# Inductively...
+{ ?C1 s:subClassOf ?C.
+  ?X owl:unionOf ?R; s:subClassOf ?C.
+  ?L rdf:first ?C1; rdf:rest ?R.
+  ?C3 owl:unionOf ?L
+} => { ?C3 s:subClassOf ?C }.
+{ ?C3 owl:unionOf (). ?C a s:Class } => { ?C3 s:subClassOf ?C }.
+
+# if x is in any of c1...cn, then it's in their union
+{ ?C owl:unionOf ?u. ?u list:member ?v. ?v is rdf:type of ?x } => { ?x a ?C }.
+
+
+
+# rdf-svx
+#{ ?u a [ owl:someValuesFrom ?w; owl:onProperty ?p ]
+#} => { ?u ?p [ a ?w ] }.
+
+
+{ ?C owl:minCardinality 1; owl:onProperty ?P.
+  ?X ?P ?Y } => { ?X a ?C }.
+{ ?C owl:cardinality 1; owl:onProperty ?P.
+  ?X ?P ?Y } => { ?X a ?C }.
+
+{ ?x a ?r. ?r owl:onProperty ?p; owl:maxCardinality 1. ?x ?p ?v1, ?v2 }
+ => { ?v1 = ?v2 }.
+
+{ ?C owl:onProperty ?p; owl:minCardinality 1.
+  ?x ?p ?y. }
+ => { ?x a ?C }.

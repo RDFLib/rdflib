@@ -1,0 +1,7 @@
+# test: eye --quick http://eulersharp.sourceforge.net/2007/07test/shubert.n3 --query http://eulersharp.sourceforge.net/2007/07test/shubertQ.n3 > shubertE.n3
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2006/02swap/steamroller#>.
+
+{?X a :Animal. ?Y a :Animal. ?X :eats ?Y. ?Z a :Grain. ?Y :eats ?Z} => {?X a :Animal. ?Y a :Animal. ?X :eats ?Y. ?Z a :Grain. ?Y :eats ?Z}.

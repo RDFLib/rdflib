@@ -1,0 +1,8 @@
+@prefix lee: <http://josd.github.io/brain/lee#>.
+
+{
+    ((1 1) (9 8) (((2 3) (4 5)) ((6 6) (8 8)))) lee:route ?PATH.
+} =>
+{
+    ((1 1) (9 8) (((2 3) (4 5)) ((6 6) (8 8)))) lee:route ?PATH.
+}.

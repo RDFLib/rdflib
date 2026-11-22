@@ -1,0 +1,13 @@
+{
+  "@context": {
+    "@vocab": "http://example.org/",
+    "container": {"@container": "@language", "@nest": "nestedlanguage"},
+    "nestedlanguage": "@nest"
+  },
+  "nestedlanguage": {
+    "container": {
+      "en": "The Queen",
+      "de": "Die Königin"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+[
+    {
+        "@id": "https://w3c.github.io/json-ld-api/tests/flatten/example1",
+        "@type": [
+            "http://example.org/vocab#test"
+        ],
+        "http://example.org/vocab#date": [
+            {
+                "@value": "2011-01-25T00:00:00Z",
+                "@type": "http://example.org/vocab#dateTime"
+            }
+        ],
+        "http://example.org/vocab#embed": [
+            {
+                "@id": "https://w3c.github.io/json-ld-api/tests/flatten/example2"
+            }
+        ]
+    },
+    {
+        "@id": "https://w3c.github.io/json-ld-api/tests/flatten/example2",
+        "http://example.org/vocab#expandedDate": [
+            {
+                "@type": "http://example.org/vocab#dateTime",
+                "@value": "2012-08-01T00:00:00Z"
+            }
+        ]
+    }
+]

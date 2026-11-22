@@ -1,0 +1,22 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --nope --plugin http://josd.github.io/brain/n3p/sample.pl --pass-all
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://example.org/try#>.
+
+:s :p {:a :b :c}.
+:s :p {:a :b :c. :d :e :f}.
+_:t_0 :p {_:t_1 :b :c}.
+:s :p <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil>.
+_:sk_0 :p :o.
+{:u :v ?U_1. ?U_2 :y :z} => {?U_1 a ?U_2}.
+{:u :p ?U_3} => false.
+{?U_4 :u ?U_5. ?U_4 :v ?U_6} => {_:sk_7 :x ?U_5. _:sk_7 :y ?U_6}.
+{:a :b ?U_8. ?U_8 :c :d. ?U_8 :e :f} => {:g :h :i}.
+{?U_9 :q ?U_10} <= {:u :v ?U_9. ?U_10 ?U_11 :z}.
+{?U_12 :y ?U_13} <= {?U_13 e:firstRest (?U_14 ?U_15). ?U_12 :p ?U_14. ?U_12 :y ?U_15}.
+{?U_16 :r ?U_17} <= {{?U_16 :q ?U_18} <= ?U_17}.
+
+#2020-02-22T21:52:18.327Z in=12 out=12 ent=13 step=29 brake=2 inf=20065 sec=0.080 inf/sec=250813
+#ENDS
+

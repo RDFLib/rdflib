@@ -1,0 +1,19 @@
+[{
+  "ex:untyped": [{
+    "@type": ["ex:Type"],
+    "ex:typed": [{
+      "@value": "v1"
+    }, {
+      "@value": "v2"
+    }, {
+      "@value": "v3"
+    }, {
+      "ex:untyped": [{
+        "@value": "v4"
+      }, {
+        "@type": ["ex:Type"],
+        "ex:typed": [{"@value": "v5"}]
+      }]
+    }]
+  }]
+}]

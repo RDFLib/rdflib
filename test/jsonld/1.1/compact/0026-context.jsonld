@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "@vocab": "http://example.com/vocab/",
+    "@language": "it",
+    "s": { "@id": "label", "@language": "en" },
+    "label": {
+      "@container": "@language"
+    }
+  }
+}

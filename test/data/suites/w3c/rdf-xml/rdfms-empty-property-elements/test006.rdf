@@ -1,0 +1,32 @@
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id$
+-->
+<!--
+
+ Assumed base URI:
+
+http://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test006.rdf
+
+ Description:
+
+ Here the parseType indicates that we should create a resource. We also
+ reify the generated statement.
+
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:random="http://random.ioctl.org/#">
+ 
+ <rdf:Description rdf:about="http://random.ioctl.org/#bar">
+   <random:someProperty rdf:ID="foo" rdf:parseType="Resource" />
+ </rdf:Description>
+
+</rdf:RDF>

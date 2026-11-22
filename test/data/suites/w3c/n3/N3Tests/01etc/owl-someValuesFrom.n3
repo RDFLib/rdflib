@@ -1,0 +1,7 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+
+{?C owl:someValuesFrom ?Y. ?C owl:onProperty ?P. ?U ?P ?V. ?V a ?Y} => {?U a ?C}.
+{?C owl:someValuesFrom owl:Thing. ?C owl:onProperty ?P. ?U ?P ?V} => {?U a ?C}.
+{?C owl:someValuesFrom ?Y. ?C owl:onProperty ?P. ?D owl:someValuesFrom ?Z. ?D owl:onProperty ?P. ?Y rdfs:subClassOf ?Z} => {?C rdfs:subClassOf ?D}.
+{?C owl:someValuesFrom ?Y. ?C owl:onProperty ?P. ?D owl:someValuesFrom ?Y. ?D owl:onProperty ?Q. ?P rdfs:subPropertyOf ?Q} => {?C rdfs:subClassOf ?D}.

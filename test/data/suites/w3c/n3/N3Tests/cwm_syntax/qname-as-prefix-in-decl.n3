@@ -1,0 +1,6 @@
+# Can the prefix in @prefix be  qname with an identifier? not since 2004/12/22
+
+@prefix  foo:bar <>.
+
+# Should fail to validate, used to parse as though "bar" were not there.
+#

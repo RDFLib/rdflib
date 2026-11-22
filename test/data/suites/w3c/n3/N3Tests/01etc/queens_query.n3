@@ -1,0 +1,3 @@
+@prefix queens: <http://josd.github.io/brain/queens#>.
+
+{8 queens:solve ?QUEENS} => {8 queens:solve ?QUEENS}.

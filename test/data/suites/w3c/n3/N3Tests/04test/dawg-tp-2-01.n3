@@ -1,0 +1,11 @@
+# $Id: dawg-tp-2-01.n3 424 2004-12-06 20:03:44Z josd $
+# PxButton | es  | euler --nope --think dawg-data-01.n3 --query dawg-tp-2-01.n3
+# PxButton | cwm | python /w3ccvs/WWW/2000/10/swap/cwm.py dawg-data-01.n3 --think --query"=dawg-tp-2-01.n3"
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+[]
+q:select {<> q:answer (?name)};
+q:where  {?x rdf:type foaf:Person. ?x foaf:name ?name}.

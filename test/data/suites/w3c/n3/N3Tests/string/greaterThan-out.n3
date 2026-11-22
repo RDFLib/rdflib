@@ -1,0 +1,3 @@
+@prefix : <greaterThan.n3#> .
+
+:testh1     a :success .

@@ -1,0 +1,4 @@
+line 41: 
+	} log:implies {:www3:is :x}.
+->
+	} log:implies {:www3 :is :x}.

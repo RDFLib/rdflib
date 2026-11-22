@@ -1,0 +1,26 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:egdo="http://example.org/"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns="http://example.org/blank_prefix#"
+    xml:base="http://example.org/blank_prefix">
+
+  <!--
+    An RDF/XML document using both a blank and a base prefix together with well
+    known prefixes.
+  -->
+
+  <rdf:Description rdf:about="#subject0">
+    <predicate00 rdf:resource="#object00"/>
+    <rdfs:label xml:lang="en">subject0</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="#subject1">
+    <predicate10 rdf:resource="#object10"/>
+    <rdfs:label xml:lang="en">subject0</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+
+</rdf:RDF>

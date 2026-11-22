@@ -1,0 +1,1 @@
+<http://example.org/s> <http://example.org/p> "\n\tWords,<b>tags</b> and white space.\n      "^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .

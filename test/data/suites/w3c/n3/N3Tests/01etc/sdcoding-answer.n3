@@ -1,0 +1,15 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --wcache http://josd.github.io/brain/dqc . --no-distinct-input --nope http://josd.github.io/brain/dqc/sdcoding-a.n3 --query http://josd.github.io/brain/dqc/sdcoding-query.n3
+
+@prefix dqc: <http://josd.github.io/brain/dqc#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+
+1 dqc:sdcoding 1 .
+3 dqc:sdcoding 3 .
+0 dqc:sdcoding 0 .
+2 dqc:sdcoding 2 .
+
+#2020-02-22T21:51:06.193Z in=25 out=4 ent=4 step=4 brake=2 inf=25538 sec=0.076 inf/sec=336026
+#ENDS
+

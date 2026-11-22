@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Krech"
+  given-names: "Daniel"
+- family-names: "Chuc"
+  given-names: "Edmond"
+  orcid: "https://orcid.org/0000-0002-6047-9864"
+- family-names: "Car"
+  given-names: "Nicholas"
+  orcid: "https://orcid.org/0000-0002-8742-7730"
+- family-names: "Nelson"
+  given-names: "Alex"
+  orcid: "https://orcid.org/0000-0002-3771-570X"
+- family-names: "Higgins"
+  given-names: "Graham"
+- family-names: "Sommer"
+  given-names: "Ashley"
+  orcid: "https://orcid.org/0000-0003-0590-0131"
+title: "RDFLib"
+version: 7.6.0
+date-released: 2026-02-13
+url: "https://github.com/RDFLib/rdflib"
+doi: 10.5281/zenodo.6845245

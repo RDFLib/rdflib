@@ -1,9 +1,10 @@
-"""
-SPARQL implementation for RDFLib
+"""SPARQL implementation for RDFLib
 
-.. versionadded:: 4.0
+!!! example "New in version 4.0"
 """
 
+from importlib.metadata import entry_points
+from typing import TYPE_CHECKING
 
 SPARQL_LOAD_GRAPHS = True
 """
@@ -28,24 +29,34 @@ NotImplementedError if they cannot handle a certain part
 """
 
 
-PLUGIN_ENTRY_POINT = 'rdf.plugins.sparqleval'
+PLUGIN_ENTRY_POINT = "rdf.plugins.sparqleval"
 
 
-
-from . import parser
-from . import operators
-from . import parserutils
-
-from .processor import prepareQuery, processUpdate
+from . import operators, parser, parserutils
+from .processor import prepareQuery, prepareUpdate, processUpdate
 
 assert parser
 assert operators
 assert parserutils
 
-try:
-    from pkg_resources import iter_entry_points
-except ImportError:
-    pass  # TODO: log a message
-else:
-    for ep in iter_entry_points(PLUGIN_ENTRY_POINT):
+
+all_entry_points = entry_points()
+if hasattr(all_entry_points, "select"):
+    for ep in all_entry_points.select(group=PLUGIN_ENTRY_POINT):
         CUSTOM_EVALS[ep.name] = ep.load()
+else:
+    # Prior to Python 3.10, this returns a dict instead of the selection interface
+    if TYPE_CHECKING:
+        assert isinstance(all_entry_points, dict)
+    for ep in all_entry_points.get(PLUGIN_ENTRY_POINT, []):
+        CUSTOM_EVALS[ep.name] = ep.load()
+
+__all__ = [
+    "prepareQuery",
+    "prepareUpdate",
+    "processUpdate",
+    "operators",
+    "parser",
+    "parserutils",
+    "CUSTOM_EVALS",
+]

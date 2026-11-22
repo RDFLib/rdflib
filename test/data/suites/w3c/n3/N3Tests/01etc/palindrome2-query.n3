@@ -1,0 +1,4 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://josd.github.io/brain#>.
+
+{("atom_codes" "ingirumimusnocteetconsumimurigni" ?A) e:derive true. (?A) :palindrome true} => {"ingirumimusnocteetconsumimurigni" a :Palindrome}.

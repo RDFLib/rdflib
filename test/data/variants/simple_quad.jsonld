@@ -1,0 +1,15 @@
+[
+  {
+    "@graph": [
+      {
+        "@id": "http://example.org/subject",
+        "http://example.org/predicate": [
+          {
+            "@id": "http://example.org/object"
+          }
+        ]
+      }
+    ],
+    "@id": "http://example.org/graph"
+  }
+]

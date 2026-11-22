@@ -1,0 +1,4 @@
+@prefix : <http://example.org/try#>.
+
+{?S :p :o} => {{?S :p ?O} :u {?S :q ?O}}.
+{?S :p :o} => {{?S :q ?O} :u {?S :r ?O}}.

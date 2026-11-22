@@ -1,0 +1,44 @@
+#Consulting |: 
+#Processed by Id: euler.pl 1779 2007-12-21 01:04:04Z josd 
+
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix var: <http://localhost/var#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix fn: <http://www.w3.org/2006/xpath-functions#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/socrates#>.
+@prefix time: <http://www.w3.org/2000/10/swap/time#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+[ a r:Proof, r:Conjunction;
+	r:component [ a r:Inference; r:gives {:Socrates rdf:type :Man}; r:evidence (
+		[ a r:Extraction; r:gives {:Socrates rdf:type :Man}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/socratesP.n3>]]);
+		r:binding [ r:variable [ n3:uri "http://localhost/var#WHO"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2004/04test/socrates#Socrates"]]; 
+		r:binding [ r:variable [ n3:uri "http://localhost/var#WHAT"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2004/04test/socrates#Man"]]; 
+		r:rule [ a r:Extraction; r:gives {@forAll var:WHO,var:WHAT. {var:WHO a var:WHAT} => {var:WHO a var:WHAT}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/socratesQ.n3>]]];
+	r:component [ a r:Inference; r:gives {:Socrates rdf:type :Mortal}; r:evidence (
+		[ a r:Extraction; r:gives {:Socrates rdf:type :Mortal}; r:because [ a r:Inference; r:gives {:Socrates rdf:type :Mortal}; r:evidence (
+			[ a r:Extraction; r:gives {:Man rdfs:subClassOf :Mortal}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/socratesP.n3>]]
+			[ a r:Extraction; r:gives {:Socrates rdf:type :Man}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/socratesP.n3>]]);
+			r:binding [ r:variable [ n3:uri "http://localhost/var#A"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2004/04test/socrates#Man"]]; 
+			r:binding [ r:variable [ n3:uri "http://localhost/var#B"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2004/04test/socrates#Mortal"]]; 
+			r:binding [ r:variable [ n3:uri "http://localhost/var#S"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2004/04test/socrates#Socrates"]]; 
+			r:rule [ a r:Extraction; r:gives {@forAll var:A,var:B,var:S. {var:A rdfs:subClassOf var:B. var:S a var:A} => {var:S a var:B}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/socratesP.n3>]]]]);
+		r:binding [ r:variable [ n3:uri "http://localhost/var#WHO"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2004/04test/socrates#Socrates"]]; 
+		r:binding [ r:variable [ n3:uri "http://localhost/var#WHAT"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2004/04test/socrates#Mortal"]]; 
+		r:rule [ a r:Extraction; r:gives {@forAll var:WHO,var:WHAT. {var:WHO a var:WHAT} => {var:WHO a var:WHAT}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/socratesQ.n3>]]];
+	r:gives {
+		:Socrates rdf:type :Man.
+		:Socrates rdf:type :Mortal.}].
+
+#ENDS 50 msec.
+
+

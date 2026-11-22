@@ -1,0 +1,4 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix : <http://www.agfa.com/w3c/euler/graph.axiom#>.
+
+{:paris :path :nantes} => {:paris :path :nantes}.

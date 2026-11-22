@@ -1,0 +1,13 @@
+{
+  "@context": {
+    "ex": "http://example.org/vocab#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "ex:integer": { "@type": "xsd:integer" },
+    "ex:double": { "@type": "xsd:double" },
+    "ex:boolean": { "@type": "xsd:boolean" }
+  },
+  "@id": "http://example.org/test#example1",
+  "ex:integer": 1,
+  "ex:double": 123.45,
+  "ex:boolean": true
+}

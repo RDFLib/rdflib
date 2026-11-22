@@ -1,0 +1,6 @@
+{
+   "@context": {
+      "listAlias": "@list",
+      "indexAlias": "@index"
+   }
+}

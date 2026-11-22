@@ -1,0 +1,19 @@
+# test the handling os lists which are in the store
+#
+# use with --think
+
+@prefix : <#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+
+# Cause llyn to search the store for a list:
+
+
+( <a> ( <b> 17 <c> ) <d> ) a :TestCase.
+
+{   ( <a> ( <b> ?x <c> ) <d> ) a :TestCase}  => { ?x a :RESULT }.
+
+ { 17 a :RESULT } => { :THIS_TEST a :SUCCESS }.
+
+#

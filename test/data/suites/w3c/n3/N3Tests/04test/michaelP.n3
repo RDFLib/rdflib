@@ -1,0 +1,32 @@
+# $Id: michaelP.n3 264 2004-04-18 14:08:48Z josd $
+
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/michaelP#>.
+
+:Quantity a owl:Class.
+:LenthQuantity owl:intersectionOf
+     (:Quantity
+      [ a owl:Restriction;
+        owl:onProperty :value;
+        owl:allValuesFrom xsd:decimal]
+      [ a owl:Restriction;
+        owl:onProperty :unit;
+        owl:allValuesFrom :Unit]).
+:Unit a owl:Class.
+
+:diameterValue a owl:ObjectProperty;
+               rdfs:domain :Wheel;
+               rdfs:range :LengthQuantity.
+:value a owl:DatatypeProperty;
+       rdfs:domain :Quantity;
+       rdfs:range xsd:decimal.
+:unit a owl:DatatypeProperty;
+      rdfs:domain :Quantity; 
+      rdfs:range :Unit.
+
+:myWheel a :Wheel; 
+         :diameterValue [ a :LengthQuantity; 
+                          :value "15"^^xsd:decimal; 
+                          :unit "cm"^^:Unit].

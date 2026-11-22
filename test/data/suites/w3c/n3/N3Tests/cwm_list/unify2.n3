@@ -1,0 +1,18 @@
+# test the handling os lists which are in the store
+#
+# use with --think
+
+@prefix : <#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+
+# Cause llyn to search the store for a list:
+
+( 17 ) a :TestCase.
+
+
+{   ( ?x ) a :TestCase}  => { ?x a :RESULT }.
+
+# { 17 a :RESULT } => { :THIS_TEST a :SUCCESS }.
+
+#

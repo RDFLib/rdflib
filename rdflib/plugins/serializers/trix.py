@@ -1,80 +1,90 @@
-from rdflib.serializer import Serializer
-from rdflib.plugins.serializers.xmlwriter import XMLWriter
+from __future__ import annotations
 
-from rdflib.term import URIRef, Literal, BNode
+from typing import IO, Any
+
+from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import Namespace
+from rdflib.plugins.serializers.xmlwriter import XMLWriter
+from rdflib.serializer import Serializer
+from rdflib.term import BNode, Literal, URIRef
 
-from rdflib.graph import Graph, ConjunctiveGraph
+__all__ = ["TriXSerializer"]
 
-from rdflib.py3compat import b
-
-__all__ = ['TriXSerializer']
-
-## TODO: MOve this somewhere central
+# TODO: Move this somewhere central
 TRIXNS = Namespace("http://www.w3.org/2004/03/trix/trix-1/")
 XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
 
 
 class TriXSerializer(Serializer):
-    def __init__(self, store):
+    """TriX RDF graph serializer."""
+
+    def __init__(self, store: Graph):
         super(TriXSerializer, self).__init__(store)
-        if not store.context_aware:
-            raise Exception(
-                "TriX serialization only makes sense for context-aware stores")
 
-    def serialize(self, stream, base=None, encoding=None, **args):
-
+    def serialize(
+        self,
+        stream: IO[bytes],
+        base: str | None = None,
+        encoding: str | None = None,
+        **kwargs: Any,
+    ) -> None:
         nm = self.store.namespace_manager
 
         self.writer = XMLWriter(stream, nm, encoding, extra_ns={"": TRIXNS})
 
-        self.writer.push(TRIXNS[u"TriX"])
+        self.writer.push(TRIXNS["TriX"])
+        # if base is given here, use that, if not and a base is set for the graph use that
+        if base is None and self.store.base is not None:
+            base = self.store.base
+        if base is not None:
+            self.writer.attribute("http://www.w3.org/XML/1998/namespacebase", base)
         self.writer.namespaces()
 
-        if isinstance(self.store, ConjunctiveGraph):
-            for subgraph in self.store.contexts():
+        # Non-context-aware aggregates must use their own triple iteration.
+        if self.store.context_aware and isinstance(self.store, ConjunctiveGraph):
+            for subgraph in self.store.graphs():
                 self._writeGraph(subgraph)
         elif isinstance(self.store, Graph):
             self._writeGraph(self.store)
         else:
-            raise Exception("Unknown graph type: " + type(self.store))
+            raise Exception(f"Unknown graph type: {type(self.store)}")
 
         self.writer.pop()
-        stream.write(b("\n"))
+        stream.write("\n".encode("latin-1"))
 
-    def _writeGraph(self, graph):
-        self.writer.push(TRIXNS[u"graph"])
+    def _writeGraph(self, graph):  # noqa: N802
+        self.writer.push(TRIXNS["graph"])
+        if graph.base:
+            self.writer.attribute(
+                "http://www.w3.org/XML/1998/namespacebase", graph.base
+            )
         if isinstance(graph.identifier, URIRef):
-            self.writer.element(
-                TRIXNS[u"uri"], content=unicode(graph.identifier))
+            self.writer.element(TRIXNS["uri"], content=str(graph.identifier))
 
         for triple in graph.triples((None, None, None)):
             self._writeTriple(triple)
         self.writer.pop()
 
-    def _writeTriple(self, triple):
-        self.writer.push(TRIXNS[u"triple"])
+    def _writeTriple(self, triple):  # noqa: N802
+        self.writer.push(TRIXNS["triple"])
         for component in triple:
             if isinstance(component, URIRef):
-                self.writer.element(TRIXNS[u"uri"],
-                                    content=unicode(component))
+                self.writer.element(TRIXNS["uri"], content=str(component))
             elif isinstance(component, BNode):
-                self.writer.element(TRIXNS[u"id"],
-                                    content=unicode(component))
+                self.writer.element(TRIXNS["id"], content=str(component))
             elif isinstance(component, Literal):
                 if component.datatype:
-                    self.writer.element(TRIXNS[u"typedLiteral"],
-                                        content=unicode(component),
-                                        attributes={TRIXNS[u"datatype"]:
-                                                    unicode(
-                                                        component.datatype)})
+                    self.writer.element(
+                        TRIXNS["typedLiteral"],
+                        content=str(component),
+                        attributes={TRIXNS["datatype"]: str(component.datatype)},
+                    )
                 elif component.language:
-                    self.writer.element(TRIXNS[u"plainLiteral"],
-                                        content=unicode(component),
-                                        attributes={XMLNS[u"lang"]:
-                                                    unicode(
-                                                        component.language)})
+                    self.writer.element(
+                        TRIXNS["plainLiteral"],
+                        content=str(component),
+                        attributes={XMLNS["lang"]: str(component.language)},
+                    )
                 else:
-                    self.writer.element(TRIXNS[u"plainLiteral"],
-                                        content=unicode(component))
+                    self.writer.element(TRIXNS["plainLiteral"], content=str(component))
         self.writer.pop()

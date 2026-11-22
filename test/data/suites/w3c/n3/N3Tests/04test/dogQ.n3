@@ -1,0 +1,15 @@
+# $Id: dogQ.n3 424 2004-12-06 20:03:44Z josd $
+# PxButton | es  | euler --nope --think dog.n3 --query dogQ.n3
+# PxButton | cwm | cwm dog.n3 --think --query"=dogQ.n3"
+
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/dog#>.
+
+[]
+q:select {<> q:answer (?X)};
+q:where  {?X a :Person. ?X a :DogOwner}.
+
+[]
+q:select {<> q:answer (?X)};
+q:where  {?X a :Person. ?X :hasPet ?Y. ?Y a :Dog}.

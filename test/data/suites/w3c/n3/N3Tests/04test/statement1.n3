@@ -1,0 +1,10 @@
+# $Id: statement1.n3 2732 2009-03-12 21:12:25Z josd $
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix  bank:  <http://bank.example/statements#>.
+
+_:e1 rdf:type bank:Statement .
+_:e1 bank:creditor "Joe's Grill" .
+_:e1 bank:debtor bank:act01347797 .
+_:e1 bank:date "2002-07-06" .
+_:e1 bank:amount "18.23" .

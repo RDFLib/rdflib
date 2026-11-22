@@ -1,0 +1,19 @@
+[
+  {
+    "http://example.org/vocab#c14n": [
+      {
+        "@type": "@json",
+        "@value": {
+          "\u20ac": "Euro Sign",
+          "\r": "Carriage Return",
+          "\u000a": "Newline",
+          "1": "One",
+          "\u0080": "Control\u007f",
+          "\ud83d\ude02": "Smiley",
+          "\u00f6": "Latin Small Letter O With Diaeresis",
+          "</script>": "Browser Challenge"
+        }
+      }
+    ]
+  }
+]

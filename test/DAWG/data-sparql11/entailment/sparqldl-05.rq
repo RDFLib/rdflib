@@ -1,8 +1,0 @@
-# Query5
-
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX : <http://example.org/test#>
-
-ASK
-WHERE
-{_:a rdf:type :Person .}

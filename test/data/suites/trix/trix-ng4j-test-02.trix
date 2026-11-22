@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TriX xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+  <graph>
+    <uri>http://example.org/persons/123</uri>
+    <triple>
+      <uri>http://richard.cyganiak.de/foaf.rdf#RichardCyganiak</uri>
+      <uri>http://xmlns.com/foaf/0.1/name</uri>
+      <plainLiteral>Richard Cyganiak</plainLiteral>
+    </triple>
+  </graph>
+  <graph>
+    <uri>http://www.bizer.de/InformationAboutRichard</uri>
+    <triple>
+      <uri>http://richard.cyganiak.de/foaf.rdf#RichardCyganiak</uri>
+      <uri>http://xmlns.com/foaf/0.1/mbox</uri>
+      <uri>mailto:richard@cyganiak.de</uri>
+    </triple>
+  </graph>
+</TriX>

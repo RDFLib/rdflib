@@ -1,7 +1,0 @@
-s,p,o
-http://example.org/s1,http://example.org/p1,http://example.org/s2
-http://example.org/s2,http://example.org/p2,foo
-http://example.org/s3,http://example.org/p3,bar
-http://example.org/s4,http://example.org/p4,4
-http://example.org/s5,http://example.org/p5,5.5
-http://example.org/s6,http://example.org/p6,_:a

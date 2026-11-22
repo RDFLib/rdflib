@@ -1,0 +1,11 @@
+[
+    {
+        "@id": "_:b0",
+        "http://example.com/term": [
+            {
+                "@value": "v",
+                "@language": "en"
+            }
+        ]
+    }
+]

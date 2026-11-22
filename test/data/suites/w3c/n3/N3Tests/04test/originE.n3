@@ -1,0 +1,10 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix bank: <http://bank.example/statements#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix ical: <http://www.w3.org/2002/12/cal/ical#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+<http://eulersharp.sourceforge.net/2004/04test/originQ.n3> q:answer ("Joe's Grill" "18.23" "2002-07-06" "Scooby Conference" "San Francisco"). 
+

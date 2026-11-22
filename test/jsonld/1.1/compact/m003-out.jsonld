@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "typemap": {"@container": "@type"}
+  },
+  "typemap": {
+    "http://example.org/foo": {"label": "Object with @type <foo>"},
+    "_:bar": {"label": "Object with @type _:bar"}
+  }
+}

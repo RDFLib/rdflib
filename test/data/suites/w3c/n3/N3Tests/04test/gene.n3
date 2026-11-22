@@ -1,0 +1,46 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/gene#>.
+
+:apollo :father :chloe.
+:dexter :father :flash.
+:flash :father :galaxy.
+
+:blaze :mother :chloe.
+:ember :mother :flash.
+:chloe :mother :galaxy.
+
+
+{?Y :father ?X.
+ ?Z :mother ?X}
+ =>
+  {((:has_gene ?X) e:T) e:depends
+    ((((:has_gene ?Y) e:T) ((:has_gene ?Z) e:T)) 0.8),
+    ((((:has_gene ?Y) e:T) ((:has_gene ?Z) e:F)) 0.4),
+    ((((:has_gene ?Y) e:F) ((:has_gene ?Z) e:T)) 0.4),
+    ((((:has_gene ?Y) e:F) ((:has_gene ?Z) e:F)) 0.1)}.
+
+{?X :father ?Y.
+ <http://eulersharp.sourceforge.net/2004/04test/gene.n3> log:semantics ?F.
+ ?F log:notIncludes {?Z :father ?X}}
+ =>
+  {((:has_gene ?X) e:T) e:depends (() 0.5)}.
+
+{?X :father ?Y.
+ <http://eulersharp.sourceforge.net/2004/04test/gene.n3> log:semantics ?F.
+ ?F log:notIncludes {?Z :mother ?X}}
+ =>
+  {((:has_gene ?X) e:T) e:depends (() 0.5)}.
+
+{?X :mother ?Y.
+ <http://eulersharp.sourceforge.net/2004/04test/gene.n3> log:semantics ?F.
+ ?F log:notIncludes {?Z :father ?X}}
+ =>
+  {((:has_gene ?X) e:T) e:depends (() 0.5)}.
+
+{?X :mother ?Y.
+ <http://eulersharp.sourceforge.net/2004/04test/gene.n3> log:semantics ?F.
+ ?F log:notIncludes {?Z :mother ?X}}
+ =>
+  {((:has_gene ?X) e:T) e:depends (() 0.5)}.
+

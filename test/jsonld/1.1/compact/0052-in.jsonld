@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "graph": "@graph",
+    "term": "http://example.org/term"
+  },
+  "graph": [
+    {
+      "term": {
+        "@list": [1]
+      }
+    },
+    {
+      "term": {
+        "@list": [2]
+      }
+    }
+  ]
+}

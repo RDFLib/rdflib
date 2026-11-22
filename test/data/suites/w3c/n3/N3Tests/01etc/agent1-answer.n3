@@ -1,0 +1,15 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --wcache http://josd.github.io/brain/map . --nope http://josd.github.io/brain/map/gps-plugin.n3 http://josd.github.io/brain/map/agent1-map.n3 --query http://josd.github.io/brain/map/agent1-query.n3
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix gps: <http://josd.github.io/brain/gps/gps-schema#>.
+@prefix : <http://josd.github.io/brain#>.
+
+:i1 gps:path ((:drive_gent_brugge) 1500.0 0.006 0.96 0.99).
+
+#2020-02-22T21:52:01.188Z in=10 out=1 ent=1 step=1 brake=2 inf=55028 sec=0.112 inf/sec=491321
+#ENDS
+

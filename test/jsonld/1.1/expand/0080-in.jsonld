@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "input": {"@id": "foo:input", "@container": ["@graph", "@set"]},
+    "value": "foo:value"
+  },
+  "input": [{
+    "value": "x"
+  }]
+}

@@ -1,0 +1,5 @@
+[{
+  "http://example.orb/vocab/@": [{"@value": "allowed"}],
+  "http://example.orb/vocab/@foo.bar": [{"@value": "allowed"}],
+  "http://example.orb/vocab/ignoreMe": [{"@value": "resolves to @vocab"}]
+}]

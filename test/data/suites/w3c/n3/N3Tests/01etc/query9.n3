@@ -1,0 +1,3 @@
+@prefix : <http://josd.github.io/brain#>.
+
+{?S :i7525 ?A. ?A :i7525 ?B. ?B :i7525 ?C. ?C :i7525 ?O} => {?S :j ?O}.

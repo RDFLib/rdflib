@@ -1,0 +1,44 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://josd.github.io/brain#>.
+
+:person1 :chopstick (:chopstick1 :chopstick5).
+:person2 :chopstick (:chopstick2 :chopstick1).
+:person3 :chopstick (:chopstick3 :chopstick2).
+:person4 :chopstick (:chopstick4 :chopstick3).
+:person5 :chopstick (:chopstick5 :chopstick4).
+
+{?P :pickup true} <= {
+    ?P :chopstick (?L ?R).
+    ("mutex_lock" ?L) e:derive true.
+    ("mutex_lock" ?R) e:derive true.
+}.
+
+{?P :putdown true} <= {
+    ?P :chopstick (?L ?R).
+    ("mutex_unlock" ?R) e:derive true.
+    ("mutex_unlock" ?L) e:derive true.
+}.
+
+{?P :run (?T ?S)} <= {
+    ("sleep" ?T) e:derive true.
+    ("format" "# ~w thinking for ~w seconds~n" (?P ?T)) e:derive true.
+    ?P :pickup true.
+    ("sleep" ?S) e:derive true.
+    ("format" "# ~w eating for ~w seconds~n" (?P ?S)) e:derive true.
+    ?P :putdown true.
+}.
+
+{
+    ("thread_create" {:person1 :run (0.100 0.100)} ?A ()) e:derive true.
+    ("thread_create" {:person2 :run (0.200 0.200)} ?B ()) e:derive true.
+    ("thread_create" {:person3 :run (0.300 0.300)} ?C ()) e:derive true.
+    ("thread_create" {:person4 :run (0.250 0.200)} ?D ()) e:derive true.
+    ("thread_create" {:person5 :run (0.025 0.100)} ?E ()) e:derive true.
+    ("thread_join" ?A ?F) e:derive true.
+    ("thread_join" ?B ?G) e:derive true.
+    ("thread_join" ?C ?H) e:derive true.
+    ("thread_join" ?D ?I) e:derive true.
+    ("thread_join" ?E ?J) e:derive true.
+} => {
+    :all :got :dinner.
+}.

@@ -1,0 +1,71 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix egdo: <http://example.org/> .
+
+{
+    egdo:bob dc:publisher "Bob" .
+    egdo:alice dc:publisher "Alice" .
+}
+
+
+egdo:alice {
+    _:alice foaf:name "Alice";
+        foaf:mbox <mailto:alice@work.example.org> .
+}
+
+egdo:bob {
+    _:bob foaf:name "Bob";
+        foaf:mbox <mailto:bob@oldcorp.example.org>;
+        foaf:knows _:alice .
+}
+
+
+egdo:blake {
+    [] foaf:name "Blake" ;
+        foaf:mbox <mailto:blake@oldcorp.example.org>;
+        foaf:knows [
+            foaf:name "Taylor";
+            foaf:mbox <mailto:taylor@work.example.org>
+        ] .
+}
+
+egdo:austin {
+    _:austin foaf:name "Austin" ;
+        foaf:mbox <mailto:austin@oldcorp.example.org>;
+        foaf:knows _:carson.
+
+
+    _:carson foaf:name "Carson" ;
+        foaf:mbox <mailto:carson@oldcorp.example.org>;
+        foaf:knows _:austin.
+}
+
+egdo:charlie {
+    _:charlie foaf:name "Charlie" ;
+        foaf:mbox <mailto:charlie@oldcorp.example.org>;
+        foaf:knows _:dylan;
+        foaf:knows _:greer.
+
+    _:dylan foaf:name "Dylan" ;
+        foaf:mbox <mailto:dylan@oldcorp.example.org>;
+        foaf:knows _:charlie;
+        foaf:knows _:greer.
+
+    _:greer foaf:name "Greer" ;
+        foaf:mbox <mailto:greer@oldcorp.example.org>;
+        foaf:knows _:charlie;
+        foaf:knows _:dylan.
+}
+
+egdo:jaime {
+    _:jaime foaf:name "Jaime";
+        foaf:mbox <mailto:jaime@work.example.org>;
+        foaf:knows _:keaton.
+}
+
+egdo:kennedy {
+    _:kennedy foaf:name "Kennedy";
+        foaf:mbox <mailto:kennedy@oldcorp.example.org>;
+        foaf:knows _:keaton .
+}

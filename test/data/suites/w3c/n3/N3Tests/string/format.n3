@@ -1,0 +1,7 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix string: <http://www.w3.org/2000/10/swap/string#>.
+@prefix : <#>.
+
+{ ("%s-%d" "test" 1) string:format ?x} => {"test-1" a :success}.
+
+{ ("%s-%d" "test" 2) string:format "test-3"} => {"test-2" a :FAILURE}.

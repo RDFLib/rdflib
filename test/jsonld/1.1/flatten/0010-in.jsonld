@@ -1,0 +1,11 @@
+{
+  "@context": {
+    "d": "http://purl.org/dc/elements/1.1/",
+    "e": "http://example.org/vocab#",
+    "f": "http://xmlns.com/foaf/0.1/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@id": "http://example.org/test",
+  "e:bool": true,
+  "e:int": 123
+}

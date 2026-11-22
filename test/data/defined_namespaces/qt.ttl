@@ -1,0 +1,76 @@
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix :       <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+## Query-specific test vocabulary for a manifest action.
+
+:   rdfs:comment     "Vocabulary for query test cases" ;
+    dc:creator       "Andy Seaborne" ;
+    dc:subject       "" ;
+    dc:publisher     "W3C RDF Data Access Working Group" ;
+    dc:title         "Query test case vocabulary" ;
+    dc:description   "Query test case vocabulary" ;
+    dc:date          "2004-07" ;
+    dc:format        "RDF" ;
+    dc:identifier    : ;
+    .
+## ---- Class declarations ----
+
+:QueryTest a rdfs:Class ;
+    rdfs:comment "The class of query tests" .
+
+:QueryForm    rdf:type rdfs:Class ;
+    rdfs:comment   "Super class of all query forms" ;
+    .
+
+
+## ---- Property declarations ----
+
+
+:query a rdf:Property ;
+    rdfs:comment "The query to ask" ;
+    rdfs:domain	 :QueryTest ;
+    ## rdfs:range   ?? ;
+    .	
+
+:data a rdf:Property ;
+    rdfs:comment "Optional: data for the query test" ;
+    rdfs:domain	 :QueryTest ;
+    rdfs:range   rdfs:Resource ;
+    .
+
+:graphData a rdf:Property ;
+    rdfs:comment "Optional: named-graph only data for the query test (ie. not loaded into the background graph)" ;
+    rdfs:domain	 :QueryTest ;
+    rdfs:range   rdfs:Resource ;
+    .
+
+# Could be a subPropertyOf rdf:type
+# or could just use rdf:type.
+:queryForm   rdf:type rdf:Property ;
+    rdfs:range          :QueryForm ;
+    rdfs:isDefinedBy    : ;
+    .
+
+## ---- Query forms 
+## The types of query there are
+
+:QuerySelect       rdfs:subClassOf :QueryForm ;
+    rdfs:comment        "Class of queries that are seeking variable bindings" ;
+    rdfs:label          "Variable Binding Query" .
+ 
+:QueryConstruct    rdfs:subClassOf :QueryForm ;
+    rdfs:comment        "Class of queries that are seeking a constructed graph" ;
+    rdfs:label          "Defined Graph Query" .
+
+:QueryDescribe     rdfs:subClassOf :QueryForm ;
+    rdfs:comment        "Class of queries that are seeking a descriptive graph" ;
+    rdfs:label          "Open Graph Query" .
+
+:QueryAsk          rdfs:subClassOf :QueryForm ;
+    rdfs:comment        "Class of queries that are seeking a yes/no question" ;
+    rdfs:label          "Boolean Query" .

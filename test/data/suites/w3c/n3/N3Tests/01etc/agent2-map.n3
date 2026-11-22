@@ -1,0 +1,8 @@
+@prefix gps: <http://josd.github.io/brain/gps/gps-schema#>.
+@prefix : <http://josd.github.io/brain#>.
+
+# current state
+:i1 :location :Gent.
+
+# partial map of Belgium for agent2
+{:map-BE gps:description ({?S :location :Brugge} true {?S :location :Oostende} :drive_brugge_oostende 900.0 0.004 0.98 1.0)} <= true.

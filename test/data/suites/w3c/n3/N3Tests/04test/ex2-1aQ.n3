@@ -1,0 +1,9 @@
+# $Id: ex2-1aQ.n3 424 2004-12-06 20:03:44Z josd $
+# PxButton | es  | euler ex2-1a.n3 --nope --think --query ex2-1aQ.n3
+# PxButton | cwm | cwm ex2-1a.n3 --think --query"=ex2-1aQ.n3"
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+
+[]
+q:select {<> q:answer (?title)};
+q:where  {<http://example.org/book/book1> <http://purl.org/dc/elements/1.1/title> ?title}.

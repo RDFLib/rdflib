@@ -1,0 +1,1216 @@
+#Processed by EYE v18.0417.2132 josd
+#eye http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3 http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3 http://eulersharp.sourceforge.net/2007/07test/patient.n3 http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3 --query http://eulersharp.sourceforge.net/2007/07test/fgcm-query.n3
+
+@prefix fgcm: <http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix func: <http://www.w3.org/2007/rif-builtin-function#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://www.example.org/patientdescriptions/>.
+@prefix dco: <http://www.debugit.eu/ontology/1.0/dco.owl#>.
+@prefix fl: <http://eulersharp.sourceforge.net/2003/03swap/fl-rules#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:component <#lemma3>;
+  r:component <#lemma4>;
+  r:component <#lemma5>;
+  r:component <#lemma6>;
+  r:component <#lemma7>;
+  r:component <#lemma8>;
+  r:component <#lemma9>;
+  r:component <#lemma10>;
+  r:component <#lemma11>;
+  r:component <#lemma12>;
+  r:component <#lemma13>;
+  r:component <#lemma14>;
+  r:component <#lemma15>;
+  r:component <#lemma16>;
+  r:component <#lemma17>;
+  r:component <#lemma18>;
+  r:gives {
+    (:patient008 dco:SimpleUrinaryTractInfection false) fl:gpi (0.15609492798580316 0.24989839953254675).
+    (:patient008 dco:SimpleAcuteCystitis false) fl:gpi (0.5 0.6818062399896525).
+    (:patient008 dco:ComplicatedUrinaryTractInfection false) fl:gpi (0.9962884114614465 0.9975150883686373).
+    (:patient008 dco:SimpleAcutePyelonephritis false) fl:gpi (0.9352648821737795 0.9575078825964835).
+    (:patient008 dco:ComplicatedAcutePyelonephritis false) fl:gpi (0.3181937600103475 0.5).
+    (:patient008 dco:PregnancyUrinaryTractInfection false) fl:gpi (0.6968116667552052 0.7501016004674532).
+    (:patient008 dco:ObstructiveUropathy false) fl:gpi (0.3181937600103475 0.3181937600103475).
+    (:patient008 dco:PregnancyObstructiveUropathy false) fl:gpi (0.6497482370328734 0.6818062399896525).
+    (:patient008 dco:ComplicatedAcutePregnancyPyelonephritis false) fl:gpi (0.5968726072149699 0.7501016004674533).
+    (:patient008 dco:AcuteProstatis false) fl:gpi (0.9950831899235624 0.9954629272837167).
+    (:patient008 dco:Fever false) fl:gpi (0.8 1).
+    (:patient008 dco:UrineDipstickTest false) fl:gpi (1 1).
+    (:patient008 dco:Chills false) fl:gpi (1 1).
+    (:patient008 dco:DiabetesMellitus false) fl:gpi (0 0).
+    (:patient008 dco:Male false) fl:gpi (1 1).
+    (:patient008 dco:Old false) fl:gpi (1 1).
+    (:patient008 dco:Dysuria false) fl:gpi (1 1).
+    (:patient008 dco:DigitalRectalExamination false) fl:gpi (1 1).
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    (:patient008 dco:SimpleUrinaryTractInfection false) fl:gpi (0.15609492798580316 0.24989839953254675).
+  };
+  r:evidence (
+    <#lemma19>
+  );
+  r:rule <#lemma20>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    (:patient008 dco:SimpleAcuteCystitis false) fl:gpi (0.5 0.6818062399896525).
+  };
+  r:evidence (
+    <#lemma21>
+  );
+  r:rule <#lemma20>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    (:patient008 dco:ComplicatedUrinaryTractInfection false) fl:gpi (0.9962884114614465 0.9975150883686373).
+  };
+  r:evidence (
+    <#lemma22>
+  );
+  r:rule <#lemma20>.
+
+<#lemma4> a r:Inference;
+  r:gives {
+    (:patient008 dco:SimpleAcutePyelonephritis false) fl:gpi (0.9352648821737795 0.9575078825964835).
+  };
+  r:evidence (
+    <#lemma23>
+  );
+  r:rule <#lemma20>.
+
+<#lemma5> a r:Inference;
+  r:gives {
+    (:patient008 dco:ComplicatedAcutePyelonephritis false) fl:gpi (0.3181937600103475 0.5).
+  };
+  r:evidence (
+    <#lemma24>
+  );
+  r:rule <#lemma20>.
+
+<#lemma6> a r:Inference;
+  r:gives {
+    (:patient008 dco:PregnancyUrinaryTractInfection false) fl:gpi (0.6968116667552052 0.7501016004674532).
+  };
+  r:evidence (
+    <#lemma25>
+  );
+  r:rule <#lemma20>.
+
+<#lemma7> a r:Inference;
+  r:gives {
+    (:patient008 dco:ObstructiveUropathy false) fl:gpi (0.3181937600103475 0.3181937600103475).
+  };
+  r:evidence (
+    <#lemma26>
+  );
+  r:rule <#lemma20>.
+
+<#lemma8> a r:Inference;
+  r:gives {
+    (:patient008 dco:PregnancyObstructiveUropathy false) fl:gpi (0.6497482370328734 0.6818062399896525).
+  };
+  r:evidence (
+    <#lemma27>
+  );
+  r:rule <#lemma20>.
+
+<#lemma9> a r:Inference;
+  r:gives {
+    (:patient008 dco:ComplicatedAcutePregnancyPyelonephritis false) fl:gpi (0.5968726072149699 0.7501016004674533).
+  };
+  r:evidence (
+    <#lemma28>
+  );
+  r:rule <#lemma20>.
+
+<#lemma10> a r:Inference;
+  r:gives {
+    (:patient008 dco:AcuteProstatis false) fl:gpi (0.9950831899235624 0.9954629272837167).
+  };
+  r:evidence (
+    <#lemma29>
+  );
+  r:rule <#lemma20>.
+
+<#lemma11> a r:Inference;
+  r:gives {
+    (:patient008 dco:Fever false) fl:gpi (0.8 1).
+  };
+  r:evidence (
+    <#lemma30>
+  );
+  r:rule <#lemma20>.
+
+<#lemma12> a r:Inference;
+  r:gives {
+    (:patient008 dco:UrineDipstickTest false) fl:gpi (1 1).
+  };
+  r:evidence (
+    <#lemma31>
+  );
+  r:rule <#lemma20>.
+
+<#lemma13> a r:Inference;
+  r:gives {
+    (:patient008 dco:Chills false) fl:gpi (1 1).
+  };
+  r:evidence (
+    <#lemma32>
+  );
+  r:rule <#lemma20>.
+
+<#lemma14> a r:Inference;
+  r:gives {
+    (:patient008 dco:DiabetesMellitus false) fl:gpi (0 0).
+  };
+  r:evidence (
+    <#lemma33>
+  );
+  r:rule <#lemma20>.
+
+<#lemma15> a r:Inference;
+  r:gives {
+    (:patient008 dco:Male false) fl:gpi (1 1).
+  };
+  r:evidence (
+    <#lemma34>
+  );
+  r:rule <#lemma20>.
+
+<#lemma16> a r:Inference;
+  r:gives {
+    (:patient008 dco:Old false) fl:gpi (1 1).
+  };
+  r:evidence (
+    <#lemma35>
+  );
+  r:rule <#lemma20>.
+
+<#lemma17> a r:Inference;
+  r:gives {
+    (:patient008 dco:Dysuria false) fl:gpi (1 1).
+  };
+  r:evidence (
+    <#lemma36>
+  );
+  r:rule <#lemma20>.
+
+<#lemma18> a r:Inference;
+  r:gives {
+    (:patient008 dco:DigitalRectalExamination false) fl:gpi (1 1).
+  };
+  r:evidence (
+    <#lemma37>
+  );
+  r:rule <#lemma20>.
+
+<#lemma19> a r:Inference;
+  r:gives {
+    (:patient008 dco:SimpleUrinaryTractInfection false) fl:gpi (0.15609492798580316 0.24989839953254675).
+  };
+  r:evidence (
+    <#lemma38>
+  );
+  r:rule <#lemma39>.
+
+<#lemma20> a r:Extraction;
+  r:gives {
+    {(?x_0_1 ?x_1_1 false) fl:gpi ?x_2_1} => {(?x_0_1 ?x_1_1 false) fl:gpi ?x_2_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/fgcm-query.n3>].
+
+<#lemma21> a r:Inference;
+  r:gives {
+    (:patient008 dco:SimpleAcuteCystitis false) fl:gpi (0.5 0.6818062399896525).
+  };
+  r:evidence (
+    <#lemma40>
+  );
+  r:rule <#lemma39>.
+
+<#lemma22> a r:Inference;
+  r:gives {
+    (:patient008 dco:ComplicatedUrinaryTractInfection false) fl:gpi (0.9962884114614465 0.9975150883686373).
+  };
+  r:evidence (
+    <#lemma41>
+  );
+  r:rule <#lemma39>.
+
+<#lemma23> a r:Inference;
+  r:gives {
+    (:patient008 dco:SimpleAcutePyelonephritis false) fl:gpi (0.9352648821737795 0.9575078825964835).
+  };
+  r:evidence (
+    <#lemma42>
+  );
+  r:rule <#lemma39>.
+
+<#lemma24> a r:Inference;
+  r:gives {
+    (:patient008 dco:ComplicatedAcutePyelonephritis false) fl:gpi (0.3181937600103475 0.5).
+  };
+  r:evidence (
+    <#lemma43>
+  );
+  r:rule <#lemma39>.
+
+<#lemma25> a r:Inference;
+  r:gives {
+    (:patient008 dco:PregnancyUrinaryTractInfection false) fl:gpi (0.6968116667552052 0.7501016004674532).
+  };
+  r:evidence (
+    <#lemma44>
+  );
+  r:rule <#lemma39>.
+
+<#lemma26> a r:Inference;
+  r:gives {
+    (:patient008 dco:ObstructiveUropathy false) fl:gpi (0.3181937600103475 0.3181937600103475).
+  };
+  r:evidence (
+    <#lemma45>
+  );
+  r:rule <#lemma39>.
+
+<#lemma27> a r:Inference;
+  r:gives {
+    (:patient008 dco:PregnancyObstructiveUropathy false) fl:gpi (0.6497482370328734 0.6818062399896525).
+  };
+  r:evidence (
+    <#lemma46>
+  );
+  r:rule <#lemma39>.
+
+<#lemma28> a r:Inference;
+  r:gives {
+    (:patient008 dco:ComplicatedAcutePregnancyPyelonephritis false) fl:gpi (0.5968726072149699 0.7501016004674533).
+  };
+  r:evidence (
+    <#lemma47>
+  );
+  r:rule <#lemma39>.
+
+<#lemma29> a r:Inference;
+  r:gives {
+    (:patient008 dco:AcuteProstatis false) fl:gpi (0.9950831899235624 0.9954629272837167).
+  };
+  r:evidence (
+    <#lemma48>
+  );
+  r:rule <#lemma39>.
+
+<#lemma30> a r:Inference;
+  r:gives {
+    (:patient008 dco:Fever false) fl:gpi (0.8 1).
+  };
+  r:evidence (
+    <#lemma49>
+  );
+  r:rule <#lemma39>.
+
+<#lemma31> a r:Inference;
+  r:gives {
+    (:patient008 dco:UrineDipstickTest false) fl:gpi (1 1).
+  };
+  r:evidence (
+    <#lemma50>
+  );
+  r:rule <#lemma39>.
+
+<#lemma32> a r:Inference;
+  r:gives {
+    (:patient008 dco:Chills false) fl:gpi (1 1).
+  };
+  r:evidence (
+    <#lemma51>
+  );
+  r:rule <#lemma39>.
+
+<#lemma33> a r:Inference;
+  r:gives {
+    (:patient008 dco:DiabetesMellitus false) fl:gpi (0 0).
+  };
+  r:evidence (
+    <#lemma52>
+  );
+  r:rule <#lemma39>.
+
+<#lemma34> a r:Inference;
+  r:gives {
+    (:patient008 dco:Male false) fl:gpi (1 1).
+  };
+  r:evidence (
+    <#lemma53>
+  );
+  r:rule <#lemma39>.
+
+<#lemma35> a r:Inference;
+  r:gives {
+    (:patient008 dco:Old false) fl:gpi (1 1).
+  };
+  r:evidence (
+    <#lemma54>
+  );
+  r:rule <#lemma39>.
+
+<#lemma36> a r:Inference;
+  r:gives {
+    (:patient008 dco:Dysuria false) fl:gpi (1 1).
+  };
+  r:evidence (
+    <#lemma55>
+  );
+  r:rule <#lemma39>.
+
+<#lemma37> a r:Inference;
+  r:gives {
+    (:patient008 dco:DigitalRectalExamination false) fl:gpi (1 1).
+  };
+  r:evidence (
+    <#lemma56>
+  );
+  r:rule <#lemma39>.
+
+<#lemma38> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:SimpleUrinaryTractInfection 0.15609492798580316 0.24989839953254675 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:SimpleUrinaryTractInfection) fl:gpi (_:sk_0 _:sk_1)}} {0.15609492798580316 log:equalTo _:sk_0.
+      0.24989839953254675 log:equalTo _:sk_1} {0.15609492798580316 log:equalTo 0.15609492798580316 .
+      0.24989839953254675 log:equalTo 0.24989839953254675}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:SimpleUrinaryTractInfection 0.15609492798580316 0.24989839953254675 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:SimpleUrinaryTractInfection) fl:gpi (?V0 ?V1)}} {0.15609492798580316 log:equalTo ?V0.
+     0.24989839953254675 log:equalTo ?V1} {0.15609492798580316 log:equalTo 0.15609492798580316 .
+     0.24989839953254675 log:equalTo 0.24989839953254675}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:SimpleUrinaryTractInfection 0.15609492798580316 0.24989839953254675 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:SimpleUrinaryTractInfection) fl:gpi (_:x_0_2 _:x_1_2)}} {0.15609492798580316 log:equalTo _:x_0_2.
+     0.24989839953254675 log:equalTo _:x_1_2} {0.15609492798580316 log:equalTo 0.15609492798580316 .
+     0.24989839953254675 log:equalTo 0.24989839953254675}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:SimpleUrinaryTractInfection 0.15609492798580316 0.24989839953254675 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:SimpleUrinaryTractInfection) fl:gpi (_:x_0_2 _:x_1_2)}} {0.15609492798580316 log:equalTo _:x_0_2.
+      0.24989839953254675 log:equalTo _:x_1_2} {0.15609492798580316 log:equalTo 0.15609492798580316 .
+      0.24989839953254675 log:equalTo 0.24989839953254675}) e:derive true}}}].
+
+<#lemma39> a r:Extraction;
+  r:gives {
+    {(?x_2_3 ?x_4_3 ?x_1_3) fl:gpi (?x_9_3 ?x_10_3)} <= {?x_0_3 e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+        () fgcm:expandClosureGsigma true.
+        (?x_1_3) fgcm:handleUnknownVariables true.
+        (?x_2_3 1) fgcm:iterate ?x_3_3.
+        ("nb_setval" "IterationsNeeded" ?x_3_3) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+      ("nb_getval" "IterationsNeeded" ?x_3_3) e:derive true.
+      ?x_2_3 fgcm:gpi (?x_4_3 ?x_5_3 ?x_6_3 ?x_3_3).
+      ("if_then_else" {?x_0_3 e:closure {(?x_2_3 ?x_4_3) fl:gpi (?x_7_3 ?x_8_3)}} {?x_9_3 log:equalTo ?x_7_3.
+       ?x_10_3 log:equalTo ?x_8_3} {?x_9_3 log:equalTo ?x_5_3.
+       ?x_10_3 log:equalTo ?x_6_3}) e:derive true}}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3>].
+
+<#lemma40> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:SimpleAcuteCystitis 0.5 0.6818062399896525 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:SimpleAcuteCystitis) fl:gpi (_:sk_0 _:sk_1)}} {0.5 log:equalTo _:sk_0.
+      0.6818062399896525 log:equalTo _:sk_1} {0.5 log:equalTo 0.5 .
+      0.6818062399896525 log:equalTo 0.6818062399896525}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:SimpleAcuteCystitis 0.5 0.6818062399896525 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:SimpleAcuteCystitis) fl:gpi (?V0 ?V1)}} {0.5 log:equalTo ?V0.
+     0.6818062399896525 log:equalTo ?V1} {0.5 log:equalTo 0.5 .
+     0.6818062399896525 log:equalTo 0.6818062399896525}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:SimpleAcuteCystitis 0.5 0.6818062399896525 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:SimpleAcuteCystitis) fl:gpi (_:x_0_4 _:x_1_4)}} {0.5 log:equalTo _:x_0_4.
+     0.6818062399896525 log:equalTo _:x_1_4} {0.5 log:equalTo 0.5 .
+     0.6818062399896525 log:equalTo 0.6818062399896525}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:SimpleAcuteCystitis 0.5 0.6818062399896525 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:SimpleAcuteCystitis) fl:gpi (_:x_0_4 _:x_1_4)}} {0.5 log:equalTo _:x_0_4.
+      0.6818062399896525 log:equalTo _:x_1_4} {0.5 log:equalTo 0.5 .
+      0.6818062399896525 log:equalTo 0.6818062399896525}) e:derive true}}}].
+
+<#lemma41> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:ComplicatedUrinaryTractInfection 0.9962884114614465 0.9975150883686373 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:ComplicatedUrinaryTractInfection) fl:gpi (_:sk_0 _:sk_1)}} {0.9962884114614465 log:equalTo _:sk_0.
+      0.9975150883686373 log:equalTo _:sk_1} {0.9962884114614465 log:equalTo 0.9962884114614465 .
+      0.9975150883686373 log:equalTo 0.9975150883686373}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:ComplicatedUrinaryTractInfection 0.9962884114614465 0.9975150883686373 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:ComplicatedUrinaryTractInfection) fl:gpi (?V0 ?V1)}} {0.9962884114614465 log:equalTo ?V0.
+     0.9975150883686373 log:equalTo ?V1} {0.9962884114614465 log:equalTo 0.9962884114614465 .
+     0.9975150883686373 log:equalTo 0.9975150883686373}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:ComplicatedUrinaryTractInfection 0.9962884114614465 0.9975150883686373 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:ComplicatedUrinaryTractInfection) fl:gpi (_:x_0_5 _:x_1_5)}} {0.9962884114614465 log:equalTo _:x_0_5.
+     0.9975150883686373 log:equalTo _:x_1_5} {0.9962884114614465 log:equalTo 0.9962884114614465 .
+     0.9975150883686373 log:equalTo 0.9975150883686373}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:ComplicatedUrinaryTractInfection 0.9962884114614465 0.9975150883686373 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:ComplicatedUrinaryTractInfection) fl:gpi (_:x_0_5 _:x_1_5)}} {0.9962884114614465 log:equalTo _:x_0_5.
+      0.9975150883686373 log:equalTo _:x_1_5} {0.9962884114614465 log:equalTo 0.9962884114614465 .
+      0.9975150883686373 log:equalTo 0.9975150883686373}) e:derive true}}}].
+
+<#lemma42> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:SimpleAcutePyelonephritis 0.9352648821737795 0.9575078825964835 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:SimpleAcutePyelonephritis) fl:gpi (_:sk_0 _:sk_1)}} {0.9352648821737795 log:equalTo _:sk_0.
+      0.9575078825964835 log:equalTo _:sk_1} {0.9352648821737795 log:equalTo 0.9352648821737795 .
+      0.9575078825964835 log:equalTo 0.9575078825964835}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:SimpleAcutePyelonephritis 0.9352648821737795 0.9575078825964835 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:SimpleAcutePyelonephritis) fl:gpi (?V0 ?V1)}} {0.9352648821737795 log:equalTo ?V0.
+     0.9575078825964835 log:equalTo ?V1} {0.9352648821737795 log:equalTo 0.9352648821737795 .
+     0.9575078825964835 log:equalTo 0.9575078825964835}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:SimpleAcutePyelonephritis 0.9352648821737795 0.9575078825964835 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:SimpleAcutePyelonephritis) fl:gpi (_:x_0_6 _:x_1_6)}} {0.9352648821737795 log:equalTo _:x_0_6.
+     0.9575078825964835 log:equalTo _:x_1_6} {0.9352648821737795 log:equalTo 0.9352648821737795 .
+     0.9575078825964835 log:equalTo 0.9575078825964835}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:SimpleAcutePyelonephritis 0.9352648821737795 0.9575078825964835 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:SimpleAcutePyelonephritis) fl:gpi (_:x_0_6 _:x_1_6)}} {0.9352648821737795 log:equalTo _:x_0_6.
+      0.9575078825964835 log:equalTo _:x_1_6} {0.9352648821737795 log:equalTo 0.9352648821737795 .
+      0.9575078825964835 log:equalTo 0.9575078825964835}) e:derive true}}}].
+
+<#lemma43> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:ComplicatedAcutePyelonephritis 0.3181937600103475 0.5 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:ComplicatedAcutePyelonephritis) fl:gpi (_:sk_0 _:sk_1)}} {0.3181937600103475 log:equalTo _:sk_0.
+      0.5 log:equalTo _:sk_1} {0.3181937600103475 log:equalTo 0.3181937600103475 .
+      0.5 log:equalTo 0.5}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:ComplicatedAcutePyelonephritis 0.3181937600103475 0.5 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:ComplicatedAcutePyelonephritis) fl:gpi (?V0 ?V1)}} {0.3181937600103475 log:equalTo ?V0.
+     0.5 log:equalTo ?V1} {0.3181937600103475 log:equalTo 0.3181937600103475 .
+     0.5 log:equalTo 0.5}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:ComplicatedAcutePyelonephritis 0.3181937600103475 0.5 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:ComplicatedAcutePyelonephritis) fl:gpi (_:x_0_7 _:x_1_7)}} {0.3181937600103475 log:equalTo _:x_0_7.
+     0.5 log:equalTo _:x_1_7} {0.3181937600103475 log:equalTo 0.3181937600103475 .
+     0.5 log:equalTo 0.5}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:ComplicatedAcutePyelonephritis 0.3181937600103475 0.5 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:ComplicatedAcutePyelonephritis) fl:gpi (_:x_0_7 _:x_1_7)}} {0.3181937600103475 log:equalTo _:x_0_7.
+      0.5 log:equalTo _:x_1_7} {0.3181937600103475 log:equalTo 0.3181937600103475 .
+      0.5 log:equalTo 0.5}) e:derive true}}}].
+
+<#lemma44> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:PregnancyUrinaryTractInfection 0.6968116667552052 0.7501016004674532 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:PregnancyUrinaryTractInfection) fl:gpi (_:sk_0 _:sk_1)}} {0.6968116667552052 log:equalTo _:sk_0.
+      0.7501016004674532 log:equalTo _:sk_1} {0.6968116667552052 log:equalTo 0.6968116667552052 .
+      0.7501016004674532 log:equalTo 0.7501016004674532}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:PregnancyUrinaryTractInfection 0.6968116667552052 0.7501016004674532 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:PregnancyUrinaryTractInfection) fl:gpi (?V0 ?V1)}} {0.6968116667552052 log:equalTo ?V0.
+     0.7501016004674532 log:equalTo ?V1} {0.6968116667552052 log:equalTo 0.6968116667552052 .
+     0.7501016004674532 log:equalTo 0.7501016004674532}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:PregnancyUrinaryTractInfection 0.6968116667552052 0.7501016004674532 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:PregnancyUrinaryTractInfection) fl:gpi (_:x_0_8 _:x_1_8)}} {0.6968116667552052 log:equalTo _:x_0_8.
+     0.7501016004674532 log:equalTo _:x_1_8} {0.6968116667552052 log:equalTo 0.6968116667552052 .
+     0.7501016004674532 log:equalTo 0.7501016004674532}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:PregnancyUrinaryTractInfection 0.6968116667552052 0.7501016004674532 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:PregnancyUrinaryTractInfection) fl:gpi (_:x_0_8 _:x_1_8)}} {0.6968116667552052 log:equalTo _:x_0_8.
+      0.7501016004674532 log:equalTo _:x_1_8} {0.6968116667552052 log:equalTo 0.6968116667552052 .
+      0.7501016004674532 log:equalTo 0.7501016004674532}) e:derive true}}}].
+
+<#lemma45> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:ObstructiveUropathy 0.3181937600103475 0.3181937600103475 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:ObstructiveUropathy) fl:gpi (_:sk_0 _:sk_1)}} {0.3181937600103475 log:equalTo _:sk_0.
+      0.3181937600103475 log:equalTo _:sk_1} {0.3181937600103475 log:equalTo 0.3181937600103475 .
+      0.3181937600103475 log:equalTo 0.3181937600103475}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:ObstructiveUropathy 0.3181937600103475 0.3181937600103475 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:ObstructiveUropathy) fl:gpi (?V0 ?V1)}} {0.3181937600103475 log:equalTo ?V0.
+     0.3181937600103475 log:equalTo ?V1} {0.3181937600103475 log:equalTo 0.3181937600103475 .
+     0.3181937600103475 log:equalTo 0.3181937600103475}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:ObstructiveUropathy 0.3181937600103475 0.3181937600103475 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:ObstructiveUropathy) fl:gpi (_:x_0_9 _:x_1_9)}} {0.3181937600103475 log:equalTo _:x_0_9.
+     0.3181937600103475 log:equalTo _:x_1_9} {0.3181937600103475 log:equalTo 0.3181937600103475 .
+     0.3181937600103475 log:equalTo 0.3181937600103475}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:ObstructiveUropathy 0.3181937600103475 0.3181937600103475 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:ObstructiveUropathy) fl:gpi (_:x_0_9 _:x_1_9)}} {0.3181937600103475 log:equalTo _:x_0_9.
+      0.3181937600103475 log:equalTo _:x_1_9} {0.3181937600103475 log:equalTo 0.3181937600103475 .
+      0.3181937600103475 log:equalTo 0.3181937600103475}) e:derive true}}}].
+
+<#lemma46> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:PregnancyObstructiveUropathy 0.6497482370328734 0.6818062399896525 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:PregnancyObstructiveUropathy) fl:gpi (_:sk_0 _:sk_1)}} {0.6497482370328734 log:equalTo _:sk_0.
+      0.6818062399896525 log:equalTo _:sk_1} {0.6497482370328734 log:equalTo 0.6497482370328734 .
+      0.6818062399896525 log:equalTo 0.6818062399896525}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:PregnancyObstructiveUropathy 0.6497482370328734 0.6818062399896525 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:PregnancyObstructiveUropathy) fl:gpi (?V0 ?V1)}} {0.6497482370328734 log:equalTo ?V0.
+     0.6818062399896525 log:equalTo ?V1} {0.6497482370328734 log:equalTo 0.6497482370328734 .
+     0.6818062399896525 log:equalTo 0.6818062399896525}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:PregnancyObstructiveUropathy 0.6497482370328734 0.6818062399896525 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:PregnancyObstructiveUropathy) fl:gpi (_:x_0_10 _:x_1_10)}} {0.6497482370328734 log:equalTo _:x_0_10.
+     0.6818062399896525 log:equalTo _:x_1_10} {0.6497482370328734 log:equalTo 0.6497482370328734 .
+     0.6818062399896525 log:equalTo 0.6818062399896525}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:PregnancyObstructiveUropathy 0.6497482370328734 0.6818062399896525 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:PregnancyObstructiveUropathy) fl:gpi (_:x_0_10 _:x_1_10)}} {0.6497482370328734 log:equalTo _:x_0_10.
+      0.6818062399896525 log:equalTo _:x_1_10} {0.6497482370328734 log:equalTo 0.6497482370328734 .
+      0.6818062399896525 log:equalTo 0.6818062399896525}) e:derive true}}}].
+
+<#lemma47> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:ComplicatedAcutePregnancyPyelonephritis 0.5968726072149699 0.7501016004674533 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:ComplicatedAcutePregnancyPyelonephritis) fl:gpi (_:sk_0 _:sk_1)}} {0.5968726072149699 log:equalTo _:sk_0.
+      0.7501016004674533 log:equalTo _:sk_1} {0.5968726072149699 log:equalTo 0.5968726072149699 .
+      0.7501016004674533 log:equalTo 0.7501016004674533}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:ComplicatedAcutePregnancyPyelonephritis 0.5968726072149699 0.7501016004674533 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:ComplicatedAcutePregnancyPyelonephritis) fl:gpi (?V0 ?V1)}} {0.5968726072149699 log:equalTo ?V0.
+     0.7501016004674533 log:equalTo ?V1} {0.5968726072149699 log:equalTo 0.5968726072149699 .
+     0.7501016004674533 log:equalTo 0.7501016004674533}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:ComplicatedAcutePregnancyPyelonephritis 0.5968726072149699 0.7501016004674533 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:ComplicatedAcutePregnancyPyelonephritis) fl:gpi (_:x_0_11 _:x_1_11)}} {0.5968726072149699 log:equalTo _:x_0_11.
+     0.7501016004674533 log:equalTo _:x_1_11} {0.5968726072149699 log:equalTo 0.5968726072149699 .
+     0.7501016004674533 log:equalTo 0.7501016004674533}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:ComplicatedAcutePregnancyPyelonephritis 0.5968726072149699 0.7501016004674533 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:ComplicatedAcutePregnancyPyelonephritis) fl:gpi (_:x_0_11 _:x_1_11)}} {0.5968726072149699 log:equalTo _:x_0_11.
+      0.7501016004674533 log:equalTo _:x_1_11} {0.5968726072149699 log:equalTo 0.5968726072149699 .
+      0.7501016004674533 log:equalTo 0.7501016004674533}) e:derive true}}}].
+
+<#lemma48> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:AcuteProstatis 0.9950831899235624 0.9954629272837167 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:AcuteProstatis) fl:gpi (_:sk_0 _:sk_1)}} {0.9950831899235624 log:equalTo _:sk_0.
+      0.9954629272837167 log:equalTo _:sk_1} {0.9950831899235624 log:equalTo 0.9950831899235624 .
+      0.9954629272837167 log:equalTo 0.9954629272837167}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:AcuteProstatis 0.9950831899235624 0.9954629272837167 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:AcuteProstatis) fl:gpi (?V0 ?V1)}} {0.9950831899235624 log:equalTo ?V0.
+     0.9954629272837167 log:equalTo ?V1} {0.9950831899235624 log:equalTo 0.9950831899235624 .
+     0.9954629272837167 log:equalTo 0.9954629272837167}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:AcuteProstatis 0.9950831899235624 0.9954629272837167 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:AcuteProstatis) fl:gpi (_:x_0_12 _:x_1_12)}} {0.9950831899235624 log:equalTo _:x_0_12.
+     0.9954629272837167 log:equalTo _:x_1_12} {0.9950831899235624 log:equalTo 0.9950831899235624 .
+     0.9954629272837167 log:equalTo 0.9954629272837167}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:AcuteProstatis 0.9950831899235624 0.9954629272837167 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:AcuteProstatis) fl:gpi (_:x_0_12 _:x_1_12)}} {0.9950831899235624 log:equalTo _:x_0_12.
+      0.9954629272837167 log:equalTo _:x_1_12} {0.9950831899235624 log:equalTo 0.9950831899235624 .
+      0.9954629272837167 log:equalTo 0.9954629272837167}) e:derive true}}}].
+
+<#lemma49> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:Fever 0.8 1 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Fever) fl:gpi (_:sk_0 _:sk_1)}} {0.8 log:equalTo _:sk_0.
+      1 log:equalTo _:sk_1} {0.8 log:equalTo 0.8 .
+      1 log:equalTo 1}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:Fever 0.8 1 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Fever) fl:gpi (?V0 ?V1)}} {0.8 log:equalTo ?V0.
+     1 log:equalTo ?V1} {0.8 log:equalTo 0.8 .
+     1 log:equalTo 1}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:Fever 0.8 1 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Fever) fl:gpi (_:x_0_13 _:x_1_13)}} {0.8 log:equalTo _:x_0_13.
+     1 log:equalTo _:x_1_13} {0.8 log:equalTo 0.8 .
+     1 log:equalTo 1}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:Fever 0.8 1 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Fever) fl:gpi (_:x_0_13 _:x_1_13)}} {0.8 log:equalTo _:x_0_13.
+      1 log:equalTo _:x_1_13} {0.8 log:equalTo 0.8 .
+      1 log:equalTo 1}) e:derive true}}}].
+
+<#lemma50> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:UrineDipstickTest 1 1 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:UrineDipstickTest) fl:gpi (_:sk_0 _:sk_1)}} {1 log:equalTo _:sk_0.
+      1 log:equalTo _:sk_1} {1 log:equalTo 1 .
+      1 log:equalTo 1}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:UrineDipstickTest 1 1 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:UrineDipstickTest) fl:gpi (?V0 ?V1)}} {1 log:equalTo ?V0.
+     1 log:equalTo ?V1} {1 log:equalTo 1 .
+     1 log:equalTo 1}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:UrineDipstickTest 1 1 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:UrineDipstickTest) fl:gpi (_:x_0_14 _:x_1_14)}} {1 log:equalTo _:x_0_14.
+     1 log:equalTo _:x_1_14} {1 log:equalTo 1 .
+     1 log:equalTo 1}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:UrineDipstickTest 1 1 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:UrineDipstickTest) fl:gpi (_:x_0_14 _:x_1_14)}} {1 log:equalTo _:x_0_14.
+      1 log:equalTo _:x_1_14} {1 log:equalTo 1 .
+      1 log:equalTo 1}) e:derive true}}}].
+
+<#lemma51> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:Chills 1 1 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Chills) fl:gpi (_:sk_0 _:sk_1)}} {1 log:equalTo _:sk_0.
+      1 log:equalTo _:sk_1} {1 log:equalTo 1 .
+      1 log:equalTo 1}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:Chills 1 1 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Chills) fl:gpi (?V0 ?V1)}} {1 log:equalTo ?V0.
+     1 log:equalTo ?V1} {1 log:equalTo 1 .
+     1 log:equalTo 1}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:Chills 1 1 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Chills) fl:gpi (_:x_0_15 _:x_1_15)}} {1 log:equalTo _:x_0_15.
+     1 log:equalTo _:x_1_15} {1 log:equalTo 1 .
+     1 log:equalTo 1}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:Chills 1 1 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Chills) fl:gpi (_:x_0_15 _:x_1_15)}} {1 log:equalTo _:x_0_15.
+      1 log:equalTo _:x_1_15} {1 log:equalTo 1 .
+      1 log:equalTo 1}) e:derive true}}}].
+
+<#lemma52> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:DiabetesMellitus 0 0 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:DiabetesMellitus) fl:gpi (_:sk_0 _:sk_1)}} {0 log:equalTo _:sk_0.
+      0 log:equalTo _:sk_1} {0 log:equalTo 0 .
+      0 log:equalTo 0}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:DiabetesMellitus 0 0 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:DiabetesMellitus) fl:gpi (?V0 ?V1)}} {0 log:equalTo ?V0.
+     0 log:equalTo ?V1} {0 log:equalTo 0 .
+     0 log:equalTo 0}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:DiabetesMellitus 0 0 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:DiabetesMellitus) fl:gpi (_:x_0_16 _:x_1_16)}} {0 log:equalTo _:x_0_16.
+     0 log:equalTo _:x_1_16} {0 log:equalTo 0 .
+     0 log:equalTo 0}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:DiabetesMellitus 0 0 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:DiabetesMellitus) fl:gpi (_:x_0_16 _:x_1_16)}} {0 log:equalTo _:x_0_16.
+      0 log:equalTo _:x_1_16} {0 log:equalTo 0 .
+      0 log:equalTo 0}) e:derive true}}}].
+
+<#lemma53> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:Male 1 1 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Male) fl:gpi (_:sk_0 _:sk_1)}} {1 log:equalTo _:sk_0.
+      1 log:equalTo _:sk_1} {1 log:equalTo 1 .
+      1 log:equalTo 1}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:Male 1 1 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Male) fl:gpi (?V0 ?V1)}} {1 log:equalTo ?V0.
+     1 log:equalTo ?V1} {1 log:equalTo 1 .
+     1 log:equalTo 1}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:Male 1 1 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Male) fl:gpi (_:x_0_17 _:x_1_17)}} {1 log:equalTo _:x_0_17.
+     1 log:equalTo _:x_1_17} {1 log:equalTo 1 .
+     1 log:equalTo 1}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:Male 1 1 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Male) fl:gpi (_:x_0_17 _:x_1_17)}} {1 log:equalTo _:x_0_17.
+      1 log:equalTo _:x_1_17} {1 log:equalTo 1 .
+      1 log:equalTo 1}) e:derive true}}}].
+
+<#lemma54> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:Old 1 1 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Old) fl:gpi (_:sk_0 _:sk_1)}} {1 log:equalTo _:sk_0.
+      1 log:equalTo _:sk_1} {1 log:equalTo 1 .
+      1 log:equalTo 1}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:Old 1 1 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Old) fl:gpi (?V0 ?V1)}} {1 log:equalTo ?V0.
+     1 log:equalTo ?V1} {1 log:equalTo 1 .
+     1 log:equalTo 1}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:Old 1 1 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Old) fl:gpi (_:x_0_18 _:x_1_18)}} {1 log:equalTo _:x_0_18.
+     1 log:equalTo _:x_1_18} {1 log:equalTo 1 .
+     1 log:equalTo 1}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:Old 1 1 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Old) fl:gpi (_:x_0_18 _:x_1_18)}} {1 log:equalTo _:x_0_18.
+      1 log:equalTo _:x_1_18} {1 log:equalTo 1 .
+      1 log:equalTo 1}) e:derive true}}}].
+
+<#lemma55> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:Dysuria 1 1 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Dysuria) fl:gpi (_:sk_0 _:sk_1)}} {1 log:equalTo _:sk_0.
+      1 log:equalTo _:sk_1} {1 log:equalTo 1 .
+      1 log:equalTo 1}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:Dysuria 1 1 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Dysuria) fl:gpi (?V0 ?V1)}} {1 log:equalTo ?V0.
+     1 log:equalTo ?V1} {1 log:equalTo 1 .
+     1 log:equalTo 1}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:Dysuria 1 1 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Dysuria) fl:gpi (_:x_0_19 _:x_1_19)}} {1 log:equalTo _:x_0_19.
+     1 log:equalTo _:x_1_19} {1 log:equalTo 1 .
+     1 log:equalTo 1}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:Dysuria 1 1 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:Dysuria) fl:gpi (_:x_0_19 _:x_1_19)}} {1 log:equalTo _:x_0_19.
+      1 log:equalTo _:x_1_19} {1 log:equalTo 1 .
+      1 log:equalTo 1}) e:derive true}}}].
+
+<#lemma56> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:DigitalRectalExamination 1 1 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:DigitalRectalExamination) fl:gpi (_:sk_0 _:sk_1)}} {1 log:equalTo _:sk_0.
+      1 log:equalTo _:sk_1} {1 log:equalTo 1 .
+      1 log:equalTo 1}) e:derive true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {("nb_getval" "IterationsNeeded" 7) e:derive true}]
+    [ a r:Fact; r:gives {:patient008 fgcm:gpi (dco:DigitalRectalExamination 1 1 7)}]
+    [ a r:Fact; r:gives {("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:DigitalRectalExamination) fl:gpi (?V0 ?V1)}} {1 log:equalTo ?V0.
+     1 log:equalTo ?V1} {1 log:equalTo 1 .
+     1 log:equalTo 1}) e:derive true}]
+  );
+  r:rule [ a r:Fact; r:gives {{("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+      () fgcm:expandClosureGsigma true.
+      (false) fgcm:handleUnknownVariables true.
+      (:patient008 1) fgcm:iterate 7 .
+      ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+    ("nb_getval" "IterationsNeeded" 7) e:derive true.
+    :patient008 fgcm:gpi (dco:DigitalRectalExamination 1 1 7).
+    ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:DigitalRectalExamination) fl:gpi (_:x_0_20 _:x_1_20)}} {1 log:equalTo _:x_0_20.
+     1 log:equalTo _:x_1_20} {1 log:equalTo 1 .
+     1 log:equalTo 1}) e:derive true} => {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:call {("if_then_else" {("nb_getval" "fnet" "done") e:derive true} true {(";" {() fgcm:expandClosureGmu true.
+       () fgcm:expandClosureGsigma true.
+       (false) fgcm:handleUnknownVariables true.
+       (:patient008 1) fgcm:iterate 7 .
+       ("nb_setval" "IterationsNeeded" 7) e:derive true} {("nb_setval" "fnet" "done") e:derive true}) e:derive true}) e:derive true.
+     ("nb_getval" "IterationsNeeded" 7) e:derive true.
+     :patient008 fgcm:gpi (dco:DigitalRectalExamination 1 1 7).
+     ("if_then_else" {((<http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3> <http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3> <http://eulersharp.sourceforge.net/2007/07test/patient.n3> <http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3>) 1) e:closure {(:patient008 dco:DigitalRectalExamination) fl:gpi (_:x_0_20 _:x_1_20)}} {1 log:equalTo _:x_0_20.
+      1 log:equalTo _:x_1_20} {1 log:equalTo 1 .
+      1 log:equalTo 1}) e:derive true}}}].
+
+#2018-04-18T08:27:58.194Z in=630 out=18 ent=237 step=1917 brake=5 inf=804063 sec=0.164 inf/sec=4902823
+#ENDS
+

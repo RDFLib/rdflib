@@ -1,0 +1,10 @@
+{
+  "quad_count": 4,
+  "exact_match": true,
+  "has_subject_iris": [
+    "http://example.org/kb/individual-a",
+    "http://example.org/kb/individual-b",
+    "http://example.org/ontology/core/MyClassA",
+    "http://example.org/ontology/core/MyClassB"
+  ]
+}

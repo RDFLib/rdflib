@@ -1,0 +1,94 @@
+#Processed by $Id: euler.yap 2932 2009-06-19 19:33:07Z josd $
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <try#>.
+@prefix var: <http://localhost/var#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+:i1 :p1 :j1.
+:j1 :p1 :k1.
+:k1 :p1 :l1.
+:l1 :p1 :m1.
+:m1 :p1 :n1.
+:n1 :p1 :o1.
+:o1 :p1 :i1.
+:i2 :p2 :j2.
+:j2 :p2 :k2.
+:k2 :p2 :l2.
+:l2 :p2 :m2.
+:m2 :p2 :n2.
+:n2 :p2 :o2.
+:o2 :p2 :i2.
+:p1 owl:sameAs :p2.
+:q1 owl:sameAs :q2.
+:q2 owl:sameAs :p1.
+:p2 owl:sameAs :p1.
+:q2 owl:sameAs :q1.
+:p1 owl:sameAs :q2.
+:p1 owl:sameAs :p1.
+:q1 owl:sameAs :p1.
+:q1 owl:sameAs :q1.
+:q2 owl:sameAs :p2.
+:q2 owl:sameAs :q2.
+:p2 owl:sameAs :p2.
+:p2 owl:sameAs :q2.
+:p1 owl:sameAs :q1.
+:p2 owl:sameAs :q1.
+:q1 owl:sameAs :p2.
+:i1 :p2 :j1.
+:j1 :p2 :k1.
+:k1 :p2 :l1.
+:l1 :p2 :m1.
+:m1 :p2 :n1.
+:n1 :p2 :o1.
+:o1 :p2 :i1.
+:i2 :p1 :j2.
+:j2 :p1 :k2.
+:k2 :p1 :l2.
+:l2 :p1 :m2.
+:m2 :p1 :n2.
+:n2 :p1 :o2.
+:o2 :p1 :i2.
+:i1 :q2 :j1.
+:j1 :q2 :k1.
+:k1 :q2 :l1.
+:l1 :q2 :m1.
+:m1 :q2 :n1.
+:n1 :q2 :o1.
+:o1 :q2 :i1.
+:i2 :q2 :j2.
+:j2 :q2 :k2.
+:k2 :q2 :l2.
+:l2 :q2 :m2.
+:m2 :q2 :n2.
+:n2 :q2 :o2.
+:o2 :q2 :i2.
+:i1 :q1 :j1.
+:j1 :q1 :k1.
+:k1 :q1 :l1.
+:l1 :q1 :m1.
+:m1 :q1 :n1.
+:n1 :q1 :o1.
+:o1 :q1 :i1.
+:i2 :q1 :j2.
+:j2 :q1 :k2.
+:k2 :q1 :l2.
+:l2 :q1 :m2.
+:m2 :q1 :n2.
+:n2 :q1 :o2.
+:o2 :q1 :i2.
+
+
+#ENDS 8 msec
+#Trunk : 343/1581 = 21.6951296647691 %
+#Branch: 1/505 = 0.198019801980198 %
+

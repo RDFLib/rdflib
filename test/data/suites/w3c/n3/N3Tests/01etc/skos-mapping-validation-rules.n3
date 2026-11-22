@@ -1,0 +1,308 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix dce: <http://purl.org/dc/elements/1.1/>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix validation: <http://eulersharp.sourceforge.net/2003/03swap/skos-mapping-validation-rules#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+
+
+<http://eulersharp.sourceforge.net/2003/03swap/skos-mapping-validation-rules>
+    dce:title "SKOS Mapping Validation Rules"@en;
+    dce:creator "Hong Sun"@en;
+    dce:contributor "Jos De Roo, Giovanni Mels, Boris De Vloed"@en;
+    dce:publisher "Agfa Healthcare/Belgium"@en;
+    dce:description "Rules for SKOS constraint check"@en;
+    skos:note "Rules to check SKOS mappings which may bring in non-consisitent pattern or vocabulary hijacking."@en;
+    skos:note "A document which further explains these rules can be found at: http://arxiv.org/ftp/arxiv/papers/1310/1310.4156.pdf"@en;
+    rdfs:seeAlso <http://eulersharp.sourceforge.net/2003/03swap/skos-rules>;
+    rdfs:seeAlso <http://eulersharp.sourceforge.net/2003/03swap/skos-extra-rules>;
+    rdfs:seeAlso <http://arxiv.org/ftp/arxiv/papers/1310/1310.4156.pdf>.
+
+#CLASSES
+    
+# Classes, the classes below lists the false/suspicious patterns listed in the associated document.
+validation:Pattern1NonConsistentWithSKOSExtraRules 
+    a rdfs:Class;
+    rdfs:comment "The inferred skos:broaderTransitive relation via skos:broadMatch mapping consists a cycle the with existing skos:braoderTransitive relation".
+    
+validation:Pattern1VocabularyHijacking 
+    a rdfs:Class;
+    rdfs:comment "The inferred skos:broaderTransitive relation via skos:broadMatch mapping is considered as vocabulary hijacking to the original vocabulary".
+    
+validation:Pattern1NonConsistentWithSKOSRules 
+    a rdfs:Class;
+    rdfs:comment "The inferred skos:broaderTransitive relation via skos:broadMatch mapping is considered as contradictory with the existing skos:related relation".    
+
+validation:Pattern2NonConsistentWithSKOSExtraRules 
+    a rdfs:Class;
+    rdfs:comment "The inferred skos:exactMatch relation via skos:exactMatch mapping is considered as contradictory with the existing skos:braoderTransitive relation".
+
+validation:Pattern2VocabularyHijacking 
+    a rdfs:Class;
+    rdfs:comment "The inferred skos:exactMatch relation via skos:exactMatch mapping is considered as vocabulary hijacking to the original vocabulary".
+
+validation:Pattern3NonConsistentWithSKOSRules 
+    a rdfs:Class;
+    rdfs:comment "The inferred skos:broaderTransitive relation via skos:broadMatch mapping and skos:broaderTransitive relation is considered as contradictory with the skos:relatedMatch mapping".
+
+validation:Pattern3NonConsistentWithSKOSExtraRules 
+    a rdfs:Class;
+    rdfs:comment "The inferred skos:broaderTransitive relation via skos:broadMatch mapping and skos:broaderTransitive relation is considered as contradictory with the skos:exactMatch mapping".
+
+validation:Pattern4NonConsistentWithSKOSRules 
+    a rdfs:Class;
+    rdfs:comment "The inferred skos:broaderTransitive relation via skos:broadMatch mapping and skos:broaderTransitive relation is considered as contradictory with the skos:relatedMatch mapping, reverse direction of validation:Pattern3NonConsistentWithSKOSRules".
+
+validation:Pattern4NonConsistentWithSKOSExtraRules 
+    a rdfs:Class;
+    rdfs:comment "The inferred skos:broaderTransitive relation via skos:broadMatch mapping and skos:broaderTransitive relation is considered as contradictory with the skos:exactMatch mapping, reverse direction of validation:Pattern3NonConsistentWithSKOSExtraRules".
+
+validation:Pattern5NonConsistentWithSKOSExtraRules 
+    a rdfs:Class;
+    rdfs:comment "The inferred skos:broaderTransitive relation via skos:broadMatch mappings and skos:broaderTransitive relation is considered as contradictory with the existing skos:braoderTransitive relation".
+
+validation:Pattern5NonConsistentWithSKOSRules 
+    a rdfs:Class;
+    rdfs:comment "The inferred skos:broaderTransitive relation via skos:broadMatch mappings and skos:broaderTransitive relation is considered as contradictory with the existing skos:related relation".    
+    
+validation:Pattern5VocabularyHijacking 
+    a rdfs:Class;
+    rdfs:comment "The inferred skos:broaderTransitive relation via skos:broadMatch mappings and skos:broaderTransitive relation is considered as vocabulary hijacking to the original vocabulary".
+
+validation:Pattern6NonConsistentWithSKOSRules 
+    a rdfs:Class;
+    rdfs:comment "The inferred skos:broaderTransitive relation via skos:broadMatch mapping and skos:broaderTransitive relations is considered as contradictory with the skos:relatedMatch mapping".
+
+validation:Pattern6NonConsistentWithSKOSExtraRules 
+    a rdfs:Class;
+    rdfs:comment "The inferred skos:broaderTransitive relation via skos:broadMatch mapping and skos:broaderTransitive relations is considered as contradictory with the skos:exactMatch mapping".
+
+validation:Pattern7CounterIntuitive 
+    a rdfs:Class;
+    rdfs:comment "The paired mappings creats a cycle on skos:broaderTransitive, indirectly. Therefore this pattern is also considered as suspicious.".
+
+    
+# Class relations 
+validation:Pattern1NonConsistentWithSKOSExtraRules
+    rdfs:subClassOf validation:Pattern1VocabularyHijacking.
+    
+validation:Pattern1NonConsistentWithSKOSRules
+    rdfs:subClassOf validation:Pattern1VocabularyHijacking.    
+    
+validation:Pattern2NonConsistentWithSKOSExtraRules
+    rdfs:subClassOf validation:Pattern2VocabularyHijacking.    
+    
+validation:Pattern5NonConsistentWithSKOSExtraRules    
+    rdfs:subClassOf validation:Pattern5VocabularyHijacking.
+    
+validation:Pattern5NonConsistentWithSKOSRules    
+    rdfs:subClassOf validation:Pattern5VocabularyHijacking.    
+    
+
+#MINIMAL INFERENCE
+    
+#inference on mapping relations
+{ ?x skos:exactMatch ?y } => { ?y skos:exactMatch ?x }.
+{ ?x skos:narrowMatch ?y } => { ?y skos:broadMatch ?x }.
+{ ?x skos:relatedMatch ?y } => { ?y skos:relatedMatch ?x }.
+
+#inference on semantic relations
+{ ?x skos:narrower ?y } => { ?y skos:broader ?x }.
+{ ?x skos:related ?y } => { ?y skos:related ?x }.
+{ ?x skos:broader ?y } => { ?x skos:broaderTransitive ?y }.
+{ ?x skos:broaderTransitive ?y. ?y skos:broaderTransitive ?z } => { ?x skos:broaderTransitive ?z }.
+    
+    
+#PATTERN DETECTION
+
+#Pattern1VocabularyHijacking
+{
+    ?A1 skos:broadMatch ?B1.
+    ?B1 skos:broadMatch ?A2.
+    ?SCOPE e:findall ( ?A1 { ?A1 skos:broaderTransitive ?A2. } () ).
+    {     ?A1 skos:broadMatch ?B1.
+        ?B1 skos:broadMatch ?A2. } e:graphCopy ?pattern.
+} => {
+    ?pattern a validation:Pattern1VocabularyHijacking.
+}.    
+
+#Pattern1NonConsistentWithSKOSExtraRules
+{
+    ?A1 skos:broadMatch ?B1.
+    ?B1 skos:broadMatch ?A2.
+    ?A2 skos:broaderTransitive ?A1.
+    {   ?A1 skos:broadMatch ?B1.
+        ?B1 skos:broadMatch ?A2.
+        ?A2 skos:broaderTransitive ?A1. } e:graphCopy ?pattern.
+} => {
+    ?pattern a validation:Pattern1NonConsistentWithSKOSExtraRules.
+}.
+
+#Pattern1NonConsistentWithSKOSRules
+{
+    ?A1 skos:broadMatch ?B1.
+    ?B1 skos:broadMatch ?A2.
+    ?A1 skos:related ?A2.
+    {   ?A1 skos:broadMatch ?B1.
+        ?B1 skos:broadMatch ?A2.
+        ?A1 skos:related ?A2. } e:graphCopy ?pattern.
+} => {
+    ?pattern a validation:Pattern1NonConsistentWithSKOSRules.
+}.
+
+#Pattern2VocabularyHijacking
+{
+    ?A1 skos:exactMatch ?B1.
+    ?B1 skos:exactMatch ?A2.
+    ?A1 log:notEqualTo ?A2.
+    {     ?A1 skos:exactMatch ?B1.
+        ?B1 skos:exactMatch ?A2. } e:graphCopy ?pattern.
+} => {
+    ?pattern a validation:Pattern2VocabularyHijacking.
+}.
+
+#Pattern2NonConsistentWithSKOSExtraRules
+{
+    ?A1 skos:exactMatch ?B1.
+    ?B1 skos:exactMatch ?A2.
+    ?A1 log:notEqualTo ?A2.
+    ?A2 skos:broaderTransitive ?A1.
+    {     ?A1 skos:exactMatch ?B1.
+        ?B1 skos:exactMatch ?A2.
+        ?A2 skos:broaderTransitive ?A1. } e:graphCopy ?pattern.
+} => {
+    ?pattern a validation:Pattern2NonConsistentWithSKOSExtraRules.
+}.
+
+#Pattern3NonConsistentWithSKOSExtraRules
+{
+    ?A2 skos:broaderTransitive ?A1.
+    ?A1 skos:broadMatch ?B1.
+    ?B1 skos:exactMatch ?A2.
+    {   ?A2 skos:broaderTransitive ?A1.
+        ?A1 skos:broadMatch ?B1.
+        ?B1 skos:exactMatch ?A2. } e:graphCopy ?pattern.
+} => {
+    ?pattern a validation:Pattern3NonConsistentWithSKOSExtraRules.
+}.
+
+#Pattern3NonConsistentWithSKOSRules
+{
+    ?A2 skos:broaderTransitive ?A1.
+    ?A1 skos:broadMatch ?B1.
+    ?B1 skos:relatedMatch ?A2.
+    {      ?A2 skos:broaderTransitive ?A1.
+        ?A1 skos:broadMatch ?B1.
+        ?B1 skos:relatedMatch ?A2. } e:graphCopy ?pattern.
+} => {
+    ?pattern a validation:Pattern3NonConsistentWithSKOSRules.
+}.
+
+#Pattern4NonConsistentWithSKOSExtraRules
+{
+    ?A1 skos:broaderTransitive ?A2.
+    ?B1 skos:broadMatch ?A1.
+    ?A2 skos:exactMatch ?B1.
+    {   ?A1 skos:broaderTransitive ?A2.
+        ?B1 skos:broadMatch ?A1.
+        ?A2 skos:exactMatch ?B1. } e:graphCopy ?pattern.
+} => {
+    ?pattern a validation:Pattern4NonConsistentWithSKOSExtraRules.
+}.
+
+#Pattern4NonConsistentWithSKOSRules
+{
+    ?A1 skos:broaderTransitive ?A2.
+    ?B1 skos:broadMatch ?A1.
+    ?A2 skos:relatedMatch ?B1.
+    {   ?A1 skos:broaderTransitive ?A2.
+        ?B1 skos:broadMatch ?A1.
+        ?A2 skos:relatedMatch ?B1. } e:graphCopy ?pattern.
+} => {
+    ?pattern a validation:Pattern4NonConsistentWithSKOSRules.
+}.
+
+#Pattern5VocabularyHijacking
+{
+    ?A1 skos:broadMatch ?B1.
+    ?B1 skos:broaderTransitive ?B2.
+    ?B2 skos:broadMatch ?A2.
+    ?A1 log:notEqualTo ?A2.
+    ?SCOPE e:findall ( ?A1 { ?A1 skos:broaderTransitive ?A2. } () ).
+    {   ?A1 skos:broadMatch ?B1.
+        ?B1 skos:broaderTransitive ?B2.
+        ?B2 skos:broadMatch ?A2. } e:graphCopy ?pattern.
+} => {
+    ?pattern a validation:Pattern5VocabularyHijacking.
+}.
+
+#Pattern5NonConsistentWithSKOSExtraRules
+{
+    ?A1 skos:broadMatch ?B1.
+    ?B1 skos:broaderTransitive ?B2.
+    ?B2 skos:broadMatch ?A2.
+    ?A2 skos:broaderTransitive ?A1.
+    {   ?A1 skos:broadMatch ?B1.
+        ?B1 skos:broaderTransitive ?B2.
+        ?B2 skos:broadMatch ?A2.
+        ?A2 skos:broaderTransitive ?A1. } e:graphCopy ?pattern.
+} => {
+    ?pattern a validation:Pattern5NonConsistentWithSKOSExtraRules.
+}.
+
+#Pattern5NonConsistentWithSKOSRules
+{
+    ?A1 skos:broadMatch ?B1.
+    ?B1 skos:broaderTransitive ?B2.
+    ?B2 skos:broadMatch ?A2.
+    ?A2 skos:related ?A1.
+    {   ?A1 skos:broadMatch ?B1.
+        ?B1 skos:broaderTransitive ?B2.
+        ?B2 skos:broadMatch ?A2.
+        ?A2 skos:related ?A1. } e:graphCopy ?pattern.
+} => {
+    ?pattern a validation:Pattern5NonConsistentWithSKOSRules.
+}.
+
+
+#Pattern6NonConsistentWithSKOSExtraRules
+{
+    ?A2 skos:broaderTransitive ?A1.
+    ?A1 skos:broadMatch ?B1.
+    ?B1 skos:broaderTransitive ?B2.
+    ?B2 skos:exactMatch ?A2.
+    {   ?A2 skos:broaderTransitive ?A1.
+        ?A1 skos:broadMatch ?B1.
+        ?B1 skos:broaderTransitive ?B2.
+        ?B2 skos:exactMatch ?A2. } e:graphCopy ?pattern.
+} => {
+    ?pattern a validation:Pattern6NonConsistentWithSKOSExtraRules.
+}.
+
+#Pattern6NonConsistentWithSKOSRules
+{
+    ?A2 skos:broaderTransitive ?A1.
+    ?A1 skos:broadMatch ?B1.
+    ?B1 skos:broaderTransitive ?B2.
+    ?B2 skos:relatedMatch ?A2.
+    {   ?A2 skos:broaderTransitive ?A1.
+        ?A1 skos:broadMatch ?B1.
+        ?B1 skos:broaderTransitive ?B2.
+        ?B2 skos:relatedMatch ?A2. } e:graphCopy ?pattern.
+} => {
+    ?pattern a validation:Pattern6NonConsistentWithSKOSRules.
+}.
+
+#Pattern7CounterIntuitive
+{
+    ?A2 skos:broaderTransitive ?A1.
+    ?A1 skos:exactMatch ?B1.
+    ?B1 skos:broaderTransitive ?B2.
+    ?B2 skos:exactMatch ?A2.
+    {   ?A2 skos:broaderTransitive ?A1.
+        ?A1 skos:exactMatch ?B1.
+        ?B1 skos:broaderTransitive ?B2.
+        ?B2 skos:exactMatch ?A2. } e:graphCopy ?pattern.
+} => {
+    ?pattern a validation:Pattern7CounterIntuitive.
+}.

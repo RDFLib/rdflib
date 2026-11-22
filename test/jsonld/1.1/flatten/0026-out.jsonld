@@ -1,0 +1,21 @@
+[
+    {
+        "@id": "http://example.com/a",
+        "@type": [
+            "http://example.com/b"
+        ]
+    },
+    {
+        "@id": "http://example.com/c",
+        "@type": [
+            "http://example.com/d",
+            "http://example.com/e"
+        ]
+    },
+    {
+        "@id": "http://example.com/f",
+        "@type": [
+            "http://example.com/g"
+        ]
+    }
+]

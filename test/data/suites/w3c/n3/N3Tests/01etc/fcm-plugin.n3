@@ -1,0 +1,108 @@
+# --------------------------------
+# FCM plugin for EYE -- Jos De Roo
+# --------------------------------
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix fl: <http://eulersharp.sourceforge.net/2003/03swap/fl-rules#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix fcm: <http://eulersharp.sourceforge.net/2006/02swap/fcm-plugin#>.
+
+{(?A ?B) fl:pi ?C} <=
+{   ?SCOPE e:call {
+        ("if_then_else"
+            {
+                ("nb_getval" "fnet" "done") e:derive true.
+            }
+            true
+            {
+                (";"
+                    {
+                        ("forall"
+                            {
+                                (?X ?Y) fl:mu ?Z.
+                            }
+                            {
+                                ("if_then_else"
+                                    {
+                                        (?X) fcm:fm true.
+                                    }
+                                    true
+                                    {
+                                        ("assertz" {(?X) fcm:fm true}) e:derive true.
+                                    }
+                                ) e:derive true.
+                                ("assertz" {?X fcm:pi (?Y ?Z)}) e:derive true.
+                            }
+                        ) e:derive true.
+                        ("forall"
+                            {
+                                (?X ?Y) fl:sigma ?V6.
+                            }
+                            {
+                                ("if_then_else"
+                                    {
+                                        (?X) fcm:fs true.
+                                    }
+                                    true
+                                    {
+                                        ("assertz" {(?X) fcm:fs true}) e:derive true.
+                                    }
+                                ) e:derive true.
+                                ("if_then_else"
+                                    {
+                                        (?Y) fcm:fs true.
+                                    }
+                                    true
+                                    {
+                                        ("assertz" {(?Y) fcm:fs true}) e:derive true.
+                                    }
+                                ) e:derive true.
+                            }
+                        ) e:derive true.
+                        ("between" 1 20 ?J) e:derive true.
+                        (?X) fcm:fm true.
+                        (?Y) fcm:fs true.
+                        ("findall"
+                            ?I
+                            {
+                                (?P ?Y) fl:sigma ?W.
+                                ?X fcm:pi (?P ?M).
+                                ("(2*_M-1)*(2*_W-1)" ?M ?W) e:calculate ?I.
+                            }
+                            ?L
+                        ) e:derive true.
+                        ("if_then_else"
+                            {
+                                ?L log:equalTo ().
+                            }
+                            true
+                            {
+                                ?L math:sum ?S.
+                                ("1/(1+exp(-_S))" ?S) e:calculate ?Z.
+                                ("retractall" {?X fcm:pi (?Y ?V1)}) e:derive true.
+                                ("assertz" {?X fcm:pi (?Y ?Z)}) e:derive true.
+                            }
+                        ) e:derive true.
+                        ("fail") e:derive true.
+                    }
+                    {
+                        ("nb_setval" "fnet" "done") e:derive true.
+                    }
+                ) e:derive true.
+            }
+        ) e:derive true.
+        ?A fcm:pi (?B ?U).
+        ("if_then_else"
+            {
+                ?SCOPE e:closure {(?A ?B) fl:pi ?V}.
+            }
+            {
+                ?C log:equalTo ?V.
+            }
+            {
+                ?C log:equalTo ?U.
+            }
+        ) e:derive true.
+    }
+}.

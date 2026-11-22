@@ -1,0 +1,11 @@
+@keywords is, of, a.
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix : <#>.
+
+<> a K.
+
+{?U a ?P. <> log:semantics ?F. ?F log:notIncludes {?U p ?V}} => {?U a N}.
+{?U a K. ?U log:semantics ?F. ?F log:includes {s q (?A ?B ?C)}} => {?U r (?A ?B ?C)}.
+{<> log:semantics ?F. ?F log:notIncludes {?D e ?F}} => {test a OK}.
+

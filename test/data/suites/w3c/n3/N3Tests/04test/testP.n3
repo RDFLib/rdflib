@@ -1,0 +1,503 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix time: <http://www.w3.org/2000/10/swap/time#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rtest:   <http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#> .
+@prefix otest:   <http://www.w3.org/2002/03owlt/testOntology#> .
+@prefix e: <http://www.agfa.com/w3c/euler/>.
+@prefix or: <http://www.agfa.com/w3c/euler/owl-rules#>.
+@prefix dc: <http://purl.org/dc/elements/1.0/>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix eg: <http://example.org/eg#>.
+@prefix ex: <http://example.org/ex#>.
+@prefix foo: <http://example.org/foo#>.
+@prefix kb: <http://example.org/kb#>.
+@prefix cons: <http://example.org/cons#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <test#>.
+
+#:a :b :c.
+#:d :c :f.
+#:g :c :i.
+
+#{?x :b ?y} => {?x :k (?x ?y).:sf1}.
+#{?x :b ?y} => {(?x ?y).:sf1 :m ?y}.
+
+#{?x :b ?y. ?u = [:sf (?x ?y)]} => {?x :k ?u}.
+#{?x :b ?y. ?u = [:sf (?x ?y)]} => {?u :m ?y}.
+#[:sf (:a :c)] = [:sf (:a :c)].  ## needed for cwm
+
+#:A owl:oneOf (:a).
+#:A owl:complementOf :B.
+
+#:abc rdf:first :a; rdf:rest _:r1.
+#_:r1 rdf:first :b; rdf:rest _:r2.
+#_:r2 rdf:first :c; rdf:rest rdf:nil.
+
+#:xyz rdf:first :c; rdf:rest _:r2.
+#_:r2 rdf:first :a; rdf:rest rdf:nil.
+
+#:i a :A, :B, :C.
+#{?X a ?U, ?V, ?W} => {?X a (?U ?V ?W).:sf1}.
+#{?X a ?U, ?V, ?W} => {(?U ?V ?W).:sf1 owl:intersectionOf (?U ?V ?W).:sf2}.
+#{?X a ?U, ?V, ?W} => {(?U ?V ?W).:sf2 a rdf:List}.
+#{?X a ?U, ?V, ?W} => {(?U ?V ?W).:sf2 rdf:first ?U}.
+#{?X a ?U, ?V, ?W} => {(?U ?V ?W).:sf2 rdf:rest (?U ?V ?W).:sf3}.
+#{?X a ?U, ?V, ?W} => {(?U ?V ?W).:sf3 a rdf:List}.
+#{?X a ?U, ?V, ?W} => {(?U ?V ?W).:sf3 rdf:first ?V}.
+#{?X a ?U, ?V, ?W} => {(?U ?V ?W).:sf3 rdf:rest (?U ?V ?W).:sf4}.
+#{?X a ?U, ?V, ?W} => {(?U ?V ?W).:sf4 a rdf:List}.
+#{?X a ?U, ?V, ?W} => {(?U ?V ?W).:sf4 rdf:first ?W}.
+#{?X a ?U, ?V, ?W} => {(?U ?V ?W).:sf4 rdf:rest rdf:nil}.
+
+#:comment a rdf:TriviallyTrue.
+
+#:paris owl:sameAs :parijs.
+#:paris :capitalOf :france.
+
+#:a rdf:_25 :b.
+
+#:line a owl:SymmetricProperty.
+#:p owl:distinctMembers (:p1 :p2 :p3 :p4 :p5 :p6).
+#:p1 :line :p3, :p4, :p5.
+#:p2 :line :p5, :p6.
+#:p3 :line :p5.
+#:p4 :line :p6.
+
+#{?P1 :line ?P2. ?P2 :line ?P3; owl:differentFrom ?P1. ?P3 :line ?P1; owl:differentFrom ?P1, ?P2} => {(?P1 ?P2 ?P3).:sf1 a :Triangle}.
+
+#:a owl:disjointWith :b.
+#:a owl:disjointWith :c.
+#:b owl:disjointWith :c.
+#{:a owl:disjointWith :b. :b owl:disjointWith :c. :c owl:disjointWith :a} => {: a :Inconsistency}.
+
+#:s :p :o.
+#:o owl:oneOf (:a :b :c :d).
+#:p owl:inverseOf :q.
+#{?S :q ?O. ?X a ?S} => {?X a :T}.
+
+#:p owl:inverseOf :invP.
+#:domP owl:equivalentClass _:r1.
+#_:r1 owl:onProperty :p.
+#_:r1 owl:hasValue :a.
+#:oneOfA owl:equivalentClass _:r2.
+#_:r2 owl:onProperty :invP.
+#_:r2 owl:someValuesFrom :domP.
+
+#{?P owl:inverseOf ?Q.
+# ?D owl:equivalentClass ?R.
+# ?R owl:onProperty ?P.
+# ?R owl:hasValue ?A.
+# ?O owl:equivalentClass ?T.
+# ?T owl:onProperty ?Q.
+# ?T owl:someValuesFrom ?D}
+# =>
+#{?O owl:oneOf (?P ?Q ?D ?R ?A ?O ?T).:skf.
+# (?P ?Q ?D ?R ?A ?O ?T).:skf rdf:first ?A.
+# (?P ?Q ?D ?R ?A ?O ?T).:skf rdf:rest rdf:nil}.
+
+#ex:a rdf:type rdfs:Class .
+#ex:ia rdf:type ex:a .
+#ex:i owl:intersectionOf _:l1 .
+#_:l1 rdf:type rdf:List .
+#_:l1 rdf:first ex:a .
+#_:l1 rdf:rest rdf:nil .
+
+#:Continent owl:oneOf (:Africa :Antarctica :Asia :Europe :NorthAmerica :SouthAmerica).
+#:containsLocation owl:inverseOf :containedIn; rdfs:domain :Continent; rdfs:range :Country.
+#:NorthernHemisphere :containsLocation :Finland.
+#:Finland :containedIn :NorthernHemisphere.
+#:NorthernHemisphere owl:differentFrom :Africa, :Antarctica, :Asia, :Europe, :NorthAmerica, :SouthAmerica.
+
+#ex:foo ex:prop "a"^^foo:bar.
+
+#rdfs:Class rdf:type _:x.
+#_:x owl:complementOf owl:Class.
+
+#{: rdfs:fyi :rule80c1. ?X a ?C} =>
+#{?X a (?X ?C).:skf80c11.
+# (?X ?C).:skf80c11 owl:intersectionOf (?X ?C).:skf80c12.
+# (?X ?C).:skf80c12 rdf:first ?C.
+# (?X ?C).:skf80c12 rdf:rest rdf:nil}.
+
+#owl:OntologyProperty rdfs:subClassOf rdf:Property.
+#owl:imports rdfs:domain owl:Ontology; rdfs:range owl:Ontology; a owl:OntologyProperty.
+
+#:Summation owl:equivalentClass [ a owl:Restriction; owl:onProperty :hasOperator; owl:hasValue :Plus].
+#:Addition :hasOperator :Plus.
+
+#{:X eg:length-in :Y. (:Y 2.54) math:product :Z} => {:X eg:length-cm :Z}; log:forAll :X, :Y, :Z.
+#{:X eg:length-cm :Y. (:Y 2.54) math:quotient :Z} => {:X eg:length-in :Z}; log:forAll :X, :Y, :Z.
+#eg:door eg:length-in 97.
+#eg:window eg:length-cm 158.
+
+#<http://foo.ex/a#b> <http://foo.ex/a#b> "aa".
+
+#owl:Thing owl:oneOf rdf:nil.
+
+#eg:foo rdf:type owl:Class.
+#eg:foo dc:creator "Jos".
+#eg:madeByJos owl:equivalentClass _:r.
+#_:r rdf:type owl:Restriction.
+#_:r owl:onProperty dc:creator.
+#_:r owl:hasValue "Jos".
+
+#eg:a rdfs:subClassOf eg:b .
+#eg:a rdf:type owl:Class .
+#eg:b rdf:type owl:Class.
+#owl:Thing owl:equivalentClass owl:Nothing .
+
+#rdfs:Class rdf:type _:x.
+#_:x owl:complementOf owl:Class.
+
+#:C a owl:Class.
+
+#eg:madeFrom rdfs:domain eg:ManufacturedThing; rdfs:range eg:NaturalThing.
+#eg:Wine rdfs:subClassOf [owl:onProperty eg:madeFrom; owl:allValuesFrom eg:Grape]. 
+
+#:A owl:disjointWith :B.
+#:X a :A.
+#:Y a :B.
+
+#ex:foo owl:oneOf (_:a _:b).
+#ex:foo owl:oneOf (_:b _:a).
+#ex:john a [ owl:onProperty ex:p; owl:cardinality "2"^^xsd:NonNegativeInteger]. 
+#ex:p rdfs:range ex:foo .
+
+#xsd:decimal owl:sameAs ex:bar .
+#ex:xx ex:yy "01"^^ex:bar .
+
+#:Jenny :age "10"^^xsd:integer .
+
+#eg:p2 rdfs:subPropertyOf eg:p1 .
+#eg:p1 rdfs:subPropertyOf eg:p2 .
+#eg:p1 rdfs:domain eg:c .
+
+#eg:B rdf:type owl:Class .
+#eg:A rdf:type owl:Class .
+#eg:A owl:equivalentClass _:r1 .
+#_:r1 rdf:type owl:Restriction .
+#_:r1 owl:onProperty eg:rA .
+#_:r1 owl:allValuesFrom _:r2 .
+#_:r2 rdf:type owl:Restriction .
+#_:r2 owl:onProperty eg:r .
+#_:r2 owl:allValuesFrom eg:B .
+#eg:C rdf:type owl:Class .
+#eg:C owl:equivalentClass _:r3 .
+#_:r3 rdf:type owl:Restriction .
+#_:r3 owl:onProperty eg:rC .
+#_:r3 owl:allValuesFrom _:r4 .
+#_:r4 rdf:type owl:Restriction .
+#_:r4 owl:onProperty eg:r .
+#_:r4 owl:allValuesFrom eg:B .
+
+#{ :rule123. ?X a :Man } => { ?X a :Mortal }.
+#:socrates a :Man.
+
+#{?T a rtest:PositiveParserTest; rtest:status "APPROVED"; rtest:inputDocument ?I; rtest:outputDocument ?O} => {(?T.log:semantics ?I.log:semantics).log:conjuction xxx ?O.log:semantics}.
+#{?T a rtest:PositiveParserTest; rtest:status "PROPOSED"; rtest:inputDocument ?I; rtest:outputDocument ?O} => {(?T.log:semantics ?I.log:semantics).log:conjuction xxx ?O.log:semantics}.
+#{?T a rtest:PositiveEntailmentTest; rtest:status "APPROVED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O. ?O a rtest:NT-Document} => {(?T.log:semantics ?I.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a rtest:PositiveEntailmentTest; rtest:status "APPROVED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O. ?O a rtest:RDF-XML-Document} => {(?T.log:semantics ?I.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a rtest:PositiveEntailmentTest; rtest:status "APPROVED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O. ?O a rtest:False-Document} => {(?T.log:semantics ?I.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx e:inconsistent.log:semantics}.
+#{?T a rtest:PositiveEntailmentTest; rtest:status "PROPOSED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O. ?O a rtest:NT-Document} => {(?T.log:semantics ?I.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a rtest:PositiveEntailmentTest; rtest:status "PROPOSED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O. ?O a rtest:RDF-XML-Document} => {(?T.log:semantics ?I.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a rtest:PositiveEntailmentTest; rtest:status "PROPOSED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O. ?O a rtest:False-Document} => {(?T.log:semantics ?I.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx e:inconsistent.log:semantics}.
+#{?T a rtest:NegativeEntailmentTest; rtest:status "APPROVED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O. ?O a rtest:NT-Document} => {(?T.log:semantics ?I.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a rtest:NegativeEntailmentTest; rtest:status "APPROVED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O. ?O a rtest:RDF-XML-Document} => {(?T.log:semantics ?I.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a rtest:NegativeEntailmentTest; rtest:status "APPROVED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O. ?O a rtest:False-Document} => {(?T.log:semantics ?I.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx e:inconsistent.log:semantics}.
+#{?T a rtest:NegativeEntailmentTest; rtest:status "PROPOSED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O. ?O a rtest:NT-Document} => {(?T.log:semantics ?I.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a rtest:NegativeEntailmentTest; rtest:status "PROPOSED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O. ?O a rtest:RDF-XML-Document} => {(?T.log:semantics ?I.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a rtest:NegativeEntailmentTest; rtest:status "PROPOSED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O. ?O a rtest:False-Document} => {(?T.log:semantics ?I.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx e:inconsistent.log:semantics}.
+
+#{?T a otest:PositiveEntailmentTest; rtest:status "APPROVED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O} => {(?T.log:semantics ?I.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a otest:PositiveEntailmentTest; rtest:status "PROPOSED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O} => {(?T.log:semantics ?I.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a otest:PositiveEntailmentTest; rtest:status "EXTRACREDIT"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O} => {(?T.log:semantics ?I.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a otest:NegativeEntailmentTest; rtest:status "APPROVED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O} => {(?T.log:semantics ?I.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a otest:NegativeEntailmentTest; rtest:status "PROPOSED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O} => {(?T.log:semantics ?I.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a otest:NegativeEntailmentTest; rtest:status "EXTRACREDIT"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O} => {(?T.log:semantics ?I.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a otest:ConsistencyTest; rtest:status "APPROVED"; rtest:inputDocument ?I} => {(?T.log:semantics ?I.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx e:inconsistent.log:semantics}.
+#{?T a otest:ConsistencyTest; rtest:status "PROPOSED"; rtest:inputDocument ?I} => {(?T.log:semantics ?I.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx e:inconsistent.log:semantics}.
+#{?T a otest:ConsistencyTest; rtest:status "EXTRACREDIT"; rtest:inputDocument ?I} => {(?T.log:semantics ?I.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx e:inconsistent.log:semantics}.
+#{?T a otest:InconsistencyTest; rtest:status "APPROVED"; rtest:inputDocument ?I} => {(?T.log:semantics ?I.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx e:inconsistent.log:semantics}.
+#{?T a otest:InconsistencyTest; rtest:status "PROPOSED"; rtest:inputDocument ?I} => {(?T.log:semantics ?I.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx e:inconsistent.log:semantics}.
+#{?T a otest:InconsistencyTest; rtest:status "EXTRACREDIT"; rtest:inputDocument ?I} => {(?T.log:semantics ?I.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx e:inconsistent.log:semantics}.
+#{?T a otest:ImportEntailmentTest; rtest:status "APPROVED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O} => {(?T.log:semantics ?I.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a otest:ImportEntailmentTest; rtest:status "PROPOSED"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O} => {(?T.log:semantics ?I.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a otest:ImportEntailmentTest; rtest:status "EXTRACREDIT"; rtest:premiseDocument ?I; rtest:conclusionDocument ?O} => {(?T.log:semantics ?I.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a otest:OWLforOWLTest; rtest:status "APPROVED"; rtest:conclusionDocument ?O} => {(?T.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a otest:OWLforOWLTest; rtest:status "PROPOSED"; rtest:conclusionDocument ?O} => {(?T.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+#{?T a otest:OWLforOWLTest; rtest:status "EXTRACREDIT"; rtest:conclusionDocument ?O} => {(?T.log:semantics e:owl-rules.log:semantics e:xsd-rules.log:semantics e:rdfs-rules.log:semantics).log:conjuction  xxx ?O.log:semantics}.
+
+#:a :g :b.
+#:b :g :a.
+
+#{:awrule01. ?X :g ?Y. ?Y :g ?Z} => {?X :g ?Z}.
+
+#eg:prop rdfs:range rdf:XMLLiteral .
+#eg:foo eg:prop "<"^^rdf:XMLLiteral .
+#eg:prop2 rdfs:range xsd:int .
+#eg:bar eg:prop2 "0.5"^^xsd:int.
+
+#:L rdf:first :a; rdf:rest :B. :B rdf:first :b; rdf:rest rdf:nil.
+#:M rdf:first :c; rdf:rest :C. :C rdf:first :d; rdf:rest rdf:nil.
+#:a owl:sameAs :c.
+#:b owl:sameAs :d.
+
+#{ 
+#  <http://example.org/liar> 
+#       log:implies { 
+#    <http://example.org/noone> a owl:Nothing .
+#  } . 
+#} owl:sameAs <http://example.org/liar> .
+
+#{?P [= owl:inverseOf] ?Q. ?S ?P ?O} => {?O ?Q ?S}.
+#:parent owl:inverseOf :child.
+#:K :parent :J.
+
+#:M :ratio 1.
+#{:M :ratio ?R. ?R math:tanh ?A} => {:M :angle_rad ?A}.
+#{:M :angle_rad ?A. ?A math:degrees ?D} => {:M :angle_deg ?D}.
+
+#:s a :C.
+#{?x :R ?y. ?x a :C} => {?y a :C}.
+#{?x a :C} => {?x :R (?x).:sf1}.
+#{?x a :C} => {(?x).:sf1 a :C}.
+
+#ex:s ex:p "foo"^^ex:ddd .
+
+#:worksFor :transitiveOver :consistsOf.
+#
+#:aCompany :consistsOf :rAndD.
+#:rAndD :consistsOf :gSw.
+#:gSw :consistsOf :gSwBe.
+#:mk :worksFor :gSwBe.
+#
+#{?P :transitiveOver ?Q. ?Z ?Q ?Y. ?X ?P ?Y} => {?X ?P ?Z}.
+
+#:a :p "true"^^xsd:boolean .
+#:a :p "false"^^xsd:boolean .
+#:b a xsd:boolean .
+
+#:machine022 a :ptMachine.
+#:machine022 :vmVersion 1.4.
+
+#{?X a :ptMachine} => {?X :vmVersion 1.4}.
+
+# @@ inconsistency detection
+#{?X a :ptMachine. ?X :vmVersion ?V. ?V math:lessThan 1.4} =>
+#  {facts.log:semantics log:inconsistentWith rec.log:semantics}.
+
+#ex:a ex:p "2"^^xsd:int .
+
+#:v :p "<"^^rdf:XMLLiteral.
+#:p rdfs:range rdf:XMLLiteral.
+
+#:a owl:sameAs :b.
+#:a owl:differentFrom :b.
+#
+#{?A owl:differentFrom ?A} => {}.
+
+#:Xavier :worksAt :night.
+#:Xavier :worksIn :systemMaintenance.
+#
+#?P => {?P log:or ?Q}.
+#?Q => {?P log:or ?Q}.
+
+#:Bob a :Management.
+
+#:a :b :c.
+#{[log:includes {:a :b :c}]} => {:d :e :f}.
+
+#:n1 :p :n2.
+#:p :disjunctionOf (:p1 :p2).
+#
+#:disjunctionOf rdfs:domain rdf:Property; rdfs:range rdf:List.
+#
+#{?P :disjunctionOf ?L. ?L :item ?Q. ?X ?Q ?Y} => {?X ?P ?Y}.
+#
+#{?S rdf:first ?X} => {?S :item ?X}.
+#{?S rdf:rest ?B. ?B :item ?X} => {?S :item ?X}.
+
+#{{:Rob :worksIn :processControl} => {}} => {:Rob :worksIn :systemMaintenance}.
+#{{:Rob :worksIn :systemMaintenance} => {}} => {:Rob :worksIn :processControl}.
+#{:Rob :worksIn :systemMaintenance} => {}.
+
+#this log:forAll :x.
+#{:x :homePage ?P.
+#
+# ?P log:semantics ?F.
+# ?F log:includes 
+#            { :x a :Vegetarian }}
+#=> { :x a :Vegetarian}. 
+#
+#?F ::= { :DanBri a :HoopyFrood, :Vegetarian. }
+#
+#:DanBri a :Vegetarian.
+
+#:a :b :c.
+#:cc = :c.
+
+#:Mary :son :Frank, :Bob, :Sam.
+#:Karel :parent :Maaike.
+#:Maaike :sister :Lut.
+
+#:a a :c1 .
+#:c1 rdfs:subClassOf :c2 .
+
+#:a :b :c.
+#:d :e :f.
+
+#:job74 :age 708.
+#:job65 :age 203.
+#:job83 :age 432.
+#:job45 :age 985.
+#:job34 :age 378.
+#:job18 :age 401.
+#:job95 :age 634.
+
+#:a a :b.
+
+#ex:Joe a ex:Librarian; ex:hairColor "black".
+#ex:Mary a ex:Librarian; ex:hairColor "red".
+#ex:John a ex:Plumber; ex:hairColor "brown".
+
+#:x :p "v-p" .
+#:x :q "v-q" .
+
+#:Paul rdf:type :WORKER.
+#:Andrea rdf:type :WORKER.
+#:Simon rdf:type :EMPLOYEE.
+#:Caroline rdf:type :MANAGER.
+#:Paul :has-friend :Andrea.
+#:Paul :has-friend :Simon.
+#:Simon :has-friend :Andrea.
+#:Andrea :has-friend :Caroline.
+#
+#:EMPLOYEE owl:equivalentClass [ owl:unionOf (:WORKER :MANAGER)].
+
+#:A rdfs:subClassOf :B.
+#:x a :A.
+#:y a :A.
+
+#math:Set rdfs:subClassOf rdf:Bag.
+#[  a math:Set; rdfs:member :a, :b, :c ].
+#{ , <a>, <b>, <c> } a math:Set.
+
+#:thesis :is { :theSky :is :blue, :white }.
+#:theSky :is :blue, :white.
+#@forAll :c .
+#{ :thesis :is ?x. ?x log:includes {:theSky :is :c} } => { :test :has :c } .
+
+#:doc :is { :a :p :b . :a :q :c } .
+#{ :doc :is ?d . ?d log:includes { :a :p :b } } => { :test :has "yes" } .
+
+#:x :prop "47" .
+
+#0 :successor 1.
+#{?x :successor ?y. (?y 1) math:sum ?z} => {?y :successor ?z}.
+
+#_:a foaf:name "Alice" .
+#_:a foaf:page <http://work.example/alice> .
+#_:a foaf:workplaceHomepage <http://work.example/alice> .
+#_:b foaf:name "Bob" .
+#_:c foaf:name "Eve" .
+#_:c foaf:page <http://isp.example/eve> .
+#_:c foaf:workplaceHomepage <http://work.example/eve> .
+
+#<bill> :loves _:who.
+#<joe> :loves _:who.
+
+#:testcase :made ""^^xsd:dateTime .
+
+#_:somebody foaf:homePage <http://www.w3.org/People/Connolly/>.
+#<http://www.w3.org/People/Connolly/#topic> owl:sameAs _:somebody.
+
+#:a :r1 :b;
+#   :r2 :c;
+#   :r3 :d;
+#   :r4 :e;
+#   :r5 :f.
+#:g :r1 :b;
+#   :r2 :c;
+#   :r3 :d;
+#   :r4 :e;
+#   :r5 :f.
+#
+#:p :productProperty (:r1 :r2 :r3 :r4 :r5);
+#   a owl:InverseFunctionalProperty.
+#
+#{?C a owl:InverseFunctionalProperty;
+#    :productProperty ?L.
+# (?X ?Y) :shareObjectForAllProperties ?L}
+# =>
+#{?X owl:sameAs ?Y}.
+#
+#{}
+# =>
+#{(?X ?Y) :shareObjectForAllProperties rdf:nil}.
+#
+#{?L rdf:first ?A.
+# ?X ?A ?O.
+# ?Y ?A ?O.
+# ?L rdf:rest ?B.
+# (?X ?Y) :shareObjectForAllProperties ?B}
+# =>
+#{(?X ?Y) :shareObjectForAllProperties ?L}.
+
+#:a :b "10"^^xsd:byte .
+#:c :d "10"^^xsd:integer .
+
+#:a :b eg:x.yz.
+#:c :d eg:x.yz.
+
+#:propA rdfs:subPropertyOf :propB ; owl:inverseOf :propB.
+#:propC owl:inverseOf :propC.
+
+#:A owl:intersectionOf (:B :C :D).
+#:B owl:equivalentClass :D.
+#:E owl:intersectionOf (:B :C).
+
+#:foo :shoeSize "42"^^<http://www.w3.org/2001/XMLSchema#int> ;
+#     :age      "42"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+#:X owl:oneOf ( :A ).
+#:Y owl:oneOf ( :A :B ).
+#:Z owl:oneOf ( :A :C ).
+#
+#{?B has owl:oneOf ?Y. ?A has owl:oneOf ?X. ?Y :includes ?X} => {?A rdfs:subClassOf ?B}.
+#{?X a rdf:List} => {?X :includes rdf:nil}.
+#{?S rdf:first ?A; a rdf:List. ?X :item ?A. ?S rdf:rest ?B. ?X :includes ?B} => {?X :includes ?S}.
+#{?L rdf:first ?I; a rdf:List} => {?L :item ?I}.
+#{?L rdf:rest ?R; a rdf:List. ?R :item ?I} => {?L :item ?I}.
+#{?S owl:oneOf ?X} => {?X a rdf:List}.
+#{?L rdf:rest ?X; a rdf:List} => {?X a rdf:List}.
+
+#<X> owl:oneOf ( <A> ) .
+#<Y> owl:oneOf ( <A> <B> ) .
+#<Z> owl:oneOf ( <A> <C> ) .
+
+#:Lois :believes { :Superman a :Hero }.
+#:Superman owl:sameAs :ClarkKent.
+
+#:x!:y :u :v.
+
+#:s :p :s!:p.
+
+#:a :b 1.0e0 .
+
+#_:a :r _:a.
+#_:a :p _:b.
+#_:b :url <http://example.org>.
+
+kb:customer rdfs:subClassOf [ owl:unionOf (kb:paysCash kb:paysCC)].
+
+:Paul a kb:customer.
+
+#{?X a kb:customer. ?X a kb:paysCC} => {?X a cons:paying-customer}.
+#{?X a kb:customer. ?X a kb:paysCash} => {?X a cons:paying-customer}.
+
+{?X a ?C. ?C owl:unionOf (kb:paysCash kb:paysCC)} => {?X a cons:paying-customer}.

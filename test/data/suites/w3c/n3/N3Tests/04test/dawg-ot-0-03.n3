@@ -1,0 +1,24 @@
+# $Id: dawg-ot-0-03.n3 463 2005-02-06 12:27:34Z josd $
+# PxButton | es  | euler --nope --think dawg-data-01.n3 --query dawg-ot-0-03.n3
+# PxButton | cwm | python /w3ccvs/WWW/2000/10/swap/cwm.py dawg-data-01.n3 --think --query"=dawg-ot-0-03.n3"
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+# Get names and mboxes, each of which may be optional.
+
+[]
+q:select {<> q:answer (?person _:name _:mbox)};
+q:where  {?person a foaf:Person}.
+
+[]
+q:select {<> q:answer (?person ?name _:mbox)};
+q:where  {?person a foaf:Person; foaf:name ?name}.
+
+[]
+q:select {<> q:answer (?person _:name ?mbox)};
+q:where  {?person a foaf:Person; foaf:mbox ?mbox}.
+
+[]
+q:select {<> q:answer (?person ?name ?mbox)};
+q:where  {?person a foaf:Person; foaf:name ?name; foaf:mbox ?mbox}.

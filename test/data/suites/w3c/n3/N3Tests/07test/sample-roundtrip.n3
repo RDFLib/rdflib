@@ -1,0 +1,14 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope --plugin http://eulersharp.sourceforge.net/2007/07test/sample.n3p --pass-all
+
+@prefix : <http://example.org/try#>.
+
+:s :p {:a :b :c}.
+:s :p {:a :b :c. :d :e :f}.
+_:sk_0 :p :o.
+{:u :v ?U_1. ?U_3 ?U_2 :z} => {?U_1 a ?U_3}.
+{:u :p ?U_4} => false.
+
+#2018-04-18T08:28:06.921Z in=5 out=5 ent=6 step=12 brake=2 inf=17124 sec=0.020 inf/sec=856200
+#ENDS
+

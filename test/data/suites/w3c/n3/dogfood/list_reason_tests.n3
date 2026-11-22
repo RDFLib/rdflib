@@ -1,0 +1,41 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix mf:   <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdft: <http://www.w3.org/ns/rdftest#> .
+@prefix test: <https://w3c.github.io/N3/tests/test.n3#> .
+@prefix earl: <https://www.w3.org/TR/EARL10-Schema/#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix graph: <http://www.w3.org/2000/10/swap/graph#> .
+@prefix list: <http://www.w3.org/2000/10/swap/list#> .
+@prefix string: <http://www.w3.org/2000/10/swap/string#> .
+@prefix : <#> .
+
+{	:tests :testPaths ?paths .
+
+	?paths list:member { ?uri :hasPath ?path } .
+	(?path "/(.*).n3/") string:scrape ?path2 .
+	
+	?pathUri log:uri ?path .
+	(?path2 "-ref.n3")!string:concatenation <-log:uri ?pathRefUri .	
+	
+} => {
+	?uri a test:TestN3Reason ;
+		mf:action ?pathUri ;
+		mf:result ?pathRefUri
+} . 
+
+
+{	:tests :testPaths ?paths .
+	
+	(?uri
+	{
+		?paths list:member { ?uri :hasPath ?path }
+		
+	} ?uris) log:collectAllIn _:x .
+	
+} => {
+	<> a mf:Manifest ;
+    	mf:name "Notation3 Reasoner tests" ;
+    	mf:entries ?uris .
+} .

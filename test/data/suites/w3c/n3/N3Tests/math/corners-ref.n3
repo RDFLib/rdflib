@@ -1,0 +1,6 @@
+# From swap/ref/math1.n3
+@prefix : <corners.n3#> .
+
+0 :valueOf " () math:sum ?x  --- should be 0" .
+
+1 :valueOf " () math:product ?x  --- should be 1" .

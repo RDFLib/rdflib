@@ -1,0 +1,8 @@
+[{
+  "http://example/foo": [{
+    "@value": "will-exist"
+  }],
+  "http://example/p": [{
+    "@type": ["http://example/Type"]
+  }]
+}]

@@ -1,0 +1,64 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --nope http://josd.github.io/brain/swet/swetA.n3 http://josd.github.io/brain/swet/swetD.n3 --query http://josd.github.io/brain/swet/swetQ11.n3
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2003/03swap/brain#>.
+
+_:bn_1 e:answer {:obs001 :ascribed :Rain. :obs001 :ascribed :WetGrass}.
+_:bn_3 e:answer {:obs003 :ascribed :Rain. :obs003 :ascribed :WetGrass}.
+_:bn_4 e:answer {:obs004 :ascribed :Rain. :obs004 :ascribed :WetGrass}.
+_:bn_5 e:answer {:obs005 :ascribed :Rain. :obs005 :ascribed :WetGrass}.
+_:bn_6 e:answer {:obs006 :ascribed :Rain. :obs006 :ascribed :WetGrass}.
+_:bn_9 e:answer {:obs009 :ascribed :Rain. :obs009 :ascribed :WetGrass}.
+_:bn_13 e:answer {:obs013 :ascribed :Rain. :obs013 :ascribed :WetGrass}.
+_:bn_14 e:answer {:obs014 :ascribed :Rain. :obs014 :ascribed :WetGrass}.
+_:bn_16 e:answer {:obs016 :ascribed :Rain. :obs016 :ascribed :WetGrass}.
+_:bn_17 e:answer {:obs017 :ascribed :Rain. :obs017 :ascribed :WetGrass}.
+_:bn_18 e:answer {:obs018 :ascribed :Rain. :obs018 :ascribed :WetGrass}.
+_:bn_19 e:answer {:obs019 :ascribed :Rain. :obs019 :ascribed :WetGrass}.
+_:bn_20 e:answer {:obs020 :ascribed :Rain. :obs020 :ascribed :WetGrass}.
+_:bn_21 e:answer {:obs021 :ascribed :Rain. :obs021 :ascribed :WetGrass}.
+_:bn_23 e:answer {:obs023 :ascribed :Rain. :obs023 :ascribed :WetGrass}.
+_:bn_24 e:answer {:obs024 :ascribed :Rain. :obs024 :ascribed :WetGrass}.
+_:bn_26 e:answer {:obs026 :ascribed :Rain. :obs026 :ascribed :WetGrass}.
+_:bn_29 e:answer {:obs029 :ascribed :Rain. :obs029 :ascribed :WetGrass}.
+_:bn_35 e:answer {:obs035 :ascribed :Rain. :obs035 :ascribed :WetGrass}.
+_:bn_36 e:answer {:obs036 :ascribed :Rain. :obs036 :ascribed :WetGrass}.
+_:bn_39 e:answer {:obs039 :ascribed :Rain. :obs039 :ascribed :WetGrass}.
+_:bn_44 e:answer {:obs044 :ascribed :Rain. :obs044 :ascribed :WetGrass}.
+_:bn_46 e:answer {:obs046 :ascribed :Rain. :obs046 :ascribed :WetGrass}.
+_:bn_48 e:answer {:obs048 :ascribed :Rain. :obs048 :ascribed :WetGrass}.
+_:bn_51 e:answer {:obs051 :ascribed :Rain. :obs051 :ascribed :WetGrass}.
+_:bn_52 e:answer {:obs052 :ascribed :Rain. :obs052 :ascribed :WetGrass}.
+_:bn_53 e:answer {:obs053 :ascribed :Rain. :obs053 :ascribed :WetGrass}.
+_:bn_54 e:answer {:obs054 :ascribed :Rain. :obs054 :ascribed :WetGrass}.
+_:bn_55 e:answer {:obs055 :ascribed :Rain. :obs055 :ascribed :WetGrass}.
+_:bn_57 e:answer {:obs057 :ascribed :Rain. :obs057 :ascribed :WetGrass}.
+_:bn_58 e:answer {:obs058 :ascribed :Rain. :obs058 :ascribed :WetGrass}.
+_:bn_59 e:answer {:obs059 :ascribed :Rain. :obs059 :ascribed :WetGrass}.
+_:bn_60 e:answer {:obs060 :ascribed :Rain. :obs060 :ascribed :WetGrass}.
+_:bn_61 e:answer {:obs061 :ascribed :Rain. :obs061 :ascribed :WetGrass}.
+_:bn_62 e:answer {:obs062 :ascribed :Rain. :obs062 :ascribed :WetGrass}.
+_:bn_63 e:answer {:obs063 :ascribed :Rain. :obs063 :ascribed :WetGrass}.
+_:bn_64 e:answer {:obs064 :ascribed :Rain. :obs064 :ascribed :WetGrass}.
+_:bn_65 e:answer {:obs065 :ascribed :Rain. :obs065 :ascribed :WetGrass}.
+_:bn_67 e:answer {:obs067 :ascribed :Rain. :obs067 :ascribed :WetGrass}.
+_:bn_68 e:answer {:obs068 :ascribed :Rain. :obs068 :ascribed :WetGrass}.
+_:bn_71 e:answer {:obs071 :ascribed :Rain. :obs071 :ascribed :WetGrass}.
+_:bn_72 e:answer {:obs072 :ascribed :Rain. :obs072 :ascribed :WetGrass}.
+_:bn_73 e:answer {:obs073 :ascribed :Rain. :obs073 :ascribed :WetGrass}.
+_:bn_74 e:answer {:obs074 :ascribed :Rain. :obs074 :ascribed :WetGrass}.
+_:bn_75 e:answer {:obs075 :ascribed :Rain. :obs075 :ascribed :WetGrass}.
+_:bn_76 e:answer {:obs076 :ascribed :Rain. :obs076 :ascribed :WetGrass}.
+_:bn_78 e:answer {:obs078 :ascribed :Rain. :obs078 :ascribed :WetGrass}.
+_:bn_79 e:answer {:obs079 :ascribed :Rain. :obs079 :ascribed :WetGrass}.
+_:bn_85 e:answer {:obs085 :ascribed :Rain. :obs085 :ascribed :WetGrass}.
+_:bn_86 e:answer {:obs086 :ascribed :Rain. :obs086 :ascribed :WetGrass}.
+_:bn_89 e:answer {:obs089 :ascribed :Rain. :obs089 :ascribed :WetGrass}.
+_:bn_96 e:answer {:obs096 :ascribed :Rain. :obs096 :ascribed :WetGrass}.
+_:bn_98 e:answer {:obs098 :ascribed :Rain. :obs098 :ascribed :WetGrass}.
+_:bn_99 e:answer {:obs099 :ascribed :Rain. :obs099 :ascribed :WetGrass}.
+
+#2020-02-22T21:52:59.911Z in=501 out=54 ent=54 step=54 brake=1 inf=217468 sec=0.181 inf/sec=1201481
+#ENDS
+

@@ -1,0 +1,4 @@
+#Consulting |: 
+#Processed by Id: euler.pl 1779 2007-12-21 01:04:04Z josd 
+
+_: owl:sameAs (<http://eulersharp.sourceforge.net/2004/04test/metastaticP.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticQ.n3>!log:semantics)!log:conjunction.

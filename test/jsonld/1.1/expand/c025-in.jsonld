@@ -1,0 +1,27 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "type": "@type",
+    "Outer": {
+      "@id": "ex:Outer",
+      "@context": {
+        "nested": {
+          "@id": "ex:nested",
+          "@type": "@id",
+          "@container": "@graph"
+        }
+      }
+    },
+    "Inner": {
+      "@id": "ex:Inner",
+      "@context": {
+        "foo": "ex:foo"
+      }
+    }
+  },
+  "type": "Outer",
+  "nested": {
+    "type": "Inner",
+    "foo": "bar"
+  }
+}

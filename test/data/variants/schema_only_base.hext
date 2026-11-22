@@ -1,0 +1,4 @@
+["example:/class_to_class", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://www.w3.org/2000/01/rdf-schema#Class", "globalId", "", ""]
+["example:/class_to_class", "example:/priority", "4", "http://www.w3.org/2001/XMLSchema#integer", "", ""]
+["example:/class_to_class", "example:/color", "blue", "http://www.w3.org/2001/XMLSchema#string", "", ""]
+["example:/class_to_class", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "example:/Category", "globalId", "", ""]

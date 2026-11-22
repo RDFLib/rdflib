@@ -1,0 +1,13 @@
+@prefix n3: <https://www.w3.org/ns/n3#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+
+{?BGP n3:notIn ?DOC} <= {
+    ?DOC log:semantics ?F.
+    ?F log:notIncludes ?BGP.
+}.
+
+{(?BGP1 ?BGP2) n3:forAllIn ?DOC} <= {
+    ?DOC log:semantics ?F.
+    ("forall" {?F log:includes ?BGP1} {?F log:includes ?BGP2}) e:derive true.
+}.

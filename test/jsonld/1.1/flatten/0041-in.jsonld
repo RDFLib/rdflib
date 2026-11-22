@@ -1,0 +1,24 @@
+{
+    "@context": {
+        "property": "http://example.com/property"
+    },
+    "@graph": [
+        {
+            "@set": [
+                "free-floating strings in set objects are removed",
+                {
+                    "@id": "http://example.com/free-floating-node"
+                },
+                {
+                    "@id": "http://example.com/node",
+                    "property": "nodes with properties are not removed"
+                }
+            ]
+        },
+        {
+            "@list": [
+                "lists are removed even though they represent an invisible linked structure, they have no real meaning"
+            ]
+        }
+    ]
+}

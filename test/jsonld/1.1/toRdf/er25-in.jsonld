@@ -1,0 +1,6 @@
+{
+  "@id": "http://example/foo",
+  "@reverse": {
+    "@id": "http://example/bar"
+  }
+}

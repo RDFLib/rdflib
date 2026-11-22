@@ -1,0 +1,120 @@
+@prefix validation: <http://eulersharp.sourceforge.net/2003/03swap/skos-mapping-validation-rules#>.
+
+#Pattern 1.a
+{
+  ?pattern a validation:Pattern1NonConsistentWithSKOSExtraRules.
+
+} => {
+  ?pattern a validation:Pattern1NonConsistentWithSKOSExtraRules.
+}.
+
+#Pattern 1.b
+{
+  ?pattern a validation:Pattern1VocabularyHijacking.
+
+} => {
+  ?pattern a validation:Pattern1VocabularyHijacking.
+}.
+
+#Pattern 1.c
+{
+    ?pattern a validation:Pattern1NonConsistentWithSKOSRules.
+} => {
+    ?pattern a validation:Pattern1NonConsistentWithSKOSRules.
+}.
+
+#Pattern 2.a
+{
+  ?pattern a validation:Pattern2NonConsistentWithSKOSExtraRules.
+
+} => {
+  ?pattern a validation:Pattern2NonConsistentWithSKOSExtraRules.
+}.
+
+#Pattern 2.b
+{
+  ?pattern a validation:Pattern2VocabularyHijacking.
+
+} => {
+  ?pattern a validation:Pattern2VocabularyHijacking.
+}.
+
+#Pattern 3.a
+{
+  ?pattern a validation:Pattern3NonConsistentWithSKOSRules.
+
+} => {
+  ?pattern a validation:Pattern3NonConsistentWithSKOSRules.
+}.
+
+#Pattern 3.b
+{
+  ?pattern a validation:Pattern3NonConsistentWithSKOSExtraRules.
+
+} => {
+  ?pattern a validation:Pattern3NonConsistentWithSKOSExtraRules.
+}.
+
+#Pattern 4.a
+{
+  ?pattern a validation:Pattern4NonConsistentWithSKOSRules.
+
+} => {
+  ?pattern a validation:Pattern4NonConsistentWithSKOSRules.
+}.
+
+#Pattern 4.b
+{
+  ?pattern a validation:Pattern4NonConsistentWithSKOSExtraRules.
+
+} => {
+  ?pattern a validation:Pattern4NonConsistentWithSKOSExtraRules.
+}.
+
+#Pattern 5.a
+{
+  ?pattern a validation:Pattern5NonConsistentWithSKOSExtraRules.
+
+} => {
+  ?pattern a validation:Pattern5NonConsistentWithSKOSExtraRules.
+}.
+
+#Pattern 5.b
+{
+  ?pattern a validation:Pattern5VocabularyHijacking.
+
+} => {
+  ?pattern a validation:Pattern5VocabularyHijacking.
+}.
+
+#Pattern 5.c
+{
+  ?pattern a validation:Pattern5NonConsistentWithSKOSRules.
+
+} => {
+  ?pattern a validation:Pattern5NonConsistentWithSKOSRules.
+}.
+
+#Pattern 6.a
+{
+  ?pattern a validation:Pattern6NonConsistentWithSKOSRules.
+
+} => {
+  ?pattern a validation:Pattern6NonConsistentWithSKOSRules.
+}.
+
+#Pattern 6.b
+{
+  ?pattern a validation:Pattern6NonConsistentWithSKOSExtraRules.
+
+} => {
+  ?pattern a validation:Pattern6NonConsistentWithSKOSExtraRules.
+}.
+
+#Pattern 7
+{
+  ?pattern a validation:Pattern7CounterIntuitive.
+
+} => {
+  ?pattern a validation:Pattern7CounterIntuitive.
+}.

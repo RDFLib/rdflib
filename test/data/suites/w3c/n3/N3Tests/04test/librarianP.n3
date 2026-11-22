@@ -1,0 +1,7 @@
+# $Id: librarianP.n3 336 2004-07-06 22:49:40Z josd $
+
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/librarianP#>.
+
+:Joe a :Librarian; :hairColor "black".
+:Mary a :Librarian; :hairColor "red".
+

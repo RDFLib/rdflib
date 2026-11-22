@@ -1,0 +1,349 @@
+# PxButton | e             | java euler.EulerRunner http://eulersharp.sourceforge.net/2004/04test/testP.n3 http://www.agfa.com/w3c/euler/rpo-rules.n3 --think http://eulersharp.sourceforge.net/2004/04test/testC.n3
+# PxButton | x             | java euler.EulerRunner --step 8000000 testP.n3 testC.n3
+# PxButton | x#            | Euler --step 8000000 testP.n3 testC.n3
+# PxButton | t             | java euler.EulerRunner --think --nope --step 8000000 testP.n3 testC.n3
+# PxButton | t#            | Euler --step 8000000 testP.n3 testC.n3
+# PxButton | tf            | java euler.EulerRunner --nope --think --step 8000000 testP.n3 --filter testC.n3
+# PxButton | tf#           | Euler --nope --think --step 8000000 testP.n3 --filter testC.n3
+# PxButton | tq            | java euler.EulerRunner --nope --think --step 800000 testP.n3 --query testC.n3
+# PxButton | tq#           | Euler --nope --think --step 8000000 testP.n3 --query testC.n3
+# PxButton | cwm           | python /w3ccvs/WWW/2000/10/swap/cwm.py testP.n3 --think
+# PxButton | cwm-q         | python /w3ccvs/WWW/2000/10/swap/cwm.py testP.n3 --think --query=testC.n3
+# PxButton | cwm-f         | python /w3ccvs/WWW/2000/10/swap/cwm.py testP.n3 --think --filter=testC.n3
+# PxButton | testc         | java euler.EulerRunner --nope --think --step 8000000 http://www.w3.org/2000/10/swap/test/EricNeumann/exdata testP.n3 testC.n3
+# PxButton | nci           | Euler --debug --step 8000000 nciOncology.n3 testC.n3
+# PxButton | testwifo      | java euler.EulerRunner --local --step 8000000 http://www.w3.org/2002/03owlt/miscellaneous/example001 http://www.w3.org/2002/03owlt/miscellaneous/example002 http://eulersharp.sourceforge.net/2003/09wifo/wifoP testC |
+# PxButton | testwifo2     | java euler.EulerRunner --local --step 200000 http://www.w3.org/2002/03owlt/miscellaneous/example001 http://www.w3.org/2002/03owlt/miscellaneous/example002 /josd/www/euler/owl-rules /josd/www/euler/rdfs-rules testC |
+# PxButton | testgalen     | java euler.EulerRunner --local --nope --think --step 2000000 galen owl-rules rdfs-rules galen-query > galen-result.n3|
+# PxButton | testrdf       | java euler.EulerRunner --local --step 200000 testP http://eulersharp.sourceforge.net/2003/03swap/rdfs-rules testC |
+# PxButton | testowl       | java euler.EulerRunner --think --local --step 200000 testP /euler/owl-rules testC |
+# PxButton | testowlrdf    | java euler.EulerRunner --local --step 200000 testP /euler/owl-rules /euler/rdfs-rules testC |
+# PxButton | testowlxsdrdf | java euler.EulerRunner --local --step 200000 testP /euler/owl-rules /euler/xsd-rules /euler/rdfs-rules testC |
+# PxButton | testxsdrdf    | java euler.EulerRunner --local --step 200000 testP /euler/xsd-rules /euler/rdfs-rules testC |
+# PxButton | testconvrdf   | java euler.EulerRunner --think --nope --local --step 200000 http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest testP testC |
+# PxButton | testconvowl   | java euler.EulerRunner --think --nope --local --step 200000 http://www.w3.org/2002/03owlt/editors-draft/draft/Manifest testP testC |
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix time: <http://www.w3.org/2000/10/swap/time#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix neg: <http://www.agfa.com/w3c/euler/negation#> .
+@prefix dc: <http://purl.org/dc/elements/1.0/>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix eg: <http://example.org/eg#>.
+@prefix ex: <http://example.org/ex#>.
+@prefix foo: <http://example.org/foo#>.
+@prefix kb: <http://example.org/kb#>.
+@prefix cons: <http://example.org/cons#>.
+@prefix da: <http://eulersharp.sourceforge.net/euler#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix e: <http://www.agfa.com/w3c/euler/>.
+@prefix : <test#>.
+
+#_:x :b _:u.
+#_:y _:u _:z.
+
+#_:x :k _:y.
+#_:y :m _:z.
+
+#owl:Class a :B.
+
+#<mailto:phayes@ai.uwf.edu> rdfs:fyi "email address of a clever guy".
+
+#:abc <http://www.agfa.com/w3c/euler/owl-rules#includes> :xyz.
+
+#:i a ?I.
+#?I owl:intersectionOf ?L1.
+#?L1 a rdf:List.
+#?L1 rdf:first :B.
+#?L1 rdf:rest ?L2.
+#?L2 a rdf:List.
+#?L2 rdf:first :C.
+#?L2 rdf:rest ?L3.
+#?L3 a rdf:List.
+#?L3 rdf:first :A.
+#?L3 rdf:rest rdf:nil
+
+#:parijs :capitalOf :france.
+
+#:a rdf:type rdfs:Container.
+#rdf:_25 rdfs:domain rdfs:Container.
+
+#_:p1 :line _:p2.
+#_:p2 :line _:p3; owl:differentFrom _:p1.
+#_:p3 :line _:p1; owl:differentFrom _:p1, _:p2.
+
+#?X a :Triangle.
+
+#: a :Inconsistency.
+
+#eg:a eg:prop " 3 "^^xsd:int.
+
+#(<http://www.agfa.com/w3c/euler/easterP>.log:semantics).log:conjunction =>
+# <http://www.agfa.com/w3c/euler/easterC>.log:semantics .
+
+#:d a :T.
+
+#:oneOfA owl:oneOf ?X.
+#?X rdf:first :a.
+#?X rdf:rest rdf:nil.
+
+#ex:ia rdf:type ex:i .
+
+#ex:foo ex:prop _:x.
+#_:x rdf:type rdfs:Resource.
+
+#rdfs:Class rdf:type _:i.
+#_:i owl:intersectionOf _:l.
+#_:l rdf:first rdfs:Class.
+#_:l rdf:rest rdf:nil.
+
+#rdfs:Resource rdfs:subClassOf rdf:Property.
+
+#owl:imports a rdf:Property.
+
+#:Addition a :Summation.
+
+#?X a <http://eu.org/owl#EuroMP>.
+
+#eg:door eg:length-cm ?X.
+#eg:window eg:length-in ?Y.
+
+#<http://foo.ex/a#b> <http://foo.ex/a#b> "aa"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+#owl:sameAs owl:sameIndividualAs owl:sameIndividualAs.
+
+#_:x owl:maxCardinality 1; owl:minCardinality 5.
+
+#eg:foo rdf:type eg:madeByJos .
+
+#_:b rdf:type owl:Thing .
+
+#:C rdfs:subClassOf owl:Thing.
+
+#eg:Wine rdfs:subClassOf eg:ManufacturedThing.
+#eg:Grape rdfs:subClassOf eg:NaturalThing.
+
+#:Y owl:differentFrom :X.
+
+#_:a owl:differentFrom _:b.
+
+#rdf:nil rdf:first [].
+
+#ex:xx ex:yy "1"^^xsd:decimal .
+
+#:Jenny :age 10 .
+
+#eg:p2 rdfs:domain eg:c .
+
+#eg:B rdf:type owl:Class .
+#eg:A rdf:type owl:Class .
+#eg:A owl:equivalentClass _:r1 .
+#_:r1 rdf:type owl:Restriction .
+#_:r1 owl:onProperty eg:rA .
+#_:r1 owl:allValuesFrom _:r2 .
+#_:r2 rdf:type owl:Restriction .
+#_:r2 owl:onProperty eg:r .
+#_:r2 owl:allValuesFrom eg:B .
+#eg:C rdf:type owl:Class .
+#eg:C owl:equivalentClass _:r3 .
+#_:r3 rdf:type owl:Restriction .
+#_:r3 owl:onProperty eg:rC .
+#_:r3 owl:allValuesFrom _:r2 .
+
+#:socrates a :Mortal.
+
+#@prefix wine: <http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#>.
+#@prefix vin: <http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#>.
+#@prefix food: <http://www.w3.org/TR/2003/CR-owl-guide-20030818/food#>.
+#_:W wine:hasSugar vin:OffDry.
+
+#_:X1 a _:I1.
+#_:I1 owl:intersectionOf _:L1.
+#_:L1 rdf:first _:R1.
+#_:L1 rdf:rest _:K1.
+#_:R1 owl:onProperty food:hasDrink.
+#_:R1 owl:hasValue vin:FoxenCheninBlanc.
+#_:K1 rdf:first _:S1.
+#_:K1 rdf:rest rdf:nil.
+#_:S1 owl:onProperty food:hasFood.
+#_:S1 owl:hasValue food:Pie.
+
+#_:A :g _:B.
+
+#_:nnn rdf:type rdfs:Literal .
+
+#_:Y a rdfs:Literal.
+#_:Z a xsd:int.
+
+#:L owl:sameAs :M.
+
+#_:X rdf:type rdfs:ContainerMembershipProperty .
+#rdf:_9270 rdf:type rdfs:ContainerMembershipProperty .
+
+#_:X xxx _:Y.
+
+#<http://example.org/liar> a log:Truth .
+
+#@prefix : <http://example.org/base1#> .
+#@prefix a: <http://example.org/base2#> .
+#a:a a:b .
+
+#:M :angle_deg _:X.
+
+#_:X a :C.
+
+#ex:s ex:p _:b .
+#_:b rdf:type rdfs:Literal .
+
+#_:X :worksFor _:Y.
+
+#:a :p :b .
+
+#ex:a ex:p _:a .
+#_:a a xsd:int.
+
+#{_:X :worksIn :processControl} :or {_:X :worksIn :systemMaintenance; :worksAt :night}.
+
+#:d :e :f.
+
+#_:A a [ owl:unionOf (:Management :Support)].
+#(_:A) a q:Result.
+
+#@prefix dan: <http://eulersharp.sourceforge.net/2004/04test/danP#>.
+#(dan: owl: rdfs:).da:from da:select <http://eulersharp.sourceforge.net/2004/04test/danC>.
+
+#(<testP>).da:from da:select {?N1 :p1 ?N2}, {?N1 :p2 ?N2}.
+
+#_:X :worksIn :processControl.
+
+#{{:a :b :c} log:notIncludes {:a :b :cc}} => {:a a :Result}.
+#{?X :b :cc} => {?X a :Result}.
+
+#@forAll :x, :y.
+#{ :x :son :y } => { :x :child :y. :y a :Male }.
+#{ :x :parent [ :sister :y ] } =>  { :x :aunt :y }.
+
+#{} => {?x a :c2}.
+#{?x a :c2} => {}.
+#{?x a :c2} => {?x a :c2}.
+
+#{:a :b :c} => {:yes :for <>}.
+#{:d :e :f} => {:yes :for <>}.
+
+#{?J1 :age ?A1.
+# ?J2 :age ?A2.
+# ?A1 math:lessThan ?A2.
+# ?J3 :age ?A3.
+# ?A2 math:lessThan ?A3.
+# ?J4 :age ?A4.
+# ?A3 math:lessThan ?A4.
+# ?J5 :age ?A5.
+# ?A4 math:lessThan ?A5.
+# ?J6 :age ?A6.
+# ?A5 math:lessThan ?A6.
+# ?J7 :age ?A7.
+# ?A6 math:lessThan ?A7}=> {?J7 :resultFor <>}.
+
+#?S a ?O.
+
+#[] q:select { (?x ?y) };
+#   q:where { ?x a ex:Librarian; ex:hairColor ?y }.
+#[] q:select { (?x ?y) };
+#   q:where { ?x a ex:Plumber; ex:hairColor ?y }.
+
+#[] q:select { (?X ?Y) } ;
+#   q:where  { :x :p ?X } .
+#[] q:select { (?X ?Y) } ;
+#   q:where  { :x :p ?X . :x :q ?Y } .
+
+#[] q:select {(?X ?Y ?Z)};
+#   q:where {?X a :WORKER. ?X :has-friend ?Y. ?Y a :EMPLOYEE. ?Y :has-friend ?Z. ?Z a :MANAGER}.
+
+#[] q:select { (?X) } ;
+#   q:where  { ?X a :B } .
+
+#@prefix x: <http://example.com/exon/#>.
+#@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+#
+#[] q:select { (?E) };
+#   q:where { <http://www.w3.org/2000/10/swap/test/EricNeumann/exdata> log:semantics ?F.
+#             ?F log:includes { ?T1 a x:Transcript; x:hasExon ?E. ?T2 a x:Transcript }.
+#             ?F log:notIncludes { ?T2 x:hasExon ?E }}.
+
+#[] q:select {?Y a q:Result}; q:where {?X rdfs:member ?Y}.
+
+#@prefix nci: <http://www.mindswap.org/2003/nciOncology.owl#> .
+#nci:FGFR3_Gene rdfs:subClassOf nci:Fibroblast_Growth_Factor_Receptor_Family_Gene.
+
+#[] q:select {:test :has ?W}; q:where {:test :has ?W}.
+
+#[] q:select { ?x :prop ?v}; q:where {?x :prop ?v. ?v math:greaterThan "40"^^xsd:integer}.
+
+#[] q:select { :me a :Happy-person }; q:where { (10 6) math:difference 4 }.
+
+#?u :successor ?v.
+
+#[] q:select {:s :p :o};
+#   q:where {(math:kb <testP>).log:conjunction log:includes {(1 1) math:sum 2}}.
+
+#[] q:select {:s :p :o};
+#   q:where {(math:kb {}).log:conjunction log:includes {(1 1) math:sum 2}}.
+
+#[] q:select {:s :p :o};
+#   q:where {{} log:notIncludes {_:x a rdfs:Resource}}.
+
+#[] q:select {<> q:answer (?src1 ?x ?y ?z ?src2 ?r ?s)};
+#   q:where {{?x ?y ?z} q:source ?src1.
+#            {?z ?r ?s} q:source ?src2}.
+
+#[] q:select {?x :knows ?y};
+#   q:where {?x :loves ?y}.
+
+#:testcase :made ?X^^xsd:dateTime.
+
+#<http://www.w3.org/People/Connolly/#topic> foaf:homePage <http://www.w3.org/People/Connolly/>.
+#[] q:select {?Y foaf:homePage <http://www.w3.org/People/Connolly/>};
+#   q:where  {?Y foaf:homePage <http://www.w3.org/People/Connolly/>}.
+
+#[] q:select {?X owl:sameAs ?Y}; q:where {?X owl:sameAs ?Y}.
+
+#[] q:select { :test :is "ok"}; q:where {:a :b ?x. :c :d ?x}.
+
+#:propA a owl:SymmetricProperty.
+#:propC a owl:SymmetricProperty.
+
+#:E rdfs:subClassOf :A.
+
+#{ :a log:uri ?Q } => { ?Q a :Answer}.
+#{ ("2005-03-30T11:00:00" :tz) log:dtlit ?X } => { ?X a :Answer }.
+
+#[] q:select { <#> q:answer (?s ?age) }; q:where { ?s :shoeSize ?age ; :age ?age } .
+
+#{?X rdfs:subClassOf ?Y} => {?X rdfs:subClassOf ?Y}.
+#:X owl:intersectionOf ( :Y :Z ).
+
+#<A> rdf:type <X> , <Y> , <Z> .
+#<B> rdf:type <Y> .
+#<C> rdf:type <Z> .
+
+#{:Lois :believes {:ClarkKent a :Hero}} => {:ClarkKent a :Answer}.
+
+#(0.1e+1 1) math:sum ?X.
+
+#?X :y :Z.
+
+#:a :b 1.0 .
+
+#_:b12 :r _:b13.
+#_:b26 :p _:b13.
+#_:b12 :url <http://example.org>.
+
+#"" time:gmTime _:Time.
+#"2006-01-09T14:52:44Z"^^xsd:dateTime time:inSeconds _:Seconds.
+
+:Paul a ?C.

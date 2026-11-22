@@ -1,0 +1,153 @@
+#Processed by EYE v18.0417.2132 josd
+#eye http://eulersharp.sourceforge.net/2007/07test/iq.n3 --pass-all
+
+@prefix : <http://example.org/test#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:component <#lemma3>;
+  r:component <#lemma4>;
+  r:component <#lemma5>;
+  r:component <#lemma6>;
+  r:component <#lemma7>;
+  r:gives {
+    _:t_0 :says {_:t_1 :knows :Albert}.
+    :s :p :o.
+    _:sk_0 :loves _:sk_1.
+    :s :pp {:s :ppp :ooo}.
+    {?U_2 :knows :Albert} => {_:x_0_1 :knows :Kurt}.
+    {:e :p :a} => {:e :q :b}.
+    {?U_3 :p :o} => {?U_3 :pp {?U_3 :ppp :ooo}}.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    _:t_0 :says {_:t_1 :knows :Albert}.
+  };
+  r:evidence (
+    <#lemma8>
+    [ a r:Fact; r:gives {:says <http://www.w3.org/2000/10/swap/log#notEqualTo> <http://www.w3.org/2000/10/swap/log#implies>}]
+  );
+  r:rule <#lemma9>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    :s :p :o.
+  };
+  r:evidence (
+    <#lemma10>
+    [ a r:Fact; r:gives {:p <http://www.w3.org/2000/10/swap/log#notEqualTo> <http://www.w3.org/2000/10/swap/log#implies>}]
+  );
+  r:rule <#lemma9>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    _:sk_0 :loves _:sk_1.
+  };
+  r:evidence (
+    <#lemma11>
+    [ a r:Fact; r:gives {:loves <http://www.w3.org/2000/10/swap/log#notEqualTo> <http://www.w3.org/2000/10/swap/log#implies>}]
+  );
+  r:rule <#lemma9>.
+
+<#lemma4> a r:Inference;
+  r:gives {
+    :s :pp {:s :ppp :ooo}.
+  };
+  r:evidence (
+    <#lemma12>
+    [ a r:Fact; r:gives {:pp <http://www.w3.org/2000/10/swap/log#notEqualTo> <http://www.w3.org/2000/10/swap/log#implies>}]
+  );
+  r:rule <#lemma9>.
+
+<#lemma5> a r:Inference;
+  r:gives {
+    {?U_2 :knows :Albert} => {_:x_0_4 :knows :Kurt}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{?U_2 :knows :Albert} => {_:x_0_5 :knows :Kurt}}]
+    [ a r:Fact; r:gives {{_:sk_2 :knows :Albert} <http://www.w3.org/2000/10/swap/log#notEqualTo> true}]
+  );
+  r:rule <#lemma13>.
+
+<#lemma6> a r:Inference;
+  r:gives {
+    {:e :p :a} => {:e :q :b}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:e :p :a} => {:e :q :b}}]
+    [ a r:Fact; r:gives {{:e :p :a} <http://www.w3.org/2000/10/swap/log#notEqualTo> true}]
+  );
+  r:rule <#lemma13>.
+
+<#lemma7> a r:Inference;
+  r:gives {
+    {?U_3 :p :o} => {?U_3 :pp {?U_3 :ppp :ooo}}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{?U_3 :p :o} => {?U_3 :pp {?U_3 :ppp :ooo}}}]
+    [ a r:Fact; r:gives {{_:sk_3 :p :o} <http://www.w3.org/2000/10/swap/log#notEqualTo> true}]
+  );
+  r:rule <#lemma13>.
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    _:t_0 :says {_:t_1 :knows :Albert}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/iq.n3>].
+
+<#lemma9> a r:Extraction;
+  r:gives {
+    {?x_1_10 ?x_0_10 ?x_2_10.
+     ?x_0_10 <http://www.w3.org/2000/10/swap/log#notEqualTo> <http://www.w3.org/2000/10/swap/log#implies>} => {?x_1_10 ?x_0_10 ?x_2_10}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2003/03swap/pass-all>].
+
+<#lemma10> a r:Extraction;
+  r:gives {
+    :s :p :o.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/iq.n3>].
+
+<#lemma11> a r:Inference;
+  r:gives {
+    _:sk_0 :loves _:sk_1.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives true]
+  );
+  r:rule <#lemma14>.
+
+<#lemma12> a r:Inference;
+  r:gives {
+    :s :pp {:s :ppp :ooo}.
+  };
+  r:evidence (
+    <#lemma10>
+  );
+  r:rule <#lemma15>.
+
+<#lemma13> a r:Extraction;
+  r:gives {
+    {?x_0_11 => ?x_1_11.
+     ?x_0_11 <http://www.w3.org/2000/10/swap/log#notEqualTo> true} => {?x_0_11 => ?x_1_11}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2003/03swap/pass-all>].
+
+<#lemma14> a r:Extraction;
+  r:gives {
+    true => {_:x_0_12 :loves _:x_1_12}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/iq.n3>].
+
+<#lemma15> a r:Extraction;
+  r:gives {
+    {?x_0_13 :p :o} => {?x_0_13 :pp {?x_0_13 :ppp :ooo}}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/iq.n3>].
+
+#2018-04-18T08:28:05.226Z in=15 out=7 ent=9 step=18 brake=2 inf=37576 sec=0.025 inf/sec=1503040
+#ENDS
+

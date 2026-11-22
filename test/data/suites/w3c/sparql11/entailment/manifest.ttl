@@ -1,0 +1,736 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix sd:    <http://www.w3.org/ns/sparql-service-description#> .
+@prefix ent:    <http://www.w3.org/ns/entailment/> .
+@prefix pr:    <http://www.w3.org/ns/owl-profile/> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "entailment regime test cases" ;
+    mf:entries
+    ( 
+      :rdf01
+      :rdf02
+      :rdf03
+      :rdf04
+
+      :rdfs01
+      :rdfs02
+      :rdfs03
+      :rdfs04
+      :rdfs05
+      :rdfs06
+      :rdfs07
+      :rdfs08
+      :rdfs09
+      :rdfs10
+      :rdfs11
+      :rdfs12
+      :rdfs13
+
+      :d-ent-01
+
+      :owlds01
+      :owlds02
+      :paper-sparqldl-Q1
+      :paper-sparqldl-Q1-rdfs
+      :paper-sparqldl-Q2
+      :paper-sparqldl-Q3
+      :paper-sparqldl-Q4
+      :paper-sparqldl-Q5
+      :plainLit
+      
+      :bind01
+      :bind02
+      :bind03
+      :bind04
+      :bind05
+      :bind06
+      :bind07
+      :bind08
+
+      :sparqldl-01 
+      :sparqldl-02 
+      :sparqldl-03
+      :sparqldl-04
+      :sparqldl-05
+      :sparqldl-06
+      :sparqldl-07
+      :sparqldl-08
+      :sparqldl-09
+      :sparqldl-10
+      :sparqldl-11
+      :sparqldl-12
+      :sparqldl-13
+
+      :lang
+      :parent2
+      :parent3
+      :parent4
+      :parent5	
+      :parent6
+      :parent7
+      :parent8
+      :parent9
+      :parent10
+      :simple1
+      :simple2
+      :simple3
+      :simple4
+      :simple5	
+      :simple6
+      :simple7
+      :simple8
+    ) .
+
+:rdf01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "RDF inference test" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <rdf01.rq> ;
+           qt:data   <rdf01.ttl> ;
+           sd:entailmentRegime ent:RDF ] ;
+    mf:result  <rdf01.srx> .
+
+:rdf02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "RDF inference test" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <rdf02.rq> ;
+           qt:data   <rdf02.ttl> ;
+           sd:entailmentRegime ent:RDF ] ;
+    mf:result  <rdf02.srx> .
+
+:rdf03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "RDF test for blank node cardinalities" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <rdf03.rq> ;
+           qt:data   <rdf03.ttl> ; 
+           sd:entailmentRegime ent:RDF ] ;
+    mf:result  <rdf03.srx> .
+
+:rdf04  rdf:type   mf:QueryEvaluationTest ;
+    mf:name  "simple triple pattern match" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action 
+        [ qt:query  <rdf04.rq> ; 
+          qt:data <rdf04.ttl> ; 
+          sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:RL pr:Full ) ;
+          sd:entailmentRegime ( ent:RDF ent:RDFS ent:D ent:OWL-RDF-Based ) ] ;
+    mf:result  <rdf04.srx> .
+
+:rdfs01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "RDFS inference test rdfs:subPropertyOf" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <rdfs01.rq> ;
+           qt:data   <rdfs01.ttl> ;
+           sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime ( ent:RDFS ent:D ent:OWL-RDF-Based ) ] ;
+    mf:result  <rdfs01.srx> .
+
+:rdfs02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "RDFS inference test rdfs:subPropertyOf" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <rdfs02.rq> ;
+           qt:data   <rdfs01.ttl> ;
+           sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime ( ent:RDFS ent:D ent:OWL-RDF-Based ) ] ;
+    mf:result  <rdfs02.srx> .
+
+:rdfs03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "RDFS inference test combining subPropertyOf and domain" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <rdfs03.rq> ;
+           qt:data   <rdfs03.ttl> ;
+           sd:entailmentRegime ( ent:RDFS ent:D ) ] ;
+    mf:result  <rdfs03.srx> .
+
+:rdfs04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "RDFS inference test subClassOf" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <rdfs04.rq> ;
+           qt:data   <rdfs04.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime ( ent:RDFS ent:D ent:OWL-RDF-Based ) ] ;
+    mf:result  <rdfs04.srx> .
+
+:rdfs05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "RDFS inference test subClassOf" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <rdfs05.rq> ;
+           qt:data   <rdfs05.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime  ( ent:RDFS ent:D ent:OWL-RDF-Based ) ] ;
+    mf:result  <rdfs05.srx> .
+
+:rdfs06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "RDFS inference test domain" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <rdfs06.rq> ;
+           qt:data   <rdfs06.ttl> ;
+           sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime  ( ent:RDFS ent:D ent:OWL-RDF-Based ) ] ;
+    mf:result  <rdfs06.srx> .
+
+:rdfs07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "RDFS inference test range" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <rdfs07.rq> ;
+           qt:data   <rdfs07.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime ( ent:RDFS ent:D ent:OWL-RDF-Based ) ] ;
+    mf:result  <rdfs07.srx> .
+
+:rdfs08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "RDFS inference test rdf:XMLLiteral" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <rdfs08.rq> ;
+           qt:data   <rdfs08.ttl> ; 
+           sd:entailmentRegime  ( ent:RDFS ent:D ) ] ;
+    mf:result  <rdfs08.srx> .
+
+:rdfs09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "RDFS inference test transitivity of subClassOf" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <rdfs09.rq> ;
+           qt:data   <rdfs09.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime ( ent:RDFS ent:D ent:OWL-RDF-Based ) ] ;
+    mf:result  <rdfs09.srx> .
+
+:rdfs10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "RDFS inference test transitivity of subPropertyOf" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <rdfs10.rq> ;
+           qt:data   <rdfs10.ttl> ;
+           sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:RL pr:Full ) ; 
+           sd:entailmentRegime ( ent:RDFS ent:D ent:OWL-RDF-Based ) ] ;
+    mf:result  <rdfs10.srx> .
+
+:rdfs11 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "RDFS inference test subProperty and instances" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <rdfs11.rq> ;
+           qt:data   <rdfs11.ttl> ; 
+           sd:entailmentRegime ( ent:RDFS ent:D ) ] ;
+    mf:result  <rdfs11.srx>
+    .
+
+:rdfs12 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "RDFS inference test containers" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <rdfs12.rq> ;
+           qt:data   <rdfs12.ttl> ; 
+           sd:entailmentRegime  ( ent:RDFS ent:D ) ] ;
+    mf:result  <rdfs12.srx> .
+
+:rdfs13 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "RDFS inference test to show that neither literals in subject position nor newly introduced surrogate blank nodes are to be returned in query answers" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <rdfs13.rq> ;
+           qt:data   <rdfs13.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime  ( ent:RDFS ent:D ent:OWL-RDF-Based ) ] ;
+    mf:result  <rdfs13.srx> .
+
+:d-ent-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "D-Entailment test to show that  neither literals in subject position nor newly introduced surrogate blank nodes are to be returned in query answers" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <d-ent-01.rq> ;
+           qt:data   <d-ent-01.ttl> ; 
+           sd:entailmentRegime  ent:D ] ;
+    mf:result  <d-ent-01.srx> .
+
+:owlds01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bnodes are not existentials" ;
+    dawgt:approval dawgt:Approved ;
+    mf:action
+         [ qt:query  <owlds01.rq> ;
+           qt:data   <owlds01.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:D ) ] ;
+    mf:result  <owlds01.srx> .
+
+:owlds02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bnodes are not existentials with answer" ;
+    dawgt:approval dawgt:Approved ;
+    mf:action
+         [ qt:query  <owlds02.rq> ;
+           qt:data   <owlds02.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:Full ) ;
+           sd:entailmentRegime  ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:RDF ent:D)  ] ;
+    mf:result  <owlds02.srx> .
+
+:plainLit rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Plain literals with language tag are not the same as the same literal without" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <plainLit.rq> ;
+           qt:data   <plainLit.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ) ] ;
+    mf:result  <plainLit.srx> .
+
+:paper-sparqldl-Q1  rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "paper-sparqldl-Q1" ;
+         dawgt:approval dawgt:Approved ;
+         mf:action 
+		[ qt:query  <paper-sparqldl-Q1.rq> ; 
+		qt:data <paper-sparqldl-data.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:QL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ) ] ;
+         mf:result  <paper-sparqldl-Q1.srx> .
+
+:paper-sparqldl-Q1-rdfs  rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "paper-sparqldl-Q1-rdfs" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action 
+		[ qt:query  <paper-sparqldl-Q1.rq> ; 
+		qt:data <paper-sparqldl-data.ttl> ; 
+           sd:entailmentRegime ( ent:RDFS ent:D ) ] ;
+         mf:result  <paper-sparqldl-Q1-rdfs.srx> .
+
+:paper-sparqldl-Q2  rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "paper-sparqldl-Q2" ;
+         dawgt:approval dawgt:Approved ;
+         mf:action 
+		[ qt:query  <paper-sparqldl-Q2.rq> ; 
+		qt:data <paper-sparqldl-data.ttl> ; 
+           sd:EntailmentProfile pr:DL ;
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <paper-sparqldl-Q2.srx> .
+
+:paper-sparqldl-Q3  rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "paper-sparqldl-Q3" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action 
+		[ qt:query  <paper-sparqldl-Q3.rq> ; 
+		qt:data <paper-sparqldl-data.ttl> ; 
+           sd:EntailmentProfile pr:DL ;
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <paper-sparqldl-Q3.srx> .
+
+:paper-sparqldl-Q4  rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "paper-sparqldl-Q4" ;
+         mf:action 
+		[ qt:query  <paper-sparqldl-Q4.rq> ; 
+		qt:data <paper-sparqldl-data.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:QL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ) ] ;
+         mf:result  <paper-sparqldl-Q4.srx> .
+
+:paper-sparqldl-Q5  rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "paper-sparqldl-Q5" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action 
+		[ qt:query  <paper-sparqldl-Q5.rq> ; 
+		qt:data <paper-sparqldl-data.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:QL ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ) ] ;
+         mf:result  <paper-sparqldl-Q5.srx> .
+
+:bind01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind01 - BIND fixed data for OWL DL" ;
+    dawgt:approval dawgt:Approved ;
+    mf:action
+         [ qt:query  <bind01.rq> ;
+           qt:data   <bind-data.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:RDF ent:D) ] ;
+    mf:result  <bind01.srx> .
+
+:bind02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind02 - BIND fixed data for OWL DL" ;
+    dawgt:approval dawgt:Approved ;
+    mf:action
+         [ qt:query  <bind02.rq> ;
+           qt:data   <bind-data.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:RDF ent:D) ] ;
+    mf:result  <bind02.srx> .
+
+:bind03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind03 - BIND fixed data for OWL DL" ;
+    dawgt:approval dawgt:Approved ;
+    mf:action
+         [ qt:query  <bind03.rq> ;
+           qt:data   <bind-data.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:RDF ent:D) ] ;
+    mf:result  <bind03.srx> .
+
+:bind04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind04 - BIND fixed data for OWL DL" ;
+    dawgt:approval dawgt:Approved ;
+    mf:action
+         [ qt:query  <bind04.rq> ;
+           qt:data   <bind-data.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:RDF ent:D) ] ;
+    mf:result  <bind04.srx> .
+
+:bind05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind05 - BIND fixed data for OWL DL" ;
+    dawgt:approval dawgt:Approved ;
+    mf:action
+         [ qt:query  <bind05.rq> ;
+           qt:data   <bind-data.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:RDF ent:D) ] ;
+    mf:result  <bind05.srx> .
+
+:bind06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind06 - BIND fixed data for OWL DL" ;
+    dawgt:approval dawgt:Approved ;
+    mf:action
+         [ qt:query  <bind06.rq> ;
+           qt:data   <bind-data.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime  ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:RDF ent:D) ] ;
+    mf:result  <bind06.srx> .
+
+:bind07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind07 - BIND fixed data for OWL DL" ;
+    dawgt:approval dawgt:Approved ;
+    mf:action
+         [ qt:query  <bind07.rq> ;
+           qt:data   <bind-data.ttl> ;
+           sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime  ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:RDF ent:D) ] ;
+    mf:result  <bind07.srx> .
+
+:bind08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind08 - BIND fixed data for OWL DL" ;
+    dawgt:approval dawgt:Approved ;
+    mf:action
+         [ qt:query  <bind08.rq> ;
+           qt:data   <bind-data.ttl>;
+           sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:RDF ent:D) ] ;
+    mf:result  <bind08.srx> .
+
+:sparqldl-01 rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "sparqldl-01.rq: triple pattern" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <sparqldl-01.rq> ; 
+		qt:data <data-01.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:RL pr:QL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:RDF ent:D) ] ;
+         mf:result  <sparqldl-01.srx> .
+	
+:sparqldl-02  rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "sparqldl-02.rq: simple combined query" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <sparqldl-02.rq> ; 
+		qt:data <data-01.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:RL pr:QL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:D) ] ;
+         mf:result  <sparqldl-02.srx> .
+	
+:sparqldl-03  rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "sparqldl-03.rq: combined query with complex class description" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action 
+		[ qt:query  <sparqldl-03.rq> ; 
+		qt:data <data-02.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:D) ] ;
+         mf:result  <sparqldl-03.srx> .
+
+:sparqldl-04  rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "sparqldl-04.rq: bug fixing test" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action 
+		[ qt:query  <sparqldl-04.rq> ; 
+		qt:data <data-03.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:RL pr:QL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDF ent:RDFS ent:D) ] ;
+         mf:result  <sparqldl-04.srx> .
+
+:sparqldl-05  rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "sparqldl-05.rq: simple undistinguished variable test." ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action 
+		[ qt:query  <sparqldl-05.rq> ; 
+		qt:data <data-03.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:RL pr:QL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDF ent:RDFS ent:D) ] ;
+         mf:result  <sparqldl-05.srx> .
+
+:sparqldl-06  rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "sparqldl-06.rq: cycle of undistinguished variables" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action 
+		[ qt:query  <sparqldl-06.rq> ; 
+		qt:data <data-06.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:RL pr:QL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:RDF ent:D) ] ;
+         mf:result  <sparqldl-06.srx> .
+
+:sparqldl-07  rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "sparqldl-07.rq: two distinguished variables + undist." ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action 
+		[ qt:query  <sparqldl-07.rq> ; 
+		qt:data <data-06.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:RL pr:QL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:RDF ent:D) ] ;
+         mf:result  <sparqldl-07.srx> .
+
+:sparqldl-08  rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "sparqldl-08.rq: two distinguished variables + undist." ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action 
+		[ qt:query  <sparqldl-08.rq> ; 
+		qt:data <data-06.ttl> ;
+           sd:EntailmentProfile ( pr:DL pr:EL pr:RL pr:QL pr:Full ) ; 
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:RDF ent:D) ] ;
+         mf:result  <sparqldl-08.srx> .
+
+:sparqldl-09  rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "sparqldl-09.rq: undist vars test" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action 
+		[ qt:query  <sparqldl-09.rq> ; 
+		qt:data <data-07.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:QL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:RDF ent:D) ] ;
+         mf:result  <sparqldl-09.srx> .
+
+:sparqldl-10  rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "sparqldl-10.rq: undist vars test" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action 
+		[ qt:query  <sparqldl-10.rq> ; 
+		qt:data <data-07.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based )  ] ;
+         mf:result  <sparqldl-10.srx> .
+
+:sparqldl-11  rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "sparqldl-11.rq: domain test" ;
+         mf:action 
+		[ qt:query  <sparqldl-11.rq> ; 
+		qt:data <data-11.ttl> ; 
+           sd:EntailmentProfile ( pr:DL ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ) ] ;
+         mf:result  <sparqldl-11.srx> .
+
+:sparqldl-12  rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "sparqldl-12.rq: range test" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action 
+		[ qt:query  <sparqldl-12.rq> ; 
+		qt:data <data-11.ttl> ; 
+           sd:EntailmentProfile ( pr:DL ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ) ] ;
+         mf:result  <sparqldl-12.srx> .
+
+:sparqldl-13 rdf:type   mf:QueryEvaluationTest ;
+	 mf:name  "sparqldl-13.rq: sameAs" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action 
+		[ qt:query  <sparqldl-13.rq> ; 
+		qt:data <data-08.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:EL pr:RL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ) ] ;
+         mf:result  <sparqldl-13.srx> .
+	
+:lang  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "Literal with language tag test" ;
+         dawgt:approval dawgt:Approved ;
+         mf:action  
+		[ qt:query  <lang.rq> ; 
+		qt:data <lang.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:QL pr:RL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ) ] ;
+         mf:result  <lang.srx> .         
+         	                  	
+:parent2  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "parent query with distinguished variable" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <parent2.rq> ; 
+		qt:data <parent.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:Full ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:RDF ent:D) ] ;
+         mf:result  <parent2.srx> .
+                           	
+:parent3  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "parent query with (hasChild some Thing) restriction" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <parent3.rq> ; 
+		qt:data <parent.ttl> ; 
+           sd:EntailmentProfile pr:DL ;
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <parent3.srx> .
+                           	
+:parent4  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "parent query with (hasChild min 1) restriction" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <parent4.rq> ; 
+		qt:data <parent.ttl> ; 
+           sd:EntailmentProfile pr:DL ;
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <parent4.srx> .
+                           	
+:parent5  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "parent query with (hasChild some Female) restriction" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <parent5.rq> ; 
+		qt:data <parent.ttl> ; 
+           sd:EntailmentProfile pr:DL ;
+           sd:EntailmentProfile pr:DL ;
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <parent5.srx> .
+                           	
+:parent6  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "parent query with (hasChild min 1 Female) restriction" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <parent6.rq> ; 
+		qt:data <parent.ttl> ; 
+           sd:EntailmentProfile pr:DL ;
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <parent6.srx> .
+                           	
+:parent7  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "parent query with (hasChild max 1 Female) restriction" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <parent7.rq> ; 
+		qt:data <parent.ttl> ; 
+           sd:EntailmentProfile pr:DL ;
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <parent7.srx> .
+                           	
+:parent8  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "parent query with (hasChild exactly 1 Female) restriction" ;
+         mf:action  
+		[ qt:query  <parent8.rq> ; 
+		qt:data <parent.ttl> ; 
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <parent8.srx> .    
+         
+:parent9  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "subclass query with (hasChild some Thing) restriction" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <parent9.rq> ; 
+		qt:data <parent.ttl> ; 
+           sd:EntailmentProfile pr:DL ;
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <parent9.srx> .   
+         
+:parent10  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "filtered subclass query with (hasChild some Thing) restriction" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <parent10.rq> ; 
+		qt:data <parent.ttl> ; 
+           sd:EntailmentProfile pr:DL ;
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <parent10.srx> .         
+         	
+:simple1  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "simple 1" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <simple1.rq> ; 
+		qt:data <simple.ttl> ; 
+           sd:EntailmentProfile ( pr:DL pr:RL ) ;
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <simple1.srx> .
+                  	
+:simple2  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "simple 2" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <simple2.rq> ; 
+		qt:data <simple.ttl> ; 
+           sd:EntailmentProfile pr:DL ;
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <simple2.srx> .
+                           	
+:simple3  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "simple 3" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <simple3.rq> ; 
+		qt:data <simple.ttl> ; 
+           sd:EntailmentProfile pr:DL ;
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <simple3.srx> .
+                           	
+:simple4  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "simple 4" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <simple4.rq> ; 
+		qt:data <simple.ttl> ; 
+           sd:EntailmentProfile pr:DL ;
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <simple4.srx> .
+                           	
+:simple5  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "simple 5" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <simple5.rq> ; 
+		qt:data <simple.ttl> ; 
+           sd:EntailmentProfile pr:DL ;
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <simple5.srx> .
+                           	
+:simple6  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "simple 6" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <simple6.rq> ; 
+		qt:data <simple.ttl> ; 
+           sd:EntailmentProfile pr:DL ;
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <simple6.srx> .
+                           	
+:simple7  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "simple 7" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <simple7.rq> ; 
+		qt:data <simple.ttl> ; 
+           sd:EntailmentProfile pr:DL ;
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <simple7.srx> .  
+               
+:simple8  rdf:type   mf:QueryEvaluationTest ;
+         mf:name "simple 8" ;
+         dawgt:approval dawgt:NotClassified ;
+         mf:action  
+		[ qt:query  <simple8.rq> ; 
+		qt:data <simple.ttl> ; 
+           sd:EntailmentProfile pr:DL ;
+           sd:entailmentRegime ent:OWL-Direct ] ;
+         mf:result  <simple8.srx> . 

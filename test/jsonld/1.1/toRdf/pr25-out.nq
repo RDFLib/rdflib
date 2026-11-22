@@ -1,0 +1,7 @@
+_:b4 <http://example/bar-2> "bar-2" .
+_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example/Foo> .
+_:b3 <http://example/bar-2> _:b4 .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example/Bar> .
+_:b0 <http://example/foo> _:b1 .
+_:b0 <http://example/bar-1> _:b3 .
+_:b2 <http://example/bar> <http://example/> _:b1 .

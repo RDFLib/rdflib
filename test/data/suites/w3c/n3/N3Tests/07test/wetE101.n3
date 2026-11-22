@@ -1,0 +1,587 @@
+#Processed by Id: euler.yap 7292 2014-06-13 12:27:29Z josd
+#eye --nope --quiet --quick-false --quick-possible http://eulersharp.sourceforge.net/2007/07test/wetP100.n3 http://eulersharp.sourceforge.net/2007/07test/wetC100.n3 --query http://eulersharp.sourceforge.net/2007/07test/wetQ101.n3
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/wet#>.
+
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:counterModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:falseModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:falseModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:falseModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:falseModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:counterModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:falseModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:counterModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:falseModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:falseModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:falseModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:counterModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:counterModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:counterModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:falseModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:counterModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:counterModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:counterModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:falseModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:counterModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:counterModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:counterModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:falseModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:counterModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:falseModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:falseModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:counterModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:counterModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:falseModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:falseModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:counterModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:counterModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:falseModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:counterModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:falseModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:counterModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:counterModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:counterModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:falseModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:counterModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:counterModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:counterModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:falseModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :NonWetGrass. :loc001 :ascribed _:sk0}
+; e:because [ e:integrityConstraint {{:loc001 :ascribed :WetGrass. :loc001 :ascribed :NonWetGrass} => false}
+  ; e:selected [ e:triple {:loc001 :ascribed :WetGrass}
+    ]
+  ; e:selected [ e:triple {:loc001 :ascribed :NonWetGrass}
+    ]
+  ]
+].
+
+[ e:counterModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:possibleModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:counterModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :NonSprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:possibleModel {:loc001 :ascribed :Cloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :Rain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+; e:gives {
+    :loc001 :ascribed :Rain.
+  }
+].
+
+[ e:counterModel {:loc001 :ascribed :NonCloudy. :loc001 :ascribed :Sprinkler. :loc001 :ascribed :NonRain. :loc001 :ascribed :WetGrass. :loc001 :ascribed _:sk0}
+].
+
+[ e:inductivity 0.6666666666666666; e:evidentiality 0.81; e:applicability 0.54; e:possibleModels 54; e:counterModels 27; e:falseModels 19; e:allModels 100].
+
+#ENDS 1.022 [sec] TC=0 TP=0 BC=208 BP=344 PM=54 CM=27 FM=19 AM=100
+

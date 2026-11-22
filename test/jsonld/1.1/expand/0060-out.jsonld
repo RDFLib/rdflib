@@ -1,0 +1,23 @@
+[
+  {
+    "@id": "https://w3c.github.io/json-ld-api/tests/document-relative",
+    "@type": [ "https://w3c.github.io/json-ld-api/tests/expand/0060-in.jsonld#document-relative" ],
+    "http://example.com/vocab#property": [
+      {
+        "@id": "http://example.org/document-base-overwritten",
+        "@type": [ "http://example.org/test/#document-base-overwritten" ],
+        "http://example.com/vocab#property": [
+          {
+            "@id": "https://w3c.github.io/json-ld-api/tests/document-relative",
+            "@type": [ "https://w3c.github.io/json-ld-api/tests/expand/0060-in.jsonld#document-relative" ]
+          },
+          {
+            "@id": "../document-relative",
+            "@type": [ "#document-relative" ],
+            "http://example.com/vocab#property": [ { "@value": "only @base is cleared" } ]
+          }
+        ]
+      }
+    ]
+  }
+]

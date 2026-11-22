@@ -1,9 +1,0 @@
-PREFIX :    <http://example/>
-
-SELECT *
-{ 
-    :x :p ?v . 
-    { :x :q ?w 
-      OPTIONAL {  :x :p ?v2 FILTER(?v = 1) }
-    }
-}

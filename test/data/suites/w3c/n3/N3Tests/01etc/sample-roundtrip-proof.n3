@@ -1,0 +1,304 @@
+#Processed by EYE v20.0214.1629 josd
+#eye --no-genid --plugin http://josd.github.io/brain/n3p/sample.pl --pass-all
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://example.org/try#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:component <#lemma3>;
+  r:component <#lemma4>;
+  r:component <#lemma5>;
+  r:component <#lemma6>;
+  r:component <#lemma7>;
+  r:component <#lemma8>;
+  r:component <#lemma9>;
+  r:component <#lemma10>;
+  r:component <#lemma11>;
+  r:component <#lemma12>;
+  r:gives {
+    :s :p {:a :b :c}.
+    :s :p {:a :b :c.
+     :d :e :f}.
+    <http://josd.github.io/.well-known/genid/0l4gZjrLokrTSMCaH1QcS_VZsC0#e_X_1> :p {<http://josd.github.io/.well-known/genid/0l4gZjrLokrTSMCaH1QcS_VZsC0#e_X_2> :b :c}.
+    :s :p <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil>.
+    _:sk_0 :p :o.
+    {:u :v ?U_1.
+     ?U_2 :y :z} => {?U_1 a ?U_2}.
+    {:u :p ?U_3} => false.
+    {?U_4 :u ?U_5.
+     ?U_4 :v ?U_6} => {_:sk_7 :x ?U_5.
+     _:sk_7 :y ?U_6}.
+    {:a :b ?U_8.
+     ?U_8 :c :d.
+     ?U_8 :e :f} => {:g :h :i}.
+    {?U_9 :q ?U_10} <= {:u :v ?U_9.
+     ?U_10 ?U_11 :z}.
+    {?U_12 :y ?U_13} <= {?U_13 e:firstRest (?U_14 ?U_15).
+     ?U_12 :p ?U_14.
+     ?U_12 :y ?U_15}.
+    {?U_16 :r ?U_17} <= {{?U_16 :q ?U_18} <= ?U_17}.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    :s :p {:a :b :c}.
+  };
+  r:evidence (
+    <#lemma13>
+    [ a r:Fact; r:gives {:p <http://www.w3.org/2000/10/swap/log#notEqualTo> <http://www.w3.org/2000/10/swap/log#implies>}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://example.org/try#p"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://example.org/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo {:a :b :c}];
+  r:rule <#lemma14>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    :s :p {:a :b :c.
+     :d :e :f}.
+  };
+  r:evidence (
+    <#lemma15>
+    [ a r:Fact; r:gives {:p <http://www.w3.org/2000/10/swap/log#notEqualTo> <http://www.w3.org/2000/10/swap/log#implies>}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://example.org/try#p"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://example.org/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo {:a :b :c.
+   :d :e :f}];
+  r:rule <#lemma14>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/0l4gZjrLokrTSMCaH1QcS_VZsC0#e_X_1> :p {<http://josd.github.io/.well-known/genid/0l4gZjrLokrTSMCaH1QcS_VZsC0#e_X_2> :b :c}.
+  };
+  r:evidence (
+    <#lemma16>
+    [ a r:Fact; r:gives {:p <http://www.w3.org/2000/10/swap/log#notEqualTo> <http://www.w3.org/2000/10/swap/log#implies>}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://example.org/try#p"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/.well-known/genid/0l4gZjrLokrTSMCaH1QcS_VZsC0#e_X_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo {<http://josd.github.io/.well-known/genid/0l4gZjrLokrTSMCaH1QcS_VZsC0#e_X_2> :b :c}];
+  r:rule <#lemma14>.
+
+<#lemma4> a r:Inference;
+  r:gives {
+    :s :p <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil>.
+  };
+  r:evidence (
+    <#lemma17>
+    [ a r:Fact; r:gives {:p <http://www.w3.org/2000/10/swap/log#notEqualTo> <http://www.w3.org/2000/10/swap/log#implies>}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://example.org/try#p"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://example.org/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"]];
+  r:rule <#lemma14>.
+
+<#lemma5> a r:Inference;
+  r:gives {
+    _:sk_0 :p :o.
+  };
+  r:evidence (
+    <#lemma18>
+    [ a r:Fact; r:gives {:p <http://www.w3.org/2000/10/swap/log#notEqualTo> <http://www.w3.org/2000/10/swap/log#implies>}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://example.org/try#p"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://example.org/try#o"]];
+  r:rule <#lemma14>.
+
+<#lemma6> a r:Inference;
+  r:gives {
+    {:u :v ?U_1.
+     ?U_2 :y :z} => {?U_1 a ?U_2}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:u :v ?U_1.
+     ?U_2 :y :z} => {?U_1 a ?U_2}}]
+    [ a r:Fact; r:gives {{:u :v _:sk_1.
+     _:sk_2 :y :z} <http://www.w3.org/2000/10/swap/log#notEqualTo> true}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:u :v _:sk_1.
+   _:sk_2 :y :z}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo {_:sk_1 a _:sk_2}];
+  r:rule <#lemma19>.
+
+<#lemma7> a r:Inference;
+  r:gives {
+    {:u :p ?U_3} => false.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:u :p ?U_3} => false}]
+    [ a r:Fact; r:gives {{:u :p _:sk_3} <http://www.w3.org/2000/10/swap/log#notEqualTo> true}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:u :p _:sk_3}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo false];
+  r:rule <#lemma19>.
+
+<#lemma8> a r:Inference;
+  r:gives {
+    {?U_4 :u ?U_5.
+     ?U_4 :v ?U_6} => {_:sk_7 :x ?U_5.
+     _:sk_7 :y ?U_6}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{?U_4 :u ?U_5.
+     ?U_4 :v ?U_6} => {_:sk_7 :x ?U_5.
+     _:sk_7 :y ?U_6}}]
+    [ a r:Fact; r:gives {{_:sk_4 :u _:sk_5.
+     _:sk_4 :v _:sk_6} <http://www.w3.org/2000/10/swap/log#notEqualTo> true}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {_:sk_4 :u _:sk_5.
+   _:sk_4 :v _:sk_6}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo {_:sk_7 :x _:sk_5.
+   _:sk_7 :y _:sk_6}];
+  r:rule <#lemma19>.
+
+<#lemma9> a r:Inference;
+  r:gives {
+    {:a :b ?U_8.
+     ?U_8 :c :d.
+     ?U_8 :e :f} => {:g :h :i}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {{:a :b ?U_8.
+     ?U_8 :c :d.
+     ?U_8 :e :f} => {:g :h :i}}]
+    [ a r:Fact; r:gives {{:a :b _:sk_8.
+     _:sk_8 :c :d.
+     _:sk_8 :e :f} <http://www.w3.org/2000/10/swap/log#notEqualTo> true}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:a :b _:sk_8.
+   _:sk_8 :c :d.
+   _:sk_8 :e :f}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo {:g :h :i}];
+  r:rule <#lemma19>.
+
+<#lemma10> a r:Inference;
+  r:gives {
+    {?U_9 :q ?U_10} <= {:u :v ?U_9.
+     ?U_10 ?U_11 :z}.
+  };
+  r:evidence (
+    <#lemma20>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {_:sk_9 :q _:sk_10}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo {:u :v _:sk_9.
+   _:sk_10 _:sk_11 :z}];
+  r:rule <#lemma21>.
+
+<#lemma11> a r:Inference;
+  r:gives {
+    {?U_12 :y ?U_13} <= {?U_13 e:firstRest (?U_14 ?U_15).
+     ?U_12 :p ?U_14.
+     ?U_12 :y ?U_15}.
+  };
+  r:evidence (
+    <#lemma22>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {_:sk_12 :y _:sk_13}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo {_:sk_13 e:firstRest (_:sk_14 _:sk_15).
+   _:sk_12 :p _:sk_14.
+   _:sk_12 :y _:sk_15}];
+  r:rule <#lemma21>.
+
+<#lemma12> a r:Inference;
+  r:gives {
+    {?U_16 :r ?U_17} <= {{?U_16 :q ?U_18} <= ?U_17}.
+  };
+  r:evidence (
+    <#lemma23>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {_:sk_16 :r _:sk_17}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo {{_:sk_16 :q _:sk_18} <= _:sk_17}];
+  r:rule <#lemma21>.
+
+<#lemma13> a r:Extraction;
+  r:gives {
+    :s :p {:a :b :c}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/n3p/sample.n3>].
+
+<#lemma14> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2. {var:x_1 var:x_0 var:x_2.
+     var:x_0 <http://www.w3.org/2000/10/swap/log#notEqualTo> <http://www.w3.org/2000/10/swap/log#implies>} => {var:x_1 var:x_0 var:x_2}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2003/03swap/pass-all>].
+
+<#lemma15> a r:Extraction;
+  r:gives {
+    :s :p {:a :b :c.
+     :d :e :f}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/n3p/sample.n3>].
+
+<#lemma16> a r:Extraction;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/0l4gZjrLokrTSMCaH1QcS_VZsC0#e_X_1> :p {<http://josd.github.io/.well-known/genid/0l4gZjrLokrTSMCaH1QcS_VZsC0#e_X_2> :b :c}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/n3p/sample.n3>].
+
+<#lemma17> a r:Extraction;
+  r:gives {
+    :s :p <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil>.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/n3p/sample.n3>].
+
+<#lemma18> a r:Inference;
+  r:gives {
+    _:sk_0 :p :o.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives true]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma24>.
+
+<#lemma19> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 => var:x_1.
+     var:x_0 <http://www.w3.org/2000/10/swap/log#notEqualTo> true} => {var:x_0 => var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2003/03swap/pass-all>].
+
+<#lemma20> a r:Extraction;
+  r:gives {
+    {?U_9 :q ?U_10} <= {:u :v ?U_9.
+     ?U_10 ?U_11 :z}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/n3p/sample.n3>].
+
+<#lemma21> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 <= var:x_1} => {var:x_0 <= var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2003/03swap/pass-all>].
+
+<#lemma22> a r:Extraction;
+  r:gives {
+    {?U_12 :y ?U_13} <= {?U_13 e:firstRest (?U_14 ?U_15).
+     ?U_12 :p ?U_14.
+     ?U_12 :y ?U_15}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/n3p/sample.n3>].
+
+<#lemma23> a r:Extraction;
+  r:gives {
+    {?U_16 :r ?U_17} <= {{?U_16 :q ?U_18} <= ?U_17}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/n3p/sample.n3>].
+
+<#lemma24> a r:Extraction;
+  r:gives {
+    @forSome var:x_0. true => {var:x_0 :p :o}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/n3p/sample.n3>].
+
+#2020-02-15T20:06:23.307Z in=12 out=12 ent=13 step=29 brake=2 inf=51037 sec=0.097 inf/sec=526155
+#ENDS
+

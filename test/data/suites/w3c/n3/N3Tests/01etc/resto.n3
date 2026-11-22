@@ -1,0 +1,120 @@
+#The initial state
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix resto: <http://example.org/restaurant#>.
+@prefix : <http://example.org/vocab#>.
+
+:Areeb a foaf:Person.
+:RestAppointment resto:hasDate "12/12/12";
+    resto:isOn "<#myAppointments>".
+
+#The preferences API, takes the user and outputs preferences, like his/her address
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix con: <http://www.w3.org/2000/10/swap/pim/contact#>.
+@prefix tmpl: <http://purl.org/restdesc/http-template#>.
+@prefix dc: <http://purl.org/dc/terms/>.
+
+{   ?user a foaf:Person.
+}
+=>
+{   _:request http:methodName "GET";
+        http:requestURI (?user);
+        http:resp [ http:body _:address ].
+    ?user foaf:based_near _:address.
+    _:address a con:Address.
+}.
+
+#The Location API, takes the address and outputs a geo-location
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix con: <http://www.w3.org/2000/10/swap/pim/contact#>.
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>.
+@prefix tmpl: <http://purl.org/restdesc/http-template#>.
+
+{   ?address a con:Address.
+}
+=>
+{   _:request http:methodName "GET";
+        http:requestURI ("?location= " ?address);
+        http:resp [ http:body _:location ].
+    _:location a geo:Point;
+        geo:lat _:lat;
+        geo:long _:long.
+}.
+
+#The Temperature API, takes the location and outputs a Temperature
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>.
+@prefix meteo: <http://purl.org/ns/meteo#>.
+@prefix tmpl: <http://purl.org/restdesc/http-template#>.
+
+{   ?location geo:lat ?lat;
+        geo:long ?long.
+}
+=>
+{   _:request http:methodName "GET";
+        http:requestURI ("CurrentTemperature?lat=" ?lat "&long=" ?long);
+        http:resp [ http:body _:temperature ].
+    ?location meteo:temperature [ meteo:celsius _:temperature ].
+}.
+
+#The Pressure API, takes the location and outputs a Pressure
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>.
+@prefix meteo: <http://purl.org/ns/meteo#>.
+@prefix tmpl: <http://purl.org/restdesc/http-template#>.
+
+{   ?location geo:lat ?lat;
+        geo:long ?long.
+}
+=>
+{   _:request http:methodName "GET";
+        http:requestURI ("CurrentPressure?lat=" ?lat "&long=" ?long);
+        http:resp [ http:body _:pressure ].
+    ?location meteo:pressure [ meteo:millibar _:pressure ].
+        #There is no meteo:pressure/meteo:millibar, just added it for the
+        #sake of the example
+}.
+
+#The appointment API, takes location, weather, data, outputs a restaurant, and its reservation and whether it is outside or not
+@prefix resto: <http://example.org/restaurant#>.
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>.
+@prefix meteo: <http://purl.org/ns/meteo#>.
+@prefix http: <http://www.w3.org/2011/http#>.
+
+{   ?location geo:lat ?lat;
+        geo:long ?long;
+        meteo:pressure ?pres;
+        meteo:temperature ?temp.
+    ?pres meteo:millibar ?pressure.
+    ?temp meteo:celsius ?temperature.
+    ?appointment resto:isOn ?appointmentList;
+        resto:hasDate ?date.
+}
+=>
+{   _:request http:methodName "POST";
+        http:requestURI ?appointmentList;
+        http:body (?appointment _:restaurant _:outside);
+        http:resp [ http:body ?appointment ].
+    ?appointment resto:isAt _:restaurant.
+    _:restaurant a resto:Restaurant;
+        resto:reservationList _:reservations.
+    _:place resto:isOutside _:outside.
+}.
+
+#The Restaurant API, takes the reservation request and outputs a reservation
+@prefix resto: <http://example.org/restaurant#>.
+@prefix http: <http://www.w3.org/2011/http#>.
+
+{   ?restaurant resto:reservationList ?reservations.
+    ?place resto:isOutside ?outside.
+    ?day resto:hasDate ?date.
+}
+=>
+{   _:request http:methodName "POST";
+        http:requestURI ?reservations;
+        http:body (?date ?outside);
+        http:resp [ http:body _:reservation ].
+    ?restaurant resto:hasReservation _:reservation.
+    _:reservation resto:onDate ?date;
+        resto:place [ resto:isOutside ?outside ] .
+}.

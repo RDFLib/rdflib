@@ -1,0 +1,8 @@
+{
+  "@context": {
+    "http://example.org/test#property1": {"@type": "@id"},
+    "http://example.org/test#property2": {"@type": "@id"},
+    "http://example.org/test#property3": {"@type": "@id"},
+    "uri": "@id"
+  }
+}

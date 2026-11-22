@@ -1,0 +1,25 @@
+<http://example.org/indexTest> <http://example.com/container> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.org/indexTest> <http://example.com/container> "3"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.org/indexTest> <http://example.com/container> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://example.org/indexTest> <http://example.com/container> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://example.org/indexTest> <http://example.com/container> "language-tagged string A"@en .
+<http://example.org/indexTest> <http://example.com/container> "language-tagged string C"@en .
+<http://example.org/indexTest> <http://example.com/container> "simple string A" .
+<http://example.org/indexTest> <http://example.com/container> "simple string B" .
+<http://example.org/indexTest> <http://example.com/container> "simple string C" .
+<http://example.org/indexTest> <http://example.com/container> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://example.org/indexTest> <http://example.com/container> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://example.org/indexTest> <http://example.com/container> "typed literal A"^^<http://example.org/type> .
+<http://example.org/indexTest> <http://example.com/container> "typed literal C"^^<http://example.org/type> .
+<http://example.org/indexTest> <http://example.com/container> <http://example.org/nodeWithIndexA> .
+<http://example.org/indexTest> <http://example.com/container> <http://example.org/nodeWithIndexC> .
+<http://example.org/indexTest> <http://example.com/container> <http://example.org/nodeWithoutIndexA> .
+<http://example.org/indexTest> <http://example.com/container> <http://example.org/nodeWithoutIndexC> .
+<http://example.org/indexTest> <http://example.com/property> "3"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.org/indexTest> <http://example.com/property> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://example.org/indexTest> <http://example.com/property> "language-tagged string Prop"@en .
+<http://example.org/indexTest> <http://example.com/property> "simple string no index" .
+<http://example.org/indexTest> <http://example.com/property> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://example.org/indexTest> <http://example.com/property> "typed literal Prop"^^<http://example.org/type> .
+<http://example.org/indexTest> <http://example.com/property> <http://example.org/nodeWithIndexProp> .
+<http://example.org/indexTest> <http://example.com/property> <http://example.org/nodeWithoutIndexProp> .

@@ -1,0 +1,16 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/iq.n3 --pass-all
+
+@prefix : <http://example.org/test#>.
+
+_:t_0 :says {_:t_1 :knows :Albert}.
+:s :p :o.
+_:sk_0 :loves _:sk_1.
+:s :pp {:s :ppp :ooo}.
+{?U_2 :knows :Albert} => {_:x_0_1 :knows :Kurt}.
+{:e :p :a} => {:e :q :b}.
+{?U_3 :p :o} => {?U_3 :pp {?U_3 :ppp :ooo}}.
+
+#2018-04-18T08:28:04.845Z in=15 out=7 ent=9 step=18 brake=2 inf=19407 sec=0.022 inf/sec=882136
+#ENDS
+

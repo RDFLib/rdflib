@@ -1,0 +1,167 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/update-silent/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix ut:     <http://www.w3.org/2009/sparql/tests/test-update#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "SPARQL 1.1 Update test cases for SILENT" ;
+    rdfs:comment "The test cases in this manifest comprise cases of erroneous operations which should fail, but succeed because of the keyword SILENT" ;
+    mf:entries
+    ( 
+      :load-silent
+      :load-into-silent
+      :clear-silent
+      :clear-default-silent
+      :create-silent
+      :drop-silent
+      :drop-default-silent
+      :copy-silent
+      :copy-to-default-silent
+      :move-silent
+      :move-to-default-silent
+      :add-silent
+      :add-to-default-silent
+    ) .
+
+:load-silent rdf:type mf:UpdateEvaluationTest ;
+    mf:name    "LOAD SILENT" ;
+    rdfs:comment "Loading a non-existent graph" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [ ut:request <load-silent.ru> ; 
+              ] ;
+    mf:result [] .
+
+:load-into-silent rdf:type mf:UpdateEvaluationTest ;
+    mf:name    "LOAD SILENT INTO" ;
+    rdfs:comment "Loading a non-existent named graph" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [ ut:request <load-silent-into.ru> ; 
+              ] ;
+    mf:result [] .
+
+:clear-silent rdf:type mf:UpdateEvaluationTest ;
+    mf:name    "CLEAR SILENT GRAPH iri" ;
+    rdfs:comment "Clearing a non-existent named graph" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [ ut:request <clear-silent.ru> ;
+                ut:data  <spo.ttl> 
+              ] ;
+    mf:result [ ut:data  <spo.ttl> ] .
+
+:clear-default-silent rdf:type mf:UpdateEvaluationTest ;
+    mf:name    "CLEAR SILENT DEFAULT" ;
+    rdfs:comment "Clearing the already empty default graph. (This operation would also succeed without SILENT)" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [ ut:request <clear-default-silent.ru> ;
+              ] ;
+    mf:result [] .
+
+:create-silent rdf:type mf:UpdateEvaluationTest ;
+    mf:name    "CREATE SILENT iri" ;
+    rdfs:comment "Creation of an already existent named graph" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [ ut:request <create-silent.ru> ;
+                ut:graphData  [ ut:graph <spo.ttl> ;
+                                rdfs:label "http://example.org/g1" ] 
+              ] ;
+    mf:result [ 
+                ut:graphData  [ ut:graph <spo.ttl> ;
+                                rdfs:label "http://example.org/g1" ] 
+              ] .
+
+:drop-silent rdf:type mf:UpdateEvaluationTest ;
+    mf:name    "DROP SILENT GRAPH iri" ;
+    rdfs:comment "Clearing a non-existent named graph" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [ ut:request <drop-silent.ru> ;
+                ut:data  <spo.ttl> 
+              ] ;
+    mf:result [ ut:data  <spo.ttl> ] .
+
+:drop-default-silent rdf:type mf:UpdateEvaluationTest ;
+    mf:name    "DROP SILENT DEFAULT" ;
+    rdfs:comment "Clearing the already empty default graph. (This operation would also succeed withou SILENT)" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [ ut:request <drop-default-silent.ru> ;
+              ] ;
+    mf:result [] .
+
+
+:copy-silent rdf:type mf:UpdateEvaluationTest ;
+    mf:name    "COPY SILENT" ;
+    rdfs:comment "copy a non-existent graph" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [ ut:request <copy-silent.ru> ;
+                ut:graphData  [ ut:graph <spo.ttl> ;
+                                rdfs:label "http://example.org/g2" ]  
+              ] ;
+    mf:result [
+                ut:graphData  [ ut:graph <spo.ttl> ;
+                                rdfs:label "http://example.org/g2" ]  
+
+              ] .
+
+:copy-to-default-silent rdf:type mf:UpdateEvaluationTest ;
+    mf:name    "COPY SILENT TO DEFAULT" ;
+    rdfs:comment "copy a non-existent graph to default graph" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [ ut:request <copy-to-default-silent.ru> ] ;
+    mf:result [] .
+
+:move-silent rdf:type mf:UpdateEvaluationTest ;
+    mf:name    "MOVE SILENT" ;
+    rdfs:comment "move a non-existent graph" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [ ut:request <move-silent.ru> ;
+                ut:graphData  [ ut:graph <spo.ttl> ;
+                                rdfs:label "http://example.org/g2" ]  
+              ] ;
+    mf:result [
+                ut:graphData  [ ut:graph <spo.ttl> ;
+                                rdfs:label "http://example.org/g2" ]  
+
+              ] .
+
+:move-to-default-silent rdf:type mf:UpdateEvaluationTest ;
+    mf:name    "MOVE SILENT TO DEFAULT" ;
+    rdfs:comment "move a non-existent graph to default graph" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [ ut:request <move-to-default-silent.ru> ] ;
+    mf:result [] .
+
+:add-silent rdf:type mf:UpdateEvaluationTest ;
+    mf:name    "ADD SILENT" ;
+    rdfs:comment "add a non-existent graph" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [ ut:request <add-silent.ru> ;
+                ut:graphData  [ ut:graph <spo.ttl> ;
+                                rdfs:label "http://example.org/g2" ]  
+              ] ;
+    mf:result [
+                ut:graphData  [ ut:graph <spo.ttl> ;
+                                rdfs:label "http://example.org/g2" ]  
+
+              ] .
+
+:add-to-default-silent rdf:type mf:UpdateEvaluationTest ;
+    mf:name    "ADD SILENT TO DEFAULT" ;
+    rdfs:comment "add a non-existent graph to default graph" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [ ut:request <add-to-default-silent.ru> ] ;
+    mf:result [] .

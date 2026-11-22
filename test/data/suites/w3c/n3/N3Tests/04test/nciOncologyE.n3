@@ -1,0 +1,10 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix nci: <http://www.mindswap.org/2003/nciOncology.owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix : <http://www.mindswap.org/2003/nciOncology.owl#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+nci:FGFR3_Gene rdfs:subClassOf nci:Fibroblast_Growth_Factor_Receptor_Family_Gene. 
+

@@ -1,0 +1,94 @@
+@keywords is, of, a.
+@base <http://www.w3.org/2001/tag/dj9/>.
+@prefix : <speech#>.
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix s: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+<> dc:source _:ablp.
+_:ablp
+	 dc:title "A Calculus for Access Control in Distributed Systems";
+	 dc:creator "Martin Abadi, Michael Burrows, Butler Lampson, and Gordon Plotkin";
+	 dc:publisher "ACM";
+	 s:comment "Trans. Programming Languages and Systems, 15, 4, pp 706-734.";
+	 dc:date "1993-10";
+	 s:seeAlso <http://research.microsoft.com/en-us/um/people/blampson/44-CalculusAccessControl/44-CalculusAccessControlAbstract.html>,
+	 <http://research.microsoft.com/en-us/um/people/blampson/44-CalculusAccessControl/44-CalculusAccessControlAsPub.pdf> .
+
+# ugh. there seem to be several related papers.
+# these course notes look right
+# http://www.ecs.syr.edu/faculty/chin/ACECS/Examples/example6a.pdf
+
+# modal stuff
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@forAll s, s2, subj, pred, obj, subj2, pred2, obj2, A, B.
+
+says s:label "says";
+     s:domain :Principal.
+
+# idemopotency?
+{ A says { A says s } } => { A says s }.
+
+speaks_for s:label "speaks for";
+	  s:isDefinedBy _:ablp;
+	  s:domain :Principal;
+	  s:range :Principal.
+
+{ ?A speaks_for ?B . ?A says ?s } => { ?B says ?s }.
+
+{ ?A says s. ?A says { s => s2 }} => { ?A says s2 }.
+
+{ A says { s => s2 } } => { { A says s } => { A says s2 } }.
+{ ?A a Principal. s a log:Truth } => { ?A says s }.
+
+quoting a owl:FunctionalProperty;
+         s:domain rdf:List; # of 2 principals
+	 s:range :Principal.
+
+#@@ <=> { [is quoting of (?B A)] says s } <=> { ?B says { A says s }}.
+{ ?Q is quoting of (A B); says s } => { A says { B says s } }.
+# need this? { A says { B says s } } => { [ is quoting of (A B) ] says s }.
+
+# blows up in fwd chainer:
+# { ?A says ?p. ?A says ?q. } => { ?A says [ is log:conjunction of (?p ?q)]}.
+{ ?A says { subj pred obj }.
+  ?A says { subj2 pred2 obj2 }. } =>
+   { ?A says { subj pred obj. subj2 pred2 obj2 }}.
+
+######
+
+controls s:label "controls";
+         s:domain :Principal.
+
+{ ?A controls ?s . ?A says ?s } => { ?s a log:Truth } . #level-breaker.
+
+# constrained version of the rule:
+{ ?A controls_spo ( subj pred obj ) ;
+   says ?F. ?F log:includes { subj pred obj } }
+ => { subj pred obj }.
+
+# special case
+
+controls_property s:label "controls property";
+  s:domain Principal;
+  s:range rdf:Property.
+
+{ ?A controls_property pred.
+  ?A says ?F. ?F log:includes { subj pred obj } } => { subj pred obj }.
+
+#####
+# Theorems to help cwm
+
+{ A says { ?Q is quoting of (A B); says s } } => { B says s }.
+# justification:
+# { A | B says S } => { A says s } . # defn quoting
+# A says { { A | B says S } => { A says s } } # principals say all true things
+# A says { A says s } # implication works inside says
+# A says s # idemopotency of says
+
+# partial treatment of log:Truth
+{ { subj pred obj } a log:Truth } => { subj pred obj }.
+

@@ -1,0 +1,3 @@
+<http://a.example/s> <http://a.example/p>  [ <http://a.example/p2> <http://a.example/o> ]
+                   ; <http://a.example/p3> [ <http://a.example/p4> <http://a.example/o2>
+                                                                 , <http://a.example/o3> ] .

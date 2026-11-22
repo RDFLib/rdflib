@@ -1,0 +1,16 @@
+
+# Test the cwm quick variable declarations
+
+
+@prefix : <foo.n3#>.  # Local stuff
+
+
+
+@forAll ?x, ?y, ?z.
+@forSome ?a, ?b, ?c.
+
+
+
+{ :x <#mother> :y. :y <#sister> :z } => { :x <#aunt> :z }.
+
+#ends

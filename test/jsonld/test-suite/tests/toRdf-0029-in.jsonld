@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "wd": "http://data.wikipedia.org/vocab#",
+    "ws": "http://data.wikipedia.org/snaks/",
+    "wp": "http://en.wikipedia.org/wiki/"
+  },
+  "@id": "ws:Assertions",
+  "@type": "wd:SnakSet",
+  "@graph": {
+    "@id": "ws:BerlinFact",
+    "@type": "wd:Snak",
+    "@graph": {
+      "@id": "wp:Berlin",
+      "wd:population": 3499879
+    },
+    "wd:assertedBy": "http://www.statistik-berlin-brandenburg.de/"
+  }
+}

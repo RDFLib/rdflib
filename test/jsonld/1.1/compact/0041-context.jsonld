@@ -1,0 +1,5 @@
+{
+   "@context": {
+      "name": { "@id": "http://example.com/property", "@container": "@list" }
+   }
+}

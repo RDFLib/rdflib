@@ -1,0 +1,12 @@
+[
+  {
+    "@id": "http://example.com/Subj1",
+    "http://example.com/prop": [
+      { "@value": true },
+      { "@value": false },
+      { "@value": 1 },
+      { "@value": "1.1", "@type": "http://www.w3.org/2001/XMLSchema#decimal"},
+      { "@value": 0.11 }
+    ]
+  }
+]

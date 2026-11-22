@@ -1,0 +1,5 @@
+{
+  "@context": {
+    "term": {"@reverse": "http://example/term", "@nest": "@nest"}
+  }
+}

@@ -1,0 +1,8 @@
+# $Id: origin.n3 376 2004-09-12 18:49:31Z josd $
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix bank:  <http://bank.example/statements#>.
+
+bank:debtor log:definitiveDocument <statement1.n3>.
+bank:creditor log:definitiveDocument <statement1.n3>.
+bank:amount log:definitiveDocument <statement1.n3>.

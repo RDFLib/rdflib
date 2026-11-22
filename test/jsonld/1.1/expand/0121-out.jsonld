@@ -1,0 +1,7 @@
+[{
+  "@id": "http://example.org/foo",
+  "@reverse": {
+    "http://example.org/vocab/@": [{"@id": "http://example.org/allowed"}],
+    "http://example.org/vocab/@foo.bar": [{"@id": "http://example.org/allowed"}]
+  }
+}]

@@ -1,0 +1,22 @@
+<trix xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+  <graph>
+    <triple>
+      <triple>
+        <uri>http://example/s</uri>
+        <uri>http://example/p</uri>
+        <uri>http://example/o</uri>
+      </triple>
+      <uri>http://example/subjectEmbedded</uri>
+      <uri>http://example/o</uri>
+    </triple>
+    <triple>
+      <uri>http://example/s</uri>
+      <uri>http://example/objectEmbedded</uri>
+      <triple>
+        <uri>http://example/s</uri>
+        <uri>http://example/p</uri>
+        <uri>http://example/o</uri>
+      </triple>
+    </triple>
+  </graph>
+</trix>

@@ -1,34 +1,45 @@
+from __future__ import annotations
+
+from collections.abc import Iterable, Iterator
+from typing import TYPE_CHECKING, Optional
+
 from rdflib.namespace import RDF
-from rdflib.term import BNode
-from rdflib.term import Literal
-from rdflib.py3compat import format_doctest_out
+from rdflib.term import BNode, Node
 
-__all__ = ['Collection']
+if TYPE_CHECKING:
+    from rdflib.graph import Graph
+
+__all__ = ["Collection"]
 
 
-class Collection(object):
-    __doc__ = format_doctest_out("""
-    See "Emulating container types":
-    https://docs.python.org/reference/datamodel.html#emulating-container-types
+class Collection:
+    """See "Emulating container types": <https://docs.python.org/reference/datamodel.html#emulating-container-types>
 
+    ```python
+    >>> from rdflib.term import Literal
     >>> from rdflib.graph import Graph
     >>> from pprint import pprint
-    >>> listName = BNode()
-    >>> g = Graph('IOMemory')
+    >>> listname = BNode()
+    >>> g = Graph('Memory')
     >>> listItem1 = BNode()
     >>> listItem2 = BNode()
-    >>> g.add((listName, RDF.first, Literal(1)))
-    >>> g.add((listName, RDF.rest, listItem1))
-    >>> g.add((listItem1, RDF.first, Literal(2)))
-    >>> g.add((listItem1, RDF.rest, listItem2))
-    >>> g.add((listItem2, RDF.rest, RDF.nil))
-    >>> g.add((listItem2, RDF.first, Literal(3)))
-    >>> c = Collection(g,listName)
+    >>> g.add((listname, RDF.first, Literal(1))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g.add((listname, RDF.rest, listItem1)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g.add((listItem1, RDF.first, Literal(2))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g.add((listItem1, RDF.rest, listItem2)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g.add((listItem2, RDF.rest, RDF.nil)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g.add((listItem2, RDF.first, Literal(3))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> c = Collection(g,listname)
     >>> pprint([term.n3() for term in c])
-    [%(u)s'"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
-     %(u)s'"2"^^<http://www.w3.org/2001/XMLSchema#integer>',
-     %(u)s'"3"^^<http://www.w3.org/2001/XMLSchema#integer>']
-
+    ['"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
+     '"2"^^<http://www.w3.org/2001/XMLSchema#integer>',
+     '"3"^^<http://www.w3.org/2001/XMLSchema#integer>']
     >>> Literal(1) in c
     True
     >>> len(c)
@@ -37,39 +48,54 @@ class Collection(object):
     True
     >>> c.index(Literal(2)) == 1
     True
-    """)
 
-    def __init__(self, graph, uri, seq=[]):
+    ```
+
+    The collection is immutable if `uri` is the empty list (`http://www.w3.org/1999/02/22-rdf-syntax-ns#nil`).
+    """
+
+    def __init__(self, graph: Graph, uri: Node, seq: list[Node] = []):
         self.graph = graph
         self.uri = uri or BNode()
-        self += seq
+        if seq:
+            self += seq
 
-    def n3(self):
+    def n3(self) -> str:
         """
+        ```python
+        >>> from rdflib.term import Literal
         >>> from rdflib.graph import Graph
-        >>> listName = BNode()
-        >>> g = Graph('IOMemory')
+        >>> listname = BNode()
+        >>> g = Graph('Memory')
         >>> listItem1 = BNode()
         >>> listItem2 = BNode()
-        >>> g.add((listName, RDF.first, Literal(1)))
-        >>> g.add((listName, RDF.rest, listItem1))
-        >>> g.add((listItem1, RDF.first, Literal(2)))
-        >>> g.add((listItem1, RDF.rest, listItem2))
-        >>> g.add((listItem2, RDF.rest, RDF.nil))
-        >>> g.add((listItem2, RDF.first, Literal(3)))
-        >>> c = Collection(g, listName)
+        >>> g.add((listname, RDF.first, Literal(1))) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((listname, RDF.rest, listItem1)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((listItem1, RDF.first, Literal(2))) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((listItem1, RDF.rest, listItem2)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((listItem2, RDF.rest, RDF.nil)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((listItem2, RDF.first, Literal(3))) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> c = Collection(g, listname)
         >>> print(c.n3()) #doctest: +NORMALIZE_WHITESPACE
         ( "1"^^<http://www.w3.org/2001/XMLSchema#integer>
-          "2"^^<http://www.w3.org/2001/XMLSchema#integer>
-          "3"^^<http://www.w3.org/2001/XMLSchema#integer> )
-        """
-        return "( %s )" % (' '.join([i.n3() for i in self]))
+            "2"^^<http://www.w3.org/2001/XMLSchema#integer>
+            "3"^^<http://www.w3.org/2001/XMLSchema#integer> )
 
-    def _get_container(self, index):
+        ```
+        """
+        return "( %s )" % (" ".join([i.n3() for i in self]))
+
+    def _get_container(self, index: int) -> Optional[Node]:
         """Gets the first, rest holding node at index."""
         assert isinstance(index, int)
         graph = self.graph
-        container = self.uri
+        container: Optional[Node] = self.uri
         i = 0
         while i < index:
             i += 1
@@ -78,32 +104,31 @@ class Collection(object):
                 break
         return container
 
-    def __len__(self):
+    def __len__(self) -> int:
         """length of items in collection."""
         return len(list(self.graph.items(self.uri)))
 
-    def index(self, item):
+    def index(self, item: Node) -> int:
         """
         Returns the 0-based numerical index of the item in the list
         """
-        listName = self.uri
+        listname = self.uri
         index = 0
         while True:
-            if (listName, RDF.first, item) in self.graph:
+            if (listname, RDF.first, item) in self.graph:
                 return index
             else:
-                newLink = list(self.graph.objects(listName, RDF.rest))
+                newlink = list(self.graph.objects(listname, RDF.rest))
                 index += 1
-                if newLink == [RDF.nil]:
+                if newlink == [RDF.nil]:
                     raise ValueError("%s is not in %s" % (item, self.uri))
-                elif not newLink:
+                elif not newlink:
                     raise Exception("Malformed RDF Collection: %s" % self.uri)
                 else:
-                    assert len(newLink) == 1, \
-                        "Malformed RDF Collection: %s" % self.uri
-                    listName = newLink[0]
+                    assert len(newlink) == 1, "Malformed RDF Collection: %s" % self.uri
+                    listname = newlink[0]
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: int) -> Node:
         """TODO"""
         c = self._get_container(key)
         if c:
@@ -115,7 +140,7 @@ class Collection(object):
         else:
             raise IndexError(key)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: int, value: Node) -> None:
         """TODO"""
         c = self._get_container(key)
         if c:
@@ -123,8 +148,9 @@ class Collection(object):
         else:
             raise IndexError(key)
 
-    def __delitem__(self, key):
+    def __delitem__(self, key: int) -> None:
         """
+        ```python
         >>> from rdflib.namespace import RDF, RDFS
         >>> from rdflib import Graph
         >>> from pprint import pformat
@@ -132,12 +158,18 @@ class Collection(object):
         >>> a = BNode('foo')
         >>> b = BNode('bar')
         >>> c = BNode('baz')
-        >>> g.add((a, RDF.first, RDF.type))
-        >>> g.add((a, RDF.rest, b))
-        >>> g.add((b, RDF.first, RDFS.label))
-        >>> g.add((b, RDF.rest, c))
-        >>> g.add((c, RDF.first, RDFS.comment))
-        >>> g.add((c, RDF.rest, RDF.nil))
+        >>> g.add((a, RDF.first, RDF.type)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((a, RDF.rest, b)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((b, RDF.first, RDFS.label)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((b, RDF.rest, c)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((c, RDF.first, RDFS.comment)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((c, RDF.rest, RDF.nil)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
         >>> len(g)
         6
         >>> def listAncestry(node, graph):
@@ -159,6 +191,7 @@ class Collection(object):
         >>> len(g)
         4
 
+        ```
         """
         self[key]  # to raise any potential key exceptions
         graph = self.graph
@@ -168,8 +201,9 @@ class Collection(object):
             pass
         elif key == len(self) - 1:
             # the tail
-            priorLink = self._get_container(key - 1)
-            self.graph.set((priorLink, RDF.rest, RDF.nil))
+            priorlink = self._get_container(key - 1)
+            # type error: Argument 1 to "set" of "Graph" has incompatible type "tuple[Optional[Node], URIRef, URIRef]"; expected "tuple[Node, Node, Any]"
+            self.graph.set((priorlink, RDF.rest, RDF.nil))  # type: ignore[arg-type]
             graph.remove((current, None, None))
         else:
             next = self._get_container(key + 1)
@@ -178,34 +212,39 @@ class Collection(object):
             graph.remove((current, None, None))
             graph.set((prior, RDF.rest, next))
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Node]:
         """Iterator over items in Collections"""
         return self.graph.items(self.uri)
 
-    def _end(self):
+    def _end(self) -> Node:
         # find end of list
         container = self.uri
         while True:
             rest = self.graph.value(container, RDF.rest)
-            if rest == None or rest == RDF.nil:
+            if rest is None or rest == RDF.nil:
                 return container
             else:
                 container = rest
 
-    def append(self, item):
+    def append(self, item: Node) -> Collection:
         """
+        ```python
+        >>> from rdflib.term import Literal
         >>> from rdflib.graph import Graph
-        >>> listName = BNode()
+        >>> listname = BNode()
         >>> g = Graph()
-        >>> c = Collection(g,listName,[Literal(1),Literal(2)])
+        >>> c = Collection(g,listname,[Literal(1),Literal(2)])
         >>> links = [
         ...     list(g.subjects(object=i, predicate=RDF.first))[0] for i in c]
         >>> len([i for i in links if (i, RDF.rest, RDF.nil) in g])
         1
 
+        ```
         """
-
         end = self._end()
+        if end == RDF.nil:
+            raise ValueError("Cannot append to empty list")
+
         if (end, RDF.first, None) in self.graph:
             # append new node to the end of the linked list
             node = BNode()
@@ -214,10 +253,12 @@ class Collection(object):
 
         self.graph.add((end, RDF.first, item))
         self.graph.add((end, RDF.rest, RDF.nil))
+        return self
 
-    def __iadd__(self, other):
-
+    def __iadd__(self, other: Iterable[Node]):
         end = self._end()
+        if end == RDF.nil:
+            raise ValueError("Cannot append to empty list")
         self.graph.remove((end, RDF.rest, None))
 
         for item in other:
@@ -228,58 +269,15 @@ class Collection(object):
 
             self.graph.add((end, RDF.first, item))
 
-
         self.graph.add((end, RDF.rest, RDF.nil))
+        return self
 
     def clear(self):
-        container = self.uri
+        container: Optional[Node] = self.uri
         graph = self.graph
         while container:
             rest = graph.value(container, RDF.rest)
             graph.remove((container, RDF.first, None))
             graph.remove((container, RDF.rest, None))
             container = rest
-
-
-def test():
-    import doctest
-    doctest.testmod()
-
-if __name__ == "__main__":
-    test()
-
-    from rdflib import Graph
-    g = Graph()
-
-    c = Collection(g, BNode())
-
-    assert len(c) == 0
-
-    c = Collection(
-        g, BNode(), [Literal("1"), Literal("2"), Literal("3"), Literal("4")])
-
-    assert len(c) == 4
-
-    assert c[1] == Literal("2"), c[1]
-
-    del c[1]
-
-    assert list(c) == [Literal("1"), Literal("3"), Literal("4")], list(c)
-
-    try:
-        del c[500]
-    except IndexError, i:
-        pass
-
-    c.append(Literal("5"))
-
-    print(list(c))
-
-    for i in c:
-        print(i)
-
-    del c[3]
-
-    c.clear()
-
-    assert len(c) == 0
+        return self

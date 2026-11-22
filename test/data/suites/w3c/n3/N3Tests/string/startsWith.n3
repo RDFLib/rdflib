@@ -1,0 +1,20 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix string: <http://www.w3.org/2000/10/swap/string#>.
+@prefix : <#>.
+
+{ "asdfghjkl" string:startsWith "asd" } log:implies { :test1 a :success }.
+
+{ "asdfghjkl" string:startsWith "ass" } log:implies { :test2 a :FAILURE }.
+
+{ "jkl" string:startsWith "jkl" } log:implies { :test3 a :success }.
+
+{ "asdfghjkl" string:startsWith "asdfaaa" } log:implies { :test4 a :FAILURE }.
+
+{ "asdfjhkh" string:startsWith "hkh" } log:implies { :test5 a :FAILURE }.
+
+{ "foobar" string:startsWith "" } log:implies { :test6 a :success }.
+
+{ "" string:startsWith "" } log:implies { :test7 a :success }.
+
+#ends
+

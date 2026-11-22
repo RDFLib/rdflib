@@ -1,77 +1,136 @@
-from collections import Counter
+"""Process RDF statements as they are parsed, without building a graph.
 
-from rdflib.parser import Parser
-from rdflib import plugin
+The sink uses the existing parser and store interfaces. N-Triples, N-Quads,
+and RDF/XML read their inputs incrementally; formats whose parsers buffer
+the entire document are deliberately not accepted.
+"""
 
-class Sink(object):
-    """
-    A Sink that accepts triples/quads
-    """
+from __future__ import annotations
 
-    context_aware = False
+import pathlib
+from collections.abc import Callable
+from typing import IO, Any, BinaryIO, TextIO
+
+from rdflib.graph import (
+    DATASET_DEFAULT_GRAPH_ID,
+    Dataset,
+    Graph,
+    _ContextType,
+    _TripleType,
+)
+from rdflib.parser import InputSource
+from rdflib.plugins.stores.memory import Memory
+from rdflib.term import Identifier
+
+_StatementHandler = Callable[[_TripleType, Identifier | None], None]
+
+_STREAMING_FORMATS = frozenset(
+    {
+        "nt",
+        "nt11",
+        "ntriples",
+        "application/n-triples",
+        "nquads",
+        "application/n-quads",
+        "xml",
+        "application/rdf+xml",
+    }
+)
+
+
+class _SinkStore(Memory):
+    """Keep namespace bindings, but forward statements instead of indexing them."""
+
     formula_aware = False
 
-    def __init__(self, namespace_manager):
-        self.counter = Counter()
+    def __init__(self, handler: _StatementHandler):
+        super().__init__()
+        self._handler = handler
 
-        self.namespace_manager = namespace_manager
+    def add(
+        self, triple: _TripleType, context: _ContextType, quoted: bool = False
+    ) -> None:
+        if quoted:
+            raise ValueError("Streaming sinks do not support quoted formulae")
+        identifier = context.identifier
+        self._handler(
+            triple, None if identifier == DATASET_DEFAULT_GRAPH_ID else identifier
+        )
+
+    def add_graph(self, graph: Graph) -> None:
+        # Parsers may create a Graph per named graph. Do not retain those either.
+        pass
 
 
-    def parse(self, source=None, format=None, **args):
+class Sink:
+    """Deliver parsed triples and graph names to a synchronous callback.
 
-        if format is None:
-            format = source.content_type
-        if format is None:
-            # raise Exception("Could not determine format for %r. You can" + \
-            # "expicitly specify one with the format argument." % source)
-            format = "application/rdf+xml"
-        parser = plugin.get(format, Parser)()
-        parser.parse(source, self, **args)
+    The callback receives ``(triple, graph_name)`` for every parsed statement.
+    ``graph_name`` is ``None`` for the default graph. Duplicate statements are
+    delivered repeatedly, in parser emission order. No triples are retained.
+
+    Example:
+        ```python
+        >>> from rdflib.sink import Sink
+        >>> statements = []
+        >>> sink = Sink(lambda triple, graph: statements.append((triple, graph)))
+        >>> _ = sink.parse(data='<urn:s> <urn:p> "value" .', format="nt")
+        >>> str(statements[0][0][2]), statements[0][1]
+        ('value', None)
+
+        ```
+    """
+
+    def __init__(self, handler: _StatementHandler):
+        self._handler = handler
+
+    def triple(self, triple: _TripleType, context: Identifier | None = None) -> None:
+        """Handle one statement. Callback exceptions stop parsing immediately."""
+        self._handler(triple, context)
+
+    def parse(
+        self,
+        source: IO[bytes]
+        | TextIO
+        | InputSource
+        | str
+        | bytes
+        | pathlib.PurePath
+        | None = None,
+        *,
+        format: str,
+        publicID: str | None = None,  # noqa: N803
+        location: str | None = None,
+        file: BinaryIO | TextIO | None = None,
+        data: str | bytes | None = None,
+        **args: Any,
+    ) -> Sink:
+        """Parse N-Triples, N-Quads, or RDF/XML and return this sink.
+
+        Source arguments have the same meaning as in :meth:`Graph.parse`.
+        An explicit supported format is required. Use a file or stream, rather
+        than ``data``, to avoid holding the input document in memory.
+
+        Memory usage includes parser buffers, namespace bindings and blank-node
+        label mappings; it is not independent of the number of distinct labels.
+        Statements already delivered are not rolled back after a parse error.
+
+        Parsing may access files or URLs. The security considerations for
+        :meth:`Graph.parse` apply equally here.
+        """
+        if format not in _STREAMING_FORMATS:
+            raise ValueError(
+                f"Format {format!r} is not supported for streaming; "
+                "use N-Triples, N-Quads, or RDF/XML"
+            )
+        graph = Dataset(store=_SinkStore(self.triple))
+        graph.parse(
+            source=source,
+            publicID=publicID,
+            format=format,
+            location=location,
+            file=file,
+            data=data,
+            **args,
+        )
         return self
-
-    def bind(self, prefix, namespace, override=True):
-        self.namespace_manager.bind(prefix, namespace, override)
-
-
-    def triple(self, triple, context = None):
-        pass # abstract
-
-class GraphSink(Sink):
-    """
-    A Sink that writes triples to a graph
-
-    any context is ignored
-    """
-
-    def __init__(self, graph):
-        Sink.__init__(self, graph.namespace_manager)
-        self.store = graph.store
-        self.context = graph.identifier
-
-    def triple(self, triple, context=None):
-        assert not context, "GraphSink cannot handle triples with context!"
-        self.store.add(triple, self.context)
-
-class ContextGraphSink(Sink):
-    """
-    A Sink that writes quads to a graph
-    """
-
-    context_aware = True
-
-    def __init__(self, graph):
-        Sink.__init__(self, graph.namespace_manager)
-        self.store = graph.store
-        self.default_context = graph.identifier
-
-    def triple(self, triple, context=None):
-        #print 'C', context, self.default_context
-        self.store.add(triple, context or self.default_context)
-
-
-
-def create_graph_sink(graph):
-    if graph.store.context_aware:
-        return ContextGraphSink(graph)
-    else:
-        return GraphSink(graph)

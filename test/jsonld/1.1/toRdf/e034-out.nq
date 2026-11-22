@@ -1,0 +1,5 @@
+<http://example.com/IriCollissions> <http://example.com/vocab/collidingTerm> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.com/IriCollissions> <http://example.com/vocab/collidingTerm> "3"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.com/IriCollissions> <http://example.com/vocab/collidingTerm> "5"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.com/IriCollissions> <http://example.com/vocab/collidingTerm> "four" .
+<http://example.com/IriCollissions> <http://example.com/vocab/collidingTerm> "value 1" .

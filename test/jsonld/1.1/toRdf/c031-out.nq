@@ -1,0 +1,2 @@
+_:b0 <http://a.example/out> _:b1 .
+_:b1 <http://a.example/in> "ab" .

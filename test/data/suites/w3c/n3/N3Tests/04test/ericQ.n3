@@ -1,0 +1,18 @@
+# $Id: ericQ.n3 463 2005-02-06 12:27:34Z josd $
+# PxButton | es   | euler --nope --think ericP.n3 --query ericQ.n3
+# PxButton | cwm  | cwm ericP.n3 --think --query"=ericQ.n3"
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/ericP#>.
+
+[]
+q:select {<> q:answer (?N _:D _:E _:F _:G)};
+q:where  {?N :p1 :B; :p2 :C}.
+
+[]
+q:select {<> q:answer (?N ?D ?E ?F _:G)};
+q:where  {?N :p1 :B; :p2 :C; :p3 ?D. ?D :p4 ?E; :p5 ?F}.
+
+[]
+q:select {<> q:answer (?N ?D ?E ?F ?G)};
+q:where  {?N :p1 :B; :p2 :C; :p3 ?D. ?D :p4 ?E; :p5 ?F; :p6 ?G}.

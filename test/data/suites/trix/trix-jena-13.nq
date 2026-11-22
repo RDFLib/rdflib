@@ -1,0 +1,1 @@
+<http://example.org/s> <http://example.org/p> "A<ex:T xmlns:ex=\"http://example/ns#\">B</ex:T>C"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .

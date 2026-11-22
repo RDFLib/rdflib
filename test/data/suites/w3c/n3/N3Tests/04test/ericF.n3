@@ -1,0 +1,10 @@
+# $Id: ericF.n3 352 2004-09-03 19:50:53Z josd $
+# PxButton | es   | euler --nope --think ericP.n3 --filter ericF.n3
+# PxButton | cwm  | cwm ericP.n3 --think --filter"=ericF.n3"
+
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/ericP#>.
+
+{?n :p1 :B; :p2 :C} => {(?n ?d ?e ?f ?g) :bindingFor <>}.
+{?n :p1 :B; :p2 :C; :p3 ?d. ?d :p4 ?e; :p5 ?f} => {(?n ?d ?e ?f ?g) :bindingFor <>}.
+{?n :p1 :B; :p2 :C; :p3 ?d. ?d :p4 ?e; :p5 ?f; :p6 ?g} => {(?n ?d ?e ?f ?g) :bindingFor <>}.
+

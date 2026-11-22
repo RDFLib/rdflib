@@ -1,0 +1,18 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/metastatic#>.
+
+({:MetastaticCancer e:boolean e:T}) e:conditional 0.2.
+
+({:SerumCalcium e:boolean e:T} {:MetastaticCancer e:boolean e:T}) e:conditional 0.8.
+({:SerumCalcium e:boolean e:T} {:MetastaticCancer e:boolean e:F}) e:conditional 0.2.
+
+({:BrainTumor e:boolean e:T} {:MetastaticCancer e:boolean e:T}) e:conditional 0.2.
+({:BrainTumor e:boolean e:T} {:MetastaticCancer e:boolean e:F}) e:conditional 0.05.
+
+({:Coma e:boolean e:T} {:SerumCalcium e:boolean e:T} {:BrainTumor e:boolean e:T}) e:conditional 0.8.
+({:Coma e:boolean e:T} {:SerumCalcium e:boolean e:T} {:BrainTumor e:boolean e:F}) e:conditional 0.8.
+({:Coma e:boolean e:T} {:SerumCalcium e:boolean e:F} {:BrainTumor e:boolean e:T}) e:conditional 0.8.
+({:Coma e:boolean e:T} {:SerumCalcium e:boolean e:F} {:BrainTumor e:boolean e:F}) e:conditional 0.05.
+
+({:HeadAche e:boolean e:T} {:BrainTumor e:boolean e:T}) e:conditional 0.8.
+({:HeadAche e:boolean e:T} {:BrainTumor e:boolean e:F}) e:conditional 0.6.

@@ -1,0 +1,200 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/glass/test.n3 --query http://josd.github.io/brain/glass/testQ.n3
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix : <http://example.org/try#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:component <#lemma3>;
+  r:component <#lemma4>;
+  r:component <#lemma5>;
+  r:component <#lemma6>;
+  r:gives {
+    :test1 :answer :a.
+    :test2 :answer :s.
+    :test3 :answer :s.
+    :test4 :answer :e.
+    :test5 :answer :e.
+    :test6 :answer :e.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    :test1 :answer :a.
+  };
+  r:evidence (
+    <#lemma7>
+    [ a r:Fact; r:gives {{:a :b :c} log:equalTo {:a :b :c}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:a :b :c}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://example.org/try#a"]];
+  r:rule <#lemma8>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    :test2 :answer :s.
+  };
+  r:evidence (
+    <#lemma9>
+    [ a r:Fact; r:gives {{:r :s :t} log:equalTo {:r :s :t}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:r :s :t}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://example.org/try#s"]];
+  r:rule <#lemma10>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    :test3 :answer :s.
+  };
+  r:evidence (
+    <#lemma11>
+    [ a r:Fact; r:gives {{:r :s :t.
+     :d :e :f.
+     :r :s :t} log:equalTo {:d :e :f.
+     :r :s :t}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:r :s :t.
+   :d :e :f.
+   :r :s :t}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://example.org/try#s"]];
+  r:rule <#lemma12>.
+
+<#lemma4> a r:Inference;
+  r:gives {
+    :test4 :answer :e.
+  };
+  r:evidence (
+    <#lemma11>
+    [ a r:Fact; r:gives {{:r :s :t.
+     :d :e :f.
+     :r :s :t} log:equalTo {:d :e :f.
+     :r :s :t}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:r :s :t.
+   :d :e :f.
+   :r :s :t}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://example.org/try#e"]];
+  r:rule <#lemma13>.
+
+<#lemma5> a r:Inference;
+  r:gives {
+    :test5 :answer :e.
+  };
+  r:evidence (
+    <#lemma11>
+    [ a r:Fact; r:gives {{:r :s :t.
+     :d :e :f.
+     :r :s :t} log:equalTo {:d :e :f.
+     :r :s :t.
+     :d :e :f}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:r :s :t.
+   :d :e :f.
+   :r :s :t}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://example.org/try#e"]];
+  r:rule <#lemma14>.
+
+<#lemma6> a r:Inference;
+  r:gives {
+    :test6 :answer :e.
+  };
+  r:evidence (
+    <#lemma11>
+    [ a r:Fact; r:gives {{:d :e :f.
+     :r :s :t.
+     :d :e :f} log:equalTo {:r :s :t.
+     :d :e :f.
+     :r :s :t}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {:r :s :t.
+   :d :e :f.
+   :r :s :t}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://example.org/try#e"]];
+  r:rule <#lemma15>.
+
+<#lemma7> a r:Inference;
+  r:gives {
+    {:a :b :c} :p :o.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {:b log:equalTo :b}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://example.org/try#b"]];
+  r:rule <#lemma16>.
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 :p :o.
+     var:x_0 log:equalTo {var:x_1 :b :c}} => {:test1 :answer var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/glass/testQ.n3>].
+
+<#lemma9> a r:Extraction;
+  r:gives {
+    {:r :s :t} :p :o.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/glass/test.n3>].
+
+<#lemma10> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 :p :o.
+     var:x_0 log:equalTo {:r var:x_1 :t}} => {:test2 :answer var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/glass/testQ.n3>].
+
+<#lemma11> a r:Extraction;
+  r:gives {
+    {:r :s :t.
+     :d :e :f.
+     :r :s :t} :p :o.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/glass/test.n3>].
+
+<#lemma12> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 :p :o.
+     var:x_0 log:equalTo {:d :e :f.
+      :r var:x_1 :t}} => {:test3 :answer var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/glass/testQ.n3>].
+
+<#lemma13> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 :p :o.
+     var:x_0 log:equalTo {:d var:x_1 :f.
+      :r :s :t}} => {:test4 :answer var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/glass/testQ.n3>].
+
+<#lemma14> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 :p :o.
+     var:x_0 log:equalTo {:d :e :f.
+      :r :s :t.
+      :d var:x_1 :f}} => {:test5 :answer var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/glass/testQ.n3>].
+
+<#lemma15> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 :p :o.
+     {:d :e :f.
+      :r :s :t.
+      :d var:x_1 :f} log:equalTo var:x_0} => {:test6 :answer var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/glass/testQ.n3>].
+
+<#lemma16> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 log:equalTo :b} => {{:a var:x_0 :c} :p :o}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/glass/test.n3>].
+
+#2020-02-22T21:51:44.258Z in=9 out=6 ent=7 step=30 brake=2 inf=48439 sec=0.097 inf/sec=499371
+#ENDS
+

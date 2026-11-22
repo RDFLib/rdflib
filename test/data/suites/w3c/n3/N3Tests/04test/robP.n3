@@ -1,0 +1,19 @@
+# $Id: robP.n3 264 2004-04-18 14:08:48Z josd $
+
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/robP#>.
+
+:Al a :Employee.
+:Carl a :Employee.
+:Bob a :Employee.
+:Al :hasGroup :Management.
+:Carl :hasGroup :Engineering.
+:Bob :hasLocation :SanFrancisco.
+:SanFrancisco a :NoEngineering.                             
+
+{?X a :Employee} => {?X :hasGroup :ManagementOrSupportOrEngineering}.
+{?X a :Employee; :hasGroup :Management} => {?X :hasGroup :ManagementOrSupport, :ManagementOrEngineering}.
+{?X a :Employee; :hasGroup :Support} => {?X :hasGroup :ManagementOrSupport, :SupportOrEngineering}.
+{?X a :Employee; :hasGroup :Engineering} => {?X :hasGroup :ManagementOrEngineering, :SupportOrEngineering}.
+{?X a :Employee; :hasLocation ?L. ?L a :NoManagement} => {?X :hasGroup :SupportOrEngineering}.
+{?X a :Employee; :hasLocation ?L. ?L a :NoSupport} => {?X :hasGroup :ManagementOrEngineering}.
+{?X a :Employee; :hasLocation ?L. ?L a :NoEngineering} => {?X :hasGroup :ManagementOrSupport}.

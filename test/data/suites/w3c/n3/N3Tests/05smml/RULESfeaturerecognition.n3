@@ -1,0 +1,55 @@
+@prefix : <http://smartlab.elis.ugent.be/aimontologies/geometry/instancesSTLTest#>.
+@prefix x3d: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologyx3d20091015#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix list: <http://www.co-ode.org/ontologies/lists/2008/09/11/list.owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix inst: <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> . 
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix stl:     <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101#> .
+@prefix matrix: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/matrix#>.
+@prefix we: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/wingededge#>.
+
+# FEATURE RECOGNITION: Input parameters
+we:thismodel a we:architecturalmodel.
+we:thismodel we:units "millimeters".
+we:thismodel we:verticalaxis "Z".
+we:thismodel we:minwallthickness 100.
+we:thismodel we:maxwallthickness 500.
+we:thismodel we:minwallheight 1000.
+we:thismodel we:maxwallheight 6000.
+we:thismodel we:minwalllength 500.
+
+
+# FEATURE RECOGNITION: Wall detection
+{
+  ?Input a we:architecturalmodel.
+  ?Input we:units ?units.
+  ?Input we:verticalaxis "Z".
+  ?Input we:minwallthickness ?MinWallThickness.
+  ?Input we:maxwallthickness ?MaxWallThickness.
+  ?Input we:minwallheight ?MinWallHeight.
+  ?Input we:maxwallheight ?MaxWallHeight.
+  ?Input we:minwalllength ?MinWallLength. 
+  ?X a we:box.
+  ?X we:boxXDim ?XDim.
+  ?X we:boxYDim ?YDim.
+  ?X we:boxZDim ?ZDim.
+  ?XDim math:greaterThan ?MinWallThickness.
+  ?XDim math:lessThan ?MaxWallThickness.
+  ?YDim math:greaterThan ?MinWallLength.
+  ?ZDim math:greaterThan ?MinWallHeight.
+  ?ZDim math:lessThan ?MaxWallHeight.
+}
+=>
+{
+  ?X a we:wall.
+  ?X we:units ?units.
+  ?X we:wallThickness ?XDim.
+  ?X we:wallLength ?YDim.
+  ?X we:wallHeight ?ZDim.
+}.  

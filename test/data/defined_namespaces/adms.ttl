@@ -1,0 +1,175 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<http://www.w3.org/ns/adms>
+    <http://purl.org/dc/terms/issued> "2023-04-05" ;
+    <http://purl.org/dc/terms/license> <https://creativecommons.org/licenses/by/4.0/> ;
+    <http://purl.org/dc/terms/mediator> [
+        <http://xmlns.com/foaf/0.1/homepage> <https://semic.eu> ;
+        <http://xmlns.com/foaf/0.1/name> "Semantic Interoperability Community (SEMIC)"
+    ] ;
+    a <http://www.w3.org/2002/07/owl#Ontology> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "adms"@en, "adms"@nl ;
+    <http://www.w3.org/2001/02pd/rec54#editor> [
+        a <http://xmlns.com/foaf/0.1/Person> ;
+        <http://xmlns.com/foaf/0.1/firstName> "Bert" ;
+        <http://xmlns.com/foaf/0.1/lastName> "Van Nuffelen" ;
+        <http://xmlns.com/foaf/0.1/mbox> <mailto:bert.van.nuffelen@tenforce.com> ;
+        <https://schema.org/affiliation> [
+            <http://xmlns.com/foaf/0.1/name> "TenForce"
+        ]
+    ], [
+        a <http://xmlns.com/foaf/0.1/Person> ;
+        <http://xmlns.com/foaf/0.1/firstName> "Natasa" ;
+        <http://xmlns.com/foaf/0.1/lastName> "Sofou"
+    ], [
+        a <http://xmlns.com/foaf/0.1/Person> ;
+        <http://xmlns.com/foaf/0.1/firstName> "Pavlina" ;
+        <http://xmlns.com/foaf/0.1/lastName> "Fragkou" ;
+        <https://schema.org/affiliation> [
+            <http://xmlns.com/foaf/0.1/name> "SEMIC EU"
+        ]
+    ], [
+        a <http://xmlns.com/foaf/0.1/Person> ;
+        <http://xmlns.com/foaf/0.1/firstName> "Makx" ;
+        <http://xmlns.com/foaf/0.1/lastName> "Dekkers"
+    ] ;
+    <http://xmlns.com/foaf/0.1/maker> [
+        a <http://xmlns.com/foaf/0.1/Person> ;
+        <http://xmlns.com/foaf/0.1/firstName> "Pavlina" ;
+        <http://xmlns.com/foaf/0.1/lastName> "Fragkou" ;
+        <https://schema.org/affiliation> [
+            <http://xmlns.com/foaf/0.1/name> "SEMIC EU"
+        ]
+    ] .
+
+<http://www.w3.org/ns/adms#Asset>
+    a <http://www.w3.org/2002/07/owl#Class> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "An abstract entity that reflects the intellectual content of the asset and represents those characteristics of the asset that are independent of its physical embodiment. This abstract entity combines the FRBR entities work (a distinct intellectual or artistic creation) and expression (the intellectual or artistic realization of a work)"@en ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/ns/adms> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "Asset"@en .
+
+<http://www.w3.org/ns/adms#AssetDistribution>
+    a <http://www.w3.org/2002/07/owl#Class> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "A particular physical embodiment of an Asset, which is an example of the FRBR entity manifestation (the physical embodiment of an expression of a work)."@en ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/ns/adms> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "Asset Distribution"@en .
+
+<http://www.w3.org/ns/adms#AssetRepository>
+    a <http://www.w3.org/2002/07/owl#Class> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "A system or service that provides facilities for storage and maintenance of descriptions of Assets and Asset Distributions, and functionality that allows users to search and access these descriptions. An Asset Repository will typically contain descriptions of several Assets and related Asset Distributions."@en ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/ns/adms> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "Asset repository"@en .
+
+<http://www.w3.org/ns/adms#Identifier>
+    a <http://www.w3.org/2002/07/owl#Class> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "This is based on the UN/CEFACT Identifier class."@en ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/ns/adms> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "Identifier"@en .
+
+<http://www.w3.org/ns/adms#identifier>
+    a <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Links a resource to an adms:Identifier class."@en ;
+    <http://www.w3.org/2000/01/rdf-schema#domain> <http://www.w3.org/2000/01/rdf-schema#Resource> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/ns/adms> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "identifier"@en ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/ns/adms#Identifier> .
+
+<http://www.w3.org/ns/adms#includedAsset>
+    a <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "An Asset that is contained in the Asset being described, e.g. when there are several vocabularies defined in a single document."@en ;
+    <http://www.w3.org/2000/01/rdf-schema#domain> <http://www.w3.org/ns/adms#Asset> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/ns/adms> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "included asset"@en ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/ns/adms#Asset> .
+
+<http://www.w3.org/ns/adms#interoperabilityLevel>
+    a <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The interoperability level for which the Asset is relevant."@en ;
+    <http://www.w3.org/2000/01/rdf-schema#domain> <http://www.w3.org/ns/adms#Asset> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/ns/adms> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "interoperability level"@en ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+
+<http://www.w3.org/ns/adms#last>
+    a <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "A link to the current or latest version of the Asset."@en ;
+    <http://www.w3.org/2000/01/rdf-schema#domain> <http://www.w3.org/2000/01/rdf-schema#Resource> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/ns/adms> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "last"@en ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2000/01/rdf-schema#Resource> ;
+    <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/1999/xhtml/vocab#last> .
+
+<http://www.w3.org/ns/adms#next>
+    a <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "A link to the next version of the Asset."@en ;
+    <http://www.w3.org/2000/01/rdf-schema#domain> <http://www.w3.org/2000/01/rdf-schema#Resource> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/ns/adms> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "next"@en ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2000/01/rdf-schema#Resource> ;
+    <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/1999/xhtml/vocab#next> .
+
+<http://www.w3.org/ns/adms#prev>
+    a <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "A link to the previous version of the Asset."@en ;
+    <http://www.w3.org/2000/01/rdf-schema#domain> <http://www.w3.org/2000/01/rdf-schema#Resource> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/ns/adms> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "prev"@en ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2000/01/rdf-schema#Resource> ;
+    <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/1999/xhtml/vocab#prev> .
+
+<http://www.w3.org/ns/adms#representationTechnique>
+    a <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "More information about the format in which an Asset Distribution is released. This is different from the file format as, for example, a ZIP file (file format) could contain an XML schema (representation technique)."@en ;
+    <http://www.w3.org/2000/01/rdf-schema#domain> <http://www.w3.org/2000/01/rdf-schema#Resource> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/ns/adms> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "representation technique"@en ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+
+<http://www.w3.org/ns/adms#sample>
+    a <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Links to a sample of an Asset (which is itself an Asset)."@en ;
+    <http://www.w3.org/2000/01/rdf-schema#domain> <http://www.w3.org/2000/01/rdf-schema#Resource> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/ns/adms> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "sample"@en ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2000/01/rdf-schema#Resource> .
+
+<http://www.w3.org/ns/adms#schemaAgency>
+    a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The name of the agency that issued the identifier."@en ;
+    <http://www.w3.org/2000/01/rdf-schema#domain> <http://www.w3.org/ns/adms#Identifier> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/ns/adms> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "schema agency"@en ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2000/01/rdf-schema#Literal> .
+
+<http://www.w3.org/ns/adms#status>
+    a <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The status of the Asset in the context of a particular workflow process."@en ;
+    <http://www.w3.org/2000/01/rdf-schema#domain> <http://www.w3.org/2000/01/rdf-schema#Resource> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/ns/adms> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "status"@en ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+
+<http://www.w3.org/ns/adms#supportedSchema>
+    a <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "A schema according to which the Asset Repository can provide data about its content, e.g. ADMS."@en ;
+    <http://www.w3.org/2000/01/rdf-schema#domain> <http://www.w3.org/2000/01/rdf-schema#Resource> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/ns/adms> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "supported schema"@en ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/ns/adms#Asset> .
+
+<http://www.w3.org/ns/adms#translation>
+    a <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Links Assets that are translations of each other."@en ;
+    <http://www.w3.org/2000/01/rdf-schema#domain> <http://www.w3.org/2000/01/rdf-schema#Resource> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/ns/adms> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "translation"@en ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2000/01/rdf-schema#Resource> .
+
+<http://www.w3.org/ns/adms#versionNotes>
+    a <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "A description of changes between this version and the previous version of the Asset."@en ;
+    <http://www.w3.org/2000/01/rdf-schema#domain> <http://www.w3.org/2000/01/rdf-schema#Resource> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/ns/adms> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "version notes"@en ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2000/01/rdf-schema#Literal> .
+

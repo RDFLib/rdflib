@@ -1,0 +1,812 @@
+{
+  "@context": "http://json-ld.org/test-suite/context.jsonld",
+  "@id": "",
+  "@type": "mf:Manifest",
+  "name": "Transform JSON-LD to RDF",
+  "description": "JSON-LD to RDF tests generate N-Quads output and use string comparison.",
+  "baseIri": "http://json-ld.org/test-suite/tests/",
+  "sequence": [
+    {
+      "@id": "#t0001",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Plain literal with URIs",
+      "purpose": "Tests generation of a triple using full URIs and a plain literal.",
+      "input": "toRdf-0001-in.jsonld",
+      "expect": "toRdf-0001-out.nq"
+    }, {
+      "@id": "#t0002",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Plain literal with CURIE from default context",
+      "purpose": "Tests generation of a triple using a CURIE defined in the default context.",
+      "input": "toRdf-0002-in.jsonld",
+      "expect": "toRdf-0002-out.nq"
+    }, {
+      "@id": "#t0003",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Default subject is BNode",
+      "purpose": "Tests that a BNode is created if no explicit subject is set.",
+      "input": "toRdf-0003-in.jsonld",
+      "expect": "toRdf-0003-out.nq"
+    }, {
+      "@id": "#t0004",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Literal with language tag",
+      "purpose": "Tests that a plain literal is created with a language tag.",
+      "input": "toRdf-0004-in.jsonld",
+      "expect": "toRdf-0004-out.nq"
+    }, {
+      "@id": "#t0005",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Extended character set literal",
+      "purpose": "Tests that a literal may be created using extended characters.",
+      "input": "toRdf-0005-in.jsonld",
+      "expect": "toRdf-0005-out.nq"
+    }, {
+      "@id": "#t0006",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Typed literal",
+      "purpose": "Tests creation of a literal with a datatype.",
+      "input": "toRdf-0006-in.jsonld",
+      "expect": "toRdf-0006-out.nq"
+    }, {
+      "@id": "#t0007",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Tests 'a' generates rdf:type and object is implicit IRI",
+      "purpose": "Verify that 'a' is an alias for rdf:type, and the object is created as an IRI.",
+      "input": "toRdf-0007-in.jsonld",
+      "expect": "toRdf-0007-out.nq"
+    }, {
+      "@id": "#t0008",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Test prefix defined in @context",
+      "purpose": "Generate an IRI using a prefix defined within an @context.",
+      "input": "toRdf-0008-in.jsonld",
+      "expect": "toRdf-0008-out.nq"
+    }, {
+      "@id": "#t0009",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Test using an empty suffix",
+      "purpose": "An empty suffix may be used.",
+      "input": "toRdf-0009-in.jsonld",
+      "expect": "toRdf-0009-out.nq"
+    }, {
+      "@id": "#t0010",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Test object processing defines object",
+      "purpose": "A property referencing an associative array gets object from subject of array.",
+      "input": "toRdf-0010-in.jsonld",
+      "expect": "toRdf-0010-out.nq"
+    }, {
+      "@id": "#t0011",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Test object processing defines object with implicit BNode",
+      "purpose": "If no @ is specified, a BNode is created, and will be used as the object of an enclosing property.",
+      "input": "toRdf-0011-in.jsonld",
+      "expect": "toRdf-0011-out.nq"
+    }, {
+      "@id": "#t0012",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Multiple Objects for a Single Property",
+      "purpose": "Tests that Multiple Objects are for a Single Property using array syntax.",
+      "input": "toRdf-0012-in.jsonld",
+      "expect": "toRdf-0012-out.nq"
+    }, {
+      "@id": "#t0013",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Creation of an empty list",
+      "purpose": "Tests that @list: [] generates an empty list.",
+      "input": "toRdf-0013-in.jsonld",
+      "expect": "toRdf-0013-out.nq"
+    }, {
+      "@id": "#t0014",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Creation of a list with single element",
+      "purpose": "Tests that @list generates a list.",
+      "input": "toRdf-0014-in.jsonld",
+      "expect": "toRdf-0014-out.nq"
+    }, {
+      "@id": "#t0015",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Creation of a list with multiple elements",
+      "purpose": "Tests that list with multiple elements.",
+      "input": "toRdf-0015-in.jsonld",
+      "expect": "toRdf-0015-out.nq"
+    }, {
+      "@id": "#t0016",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Empty IRI expands to resource location",
+      "purpose": "Expanding an empty IRI uses the test file location.",
+      "input": "toRdf-0016-in.jsonld",
+      "expect": "toRdf-0016-out.nq"
+    }, {
+      "@id": "#t0017",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Relative IRI expands relative resource location",
+      "purpose": "Expanding a relative IRI uses the test file location.",
+      "input": "toRdf-0017-in.jsonld",
+      "expect": "toRdf-0017-out.nq"
+    }, {
+      "@id": "#t0018",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Frag ID expands relative resource location",
+      "purpose": "Expanding a fragment uses the test file location.",
+      "input": "toRdf-0018-in.jsonld",
+      "expect": "toRdf-0018-out.nq"
+    }, {
+      "@id": "#t0019",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Test type coercion to anyURI",
+      "purpose": "Tests coercion of object to anyURI when specified.",
+      "input": "toRdf-0019-in.jsonld",
+      "expect": "toRdf-0019-out.nq"
+    }, {
+      "@id": "#t0020",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Test type coercion to typed literal",
+      "purpose": "Tests coercion of object to a typed literal when specified.",
+      "input": "toRdf-0020-in.jsonld",
+      "expect": "toRdf-0020-out.nq"
+    }, {
+      "@id": "#t0022",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Test coercion of double value",
+      "purpose": "Tests that a decimal value generates a xsd:double typed literal;.",
+      "input": "toRdf-0022-in.jsonld",
+      "expect": "toRdf-0022-out.nq"
+    }, {
+      "@id": "#t0023",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Test coercion of integer value",
+      "purpose": "Tests that a decimal value generates a xsd:integer typed literal.",
+      "input": "toRdf-0023-in.jsonld",
+      "expect": "toRdf-0023-out.nq"
+    }, {
+      "@id": "#t0024",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Test coercion of boolean value",
+      "purpose": "Tests that a decimal value generates a xsd:boolean typed literal.",
+      "input": "toRdf-0024-in.jsonld",
+      "expect": "toRdf-0024-out.nq"
+    }, {
+      "@id": "#t0025",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Test list coercion with single element",
+      "purpose": "Tests that an array with a single element on a property with @list coercion creates an RDF Collection.",
+      "input": "toRdf-0025-in.jsonld",
+      "expect": "toRdf-0025-out.nq"
+    }, {
+      "@id": "#t0026",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Test creation of multiple types",
+      "purpose": "Tests that @type with an array of types creates multiple types.",
+      "input": "toRdf-0026-in.jsonld",
+      "expect": "toRdf-0026-out.nq"
+    }, {
+      "@id": "#t0027",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Simple named graph (Wikidata)",
+      "purpose": "Using @graph with other keys places triples in a named graph.",
+      "input": "toRdf-0027-in.jsonld",
+      "expect": "toRdf-0027-out.nq"
+    }, {
+      "@id": "#t0028",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Simple named graph",
+      "purpose": "Signing a graph.",
+      "input": "toRdf-0028-in.jsonld",
+      "expect": "toRdf-0028-out.nq"
+    }, {
+      "@id": "#t0029",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "named graph with embedded named graph",
+      "purpose": "Tests that named graphs containing named graphs flatten to single level of graph naming.",
+      "input": "toRdf-0029-in.jsonld",
+      "expect": "toRdf-0029-out.nq"
+    }, {
+      "@id": "#t0030",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "top-level graph with string subject reference",
+      "purpose": "Tests graphs containing subject references as strings.",
+      "input": "toRdf-0030-in.jsonld",
+      "expect": "toRdf-0030-out.nq"
+    }, {
+      "@id": "#t0031",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Reverse property",
+      "purpose": "Tests conversion of reverse properties.",
+      "input": "toRdf-0031-in.jsonld",
+      "expect": "toRdf-0031-out.nq"
+    }, {
+      "@id": "#t0032",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "@context reordering",
+      "purpose": "Tests that generated triples do not depend on order of @context.",
+      "input": "toRdf-0032-in.jsonld",
+      "expect": "toRdf-0032-out.nq"
+    }, {
+      "@id": "#t0033",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "@id reordering",
+      "purpose": "Tests that generated triples do not depend on order of @id.",
+      "input": "toRdf-0033-in.jsonld",
+      "expect": "toRdf-0033-out.nq"
+    }, {
+      "@id": "#t0034",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "context properties reordering",
+      "purpose": "Tests that generated triples do not depend on order of properties inside @context.",
+      "input": "toRdf-0034-in.jsonld",
+      "expect": "toRdf-0034-out.nq"
+    }, {
+      "@id": "#t0035",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "non-fractional numbers converted to xsd:double",
+      "purpose": "xsd:double's canonical lexical is used when converting numbers without fraction that are coerced to xsd:double",
+      "input": "toRdf-0035-in.jsonld",
+      "expect": "toRdf-0035-out.nq"
+    }, {
+      "@id": "#t0036",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Use nodeMapGeneration bnode labels",
+      "purpose": "The toRDF algorithm does not relabel blank nodes; it reuses the counter from the nodeMapGeneration to generate new ones",
+      "input": "toRdf-0036-in.jsonld",
+      "expect": "toRdf-0036-out.nq"
+    }, {
+      "@id": "#t0041",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "drop free-floating nodes",
+      "purpose": "Free-floating nodes do not generate RDF triples",
+      "input": "toRdf-0041-in.jsonld",
+      "expect": "toRdf-0041-out.nq"
+    }, {
+      "@id": "#t0042",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "basic",
+      "purpose": "Basic RDF conversion",
+      "input": "toRdf-0042-in.jsonld",
+      "expect": "toRdf-0042-out.nq"
+    }, {
+      "@id": "#t0043",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "drop null and unmapped properties",
+      "purpose": "Properties mapped to null or which are never mapped are dropped",
+      "input": "toRdf-0043-in.jsonld",
+      "expect": "toRdf-0043-out.nq"
+    }, {
+      "@id": "#t0044",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "optimize @set, keep empty arrays",
+      "purpose": "RDF version of expand-0004",
+      "input": "toRdf-0044-in.jsonld",
+      "expect": "toRdf-0044-out.nq"
+    }, {
+      "@id": "#t0045",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "do not expand aliased @id/@type",
+      "purpose": "RDF version of expand-0005",
+      "input": "toRdf-0045-in.jsonld",
+      "expect": "toRdf-0045-out.nq"
+    }, {
+      "@id": "#t0046",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "alias keywords",
+      "purpose": "RDF version of expand-0006",
+      "input": "toRdf-0046-in.jsonld",
+      "expect": "toRdf-0046-out.nq"
+    }, {
+      "@id": "#t0047",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "date type-coercion",
+      "purpose": "Type-coerced dates generate typed literals",
+      "input": "toRdf-0047-in.jsonld",
+      "expect": "toRdf-0047-out.nq"
+    }, {
+      "@id": "#t0048",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "@value with @language",
+      "purpose": "RDF version of expand-0008",
+      "input": "toRdf-0048-in.jsonld",
+      "expect": "toRdf-0048-out.nq"
+    }, {
+      "@id": "#t0049",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "@graph with terms",
+      "purpose": "RDF version of expand-0009",
+      "input": "toRdf-0049-in.jsonld",
+      "expect": "toRdf-0049-out.nq"
+    }, {
+      "@id": "#t0050",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "native types",
+      "purpose": "Native types generate typed literals",
+      "input": "toRdf-0050-in.jsonld",
+      "expect": "toRdf-0050-out.nq"
+    }, {
+      "@id": "#t0051",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "coerced @id",
+      "purpose": "RDF version of expand-0011",
+      "input": "toRdf-0051-in.jsonld",
+      "expect": "toRdf-0051-out.nq"
+    }, {
+      "@id": "#t0052",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "@graph with embed",
+      "purpose": "RDF version of expand-0012",
+      "input": "toRdf-0052-in.jsonld",
+      "expect": "toRdf-0052-out.nq"
+    }, {
+      "@id": "#t0053",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "expand already expanded",
+      "purpose": "RDF version of expand-0013",
+      "input": "toRdf-0053-in.jsonld",
+      "expect": "toRdf-0053-out.nq"
+    }, {
+      "@id": "#t0054",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "@set of @value objects with keyword aliases",
+      "purpose": "RDF version of expand-0014",
+      "input": "toRdf-0054-in.jsonld",
+      "expect": "toRdf-0054-out.nq"
+    }, {
+      "@id": "#t0055",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "collapse set of sets, keep empty lists",
+      "purpose": "RDF version of expand-0015",
+      "input": "toRdf-0055-in.jsonld",
+      "expect": "toRdf-0055-out.nq"
+    }, {
+      "@id": "#t0056",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "context reset",
+      "purpose": "RDF version of expand-0016",
+      "input": "toRdf-0056-in.jsonld",
+      "expect": "toRdf-0056-out.nq"
+    }, {
+      "@id": "#t0057",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "@graph and @id aliased",
+      "purpose": "RDF version of expand-0017",
+      "input": "toRdf-0057-in.jsonld",
+      "expect": "toRdf-0057-out.nq"
+    }, {
+      "@id": "#t0058",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "override default @language",
+      "purpose": "RDF version of expand-0018",
+      "input": "toRdf-0058-in.jsonld",
+      "expect": "toRdf-0058-out.nq"
+    }, {
+      "@id": "#t0059",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "remove @value = null",
+      "purpose": "RDF version of expand-0019",
+      "input": "toRdf-0059-in.jsonld",
+      "expect": "toRdf-0059-out.nq"
+    }, {
+      "@id": "#t0060",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "do not remove @graph if not at top-level",
+      "purpose": "Embedded @graph without @id creates BNode-labeled named graph",
+      "input": "toRdf-0060-in.jsonld",
+      "expect": "toRdf-0060-out.nq"
+    }, {
+      "@id": "#t0061",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "do not remove @graph at top-level if not only property",
+      "purpose": "RDF version of expand-0021",
+      "input": "toRdf-0061-in.jsonld",
+      "expect": "toRdf-0061-out.nq"
+    }, {
+      "@id": "#t0062",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "expand value with default language",
+      "purpose": "RDF version of expand-0022",
+      "input": "toRdf-0062-in.jsonld",
+      "expect": "toRdf-0062-out.nq"
+    }, {
+      "@id": "#t0063",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Lists and sets of properties with list/set coercion",
+      "purpose": "RDF version of expand-0023",
+      "input": "toRdf-0063-in.jsonld",
+      "expect": "toRdf-0063-out.nq"
+    }, {
+      "@id": "#t0064",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Multiple contexts",
+      "purpose": "RDF version of expand-0024",
+      "input": "toRdf-0064-in.jsonld",
+      "expect": "toRdf-0064-out.nq"
+    }, {
+      "@id": "#t0065",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Problematic IRI expansion tests",
+      "purpose": "RDF version of expand-0025",
+      "input": "toRdf-0065-in.jsonld",
+      "expect": "toRdf-0065-out.nq"
+    }, {
+      "@id": "#t0066",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Expanding term mapping to @type uses @type syntax",
+      "purpose": "RDF version of expand-0026",
+      "input": "toRdf-0066-in.jsonld",
+      "expect": "toRdf-0066-out.nq"
+    }, {
+      "@id": "#t0067",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Keep duplicate values in @list and @set",
+      "purpose": "RDF version of expand-0027",
+      "input": "toRdf-0067-in.jsonld",
+      "expect": "toRdf-0067-out.nq"
+    }, {
+      "@id": "#t0068",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Use @vocab in properties and @type but not in @id",
+      "purpose": "RDF version of expand-0028",
+      "input": "toRdf-0068-in.jsonld",
+      "expect": "toRdf-0068-out.nq"
+    }, {
+      "@id": "#t0069",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Relative IRIs",
+      "purpose": "RDF version of expand-0029",
+      "input": "toRdf-0069-in.jsonld",
+      "expect": "toRdf-0069-out.nq"
+    }, {
+      "@id": "#t0070",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Language maps",
+      "purpose": "RDF version of expand-0030",
+      "input": "toRdf-0070-in.jsonld",
+      "expect": "toRdf-0070-out.nq"
+    }, {
+      "@id": "#t0071",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "type-coercion of native types",
+      "purpose": "RDF version of expand-0031",
+      "input": "toRdf-0071-in.jsonld",
+      "expect": "toRdf-0071-out.nq"
+    }, {
+      "@id": "#t0072",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Mapping a term to null decouples it from @vocab",
+      "purpose": "RDF version of expand-0032",
+      "input": "toRdf-0072-in.jsonld",
+      "expect": "toRdf-0072-out.nq"
+    }, {
+      "@id": "#t0073",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Using @vocab with with type-coercion",
+      "purpose": "RDF version of expand-0033",
+      "input": "toRdf-0073-in.jsonld",
+      "expect": "toRdf-0073-out.nq"
+    }, {
+      "@id": "#t0074",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Multiple properties expanding to the same IRI",
+      "purpose": "RDF version of expand-0034",
+      "input": "toRdf-0074-in.jsonld",
+      "expect": "toRdf-0074-out.nq"
+    }, {
+      "@id": "#t0075",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Language maps with @vocab, default language, and colliding property",
+      "purpose": "RDF version of expand-0035",
+      "input": "toRdf-0075-in.jsonld",
+      "expect": "toRdf-0075-out.nq"
+    }, {
+      "@id": "#t0076",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Expanding @index",
+      "purpose": "RDF version of expand-0036",
+      "input": "toRdf-0076-in.jsonld",
+      "expect": "toRdf-0076-out.nq"
+    }, {
+      "@id": "#t0077",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Expanding @reverse",
+      "purpose": "RDF version of expand-0037",
+      "input": "toRdf-0077-in.jsonld",
+      "expect": "toRdf-0077-out.nq"
+    }, {
+      "@id": "#t0078",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Drop blank node predicates by default",
+      "purpose": "Triples with blank node predicates are dropped by default.",
+      "input": "toRdf-0078-in.jsonld",
+      "expect": "toRdf-0078-out.nq"
+    }, {
+      "@id": "#t0079",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Using terms in a reverse-maps",
+      "purpose": "RDF version of expand-0039",
+      "input": "toRdf-0079-in.jsonld",
+      "expect": "toRdf-0079-out.nq"
+    }, {
+      "@id": "#t0080",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "language and index expansion on non-objects",
+      "purpose": "RDF version of expand-0040",
+      "input": "toRdf-0080-in.jsonld",
+      "expect": "toRdf-0080-out.nq"
+    }, {
+      "@id": "#t0081",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Reset the default language",
+      "purpose": "RDF version of expand-0041",
+      "input": "toRdf-0081-in.jsonld",
+      "expect": "toRdf-0081-out.nq"
+    }, {
+      "@id": "#t0082",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Expanding reverse properties",
+      "purpose": "RDF version of expand-0042",
+      "input": "toRdf-0082-in.jsonld",
+      "expect": "toRdf-0082-out.nq"
+    }, {
+      "@id": "#t0083",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Using reverse properties inside a @reverse-container",
+      "purpose": "RDF version of expand-0043",
+      "input": "toRdf-0083-in.jsonld",
+      "expect": "toRdf-0083-out.nq"
+    }, {
+      "@id": "#t0084",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Ensure index maps use language mapping",
+      "purpose": "RDF version of expand-0044",
+      "input": "toRdf-0084-in.jsonld",
+      "expect": "toRdf-0084-out.nq"
+    }, {
+      "@id": "#t0085",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Top-level value objects are removed",
+      "purpose": "RDF version of expand-0045",
+      "input": "toRdf-0085-in.jsonld",
+      "expect": "toRdf-0085-out.nq"
+    }, {
+      "@id": "#t0086",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Free-floating nodes are removed",
+      "purpose": "RDF version of expand-0046",
+      "input": "toRdf-0086-in.jsonld",
+      "expect": "toRdf-0086-out.nq"
+    }, {
+      "@id": "#t0087",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Remove free-floating set values and lists",
+      "purpose": "RDF version of expand-0047",
+      "input": "toRdf-0087-in.jsonld",
+      "expect": "toRdf-0087-out.nq"
+    }, {
+      "@id": "#t0088",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Terms are ignored in @id",
+      "purpose": "RDF version of expand-0048",
+      "input": "toRdf-0088-in.jsonld",
+      "expect": "toRdf-0088-out.nq"
+    }, {
+      "@id": "#t0089",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Using strings as value of a reverse property",
+      "purpose": "RDF version of expand-0049",
+      "input": "toRdf-0089-in.jsonld",
+      "expect": "toRdf-0089-out.nq"
+    }, {
+      "@id": "#t0090",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Term definitions with prefix separate from prefix definitions",
+      "purpose": "RDF version of expand-0050",
+      "input": "toRdf-0090-in.jsonld",
+      "expect": "toRdf-0090-out.nq"
+    }, {
+      "@id": "#t0091",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Expansion of keyword aliases in term definitions",
+      "purpose": "RDF version of expand-0051",
+      "input": "toRdf-0091-in.jsonld",
+      "expect": "toRdf-0091-out.nq"
+    }, {
+      "@id": "#t0092",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "@vocab-relative IRIs in term definitions",
+      "purpose": "RDF version of expand-0052",
+      "input": "toRdf-0092-in.jsonld",
+      "expect": "toRdf-0092-out.nq"
+    }, {
+      "@id": "#t0093",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Expand absolute IRI with @type: @vocab",
+      "purpose": "RDF version of expand-0053",
+      "input": "toRdf-0093-in.jsonld",
+      "expect": "toRdf-0093-out.nq"
+    }, {
+      "@id": "#t0094",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Expand term with @type: @vocab",
+      "purpose": "RDF version of expand-0054",
+      "input": "toRdf-0094-in.jsonld",
+      "expect": "toRdf-0094-out.nq"
+    }, {
+      "@id": "#t0095",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Expand @vocab-relative term with @type: @vocab",
+      "purpose": "RDF version of expand-0055",
+      "input": "toRdf-0095-in.jsonld",
+      "expect": "toRdf-0095-out.nq"
+    }, {
+      "@id": "#t0096",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Use terms with @type: @vocab but not with @type: @id",
+      "purpose": "RDF version of expand-0056",
+      "input": "toRdf-0096-in.jsonld",
+      "expect": "toRdf-0096-out.nq"
+    }, {
+      "@id": "#t0097",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Expand relative IRI with @type: @vocab",
+      "purpose": "RDF version of expand-0057",
+      "input": "toRdf-0097-in.jsonld",
+      "expect": "toRdf-0097-out.nq"
+    }, {
+      "@id": "#t0098",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Expand compact IRI with @type: @vocab",
+      "purpose": "RDF version of expand-0058",
+      "input": "toRdf-0098-in.jsonld",
+      "expect": "toRdf-0098-out.nq"
+    }, {
+      "@id": "#t0099",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Reset @vocab by setting it to null",
+      "purpose": "RDF version of expand-0059",
+      "input": "toRdf-0099-in.jsonld",
+      "expect": "toRdf-0099-out.nq"
+    }, {
+      "@id": "#t0100",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Overwrite document base with @base and reset it again",
+      "purpose": "RDF version of expand-0060",
+      "input": "toRdf-0100-in.jsonld",
+      "expect": "toRdf-0100-out.nq"
+    }, {
+      "@id": "#t0101",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Coercing native types to arbitrary datatypes",
+      "purpose": "RDF version of expand-0061",
+      "input": "toRdf-0101-in.jsonld",
+      "expect": "toRdf-0101-out.nq"
+    }, {
+      "@id": "#t0102",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Various relative IRIs with with @base",
+      "purpose": "RDF version of expand-0062",
+      "input": "toRdf-0102-in.jsonld",
+      "expect": "toRdf-0102-out.nq"
+    }, {
+      "@id": "#t0103",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Expand a reverse property with an index-container",
+      "purpose": "RDF version of expand-0063",
+      "input": "toRdf-0103-in.jsonld",
+      "expect": "toRdf-0103-out.nq"
+    }, {
+      "@id": "#t0104",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Expand reverse property whose values are unlabeled blank nodes",
+      "purpose": "RDF version of expand-0064",
+      "input": "toRdf-0104-in.jsonld",
+      "expect": "toRdf-0104-out.nq"
+    }, {
+      "@id": "#t0105",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Keys that are not mapped to an IRI in a reverse-map are dropped",
+      "purpose": "RDF version of expand-0065",
+      "input": "toRdf-0105-in.jsonld",
+      "expect": "toRdf-0105-out.nq"
+    }, {
+      "@id": "#t0106",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Use @vocab to expand keys in reverse-maps",
+      "purpose": "RDF version of expand-0066",
+      "input": "toRdf-0106-in.jsonld",
+      "expect": "toRdf-0106-out.nq"
+    }, {
+      "@id": "#t0107",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "prefix:://sufffix not a compact IRI",
+      "purpose": "RDF version of expand-0067",
+      "input": "toRdf-0107-in.jsonld",
+      "expect": "toRdf-0107-out.nq"
+    }, {
+      "@id": "#t0108",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "_::sufffix not a compact IRI",
+      "purpose": "RDF version of expand-0068",
+      "input": "toRdf-0108-in.jsonld",
+      "expect": "toRdf-0108-out.nq"
+    }, {
+      "@id": "#t0109",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Compact IRI as term with type mapping",
+      "purpose": "RDF version of expand-0069",
+      "input": "toRdf-0109-in.jsonld",
+      "expect": "toRdf-0109-out.nq"
+    }, {
+      "@id": "#t0110",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Redefine compact IRI with itself",
+      "purpose": "RDF version of expand-0070",
+      "input": "toRdf-0110-in.jsonld",
+      "expect": "toRdf-0110-out.nq"
+    }, {
+      "@id": "#t0111",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Redefine terms looking like compact IRIs",
+      "purpose": "RDF version of expand-0071",
+      "input": "toRdf-0111-in.jsonld",
+      "expect": "toRdf-0111-out.nq"
+    }, {
+      "@id": "#t0112",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Redefine term using @vocab, not itself",
+      "purpose": "RDF version of expand-0072",
+      "input": "toRdf-0112-in.jsonld",
+      "expect": "toRdf-0112-out.nq"
+    }, {
+      "@id": "#t0113",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Dataset with a IRI named graph",
+      "purpose": "Basic use of creating a named graph using an IRI name",
+      "input": "toRdf-0113-in.jsonld",
+      "expect": "toRdf-0113-out.nq"
+    }, {
+      "@id": "#t0114",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Dataset with a IRI named graph",
+      "purpose": "Basic use of creating a named graph using a BNode name",
+      "input": "toRdf-0114-in.jsonld",
+      "expect": "toRdf-0114-out.nq"
+    }, {
+      "@id": "#t0115",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Dataset with a default and two named graphs",
+      "purpose": "Dataset with a default and two named graphs (IRI and BNode)",
+      "input": "toRdf-0115-in.jsonld",
+      "expect": "toRdf-0115-out.nq"
+    }, {
+      "@id": "#t0116",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Dataset from node with embedded named graph",
+      "purpose": "Embedding @graph in a node creates a named graph",
+      "input": "toRdf-0116-in.jsonld",
+      "expect": "toRdf-0116-out.nq"
+    }, {
+      "@id": "#t0117",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Dataset from node with embedded named graph (bnode)",
+      "purpose": "Embedding @graph in a node creates a named graph. Graph name is created if there is no subject",
+      "input": "toRdf-0117-in.jsonld",
+      "expect": "toRdf-0117-out.nq"
+    }, {
+      "@id": "#t0118",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "produce generalized RDF flag",
+      "purpose": "Triples with blank node predicates are not dropped if the produce generalized RDF flag is true.",
+      "option": {
+        "produceGeneralizedRdf": true
+      },
+      "input": "toRdf-0118-in.jsonld",
+      "expect": "toRdf-0118-out.nq"
+    }, {
+      "@id": "#t0119",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Blank nodes with reverse properties",
+      "purpose": "Proper (re-)labeling of blank nodes if used with reverse properties.",
+      "input": "toRdf-0119-in.jsonld",
+      "expect": "toRdf-0119-out.nq"
+    }
+  ]
+}

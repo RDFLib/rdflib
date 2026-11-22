@@ -1,0 +1,1 @@
+_:b0 <http://example.org/vocab#c14n> "{\"literals\":[null,true,false],\"numbers\":[333333333.3333333,1e+30,4.5,0.002,1e-27],\"string\":\"€$\\u000f\\nA'B\\\"\\\\\\\\\\\"/\"}"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#JSON> .

@@ -1,0 +1,80 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --turtle http://josd.github.io/brain/djiti/graph-10.n3 --query http://josd.github.io/brain/djiti/query.n3
+
+@prefix : <http://josd.github.io/brain#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:gives {
+    :a :b (:i22 :i9 :i61 :i29 :i42).
+    :a :b (:i72 :i12 :i67 :i19 :i73).
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    :a :b (:i22 :i9 :i61 :i29 :i42).
+  };
+  r:evidence (
+    <#lemma3>
+    <#lemma4>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain#i22"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain#i9"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain#i61"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain#i29"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain#i42"]];
+  r:rule <#lemma5>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    :a :b (:i72 :i12 :i67 :i19 :i73).
+  };
+  r:evidence (
+    <#lemma6>
+    <#lemma7>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain#i72"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain#i12"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain#i67"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain#i19"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain#i73"]];
+  r:rule <#lemma5>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    (:i22 :i9 :i61) :p :o.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/djiti/graph-10.n3>].
+
+<#lemma4> a r:Extraction;
+  r:gives {
+    (:i61 :i29 :i42) :p :o.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/djiti/graph-10.n3>].
+
+<#lemma5> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4. {(var:x_0 var:x_1 var:x_2) :p :o.
+     (var:x_2 var:x_3 var:x_4) :p :o} => {:a :b (var:x_0 var:x_1 var:x_2 var:x_3 var:x_4)}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/djiti/query.n3>].
+
+<#lemma6> a r:Extraction;
+  r:gives {
+    (:i72 :i12 :i67) :p :o.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/djiti/graph-10.n3>].
+
+<#lemma7> a r:Extraction;
+  r:gives {
+    (:i67 :i19 :i73) :p :o.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/djiti/graph-10.n3>].
+
+#2020-02-22T21:50:36.922Z in=11 out=2 ent=2 step=2 brake=1 inf=22774 sec=0.088 inf/sec=258795
+#ENDS
+

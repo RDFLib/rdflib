@@ -1,0 +1,29 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/swetA.n3 http://eulersharp.sourceforge.net/2007/07test/swetD.n3 --query http://eulersharp.sourceforge.net/2007/07test/swetQ31.n3
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2003/03swap/etc#>.
+
+_:t_0 e:answer {:obs004 :ascribed :Rain. :obs004 :ascribed :Sprinkler. :obs004 :ascribed :WetGrass}.
+_:t_1 e:answer {:obs014 :ascribed :Rain. :obs014 :ascribed :Sprinkler. :obs014 :ascribed :WetGrass}.
+_:t_2 e:answer {:obs024 :ascribed :Rain. :obs024 :ascribed :Sprinkler. :obs024 :ascribed :WetGrass}.
+_:t_3 e:answer {:obs026 :ascribed :Rain. :obs026 :ascribed :Sprinkler. :obs026 :ascribed :WetGrass}.
+_:t_4 e:answer {:obs029 :ascribed :Rain. :obs029 :ascribed :Sprinkler. :obs029 :ascribed :WetGrass}.
+_:t_5 e:answer {:obs036 :ascribed :Rain. :obs036 :ascribed :Sprinkler. :obs036 :ascribed :WetGrass}.
+_:t_6 e:answer {:obs039 :ascribed :Rain. :obs039 :ascribed :Sprinkler. :obs039 :ascribed :WetGrass}.
+_:t_7 e:answer {:obs046 :ascribed :Rain. :obs046 :ascribed :Sprinkler. :obs046 :ascribed :WetGrass}.
+_:t_8 e:answer {:obs054 :ascribed :Rain. :obs054 :ascribed :Sprinkler. :obs054 :ascribed :WetGrass}.
+_:t_9 e:answer {:obs063 :ascribed :Rain. :obs063 :ascribed :Sprinkler. :obs063 :ascribed :WetGrass}.
+_:t_10 e:answer {:obs064 :ascribed :Rain. :obs064 :ascribed :Sprinkler. :obs064 :ascribed :WetGrass}.
+_:t_11 e:answer {:obs074 :ascribed :Rain. :obs074 :ascribed :Sprinkler. :obs074 :ascribed :WetGrass}.
+_:t_12 e:answer {:obs076 :ascribed :Rain. :obs076 :ascribed :Sprinkler. :obs076 :ascribed :WetGrass}.
+_:t_13 e:answer {:obs078 :ascribed :Rain. :obs078 :ascribed :Sprinkler. :obs078 :ascribed :WetGrass}.
+_:t_14 e:answer {:obs079 :ascribed :Rain. :obs079 :ascribed :Sprinkler. :obs079 :ascribed :WetGrass}.
+_:t_15 e:answer {:obs086 :ascribed :Rain. :obs086 :ascribed :Sprinkler. :obs086 :ascribed :WetGrass}.
+_:t_16 e:answer {:obs089 :ascribed :Rain. :obs089 :ascribed :Sprinkler. :obs089 :ascribed :WetGrass}.
+_:t_17 e:answer {:obs096 :ascribed :Rain. :obs096 :ascribed :Sprinkler. :obs096 :ascribed :WetGrass}.
+_:t_18 e:answer {:obs099 :ascribed :Rain. :obs099 :ascribed :Sprinkler. :obs099 :ascribed :WetGrass}.
+
+#2018-04-18T08:28:52.552Z in=610 out=19 ent=19 step=19 brake=1 inf=53596 sec=0.029 inf/sec=1848138
+#ENDS
+

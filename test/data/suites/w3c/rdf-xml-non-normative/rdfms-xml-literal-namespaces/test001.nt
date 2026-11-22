@@ -1,0 +1,13 @@
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# $Id: test001.nt,v 1.1 2002/11/22 13:59:59 jcarroll Exp $
+##################################################################
+
+<http://www.w3.org/2013/RDFXMLTests/rdfms-xml-literal-namespaces/test001.rdf#John_Smith> <http://my.example.org/Name>  "\n      <html:h1 xmlns:html=\"http://NoHTML.example.org\">\n        <b xmlns=\"http://www.w3.org/1999/xhtml\">John</b>\n      </html:h1>\n   "^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .

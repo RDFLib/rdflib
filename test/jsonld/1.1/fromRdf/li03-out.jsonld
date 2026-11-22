@@ -1,0 +1,14 @@
+[
+  {
+    "@id": "http://example.com",
+    "http://example.com/property": [
+      {
+        "@list": [
+          {"@list": [{"@value": "a1"}, {"@value": "a2"}, {"@value": "a3"}]},
+          {"@list": [{"@value": "b1"}, {"@value": "b2"}, {"@value": "b3"}]},
+          {"@list": [{"@value": "c1"}, {"@value": "c2"}, {"@value": "c3"}]}
+        ]
+      }
+    ]
+  }
+]

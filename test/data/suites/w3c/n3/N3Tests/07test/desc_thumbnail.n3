@@ -1,0 +1,15 @@
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+@prefix dbpedia-owl: <http://dbpedia.org/ontology/>.
+@prefix ex: <http://example.org/image#>.
+@prefix http: <http://www.w3.org/2011/http#>.
+
+{ ?image ex:smallThumbnail ?thumbnail. }
+=>
+{	_:request http:methodName "GET";
+		http:requestURI ?thumbnail;
+		http:resp [ http:body ?thumbnail ].
+	?image dbpedia-owl:thumbnail ?thumbnail.
+	?thumbnail a dbpedia:Image;
+		dbpedia-owl:height 80.0.
+}.
+

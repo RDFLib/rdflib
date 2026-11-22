@@ -1,0 +1,30 @@
+@prefix : <#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+
+# Integer divided by integer
+{ ("2" "4") math:quotient 0.5 } => {:test1a a :SUCCESS}.
+{ (2 4) math:quotient 0.5 } => {:test1b a :SUCCESS}.
+{ (-2 4) math:quotient -0.5 } => {:test1c a :SUCCESS}.
+{ (2 -4) math:quotient -0.5 } => {:test1d a :SUCCESS}.
+{ (-2 -4) math:quotient 0.5 } => {:test1e a :SUCCESS}.
+{ (0 2) math:quotient 0 } => {:test1f a :SUCCESS}.
+
+# Combinations of types
+{ (2.0 4) math:quotient 0.5 } => {:test2a a :SUCCESS}.
+{ (16 0.5) math:quotient 32.0 } => {:test2b a :SUCCESS}.
+{ (16 0.5e0) math:quotient 32.0e0 } => {:test2c a :SUCCESS}.
+{ (3.1415926 1.0e7) math:quotient 3.1415926e-7 } => {:test2d a :SUCCESS}.
+{ (1.0e7 1729) math:quotient 5.78368999421631e3 } => {:test2e a :SUCCESS}.
+{ (1.0e7 1.0e7) math:quotient 1.0e0 } => {:test2f a :SUCCESS}.
+{ (1.0e7 10000000.0) math:quotient 1.0e0 } => {:test2g a :SUCCESS}.
+{ (2.0 4) math:quotient 0.5 } => {:test2h a :SUCCESS}.
+
+# Double
+{ (0.0e0 3) math:quotient 0.0e0 } => {:test3a a :SUCCESS}.
+{ (-0.0e0 3) math:quotient -0.0e0 } => {:test3b a :SUCCESS}.
+{ (1.1e0 2.2e1) math:quotient  5.0e-2 } => {:test3c a :SUCCESS}.
+{ ("1.1e0" "2.2e1") math:quotient 5.0e-2 } => {:test3d a :SUCCESS}.
+
+# Argument errors
+{ (1) math:quotient ?x } => {:test4a a :FAILURE}.
+{ (1 2 3) math:quotient ?x } => {:test4b a :FAILURE}.

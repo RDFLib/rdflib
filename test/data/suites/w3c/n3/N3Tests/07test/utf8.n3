@@ -1,0 +1,7 @@
+@prefix : <try#>.
+
+:s :p :bÃ©c.
+:s :p "â‚¬".
+:s :p "ð?Ÿ‹"@en-US.
+:s :p "Ã˜".
+:s :p "the â€œtestâ€? is ok".

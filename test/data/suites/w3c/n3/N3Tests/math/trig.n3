@@ -1,0 +1,46 @@
+@prefix : <#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+
+# Tests some trignometric functions which have exact values
+
+{ 0 math:sin ?x}  => { :test1a :subject 0; :SIN ?x} .
+{ 0 math:asin ?x} => { :test1b :subject 0; :ASIN ?x} .
+{ 0 math:sinh ?x} => { :test1c :subject 0; :SINH ?x} .
+{ 0 math:cos ?x}  => { :test1d :subject 0; :COS ?x} .
+{ 0 math:cosh ?x} => { :test1e :subject 0; :COSH ?x} .
+{ 0 math:tan ?x}  => { :test1f :subject 0; :TAN ?x} .
+{ 0 math:atan ?x} => { :test1g :subject 0; :ATAN ?x} .
+{ 0 math:tanh ?x} => { :test1h :subject 0; :TANH ?x} .
+
+{ 3.14159265358979323846 math:cos ?x }
+=> { :test2 :subject 3.14159265358979323846; :COS ?x } .
+
+# Approximate values
+# Depends on evaluation order, so does not use blankNodeProperty representation.
+
+{0.23 math:sin  _:x . _:x math:lessThan 0.2280; math:greaterThan 0.2279} => {:test3a a :SUCCESS} .
+{0.23 math:asin _:x . _:x math:lessThan 0.2321; math:greaterThan 0.2320} => {:test3b a :SUCCESS} .
+{0.23 math:sinh _:x . _:x math:lessThan 0.2321; math:greaterThan 0.2320} => {:test3c a :SUCCESS} .
+{0.23 math:cos  _:x . _:x math:lessThan 0.9737; math:greaterThan 0.9736} => {:test3d a :SUCCESS} .
+{0.23 math:acos _:x . _:x math:lessThan 1.3388; math:greaterThan 1.3387} => {:test3e a :SUCCESS} .
+{0.23 math:cosh _:x . _:x math:lessThan 1.0266; math:greaterThan 1.0265} => {:test3f a :SUCCESS} .
+{0.23 math:tan  _:x . _:x math:lessThan 0.2342; math:greaterThan 0.2341} => {:test3g a :SUCCESS} .
+{0.23 math:atan _:x . _:x math:lessThan 0.2261; math:greaterThan 0.2260} => {:test3h a :SUCCESS} .
+{0.23 math:tanh _:x . _:x math:lessThan 0.2261; math:greaterThan 0.2260} => {:test3i a :SUCCESS} .
+
+# pi/4
+{
+  0.7853981633974483 math:tan _:x .
+  _:x math:lessThan 1.0001e0; math:greaterThan 0.9999e0
+} => {:test3j a :SUCCESS} .
+
+# pi/3
+{
+  1.0471975511965976 math:cos _:x .
+  _:x math:lessThan 0.51e0; math:greaterThan 0.49e0
+} => {:test3k a :SUCCESS} .
+
+# Inverse operations
+{ ?y math:sin 0}  => { :test4a :object 0;  :ASIN ?y} .
+{ ?y math:cos 1}  => { :test4b :object 0;  :ACOS ?y} .
+{ ?y math:tan 0}  => { :test4c :object 0;  :ATAN ?y} .

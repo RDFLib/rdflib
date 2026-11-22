@@ -1,0 +1,28 @@
+# original version at http://www.ii.uib.no/~bezem/GL/dpe.in
+# DP(r) => DP(re), i.e. the diamond property is preserved under reflexive closure
+
+@prefix : <dpe#>.
+
+:a :re :b.
+:a :re :c.
+
+# equality axioms
+{?X :re ?Y} => {?X :e ?X}.
+{?X :re ?Y} => {?Y :e ?Y}.
+
+{?X :e ?Y} => {?Y :e ?X}.
+{?Y :not_e ?X} => {?X :not_e ?Y}.
+
+{?X :not_re ?Z. ?Y :re ?Z} => {?X :not_e ?Y}.
+{?X :e ?Y. ?X :not_re ?Z} => {?Y :not_e ?Z}.
+
+# basic facts on re
+{?X :e ?Y} => {?X :re ?Y}.
+{?X :r ?Y} => {?X :re ?Y}.
+
+{?X :re ?Y. ?X :not_e ?Y} => {?X :r ?Y}.
+{?X :re ?Y. ?X :not_r ?Y} => {?X :e ?Y}.
+
+# DP
+{?X :r ?Y. ?X :r ?Z} => {?Y :r ?U. ?Z :r ?U}.
+

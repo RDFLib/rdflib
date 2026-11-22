@@ -1,0 +1,7 @@
+@prefix event: <http://eulersharp.sourceforge.net/2003/03swap/event#>.
+@prefix human: <http://eulersharp.sourceforge.net/2003/03swap/human#>.
+
+
+{?being event:hasAge ?age}
+=>
+{?being event:hasAge ?age}.

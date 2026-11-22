@@ -1,0 +1,29 @@
+{
+  "@context": {
+    "name": "http://example.com/vocab#name",
+    "children": { "@reverse": "http://example.com/vocab#parent" },
+    "pets": { "@reverse": "http://example.com/vocab#owner" }
+  },
+  "@id": "#homer",
+  "name": "Homer",
+  "children": [
+    {
+      "@id": "#bart",
+      "name": "Bart"
+    },
+    {
+      "@id": "#lisa",
+      "name": "Lisa"
+    }
+  ],
+  "pets": [
+    {
+      "@id": "#snowball-ii",
+      "name": "Snowball II"
+    },
+    {
+      "@id": "#santas-little-helper",
+      "name": "Santa's Little Helper"
+    }
+  ]
+}

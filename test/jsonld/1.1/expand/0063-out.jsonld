@@ -1,0 +1,20 @@
+[
+  {
+    "@id": "http://example.com/people/markus",
+    "@reverse": {
+      "http://xmlns.com/foaf/0.1/knows": [
+        {
+          "@id": "http://example.com/people/dave",
+          "@index": "Dave",
+          "http://xmlns.com/foaf/0.1/name": [ { "@value": "Dave Longley" } ]
+        },
+        {
+          "@id": "http://example.com/people/gregg",
+          "@index": "Gregg",
+          "http://xmlns.com/foaf/0.1/name": [ { "@value": "Gregg Kellogg" } ]
+        }
+      ]
+    },
+    "http://xmlns.com/foaf/0.1/name": [ { "@value": "Markus Lanthaler" } ]
+  }
+]

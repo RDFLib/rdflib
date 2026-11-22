@@ -1,0 +1,7 @@
+# $Id: grahamC.n3 521 2005-05-05 12:25:45Z josd $
+# PxButton | es  | euler --think grahamP.n3 grahamC.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/grahamP#>.
+
+?W a :WeatherReport; :maxTemperature ?M.
+?E a :Experiment; :meanValue ?V.

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 A collection of utilities for canonicalizing and inspecting graphs.
 
@@ -8,87 +7,117 @@ comparisons.
 Warning: the time to canonicalize bnodes may increase exponentially on
 degenerate larger graphs. Use with care!
 
-Example of comparing two graphs::
+Example of comparing two graphs:
 
-    >>> g1 = Graph().parse(format='n3', data='''
-    ...     @prefix : <http://example.org/ns#> .
-    ...     <http://example.org> :rel
-    ...         <http://example.org/same>,
-    ...         [ :label "Same" ],
-    ...         <http://example.org/a>,
-    ...         [ :label "A" ] .
-    ... ''')
-    >>> g2 = Graph().parse(format='n3', data='''
-    ...     @prefix : <http://example.org/ns#> .
-    ...     <http://example.org> :rel
-    ...         <http://example.org/same>,
-    ...         [ :label "Same" ],
-    ...         <http://example.org/b>,
-    ...         [ :label "B" ] .
-    ... ''')
-    >>>
-    >>> iso1 = to_isomorphic(g1)
-    >>> iso2 = to_isomorphic(g2)
+```python
+>>> g1 = Graph().parse(format='n3', data='''
+...     @prefix : <http://example.org/ns#> .
+...     <http://example.org> :rel
+...         <http://example.org/same>,
+...         [ :label "Same" ],
+...         <http://example.org/a>,
+...         [ :label "A" ] .
+... ''')
+>>> g2 = Graph().parse(format='n3', data='''
+...     @prefix : <http://example.org/ns#> .
+...     <http://example.org> :rel
+...         <http://example.org/same>,
+...         [ :label "Same" ],
+...         <http://example.org/b>,
+...         [ :label "B" ] .
+... ''')
+>>>
+>>> iso1 = to_isomorphic(g1)
+>>> iso2 = to_isomorphic(g2)
 
-These are not isomorphic::
+```
 
-    >>> iso1 == iso2
-    False
+These are not isomorphic
 
-Diff the two graphs::
+```python
+>>> iso1 == iso2
+False
 
-    >>> in_both, in_first, in_second = graph_diff(iso1, iso2)
+```
 
-Present in both::
+Diff the two graphs:
 
-    >>> def dump_nt_sorted(g):
-    ...     for l in sorted(g.serialize(format='nt').splitlines()):
-    ...         if l: print(l.decode('ascii'))
+```python
+>>> in_both, in_first, in_second = graph_diff(iso1, iso2)
 
-    >>> dump_nt_sorted(in_both) #doctest: +SKIP
-    <http://example.org>
-        <http://example.org/ns#rel> <http://example.org/same> .
-    <http://example.org>
-        <http://example.org/ns#rel> _:cbcaabaaba17fecbc304a64f8edee4335e .
-    _:cbcaabaaba17fecbc304a64f8edee4335e
-        <http://example.org/ns#label> "Same" .
+```
 
-Only in first::
+Present in both:
 
-    >>> dump_nt_sorted(in_first) #doctest: +SKIP
-    <http://example.org>
-        <http://example.org/ns#rel> <http://example.org/a> .
-    <http://example.org>
-        <http://example.org/ns#rel> _:cb124e4c6da0579f810c0ffe4eff485bd9 .
-    _:cb124e4c6da0579f810c0ffe4eff485bd9
-        <http://example.org/ns#label> "A" .
+```python
+>>> def dump_nt_sorted(g):
+...     for l in sorted(g.serialize(format='nt').splitlines()):
+...         if l: print(l.decode('ascii'))
+>>> dump_nt_sorted(in_both) #doctest: +SKIP
+<http://example.org>
+    <http://example.org/ns#rel> <http://example.org/same> .
+<http://example.org>
+    <http://example.org/ns#rel> _:cbcaabaaba17fecbc304a64f8edee4335e .
+_:cbcaabaaba17fecbc304a64f8edee4335e
+    <http://example.org/ns#label> "Same" .
+```
 
-Only in second::
+Only in first:
 
-    >>> dump_nt_sorted(in_second) #doctest: +SKIP
-    <http://example.org>
-        <http://example.org/ns#rel> <http://example.org/b> .
-    <http://example.org>
-        <http://example.org/ns#rel> _:cb558f30e21ddfc05ca53108348338ade8 .
-    _:cb558f30e21ddfc05ca53108348338ade8
-        <http://example.org/ns#label> "B" .
+```python
+>>> dump_nt_sorted(in_first) #doctest: +SKIP
+<http://example.org>
+    <http://example.org/ns#rel> <http://example.org/a> .
+<http://example.org>
+    <http://example.org/ns#rel> _:cb124e4c6da0579f810c0ffe4eff485bd9 .
+_:cb124e4c6da0579f810c0ffe4eff485bd9
+    <http://example.org/ns#label> "A" .
+```
+
+Only in second:
+
+```python
+>>> dump_nt_sorted(in_second) #doctest: +SKIP
+<http://example.org>
+    <http://example.org/ns#rel> <http://example.org/b> .
+<http://example.org>
+    <http://example.org/ns#rel> _:cb558f30e21ddfc05ca53108348338ade8 .
+_:cb558f30e21ddfc05ca53108348338ade8
+    <http://example.org/ns#label> "B" .
+```
 """
 
+from __future__ import annotations
 
 # TODO:
 # - Doesn't handle quads.
 # - Add warning and/or safety mechanism before working on large graphs?
 # - use this in existing Graph.isomorphic?
 
-__all__ = ['IsomorphicGraph', 'to_isomorphic', 'isomorphic',
-           'to_canonical_graph', 'graph_diff', 'similar']
+__all__ = [
+    "IsomorphicGraph",
+    "to_isomorphic",
+    "isomorphic",
+    "to_canonical_graph",
+    "graph_diff",
+    "similar",
+]
 
-from rdflib.graph import Graph, ConjunctiveGraph, ReadOnlyGraphAggregate
-from rdflib.term import BNode, Node
-from hashlib import sha256
-
-from datetime import datetime
 from collections import defaultdict
+from collections.abc import Callable, Iterator
+from datetime import datetime
+from hashlib import sha256
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+    Union,
+)
+
+from rdflib.graph import ConjunctiveGraph, Graph, ReadOnlyGraphAggregate, _TripleType
+from rdflib.term import BNode, IdentifiedNode, Node, URIRef
+
+if TYPE_CHECKING:
+    from _hashlib import HASH
 
 
 def _total_seconds(td):
@@ -98,7 +127,7 @@ def _total_seconds(td):
     return result
 
 
-class _runtime(object):
+class _runtime:  # noqa: N801
     def __init__(self, label):
         self.label = label
 
@@ -109,14 +138,15 @@ class _runtime(object):
         def wrapped_f(*args, **kwargs):
             start = datetime.now()
             result = f(*args, **kwargs)
-            if 'stats' in kwargs and kwargs['stats'] is not None:
-                stats = kwargs['stats']
+            if "stats" in kwargs and kwargs["stats"] is not None:
+                stats = kwargs["stats"]
                 stats[self.label] = _total_seconds(datetime.now() - start)
             return result
+
         return wrapped_f
 
 
-class _call_count(object):
+class _call_count:  # noqa: N801
     def __init__(self, label):
         self.label = label
 
@@ -125,12 +155,13 @@ class _call_count(object):
             self.label = f.__name__ + "_runtime"
 
         def wrapped_f(*args, **kwargs):
-            if 'stats' in kwargs and kwargs['stats'] is not None:
-                stats = kwargs['stats']
+            if "stats" in kwargs and kwargs["stats"] is not None:
+                stats = kwargs["stats"]
                 if self.label not in stats:
                     stats[self.label] = 0
                 stats[self.label] += 1
             return f(*args, **kwargs)
+
         return wrapped_f
 
 
@@ -142,7 +173,7 @@ class IsomorphicGraph(ConjunctiveGraph):
     sum and SHA-256 <http://www.hpl.hp.com/techreports/2003/HPL-2003-235R1.pdf>
     and traces <http://pallini.di.uniroma1.it>, an average case
     polynomial time algorithm for graph canonicalization.
-    
+
     McCusker, J. P. (2015). WebSig: A Digital Signature Framework for the Web.
     Rensselaer Polytechnic Institute, Troy, NY.
     http://gradworks.umi.com/3727015.pdf
@@ -163,21 +194,37 @@ class IsomorphicGraph(ConjunctiveGraph):
         """Negative graph isomorphism testing."""
         return not self.__eq__(other)
 
+    def __hash__(self):
+        return super(IsomorphicGraph, self).__hash__()
+
     def graph_digest(self, stats=None):
         """Synonym for IsomorphicGraph.internal_hash."""
         return self.internal_hash(stats=stats)
 
     def internal_hash(self, stats=None):
         """
-        This is defined instead of __hash__ to avoid a circular recursion
+        This is defined instead of `__hash__` to avoid a circular recursion
         scenario with the Memory store for rdflib which requires a hash lookup
         in order to return a generator of triples.
         """
         return _TripleCanonicalizer(self).to_hash(stats=stats)
 
 
+HashFunc = Callable[[str], int]
+ColorItem = tuple[Union[int, str], URIRef, Union[int, str]]
+ColorItemTuple = tuple[ColorItem, ...]
+HashCache = Optional[dict[ColorItemTuple, str]]
+Stats = dict[str, Union[int, str]]
+
+
 class Color:
-    def __init__(self, nodes, hashfunc, color=(), hash_cache=None):
+    def __init__(
+        self,
+        nodes: list[IdentifiedNode],
+        hashfunc: HashFunc,
+        color: ColorItemTuple = (),
+        hash_cache: HashCache = None,
+    ):
         if hash_cache is None:
             hash_cache = {}
         self._hash_cache = hash_cache
@@ -186,10 +233,14 @@ class Color:
         self.hashfunc = hashfunc
         self._hash_color = None
 
+    def __str__(self):
+        nodes, color = self.key()
+        return "Color %s (%s nodes)" % (color, nodes)
+
     def key(self):
         return (len(self.nodes), self.hash_color())
 
-    def hash_color(self, color=None):
+    def hash_color(self, color: tuple[ColorItem, ...] | None = None) -> str:
         if color is None:
             color = self.color
         if color in self._hash_cache:
@@ -199,34 +250,33 @@ class Color:
             if isinstance(x, Node):
                 return x.n3()
             else:
-                return unicode(x)
+                return str(x)
+
         if isinstance(color, Node):
             return stringify(color)
         value = 0
         for triple in color:
-            value += self.hashfunc(' '.join([stringify(x) for x in triple]))
-        val = u"%x" % value
+            value += self.hashfunc(" ".join([stringify(x) for x in triple]))
+        val: str = "%x" % value
         self._hash_cache[color] = val
         return val
 
-    def distinguish(self, W, graph):
-        colors = {}
+    def distinguish(self, W: Color, graph: Graph):  # noqa: N803
+        colors: dict[str, Color] = {}
         for n in self.nodes:
-            new_color = list(self.color)
+            new_color: tuple[ColorItem, ...] = list(self.color)  # type: ignore[assignment]
             for node in W.nodes:
-                new_color += [
-                    (1, p, W.hash_color())
-                    for s, p, o in graph.triples((n, None, node))]
-                new_color += [
-                    (W.hash_color(), p, 3)
-                    for s, p, o in graph.triples((node, None, n))]
+                new_color += [  # type: ignore[operator]
+                    (1, p, W.hash_color()) for s, p, o in graph.triples((n, None, node))
+                ]
+                new_color += [  # type: ignore[operator]
+                    (W.hash_color(), p, 3) for s, p, o in graph.triples((node, None, n))
+                ]
             new_color = tuple(new_color)
             new_hash_color = self.hash_color(new_color)
 
             if new_hash_color not in colors:
-                c = Color(
-                    [], self.hashfunc, new_color,
-                    hash_cache=self._hash_cache)
+                c = Color([], self.hashfunc, new_color, hash_cache=self._hash_cache)
                 colors[new_hash_color] = c
             colors[new_hash_color].nodes.append(n)
         return colors.values()
@@ -236,40 +286,41 @@ class Color:
 
     def copy(self):
         return Color(
-            self.nodes[:], self.hashfunc, self.color,
-            hash_cache=self._hash_cache)
+            self.nodes[:], self.hashfunc, self.color, hash_cache=self._hash_cache
+        )
 
 
-class _TripleCanonicalizer(object):
+_HashT = Callable[[], "HASH"]
 
-    def __init__(self, graph, hashfunc=sha256):
+
+class _TripleCanonicalizer:
+    def __init__(self, graph: Graph, hashfunc: _HashT = sha256):
         self.graph = graph
 
-        def _hashfunc(s):
+        def _hashfunc(s: str):
             h = hashfunc()
-            h.update(unicode(s).encode("utf8"))
+            h.update(str(s).encode("utf8"))
             return int(h.hexdigest(), 16)
-        self._hash_cache = {}
+
+        self._hash_cache: HashCache = {}
         self.hashfunc = _hashfunc
 
-
-    def _discrete(self, coloring):
+    def _discrete(self, coloring: list[Color]) -> bool:
         return len([c for c in coloring if not c.discrete()]) == 0
 
-
-    def _initial_color(self):
+    def _initial_color(self) -> list[Color]:
         """Finds an initial color for the graph.
 
-        Finds an initial color fo the graph by finding all blank nodes and
+        Finds an initial color of the graph by finding all blank nodes and
         non-blank nodes that are adjacent. Nodes that are not adjacent to blank
         nodes are not included, as they are a) already colored (by URI or literal)
         and b) do not factor into the color of any blank node.
         """
-        bnodes = set()
+        bnodes: set[BNode] = set()
         others = set()
         self._neighbors = defaultdict(set)
         for s, p, o in self.graph:
-            nodes = set([s, o])
+            nodes = set([s, p, o])
             b = set([x for x in nodes if isinstance(x, BNode)])
             if len(b) > 0:
                 others |= nodes - b
@@ -278,13 +329,16 @@ class _TripleCanonicalizer(object):
                     self._neighbors[s].add(o)
                 if isinstance(o, BNode):
                     self._neighbors[o].add(s)
+                if isinstance(p, BNode):
+                    self._neighbors[p].add(s)
+                    self._neighbors[p].add(p)
         if len(bnodes) > 0:
-            return [
-                    Color(list(bnodes), self.hashfunc, hash_cache=self._hash_cache)
-                ] + [
-                    Color([x], self.hashfunc, x, hash_cache=self._hash_cache)
-                    for x in others
-                ]
+            return [Color(list(bnodes), self.hashfunc, hash_cache=self._hash_cache)] + [
+                # type error: List item 0 has incompatible type "Union[IdentifiedNode, Literal]"; expected "IdentifiedNode"
+                # type error: Argument 3 to "Color" has incompatible type "Union[IdentifiedNode, Literal]"; expected "tuple[tuple[Union[int, str], URIRef, Union[int, str]], ...]"
+                Color([x], self.hashfunc, x, hash_cache=self._hash_cache)  # type: ignore[list-item, arg-type]
+                for x in others
+            ]
         else:
             return []
 
@@ -293,46 +347,57 @@ class _TripleCanonicalizer(object):
         new_color.append((len(color.nodes),))
 
         color.nodes.remove(individual)
-        c = Color([individual], self.hashfunc, tuple(new_color),
-                  hash_cache=self._hash_cache)
+        c = Color(
+            [individual], self.hashfunc, tuple(new_color), hash_cache=self._hash_cache
+        )
         return c
 
-    def _get_candidates(self, coloring):
-        candidates = [c for c in coloring if not c.discrete()]
+    def _get_candidates(self, coloring: list[Color]) -> Iterator[tuple[Node, Color]]:
         for c in [c for c in coloring if not c.discrete()]:
             for node in c.nodes:
                 yield node, c
 
-    def _refine(self, coloring, sequence):
+    def _refine(self, coloring: list[Color], sequence: list[Color]) -> list[Color]:
         sequence = sorted(sequence, key=lambda x: x.key(), reverse=True)
         coloring = coloring[:]
         while len(sequence) > 0 and not self._discrete(coloring):
-            W = sequence.pop()
+            W = sequence.pop()  # noqa: N806
             for c in coloring[:]:
-                if len(c.nodes) > 1:
-                    colors = sorted(c.distinguish(W, self.graph),
-                                    key=lambda x: x.key(),
-                                    reverse=True)
+                if len(c.nodes) > 1 or isinstance(c.nodes[0], BNode):
+                    colors = sorted(
+                        c.distinguish(W, self.graph),
+                        key=lambda x: x.key(),
+                        reverse=True,
+                    )
                     coloring.remove(c)
                     coloring.extend(colors)
                     try:
                         si = sequence.index(c)
-                        sequence = sequence[:si] + colors + sequence[si+1:]
+                        sequence = sequence[:si] + colors + sequence[si + 1 :]
                     except ValueError:
                         sequence = colors[1:] + sequence
-
-        return coloring
+        combined_colors: list[Color] = []
+        combined_color_map: dict[str, Color] = dict()
+        for color in coloring:
+            color_hash = color.hash_color()
+            # This is a hash collision, and be combined into a single color for individuation.
+            if color_hash in combined_color_map:
+                combined_color_map[color_hash].nodes.extend(color.nodes)
+            else:
+                combined_colors.append(color)
+                combined_color_map[color_hash] = color
+        return combined_colors
 
     @_runtime("to_hash_runtime")
-    def to_hash(self, stats=None):
+    def to_hash(self, stats: Stats | None = None):
         result = 0
         for triple in self.canonical_triples(stats=stats):
-            result += self.hashfunc(' '.join([x.n3() for x in triple]))
+            result += self.hashfunc(" ".join([x.n3() for x in triple]))
         if stats is not None:
-            stats['graph_digest'] = "%x" % result
+            stats["graph_digest"] = "%x" % result
         return result
 
-    def _experimental_path(self, coloring):
+    def _experimental_path(self, coloring: list[Color]) -> list[Color]:
         coloring = [c.copy() for c in coloring]
         while not self._discrete(coloring):
             color = [x for x in coloring if not x.discrete()][0]
@@ -342,7 +407,11 @@ class _TripleCanonicalizer(object):
             coloring = self._refine(coloring, [new_color])
         return coloring
 
-    def _create_generator(self, colorings, groupings=None):
+    def _create_generator(
+        self,
+        colorings: list[list[Color]],
+        groupings: dict[Node, set[Node]] | None = None,
+    ) -> dict[Node, set[Node]]:
         if not groupings:
             groupings = defaultdict(set)
         for group in zip(*colorings):
@@ -354,18 +423,22 @@ class _TripleCanonicalizer(object):
         return groupings
 
     @_call_count("individuations")
-    def _traces(self, coloring, stats=None, depth=[0]):
-        if stats is not None and 'prunings' not in stats:
-            stats['prunings'] = 0
+    def _traces(
+        self,
+        coloring: list[Color],
+        stats: Stats | None = None,
+        depth: list[int] = [0],
+    ) -> list[Color]:
+        if stats is not None and "prunings" not in stats:
+            stats["prunings"] = 0
         depth[0] += 1
         candidates = self._get_candidates(coloring)
-        best = []
+        best: list[list[Color]] = []
         best_score = None
-        best_experimental = None
         best_experimental_score = None
         last_coloring = None
-        generator = defaultdict(set)
-        visited = set()
+        generator: dict[Node, set[Node]] = defaultdict(set)
+        visited: set[Node] = set()
         for candidate, color in candidates:
             if candidate in generator:
                 v = generator[candidate] & visited
@@ -373,7 +446,7 @@ class _TripleCanonicalizer(object):
                     visited.add(candidate)
                     continue
             visited.add(candidate)
-            coloring_copy = []
+            coloring_copy: list[Color] = []
             color_copy = None
             for c in coloring:
                 c_copy = c.copy()
@@ -387,26 +460,26 @@ class _TripleCanonicalizer(object):
             experimental = self._experimental_path(coloring_copy)
             experimental_score = set([c.key() for c in experimental])
             if last_coloring:
+                # type error: Statement is unreachable
                 generator = self._create_generator(
-                    [last_coloring, experimental],
-                    generator)
+                    [last_coloring, experimental], generator
+                )
             last_coloring = experimental
             if best_score is None or best_score < color_score:
                 best = [refined_coloring]
                 best_score = color_score
-                best_experimental = experimental
                 best_experimental_score = experimental_score
             elif best_score > color_score:
                 # prune this branch.
-                if stats is not None:
-                    stats['prunings'] += 1
+                if stats is not None and isinstance(stats["prunings"], int):
+                    stats["prunings"] += 1
             elif experimental_score != best_experimental_score:
                 best.append(refined_coloring)
             else:
                 # prune this branch.
-                if stats is not None:
-                    stats['prunings'] += 1
-        discrete = [x for x in best if self._discrete(x)]
+                if stats is not None and isinstance(stats["prunings"], int):
+                    stats["prunings"] += 1
+        discrete: list[list[Color]] = [x for x in best if self._discrete(x)]
         if len(discrete) == 0:
             best_score = None
             best_depth = None
@@ -418,42 +491,50 @@ class _TripleCanonicalizer(object):
                     discrete = [new_color]
                     best_score = color_score
                     best_depth = d[0]
-            depth[0] = best_depth
+            depth[0] = best_depth  # type: ignore[assignment]
         return discrete[0]
 
-    def canonical_triples(self, stats=None):
-        if stats is not None:
-            start_canonicalization = datetime.now()
+    def canonical_triples(self, stats: Stats | None = None):
         if stats is not None:
             start_coloring = datetime.now()
         coloring = self._initial_color()
         if stats is not None:
-            stats['triple_count'] = len(self.graph)
-            stats['adjacent_nodes'] = max(0, len(coloring) - 1)
+            stats["triple_count"] = len(self.graph)
+            stats["adjacent_nodes"] = max(0, len(coloring) - 1)
         coloring = self._refine(coloring, coloring[:])
         if stats is not None:
-            stats['initial_coloring_runtime'] = _total_seconds(datetime.now() - start_coloring)
-            stats['initial_color_count'] = len(coloring)
+            stats["initial_coloring_runtime"] = _total_seconds(
+                datetime.now() - start_coloring
+            )
+            stats["initial_color_count"] = len(coloring)
 
         if not self._discrete(coloring):
             depth = [0]
             coloring = self._traces(coloring, stats=stats, depth=depth)
             if stats is not None:
-                stats['tree_depth'] = depth[0]
+                stats["tree_depth"] = depth[0]
         elif stats is not None:
-            stats['individuations'] = 0
-            stats['tree_depth'] = 0
+            stats["individuations"] = 0
+            stats["tree_depth"] = 0
         if stats is not None:
-            stats['color_count'] = len(coloring)
+            stats["color_count"] = len(coloring)
 
-        bnode_labels = dict([(c.nodes[0], c.hash_color()) for c in coloring])
+        bnode_labels: dict[Node, str] = dict(
+            [(c.nodes[0], c.hash_color()) for c in coloring]
+        )
         if stats is not None:
-            stats["canonicalize_triples_runtime"] = _total_seconds(datetime.now() - start_coloring)
+            stats["canonicalize_triples_runtime"] = _total_seconds(
+                datetime.now() - start_coloring
+            )
         for triple in self.graph:
             result = tuple(self._canonicalize_bnodes(triple, bnode_labels))
             yield result
 
-    def _canonicalize_bnodes(self, triple, labels):
+    def _canonicalize_bnodes(
+        self,
+        triple: _TripleType,
+        labels: dict[Node, str],
+    ):
         for term in triple:
             if isinstance(term, BNode):
                 yield BNode(value="cb%s" % labels[term])
@@ -461,19 +542,23 @@ class _TripleCanonicalizer(object):
                 yield term
 
 
-def to_isomorphic(graph):
+def to_isomorphic(graph: Graph) -> IsomorphicGraph:
     if isinstance(graph, IsomorphicGraph):
         return graph
-    return IsomorphicGraph(store=graph.store)
+    result = IsomorphicGraph()
+    if hasattr(graph, "identifier"):
+        result = IsomorphicGraph(identifier=graph.identifier)
+    result += graph
+    return result
 
 
-def isomorphic(graph1, graph2):
+def isomorphic(graph1: Graph, graph2: Graph) -> bool:
     """Compare graph for equality.
 
     Uses an algorithm to compute unique hashes which takes bnodes into account.
 
-    Examples::
-
+    Example:
+        ```python
         >>> g1 = Graph().parse(format='n3', data='''
         ...     @prefix : <http://example.org/ns#> .
         ...     <http://example.org> :rel <http://example.org/a> .
@@ -488,7 +573,6 @@ def isomorphic(graph1, graph2):
         ... ''')
         >>> isomorphic(g1, g2)
         True
-
         >>> g3 = Graph().parse(format='n3', data='''
         ...     @prefix : <http://example.org/ns#> .
         ...     <http://example.org> :rel <http://example.org/a> .
@@ -497,25 +581,26 @@ def isomorphic(graph1, graph2):
         ... ''')
         >>> isomorphic(g1, g3)
         False
+
+        ```
     """
     gd1 = _TripleCanonicalizer(graph1).to_hash()
     gd2 = _TripleCanonicalizer(graph2).to_hash()
     return gd1 == gd2
 
 
-
-def to_canonical_graph(g1):
+def to_canonical_graph(g1: Graph, stats: Stats | None = None) -> ReadOnlyGraphAggregate:
     """Creates a canonical, read-only graph.
 
     Creates a canonical, read-only graph where all bnode id:s are based on
     deterministical SHA-256 checksums, correlated with the graph contents.
     """
     graph = Graph()
-    graph += _TripleCanonicalizer(g1).canonical_triples()
+    graph += _TripleCanonicalizer(g1).canonical_triples(stats=stats)
     return ReadOnlyGraphAggregate([graph])
 
 
-def graph_diff(g1, g2):
+def graph_diff(g1: Graph, g2: Graph) -> tuple[Graph, Graph, Graph]:
     """Returns three sets of triples: "in both", "in first" and "in second"."""
     # bnodes have deterministic values in canonical graphs:
     cg1 = to_canonical_graph(g1)
@@ -526,29 +611,28 @@ def graph_diff(g1, g2):
     return (in_both, in_first, in_second)
 
 
-
 _MOCK_BNODE = BNode()
 
 
-def similar(g1, g2):
+def similar(g1: Graph, g2: Graph):
     """Checks if the two graphs are "similar".
 
     Checks if the two graphs are "similar", by comparing sorted triples where
     all bnodes have been replaced by a singular mock bnode (the
-    ``_MOCK_BNODE``).
+    `_MOCK_BNODE`).
 
     This is a much cheaper, but less reliable, alternative to the comparison
-    algorithm in ``isomorphic``.
+    algorithm in `isomorphic`.
     """
     return all(t1 == t2 for (t1, t2) in _squashed_graphs_triples(g1, g2))
 
 
-def _squashed_graphs_triples(g1, g2):
-    for (t1, t2) in zip(sorted(_squash_graph(g1)), sorted(_squash_graph(g2))):
+def _squashed_graphs_triples(g1: Graph, g2: Graph):
+    for t1, t2 in zip(sorted(_squash_graph(g1)), sorted(_squash_graph(g2))):
         yield t1, t2
 
 
-def _squash_graph(graph):
+def _squash_graph(graph: Graph):
     return (_squash_bnodes(triple) for triple in graph)
 
 

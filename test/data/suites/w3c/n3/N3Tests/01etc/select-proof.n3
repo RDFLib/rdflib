@@ -1,0 +1,432 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/csv/select-data.n3 --query http://josd.github.io/brain/csv/select-query.n3
+
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <http://eulersharp.sourceforge.net/try#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:component <#lemma3>;
+  r:component <#lemma4>;
+  r:component <#lemma5>;
+  r:component <#lemma6>;
+  r:component <#lemma7>;
+  r:component <#lemma8>;
+  r:component <#lemma9>;
+  r:component <#lemma10>;
+  r:component <#lemma11>;
+  r:component <#lemma12>;
+  r:component <#lemma13>;
+  r:component <#lemma14>;
+  r:component <#lemma15>;
+  r:component <#lemma16>;
+  r:component <#lemma17>;
+  r:gives {
+    _:sk_2 e:csvTuple (:s :p1 _:sk_0 :u001 _:sk_1).
+    _:sk_5 e:csvTuple (:s :p2 _:sk_3 :u002 _:sk_4).
+    _:sk_8 e:csvTuple (:s :p3 _:sk_6 "v003" _:sk_7).
+    _:sk_11 e:csvTuple (:s :p4 _:sk_9 404 _:sk_10).
+    _:sk_14 e:csvTuple (:s :p5 _:sk_12 "v005"^^:t005 _:sk_13).
+    _:sk_17 e:csvTuple (:s :p6 _:sk_15 "v006,w006" _:sk_16).
+    _:sk_20 e:csvTuple (:s :p7 _:sk_18 "" _:sk_19).
+    _:sk_23 e:csvTuple (:s :p8 _:sk_21 "\"8\"" _:sk_22).
+    _:sk_26 e:csvTuple (:s :p9 _:sk_24 "\tthis is a\ntest" _:sk_25).
+    _:sk_29 e:csvTuple (:s :p10 _:sk_27 "abc010" _:sk_28).
+    _:sk_32 e:csvTuple (:s :p11 _:sk_30 " def011  " _:sk_31).
+    _:sk_35 e:csvTuple (:s :p12 _:sk_33 <http://josd.github.io/.well-known/genid/#e_a012_1> _:sk_34).
+    _:sk_38 e:csvTuple (:s :p13 _:sk_36 <http://josd.github.io/.well-known/genid/#bn_1> _:sk_37).
+    _:sk_41 e:csvTuple (:s :p14 _:sk_39 14 _:sk_40).
+    _:sk_44 e:csvTuple (:s :p15 _:sk_42 1.555555555555555 _:sk_43).
+    _:sk_47 e:csvTuple (:s :p16 _:sk_45 "2016-08-10T20:16:53+02:00"^^xsd:dateTime _:sk_46).
+    _:sk_50 e:csvTuple (:s :p17 _:sk_48 "case 17"@en-US _:sk_49).
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    _:sk_2 e:csvTuple (:s :p1 _:sk_0 :u001 _:sk_1).
+  };
+  r:evidence (
+    <#lemma18>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/csv/select-data.n3>) 1) e:optional {_:sk_0 :b _:sk_1}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#p1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#u001"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/csv/select-data.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:rule <#lemma19>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    _:sk_5 e:csvTuple (:s :p2 _:sk_3 :u002 _:sk_4).
+  };
+  r:evidence (
+    <#lemma20>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/csv/select-data.n3>) 1) e:optional {_:sk_3 :b _:sk_4}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#p2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#u002"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/csv/select-data.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:rule <#lemma19>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    _:sk_8 e:csvTuple (:s :p3 _:sk_6 "v003" _:sk_7).
+  };
+  r:evidence (
+    <#lemma21>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/csv/select-data.n3>) 1) e:optional {_:sk_6 :b _:sk_7}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#p3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "v003"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/csv/select-data.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:rule <#lemma19>.
+
+<#lemma4> a r:Inference;
+  r:gives {
+    _:sk_11 e:csvTuple (:s :p4 _:sk_9 404 _:sk_10).
+  };
+  r:evidence (
+    <#lemma22>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/csv/select-data.n3>) 1) e:optional {_:sk_9 :b _:sk_10}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#p4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 404];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/csv/select-data.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_9"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_10"]];
+  r:rule <#lemma19>.
+
+<#lemma5> a r:Inference;
+  r:gives {
+    _:sk_14 e:csvTuple (:s :p5 _:sk_12 "v005"^^:t005 _:sk_13).
+  };
+  r:evidence (
+    <#lemma23>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/csv/select-data.n3>) 1) e:optional {_:sk_12 :b _:sk_13}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#p5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "v005"^^:t005];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/csv/select-data.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_12"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_13"]];
+  r:rule <#lemma19>.
+
+<#lemma6> a r:Inference;
+  r:gives {
+    _:sk_17 e:csvTuple (:s :p6 _:sk_15 "v006,w006" _:sk_16).
+  };
+  r:evidence (
+    <#lemma24>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/csv/select-data.n3>) 1) e:optional {_:sk_15 :b _:sk_16}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#p6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "v006,w006"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/csv/select-data.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_15"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_16"]];
+  r:rule <#lemma19>.
+
+<#lemma7> a r:Inference;
+  r:gives {
+    _:sk_20 e:csvTuple (:s :p7 _:sk_18 "" _:sk_19).
+  };
+  r:evidence (
+    <#lemma25>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/csv/select-data.n3>) 1) e:optional {_:sk_18 :b _:sk_19}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#p7"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo ""];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/csv/select-data.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_18"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_19"]];
+  r:rule <#lemma19>.
+
+<#lemma8> a r:Inference;
+  r:gives {
+    _:sk_23 e:csvTuple (:s :p8 _:sk_21 "\"8\"" _:sk_22).
+  };
+  r:evidence (
+    <#lemma26>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/csv/select-data.n3>) 1) e:optional {_:sk_21 :b _:sk_22}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#p8"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "\"8\""];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/csv/select-data.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_21"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_22"]];
+  r:rule <#lemma19>.
+
+<#lemma9> a r:Inference;
+  r:gives {
+    _:sk_26 e:csvTuple (:s :p9 _:sk_24 "\tthis is a\ntest" _:sk_25).
+  };
+  r:evidence (
+    <#lemma27>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/csv/select-data.n3>) 1) e:optional {_:sk_24 :b _:sk_25}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#p9"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "\tthis is a\ntest"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/csv/select-data.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_24"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_25"]];
+  r:rule <#lemma19>.
+
+<#lemma10> a r:Inference;
+  r:gives {
+    _:sk_29 e:csvTuple (:s :p10 _:sk_27 "abc010" _:sk_28).
+  };
+  r:evidence (
+    <#lemma28>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/csv/select-data.n3>) 1) e:optional {_:sk_27 :b _:sk_28}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#p10"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "abc010"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/csv/select-data.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_27"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_28"]];
+  r:rule <#lemma19>.
+
+<#lemma11> a r:Inference;
+  r:gives {
+    _:sk_32 e:csvTuple (:s :p11 _:sk_30 " def011  " _:sk_31).
+  };
+  r:evidence (
+    <#lemma29>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/csv/select-data.n3>) 1) e:optional {_:sk_30 :b _:sk_31}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#p11"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo " def011  "];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/csv/select-data.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_30"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_31"]];
+  r:rule <#lemma19>.
+
+<#lemma12> a r:Inference;
+  r:gives {
+    _:sk_35 e:csvTuple (:s :p12 _:sk_33 <http://josd.github.io/.well-known/genid/#e_a012_1> _:sk_34).
+  };
+  r:evidence (
+    <#lemma30>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/csv/select-data.n3>) 1) e:optional {_:sk_33 :b _:sk_34}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#p12"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#e_a012_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/csv/select-data.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_33"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_34"]];
+  r:rule <#lemma19>.
+
+<#lemma13> a r:Inference;
+  r:gives {
+    _:sk_38 e:csvTuple (:s :p13 _:sk_36 <http://josd.github.io/.well-known/genid/#bn_1> _:sk_37).
+  };
+  r:evidence (
+    <#lemma31>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/csv/select-data.n3>) 1) e:optional {_:sk_36 :b _:sk_37}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#p13"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/csv/select-data.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_36"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_37"]];
+  r:rule <#lemma19>.
+
+<#lemma14> a r:Inference;
+  r:gives {
+    _:sk_41 e:csvTuple (:s :p14 _:sk_39 14 _:sk_40).
+  };
+  r:evidence (
+    <#lemma32>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/csv/select-data.n3>) 1) e:optional {_:sk_39 :b _:sk_40}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#p14"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 14];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/csv/select-data.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_39"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_40"]];
+  r:rule <#lemma19>.
+
+<#lemma15> a r:Inference;
+  r:gives {
+    _:sk_44 e:csvTuple (:s :p15 _:sk_42 1.555555555555555 _:sk_43).
+  };
+  r:evidence (
+    <#lemma33>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/csv/select-data.n3>) 1) e:optional {_:sk_42 :b _:sk_43}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#p15"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1.555555555555555];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/csv/select-data.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_42"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_43"]];
+  r:rule <#lemma19>.
+
+<#lemma16> a r:Inference;
+  r:gives {
+    _:sk_47 e:csvTuple (:s :p16 _:sk_45 "2016-08-10T20:16:53+02:00"^^xsd:dateTime _:sk_46).
+  };
+  r:evidence (
+    <#lemma34>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/csv/select-data.n3>) 1) e:optional {_:sk_45 :b _:sk_46}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#p16"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "2016-08-10T20:16:53+02:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/csv/select-data.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_45"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_46"]];
+  r:rule <#lemma19>.
+
+<#lemma17> a r:Inference;
+  r:gives {
+    _:sk_50 e:csvTuple (:s :p17 _:sk_48 "case 17"@en-US _:sk_49).
+  };
+  r:evidence (
+    <#lemma35>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/csv/select-data.n3>) 1) e:optional {_:sk_48 :b _:sk_49}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#p17"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "case 17"@en-US];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((<http://josd.github.io/brain/csv/select-data.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_48"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_49"]];
+  r:rule <#lemma19>.
+
+<#lemma18> a r:Extraction;
+  r:gives {
+    :s :p1 :u001.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-data.n3>].
+
+<#lemma19> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5. @forSome var:x_6. {var:x_1 var:x_0 var:x_2.
+     var:x_3 e:optional {var:x_4 :b var:x_5}} => {var:x_6 e:csvTuple (var:x_1 var:x_0 var:x_4 var:x_2 var:x_5)}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-query.n3>].
+
+<#lemma20> a r:Extraction;
+  r:gives {
+    :s :p2 :u002.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-data.n3>].
+
+<#lemma21> a r:Extraction;
+  r:gives {
+    :s :p3 "v003".
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-data.n3>].
+
+<#lemma22> a r:Extraction;
+  r:gives {
+    :s :p4 404 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-data.n3>].
+
+<#lemma23> a r:Extraction;
+  r:gives {
+    :s :p5 "v005"^^:t005.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-data.n3>].
+
+<#lemma24> a r:Extraction;
+  r:gives {
+    :s :p6 "v006,w006".
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-data.n3>].
+
+<#lemma25> a r:Extraction;
+  r:gives {
+    :s :p7 "".
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-data.n3>].
+
+<#lemma26> a r:Extraction;
+  r:gives {
+    :s :p8 "\"8\"".
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-data.n3>].
+
+<#lemma27> a r:Extraction;
+  r:gives {
+    :s :p9 "\tthis is a\ntest".
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-data.n3>].
+
+<#lemma28> a r:Extraction;
+  r:gives {
+    :s :p10 "abc010".
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-data.n3>].
+
+<#lemma29> a r:Extraction;
+  r:gives {
+    :s :p11 " def011  ".
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-data.n3>].
+
+<#lemma30> a r:Extraction;
+  r:gives {
+    :s :p12 <http://josd.github.io/.well-known/genid/#e_a012_1>.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-data.n3>].
+
+<#lemma31> a r:Extraction;
+  r:gives {
+    :s :p13 <http://josd.github.io/.well-known/genid/#bn_1>.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-data.n3>].
+
+<#lemma32> a r:Extraction;
+  r:gives {
+    :s :p14 14 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-data.n3>].
+
+<#lemma33> a r:Extraction;
+  r:gives {
+    :s :p15 1.555555555555555 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-data.n3>].
+
+<#lemma34> a r:Extraction;
+  r:gives {
+    :s :p16 "2016-08-10T20:16:53+02:00"^^xsd:dateTime.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-data.n3>].
+
+<#lemma35> a r:Extraction;
+  r:gives {
+    :s :p17 "case 17"@en-US.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/csv/select-data.n3>].
+
+#2020-02-22T21:50:33.465Z in=18 out=17 ent=17 step=17 brake=2 inf=89059 sec=0.143 inf/sec=622790
+#ENDS
+

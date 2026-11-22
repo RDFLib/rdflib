@@ -1,0 +1,13 @@
+#Processed by Id: cwm.py,v 1.197 2007-12-13 15:38:39 syosi Exp 
+        #    using base test-files/reason/socrates.n3
+        
+#  Notation3 generation by
+#       notation3.py,v 1.201 2010-10-23 04:14:48 timbl Exp
+
+#   Base was: file:///Users/gregg/Projects/rdf-n3/spec/test-files/reason/socrates.n3
+     @prefix : <socrates#> .
+    
+    :socrates     a :Man,
+                :Mortal .
+    
+#ENDS

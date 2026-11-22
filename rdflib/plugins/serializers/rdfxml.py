@@ -1,65 +1,95 @@
-from rdflib.plugins.serializers.xmlwriter import XMLWriter
+from __future__ import annotations
 
-from rdflib.namespace import Namespace, RDF, RDFS  # , split_uri
-
-from rdflib.term import URIRef, Literal, BNode
-from rdflib.util import first, more_than
-from rdflib.collection import Collection
-from rdflib.serializer import Serializer
-
-# from rdflib.exceptions import Error
-
-from rdflib.py3compat import b
-
-from xml.sax.saxutils import quoteattr, escape
 import xml.dom.minidom
+from collections.abc import Generator
+from typing import IO, Any
+from xml.sax.saxutils import escape, quoteattr
 
-from xmlwriter import ESCAPE_ENTITIES
+from rdflib.collection import Collection
+from rdflib.graph import Graph
+from rdflib.namespace import RDF, RDFS, Namespace, NamespaceManager  # , split_uri
+from rdflib.plugins.parsers.RDFVOC import RDFVOC
+from rdflib.plugins.serializers.xmlwriter import XMLWriter
+from rdflib.serializer import Serializer
+from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, Node, URIRef
+from rdflib.util import first, more_than
 
-__all__ = ['fix', 'XMLSerializer', 'PrettyXMLSerializer']
+from .xmlwriter import ESCAPE_ENTITIES
+
+__all__ = ["fix", "XMLSerializer", "PrettyXMLSerializer"]
+
+
+def _compute_qname_strict_for_term(
+    nm: NamespaceManager, term: Node
+) -> tuple[str, str, str]:
+    """Compute the strict qname for predicate ``term``, raising a clear
+    error if it cannot be split into a namespace and a valid XML local
+    name (and therefore cannot be represented in RDF/XML).
+    """
+    try:
+        # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
+        return nm.compute_qname_strict(term)  # type: ignore[arg-type]
+    except ValueError as e:
+        raise ValueError(
+            f"Cannot serialize predicate {term} to RDF/XML: it cannot be "
+            "split into a namespace and a valid XML local name, so it "
+            "cannot be written as an XML element name."
+        ) from e
 
 
 class XMLSerializer(Serializer):
+    """RDF/XML RDF graph serializer."""
 
-    def __init__(self, store):
+    def __init__(self, store: Graph):
         super(XMLSerializer, self).__init__(store)
 
-    def __bindings(self):
+    def __bindings(self) -> Generator[tuple[str, URIRef], None, None]:
         store = self.store
         nm = store.namespace_manager
-        bindings = {}
+        bindings: dict[str, URIRef] = {}
 
         for predicate in set(store.predicates()):
-            prefix, namespace, name = nm.compute_qname(predicate)
+            prefix, namespace, name = _compute_qname_strict_for_term(nm, predicate)
             bindings[prefix] = URIRef(namespace)
 
-        RDFNS = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+        RDFNS = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#")  # noqa: N806
 
         if "rdf" in bindings:
             assert bindings["rdf"] == RDFNS
         else:
             bindings["rdf"] = RDFNS
 
-        for prefix, namespace in bindings.iteritems():
+        for prefix, namespace in bindings.items():
             yield prefix, namespace
 
-    def serialize(self, stream, base=None, encoding=None, **args):
-        self.base = base
+    def serialize(
+        self,
+        stream: IO[bytes],
+        base: str | None = None,
+        encoding: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        # if base is given here, use that, if not and a base is set for the graph use that
+        if base is not None:
+            self.base = base
+        elif self.store.base is not None:
+            self.base = self.store.base
         self.__stream = stream
-        self.__serialized = {}
+        self.__serialized: dict[Identifier, int] = {}
         encoding = self.encoding
-        self.write = write = lambda uni: stream.write(
-            uni.encode(encoding, 'replace'))
+        self.write = write = lambda uni: stream.write(uni.encode(encoding, "replace"))
 
         # startDocument
         write('<?xml version="1.0" encoding="%s"?>\n' % self.encoding)
 
         # startRDF
-        write('<rdf:RDF\n')
+        write("<rdf:RDF\n")
 
         # If provided, write xml:base attribute for the RDF
-        if "xml_base" in args:
-            write('   xml:base="%s"\n' % args['xml_base'])
+        if "xml_base" in kwargs:
+            write('   xml:base="%s"\n' % kwargs["xml_base"])
+        elif self.base:
+            write('   xml:base="%s"\n' % self.base)
         # TODO:
         # assert(
         #    namespaces["http://www.w3.org/1999/02/22-rdf-syntax-ns#"]=='rdf')
@@ -71,11 +101,12 @@ class XMLSerializer(Serializer):
                 write('   xmlns:%s="%s"\n' % (prefix, namespace))
             else:
                 write('   xmlns="%s"\n' % namespace)
-        write('>\n')
+        write(">\n")
 
         # write out triples by subject
         for subject in self.store.subjects():
-            self.subject(subject, 1)
+            # type error: Argument 1 to "subject" of "XMLSerializer" has incompatible type "Node"; expected "Identifier"
+            self.subject(subject, 1)  # type: ignore[arg-type]
 
         # endRDF
         write("</rdf:RDF>\n")
@@ -84,8 +115,8 @@ class XMLSerializer(Serializer):
         # self.__serialized = None
         del self.__serialized
 
-    def subject(self, subject, depth=1):
-        if not subject in self.__serialized:
+    def subject(self, subject: Identifier, depth: int = 1) -> None:
+        if subject not in self.__serialized:
             self.__serialized[subject] = 1
 
             if isinstance(subject, (BNode, URIRef)):
@@ -94,8 +125,7 @@ class XMLSerializer(Serializer):
                 element_name = "rdf:Description"
 
                 if isinstance(subject, BNode):
-                    write('%s<%s rdf:nodeID="%s"' % (
-                        indent, element_name, subject))
+                    write('%s<%s rdf:nodeID="%s"' % (indent, element_name, subject))
                 else:
                     uri = quoteattr(self.relativize(subject))
                     write("%s<%s rdf:about=%s" % (indent, element_name, uri))
@@ -103,18 +133,21 @@ class XMLSerializer(Serializer):
                 if (subject, None, None) in self.store:
                     write(">\n")
 
-                    for predicate, object in self.store.predicate_objects(
-                            subject):
-                        self.predicate(predicate, object, depth + 1)
+                    for predicate, object in self.store.predicate_objects(subject):
+                        # type error: Argument 1 to "predicate" of "XMLSerializer" has incompatible type "Node"; expected "Identifier"
+                        # type error: Argument 2 to "predicate" of "XMLSerializer" has incompatible type "Node"; expected "Identifier"
+                        self.predicate(predicate, object, depth + 1)  # type: ignore[arg-type]
                     write("%s</%s>\n" % (indent, element_name))
 
                 else:
                     write("/>\n")
 
-    def predicate(self, predicate, object, depth=1):
+    def predicate(
+        self, predicate: Identifier, object: Identifier, depth: int = 1
+    ) -> None:
         write = self.write
         indent = "  " * depth
-        qname = self.store.namespace_manager.qname(predicate)
+        qname = self.store.namespace_manager.qname_strict(predicate)
 
         if isinstance(object, Literal):
             attributes = ""
@@ -125,25 +158,27 @@ class XMLSerializer(Serializer):
             if object.datatype:
                 attributes += ' rdf:datatype="%s"' % object.datatype
 
-            write("%s<%s%s>%s</%s>\n" %
-                  (indent, qname, attributes,
-                   escape(object, ESCAPE_ENTITIES), qname))
+            write(
+                "%s<%s%s>%s</%s>\n"
+                % (indent, qname, attributes, escape(object, ESCAPE_ENTITIES), qname)
+            )
         else:
-
             if isinstance(object, BNode):
-                write('%s<%s rdf:nodeID="%s"/>\n' %
-                      (indent, qname, object))
+                write('%s<%s rdf:nodeID="%s"/>\n' % (indent, qname, object))
             else:
-                write("%s<%s rdf:resource=%s/>\n" %
-                      (indent, qname, quoteattr(self.relativize(object))))
+                write(
+                    "%s<%s rdf:resource=%s/>\n"
+                    % (indent, qname, quoteattr(self.relativize(object)))
+                )
+
 
 XMLLANG = "http://www.w3.org/XML/1998/namespacelang"
 XMLBASE = "http://www.w3.org/XML/1998/namespacebase"
-OWL_NS = Namespace('http://www.w3.org/2002/07/owl#')
+OWL_NS = Namespace("http://www.w3.org/2002/07/owl#")
 
 
 # TODO:
-def fix(val):
+def fix(val: str) -> str:
     "strip off _: from nodeIDs... as they are not valid NCNames"
     if val.startswith("_:"):
         return val[2:]
@@ -152,40 +187,67 @@ def fix(val):
 
 
 class PrettyXMLSerializer(Serializer):
+    """Pretty RDF/XML RDF graph serializer."""
 
-    def __init__(self, store, max_depth=3):
+    def __init__(self, store: Graph, max_depth=3):
         super(PrettyXMLSerializer, self).__init__(store)
-        self.forceRDFAbout = set()
+        self.forceRDFAbout: set[URIRef] = set()
 
-    def serialize(self, stream, base=None, encoding=None, **args):
-        self.__serialized = {}
+    def serialize(
+        self,
+        stream: IO[bytes],
+        base: str | None = None,
+        encoding: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        self.__serialized: dict[Identifier, int] = {}
         store = self.store
-        self.base = base
-        self.max_depth = args.get("max_depth", 3)
+        # if base is given here, use that, if not and a base is set for the graph use that
+        if base is not None:
+            self.base = base
+        elif store.base is not None:
+            self.base = store.base
+        self.max_depth = kwargs.get("max_depth", 3)
         assert self.max_depth > 0, "max_depth must be greater than 0"
 
         self.nm = nm = store.namespace_manager
-        self.writer = writer = XMLWriter(stream, nm, encoding)
+        self.writer = writer = XMLWriter(
+            stream,
+            nm,
+            encoding,
+            extra_ns={"rdf": Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")},
+        )
         namespaces = {}
 
-        possible = set(store.predicates()).union(
-            store.objects(None, RDF.type))
-
-        for predicate in possible:
-            prefix, namespace, local = nm.compute_qname(predicate)
+        for predicate in set(store.predicates()):
+            prefix, namespace, local = _compute_qname_strict_for_term(nm, predicate)
             namespaces[prefix] = namespace
 
-        namespaces["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        # rdf:type objects are only used as element names when they can be
+        # shortened; the others are written as rdf:type properties of an
+        # rdf:Description element (see `subject`), so failing to shorten one
+        # is not an error.
+        for type_ in store.objects(None, RDF.type):
+            try:
+                # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
+                prefix, namespace, local = nm.compute_qname_strict(type_)  # type: ignore[arg-type]
+            except ValueError:
+                continue
+            namespaces[prefix] = namespace
 
-        writer.push(RDF.RDF)
+        writer.push(RDFVOC.RDF)
 
-        if "xml_base" in args:
-            writer.attribute(XMLBASE, args["xml_base"])
+        if "xml_base" in kwargs:
+            writer.attribute(XMLBASE, kwargs["xml_base"])
+        elif self.base:
+            writer.attribute(XMLBASE, self.base)
 
-        writer.namespaces(namespaces.iteritems())
+        writer.namespaces(namespaces.items())
 
+        subject: IdentifiedNode
         # Write out subjects that can not be inline
-        for subject in store.subjects():
+        # type error: Incompatible types in assignment (expression has type "Node", variable has type "IdentifiedNode")
+        for subject in store.subjects():  # type: ignore[assignment]
             if (None, None, subject) in store:
                 if (subject, None, subject) in store:
                     self.subject(subject, 1)
@@ -196,7 +258,8 @@ class PrettyXMLSerializer(Serializer):
         # write out BNodes last (to ensure they can be inlined where possible)
         bnodes = set()
 
-        for subject in store.subjects():
+        # type error: Incompatible types in assignment (expression has type "Node", variable has type "IdentifiedNode")
+        for subject in store.subjects():  # type: ignore[assignment]
             if isinstance(subject, BNode):
                 bnodes.add(subject)
                 continue
@@ -207,35 +270,38 @@ class PrettyXMLSerializer(Serializer):
             if bnode not in self.__serialized:
                 self.subject(subject, 1)
 
-        writer.pop(RDF.RDF)
-        stream.write(b("\n"))
+        writer.pop(RDFVOC.RDF)
+        stream.write("\n".encode("latin-1"))
 
         # Set to None so that the memory can get garbage collected.
-        self.__serialized = None
+        self.__serialized = None  # type: ignore[assignment]
 
-    def subject(self, subject, depth=1):
+    def subject(self, subject: Identifier, depth: int = 1):
         store = self.store
         writer = self.writer
 
         if subject in self.forceRDFAbout:
-            writer.push(RDF.Description)
-            writer.attribute(RDF.about, self.relativize(subject))
-            writer.pop(RDF.Description)
-            self.forceRDFAbout.remove(subject)
+            writer.push(RDFVOC.Description)
+            writer.attribute(RDFVOC.about, self.relativize(subject))
+            writer.pop(RDFVOC.Description)
+            self.forceRDFAbout.remove(subject)  # type: ignore[arg-type]
 
-        elif not subject in self.__serialized:
+        elif subject not in self.__serialized:
             self.__serialized[subject] = 1
             type = first(store.objects(subject, RDF.type))
 
             try:
-                self.nm.qname(type)
-            except:
+                # type error: Argument 1 to "qname_strict" of "NamespaceManager" has incompatible type "Optional[Node]"; expected "str"
+                self.nm.qname_strict(type)  # type: ignore[arg-type]
+            except Exception:
                 type = None
 
-            element = type or RDF.Description
-            writer.push(element)
+            element = type or RDFVOC.Description
+            # type error: Argument 1 to "push" of "XMLWriter" has incompatible type "Node"; expected "str"
+            writer.push(element)  # type: ignore[arg-type]
 
             if isinstance(subject, BNode):
+
                 def subj_as_obj_more_than(ceil):
                     return True
                     # more_than(store.triples((None, None, subject)), ceil)
@@ -244,25 +310,31 @@ class PrettyXMLSerializer(Serializer):
                 # more than once (this reduces the use of redundant BNode
                 # identifiers)
                 if subj_as_obj_more_than(1):
-                    writer.attribute(RDF.nodeID, fix(subject))
+                    writer.attribute(RDFVOC.nodeID, fix(subject))
 
             else:
-                writer.attribute(RDF.about, self.relativize(subject))
+                writer.attribute(RDFVOC.about, self.relativize(subject))
 
             if (subject, None, None) in store:
                 for predicate, object in store.predicate_objects(subject):
                     if not (predicate == RDF.type and object == type):
-                        self.predicate(predicate, object, depth + 1)
+                        # type error: Argument 1 to "predicate" of "PrettyXMLSerializer" has incompatible type "Node"; expected "Identifier"
+                        # type error: Argument 2 to "predicate" of "PrettyXMLSerializer" has incompatible type "Node"; expected "Identifier"
+                        self.predicate(predicate, object, depth + 1)  # type: ignore[arg-type]
 
-            writer.pop(element)
+            # type error: Argument 1 to "pop" of "XMLWriter" has incompatible type "Node"; expected "Optional[str]"
+            writer.pop(element)  # type: ignore[arg-type]
 
         elif subject in self.forceRDFAbout:
-            writer.push(RDF.Description)
-            writer.attribute(RDF.about, self.relativize(subject))
-            writer.pop(RDF.Description)
-            self.forceRDFAbout.remove(subject)
+            # TODO FIXME?: this looks like a duplicate of first condition
+            writer.push(RDFVOC.Description)
+            writer.attribute(RDFVOC.about, self.relativize(subject))
+            writer.pop(RDFVOC.Description)
+            self.forceRDFAbout.remove(subject)  # type: ignore[arg-type]
 
-    def predicate(self, predicate, object, depth=1):
+    def predicate(
+        self, predicate: Identifier, object: Identifier, depth: int = 1
+    ) -> None:
         writer = self.writer
         store = self.store
         writer.push(predicate)
@@ -271,70 +343,80 @@ class PrettyXMLSerializer(Serializer):
             if object.language:
                 writer.attribute(XMLLANG, object.language)
 
-            if (object.datatype == RDF.XMLLiteral and
-                    isinstance(object.value, xml.dom.minidom.Document)):
-                writer.attribute(RDF.parseType, "Literal")
-                writer.text(u"")
+            if object.datatype == RDF.XMLLiteral and isinstance(
+                object.value, xml.dom.minidom.Document
+            ):
+                writer.attribute(RDFVOC.parseType, "Literal")
+                writer.text("")
                 writer.stream.write(object)
             else:
                 if object.datatype:
-                    writer.attribute(RDF.datatype, object.datatype)
+                    writer.attribute(RDFVOC.datatype, object.datatype)
                 writer.text(object)
 
-        elif object in self.__serialized or not (object, None, None) in store:
-
+        elif (
+            object in self.__serialized or not (object, None, None) in store  # noqa: E713
+        ):
             if isinstance(object, BNode):
                 if more_than(store.triples((None, None, object)), 0):
-                    writer.attribute(RDF.nodeID, fix(object))
+                    writer.attribute(RDFVOC.nodeID, fix(object))
             else:
-                writer.attribute(RDF.resource, self.relativize(object))
+                writer.attribute(RDFVOC.resource, self.relativize(object))
 
         else:
             if first(store.objects(object, RDF.first)):  # may not have type
-                                                         # RDF.List
+                # RDF.List
 
                 self.__serialized[object] = 1
 
                 # Warn that any assertions on object other than
                 # RDF.first and RDF.rest are ignored... including RDF.List
                 import warnings
+
                 warnings.warn(
-                    "Assertions on %s other than RDF.first " % repr(object) +
-                    "and RDF.rest are ignored ... including RDF.List",
-                    UserWarning, stacklevel=2)
-                writer.attribute(RDF.parseType, "Collection")
+                    "Assertions on %s other than RDF.first " % repr(object)
+                    + "and RDF.rest are ignored ... including RDF.List",
+                    UserWarning,
+                    stacklevel=2,
+                )
+                writer.attribute(RDFVOC.parseType, "Collection")
 
                 col = Collection(store, object)
 
                 for item in col:
-
                     if isinstance(item, URIRef):
                         self.forceRDFAbout.add(item)
-                    self.subject(item)
+                    # type error: Argument 1 to "subject" of "PrettyXMLSerializer" has incompatible type "Node"; expected "Identifier"
+                    self.subject(item)  # type: ignore[arg-type]
 
                     if not isinstance(item, URIRef):
-                        self.__serialized[item] = 1
+                        # type error: Invalid index type "Node" for "dict[Identifier, int]"; expected type "Identifier"
+                        self.__serialized[item] = 1  # type: ignore[index]
             else:
-                if first(store.triples_choices(
-                    (object, RDF.type, [OWL_NS.Class, RDFS.Class]))) \
-                        and isinstance(object, URIRef):
-                    writer.attribute(RDF.resource, self.relativize(object))
+                if first(
+                    store.triples_choices(
+                        # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "tuple[Identifier, URIRef, list[URIRef]]"; expected "Union[tuple[list[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
+                        (object, RDF.type, [OWL_NS.Class, RDFS.Class])  # type: ignore[arg-type]
+                    )
+                ) and isinstance(object, URIRef):
+                    writer.attribute(RDFVOC.resource, self.relativize(object))
 
                 elif depth <= self.max_depth:
                     self.subject(object, depth + 1)
 
                 elif isinstance(object, BNode):
-
-                    if not object in self.__serialized \
-                            and (object, None, None) in store \
-                            and len(list(store.subjects(object=object))) == 1:
+                    if (
+                        object not in self.__serialized
+                        and (object, None, None) in store
+                        and len(list(store.subjects(object=object))) == 1
+                    ):
                         # inline blank nodes if they haven't been serialized yet
                         # and are only referenced once (regardless of depth)
                         self.subject(object, depth + 1)
                     else:
-                        writer.attribute(RDF.nodeID, fix(object))
+                        writer.attribute(RDFVOC.nodeID, fix(object))
 
                 else:
-                    writer.attribute(RDF.resource, self.relativize(object))
+                    writer.attribute(RDFVOC.resource, self.relativize(object))
 
         writer.pop(predicate)

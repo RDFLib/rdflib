@@ -1,0 +1,2 @@
+_:b0 <http://example.com/issue/> <http://json-ld.org/issue/1> .
+_:b0 <http://example.com/issue/raisedBy> "Markus" .

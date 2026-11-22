@@ -1,0 +1,14 @@
+[
+  {
+    "@id": "http://example.org/node1",
+    "http://www.w3.org/2002/07/owl#sameAs": [
+      {
+        "@id": "http://example.org/node2",
+        "http://example.org/link": [
+          { "@id": "http://example.org/node3" }
+        ],
+        "http://www.w3.org/2000/01/rdf-schema#label": [ { "@value": "Node 2" } ]
+      }
+    ]
+  }
+]

@@ -1,5 +1,0 @@
-PREFIX : <http://example.org/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-SELECT ?s WHERE {
-  ?s :p ?o .
-} ORDER BY xsd:integer(?o)

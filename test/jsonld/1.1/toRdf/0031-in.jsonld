@@ -1,0 +1,15 @@
+{
+  "@context": {
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "defines": { "@reverse": "rdfs:definedBy" },
+    "label": "rdfs:label"
+  },
+  "@id": "http://example.com/vocab",
+  "label": "My vocabulary",
+  "defines": [
+    {
+      "@id": "http://example.com/vocab#property",
+      "label": "A property"
+    }
+  ]
+}

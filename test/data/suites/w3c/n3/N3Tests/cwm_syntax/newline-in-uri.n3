@@ -1,0 +1,6 @@
+@base <http://example.org/> .
+
+<http://example.com/iri with
+whitespace is
+okay
+> a :testcase .

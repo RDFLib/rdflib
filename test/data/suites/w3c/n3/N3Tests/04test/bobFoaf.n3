@@ -1,0 +1,7 @@
+# $Id: bobFoaf.n3 436 2004-12-19 22:40:26Z josd $
+
+@prefix  foaf: <http://xmlns.com/foaf/0.1/> .
+
+_:a foaf:mbox <mailto:bob@work.example> .
+_:a foaf:PersonalProfileDocument <bobFoaf.n3> .
+_:a foaf:age 35 .

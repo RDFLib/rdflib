@@ -1,0 +1,5 @@
+{
+    "http://example.org/address": {
+      "@id": "http://localhost/@special"
+    }
+}

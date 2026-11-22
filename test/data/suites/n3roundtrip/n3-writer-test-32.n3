@@ -1,0 +1,7 @@
+# Test unshortenable strict qnames no predicates for xml sanity check
+
+@prefix here: <http://example.org/here#> .
+
+# Test namespace generation
+
+[] here: [] .

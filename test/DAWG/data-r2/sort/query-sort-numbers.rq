@@ -1,4 +1,0 @@
-PREFIX : <http://example.org/>
-SELECT ?s WHERE {
-  ?s :p ?o1 ; :q ?o2 .
-} ORDER BY (?o1 + ?o2)

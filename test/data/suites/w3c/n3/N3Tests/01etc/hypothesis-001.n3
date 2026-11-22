@@ -1,0 +1,4 @@
+@prefix t: <http://josd.github.io/brain/tfcontext#>.
+@prefix h: <http://josd.github.io/brain/h2o#>.
+
+h:traveler1 h:inOneOf (t:Antwerp-Belgium t:Boston-USA t:Cambridge-USA t:Ghent-Belgium t:Ostend-Belgium).

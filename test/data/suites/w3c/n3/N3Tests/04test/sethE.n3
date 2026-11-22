@@ -1,0 +1,30 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+
+(<http://eulersharp.sourceforge.net/2004/04test/sethP.n3>!log:semantics
+ <http://eulersharp.sourceforge.net/2003/03swap/owl-rules.n3>!log:semantics
+ <http://eulersharp.sourceforge.net/2003/03swap/rdfs-rules.n3>!log:semantics)!log:conjunction =>
+{
+@prefix ns1: <http://eulersharp.sourceforge.net/2003/03swap/rdfs-rules#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix ns0: <http://eulersharp.sourceforge.net/2003/03swap/owl-rules#>.
+@prefix dc: <http://purl.org/dc/elements/1.0/>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/sethP#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+ {# <http://eulersharp.sourceforge.net/2003/03swap/rdfs-rules.n3> line 58. 
+  _:e29_1 rdfs:subClassOf :Foo. 
+   {# <http://eulersharp.sourceforge.net/2003/03swap/owl-rules.n3> line 151. 
+    _:e29_1 owl:onProperty dc:subject. 
+    _:e29_1 owl:hasValue "foo". 
+    :foo dc:subject "foo"} =>
+  {:foo a _:e29_1}} =>
+{:foo a :Foo}. 
+
+# Proof found for http://eulersharp.sourceforge.net/2004/04test/sethC.n3 in 1024 steps (102150 steps/sec) using 1 engine
+}.
+

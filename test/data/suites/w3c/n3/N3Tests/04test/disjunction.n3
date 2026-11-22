@@ -1,0 +1,6 @@
+# $Id: disjunction.n3 365 2004-09-06 21:35:12Z josd $
+
+@prefix : <http://example.org/> .
+
+:x :p "p" .
+:x :q "q" .

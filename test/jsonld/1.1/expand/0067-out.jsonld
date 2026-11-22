@@ -1,0 +1,9 @@
+[
+  {
+    "@id": "http://example.org/node1",
+    "@type": ["http://example.org/type"],
+    "http://example.org/property": [
+      { "@value": "all these IRIs remain unchanged because they are interpreted as absolute IRIs" }
+    ]
+  }
+]

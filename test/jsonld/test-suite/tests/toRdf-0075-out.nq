@@ -1,0 +1,5 @@
+<http://example.com/queen> <http://example.com/vocab/label> "Die Königin"@de .
+<http://example.com/queen> <http://example.com/vocab/label> "Ihre Majestät"@de .
+<http://example.com/queen> <http://example.com/vocab/label> "Il re"@it .
+<http://example.com/queen> <http://example.com/vocab/label> "The Queen"@en .
+<http://example.com/queen> <http://example.com/vocab/label> "The king"@en .

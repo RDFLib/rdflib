@@ -1,0 +1,18 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <try#>.
+
+:i2 :p2 :j2.
+:j2 :p2 :k2.
+:k2 :p2 :l2.
+:l2 :p2 :m2.
+:m2 :p2 :n2.
+:n2 :p2 :o2.
+:o2 :p2 :i2.

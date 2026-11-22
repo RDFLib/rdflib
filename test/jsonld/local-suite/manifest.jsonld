@@ -1,0 +1,43 @@
+{
+  "@context": "h2p://json-ld.org/test-suite/context.jsonld",
+  "@id": "",
+  "@type": "mf:Manifest",
+  "name": "RDFLib-jsonld local test suite",
+  "sequence": [
+    {
+      "@id": "#toRdf-twoidnodes",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Two identifier nodes",
+      "purpose": "Multiple @id aliases.  Issue #58",
+      "input": "toRdf-twoidnodes-in.jsonld",
+      "expect": "toRdf-twoidnodes-out.nq"
+    },
+    {
+      "@id": "#toRdf-urn-in-vocab-and-prefix-values",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "URN in vocab and prefix values",
+      "purpose": "Expanding urn IRIs recursively. Issue #75",
+      "input": "sample-urn-in.jsonld",
+      "expect": "sample-urn-out.nq"
+    },
+    {
+      "@id": "#toRdf-twoimports",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "JSON-LD parser doesn't restore root directory",
+      "purpose": "Multiple @id aliases.  Issue #2164",
+      "input": "toRdf-twoimports-in.jsonld",
+      "expect": "toRdf-twoimports-out.nq"
+    },
+    {
+      "@id": "#toRdf-two-invalid-ids",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Two invalid identifiers",
+      "purpose": "Multiple nodes with invalid @ids are not merged together.",
+      "option": {
+        "produceGeneralizedRdf": true
+      },
+      "input": "toRdf-twoinvalidids-in.jsonld",
+      "expect": "toRdf-twoinvalidids-out.nq"
+    }
+  ]
+}

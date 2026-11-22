@@ -1,0 +1,7 @@
+<example:special> <example:newline> "\n" .
+<example:special> <example:form_feed> "\f" .
+<example:special> <example:backspace> "\b" .
+<example:special> <example:carriage_return> "\r" .
+<example:special> <example:backslash> "\\" .
+<example:special> <example:string-000> "\\r" .
+<example:special> <example:string-001> "\\\r" .

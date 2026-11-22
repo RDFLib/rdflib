@@ -1,0 +1,15 @@
+# $Id: NamespaceQ.n3 2725 2009-03-10 10:46:33Z josd $
+# PxButton | es  | euler --nope --think sample.n3 --query NamespaceQ.n3
+# PxButton | cwm | cwm sample.n3 --think --query"=NamespaceQ.n3"
+
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/sample#>.
+
+[]
+q:select {?A :namespace <http://eulersharp.sourceforge.net/2004/04test/sample#>};
+q:where  {?A a rdfs:Class; log:uri ?S. ?S str:matches "http://eulersharp\\.sourceforge\\.net/2004/04test/sample#.*"}.

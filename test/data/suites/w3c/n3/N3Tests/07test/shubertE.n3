@@ -1,0 +1,61 @@
+#Processed by Id: euler.yap 7292 2014-06-13 12:27:29Z josd
+#eye --nope --quiet --quick-false http://eulersharp.sourceforge.net/2007/07test/shubert.n3 --query http://eulersharp.sourceforge.net/2007/07test/shubertQ.n3
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2006/02swap/steamroller#>.
+
+
+[ e:falseModel {:wolf_1 :eats :grain_1. :fox_1 :eats :grain_1. :bird_1 :eats :grain_1}
+; e:because [ e:integrityConstraint {{:wolf_1 a :Wolf. :grain_1 a :Grain. :wolf_1 :eats :grain_1} => false}
+  ; e:selected [ e:triple {:wolf_1 a :Wolf}
+    ]
+  ; e:selected [ e:triple {:grain_1 a :Grain}
+    ]
+  ; e:selected [ e:triple {:wolf_1 :eats :grain_1}
+    ]
+  ]
+].
+
+[ e:falseModel {:wolf_1 :eats :fox_1. :fox_1 :eats :grain_1. :bird_1 :eats :grain_1}
+; e:because [ e:integrityConstraint {{:wolf_1 a :Wolf. :fox_1 a :Fox. :wolf_1 :eats :fox_1} => false}
+  ; e:selected [ e:triple {:wolf_1 a :Wolf}
+    ]
+  ; e:selected [ e:triple {:fox_1 a :Fox}
+    ]
+  ; e:selected [ e:triple {:wolf_1 :eats :fox_1}
+    ]
+  ]
+].
+
+[ e:possibleModel {:fox_1 :eats :bird_1. :bird_1 :eats :grain_1}
+; e:gives {
+    :fox_1 a :Animal.
+    :bird_1 a :Animal.
+    :fox_1 :eats :bird_1.
+    :grain_1 a :Grain.
+    :bird_1 :eats :grain_1.
+  }
+].
+
+[ e:falseModel {:bird_1 :eats :snail_1}
+; e:because [ e:integrityConstraint {{:bird_1 a :Bird. :snail_1 a :Snail. :bird_1 :eats :snail_1} => false}
+  ; e:selected [ e:triple {:bird_1 a :Bird}
+    ]
+  ; e:selected [ e:triple {:snail_1 a :Snail}
+    ]
+  ; e:selected [ e:triple {:bird_1 :eats :snail_1}
+    ]
+  ]
+].
+
+:fox_1 a :Animal.
+:bird_1 a :Animal.
+:fox_1 :eats :bird_1.
+:grain_1 a :Grain.
+:bird_1 :eats :grain_1.
+
+[ e:inductivity 1; e:evidentiality 0.25; e:applicability 0.25; e:possibleModels 1; e:counterModels 0; e:falseModels 3; e:allModels 4].
+
+#ENDS 0.557 [sec] TC=13 TP=26 BC=7 BP=104 PM=1 CM=0 FM=3 AM=4
+

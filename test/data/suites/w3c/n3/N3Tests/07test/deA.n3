@@ -1,0 +1,5 @@
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/try#>.
+
+# assuming the negation of the query so that it can be discharged when the query succeeds
+_:anon :not_saying :C.
+

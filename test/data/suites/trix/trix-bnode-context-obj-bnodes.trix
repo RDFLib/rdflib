@@ -1,0 +1,18 @@
+<trix xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+  <graph>
+    <uri>http://example.org/alice/foaf3.rdf</uri>
+    <triple>
+      <uri>http://example.org/Kevin</uri>
+      <uri>http://xmlns.com/foaf/0.1/Friend</uri>
+      <id>fec897de6dcd2f89c6f2ad41320faea6</id>
+    </triple>
+  </graph>
+  <graph>
+    <uri>http://example.org/alice/foaf2.rdf</uri>
+    <triple>
+      <id>8aa378ed42733fe43f91b0669674a821</id>
+      <uri>http://xmlns.com/foaf/0.1/Friend</uri>
+      <plainLiteral>Michele</plainLiteral>
+    </triple>
+  </graph>
+</trix>

@@ -1,0 +1,50 @@
+@prefix : <#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Generally defined by XPath. See https://www.w3.org/TR/xpath-functions/#op.numeric
+
+# Equality
+# see https://www.w3.org/TR/xpath-functions/#func-numeric-equal
+{ "INF"^^xsd:double math:equalTo "INF"^^xsd:double} => { :test1a :is :PASS }.
+{ "-INF"^^xsd:double math:equalTo "-INF"^^xsd:double} => { :test1b :is :PASS }.
+{ "INF"^^xsd:double math:notEqualTo "-INF"^^xsd:double} => { :test1c :is :PASS }.
+{ "NaN"^^xsd:double math:notEqualTo "NaN"^^xsd:double} => { :test1d :is :PASS }.
+{ "NaN"^^xsd:double math:notEqualTo "INF"^^xsd:double} => { :test1e :is :PASS }.
+{ "NaN"^^xsd:double math:notEqualTo "-INF"^^xsd:double} => { :test1f :is :PASS }.
+
+# Comparison
+# see https://www.w3.org/TR/xpath-functions/#func-numeric-greater-than
+{ "INF"^^xsd:double math:greaterThan 42 } => { :test2a :is :PASS }.
+{ "INF"^^xsd:double math:notGreaterThan "INF"^^xsd:double } => { :test2b :is :PASS }.
+{ "-INF"^^xsd:double math:lessThan -42 } => { :test2c :is :PASS }.
+{ "-INF"^^xsd:double math:notLessThan "-INF"^^xsd:double } => { :test2d :is :PASS }.
+
+# Addition
+# see https://www.w3.org/TR/xpath-functions/#func-numeric-add
+{ (0 "INF"^^xsd:double) math:sum "INF"^^xsd:double } => { :test3a :is :PASS }.
+{ (0 "-INF"^^xsd:double) math:sum "-INF"^^xsd:double } => { :test3b :is :PASS }.
+{ ("INF"^^xsd:double "INF"^^xsd:double) math:sum "INF"^^xsd:double } => { :test3c :is :PASS }.
+{ ("-INF"^^xsd:double "-INF"^^xsd:double) math:sum "-INF"^^xsd:double } => { :test3d :is :PASS }.
+# cant compare Nan and Nan
+{ ("INF"^^xsd:double "-INF"^^xsd:double) math:sum ?x } => { :test3e :is ?x }.
+
+# Multiplication
+# see https://www.w3.org/TR/xpath-functions/#func-numeric-multiply
+{ (0 "INF"^^xsd:double) math:product ?x } => { :test4a :is ?x }.
+{ (0 "-INF"^^xsd:double) math:product ?x } => { :test4b :is ?x }.
+{ (1 "INF"^^xsd:double) math:product "INF"^^xsd:double } => { :test4c :is :PASS }.
+{ (-1 "INF"^^xsd:double) math:product "-INF"^^xsd:double } => { :test4d :is :PASS }.
+{ (1 "-INF"^^xsd:double) math:product "-INF"^^xsd:double } => { :test4e :is :PASS }.
+{ (-1 "-INF"^^xsd:double) math:product "INF"^^xsd:double } => { :test4f :is :PASS }.
+
+# Division
+# see https://www.w3.org/TR/xpath-functions/#func-numeric-divide
+{ (1 +0.0e0) math:quotient "INF"^^xsd:double } => { :test5a :is :PASS }.
+{ (-1 +0.0e0) math:quotient "-INF"^^xsd:double } => { :test5b :is :PASS }.
+{ (1 -0.0e0) math:quotient "-INF"^^xsd:double } => { :test5c :is :PASS }.
+{ (-1 -0.0e0) math:quotient "INF"^^xsd:double } => { :test5d :is :PASS }.
+{ (0.0e0 0.0e0) math:quotient ?x } => { :test5e :is ?x }.
+{ (-0.0e0 0.0e0) math:quotient ?x } => { :test5f :is ?x }.
+{ ("INF"^^xsd:double "INF"^^xsd:double) math:quotient ?x } => { :test5g :is ?x }.
+{ ("INF"^^xsd:double "-INF"^^xsd:double) math:quotient ?x } => { :test5h :is ?x }.

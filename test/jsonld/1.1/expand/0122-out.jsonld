@@ -1,0 +1,5 @@
+[{
+  "http://example.org/vocab/at": [{"@id": "http://example.org/@"}],
+  "http://example.org/vocab/foo.bar": [{"@id": "http://example.org/@foo.bar"}],
+  "http://example.org/vocab/ignoreme": [{"@id": null}]
+}]

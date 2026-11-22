@@ -1,0 +1,4 @@
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/monadic#>.
+
+{?PC :state (?R1 ?R2). ?PC :instruction (:halt)} => {?PC :state (?R1 ?R2). ?PC :instruction (:halt)}.
+

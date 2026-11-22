@@ -1,94 +1,106 @@
 """
-
 Code for carrying out Update Operations
-
 """
 
-from rdflib import Graph, Variable
+from __future__ import annotations
 
-from rdflib.plugins.sparql.sparql import QueryContext
-from rdflib.plugins.sparql.evalutils import _fillTemplate, _join
+from collections.abc import Iterator, Mapping, Sequence
+from typing import TYPE_CHECKING
+
+from rdflib.graph import Graph
 from rdflib.plugins.sparql.evaluate import evalBGP, evalPart
+from rdflib.plugins.sparql.evalutils import _fillTemplate, _join
+from rdflib.plugins.sparql.parserutils import CompValue
+from rdflib.plugins.sparql.sparql import FrozenDict, QueryContext, Update
+from rdflib.term import Identifier, URIRef, Variable
 
 
-def _graphOrDefault(ctx, g):
-    if g == 'DEFAULT':
+def _graphOrDefault(ctx: QueryContext, g: str) -> Graph | None:
+    if g == "DEFAULT":
         return ctx.graph
     else:
         return ctx.dataset.get_context(g)
 
 
-def _graphAll(ctx, g):
+def _graphAll(ctx: QueryContext, g: str) -> Sequence[Graph]:
     """
     return a list of graphs
     """
-    if g == 'DEFAULT':
-        return [ctx.graph]
-    elif g == 'NAMED':
-        return [c for c in ctx.dataset.contexts()
-                if c.identifier != ctx.graph.identifier]
-    elif g == 'ALL':
+    if g == "DEFAULT":
+        # type error: List item 0 has incompatible type "Optional[Graph]"; expected "Graph"
+        return [ctx.graph]  # type: ignore[list-item]
+    elif g == "NAMED":
+        return [
+            # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"
+            c
+            for c in ctx.dataset.contexts()
+            if c.identifier != ctx.graph.identifier  # type: ignore[union-attr]
+        ]
+    elif g == "ALL":
         return list(ctx.dataset.contexts())
     else:
         return [ctx.dataset.get_context(g)]
 
 
-def evalLoad(ctx, u):
+def evalLoad(ctx: QueryContext, u: CompValue) -> None:
     """
     http://www.w3.org/TR/sparql11-update/#load
     """
 
+    if TYPE_CHECKING:
+        assert isinstance(u.iri, URIRef)
+
     if u.graphiri:
-        ctx.load(u.iri, default=False, publicID=u.graphiri)
+        ctx.load(u.iri, default=False, into=u.graphiri)
     else:
         ctx.load(u.iri, default=True)
 
 
-def evalCreate(ctx, u):
+def evalCreate(ctx: QueryContext, u: CompValue) -> None:
     """
     http://www.w3.org/TR/sparql11-update/#create
     """
-    g = ctx.datset.get_context(u.graphiri)
+    g = ctx.dataset.get_context(u.graphiri)
     if len(g) > 0:
         raise Exception("Graph %s already exists." % g.identifier)
     raise Exception("Create not implemented!")
 
 
-def evalClear(ctx, u):
+def evalClear(ctx: QueryContext, u: CompValue) -> None:
     """
     http://www.w3.org/TR/sparql11-update/#clear
     """
-
     for g in _graphAll(ctx, u.graphiri):
         g.remove((None, None, None))
 
-def evalDrop(ctx, u):
+
+def evalDrop(ctx: QueryContext, u: CompValue) -> None:
     """
     http://www.w3.org/TR/sparql11-update/#drop
     """
     if ctx.dataset.store.graph_aware:
         for g in _graphAll(ctx, u.graphiri):
-            ctx.dataset.remove_graph(g)
+            ctx.dataset.store.remove_graph(g)
     else:
         evalClear(ctx, u)
 
 
-def evalInsertData(ctx, u):
+def evalInsertData(ctx: QueryContext, u: CompValue) -> None:
     """
     http://www.w3.org/TR/sparql11-update/#insertData
     """
     # add triples
     g = ctx.graph
     g += u.triples
-
     # add quads
     # u.quads is a dict of graphURI=>[triples]
     for g in u.quads:
+        # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Optional[Graph]"; expected "Union[IdentifiedNode, str, None]"
         cg = ctx.dataset.get_context(g)
         cg += u.quads[g]
 
 
-def evalDeleteData(ctx, u):
+def evalDeleteData(ctx: QueryContext, u: CompValue) -> None:
     """
     http://www.w3.org/TR/sparql11-update/#deleteData
     """
@@ -99,40 +111,41 @@ def evalDeleteData(ctx, u):
     # remove quads
     # u.quads is a dict of graphURI=>[triples]
     for g in u.quads:
+        # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Optional[Graph]"; expected "Union[IdentifiedNode, str, None]"
         cg = ctx.dataset.get_context(g)
         cg -= u.quads[g]
 
 
-def evalDeleteWhere(ctx, u):
+def evalDeleteWhere(ctx: QueryContext, u: CompValue) -> None:
     """
     http://www.w3.org/TR/sparql11-update/#deleteWhere
     """
 
-    res = evalBGP(ctx, u.triples)
+    res: Iterator[FrozenDict] = evalBGP(ctx, u.triples)
     for g in u.quads:
         cg = ctx.dataset.get_context(g)
         c = ctx.pushGraph(cg)
         res = _join(res, list(evalBGP(c, u.quads[g])))
 
-    for c in res:
+    # type error: Incompatible types in assignment (expression has type "FrozenBindings", variable has type "QueryContext")
+    for c in res:  # type: ignore[assignment]
         g = ctx.graph
-        g -= _fillTemplate(u.triples, c)
+        g -= _fillTemplate(u.triples, c)  # type: ignore[operator]
 
         for g in u.quads:
             cg = ctx.dataset.get_context(c.get(g))
             cg -= _fillTemplate(u.quads[g], c)
 
 
-def evalModify(ctx, u):
-
+def evalModify(ctx: QueryContext, u: CompValue) -> None:
     originalctx = ctx
 
     # Using replaces the dataset for evaluating the where-clause
+    dg: Graph | None
     if u.using:
         otherDefault = False
         for d in u.using:
             if d.default:
-
                 if not otherDefault:
                     # replace current default graph
                     dg = Graph()
@@ -167,24 +180,31 @@ def evalModify(ctx, u):
             g = ctx.dataset.get_context(u.withClause)
             ctx = ctx.pushGraph(g)
 
-    for c in res:
-        dg = ctx.graph
+    for c in list(res):
+        # TODO: Make this more intentional and without the weird type checking logic
+        #       once ConjunctiveGraph is removed and Dataset no longer inherits from
+        #       Graph.
+        dg = ctx.graph if type(ctx.graph) is Graph else ctx.dataset.default_context
         if u.delete:
-            dg -= _fillTemplate(u.delete.triples, c)
+            # type error: Unsupported left operand type for - ("None")
+            # type error: Unsupported operand types for - ("Graph" and "Generator[tuple[Identifier, Identifier, Identifier], None, None]")
+            dg -= _fillTemplate(u.delete.triples, c)  # type: ignore[operator]
 
-            for g, q in u.delete.quads.iteritems():
+            for g, q in u.delete.quads.items():
                 cg = ctx.dataset.get_context(c.get(g))
                 cg -= _fillTemplate(q, c)
 
         if u.insert:
-            dg += _fillTemplate(u.insert.triples, c)
+            # type error: Unsupported left operand type for + ("None")
+            # type error: Unsupported operand types for + ("Graph" and "Generator[tuple[Identifier, Identifier, Identifier], None, None]")
+            dg += _fillTemplate(u.insert.triples, c)  # type: ignore[operator]
 
-            for g, q in u.insert.quads.iteritems():
+            for g, q in u.insert.quads.items():
                 cg = ctx.dataset.get_context(c.get(g))
                 cg += _fillTemplate(q, c)
 
 
-def evalAdd(ctx, u):
+def evalAdd(ctx: QueryContext, u: CompValue) -> None:
     """
 
     add all triples from src to dst
@@ -196,13 +216,15 @@ def evalAdd(ctx, u):
     srcg = _graphOrDefault(ctx, src)
     dstg = _graphOrDefault(ctx, dst)
 
-    if srcg.identifier == dstg.identifier:
+    # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"
+    if srcg.identifier == dstg.identifier:  # type: ignore[union-attr]
         return
 
-    dstg += srcg
+    # type error: Unsupported left operand type for + ("None")
+    dstg += srcg  # type: ignore[operator]
 
 
-def evalMove(ctx, u):
+def evalMove(ctx: QueryContext, u: CompValue) -> None:
     """
 
     remove all triples from dst
@@ -217,20 +239,25 @@ def evalMove(ctx, u):
     srcg = _graphOrDefault(ctx, src)
     dstg = _graphOrDefault(ctx, dst)
 
-    if srcg.identifier == dstg.identifier:
+    # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"
+    if srcg.identifier == dstg.identifier:  # type: ignore[union-attr]
         return
 
-    dstg.remove((None, None, None))
+    # type error: Item "None" of "Optional[Graph]" has no attribute "remove"
+    dstg.remove((None, None, None))  # type: ignore[union-attr]
 
-    dstg += srcg
+    # type error: Unsupported left operand type for + ("None")
+    dstg += srcg  # type: ignore[operator]
 
     if ctx.dataset.store.graph_aware:
-        ctx.dataset.remove_graph(srcg)
+        # type error: Argument 1 to "remove_graph" of "Store" has incompatible type "Optional[Graph]"; expected "Graph"
+        ctx.dataset.store.remove_graph(srcg)  # type: ignore[arg-type]
     else:
-        srcg.remove((None, None, None))
+        # type error: Item "None" of "Optional[Graph]" has no attribute "remove"
+        srcg.remove((None, None, None))  # type: ignore[union-attr]
 
 
-def evalCopy(ctx, u):
+def evalCopy(ctx: QueryContext, u: CompValue) -> None:
     """
 
     remove all triples from dst
@@ -244,18 +271,23 @@ def evalCopy(ctx, u):
     srcg = _graphOrDefault(ctx, src)
     dstg = _graphOrDefault(ctx, dst)
 
-    if srcg.identifier == dstg.identifier:
+    # type error: Item "None" of "Optional[Graph]" has no attribute "remove"
+    if srcg.identifier == dstg.identifier:  # type: ignore[union-attr]
         return
 
-    dstg.remove((None, None, None))
+    # type error: Item "None" of "Optional[Graph]" has no attribute "remove"
+    dstg.remove((None, None, None))  # type: ignore[union-attr]
 
-    dstg += srcg
+    # type error: Unsupported left operand type for + ("None")
+    dstg += srcg  # type: ignore[operator]
 
 
-def evalUpdate(graph, update, initBindings={}):
-    """
-
-    http://www.w3.org/TR/sparql11-update/#updateLanguage
+def evalUpdate(
+    graph: Graph,
+    update: Update,
+    initBindings: Mapping[str, Identifier] | None = None,
+) -> None:
+    """http://www.w3.org/TR/sparql11-update/#updateLanguage
 
     'A request is a sequence of operations [...] Implementations MUST
     ensure that operations of a single request are executed in a
@@ -270,41 +302,52 @@ def evalUpdate(graph, update, initBindings={}):
 
     This will return None on success and raise Exceptions on error
 
+    !!! warning "Security Considerations"
+
+        This method can access indirectly requested network endpoints, for
+        example, query processing will attempt to access network endpoints
+        specified in `SERVICE` directives.
+
+        When processing untrusted or potentially malicious queries, measures
+        should be taken to restrict network and file access.
+
+        For information on available security measures, see the RDFLib
+        [Security Considerations](../security_considerations.md)
+        documentation.
+
     """
 
-    for u in update:
-
-        initBindings = dict( ( Variable(k),v ) for k,v in initBindings.iteritems() )
+    for u in update.algebra:
+        initBindings = dict((Variable(k), v) for k, v in (initBindings or {}).items())
 
         ctx = QueryContext(graph, initBindings=initBindings)
         ctx.prologue = u.prologue
 
-
         try:
-            if u.name == 'Load':
+            if u.name == "Load":
                 evalLoad(ctx, u)
-            elif u.name == 'Clear':
+            elif u.name == "Clear":
                 evalClear(ctx, u)
-            elif u.name == 'Drop':
+            elif u.name == "Drop":
                 evalDrop(ctx, u)
-            elif u.name == 'Create':
+            elif u.name == "Create":
                 evalCreate(ctx, u)
-            elif u.name == 'Add':
+            elif u.name == "Add":
                 evalAdd(ctx, u)
-            elif u.name == 'Move':
+            elif u.name == "Move":
                 evalMove(ctx, u)
-            elif u.name == 'Copy':
+            elif u.name == "Copy":
                 evalCopy(ctx, u)
-            elif u.name == 'InsertData':
+            elif u.name == "InsertData":
                 evalInsertData(ctx, u)
-            elif u.name == 'DeleteData':
+            elif u.name == "DeleteData":
                 evalDeleteData(ctx, u)
-            elif u.name == 'DeleteWhere':
+            elif u.name == "DeleteWhere":
                 evalDeleteWhere(ctx, u)
-            elif u.name == 'Modify':
+            elif u.name == "Modify":
                 evalModify(ctx, u)
             else:
-                raise Exception('Unknown update operation: %s' % (u,))
-        except:
+                raise Exception("Unknown update operation: %s" % (u,))
+        except:  # noqa: E722
             if not u.silent:
                 raise

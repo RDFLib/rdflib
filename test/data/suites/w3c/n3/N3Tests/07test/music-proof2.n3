@@ -1,0 +1,58 @@
+#Processed by EYE-Summer16.0908.1535 josd
+#eye --think http://eulersharp.sourceforge.net/2007/07test/music.n3 http://eulersharp.sourceforge.net/2007/07test/music-rule.n3 --query http://eulersharp.sourceforge.net/2007/07test/music-query2.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/test#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    :Room :hasMusic true.
+  }.
+
+<#lemma1> a r:Inference; 
+  r:gives {
+    :Room :hasMusic true.
+  }; 
+  r:evidence (
+    <#lemma2>
+  );
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference; 
+  r:gives {
+    :Room :hasMusic true.
+  }; 
+  r:evidence (
+    <#lemma4>
+    <#lemma5>
+  );
+  r:rule <#lemma6>.
+
+<#lemma3> a r:Extraction; 
+  r:gives {
+    {?x_0_1 :hasMusic true} => {?x_0_1 :hasMusic true}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/music-query2.n3>].
+
+<#lemma4> a r:Extraction; 
+  r:gives {
+    :Room :contains :Radio1.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/music.n3>].
+
+<#lemma5> a r:Extraction; 
+  r:gives {
+    :Radio1 :playing <http://eulersharp.sourceforge.net/2007/07test/rock.mp3>.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/music.n3>].
+
+<#lemma6> a r:Extraction; 
+  r:gives {
+    {?x_0_2 :contains ?x_1_2.
+      ?x_1_2 :playing ?x_2_2} => {?x_0_2 :hasMusic true}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/music-rule.n3>].
+
+#ENDS 1.077 [sec] IO=6/1 TC=3 TP=6 BC=0 BP=0 PM=0 CM=0 FM=0 AM=0
+

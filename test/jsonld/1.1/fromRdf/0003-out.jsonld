@@ -1,0 +1,19 @@
+[
+  {
+    "@id": "_:a",
+    "@type": ["http://example.com/SubType"]
+  },
+  {
+    "@id": "http://example.com/Subj1",
+    "@type": ["http://example.com/Type"],
+    "http://example.com/ref": [
+      {"@id": "_:a"},
+      {"@id": "http://example.com/Subj2"}
+    ]
+  },
+  {
+    "@id": "http://example.com/Subj2",
+    "@type": ["http://example.com/Type"],
+    "http://example.com/ref": [{"@id": "http://example.com/Subj1"}]
+  }
+]

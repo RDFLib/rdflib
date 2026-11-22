@@ -1,0 +1,22 @@
+# From swap/test/math/math_test.n3
+@prefix : <#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+
+# Using numbers:
+
+{ (3) math:sum ?x } => { ?x :valueOf "sum(3) = 3" } .
+{ (3 5) math:sum ?x } => { ?x :valueOf "3 + 5 = 8" } .
+{ (3 5 100) math:sum ?x } => { ?x :valueOf "3 + 5 + 100" } .
+{ (8 3) math:difference ?x} => { ?x :valueOf "8 - 3" } .
+# { (8) math:difference ?x } => { ?x :valueOf "8 - (error?)" } .
+{ (5 3 2) math:product ?x} => { ?x :valueOf "5 * 3 * 2" } .
+{ ?x is math:quotient of (7 2) } => { ?x :valueOf "7 / 2" } .
+{ ?x is math:remainder of (7 2) } => { ?x :valueOf "7 % 2" } .
+{ ?x math:negation 3 } => { ?x :valueOf "3 negated" } .
+{ -3 math:negation ?x } => { ?x :valueOf "what -3's the - of" } .
+{ ?x is math:exponentiation of (2 10) } => { ?x :valueOf "2^10" } .
+
+# A nested rule
+
+{ ?x is math:sum of (3 (8 3)!math:difference ) } 
+   => { ?x :valueOf "3 + (8 - 3)" } .

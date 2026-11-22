@@ -1,0 +1,7 @@
+<?xml version="1.1"?>
+
+<trix:TriX xmlns:trix="http://www.w3.org/2004/03/trix/trix-1/">
+  <trix:graph>
+    <trix:uri>http://example/test</trix:uri>
+  </trix:graph>
+</trix:TriX>

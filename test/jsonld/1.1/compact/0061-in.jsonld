@@ -1,0 +1,8 @@
+[
+  {
+    "http://example.com/vocab#foo": [
+       { "@id": "http://example.com/vocab#Bar" },
+       { "@id": "http://example.com/vocab#Baz" }
+    ]
+  }
+]

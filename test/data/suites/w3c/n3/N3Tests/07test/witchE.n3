@@ -1,0 +1,112 @@
+#Processed by EYE v18.0417.2132 josd
+#eye http://eulersharp.sourceforge.net/2007/07test/witch.n3 --query http://eulersharp.sourceforge.net/2007/07test/witch-goal.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/witch#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    :GIRL a :WITCH.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    :GIRL a :WITCH.
+  };
+  r:evidence (
+    <#lemma2>
+  );
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    :GIRL a :WITCH.
+  };
+  r:evidence (
+    <#lemma4>
+    <#lemma5>
+  );
+  r:rule <#lemma6>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    {:GIRL a :WITCH} => {:GIRL a :WITCH}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witch-goal.n3>].
+
+<#lemma4> a r:Inference;
+  r:gives {
+    :GIRL a :BURNS.
+  };
+  r:evidence (
+    <#lemma7>
+  );
+  r:rule <#lemma8>.
+
+<#lemma5> a r:Extraction;
+  r:gives {
+    :GIRL a :WOMAN.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witch.n3>].
+
+<#lemma6> a r:Extraction;
+  r:gives {
+    {?x_0_2 a :BURNS.
+     ?x_0_2 a :WOMAN} => {?x_0_2 a :WITCH}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witch.n3>].
+
+<#lemma7> a r:Inference;
+  r:gives {
+    :GIRL a :ISMADEOFWOOD.
+  };
+  r:evidence (
+    <#lemma9>
+  );
+  r:rule <#lemma10>.
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    {?x_0_3 a :ISMADEOFWOOD} => {?x_0_3 a :BURNS}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witch.n3>].
+
+<#lemma9> a r:Inference;
+  r:gives {
+    :GIRL a :FLOATS.
+  };
+  r:evidence (
+    <#lemma11>
+    <#lemma12>
+  );
+  r:rule <#lemma13>.
+
+<#lemma10> a r:Extraction;
+  r:gives {
+    {?x_0_4 a :FLOATS} => {?x_0_4 a :ISMADEOFWOOD}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witch.n3>].
+
+<#lemma11> a r:Extraction;
+  r:gives {
+    :DUCK a :FLOATS.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witch.n3>].
+
+<#lemma12> a r:Extraction;
+  r:gives {
+    :DUCK :SAMEWEIGHT :GIRL.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witch.n3>].
+
+<#lemma13> a r:Extraction;
+  r:gives {
+    {?x_0_5 a :FLOATS.
+     ?x_0_5 :SAMEWEIGHT ?x_1_5} => {?x_1_5 a :FLOATS}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/witch.n3>].
+
+#2018-04-18T08:28:58.726Z in=20 out=1 ent=7 step=25 brake=5 inf=25903 sec=0.025 inf/sec=1036120
+#ENDS
+

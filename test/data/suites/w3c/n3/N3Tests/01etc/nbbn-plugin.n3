@@ -1,0 +1,154 @@
+# EYE Components for NBBN -- Jos De Roo
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix bbn: <http://eulersharp.sourceforge.net/2006/02swap/nbbn-plugin#>.
+
+# unplug the Full Bayes Belief Network builtin
+true <= {
+    ("_P/2" e:biconditional) e:compoundTerm ?U.
+    ("abolish" ?U) e:derive true.
+}.
+
+# plugin the Naive Bayes Belief Network builtin
+{?L e:biconditional ?D} <= {
+    ?SCOPE e:call {
+        ?L e:firstRest ({?A e:boolean ?B} ?C).
+        ("if_then_else"
+            {("nb_getval" "bnet" "done") e:derive true}
+            true
+            {   () bbn:bnet true.
+                ("nb_setval" "bnet" "done") e:derive true.
+            }
+        ) e:derive true.
+        (?A) bbn:bvar true.
+        (?B) bbn:bval true.
+        ({?A e:boolean ?B} ?C ?D) bbn:nb true.
+    }
+}.
+
+{() bbn:bnet true} <= {
+    (";"
+        {   (";"
+                {   ?L1 e:firstRest (?I ?J).
+                    ?L1 e:conditional ?O.
+                    ?J e:sort ?K.
+                    ("findall"
+                        ?Y
+                        {   ?L2 e:firstRest (?I ?X).
+                            ?L2 e:conditional ?Y.
+                            ?X e:sort ?K.
+                        }
+                        ?L
+                    ) e:derive true.
+                    ?L math:sum ?S.
+                    ?L math:memberCount ?N.
+                    (?S ?N) math:quotient ?Z.
+                    ("call" {?L1 bbn:bcnd ?P}) e:derive false.
+                    ("assertz" {?L1 bbn:bcnd ?Z}) e:derive true.
+                    ?I bbn:inverse ?M.
+                    ?L3 e:firstRest (?M ?J).
+                    ("call" {?L3 bbn:bcnd ?Q}) e:derive false.
+                    (1 ?Z) math:difference ?E.
+                    ("assertz" {?L3 bbn:bcnd ?E}) e:derive true.
+                    ("fail") e:derive true.
+                }
+                {   ?L4 e:firstRest ({?I e:boolean ?R} ?J).
+                    ?L4 bbn:bcnd ?T.
+                    (";"
+                        {   
+                            ("call" {(?I) bbn:bvar true}) e:derive false.
+                            ("assertz" {(?I) bbn:bvar true}) e:derive true.
+                        }
+                        true
+                    ) e:derive true.
+                    {?K e:boolean ?U} list:in ?J.
+                    ("call" {(?K) bbn:bvar true}) e:derive false.
+                    ("assertz" {(?K) bbn:bvar true}) e:derive true.
+                    ("fail") e:derive true.
+                }
+            ) e:derive true.
+        }
+        true
+    ) e:derive true.
+}.
+
+{{?A e:boolean e:T} bbn:inverse {?A e:boolean e:F}} <= true.
+{{?A e:boolean e:F} bbn:inverse {?A e:boolean e:T}} <= true.
+
+(e:T) bbn:bval true.
+(e:F) bbn:bval true.
+
+{(?A ?B 1.0) bbn:nb true} <= {
+    ("memberchk" ?A ?B) e:derive true.
+    ("!") e:derive true.
+}.
+
+{({?A e:boolean e:T} ?B 0.0) bbn:nb true} <= {
+    ("memberchk" {?A e:boolean e:F} ?B) e:derive true.
+    ("!") e:derive true.
+}.
+
+{({?A e:boolean e:F} ?B ?C) bbn:nb true} <= {
+    ("if_then_else"
+        {   ("memberchk" {?A e:boolean e:T} ?B) e:derive true.
+            ?C log:equalTo 0.0.
+        }
+        true
+        {   ({?A e:boolean e:T} ?B ?D) bbn:nb true.
+            ("1-_D" ?D) e:calculate ?C.
+        }
+    ) e:derive true.
+}.
+
+{(?A ?B ?C) bbn:nb true} <= {
+    ?L e:firstRest (?A ?B).
+    ?L bbn:bcnd ?C.
+    ("!") e:derive true.
+}.
+
+{(?A ?B ?C) bbn:nb true} <= {
+    ("if_then_else"
+        {   (?A ?D) bbn:bcnd ?E.
+            (?D ?B ?F) bbn:nb true.
+            ?D bbn:inverse ?G.
+            (?A ?G) bbn:bcnd ?H.
+            ("_F*_E+(1-_F)*_H" ?F ?E ?H) e:calculate ?C.
+        }
+        true
+        {   (?A ?B ?I) bbn:nc true.
+            ?A bbn:inverse ?J.
+            (?J ?B ?K) bbn:nc true.
+            ("1/(1+2**(_K-_I))" ?K ?I) e:calculate ?C.
+        }
+    ) e:derive true.
+}.
+
+{(?A () 0.0) bbn:nc true} <= {
+    ("!") e:derive true.
+}.
+
+{(?A ?L ?D) bbn:nc true} <= {
+    ?L e:firstRest (?B ?C).
+    (";"
+        {   (";"
+                {(?B ?A) bbn:bcnd ?E}
+                {   ?B bbn:inverse ?F.
+                    (?F ?A) bbn:bcnd ?G.
+                    (1 ?G) math:difference ?E.
+                }
+            ) e:derive true.
+        }
+        {?E log:equalTo 1.0}
+    ) e:derive true.
+    ("!") e:derive true.
+    ("if_then_else"
+        {?E math:equalTo 0}
+        {("epsilon") e:calculate ?I}
+        {?I log:equalTo ?E}
+    ) e:derive true.
+    (?A ?C ?H) bbn:nc true.
+    ("log(_I)/log(2)+_H" ?I ?H) e:calculate ?D.
+}.

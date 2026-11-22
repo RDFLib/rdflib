@@ -1,0 +1,20 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:eghttp="http://example.com/"
+    xmlns:egurn="urn:example:"
+    xmlns:egschema="example:"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#" >
+  <rdf:Description rdf:about="example:object">
+    <eghttp:predicate>XSD string</eghttp:predicate>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/subject">
+    <eghttp:predicate xml:lang="jpx">日本語の表記体系</eghttp:predicate>
+  </rdf:Description>
+  <rdf:Description rdf:about="urn:example:subject">
+    <egschema:predicate rdf:resource="example:subject"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="example:subject">
+    <egschema:predicate rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12</egschema:predicate>
+    <egschema:predicate rdf:resource="example:object"/>
+  </rdf:Description>
+</rdf:RDF>

@@ -1,0 +1,8 @@
+{
+  "@context": {
+    "@vocab": "http://example.org/",
+    "property": "vocabRelativeProperty"
+  },
+  "property": "must expand to http://example.org/vocabRelativeProperty",
+  "http://example.org/property": "ok"
+}

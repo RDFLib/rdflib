@@ -1,0 +1,7 @@
+@prefix my: <http://josd.github.io/brain/ppt-bank/acct3#>.
+@prefix ck: <http://josd.github.io/brain/ppt-bank/checking#>.
+@prefix bk: <http://josd.github.io/brain/ppt-bank/banking#>.
+
+my:account a ck:Account;
+    bk:statements (<acct3start.n3>);
+    bk:transactions (<acct3check1.n3> <acct3check2.n3>).

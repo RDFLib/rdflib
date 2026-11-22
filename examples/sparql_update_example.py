@@ -1,26 +1,29 @@
-
+"""
+SPARQL Update statements can be applied with [`Graph.update`][rdflib.graph.Graph.update]
 """
 
-SPARQL Update statements can be applied with :meth:`rdflib.graph.Graph.update`
-
-"""
+from pathlib import Path
 
 import rdflib
 
-if __name__=='__main__':
+EXAMPLES_DIR = Path(__file__).parent
 
+
+if __name__ == "__main__":
     g = rdflib.Graph()
-    g.load("foaf.rdf")
+    g.parse(f"{EXAMPLES_DIR / 'foaf.n3'}", format="n3")
 
-    g.update('''
-    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-    PREFIX dbpedia: <http://dbpedia.org/resource/>
-    INSERT
-        { ?s a dbpedia:Human . }
-    WHERE
-        { ?s a foaf:Person . }
-    ''')
+    print(f"Initially there are {len(g)} triples in the graph")
 
-    for x in g.subjects(
-            rdflib.RDF.type, rdflib.URIRef('http://dbpedia.org/resource/Human')):
-        print x
+    g.update("""
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        PREFIX dbpedia: <http://dbpedia.org/resource/>
+        INSERT {
+            ?s a dbpedia:Human .
+        }
+        WHERE {
+            ?s a foaf:Person .
+        }
+        """)
+
+    print(f"After the UPDATE, there are {len(g)} triples in the graph")

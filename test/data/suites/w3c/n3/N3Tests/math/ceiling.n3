@@ -1,0 +1,11 @@
+@prefix : <#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+
+{ "0.5" math:ceiling 1 } => {:test1a a :SUCCESS}.
+{ 1 math:ceiling 1 } => {:test1b a :SUCCESS}.
+{ "-2.5" math:ceiling -2 } => {:test1c a :SUCCESS}.
+{ -0.8 math:ceiling 0 } => {:test1d a :SUCCESS}.
+
+{ -8.1 math:ceiling ?x } => {:test2a :is ?x}.
+
+{ (1) math:ceiling ?x } => {:test2a a :FAILURE}.

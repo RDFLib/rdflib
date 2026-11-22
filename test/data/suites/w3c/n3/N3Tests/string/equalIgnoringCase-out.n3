@@ -1,0 +1,8 @@
+@prefix : <equalIgnoringCase.n3#> .
+
+:test1     a :success .
+:test3     a :success .
+:test5a    a :success .
+:test5b    a :success .
+:test5c    a :success .
+:test5d    a :success .

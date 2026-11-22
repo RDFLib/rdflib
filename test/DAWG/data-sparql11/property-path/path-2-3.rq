@@ -1,5 +1,0 @@
-prefix : <http://example/> 
-
-select * where {
-    :a :p{3} ?z
-} 

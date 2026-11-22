@@ -1,0 +1,13 @@
+{
+  "@context": {
+    "name": "http://xmlns.com/foaf/0.1/name",
+    "homepage": { "@id": "http://xmlns.com/foaf/0.1/homepage", "@type": "@vocab" },
+    "link": { "@id": "http://example.com/link", "@type": "@id" },
+    "MarkusHomepage": "http://www.markus-lanthaler.com/",
+    "relative-iri": "http://example.com/error-if-this-is-used-for-link"
+  },
+  "@id": "http://me.markus-lanthaler.com/",
+  "name": "Markus Lanthaler",
+  "homepage": "MarkusHomepage",
+  "link": "relative-iri"
+}

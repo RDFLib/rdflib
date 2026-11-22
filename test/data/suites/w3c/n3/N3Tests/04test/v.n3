@@ -1,0 +1,5 @@
+# $Id: v.n3 390 2004-10-05 23:01:48Z josd $
+
+@prefix : <http://example.org/data#> .
+
+:a :b :c.

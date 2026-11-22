@@ -1,0 +1,403 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix dawgt: <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+@prefix :      <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#> .
+
+<> a mf:Manifest ;
+	rdfs:label "RDFLib Extra SPARQL tests" ;
+    mf:entries
+    (
+	:unicode
+	:nestedbnode
+    :whitespacedot
+    :minusfilter
+    :notexistsfilter
+
+    :bindscope
+    :bindscope2
+
+    :filtersubquery1
+    :filtersubquery2
+    :filtersubquery3
+    :filteroptional
+
+    :subquery1
+    :subquery2
+    :subquery3
+
+    :subqueryagg1
+    :subqueryagg2
+
+    :bnode-ppath-mix-a
+    :bnode-ppath-mix-b
+    :bnode-ppath-mix-c
+    :bnode-ppath-mix-d
+    :bnode-ppath-mix-e
+    :bnode-ppath-mix-f
+    :bnode-ppath-mix-g
+    :bnode-ppath-mix-h
+
+    :test-codepoint-escape-01
+    :test-codepoint-escape-02
+    :test-codepoint-escape-03
+    :test-codepoint-escape-04
+    :test-codepoint-escape-bad
+
+	) .
+
+
+:opt-subquery rdf:type mf:QueryEvaluationTest ;
+    mf:name "OPTIONAL SUB-QUERY";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/> ;
+    mf:action
+         [ qt:query <optsubq.rq> ;
+           qt:data   <optsubq.ttl> ] ;
+    mf:result  <optsubq.srx>
+    .
+
+:unicode rdf:type mf:QueryEvaluationTest ;
+    mf:name "Unicode in SPARQL queries";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <unicode.rq> ;
+           qt:data   <unicode.ttl> ] ;
+    mf:result  <unicode.srx>
+    .
+
+
+:nestedbnode rdf:type mf:QueryEvaluationTest ;
+    mf:name "Nestedbnode in SPARQL queries";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <nestedbnode.rq> ] ;
+    mf:result  <nestedbnode.srx>
+    .
+
+:whitespacedot rdf:type mf:PositiveSyntaxTest11 ;
+    mf:name "Dot without whitespace after triple-pattern";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action <whitespacedot.rq>
+    .
+
+
+
+:minusfilter rdf:type mf:QueryEvaluationTest ;
+    mf:name "Filter in MINUS";
+    rdfs:comment """' with MINUS, the FILTER inside the pattern does not have a value for ?n and it is always unbound:'
+From https://github.com/RDFLib/rdflib/issues/615, contributed by https://github.com/pfps""" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <minusfilter.rq> ;
+           qt:data <minusfilter.ttl> ] ;
+    mf:result  <minusfilter.srx>
+    .
+
+:notexistsfilter rdf:type mf:QueryEvaluationTest ;
+    mf:name "Filter in NOT EXISTS";
+    rdfs:comment """'the FILTER inside the NOT EXISTS has access to the value of ?n for the solution being considered.'
+From https://github.com/RDFLib/rdflib/issues/615, contributed by https://github.com/pfps""" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <notexistsfilter.rq> ;
+           qt:data <minusfilter.ttl> ] ;
+    mf:result  <notexistsfilter.srx>
+    .
+
+
+:bindscope rdf:type mf:QueryEvaluationTest ;
+    mf:name "Scope of bind in groups";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/580, contributed by https://github.com/pchampin
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bindscope.rq> ;
+           qt:data <bindscope.ttl> ] ;
+    mf:result  <bindscope.srx>
+    .
+
+
+:bindscope2 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Scope of bind in groups2";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/580, contributed by https://github.com/pchampin
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bindscope2.rq> ;
+           qt:data <bindscope.ttl> ] ;
+    mf:result  <bindscope2.tsv>
+    .
+
+:filtersubquery1 rdf:type mf:QueryEvaluationTest ;
+    mf:name "filters in subqueries 1";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/619, contributed by https://github.com/pfps
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <filtersubquery1.rq> ] ;
+    mf:result  <filtersubquery.tsv>
+    .
+
+
+:filtersubquery2 rdf:type mf:QueryEvaluationTest ;
+    mf:name "filters in subqueries 2 - filter in first subquery";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/619, contributed by https://github.com/pfps
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <filtersubquery2.rq> ] ;
+    mf:result  <filtersubquery.tsv>
+    .
+
+
+:filtersubquery3 rdf:type mf:QueryEvaluationTest ;
+    mf:name "filters in subqueries 2 - filter in second subquery";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/619, contributed by https://github.com/pfps
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <filtersubquery3.rq> ] ;
+    mf:result  <filtersubquery.tsv>
+    .
+
+
+:filteroptional rdf:type mf:QueryEvaluationTest ;
+    mf:name "filters in optional";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/619, contributed by https://github.com/pfps
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <filteroptional.rq> ] ;
+    mf:result  <filtersubquery.tsv>
+    .
+
+
+:subquery1 rdf:type mf:QueryEvaluationTest ;
+    mf:name "subquery1";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/607, contributed by https://github.com/pfps
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <subquery1.rq> ;
+           qt:data <subquery.ttl> ] ;
+    mf:result  <subquery.tsv>
+    .
+
+
+:subquery2 rdf:type mf:QueryEvaluationTest ;
+    mf:name "subquery2";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/607, contributed by https://github.com/pfps
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <subquery2.rq> ;
+           qt:data <subquery.ttl> ] ;
+    mf:result  <subquery.tsv>
+    .
+
+
+:subquery3 rdf:type mf:QueryEvaluationTest ;
+    mf:name "subquery3";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/607, contributed by https://github.com/pfps
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <subquery3.rq> ;
+           qt:data <subquery.ttl> ] ;
+    mf:result  <subquery.tsv>
+    .
+
+
+:subqueryagg1 rdf:type mf:QueryEvaluationTest ;
+    mf:name "plain query aggregation function";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/628, contributed by https://github.com/wrobell
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <subqueryagg1.rq> ;
+           qt:data <subqueryagg.ttl> ] ;
+    mf:result  <subqueryagg.tsv>
+    .
+
+
+:subqueryagg2 rdf:type mf:QueryEvaluationTest ;
+    mf:name "subquery aggregation function";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/628, contributed by https://github.com/wrobell
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <subqueryagg.rq> ;
+           qt:data <subqueryagg.ttl> ] ;
+    mf:result  <subqueryagg.tsv>
+    .
+
+:bnode-ppath-mix-a rdf:type mf:QueryEvaluationTest ;
+    mf:name "bnode-ppath-mix-a";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/714, contributed by https://github.com/tiko-tiko
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bnode-ppath-mix-a.rq> ;
+           qt:data <bnode-ppath-mix.ttl> ] ;
+    mf:result  <bnode-ppath-mix.srx>
+    .
+
+:bnode-ppath-mix-b rdf:type mf:QueryEvaluationTest ;
+    mf:name "bnode-ppath-mix-b";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/714, contributed by https://github.com/tiko-tiko
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bnode-ppath-mix-b.rq> ;
+           qt:data <bnode-ppath-mix.ttl> ] ;
+    mf:result  <bnode-ppath-mix.srx>
+    .
+
+:bnode-ppath-mix-c rdf:type mf:QueryEvaluationTest ;
+    mf:name "bnode-ppath-mix-c";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/714, contributed by https://github.com/tiko-tiko
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bnode-ppath-mix-c.rq> ;
+           qt:data <bnode-ppath-mix.ttl> ] ;
+    mf:result  <bnode-ppath-mix.srx>
+    .
+
+
+:bnode-ppath-mix-d rdf:type mf:QueryEvaluationTest ;
+    mf:name "bnode-ppath-mix-d";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/714, contributed by https://github.com/tiko-tiko
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bnode-ppath-mix-d.rq> ;
+           qt:data <bnode-ppath-mix.ttl> ] ;
+    mf:result  <bnode-ppath-mix.srx>
+    .
+
+
+
+:bnode-ppath-mix-e rdf:type mf:QueryEvaluationTest ;
+    mf:name "bnode-ppath-mix-e";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/714, contributed by https://github.com/tiko-tiko
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bnode-ppath-mix-e.rq> ;
+           qt:data <bnode-ppath-mix.ttl> ] ;
+    mf:result  <bnode-ppath-mix.srx>
+    .
+
+
+:bnode-ppath-mix-f rdf:type mf:QueryEvaluationTest ;
+    mf:name "bnode-ppath-mix-f";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/714, contributed by https://github.com/tiko-tiko
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bnode-ppath-mix-f.rq> ;
+           qt:data <bnode-ppath-mix.ttl> ] ;
+    mf:result  <bnode-ppath-mix.srx>
+    .
+
+:bnode-ppath-mix-g rdf:type mf:QueryEvaluationTest ;
+    mf:name "bnode-ppath-mix-g";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/714, contributed by https://github.com/tiko-tiko
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bnode-ppath-mix-g.rq> ;
+           qt:data <bnode-ppath-mix.ttl> ] ;
+    mf:result  <bnode-ppath-mix.srx>
+    .
+
+:bnode-ppath-mix-h rdf:type mf:QueryEvaluationTest ;
+    mf:name "bnode-ppath-mix-h";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/714, contributed by https://github.com/tiko-tiko
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bnode-ppath-mix-h.rq> ;
+           qt:data <bnode-ppath-mix.ttl> ] ;
+    mf:result  <bnode-ppath-mix.srx>
+    .
+
+:test-codepoint-escape-01 rdf:type   mf:PositiveSyntaxTest11 ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "\\U unicode codepoint escaping in literal" ;
+    rdfs:comment """From https://github.com/RDFLib/rdflib/issues/1884, contributed by https://github.com/gjhiggins""" ;
+    mf:action  <syn-codepoint-escape-01.rq> ;.
+
+:test-codepoint-escape-02 rdf:type   mf:PositiveSyntaxTest11 ;
+    dawgt:approval dawgt:Proposed ;
+    rdfs:comment """From https://github.com/RDFLib/rdflib/issues/1884, contributed by https://github.com/gjhiggins""" ;
+    mf:name    "\\u unicode codepoint escaping in literal" ;
+    mf:action  <syn-codepoint-escape-02.rq> ;.
+
+:test-codepoint-escape-03 rdf:type   mf:PositiveSyntaxTest11 ;
+    dawgt:approval dawgt:Proposed ;
+    rdfs:comment """From https://github.com/RDFLib/rdflib/issues/1884, contributed by https://github.com/gjhiggins""" ;
+    mf:name    "\\u and \\U unicode codepoint escaping in literal" ;
+    mf:action  <syn-codepoint-escape-03.rq> ;.
+
+:test-codepoint-escape-04 rdf:type   mf:PositiveSyntaxTest11 ;
+    dawgt:approval dawgt:Proposed ;
+    rdfs:comment """From https://github.com/RDFLib/rdflib/issues/1884, contributed by https://github.com/gjhiggins""" ;
+    mf:name    "\\U and \\U unicode codepoints escaping in literal" ;
+    mf:action  <syn-codepoint-escape-04.rq> ;.
+
+:test-codepoint-escape-bad rdf:type   mf:NegativeSyntaxTest11 ;
+    dawgt:approval dawgt:Proposed ;
+    rdfs:comment """From https://github.com/RDFLib/rdflib/issues/1884, contributed by https://github.com/gjhiggins""" ;
+    mf:name    "Invalid multi-pass codepoint escaping (\\u then \\U)" ;
+    mf:description "Unescaping one escape sequence must not produce content that is used in another escape sequence" ;
+    mf:action  <syn-codepoint-escape-bad.rq> ;.
+

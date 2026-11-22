@@ -1,0 +1,28 @@
+# ------------------------------
+# graph generation -- Jos De Roo
+# ------------------------------
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://josd.github.io/brain#>.
+
+{(?F ?N ?M) :graphgen true} <=
+{   ("open" ?F "write" ?FD) e:derive true.
+    ("tell" ?FD) e:derive true.
+    ("format" "@prefix : <http://josd.github.io/brain#>.~n~n" ()) e:derive true.
+    ("between" 1 ?N ?I) e:derive true.
+    (?M) e:random ?S1.
+    (?M) e:random ?S2.
+    (?M) e:random ?S3.
+    ("format" "(:i~d :i~d :i~d) :p :o.~n" (?S1 ?S2 ?S3)) e:derive true.
+    ("fail") e:derive true.
+}.
+{(?F ?N ?M) :graphgen true} <=
+{   ("told") e:derive true.
+}.
+
+true <=
+{   ("graph-10.n3" 10 100) :graphgen true.
+    ("graph-100.n3" 100 1000) :graphgen true.
+    ("graph-1000.n3" 1000 10000) :graphgen true.
+    ("graph-10000.n3" 10000 100000) :graphgen true.
+}.

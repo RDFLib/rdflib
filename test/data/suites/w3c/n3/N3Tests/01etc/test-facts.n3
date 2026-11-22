@@ -1,0 +1,8 @@
+### Facts
+
+@prefix : <http://eulersharp.sourceforge.net/2009/12dtb/test#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+:TestVariable rdf:type :A1.
+:TestVariable rdf:type :N1.
+

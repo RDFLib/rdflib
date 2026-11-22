@@ -1,0 +1,9 @@
+[
+  {
+    "http://example.org/foo": [
+      {
+        "@value": "bar"
+      }
+    ]
+  }
+]

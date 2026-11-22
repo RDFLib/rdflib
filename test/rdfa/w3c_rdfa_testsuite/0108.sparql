@@ -1,3 +1,0 @@
-ASK WHERE {
- <http://example.org/node> <http://example.org/property> "ελληνικό\nάσπρο   διάστημα\n"@el .
- }

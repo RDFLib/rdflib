@@ -1,0 +1,1039 @@
+#Processed by Id: euler.yap 4653 2011-10-30 11:01:47Z josd
+#eye --nope --no-span http://eulersharp.sourceforge.net/2010/05smml/FACTSneighbourtriangles.n3 http://eulersharp.sourceforge.net/2010/05smml/FACTSfacedetection.n3 http://eulersharp.sourceforge.net/2010/05smml/FACTSobjectdetection.n3 http://eulersharp.sourceforge.net/2010/05smml/RULESlinkfacestoobjects.n3 --pass
+
+@prefix : <http://smartlab.elis.ugent.be/aimontologies/geometry/instancesSTLBox#>.
+@prefix stl: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix ns1: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/ifctox3d#>.
+@prefix x3d: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologyx3d20091015#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix list: <http://www.co-ode.org/ontologies/lists/2008/09/11/list.owl#>.
+@prefix inst: <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix matrix: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/matrix#>.
+@prefix we: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/wingededge#>.
+@prefix var: <http://localhost/var#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+<http://smartlab.elis.ugent.be/aimontologies/geometry/instancesSTLBox> a owl:Ontology.
+<http://smartlab.elis.ugent.be/aimontologies/geometry/instancesSTLBox> owl:imports <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101>.
+:Solid1 a stl:StlSolid.
+:Triangle1 a stl:StlTriangle.
+:Triangle1 stl:normal ("-0.0"^^xsd:double "-1.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle1 stl:vertex1 ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle1 stl:vertex2 ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle1 stl:vertex3 ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle2 a stl:StlTriangle.
+:Triangle2 stl:normal ("-0.0"^^xsd:double "-1.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle2 stl:vertex1 ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle2 stl:vertex2 ("30.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle2 stl:vertex3 ("30.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle3 a stl:StlTriangle.
+:Triangle3 stl:normal ("0.0"^^xsd:double "-1.0"^^xsd:double "-0.0"^^xsd:double).
+:Triangle3 stl:vertex1 ("30.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle3 stl:vertex2 ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle3 stl:vertex3 ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle4 a stl:StlTriangle.
+:Triangle4 stl:normal ("0.0"^^xsd:double "-1.0"^^xsd:double "-0.0"^^xsd:double).
+:Triangle4 stl:vertex1 ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle4 stl:vertex2 ("0.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle4 stl:vertex3 ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle5 a stl:StlTriangle.
+:Triangle5 stl:normal ("1.0"^^xsd:double "-0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle5 stl:vertex1 ("30.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle5 stl:vertex2 ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle5 stl:vertex3 ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle6 a stl:StlTriangle.
+:Triangle6 stl:normal ("1.0"^^xsd:double "-0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle6 stl:vertex1 ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle6 stl:vertex2 ("30.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle6 stl:vertex3 ("30.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle7 a stl:StlTriangle.
+:Triangle7 stl:normal ("1.0"^^xsd:double "0.0"^^xsd:double "-0.0"^^xsd:double).
+:Triangle7 stl:vertex1 ("30.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle7 stl:vertex2 ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle7 stl:vertex3 ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle8 a stl:StlTriangle.
+:Triangle8 stl:normal ("1.0"^^xsd:double "0.0"^^xsd:double "-0.0"^^xsd:double).
+:Triangle8 stl:vertex1 ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle8 stl:vertex2 ("30.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle8 stl:vertex3 ("30.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle9 a stl:StlTriangle.
+:Triangle9 stl:normal ("-0.0"^^xsd:double "1.0"^^xsd:double "-0.0"^^xsd:double).
+:Triangle9 stl:vertex1 ("30.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle9 stl:vertex2 ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle9 stl:vertex3 ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle10 a stl:StlTriangle.
+:Triangle10 stl:normal ("-0.0"^^xsd:double "1.0"^^xsd:double "-0.0"^^xsd:double).
+:Triangle10 stl:vertex1 ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle10 stl:vertex2 ("0.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle10 stl:vertex3 ("0.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle11 a stl:StlTriangle.
+:Triangle11 stl:normal ("0.0"^^xsd:double "1.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle11 stl:vertex1 ("0.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle11 stl:vertex2 ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle11 stl:vertex3 ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle12 a stl:StlTriangle.
+:Triangle12 stl:normal ("0.0"^^xsd:double "1.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle12 stl:vertex1 ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle12 stl:vertex2 ("30.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle12 stl:vertex3 ("30.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle13 a stl:StlTriangle.
+:Triangle13 stl:normal ("-1.0"^^xsd:double "-0.0"^^xsd:double "-0.0"^^xsd:double).
+:Triangle13 stl:vertex1 ("0.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle13 stl:vertex2 ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle13 stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle14 a stl:StlTriangle.
+:Triangle14 stl:normal ("-1.0"^^xsd:double "-0.0"^^xsd:double "-0.0"^^xsd:double).
+:Triangle14 stl:vertex1 ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle14 stl:vertex2 ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle14 stl:vertex3 ("0.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle15 a stl:StlTriangle.
+:Triangle15 stl:normal ("-1.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle15 stl:vertex1 ("0.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle15 stl:vertex2 ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle15 stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle16 a stl:StlTriangle.
+:Triangle16 stl:normal ("-1.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle16 stl:vertex1 ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle16 stl:vertex2 ("0.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle16 stl:vertex3 ("0.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle17 a stl:StlTriangle.
+:Triangle17 stl:normal ("0.0"^^xsd:double "0.0"^^xsd:double "-1.0"^^xsd:double).
+:Triangle17 stl:vertex1 ("30.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle17 stl:vertex2 ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle17 stl:vertex3 ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle18 a stl:StlTriangle.
+:Triangle18 stl:normal ("0.0"^^xsd:double "0.0"^^xsd:double "-1.0"^^xsd:double).
+:Triangle18 stl:vertex1 ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle18 stl:vertex2 ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle18 stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle19 a stl:StlTriangle.
+:Triangle19 stl:normal ("0.0"^^xsd:double "-0.0"^^xsd:double "-1.0"^^xsd:double).
+:Triangle19 stl:vertex1 ("30.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle19 stl:vertex2 ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle19 stl:vertex3 ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle20 a stl:StlTriangle.
+:Triangle20 stl:normal ("-0.0"^^xsd:double "0.0"^^xsd:double "-1.0"^^xsd:double).
+:Triangle20 stl:vertex1 ("0.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle20 stl:vertex2 ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle20 stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle21 a stl:StlTriangle.
+:Triangle21 stl:normal ("0.0"^^xsd:double "-0.0"^^xsd:double "-1.0"^^xsd:double).
+:Triangle21 stl:vertex1 ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle21 stl:vertex2 ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle21 stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle22 a stl:StlTriangle.
+:Triangle22 stl:normal ("-0.0"^^xsd:double "0.0"^^xsd:double "-1.0"^^xsd:double).
+:Triangle22 stl:vertex1 ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle22 stl:vertex2 ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle22 stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle23 a stl:StlTriangle.
+:Triangle23 stl:normal ("0.0"^^xsd:double "0.0"^^xsd:double "1.0"^^xsd:double).
+:Triangle23 stl:vertex1 ("0.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle23 stl:vertex2 ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle23 stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle24 a stl:StlTriangle.
+:Triangle24 stl:normal ("0.0"^^xsd:double "-0.0"^^xsd:double "1.0"^^xsd:double).
+:Triangle24 stl:vertex1 ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle24 stl:vertex2 ("30.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle24 stl:vertex3 ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle25 a stl:StlTriangle.
+:Triangle25 stl:normal ("-0.0"^^xsd:double "-0.0"^^xsd:double "1.0"^^xsd:double).
+:Triangle25 stl:vertex1 ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle25 stl:vertex2 ("30.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle25 stl:vertex3 ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle26 a stl:StlTriangle.
+:Triangle26 stl:normal ("-0.0"^^xsd:double "0.0"^^xsd:double "1.0"^^xsd:double).
+:Triangle26 stl:vertex1 ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle26 stl:vertex2 ("0.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle26 stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle27 a stl:StlTriangle.
+:Triangle27 stl:normal ("0.0"^^xsd:double "0.0"^^xsd:double "1.0"^^xsd:double).
+:Triangle27 stl:vertex1 ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle27 stl:vertex2 ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle27 stl:vertex3 ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle28 a stl:StlTriangle.
+:Triangle28 stl:normal ("-0.0"^^xsd:double "-0.0"^^xsd:double "1.0"^^xsd:double).
+:Triangle28 stl:vertex1 ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle28 stl:vertex2 ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle28 stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle1 stl:vertex ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle1 stl:vertex ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle1 stl:vertex ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle2 stl:vertex ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle2 stl:vertex ("30.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle2 stl:vertex ("30.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle3 stl:vertex ("30.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle3 stl:vertex ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle3 stl:vertex ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle4 stl:vertex ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle4 stl:vertex ("0.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle4 stl:vertex ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle5 stl:vertex ("30.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle5 stl:vertex ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle5 stl:vertex ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle6 stl:vertex ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle6 stl:vertex ("30.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle6 stl:vertex ("30.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle7 stl:vertex ("30.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle7 stl:vertex ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle7 stl:vertex ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle8 stl:vertex ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle8 stl:vertex ("30.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle8 stl:vertex ("30.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle9 stl:vertex ("30.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle9 stl:vertex ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle9 stl:vertex ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle10 stl:vertex ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle10 stl:vertex ("0.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle10 stl:vertex ("0.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle11 stl:vertex ("0.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle11 stl:vertex ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle11 stl:vertex ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle12 stl:vertex ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle12 stl:vertex ("30.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle12 stl:vertex ("30.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle13 stl:vertex ("0.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle13 stl:vertex ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle13 stl:vertex ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle14 stl:vertex ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle14 stl:vertex ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle14 stl:vertex ("0.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle15 stl:vertex ("0.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle15 stl:vertex ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle15 stl:vertex ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle16 stl:vertex ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle16 stl:vertex ("0.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle16 stl:vertex ("0.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle17 stl:vertex ("30.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle17 stl:vertex ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle17 stl:vertex ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle18 stl:vertex ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle18 stl:vertex ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle18 stl:vertex ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle19 stl:vertex ("30.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle19 stl:vertex ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle19 stl:vertex ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle20 stl:vertex ("0.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle20 stl:vertex ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle20 stl:vertex ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle21 stl:vertex ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle21 stl:vertex ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle21 stl:vertex ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle22 stl:vertex ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle22 stl:vertex ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle22 stl:vertex ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double).
+:Triangle23 stl:vertex ("0.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle23 stl:vertex ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle23 stl:vertex ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle24 stl:vertex ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle24 stl:vertex ("30.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle24 stl:vertex ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle25 stl:vertex ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle25 stl:vertex ("30.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle25 stl:vertex ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle26 stl:vertex ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle26 stl:vertex ("0.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle26 stl:vertex ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle27 stl:vertex ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle27 stl:vertex ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle27 stl:vertex ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle28 stl:vertex ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle28 stl:vertex ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle28 stl:vertex ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double).
+:Triangle1 we:sharedvertex :Triangle2.
+:Triangle1 we:sharedvertex :Triangle3.
+:Triangle1 we:sharedvertex :Triangle4.
+:Triangle1 we:sharedvertex :Triangle14.
+:Triangle1 we:sharedvertex :Triangle17.
+:Triangle1 we:sharedvertex :Triangle18.
+:Triangle1 we:sharedvertex :Triangle21.
+:Triangle1 we:sharedvertex :Triangle23.
+:Triangle1 we:sharedvertex :Triangle24.
+:Triangle1 we:sharedvertex :Triangle27.
+:Triangle2 we:sharedvertex :Triangle1.
+:Triangle2 we:sharedvertex :Triangle3.
+:Triangle2 we:sharedvertex :Triangle5.
+:Triangle2 we:sharedvertex :Triangle8.
+:Triangle2 we:sharedvertex :Triangle17.
+:Triangle2 we:sharedvertex :Triangle18.
+:Triangle2 we:sharedvertex :Triangle21.
+:Triangle2 we:sharedvertex :Triangle24.
+:Triangle3 we:sharedvertex :Triangle1.
+:Triangle3 we:sharedvertex :Triangle2.
+:Triangle3 we:sharedvertex :Triangle4.
+:Triangle3 we:sharedvertex :Triangle8.
+:Triangle3 we:sharedvertex :Triangle17.
+:Triangle3 we:sharedvertex :Triangle18.
+:Triangle3 we:sharedvertex :Triangle21.
+:Triangle3 we:sharedvertex :Triangle23.
+:Triangle3 we:sharedvertex :Triangle24.
+:Triangle3 we:sharedvertex :Triangle27.
+:Triangle4 we:sharedvertex :Triangle1.
+:Triangle4 we:sharedvertex :Triangle3.
+:Triangle4 we:sharedvertex :Triangle14.
+:Triangle4 we:sharedvertex :Triangle15.
+:Triangle4 we:sharedvertex :Triangle18.
+:Triangle4 we:sharedvertex :Triangle23.
+:Triangle4 we:sharedvertex :Triangle24.
+:Triangle4 we:sharedvertex :Triangle27.
+:Triangle5 we:sharedvertex :Triangle2.
+:Triangle5 we:sharedvertex :Triangle6.
+:Triangle5 we:sharedvertex :Triangle7.
+:Triangle5 we:sharedvertex :Triangle8.
+:Triangle5 we:sharedvertex :Triangle17.
+:Triangle5 we:sharedvertex :Triangle19.
+:Triangle5 we:sharedvertex :Triangle21.
+:Triangle5 we:sharedvertex :Triangle22.
+:Triangle5 we:sharedvertex :Triangle24.
+:Triangle5 we:sharedvertex :Triangle25.
+:Triangle5 we:sharedvertex :Triangle27.
+:Triangle5 we:sharedvertex :Triangle28.
+:Triangle6 we:sharedvertex :Triangle5.
+:Triangle6 we:sharedvertex :Triangle7.
+:Triangle6 we:sharedvertex :Triangle9.
+:Triangle6 we:sharedvertex :Triangle12.
+:Triangle6 we:sharedvertex :Triangle17.
+:Triangle6 we:sharedvertex :Triangle19.
+:Triangle6 we:sharedvertex :Triangle21.
+:Triangle6 we:sharedvertex :Triangle22.
+:Triangle6 we:sharedvertex :Triangle25.
+:Triangle7 we:sharedvertex :Triangle5.
+:Triangle7 we:sharedvertex :Triangle6.
+:Triangle7 we:sharedvertex :Triangle8.
+:Triangle7 we:sharedvertex :Triangle12.
+:Triangle7 we:sharedvertex :Triangle17.
+:Triangle7 we:sharedvertex :Triangle19.
+:Triangle7 we:sharedvertex :Triangle21.
+:Triangle7 we:sharedvertex :Triangle22.
+:Triangle7 we:sharedvertex :Triangle24.
+:Triangle7 we:sharedvertex :Triangle25.
+:Triangle7 we:sharedvertex :Triangle27.
+:Triangle7 we:sharedvertex :Triangle28.
+:Triangle8 we:sharedvertex :Triangle2.
+:Triangle8 we:sharedvertex :Triangle3.
+:Triangle8 we:sharedvertex :Triangle5.
+:Triangle8 we:sharedvertex :Triangle7.
+:Triangle8 we:sharedvertex :Triangle17.
+:Triangle8 we:sharedvertex :Triangle24.
+:Triangle8 we:sharedvertex :Triangle25.
+:Triangle8 we:sharedvertex :Triangle27.
+:Triangle8 we:sharedvertex :Triangle28.
+:Triangle9 we:sharedvertex :Triangle6.
+:Triangle9 we:sharedvertex :Triangle10.
+:Triangle9 we:sharedvertex :Triangle11.
+:Triangle9 we:sharedvertex :Triangle12.
+:Triangle9 we:sharedvertex :Triangle19.
+:Triangle9 we:sharedvertex :Triangle20.
+:Triangle9 we:sharedvertex :Triangle22.
+:Triangle9 we:sharedvertex :Triangle25.
+:Triangle9 we:sharedvertex :Triangle26.
+:Triangle9 we:sharedvertex :Triangle28.
+:Triangle10 we:sharedvertex :Triangle9.
+:Triangle10 we:sharedvertex :Triangle11.
+:Triangle10 we:sharedvertex :Triangle13.
+:Triangle10 we:sharedvertex :Triangle16.
+:Triangle10 we:sharedvertex :Triangle19.
+:Triangle10 we:sharedvertex :Triangle20.
+:Triangle10 we:sharedvertex :Triangle22.
+:Triangle10 we:sharedvertex :Triangle26.
+:Triangle11 we:sharedvertex :Triangle9.
+:Triangle11 we:sharedvertex :Triangle10.
+:Triangle11 we:sharedvertex :Triangle12.
+:Triangle11 we:sharedvertex :Triangle16.
+:Triangle11 we:sharedvertex :Triangle19.
+:Triangle11 we:sharedvertex :Triangle20.
+:Triangle11 we:sharedvertex :Triangle22.
+:Triangle11 we:sharedvertex :Triangle25.
+:Triangle11 we:sharedvertex :Triangle26.
+:Triangle11 we:sharedvertex :Triangle28.
+:Triangle12 we:sharedvertex :Triangle6.
+:Triangle12 we:sharedvertex :Triangle7.
+:Triangle12 we:sharedvertex :Triangle9.
+:Triangle12 we:sharedvertex :Triangle11.
+:Triangle12 we:sharedvertex :Triangle19.
+:Triangle12 we:sharedvertex :Triangle25.
+:Triangle12 we:sharedvertex :Triangle26.
+:Triangle12 we:sharedvertex :Triangle28.
+:Triangle13 we:sharedvertex :Triangle10.
+:Triangle13 we:sharedvertex :Triangle14.
+:Triangle13 we:sharedvertex :Triangle15.
+:Triangle13 we:sharedvertex :Triangle16.
+:Triangle13 we:sharedvertex :Triangle18.
+:Triangle13 we:sharedvertex :Triangle20.
+:Triangle13 we:sharedvertex :Triangle21.
+:Triangle13 we:sharedvertex :Triangle22.
+:Triangle13 we:sharedvertex :Triangle23.
+:Triangle13 we:sharedvertex :Triangle26.
+:Triangle13 we:sharedvertex :Triangle27.
+:Triangle13 we:sharedvertex :Triangle28.
+:Triangle14 we:sharedvertex :Triangle1.
+:Triangle14 we:sharedvertex :Triangle4.
+:Triangle14 we:sharedvertex :Triangle13.
+:Triangle14 we:sharedvertex :Triangle15.
+:Triangle14 we:sharedvertex :Triangle18.
+:Triangle14 we:sharedvertex :Triangle20.
+:Triangle14 we:sharedvertex :Triangle21.
+:Triangle14 we:sharedvertex :Triangle22.
+:Triangle14 we:sharedvertex :Triangle23.
+:Triangle15 we:sharedvertex :Triangle4.
+:Triangle15 we:sharedvertex :Triangle13.
+:Triangle15 we:sharedvertex :Triangle14.
+:Triangle15 we:sharedvertex :Triangle16.
+:Triangle15 we:sharedvertex :Triangle18.
+:Triangle15 we:sharedvertex :Triangle20.
+:Triangle15 we:sharedvertex :Triangle21.
+:Triangle15 we:sharedvertex :Triangle22.
+:Triangle15 we:sharedvertex :Triangle23.
+:Triangle15 we:sharedvertex :Triangle26.
+:Triangle15 we:sharedvertex :Triangle27.
+:Triangle15 we:sharedvertex :Triangle28.
+:Triangle16 we:sharedvertex :Triangle10.
+:Triangle16 we:sharedvertex :Triangle11.
+:Triangle16 we:sharedvertex :Triangle13.
+:Triangle16 we:sharedvertex :Triangle15.
+:Triangle16 we:sharedvertex :Triangle20.
+:Triangle16 we:sharedvertex :Triangle23.
+:Triangle16 we:sharedvertex :Triangle26.
+:Triangle16 we:sharedvertex :Triangle27.
+:Triangle16 we:sharedvertex :Triangle28.
+:Triangle17 we:sharedvertex :Triangle1.
+:Triangle17 we:sharedvertex :Triangle2.
+:Triangle17 we:sharedvertex :Triangle3.
+:Triangle17 we:sharedvertex :Triangle5.
+:Triangle17 we:sharedvertex :Triangle6.
+:Triangle17 we:sharedvertex :Triangle7.
+:Triangle17 we:sharedvertex :Triangle8.
+:Triangle17 we:sharedvertex :Triangle18.
+:Triangle17 we:sharedvertex :Triangle19.
+:Triangle17 we:sharedvertex :Triangle21.
+:Triangle17 we:sharedvertex :Triangle22.
+:Triangle18 we:sharedvertex :Triangle1.
+:Triangle18 we:sharedvertex :Triangle2.
+:Triangle18 we:sharedvertex :Triangle3.
+:Triangle18 we:sharedvertex :Triangle4.
+:Triangle18 we:sharedvertex :Triangle13.
+:Triangle18 we:sharedvertex :Triangle14.
+:Triangle18 we:sharedvertex :Triangle15.
+:Triangle18 we:sharedvertex :Triangle17.
+:Triangle18 we:sharedvertex :Triangle20.
+:Triangle18 we:sharedvertex :Triangle21.
+:Triangle18 we:sharedvertex :Triangle22.
+:Triangle19 we:sharedvertex :Triangle5.
+:Triangle19 we:sharedvertex :Triangle6.
+:Triangle19 we:sharedvertex :Triangle7.
+:Triangle19 we:sharedvertex :Triangle9.
+:Triangle19 we:sharedvertex :Triangle10.
+:Triangle19 we:sharedvertex :Triangle11.
+:Triangle19 we:sharedvertex :Triangle12.
+:Triangle19 we:sharedvertex :Triangle17.
+:Triangle19 we:sharedvertex :Triangle20.
+:Triangle19 we:sharedvertex :Triangle21.
+:Triangle19 we:sharedvertex :Triangle22.
+:Triangle20 we:sharedvertex :Triangle9.
+:Triangle20 we:sharedvertex :Triangle10.
+:Triangle20 we:sharedvertex :Triangle11.
+:Triangle20 we:sharedvertex :Triangle13.
+:Triangle20 we:sharedvertex :Triangle14.
+:Triangle20 we:sharedvertex :Triangle15.
+:Triangle20 we:sharedvertex :Triangle16.
+:Triangle20 we:sharedvertex :Triangle18.
+:Triangle20 we:sharedvertex :Triangle19.
+:Triangle20 we:sharedvertex :Triangle21.
+:Triangle20 we:sharedvertex :Triangle22.
+:Triangle21 we:sharedvertex :Triangle1.
+:Triangle21 we:sharedvertex :Triangle2.
+:Triangle21 we:sharedvertex :Triangle3.
+:Triangle21 we:sharedvertex :Triangle5.
+:Triangle21 we:sharedvertex :Triangle6.
+:Triangle21 we:sharedvertex :Triangle7.
+:Triangle21 we:sharedvertex :Triangle13.
+:Triangle21 we:sharedvertex :Triangle14.
+:Triangle21 we:sharedvertex :Triangle15.
+:Triangle21 we:sharedvertex :Triangle17.
+:Triangle21 we:sharedvertex :Triangle18.
+:Triangle21 we:sharedvertex :Triangle19.
+:Triangle21 we:sharedvertex :Triangle20.
+:Triangle21 we:sharedvertex :Triangle22.
+:Triangle22 we:sharedvertex :Triangle5.
+:Triangle22 we:sharedvertex :Triangle6.
+:Triangle22 we:sharedvertex :Triangle7.
+:Triangle22 we:sharedvertex :Triangle9.
+:Triangle22 we:sharedvertex :Triangle10.
+:Triangle22 we:sharedvertex :Triangle11.
+:Triangle22 we:sharedvertex :Triangle13.
+:Triangle22 we:sharedvertex :Triangle14.
+:Triangle22 we:sharedvertex :Triangle15.
+:Triangle22 we:sharedvertex :Triangle17.
+:Triangle22 we:sharedvertex :Triangle18.
+:Triangle22 we:sharedvertex :Triangle19.
+:Triangle22 we:sharedvertex :Triangle20.
+:Triangle22 we:sharedvertex :Triangle21.
+:Triangle23 we:sharedvertex :Triangle1.
+:Triangle23 we:sharedvertex :Triangle3.
+:Triangle23 we:sharedvertex :Triangle4.
+:Triangle23 we:sharedvertex :Triangle13.
+:Triangle23 we:sharedvertex :Triangle14.
+:Triangle23 we:sharedvertex :Triangle15.
+:Triangle23 we:sharedvertex :Triangle16.
+:Triangle23 we:sharedvertex :Triangle24.
+:Triangle23 we:sharedvertex :Triangle26.
+:Triangle23 we:sharedvertex :Triangle27.
+:Triangle23 we:sharedvertex :Triangle28.
+:Triangle24 we:sharedvertex :Triangle1.
+:Triangle24 we:sharedvertex :Triangle2.
+:Triangle24 we:sharedvertex :Triangle3.
+:Triangle24 we:sharedvertex :Triangle4.
+:Triangle24 we:sharedvertex :Triangle5.
+:Triangle24 we:sharedvertex :Triangle7.
+:Triangle24 we:sharedvertex :Triangle8.
+:Triangle24 we:sharedvertex :Triangle23.
+:Triangle24 we:sharedvertex :Triangle25.
+:Triangle24 we:sharedvertex :Triangle27.
+:Triangle24 we:sharedvertex :Triangle28.
+:Triangle25 we:sharedvertex :Triangle5.
+:Triangle25 we:sharedvertex :Triangle6.
+:Triangle25 we:sharedvertex :Triangle7.
+:Triangle25 we:sharedvertex :Triangle8.
+:Triangle25 we:sharedvertex :Triangle9.
+:Triangle25 we:sharedvertex :Triangle11.
+:Triangle25 we:sharedvertex :Triangle12.
+:Triangle25 we:sharedvertex :Triangle24.
+:Triangle25 we:sharedvertex :Triangle26.
+:Triangle25 we:sharedvertex :Triangle27.
+:Triangle25 we:sharedvertex :Triangle28.
+:Triangle26 we:sharedvertex :Triangle9.
+:Triangle26 we:sharedvertex :Triangle10.
+:Triangle26 we:sharedvertex :Triangle11.
+:Triangle26 we:sharedvertex :Triangle12.
+:Triangle26 we:sharedvertex :Triangle13.
+:Triangle26 we:sharedvertex :Triangle15.
+:Triangle26 we:sharedvertex :Triangle16.
+:Triangle26 we:sharedvertex :Triangle23.
+:Triangle26 we:sharedvertex :Triangle25.
+:Triangle26 we:sharedvertex :Triangle27.
+:Triangle26 we:sharedvertex :Triangle28.
+:Triangle27 we:sharedvertex :Triangle1.
+:Triangle27 we:sharedvertex :Triangle3.
+:Triangle27 we:sharedvertex :Triangle4.
+:Triangle27 we:sharedvertex :Triangle5.
+:Triangle27 we:sharedvertex :Triangle7.
+:Triangle27 we:sharedvertex :Triangle8.
+:Triangle27 we:sharedvertex :Triangle13.
+:Triangle27 we:sharedvertex :Triangle15.
+:Triangle27 we:sharedvertex :Triangle16.
+:Triangle27 we:sharedvertex :Triangle23.
+:Triangle27 we:sharedvertex :Triangle24.
+:Triangle27 we:sharedvertex :Triangle25.
+:Triangle27 we:sharedvertex :Triangle26.
+:Triangle27 we:sharedvertex :Triangle28.
+:Triangle28 we:sharedvertex :Triangle5.
+:Triangle28 we:sharedvertex :Triangle7.
+:Triangle28 we:sharedvertex :Triangle8.
+:Triangle28 we:sharedvertex :Triangle9.
+:Triangle28 we:sharedvertex :Triangle11.
+:Triangle28 we:sharedvertex :Triangle12.
+:Triangle28 we:sharedvertex :Triangle13.
+:Triangle28 we:sharedvertex :Triangle15.
+:Triangle28 we:sharedvertex :Triangle16.
+:Triangle28 we:sharedvertex :Triangle23.
+:Triangle28 we:sharedvertex :Triangle24.
+:Triangle28 we:sharedvertex :Triangle25.
+:Triangle28 we:sharedvertex :Triangle26.
+:Triangle28 we:sharedvertex :Triangle27.
+:Triangle1 we:neighbourtriangle :Triangle3.
+:Triangle1 we:neighbourtriangle :Triangle4.
+:Triangle1 we:neighbourtriangle :Triangle18.
+:Triangle2 we:neighbourtriangle :Triangle3.
+:Triangle2 we:neighbourtriangle :Triangle8.
+:Triangle2 we:neighbourtriangle :Triangle17.
+:Triangle3 we:neighbourtriangle :Triangle1.
+:Triangle3 we:neighbourtriangle :Triangle2.
+:Triangle3 we:neighbourtriangle :Triangle24.
+:Triangle4 we:neighbourtriangle :Triangle1.
+:Triangle4 we:neighbourtriangle :Triangle14.
+:Triangle4 we:neighbourtriangle :Triangle23.
+:Triangle5 we:neighbourtriangle :Triangle7.
+:Triangle5 we:neighbourtriangle :Triangle8.
+:Triangle5 we:neighbourtriangle :Triangle17.
+:Triangle6 we:neighbourtriangle :Triangle7.
+:Triangle6 we:neighbourtriangle :Triangle12.
+:Triangle6 we:neighbourtriangle :Triangle19.
+:Triangle7 we:neighbourtriangle :Triangle5.
+:Triangle7 we:neighbourtriangle :Triangle6.
+:Triangle7 we:neighbourtriangle :Triangle25.
+:Triangle8 we:neighbourtriangle :Triangle2.
+:Triangle8 we:neighbourtriangle :Triangle5.
+:Triangle8 we:neighbourtriangle :Triangle24.
+:Triangle9 we:neighbourtriangle :Triangle11.
+:Triangle9 we:neighbourtriangle :Triangle12.
+:Triangle9 we:neighbourtriangle :Triangle19.
+:Triangle10 we:neighbourtriangle :Triangle11.
+:Triangle10 we:neighbourtriangle :Triangle16.
+:Triangle10 we:neighbourtriangle :Triangle20.
+:Triangle11 we:neighbourtriangle :Triangle9.
+:Triangle11 we:neighbourtriangle :Triangle10.
+:Triangle11 we:neighbourtriangle :Triangle26.
+:Triangle12 we:neighbourtriangle :Triangle6.
+:Triangle12 we:neighbourtriangle :Triangle9.
+:Triangle12 we:neighbourtriangle :Triangle25.
+:Triangle13 we:neighbourtriangle :Triangle15.
+:Triangle13 we:neighbourtriangle :Triangle16.
+:Triangle13 we:neighbourtriangle :Triangle20.
+:Triangle14 we:neighbourtriangle :Triangle4.
+:Triangle14 we:neighbourtriangle :Triangle15.
+:Triangle14 we:neighbourtriangle :Triangle18.
+:Triangle15 we:neighbourtriangle :Triangle13.
+:Triangle15 we:neighbourtriangle :Triangle14.
+:Triangle15 we:neighbourtriangle :Triangle23.
+:Triangle16 we:neighbourtriangle :Triangle10.
+:Triangle16 we:neighbourtriangle :Triangle13.
+:Triangle16 we:neighbourtriangle :Triangle26.
+:Triangle17 we:neighbourtriangle :Triangle2.
+:Triangle17 we:neighbourtriangle :Triangle5.
+:Triangle17 we:neighbourtriangle :Triangle21.
+:Triangle18 we:neighbourtriangle :Triangle1.
+:Triangle18 we:neighbourtriangle :Triangle14.
+:Triangle18 we:neighbourtriangle :Triangle21.
+:Triangle19 we:neighbourtriangle :Triangle6.
+:Triangle19 we:neighbourtriangle :Triangle9.
+:Triangle19 we:neighbourtriangle :Triangle22.
+:Triangle20 we:neighbourtriangle :Triangle10.
+:Triangle20 we:neighbourtriangle :Triangle13.
+:Triangle20 we:neighbourtriangle :Triangle22.
+:Triangle21 we:neighbourtriangle :Triangle17.
+:Triangle21 we:neighbourtriangle :Triangle18.
+:Triangle21 we:neighbourtriangle :Triangle22.
+:Triangle22 we:neighbourtriangle :Triangle19.
+:Triangle22 we:neighbourtriangle :Triangle20.
+:Triangle22 we:neighbourtriangle :Triangle21.
+:Triangle23 we:neighbourtriangle :Triangle4.
+:Triangle23 we:neighbourtriangle :Triangle15.
+:Triangle23 we:neighbourtriangle :Triangle27.
+:Triangle24 we:neighbourtriangle :Triangle3.
+:Triangle24 we:neighbourtriangle :Triangle8.
+:Triangle24 we:neighbourtriangle :Triangle27.
+:Triangle25 we:neighbourtriangle :Triangle7.
+:Triangle25 we:neighbourtriangle :Triangle12.
+:Triangle25 we:neighbourtriangle :Triangle28.
+:Triangle26 we:neighbourtriangle :Triangle11.
+:Triangle26 we:neighbourtriangle :Triangle16.
+:Triangle26 we:neighbourtriangle :Triangle28.
+:Triangle27 we:neighbourtriangle :Triangle23.
+:Triangle27 we:neighbourtriangle :Triangle24.
+:Triangle27 we:neighbourtriangle :Triangle28.
+:Triangle28 we:neighbourtriangle :Triangle25.
+:Triangle28 we:neighbourtriangle :Triangle26.
+:Triangle28 we:neighbourtriangle :Triangle27.
+:Triangle1 we:samenormal :Triangle2.
+:Triangle1 we:samenormal :Triangle3.
+:Triangle1 we:samenormal :Triangle4.
+:Triangle2 we:samenormal :Triangle1.
+:Triangle2 we:samenormal :Triangle3.
+:Triangle2 we:samenormal :Triangle4.
+:Triangle3 we:samenormal :Triangle1.
+:Triangle3 we:samenormal :Triangle2.
+:Triangle3 we:samenormal :Triangle4.
+:Triangle4 we:samenormal :Triangle1.
+:Triangle4 we:samenormal :Triangle2.
+:Triangle4 we:samenormal :Triangle3.
+:Triangle5 we:samenormal :Triangle6.
+:Triangle5 we:samenormal :Triangle7.
+:Triangle5 we:samenormal :Triangle8.
+:Triangle6 we:samenormal :Triangle5.
+:Triangle6 we:samenormal :Triangle7.
+:Triangle6 we:samenormal :Triangle8.
+:Triangle7 we:samenormal :Triangle5.
+:Triangle7 we:samenormal :Triangle6.
+:Triangle7 we:samenormal :Triangle8.
+:Triangle8 we:samenormal :Triangle5.
+:Triangle8 we:samenormal :Triangle6.
+:Triangle8 we:samenormal :Triangle7.
+:Triangle9 we:samenormal :Triangle10.
+:Triangle9 we:samenormal :Triangle11.
+:Triangle9 we:samenormal :Triangle12.
+:Triangle10 we:samenormal :Triangle9.
+:Triangle10 we:samenormal :Triangle11.
+:Triangle10 we:samenormal :Triangle12.
+:Triangle11 we:samenormal :Triangle9.
+:Triangle11 we:samenormal :Triangle10.
+:Triangle11 we:samenormal :Triangle12.
+:Triangle12 we:samenormal :Triangle9.
+:Triangle12 we:samenormal :Triangle10.
+:Triangle12 we:samenormal :Triangle11.
+:Triangle13 we:samenormal :Triangle14.
+:Triangle13 we:samenormal :Triangle15.
+:Triangle13 we:samenormal :Triangle16.
+:Triangle14 we:samenormal :Triangle13.
+:Triangle14 we:samenormal :Triangle15.
+:Triangle14 we:samenormal :Triangle16.
+:Triangle15 we:samenormal :Triangle13.
+:Triangle15 we:samenormal :Triangle14.
+:Triangle15 we:samenormal :Triangle16.
+:Triangle16 we:samenormal :Triangle13.
+:Triangle16 we:samenormal :Triangle14.
+:Triangle16 we:samenormal :Triangle15.
+:Triangle17 we:samenormal :Triangle18.
+:Triangle17 we:samenormal :Triangle19.
+:Triangle17 we:samenormal :Triangle20.
+:Triangle17 we:samenormal :Triangle21.
+:Triangle17 we:samenormal :Triangle22.
+:Triangle18 we:samenormal :Triangle17.
+:Triangle18 we:samenormal :Triangle19.
+:Triangle18 we:samenormal :Triangle20.
+:Triangle18 we:samenormal :Triangle21.
+:Triangle18 we:samenormal :Triangle22.
+:Triangle19 we:samenormal :Triangle17.
+:Triangle19 we:samenormal :Triangle18.
+:Triangle19 we:samenormal :Triangle20.
+:Triangle19 we:samenormal :Triangle21.
+:Triangle19 we:samenormal :Triangle22.
+:Triangle20 we:samenormal :Triangle17.
+:Triangle20 we:samenormal :Triangle18.
+:Triangle20 we:samenormal :Triangle19.
+:Triangle20 we:samenormal :Triangle21.
+:Triangle20 we:samenormal :Triangle22.
+:Triangle21 we:samenormal :Triangle17.
+:Triangle21 we:samenormal :Triangle18.
+:Triangle21 we:samenormal :Triangle19.
+:Triangle21 we:samenormal :Triangle20.
+:Triangle21 we:samenormal :Triangle22.
+:Triangle22 we:samenormal :Triangle17.
+:Triangle22 we:samenormal :Triangle18.
+:Triangle22 we:samenormal :Triangle19.
+:Triangle22 we:samenormal :Triangle20.
+:Triangle22 we:samenormal :Triangle21.
+:Triangle23 we:samenormal :Triangle24.
+:Triangle23 we:samenormal :Triangle25.
+:Triangle23 we:samenormal :Triangle26.
+:Triangle23 we:samenormal :Triangle27.
+:Triangle23 we:samenormal :Triangle28.
+:Triangle24 we:samenormal :Triangle23.
+:Triangle24 we:samenormal :Triangle25.
+:Triangle24 we:samenormal :Triangle26.
+:Triangle24 we:samenormal :Triangle27.
+:Triangle24 we:samenormal :Triangle28.
+:Triangle25 we:samenormal :Triangle23.
+:Triangle25 we:samenormal :Triangle24.
+:Triangle25 we:samenormal :Triangle26.
+:Triangle25 we:samenormal :Triangle27.
+:Triangle25 we:samenormal :Triangle28.
+:Triangle26 we:samenormal :Triangle23.
+:Triangle26 we:samenormal :Triangle24.
+:Triangle26 we:samenormal :Triangle25.
+:Triangle26 we:samenormal :Triangle27.
+:Triangle26 we:samenormal :Triangle28.
+:Triangle27 we:samenormal :Triangle23.
+:Triangle27 we:samenormal :Triangle24.
+:Triangle27 we:samenormal :Triangle25.
+:Triangle27 we:samenormal :Triangle26.
+:Triangle27 we:samenormal :Triangle28.
+:Triangle28 we:samenormal :Triangle23.
+:Triangle28 we:samenormal :Triangle24.
+:Triangle28 we:samenormal :Triangle25.
+:Triangle28 we:samenormal :Triangle26.
+:Triangle28 we:samenormal :Triangle27.
+:Triangle1 we:oppositenormal :Triangle9.
+:Triangle1 we:oppositenormal :Triangle10.
+:Triangle1 we:oppositenormal :Triangle11.
+:Triangle1 we:oppositenormal :Triangle12.
+:Triangle2 we:oppositenormal :Triangle9.
+:Triangle2 we:oppositenormal :Triangle10.
+:Triangle2 we:oppositenormal :Triangle11.
+:Triangle2 we:oppositenormal :Triangle12.
+:Triangle3 we:oppositenormal :Triangle9.
+:Triangle3 we:oppositenormal :Triangle10.
+:Triangle3 we:oppositenormal :Triangle11.
+:Triangle3 we:oppositenormal :Triangle12.
+:Triangle4 we:oppositenormal :Triangle9.
+:Triangle4 we:oppositenormal :Triangle10.
+:Triangle4 we:oppositenormal :Triangle11.
+:Triangle4 we:oppositenormal :Triangle12.
+:Triangle5 we:oppositenormal :Triangle13.
+:Triangle5 we:oppositenormal :Triangle14.
+:Triangle5 we:oppositenormal :Triangle15.
+:Triangle5 we:oppositenormal :Triangle16.
+:Triangle6 we:oppositenormal :Triangle13.
+:Triangle6 we:oppositenormal :Triangle14.
+:Triangle6 we:oppositenormal :Triangle15.
+:Triangle6 we:oppositenormal :Triangle16.
+:Triangle7 we:oppositenormal :Triangle13.
+:Triangle7 we:oppositenormal :Triangle14.
+:Triangle7 we:oppositenormal :Triangle15.
+:Triangle7 we:oppositenormal :Triangle16.
+:Triangle8 we:oppositenormal :Triangle13.
+:Triangle8 we:oppositenormal :Triangle14.
+:Triangle8 we:oppositenormal :Triangle15.
+:Triangle8 we:oppositenormal :Triangle16.
+:Triangle9 we:oppositenormal :Triangle1.
+:Triangle9 we:oppositenormal :Triangle2.
+:Triangle9 we:oppositenormal :Triangle3.
+:Triangle9 we:oppositenormal :Triangle4.
+:Triangle10 we:oppositenormal :Triangle1.
+:Triangle10 we:oppositenormal :Triangle2.
+:Triangle10 we:oppositenormal :Triangle3.
+:Triangle10 we:oppositenormal :Triangle4.
+:Triangle11 we:oppositenormal :Triangle1.
+:Triangle11 we:oppositenormal :Triangle2.
+:Triangle11 we:oppositenormal :Triangle3.
+:Triangle11 we:oppositenormal :Triangle4.
+:Triangle12 we:oppositenormal :Triangle1.
+:Triangle12 we:oppositenormal :Triangle2.
+:Triangle12 we:oppositenormal :Triangle3.
+:Triangle12 we:oppositenormal :Triangle4.
+:Triangle13 we:oppositenormal :Triangle5.
+:Triangle13 we:oppositenormal :Triangle6.
+:Triangle13 we:oppositenormal :Triangle7.
+:Triangle13 we:oppositenormal :Triangle8.
+:Triangle14 we:oppositenormal :Triangle5.
+:Triangle14 we:oppositenormal :Triangle6.
+:Triangle14 we:oppositenormal :Triangle7.
+:Triangle14 we:oppositenormal :Triangle8.
+:Triangle15 we:oppositenormal :Triangle5.
+:Triangle15 we:oppositenormal :Triangle6.
+:Triangle15 we:oppositenormal :Triangle7.
+:Triangle15 we:oppositenormal :Triangle8.
+:Triangle16 we:oppositenormal :Triangle5.
+:Triangle16 we:oppositenormal :Triangle6.
+:Triangle16 we:oppositenormal :Triangle7.
+:Triangle16 we:oppositenormal :Triangle8.
+:Triangle17 we:oppositenormal :Triangle23.
+:Triangle17 we:oppositenormal :Triangle24.
+:Triangle17 we:oppositenormal :Triangle25.
+:Triangle17 we:oppositenormal :Triangle26.
+:Triangle17 we:oppositenormal :Triangle27.
+:Triangle17 we:oppositenormal :Triangle28.
+:Triangle18 we:oppositenormal :Triangle23.
+:Triangle18 we:oppositenormal :Triangle24.
+:Triangle18 we:oppositenormal :Triangle25.
+:Triangle18 we:oppositenormal :Triangle26.
+:Triangle18 we:oppositenormal :Triangle27.
+:Triangle18 we:oppositenormal :Triangle28.
+:Triangle19 we:oppositenormal :Triangle23.
+:Triangle19 we:oppositenormal :Triangle24.
+:Triangle19 we:oppositenormal :Triangle25.
+:Triangle19 we:oppositenormal :Triangle26.
+:Triangle19 we:oppositenormal :Triangle27.
+:Triangle19 we:oppositenormal :Triangle28.
+:Triangle20 we:oppositenormal :Triangle23.
+:Triangle20 we:oppositenormal :Triangle24.
+:Triangle20 we:oppositenormal :Triangle25.
+:Triangle20 we:oppositenormal :Triangle26.
+:Triangle20 we:oppositenormal :Triangle27.
+:Triangle20 we:oppositenormal :Triangle28.
+:Triangle21 we:oppositenormal :Triangle23.
+:Triangle21 we:oppositenormal :Triangle24.
+:Triangle21 we:oppositenormal :Triangle25.
+:Triangle21 we:oppositenormal :Triangle26.
+:Triangle21 we:oppositenormal :Triangle27.
+:Triangle21 we:oppositenormal :Triangle28.
+:Triangle22 we:oppositenormal :Triangle23.
+:Triangle22 we:oppositenormal :Triangle24.
+:Triangle22 we:oppositenormal :Triangle25.
+:Triangle22 we:oppositenormal :Triangle26.
+:Triangle22 we:oppositenormal :Triangle27.
+:Triangle22 we:oppositenormal :Triangle28.
+:Triangle23 we:oppositenormal :Triangle17.
+:Triangle23 we:oppositenormal :Triangle18.
+:Triangle23 we:oppositenormal :Triangle19.
+:Triangle23 we:oppositenormal :Triangle20.
+:Triangle23 we:oppositenormal :Triangle21.
+:Triangle23 we:oppositenormal :Triangle22.
+:Triangle24 we:oppositenormal :Triangle17.
+:Triangle24 we:oppositenormal :Triangle18.
+:Triangle24 we:oppositenormal :Triangle19.
+:Triangle24 we:oppositenormal :Triangle20.
+:Triangle24 we:oppositenormal :Triangle21.
+:Triangle24 we:oppositenormal :Triangle22.
+:Triangle25 we:oppositenormal :Triangle17.
+:Triangle25 we:oppositenormal :Triangle18.
+:Triangle25 we:oppositenormal :Triangle19.
+:Triangle25 we:oppositenormal :Triangle20.
+:Triangle25 we:oppositenormal :Triangle21.
+:Triangle25 we:oppositenormal :Triangle22.
+:Triangle26 we:oppositenormal :Triangle17.
+:Triangle26 we:oppositenormal :Triangle18.
+:Triangle26 we:oppositenormal :Triangle19.
+:Triangle26 we:oppositenormal :Triangle20.
+:Triangle26 we:oppositenormal :Triangle21.
+:Triangle26 we:oppositenormal :Triangle22.
+:Triangle27 we:oppositenormal :Triangle17.
+:Triangle27 we:oppositenormal :Triangle18.
+:Triangle27 we:oppositenormal :Triangle19.
+:Triangle27 we:oppositenormal :Triangle20.
+:Triangle27 we:oppositenormal :Triangle21.
+:Triangle27 we:oppositenormal :Triangle22.
+:Triangle28 we:oppositenormal :Triangle17.
+:Triangle28 we:oppositenormal :Triangle18.
+:Triangle28 we:oppositenormal :Triangle19.
+:Triangle28 we:oppositenormal :Triangle20.
+:Triangle28 we:oppositenormal :Triangle21.
+:Triangle28 we:oppositenormal :Triangle22.
+:Triangle1 we:neighbourtriangles (:Triangle3 :Triangle4 :Triangle18).
+:Triangle1 we:neighbourcount 3 .
+:Triangle2 we:neighbourtriangles (:Triangle3 :Triangle8 :Triangle17).
+:Triangle2 we:neighbourcount 3 .
+:Triangle3 we:neighbourtriangles (:Triangle1 :Triangle2 :Triangle24).
+:Triangle3 we:neighbourcount 3 .
+:Triangle4 we:neighbourtriangles (:Triangle1 :Triangle14 :Triangle23).
+:Triangle4 we:neighbourcount 3 .
+:Triangle5 we:neighbourtriangles (:Triangle7 :Triangle8 :Triangle17).
+:Triangle5 we:neighbourcount 3 .
+:Triangle6 we:neighbourtriangles (:Triangle7 :Triangle12 :Triangle19).
+:Triangle6 we:neighbourcount 3 .
+:Triangle7 we:neighbourtriangles (:Triangle5 :Triangle6 :Triangle25).
+:Triangle7 we:neighbourcount 3 .
+:Triangle8 we:neighbourtriangles (:Triangle2 :Triangle5 :Triangle24).
+:Triangle8 we:neighbourcount 3 .
+:Triangle9 we:neighbourtriangles (:Triangle11 :Triangle12 :Triangle19).
+:Triangle9 we:neighbourcount 3 .
+:Triangle10 we:neighbourtriangles (:Triangle11 :Triangle16 :Triangle20).
+:Triangle10 we:neighbourcount 3 .
+:Triangle11 we:neighbourtriangles (:Triangle9 :Triangle10 :Triangle26).
+:Triangle11 we:neighbourcount 3 .
+:Triangle12 we:neighbourtriangles (:Triangle6 :Triangle9 :Triangle25).
+:Triangle12 we:neighbourcount 3 .
+:Triangle13 we:neighbourtriangles (:Triangle15 :Triangle16 :Triangle20).
+:Triangle13 we:neighbourcount 3 .
+:Triangle14 we:neighbourtriangles (:Triangle4 :Triangle15 :Triangle18).
+:Triangle14 we:neighbourcount 3 .
+:Triangle15 we:neighbourtriangles (:Triangle13 :Triangle14 :Triangle23).
+:Triangle15 we:neighbourcount 3 .
+:Triangle16 we:neighbourtriangles (:Triangle10 :Triangle13 :Triangle26).
+:Triangle16 we:neighbourcount 3 .
+:Triangle17 we:neighbourtriangles (:Triangle2 :Triangle5 :Triangle21).
+:Triangle17 we:neighbourcount 3 .
+:Triangle18 we:neighbourtriangles (:Triangle1 :Triangle14 :Triangle21).
+:Triangle18 we:neighbourcount 3 .
+:Triangle19 we:neighbourtriangles (:Triangle6 :Triangle9 :Triangle22).
+:Triangle19 we:neighbourcount 3 .
+:Triangle20 we:neighbourtriangles (:Triangle10 :Triangle13 :Triangle22).
+:Triangle20 we:neighbourcount 3 .
+:Triangle21 we:neighbourtriangles (:Triangle17 :Triangle18 :Triangle22).
+:Triangle21 we:neighbourcount 3 .
+:Triangle22 we:neighbourtriangles (:Triangle19 :Triangle20 :Triangle21).
+:Triangle22 we:neighbourcount 3 .
+:Triangle23 we:neighbourtriangles (:Triangle4 :Triangle15 :Triangle27).
+:Triangle23 we:neighbourcount 3 .
+:Triangle24 we:neighbourtriangles (:Triangle3 :Triangle8 :Triangle27).
+:Triangle24 we:neighbourcount 3 .
+:Triangle25 we:neighbourtriangles (:Triangle7 :Triangle12 :Triangle28).
+:Triangle25 we:neighbourcount 3 .
+:Triangle26 we:neighbourtriangles (:Triangle11 :Triangle16 :Triangle28).
+:Triangle26 we:neighbourcount 3 .
+:Triangle27 we:neighbourtriangles (:Triangle23 :Triangle24 :Triangle28).
+:Triangle27 we:neighbourcount 3 .
+:Triangle28 we:neighbourtriangles (:Triangle25 :Triangle26 :Triangle27).
+:Triangle28 we:neighbourcount 3 .
+_:sk5_1 a we:FinalFace.
+_:sk5_1 we:facetriangles (:Triangle1 :Triangle3 :Triangle4 :Triangle2).
+_:sk5_1 we:trianglescount 4 .
+:Triangle1 we:partofface _:sk5_1.
+:Triangle3 we:partofface _:sk5_1.
+:Triangle4 we:partofface _:sk5_1.
+:Triangle2 we:partofface _:sk5_1.
+_:sk5_1 we:facenormal ("-0.0"^^xsd:double "-1.0"^^xsd:double "0.0"^^xsd:double).
+_:sk5_1 we:facenormal ("0.0"^^xsd:double "-1.0"^^xsd:double "-0.0"^^xsd:double).
+_:sk14_1 a we:FinalFace.
+_:sk14_1 we:facetriangles (:Triangle5 :Triangle7 :Triangle8 :Triangle6).
+_:sk14_1 we:trianglescount 4 .
+:Triangle5 we:partofface _:sk14_1.
+:Triangle7 we:partofface _:sk14_1.
+:Triangle8 we:partofface _:sk14_1.
+:Triangle6 we:partofface _:sk14_1.
+_:sk14_1 we:facenormal ("1.0"^^xsd:double "-0.0"^^xsd:double "0.0"^^xsd:double).
+_:sk14_1 we:facenormal ("1.0"^^xsd:double "0.0"^^xsd:double "-0.0"^^xsd:double).
+_:sk23_1 a we:FinalFace.
+_:sk23_1 we:facetriangles (:Triangle9 :Triangle11 :Triangle12 :Triangle10).
+_:sk23_1 we:trianglescount 4 .
+:Triangle9 we:partofface _:sk23_1.
+:Triangle11 we:partofface _:sk23_1.
+:Triangle12 we:partofface _:sk23_1.
+:Triangle10 we:partofface _:sk23_1.
+_:sk23_1 we:facenormal ("-0.0"^^xsd:double "1.0"^^xsd:double "-0.0"^^xsd:double).
+_:sk23_1 we:facenormal ("0.0"^^xsd:double "1.0"^^xsd:double "0.0"^^xsd:double).
+_:sk5_1 we:parallelface _:sk23_1.
+_:sk23_1 we:parallelface _:sk5_1.
+_:sk32_1 a we:FinalFace.
+_:sk32_1 we:facetriangles (:Triangle13 :Triangle15 :Triangle16 :Triangle14).
+_:sk32_1 we:trianglescount 4 .
+:Triangle13 we:partofface _:sk32_1.
+:Triangle15 we:partofface _:sk32_1.
+:Triangle16 we:partofface _:sk32_1.
+:Triangle14 we:partofface _:sk32_1.
+_:sk32_1 we:facenormal ("-1.0"^^xsd:double "-0.0"^^xsd:double "-0.0"^^xsd:double).
+_:sk32_1 we:facenormal ("-1.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+_:sk14_1 we:parallelface _:sk32_1.
+_:sk32_1 we:parallelface _:sk14_1.
+_:sk43_1 a we:FinalFace.
+_:sk43_1 we:facetriangles (:Triangle17 :Triangle21 :Triangle18 :Triangle22 :Triangle19 :Triangle20).
+_:sk43_1 we:trianglescount 6 .
+:Triangle17 we:partofface _:sk43_1.
+:Triangle21 we:partofface _:sk43_1.
+:Triangle18 we:partofface _:sk43_1.
+:Triangle22 we:partofface _:sk43_1.
+:Triangle19 we:partofface _:sk43_1.
+:Triangle20 we:partofface _:sk43_1.
+_:sk43_1 we:facenormal ("0.0"^^xsd:double "0.0"^^xsd:double "-1.0"^^xsd:double).
+_:sk43_1 we:facenormal ("0.0"^^xsd:double "-0.0"^^xsd:double "-1.0"^^xsd:double).
+_:sk43_1 we:facenormal ("-0.0"^^xsd:double "0.0"^^xsd:double "-1.0"^^xsd:double).
+_:sk54_1 a we:FinalFace.
+_:sk54_1 we:facetriangles (:Triangle23 :Triangle27 :Triangle24 :Triangle28 :Triangle25 :Triangle26).
+_:sk54_1 we:trianglescount 6 .
+:Triangle23 we:partofface _:sk54_1.
+:Triangle27 we:partofface _:sk54_1.
+:Triangle24 we:partofface _:sk54_1.
+:Triangle28 we:partofface _:sk54_1.
+:Triangle25 we:partofface _:sk54_1.
+:Triangle26 we:partofface _:sk54_1.
+_:sk54_1 we:facenormal ("0.0"^^xsd:double "0.0"^^xsd:double "1.0"^^xsd:double).
+_:sk54_1 we:facenormal ("0.0"^^xsd:double "-0.0"^^xsd:double "1.0"^^xsd:double).
+_:sk54_1 we:facenormal ("-0.0"^^xsd:double "-0.0"^^xsd:double "1.0"^^xsd:double).
+_:sk54_1 we:facenormal ("-0.0"^^xsd:double "0.0"^^xsd:double "1.0"^^xsd:double).
+_:sk43_1 we:parallelface _:sk54_1.
+_:sk54_1 we:parallelface _:sk43_1.
+:Triangle1 we:partofobject _:sk13_1.
+:Triangle3 we:partofobject _:sk13_1.
+:Triangle4 we:partofobject _:sk13_1.
+:Triangle18 we:partofobject _:sk13_1.
+:Triangle2 we:partofobject _:sk13_1.
+:Triangle24 we:partofobject _:sk13_1.
+:Triangle14 we:partofobject _:sk13_1.
+:Triangle23 we:partofobject _:sk13_1.
+:Triangle21 we:partofobject _:sk13_1.
+:Triangle8 we:partofobject _:sk13_1.
+:Triangle17 we:partofobject _:sk13_1.
+:Triangle27 we:partofobject _:sk13_1.
+:Triangle15 we:partofobject _:sk13_1.
+:Triangle22 we:partofobject _:sk13_1.
+:Triangle5 we:partofobject _:sk13_1.
+:Triangle28 we:partofobject _:sk13_1.
+:Triangle13 we:partofobject _:sk13_1.
+:Triangle19 we:partofobject _:sk13_1.
+:Triangle20 we:partofobject _:sk13_1.
+:Triangle7 we:partofobject _:sk13_1.
+:Triangle25 we:partofobject _:sk13_1.
+:Triangle26 we:partofobject _:sk13_1.
+:Triangle16 we:partofobject _:sk13_1.
+:Triangle6 we:partofobject _:sk13_1.
+:Triangle9 we:partofobject _:sk13_1.
+:Triangle10 we:partofobject _:sk13_1.
+:Triangle12 we:partofobject _:sk13_1.
+:Triangle11 we:partofobject _:sk13_1.
+_:sk13_1 a we:FinalObject.
+_:sk13_1 we:objecttriangles (:Triangle1 :Triangle3 :Triangle4 :Triangle18 :Triangle2 :Triangle24 :Triangle14 :Triangle23 :Triangle21 :Triangle8 :Triangle17 :Triangle27 :Triangle15 :Triangle22 :Triangle5 :Triangle28 :Triangle13 :Triangle19 :Triangle20 :Triangle7 :Triangle25 :Triangle26 :Triangle16 :Triangle6 :Triangle9 :Triangle10 :Triangle12 :Triangle11).
+_:sk13_1 we:trianglescount 28 .
+_:sk13_1 we:objectProperties we:ClosedObject.
+_:sk13_1 we:objectfaces (_:sk5_1 _:sk14_1 _:sk23_1 _:sk32_1 _:sk43_1 _:sk54_1).
+_:sk13_1 we:facecount 6 .
+
+
+#ENDS 52 [msec] TC=1013 TP=4049 BC=0 BP=1014 PM=0 CM=0 FM=0 AM=0
+

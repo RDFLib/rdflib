@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile.devcontainer
+    working_dir: /srv/workspace
+    environment:
+      - XDG_CACHE_HOME=/srv/workspace/.var/devcontainer/cache
+      - MYPY_CACHE_DIR=/srv/workspace/.var/devcontainer/mypy_cache
+      - TOX_WORK_DIR=/srv/workspace/.var/devcontainer/tox
+      - PYTEST_ADDOPTS=-o cache_dir=/srv/workspace/.var/devcontainer/pytest_cache
+      - PRE_COMMIT_HOME=/srv/workspace/.var/devcontainer/pre-commit
+    volumes:
+      - .:/srv/workspace:z,cached
+    command:
+     - /bin/sh
+     - -c
+     - |
+       echo Waiting for shutdown... override the command if this is not what you want. 1>&2
+       while sleep 1000; do :; done
+  run:
+    build:
+      context: .
+      dockerfile: Dockerfile.devcontainer
+    working_dir: /srv/workspace
+    environment:
+      - XDG_CACHE_HOME=/srv/workspace-var/cache
+      - MYPY_CACHE_DIR=/srv/workspace-var/mypy_cache
+      - TOX_WORK_DIR=/srv/workspace-var/tox
+      - PYTEST_ADDOPTS=-o cache_dir=/srv/workspace-var/pytest_cache
+      - PRE_COMMIT_HOME=/srv/workspace-var/pre-commit
+    volumes:
+      - .:/srv/workspace:z,cached
+      - workspace-var:/srv/workspace-var
+volumes:
+    workspace-var: {}

@@ -1,0 +1,7 @@
+_:b0 <http://example/bar> _:b2 .
+_:b0 <http://example/baz> _:b3 .
+_:b0 <http://example/foo> _:b1 .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example/Type> .
+_:b1 <http://example/foo-prop> "foo" .
+_:b2 <http://example/bar-prop> "bar" .
+_:b3 <http://example/base-prop> "baz" .

@@ -1,0 +1,14 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+
+### Poor UROP doesn't know what is true. 
+### He figures that in the rare cases that timbl
+## agrees with DanC
+## It must be true!
+
+{ <timbl.n3>!log:semantics
+   log:supports {?S ?P ?O} .
+  <danc.n3>!log:semantics
+   log:supports {?S ?P ?O} .
+} => {?S ?P ?O} .
+

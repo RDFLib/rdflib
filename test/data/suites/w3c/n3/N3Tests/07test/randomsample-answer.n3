@@ -1,0 +1,14 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope --tactic limited-answer 1 http://eulersharp.sourceforge.net/2007/07test/randomsample-rule.n3 --query http://eulersharp.sourceforge.net/2007/07test/randomsample-query.n3
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+@prefix ns1: <http://eulersharp.sourceforge.net/2007/07test/graph#>.
+
+{ns1:i6025 ns1:i16 ns1:i1579. ns1:i6424 ns1:i1 ns1:i6635. ns1:i7820 ns1:i20 ns1:i8127. ns1:i3598 ns1:i27 ns1:i7379. ns1:i6779 ns1:i36 ns1:i9410. ns1:i5056 ns1:i46 ns1:i5982. ns1:i8522 ns1:i48 ns1:i7875. ns1:i8724 ns1:i53 ns1:i252. ns1:i1375 ns1:i55 ns1:i8807. ns1:i2351 ns1:i58 ns1:i4445. ns1:i7177 ns1:i5 ns1:i7043. ns1:i3523 ns1:i60 ns1:i5227. ns1:i5962 ns1:i72 ns1:i4542. ns1:i5244 ns1:i73 ns1:i4613. ns1:i8139 ns1:i74 ns1:i3890. ns1:i1778 ns1:i78 ns1:i4888. ns1:i3191 ns1:i78 ns1:i8074. ns1:i8297 ns1:i80 ns1:i9796. ns1:i4803 ns1:i84 ns1:i1449. ns1:i7973 ns1:i84 ns1:i5992. ns1:i8046 ns1:i85 ns1:i7381. ns1:i4626 ns1:i86 ns1:i3195. ns1:i292 ns1:i94 ns1:i4177. ns1:i4050 ns1:i97 ns1:i6001. ns1:i6063 ns1:i98 ns1:i5223} a :Result.
+
+#2018-04-18T08:28:34.290Z in=1013 out=1 ent=1 step=1 brake=1 inf=132790 sec=0.045 inf/sec=2950889
+#ENDS
+

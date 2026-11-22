@@ -1,0 +1,12 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/cyclic-rules.n3 --pass
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/try#>.
+
+:i a :A.
+:i a :A.
+:i a :B.
+
+#2018-04-18T08:27:45.476Z in=7 out=3 ent=1 step=4 brake=2 inf=11998 sec=0.018 inf/sec=666556
+#ENDS
+

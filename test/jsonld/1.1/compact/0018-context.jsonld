@@ -1,0 +1,13 @@
+{
+  "@context": {
+    "type1": "http://example.com/t1",
+    "type2": "http://example.com/t2",
+    "@language": "de",
+    "term": { "@id": "http://example.com/term" },
+    "term1": { "@id": "http://example.com/term", "@container": "@list" },
+    "term2": { "@id": "http://example.com/term", "@container": "@list", "@language": "en" },
+    "term3": { "@id": "http://example.com/term", "@container": "@list", "@language": null },
+    "term4": { "@id": "http://example.com/term", "@container": "@list", "@type": "type1" },
+    "term5": { "@id": "http://example.com/term", "@container": "@list", "@type": "type2" }
+  }
+}

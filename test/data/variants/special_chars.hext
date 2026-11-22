@@ -1,0 +1,7 @@
+["example:special", "example:newline", "\n", "http://www.w3.org/2001/XMLSchema#string", "", ""]
+["example:special", "example:form_feed", "\f", "http://www.w3.org/2001/XMLSchema#string", "", ""]
+["example:special", "example:backspace", "\b", "http://www.w3.org/2001/XMLSchema#string", "", ""]
+["example:special", "example:carriage_return", "\r", "http://www.w3.org/2001/XMLSchema#string", "", ""]
+["example:special", "example:backslash", "\\", "http://www.w3.org/2001/XMLSchema#string", "", ""]
+["example:special", "example:string-000", "\\r", "http://www.w3.org/2001/XMLSchema#string", "", ""]
+["example:special", "example:string-001", "\\\r", "http://www.w3.org/2001/XMLSchema#string", "", ""]

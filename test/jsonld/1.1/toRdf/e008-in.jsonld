@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "ex": "http://example.org/vocab#"
+  },
+  "@id": "http://example.org/test",
+  "ex:test": { "@value": "test",  "@language": "en" },
+  "ex:drop-lang-only": { "@language": "en" },
+  "ex:keep-full-value": { "@value": "only value" }
+}

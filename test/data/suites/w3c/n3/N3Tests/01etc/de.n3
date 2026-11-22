@@ -1,0 +1,14 @@
+# disjunction elimination test case using negation predicates
+@prefix : <http://josd.github.io/brain#>.
+
+# saying A means saying C
+{?S :saying :A} => {?S :saying :C}.
+{?S :not_saying :C} => {?S :not_saying :A}.
+
+# saying B means saying C
+{?S :saying :B} => {?S :saying :C}.
+{?S :not_saying :C} => {?S :not_saying :B}.
+
+# saying A or saying B
+{?S :not_saying :A} => {?S :saying :B}.
+{?S :not_saying :B} => {?S :saying :A}.

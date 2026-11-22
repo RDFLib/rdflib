@@ -1,0 +1,4 @@
+_:b0 <http://example.org/input> _:b1 .
+_:b0 <http://example.org/input> _:b4 .
+_:b3 <http://example.org/value> "x" _:b2 .
+_:b6 <http://example.org/value> "y" _:b5 .

@@ -1,0 +1,13 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --nope http://josd.github.io/brain/fib/fib.n3 --query http://josd.github.io/brain/fib/fibQ.n3
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix : <http://josd.github.io/brain#>.
+
+(0) :fib 1 .
+(91) :fib 7540113804746346429 .
+(283) :fib 100694286476841731898333719576864360661213863366454327287613 .
+
+#2020-02-22T21:51:41.035Z in=7 out=3 ent=3 step=3 brake=1 inf=28423 sec=0.082 inf/sec=346622
+#ENDS
+

@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "compact-iris": {"@id": "http://example.com/compact-iris-", "@prefix": true},
+    "property": "http://example.com/property"
+  },
+  "property": {
+    "@id": "compact-iris:are-considered",
+    "property": "@prefix does not require a gen-delim"
+  }
+}

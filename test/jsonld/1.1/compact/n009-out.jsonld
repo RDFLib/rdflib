@@ -1,0 +1,13 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "idmap": {"@container": "@id", "@nest": "nestedidmap"},
+    "nestedidmap": "@nest"
+  },
+  "nestedidmap": {
+    "idmap": {
+      "http://example.org/foo": {"label": "Object with @id <foo>"},
+      "_:bar": {"label": "Object with @id _:bar"}
+    }
+  }
+}

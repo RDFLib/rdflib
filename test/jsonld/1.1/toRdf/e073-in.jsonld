@@ -1,0 +1,16 @@
+{
+  "@id": "ex:node1",
+  "owl:sameAs": {
+    "@id": "ex:node2",
+    "rdfs:label": "Node 2",
+    "link": "ex:node3",
+    "@context": {
+      "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
+    }
+  },
+  "@context": {
+    "ex": "http://example.org/",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "link": { "@id": "ex:link", "@type": "@id" }
+  }
+}

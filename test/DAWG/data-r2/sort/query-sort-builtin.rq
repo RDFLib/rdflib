@@ -1,4 +1,0 @@
-PREFIX : <http://example.org/>
-SELECT ?s WHERE {
-  ?s :p ?o .
-} ORDER BY str(?o)

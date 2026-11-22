@@ -1,0 +1,8 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "tag": {"@id": "http://example.org/ns/tag/", "@prefix": false}
+  },
+  "tag:champin.net,2019:prop": "This is not treated as a Compact IRI",
+  "tag": "tricky"
+}

@@ -1,0 +1,9 @@
+[
+  {
+    "http://example/foo": [{
+      "http://example/bar": [
+        {"@value": "baz"}
+      ]}
+    ]
+  }
+]

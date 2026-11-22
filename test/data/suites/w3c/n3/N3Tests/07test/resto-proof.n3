@@ -1,0 +1,257 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --tactic limited-answer 1 http://eulersharp.sourceforge.net/2007/07test/resto.n3 --query http://eulersharp.sourceforge.net/2007/07test/restoG.n3
+
+@prefix : <http://example.org/vocab#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix dc: <http://purl.org/dc/terms/>.
+@prefix con: <http://www.w3.org/2000/10/swap/pim/contact#>.
+@prefix tmpl: <http://purl.org/restdesc/http-template#>.
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>.
+@prefix meteo: <http://purl.org/ns/meteo#>.
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix resto: <http://example.org/restaurant#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    _:sk_17 resto:hasReservation _:sk_24.
+    _:sk_24 resto:onDate "12/12/12".
+    _:sk_24 resto:place _:sk_25.
+    _:sk_25 resto:isOutside _:sk_18.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    _:sk_17 resto:hasReservation _:sk_24.
+    _:sk_24 resto:onDate "12/12/12".
+    _:sk_24 resto:place _:sk_25.
+    _:sk_25 resto:isOutside _:sk_18.
+  };
+  r:evidence (
+    <#lemma2>
+    <#lemma2>
+    <#lemma2>
+    <#lemma2>
+  );
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    _:sk_22 http:methodName "POST".
+    _:sk_22 http:requestURI _:sk_20.
+    _:sk_22 http:body ("12/12/12" _:sk_18).
+    _:sk_22 http:resp _:sk_23.
+    _:sk_23 http:body _:sk_24.
+    _:sk_17 resto:hasReservation _:sk_24.
+    _:sk_24 resto:onDate "12/12/12".
+    _:sk_24 resto:place _:sk_25.
+    _:sk_25 resto:isOutside _:sk_18.
+  };
+  r:evidence (
+    <#lemma4>
+    <#lemma4>
+    <#lemma5>
+  );
+  r:rule <#lemma6>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    {?x_0_1 resto:hasReservation ?x_1_1.
+     ?x_1_1 resto:onDate ?x_2_1.
+     ?x_1_1 resto:place ?x_3_1.
+     ?x_3_1 resto:isOutside ?x_4_1} => {?x_0_1 resto:hasReservation ?x_1_1.
+     ?x_1_1 resto:onDate ?x_2_1.
+     ?x_1_1 resto:place ?x_3_1.
+     ?x_3_1 resto:isOutside ?x_4_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/restoG.n3>].
+
+<#lemma4> a r:Inference;
+  r:gives {
+    _:sk_16 http:methodName "POST".
+    _:sk_16 http:requestURI "<#myAppointments>".
+    _:sk_16 http:body (:RestAppointment _:sk_17 _:sk_18).
+    _:sk_16 http:resp _:sk_19.
+    _:sk_19 http:body :RestAppointment.
+    :RestAppointment resto:isAt _:sk_17.
+    _:sk_17 a resto:Restaurant.
+    _:sk_17 resto:reservationList _:sk_20.
+    _:sk_21 resto:isOutside _:sk_18.
+  };
+  r:evidence (
+    <#lemma7>
+    <#lemma7>
+    <#lemma8>
+    <#lemma9>
+    <#lemma8>
+    <#lemma9>
+    <#lemma10>
+    <#lemma5>
+  );
+  r:rule <#lemma11>.
+
+<#lemma5> a r:Extraction;
+  r:gives {
+    :RestAppointment resto:hasDate "12/12/12".
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/resto.n3>].
+
+<#lemma6> a r:Extraction;
+  r:gives {
+    {?x_0_2 resto:reservationList ?x_1_2.
+     ?x_2_2 resto:isOutside ?x_3_2.
+     ?x_4_2 resto:hasDate ?x_5_2} => {_:x_6_2 http:methodName "POST".
+     _:x_6_2 http:requestURI ?x_1_2.
+     _:x_6_2 http:body (?x_5_2 ?x_3_2).
+     _:x_6_2 http:resp _:x_7_2.
+     _:x_7_2 http:body _:x_8_2.
+     ?x_0_2 resto:hasReservation _:x_8_2.
+     _:x_8_2 resto:onDate ?x_5_2.
+     _:x_8_2 resto:place _:x_9_2.
+     _:x_9_2 resto:isOutside ?x_3_2}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/resto.n3>].
+
+<#lemma7> a r:Inference;
+  r:gives {
+    _:sk_3 http:methodName "GET".
+    _:sk_3 http:requestURI ("?location= " _:sk_2).
+    _:sk_3 http:resp _:sk_4.
+    _:sk_4 http:body _:sk_5.
+    _:sk_5 a geo:Point.
+    _:sk_5 geo:lat _:sk_6.
+    _:sk_5 geo:long _:sk_7.
+  };
+  r:evidence (
+    <#lemma12>
+  );
+  r:rule <#lemma13>.
+
+<#lemma8> a r:Inference;
+  r:gives {
+    _:sk_12 http:methodName "GET".
+    _:sk_12 http:requestURI ("CurrentPressure?lat=" _:sk_6 "&long=" _:sk_7).
+    _:sk_12 http:resp _:sk_13.
+    _:sk_13 http:body _:sk_14.
+    _:sk_5 meteo:pressure _:sk_15.
+    _:sk_15 meteo:millibar _:sk_14.
+  };
+  r:evidence (
+    <#lemma7>
+    <#lemma7>
+  );
+  r:rule <#lemma14>.
+
+<#lemma9> a r:Inference;
+  r:gives {
+    _:sk_8 http:methodName "GET".
+    _:sk_8 http:requestURI ("CurrentTemperature?lat=" _:sk_6 "&long=" _:sk_7).
+    _:sk_8 http:resp _:sk_9.
+    _:sk_9 http:body _:sk_10.
+    _:sk_5 meteo:temperature _:sk_11.
+    _:sk_11 meteo:celsius _:sk_10.
+  };
+  r:evidence (
+    <#lemma7>
+    <#lemma7>
+  );
+  r:rule <#lemma15>.
+
+<#lemma10> a r:Extraction;
+  r:gives {
+    :RestAppointment resto:isOn "<#myAppointments>".
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/resto.n3>].
+
+<#lemma11> a r:Extraction;
+  r:gives {
+    {?x_0_3 geo:lat ?x_1_3.
+     ?x_0_3 geo:long ?x_2_3.
+     ?x_0_3 meteo:pressure ?x_3_3.
+     ?x_0_3 meteo:temperature ?x_4_3.
+     ?x_3_3 meteo:millibar ?x_5_3.
+     ?x_4_3 meteo:celsius ?x_6_3.
+     ?x_7_3 resto:isOn ?x_8_3.
+     ?x_7_3 resto:hasDate ?x_9_3} => {_:x_10_3 http:methodName "POST".
+     _:x_10_3 http:requestURI ?x_8_3.
+     _:x_10_3 http:body (?x_7_3 _:x_11_3 _:x_12_3).
+     _:x_10_3 http:resp _:x_13_3.
+     _:x_13_3 http:body ?x_7_3.
+     ?x_7_3 resto:isAt _:x_11_3.
+     _:x_11_3 a resto:Restaurant.
+     _:x_11_3 resto:reservationList _:x_14_3.
+     _:x_15_3 resto:isOutside _:x_12_3}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/resto.n3>].
+
+<#lemma12> a r:Inference;
+  r:gives {
+    _:sk_0 http:methodName "GET".
+    _:sk_0 http:requestURI (:Areeb).
+    _:sk_0 http:resp _:sk_1.
+    _:sk_1 http:body _:sk_2.
+    :Areeb foaf:based_near _:sk_2.
+    _:sk_2 a con:Address.
+  };
+  r:evidence (
+    <#lemma16>
+  );
+  r:rule <#lemma17>.
+
+<#lemma13> a r:Extraction;
+  r:gives {
+    {?x_0_4 a con:Address} => {_:x_1_4 http:methodName "GET".
+     _:x_1_4 http:requestURI ("?location= " ?x_0_4).
+     _:x_1_4 http:resp _:x_2_4.
+     _:x_2_4 http:body _:x_3_4.
+     _:x_3_4 a geo:Point.
+     _:x_3_4 geo:lat _:x_4_4.
+     _:x_3_4 geo:long _:x_5_4}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/resto.n3>].
+
+<#lemma14> a r:Extraction;
+  r:gives {
+    {?x_0_5 geo:lat ?x_1_5.
+     ?x_0_5 geo:long ?x_2_5} => {_:x_3_5 http:methodName "GET".
+     _:x_3_5 http:requestURI ("CurrentPressure?lat=" ?x_1_5 "&long=" ?x_2_5).
+     _:x_3_5 http:resp _:x_4_5.
+     _:x_4_5 http:body _:x_5_5.
+     ?x_0_5 meteo:pressure _:x_6_5.
+     _:x_6_5 meteo:millibar _:x_5_5}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/resto.n3>].
+
+<#lemma15> a r:Extraction;
+  r:gives {
+    {?x_0_6 geo:lat ?x_1_6.
+     ?x_0_6 geo:long ?x_2_6} => {_:x_3_6 http:methodName "GET".
+     _:x_3_6 http:requestURI ("CurrentTemperature?lat=" ?x_1_6 "&long=" ?x_2_6).
+     _:x_3_6 http:resp _:x_4_6.
+     _:x_4_6 http:body _:x_5_6.
+     ?x_0_6 meteo:temperature _:x_6_6.
+     _:x_6_6 meteo:celsius _:x_5_6}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/resto.n3>].
+
+<#lemma16> a r:Extraction;
+  r:gives {
+    :Areeb a foaf:Person.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/resto.n3>].
+
+<#lemma17> a r:Extraction;
+  r:gives {
+    {?x_0_7 a foaf:Person} => {_:x_1_7 http:methodName "GET".
+     _:x_1_7 http:requestURI (?x_0_7).
+     _:x_1_7 http:resp _:x_2_7.
+     _:x_2_7 http:body _:x_3_7.
+     ?x_0_7 foaf:based_near _:x_3_7.
+     _:x_3_7 a con:Address}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/resto.n3>].
+
+#2018-04-18T08:28:36.083Z in=78 out=4 ent=47 step=7 brake=1 inf=55494 sec=0.027 inf/sec=2055333
+#ENDS
+

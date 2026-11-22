@@ -1,0 +1,5 @@
+# eye --nope --plugin http://eulersharp.sourceforge.net/2006/02swap/crypto-plugin.yap http://eulersharp.sourceforge.net/2007/07test/cryptoP.n3 --query http://eulersharp.sourceforge.net/2007/07test/cryptoQ.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+{?P a ?R} => {?P a ?R}.

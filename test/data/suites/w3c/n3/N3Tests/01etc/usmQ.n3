@@ -1,0 +1,4 @@
+@prefix : <http://josd.github.io/brain#>.
+
+{?PC :state (?R1 ?R2). ?PC :instruction (:halt)} => {?PC :state (?R1 ?R2). ?PC :instruction (:halt)}.
+

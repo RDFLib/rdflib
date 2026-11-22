@@ -1,0 +1,10 @@
+# $Id: ex2-3aQ.n3 424 2004-12-06 20:03:44Z josd $
+# PxButton | es  | euler ex2-3a.n3 --nope --think --query ex2-3aQ.n3
+# PxButton | cwm | cwm ex2-3a.n3 --think --query"=ex2-3aQ.n3"
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+[]
+q:select {<> q:answer (?mbox)};
+q:where  {?x foaf:name "Johnny Lee Outlaw". ?x foaf:mbox ?mbox}.

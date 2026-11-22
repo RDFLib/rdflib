@@ -1,0 +1,32 @@
+{
+  "@context": {
+    "@vocab":   "http://json-ld.org/test-suite/vocab#",
+    "dcterms":  "http://purl.org/dc/terms/",
+    "dc":       "http://purl.org/dc/elements/1.1/",
+    "jld":      "http://json-ld.org/test-suite/vocab#",
+    "mf":       "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+    "rdfs":     "http://www.w3.org/2000/01/rdf-schema#",
+    "xsd":      "http://www.w3.org/2001/XMLSchema#",
+
+    "context":    { "@id": "input", "@type": "@id" },
+    "expect":     { "@id": "mf:result", "@type": "@id" },
+    "frame":      { "@id": "input", "@type": "@id" },
+    "input":      { "@id": "mf:action", "@type": "@id" },
+    "option":     { "@type": "@id"},
+    "sequence":   { "@id": "mf:entries", "@type": "@id", "@container": "@list" },
+    "redirectTo": { "@type": "@id"},
+
+    "name":                 "mf:name",
+    "purpose":              "rdfs:comment",
+    "description":          "rdfs:comment",
+    "base":                 { "@type": "@id" },
+    "compactArrays":        { "@type": "xsd:boolean" },
+    "documentLoader":       { "@type": "xsd:string" },
+    "expandContext":        { "@type": "xsd:string" },
+    "processingMode":       { "@type": "xsd:string" },
+    "produceGeneralizedRdf":{ "@type": "xsd:boolean" },
+    "useNativeTypes":       { "@type": "xsd:boolean" },
+    "httpStatus":           { "@type": "xsd:integer"},
+    "httpLink":             { "@container": "@set"}
+  }
+}

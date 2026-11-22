@@ -1,0 +1,18 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --nope palindrome.n3 palindrome-declarations.n3 preduction-plugin.n3 --query palindrome-preduction.n3
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://josd.github.io/brain#>.
+@prefix p: <http://josd.github.io/brain/preduction#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+
+{(?U_0) :palindrome true} <= {(?U_0 :push ()) :palindrome true}.
+{(?U_1 :push ?U_2) :palindrome true} <= {?U_1 e:firstRest (?U_3 ?U_4). ?U_5 e:firstRest (?U_3 ?U_2). (?U_4 :push ?U_5) :palindrome true}.
+{(?U_6 :push ?U_7) :palindrome true} <= {?U_6 e:firstRest (?U_8 ?U_9). ?U_10 e:firstRest (?U_8 ?U_7). (?U_9 :pop ?U_10) :palindrome true}.
+{(?U_11 :push ?U_12) :palindrome true} <= {?U_11 e:firstRest (?U_13 ?U_14). (?U_14 :pop ?U_12) :palindrome true}.
+{(?U_15 :pop ?U_16) :palindrome true} <= {?U_15 e:firstRest (?U_17 ?U_18). ?U_16 e:firstRest (?U_17 ?U_19). (?U_18 :pop ?U_19) :palindrome true}.
+(() :pop ()) :palindrome true.
+
+#2020-02-22T21:52:26.975Z in=24 out=6 ent=6 step=6 brake=1 inf=58257 sec=0.093 inf/sec=626419
+#ENDS
+

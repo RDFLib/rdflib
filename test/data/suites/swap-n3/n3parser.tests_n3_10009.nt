@@ -1,0 +1,13 @@
+    
+    <http://www.w3.org/2000/10/swap/test/strquot.n3>     <http://purl.org/dc/elements/1.1/description> "testing string parsing in N3.\nHmm... how much of this is in the primer?\nHow much should be there?\n@@ Holding off on unicode until support\nin python is sufficiently deployed\n(e.g. python on tux doesn't grok,\nnor does pythonwin on TimBL's laptop).\n$Id: n3parser.tests_n3_10009.nt,v 1.2 2006/06/07 15:01:43 syosi Exp $\n" .
+    
+    <http://www.w3.org/2000/10/swap/test/strquot.n3#martin>     <http://www.w3.org/2000/10/swap/test/strquot.n3#familyName> "D\u00FCrst" .
+    
+    <http://www.w3.org/2000/10/swap/test/strquot.n3#x>     <http://www.w3.org/2000/10/swap/test/strquot.n3#prop> "simple string" .
+    
+    <http://www.w3.org/2000/10/swap/test/strquot.n3#y>     <http://www.w3.org/2000/10/swap/test/strquot.n3#prop> "triple quoted\nstring with newlines in it." .
+    
+    <http://www.w3.org/2000/10/swap/test/strquot.n3#z>     <http://www.w3.org/2000/10/swap/test/strquot.n3#prop> "string with \" escaped quote marks" .
+    
+    <http://www.w3.org/2000/10/swap/test/strquot.n3#zz>     <http://www.w3.org/2000/10/swap/test/strquot.n3#escapes> "\\\"\a\b\f\r\t\v" .
+    

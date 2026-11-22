@@ -1,0 +1,10 @@
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+:s :p1 true.
+#:s :p2 true.
+:s :p3 true.
+:s :p4 true.
+#:s :p5 true.
+:s :p6 true.
+:s :p7 true.
+

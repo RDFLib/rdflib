@@ -1,0 +1,11 @@
+# From swap/test/ref/includes-builtins.n3
+@prefix : <builtins.n3#> .
+
+:test1     a :Success .
+
+:test2     a :Success .
+
+:test3     a :Success .
+
+:test4     a :Success .
+

@@ -1,0 +1,13 @@
+# eye http://eulersharp.sourceforge.net/2007/07test/socrates.n3 --query http://eulersharp.sourceforge.net/2007/07test/socratesQ.n3 > socratesE.n3
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/socrates#>.
+
+{?X a ?Y} => {?X a ?Y}.
+
+{{:socrates a :Mortal} e:allAncestors ?L} => {{:socrates a :Mortal} e:allAncestors ?L}.
+{{:socrates a :Mortal} e:allDescendents ?M} => {{:socrates a :Mortal} e:allDescendents ?M}.

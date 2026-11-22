@@ -1,34 +1,36 @@
-
 """
+SPARQL Query using [`Graph.query`][rdflib.graph.Graph.query]
 
-SPARQL Query using :meth:`rdflib.graph.Graph.query`
+The method returns a [`Result`][rdflib.query.Result], iterating over
+this yields [`ResultRow`][rdflib.query.ResultRow] objects
 
-The method returns a :class:`~rdflib.query.Result`, iterating over
-this yields :class:`~rdflib.query.ResultRow` objects 
-
-The variable bindings can be access as attributes of the row objects
+The variable bindings can be accessed as attributes of the row objects
 For variable names that are not valid python identifiers, dict access
-(i.e. with ``row[var] / __getitem__``) is also possible.
+(i.e. with `row[var] / __getitem__`) is also possible.
 
-:attr:`~rdflib.query.ResultRow.vars` contains the variables
-
+[`Result.vars`][rdflib.query.Result.vars] contains the variables
 """
+
+import logging
+import sys
+from pathlib import Path
 
 import rdflib
 
-if __name__=='__main__':
+EXAMPLES_DIR = Path(__file__).parent
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
 
     g = rdflib.Graph()
-    g.load("foaf.rdf")
+    g.parse(f"{EXAMPLES_DIR / 'foaf.n3'}", format="n3")
 
-    # the QueryProcessor knows the FOAF prefix from the graph
-    # which in turn knows it from reading the RDF/XML file
-    for row in g.query(
-            'select ?s where { [] foaf:knows ?s .}'):
-        print row.s 
+    # The QueryProcessor knows the FOAF prefix from the graph
+    # which in turn knows it from reading the N3 RDF file
+    for row in g.query("SELECT ?s WHERE { [] foaf:knows ?s .}"):
+        # For select queries, the Result object is an iterable of ResultRow
+        # objects.
+        assert isinstance(row, rdflib.query.ResultRow)
+        print(row.s)
         # or row["s"]
         # or row[rdflib.Variable("s")]
-
-
-
-

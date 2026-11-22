@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "test": "http://example.com/list"
+  },
+  "@id": "list-equivalence-test",
+  "test": [
+    { "@list": [ "1", "2" ] },
+    { "@list": [ "1", "2" ] }
+  ]
+}

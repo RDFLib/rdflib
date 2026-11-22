@@ -1,0 +1,71 @@
+#Processed by Id: euler.yap 7292 2014-06-13 12:27:29Z josd
+#eye --nope --quick-possible http://eulersharp.sourceforge.net/2007/07test/bd-test-10.n3 --query http://eulersharp.sourceforge.net/2007/07test/bd-query.n3
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/bd#>.
+
+
+[ e:possibleModel {:a :b :c0}
+; e:gives {
+    :a :b :c0.
+  }
+].
+
+[ e:possibleModel {:a :b :c1}
+; e:gives {
+    :a :b :c1.
+  }
+].
+
+[ e:possibleModel {:a :b :c2}
+; e:gives {
+    :a :b :c2.
+  }
+].
+
+[ e:possibleModel {:a :b :c3}
+; e:gives {
+    :a :b :c3.
+  }
+].
+
+[ e:possibleModel {:a :b :c4}
+; e:gives {
+    :a :b :c4.
+  }
+].
+
+[ e:possibleModel {:a :b :c5}
+; e:gives {
+    :a :b :c5.
+  }
+].
+
+[ e:possibleModel {:a :b :c6}
+; e:gives {
+    :a :b :c6.
+  }
+].
+
+[ e:possibleModel {:a :b :c7}
+; e:gives {
+    :a :b :c7.
+  }
+].
+
+[ e:possibleModel {:a :b :c8}
+; e:gives {
+    :a :b :c8.
+  }
+].
+
+[ e:possibleModel {:a :b :c9}
+; e:gives {
+    :a :b :c9.
+  }
+].
+
+[ e:inductivity 1; e:evidentiality 1; e:applicability 1; e:possibleModels 10; e:counterModels 0; e:falseModels 0; e:allModels 10].
+
+#ENDS 0.577 [sec] TC=0 TP=0 BC=20 BP=31 PM=10 CM=0 FM=0 AM=10
+

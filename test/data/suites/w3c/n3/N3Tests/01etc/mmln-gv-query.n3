@@ -1,0 +1,12 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#>.
+
+{
+    ?TARGET a :Greek_Pottery.
+    ?SHAPE a :Greek_Pottery_Shape.
+    (?TARGET ?SHAPE) e:inductivity ?PROBABILITY.
+}
+=>
+{
+    ?TARGET :has_shape (?PROBABILITY ?SHAPE).
+}.

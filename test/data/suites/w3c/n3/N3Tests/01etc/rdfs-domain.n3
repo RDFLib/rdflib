@@ -1,0 +1,3 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+
+{?P rdfs:domain ?C. ?X ?P ?Y} => {?X a ?C}.

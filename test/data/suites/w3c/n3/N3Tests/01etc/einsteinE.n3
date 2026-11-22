@@ -1,0 +1,207 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/einstein/einstein.n3 --query http://josd.github.io/brain/einstein/einsteinQ.n3
+
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2005/11swap/einstein#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    :german :eats :fish.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    :german :eats :fish.
+  };
+  r:evidence (
+    <#lemma2>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#german"]];
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    :german :eats :fish.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:yellow :norwegian :cats :water :dunhill) (:blue :dane :horse :tea :blends) (:red :brit :birds :milk :pallmall) (:green :german :fish :coffee :prince) (:white :swede :dogs :beer :bluemasters)) log:equalTo ((:yellow :norwegian :cats :water :dunhill) (:blue :dane :horse :tea :blends) (:red :brit :birds :milk :pallmall) (:green :german :fish :coffee :prince) (:white :swede :dogs :beer :bluemasters))}]
+    <#lemma4>
+    <#lemma4>
+    <#lemma5>
+    <#lemma4>
+    [ a r:Fact; r:gives {((:yellow :norwegian :cats :water :dunhill) (:blue :dane :horse :tea :blends) (:red :brit :birds :milk :pallmall) (:green :german :fish :coffee :prince) (:white :swede :dogs :beer :bluemasters)) list:member (:red :brit :birds :milk :pallmall)}]
+    [ a r:Fact; r:gives {((:yellow :norwegian :cats :water :dunhill) (:blue :dane :horse :tea :blends) (:red :brit :birds :milk :pallmall) (:green :german :fish :coffee :prince) (:white :swede :dogs :beer :bluemasters)) list:member (:white :swede :dogs :beer :bluemasters)}]
+    [ a r:Fact; r:gives {((:yellow :norwegian :cats :water :dunhill) (:blue :dane :horse :tea :blends) (:red :brit :birds :milk :pallmall) (:green :german :fish :coffee :prince) (:white :swede :dogs :beer :bluemasters)) list:member (:blue :dane :horse :tea :blends)}]
+    [ a r:Fact; r:gives {((:yellow :norwegian :cats :water :dunhill) (:blue :dane :horse :tea :blends) (:red :brit :birds :milk :pallmall) (:green :german :fish :coffee :prince) (:white :swede :dogs :beer :bluemasters)) list:member (:red :brit :birds :milk :pallmall)}]
+    [ a r:Fact; r:gives {((:yellow :norwegian :cats :water :dunhill) (:blue :dane :horse :tea :blends) (:red :brit :birds :milk :pallmall) (:green :german :fish :coffee :prince) (:white :swede :dogs :beer :bluemasters)) list:member (:yellow :norwegian :cats :water :dunhill)}]
+    [ a r:Fact; r:gives {((:yellow :norwegian :cats :water :dunhill) (:blue :dane :horse :tea :blends) (:red :brit :birds :milk :pallmall) (:green :german :fish :coffee :prince) (:white :swede :dogs :beer :bluemasters)) list:member (:white :swede :dogs :beer :bluemasters)}]
+    [ a r:Fact; r:gives {((:yellow :norwegian :cats :water :dunhill) (:blue :dane :horse :tea :blends) (:red :brit :birds :milk :pallmall) (:green :german :fish :coffee :prince) (:white :swede :dogs :beer :bluemasters)) list:member (:green :german :fish :coffee :prince)}]
+    [ a r:Fact; r:gives {((:yellow :norwegian :cats :water :dunhill) (:blue :dane :horse :tea :blends) (:red :brit :birds :milk :pallmall) (:green :german :fish :coffee :prince) (:white :swede :dogs :beer :bluemasters)) list:member (:green :german :fish :coffee :prince)}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:yellow :norwegian :cats :water :dunhill) (:blue :dane :horse :tea :blends) (:red :brit :birds :milk :pallmall) (:green :german :fish :coffee :prince) (:white :swede :dogs :beer :bluemasters))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#yellow"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#cats"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#water"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#dunhill"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#dane"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#horse"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#tea"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#blends"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#red"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#brit"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#birds"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_12"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#pallmall"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_13"]; r:boundTo (:green :german :fish :coffee :prince)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_14"]; r:boundTo (:white :swede :dogs :beer :bluemasters)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_15"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#blue"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_16"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#dane"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_17"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#horse"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_18"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#tea"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_19"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#yellow"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_20"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#norwegian"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_21"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#water"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_22"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#dunhill"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_23"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#blue"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_24"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#dane"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_25"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#tea"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_26"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#blends"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_27"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#yellow"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_28"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#norwegian"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_29"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#cats"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_30"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#water"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_31"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#german"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_32"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#fish"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_33"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#prince"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_34"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#swede"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_35"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#dogs"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_36"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#beer"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_37"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#bluemasters"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_38"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#blue"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_39"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#dane"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_40"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#horse"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_41"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#tea"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_42"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#yellow"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_43"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#norwegian"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_44"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#cats"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_45"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#dunhill"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_46"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#birds"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_47"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#milk"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_48"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#pallmall"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_49"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#white"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_50"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#beer"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_51"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#bluemasters"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_52"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#blue"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_53"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#horse"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_54"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#blends"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_55"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#red"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_56"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#brit"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_57"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#milk"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_58"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#norwegian"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_59"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#cats"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_60"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#water"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_61"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#white"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_62"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#swede"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_63"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#dogs"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_64"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#green"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_65"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#fish"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_66"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#coffee"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_67"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#green"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_68"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#german"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_69"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#coffee"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_70"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2005/11swap/einstein#prince"]];
+  r:rule <#lemma6>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 :eats :fish} => {var:x_0 :eats :fish}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/einstein/einsteinQ.n3>].
+
+<#lemma4> a r:Inference;
+  r:gives {
+    ((:yellow :norwegian :cats :water :dunhill) (:blue :dane :horse :tea :blends) (:red :brit :birds :milk :pallmall) (:green :german :fish :coffee :prince) (:white :swede :dogs :beer :bluemasters)) :pair ((:blue :dane :horse :tea :blends) (:yellow :norwegian :cats :water :dunhill)).
+  };
+  r:evidence (
+    <#lemma7>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:yellow :norwegian :cats :water :dunhill) (:blue :dane :horse :tea :blends) (:red :brit :birds :milk :pallmall) (:green :german :fish :coffee :prince) (:white :swede :dogs :beer :bluemasters))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((_:sk_0 :norwegian :cats _:sk_1 _:sk_2) (:blue _:sk_3 _:sk_4 _:sk_5 :blends) (_:sk_6 _:sk_7 _:sk_8 :milk _:sk_9) _:sk_10 _:sk_11)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (:yellow :norwegian :cats :water :dunhill)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (_:sk_0 :norwegian :cats _:sk_1 _:sk_2)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (:blue :dane :horse :tea :blends)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (:blue _:sk_3 _:sk_4 _:sk_5 :blends)];
+  r:rule <#lemma8>.
+
+<#lemma5> a r:Inference;
+  r:gives {
+    ((:yellow :norwegian :cats :water :dunhill) (:blue :dane :horse :tea :blends) (:red :brit :birds :milk :pallmall) (:green :german :fish :coffee :prince) (:white :swede :dogs :beer :bluemasters)) :sublist ((:green :german :fish :coffee :prince) (:white :swede :dogs :beer :bluemasters)).
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(((_:sk_0 :norwegian :cats _:sk_1 :dunhill) (:blue _:sk_2 :horse _:sk_3 :blends) (_:sk_4 _:sk_5 _:sk_6 :milk _:sk_7) (:green _:sk_8 _:sk_9 :coffee _:sk_10) (:white _:sk_11 _:sk_12 _:sk_13 _:sk_14)) ()) list:append ((_:sk_0 :norwegian :cats _:sk_1 :dunhill) (:blue _:sk_2 :horse _:sk_3 :blends) (_:sk_4 _:sk_5 _:sk_6 :milk _:sk_7) (:green _:sk_8 _:sk_9 :coffee _:sk_10) (:white _:sk_11 _:sk_12 _:sk_13 _:sk_14))}]
+    [ a r:Fact; r:gives {(((_:sk_0 :norwegian :cats _:sk_1 :dunhill) (:blue _:sk_2 :horse _:sk_3 :blends) (_:sk_4 _:sk_5 _:sk_6 :milk _:sk_7)) ((:green _:sk_8 _:sk_9 :coffee _:sk_10) (:white _:sk_11 _:sk_12 _:sk_13 _:sk_14))) list:append ((_:sk_0 :norwegian :cats _:sk_1 :dunhill) (:blue _:sk_2 :horse _:sk_3 :blends) (_:sk_4 _:sk_5 _:sk_6 :milk _:sk_7) (:green _:sk_8 _:sk_9 :coffee _:sk_10) (:white _:sk_11 _:sk_12 _:sk_13 _:sk_14))}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo ((:yellow :norwegian :cats :water :dunhill) (:blue :dane :horse :tea :blends) (:red :brit :birds :milk :pallmall) (:green :german :fish :coffee :prince) (:white :swede :dogs :beer :bluemasters))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo ((_:sk_0 :norwegian :cats _:sk_1 :dunhill) (:blue _:sk_2 :horse _:sk_3 :blends) (_:sk_4 _:sk_5 _:sk_6 :milk _:sk_7) (:green _:sk_8 _:sk_9 :coffee _:sk_10) (:white _:sk_11 _:sk_12 _:sk_13 _:sk_14))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((_:sk_0 :norwegian :cats _:sk_1 :dunhill) (:blue _:sk_2 :horse _:sk_3 :blends) (_:sk_4 _:sk_5 _:sk_6 :milk _:sk_7) (:green _:sk_8 _:sk_9 :coffee _:sk_10) (:white _:sk_11 _:sk_12 _:sk_13 _:sk_14))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((_:sk_0 :norwegian :cats _:sk_1 :dunhill) (:blue _:sk_2 :horse _:sk_3 :blends) (_:sk_4 _:sk_5 _:sk_6 :milk _:sk_7))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo ((:green :german :fish :coffee :prince) (:white :swede :dogs :beer :bluemasters))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo ((:green _:sk_8 _:sk_9 :coffee _:sk_10) (:white _:sk_11 _:sk_12 _:sk_13 _:sk_14))];
+  r:rule <#lemma9>.
+
+<#lemma6> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5, var:x_6, var:x_7, var:x_8, var:x_9, var:x_10, var:x_11, var:x_12, var:x_13, var:x_14, var:x_15, var:x_16, var:x_17, var:x_18, var:x_19, var:x_20, var:x_21, var:x_22, var:x_23, var:x_24, var:x_25, var:x_26, var:x_27, var:x_28, var:x_29, var:x_30, var:x_31, var:x_32, var:x_33, var:x_34, var:x_35, var:x_36, var:x_37, var:x_38, var:x_39, var:x_40, var:x_41, var:x_42, var:x_43, var:x_44, var:x_45, var:x_46, var:x_47, var:x_48, var:x_49, var:x_50, var:x_51, var:x_52, var:x_53, var:x_54, var:x_55, var:x_56, var:x_57, var:x_58, var:x_59, var:x_60, var:x_61, var:x_62, var:x_63, var:x_64, var:x_65, var:x_66, var:x_67, var:x_68, var:x_69, var:x_70. {var:x_0 log:equalTo ((var:x_1 :norwegian var:x_2 var:x_3 var:x_4) (:blue var:x_5 var:x_6 var:x_7 var:x_8) (var:x_9 var:x_10 var:x_11 :milk var:x_12) var:x_13 var:x_14).
+     var:x_0 :pair ((var:x_15 var:x_16 var:x_17 var:x_18 :blends) (var:x_19 var:x_20 :cats var:x_21 var:x_22)).
+     var:x_0 :pair ((var:x_23 var:x_24 :horse var:x_25 var:x_26) (var:x_27 var:x_28 var:x_29 var:x_30 :dunhill)).
+     var:x_0 :sublist ((:green var:x_31 var:x_32 :coffee var:x_33) (:white var:x_34 var:x_35 var:x_36 var:x_37)).
+     var:x_0 :pair ((var:x_38 var:x_39 var:x_40 var:x_41 :blends) (var:x_42 var:x_43 var:x_44 :water var:x_45)).
+     var:x_0 list:member (:red :brit var:x_46 var:x_47 var:x_48).
+     var:x_0 list:member (var:x_49 :swede :dogs var:x_50 var:x_51).
+     var:x_0 list:member (var:x_52 :dane var:x_53 :tea var:x_54).
+     var:x_0 list:member (var:x_55 var:x_56 :birds var:x_57 :pallmall).
+     var:x_0 list:member (:yellow var:x_58 var:x_59 var:x_60 :dunhill).
+     var:x_0 list:member (var:x_61 var:x_62 var:x_63 :beer :bluemasters).
+     var:x_0 list:member (var:x_64 :german var:x_65 var:x_66 :prince).
+     var:x_0 list:member (var:x_67 var:x_68 :fish var:x_69 var:x_70)} => {var:x_68 :eats :fish}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/einstein/einstein.n3>].
+
+<#lemma7> a r:Inference;
+  r:gives {
+    ((_:sk_0 :norwegian :cats _:sk_1 _:sk_2) (:blue _:sk_3 _:sk_4 _:sk_5 :blends) (_:sk_6 _:sk_7 _:sk_8 :milk _:sk_9) _:sk_10 _:sk_11) :sublist ((_:sk_0 :norwegian :cats _:sk_1 _:sk_2) (:blue _:sk_3 _:sk_4 _:sk_5 :blends)).
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(((_:sk_0 :norwegian :cats _:sk_1 _:sk_2) (:blue _:sk_3 _:sk_4 _:sk_5 :blends)) ((_:sk_6 _:sk_7 _:sk_8 :milk _:sk_9) _:sk_10 _:sk_11)) list:append ((_:sk_0 :norwegian :cats _:sk_1 _:sk_2) (:blue _:sk_3 _:sk_4 _:sk_5 :blends) (_:sk_6 _:sk_7 _:sk_8 :milk _:sk_9) _:sk_10 _:sk_11)}]
+    [ a r:Fact; r:gives {(() ((_:sk_0 :norwegian :cats _:sk_1 _:sk_2) (:blue _:sk_3 _:sk_4 _:sk_5 :blends))) list:append ((_:sk_0 :norwegian :cats _:sk_1 _:sk_2) (:blue _:sk_3 _:sk_4 _:sk_5 :blends))}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo ((_:sk_0 :norwegian :cats _:sk_1 _:sk_2) (:blue _:sk_3 _:sk_4 _:sk_5 :blends) (_:sk_6 _:sk_7 _:sk_8 :milk _:sk_9) _:sk_10 _:sk_11)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((_:sk_0 :norwegian :cats _:sk_1 _:sk_2) (:blue _:sk_3 _:sk_4 _:sk_5 :blends))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo ((_:sk_6 _:sk_7 _:sk_8 :milk _:sk_9) _:sk_10 _:sk_11)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo ((_:sk_0 :norwegian :cats _:sk_1 _:sk_2) (:blue _:sk_3 _:sk_4 _:sk_5 :blends))];
+  r:rule <#lemma9>.
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2. {var:x_0 :pair (var:x_2 var:x_1)} <= {var:x_0 :sublist (var:x_1 var:x_2)}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/einstein/einstein.n3>].
+
+<#lemma9> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4. {var:x_2 :sublist var:x_4} <= {(var:x_0 var:x_1) list:append var:x_2.
+     (var:x_3 var:x_4) list:append var:x_0}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/einstein/einstein.n3>].
+
+#2020-02-22T21:51:12.408Z in=5 out=1 ent=2 step=4 brake=2 inf=701334 sec=0.458 inf/sec=1531297
+#ENDS
+

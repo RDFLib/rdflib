@@ -1,0 +1,4 @@
+<https://w3c.github.io/json-ld-api/tests/document-relative> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/json-ld-api/tests/toRdf/e060-in.jsonld#document-relative> .
+<https://w3c.github.io/json-ld-api/tests/document-relative> <http://example.com/vocab#property> <http://example.org/document-base-overwritten> .
+<http://example.org/document-base-overwritten> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/test/#document-base-overwritten> .
+<http://example.org/document-base-overwritten> <http://example.com/vocab#property> <https://w3c.github.io/json-ld-api/tests/document-relative> .

@@ -1,0 +1,31 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/vcardP#>.
+@prefix vc: <http://www.w3.org/2001/vcard-rdf/3.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+<http://qqqfoo.com/staff/corky> :employeeId "1234". 
+<http://qqqfoo.com/staff/corky> vc:ADR _:e45_0_. 
+<http://qqqfoo.com/staff/corky> vc:BDAY " 1980-01-01 ". 
+<http://qqqfoo.com/staff/corky> vc:EMAIL _:e54_0_. 
+<http://qqqfoo.com/staff/corky> vc:FN " Corky Crystal ". 
+<http://qqqfoo.com/staff/corky> vc:N _:e59_0_. 
+<http://qqqfoo.com/staff/corky> vc:ROLE " Programmer ". 
+<http://qqqfoo.com/staff/corky> vc:TEL _:e68_0_. 
+<http://qqqfoo.com/staff/corky> vc:TITLE " Computer Officer Class 3 ". 
+_:e45_0_ vc:Country "  Australia ". 
+_:e45_0_ vc:Locality " WonderCity ". 
+_:e45_0_ vc:Pcode "    5555 ". 
+_:e45_0_ vc:Street "   111 Lake Drive ". 
+_:e54_0_ a vc:internet. 
+_:e54_0_ rdf:value " corky@qqqfoo.com ". 
+_:e59_0_ vc:Family " Crystal ". 
+_:e59_0_ vc:Given "  Corky ". 
+_:e59_0_ vc:Other "  Jacky ". 
+_:e59_0_ vc:Prefix " Dr ". 
+_:e68_0_ a vc:voice. 
+_:e68_0_ a vc:work. 
+_:e68_0_ rdf:value " +61 7 555 5555 ". 
+

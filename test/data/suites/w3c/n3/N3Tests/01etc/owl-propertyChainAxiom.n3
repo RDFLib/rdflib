@@ -1,0 +1,4 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+
+{?P owl:propertyChainAxiom ?L. ?L e:propertyChainExtension (?S ?O)} => {?S ?P ?O}.

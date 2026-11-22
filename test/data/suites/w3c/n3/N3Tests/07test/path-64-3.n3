@@ -1,0 +1,961 @@
+@prefix ex: <http://example.org/#>.
+@prefix http: <http://www.w3.org/2011/http#>.
+
+{
+  ?a1 ex:rel1 ?b1.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel2 ?b1.
+  ?a2 ex:rel2 ?b2.
+  ?a3 ex:rel2 ?b3.
+}.
+
+{
+  ?a1 ex:rel2 ?b1.
+  ?a2 ex:rel2 ?b2.
+  ?a3 ex:rel2 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel3 ?b1.
+  ?a2 ex:rel3 ?b2.
+  ?a3 ex:rel3 ?b3.
+}.
+
+{
+  ?a1 ex:rel3 ?b1.
+  ?a2 ex:rel3 ?b2.
+  ?a3 ex:rel3 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel4 ?b1.
+  ?a2 ex:rel4 ?b2.
+  ?a3 ex:rel4 ?b3.
+}.
+
+{
+  ?a1 ex:rel4 ?b1.
+  ?a2 ex:rel4 ?b2.
+  ?a3 ex:rel4 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel5 ?b1.
+  ?a2 ex:rel5 ?b2.
+  ?a3 ex:rel5 ?b3.
+}.
+
+{
+  ?a1 ex:rel5 ?b1.
+  ?a2 ex:rel5 ?b2.
+  ?a3 ex:rel5 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel6 ?b1.
+  ?a2 ex:rel6 ?b2.
+  ?a3 ex:rel6 ?b3.
+}.
+
+{
+  ?a1 ex:rel6 ?b1.
+  ?a2 ex:rel6 ?b2.
+  ?a3 ex:rel6 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel7 ?b1.
+  ?a2 ex:rel7 ?b2.
+  ?a3 ex:rel7 ?b3.
+}.
+
+{
+  ?a1 ex:rel7 ?b1.
+  ?a2 ex:rel7 ?b2.
+  ?a3 ex:rel7 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel8 ?b1.
+  ?a2 ex:rel8 ?b2.
+  ?a3 ex:rel8 ?b3.
+}.
+
+{
+  ?a1 ex:rel8 ?b1.
+  ?a2 ex:rel8 ?b2.
+  ?a3 ex:rel8 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel9 ?b1.
+  ?a2 ex:rel9 ?b2.
+  ?a3 ex:rel9 ?b3.
+}.
+
+{
+  ?a1 ex:rel9 ?b1.
+  ?a2 ex:rel9 ?b2.
+  ?a3 ex:rel9 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel10 ?b1.
+  ?a2 ex:rel10 ?b2.
+  ?a3 ex:rel10 ?b3.
+}.
+
+{
+  ?a1 ex:rel10 ?b1.
+  ?a2 ex:rel10 ?b2.
+  ?a3 ex:rel10 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel11 ?b1.
+  ?a2 ex:rel11 ?b2.
+  ?a3 ex:rel11 ?b3.
+}.
+
+{
+  ?a1 ex:rel11 ?b1.
+  ?a2 ex:rel11 ?b2.
+  ?a3 ex:rel11 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel12 ?b1.
+  ?a2 ex:rel12 ?b2.
+  ?a3 ex:rel12 ?b3.
+}.
+
+{
+  ?a1 ex:rel12 ?b1.
+  ?a2 ex:rel12 ?b2.
+  ?a3 ex:rel12 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel13 ?b1.
+  ?a2 ex:rel13 ?b2.
+  ?a3 ex:rel13 ?b3.
+}.
+
+{
+  ?a1 ex:rel13 ?b1.
+  ?a2 ex:rel13 ?b2.
+  ?a3 ex:rel13 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel14 ?b1.
+  ?a2 ex:rel14 ?b2.
+  ?a3 ex:rel14 ?b3.
+}.
+
+{
+  ?a1 ex:rel14 ?b1.
+  ?a2 ex:rel14 ?b2.
+  ?a3 ex:rel14 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel15 ?b1.
+  ?a2 ex:rel15 ?b2.
+  ?a3 ex:rel15 ?b3.
+}.
+
+{
+  ?a1 ex:rel15 ?b1.
+  ?a2 ex:rel15 ?b2.
+  ?a3 ex:rel15 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel16 ?b1.
+  ?a2 ex:rel16 ?b2.
+  ?a3 ex:rel16 ?b3.
+}.
+
+{
+  ?a1 ex:rel16 ?b1.
+  ?a2 ex:rel16 ?b2.
+  ?a3 ex:rel16 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel17 ?b1.
+  ?a2 ex:rel17 ?b2.
+  ?a3 ex:rel17 ?b3.
+}.
+
+{
+  ?a1 ex:rel17 ?b1.
+  ?a2 ex:rel17 ?b2.
+  ?a3 ex:rel17 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel18 ?b1.
+  ?a2 ex:rel18 ?b2.
+  ?a3 ex:rel18 ?b3.
+}.
+
+{
+  ?a1 ex:rel18 ?b1.
+  ?a2 ex:rel18 ?b2.
+  ?a3 ex:rel18 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel19 ?b1.
+  ?a2 ex:rel19 ?b2.
+  ?a3 ex:rel19 ?b3.
+}.
+
+{
+  ?a1 ex:rel19 ?b1.
+  ?a2 ex:rel19 ?b2.
+  ?a3 ex:rel19 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel20 ?b1.
+  ?a2 ex:rel20 ?b2.
+  ?a3 ex:rel20 ?b3.
+}.
+
+{
+  ?a1 ex:rel20 ?b1.
+  ?a2 ex:rel20 ?b2.
+  ?a3 ex:rel20 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel21 ?b1.
+  ?a2 ex:rel21 ?b2.
+  ?a3 ex:rel21 ?b3.
+}.
+
+{
+  ?a1 ex:rel21 ?b1.
+  ?a2 ex:rel21 ?b2.
+  ?a3 ex:rel21 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel22 ?b1.
+  ?a2 ex:rel22 ?b2.
+  ?a3 ex:rel22 ?b3.
+}.
+
+{
+  ?a1 ex:rel22 ?b1.
+  ?a2 ex:rel22 ?b2.
+  ?a3 ex:rel22 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel23 ?b1.
+  ?a2 ex:rel23 ?b2.
+  ?a3 ex:rel23 ?b3.
+}.
+
+{
+  ?a1 ex:rel23 ?b1.
+  ?a2 ex:rel23 ?b2.
+  ?a3 ex:rel23 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel24 ?b1.
+  ?a2 ex:rel24 ?b2.
+  ?a3 ex:rel24 ?b3.
+}.
+
+{
+  ?a1 ex:rel24 ?b1.
+  ?a2 ex:rel24 ?b2.
+  ?a3 ex:rel24 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel25 ?b1.
+  ?a2 ex:rel25 ?b2.
+  ?a3 ex:rel25 ?b3.
+}.
+
+{
+  ?a1 ex:rel25 ?b1.
+  ?a2 ex:rel25 ?b2.
+  ?a3 ex:rel25 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel26 ?b1.
+  ?a2 ex:rel26 ?b2.
+  ?a3 ex:rel26 ?b3.
+}.
+
+{
+  ?a1 ex:rel26 ?b1.
+  ?a2 ex:rel26 ?b2.
+  ?a3 ex:rel26 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel27 ?b1.
+  ?a2 ex:rel27 ?b2.
+  ?a3 ex:rel27 ?b3.
+}.
+
+{
+  ?a1 ex:rel27 ?b1.
+  ?a2 ex:rel27 ?b2.
+  ?a3 ex:rel27 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel28 ?b1.
+  ?a2 ex:rel28 ?b2.
+  ?a3 ex:rel28 ?b3.
+}.
+
+{
+  ?a1 ex:rel28 ?b1.
+  ?a2 ex:rel28 ?b2.
+  ?a3 ex:rel28 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel29 ?b1.
+  ?a2 ex:rel29 ?b2.
+  ?a3 ex:rel29 ?b3.
+}.
+
+{
+  ?a1 ex:rel29 ?b1.
+  ?a2 ex:rel29 ?b2.
+  ?a3 ex:rel29 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel30 ?b1.
+  ?a2 ex:rel30 ?b2.
+  ?a3 ex:rel30 ?b3.
+}.
+
+{
+  ?a1 ex:rel30 ?b1.
+  ?a2 ex:rel30 ?b2.
+  ?a3 ex:rel30 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel31 ?b1.
+  ?a2 ex:rel31 ?b2.
+  ?a3 ex:rel31 ?b3.
+}.
+
+{
+  ?a1 ex:rel31 ?b1.
+  ?a2 ex:rel31 ?b2.
+  ?a3 ex:rel31 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel32 ?b1.
+  ?a2 ex:rel32 ?b2.
+  ?a3 ex:rel32 ?b3.
+}.
+
+{
+  ?a1 ex:rel32 ?b1.
+  ?a2 ex:rel32 ?b2.
+  ?a3 ex:rel32 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel33 ?b1.
+  ?a2 ex:rel33 ?b2.
+  ?a3 ex:rel33 ?b3.
+}.
+
+{
+  ?a1 ex:rel33 ?b1.
+  ?a2 ex:rel33 ?b2.
+  ?a3 ex:rel33 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel34 ?b1.
+  ?a2 ex:rel34 ?b2.
+  ?a3 ex:rel34 ?b3.
+}.
+
+{
+  ?a1 ex:rel34 ?b1.
+  ?a2 ex:rel34 ?b2.
+  ?a3 ex:rel34 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel35 ?b1.
+  ?a2 ex:rel35 ?b2.
+  ?a3 ex:rel35 ?b3.
+}.
+
+{
+  ?a1 ex:rel35 ?b1.
+  ?a2 ex:rel35 ?b2.
+  ?a3 ex:rel35 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel36 ?b1.
+  ?a2 ex:rel36 ?b2.
+  ?a3 ex:rel36 ?b3.
+}.
+
+{
+  ?a1 ex:rel36 ?b1.
+  ?a2 ex:rel36 ?b2.
+  ?a3 ex:rel36 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel37 ?b1.
+  ?a2 ex:rel37 ?b2.
+  ?a3 ex:rel37 ?b3.
+}.
+
+{
+  ?a1 ex:rel37 ?b1.
+  ?a2 ex:rel37 ?b2.
+  ?a3 ex:rel37 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel38 ?b1.
+  ?a2 ex:rel38 ?b2.
+  ?a3 ex:rel38 ?b3.
+}.
+
+{
+  ?a1 ex:rel38 ?b1.
+  ?a2 ex:rel38 ?b2.
+  ?a3 ex:rel38 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel39 ?b1.
+  ?a2 ex:rel39 ?b2.
+  ?a3 ex:rel39 ?b3.
+}.
+
+{
+  ?a1 ex:rel39 ?b1.
+  ?a2 ex:rel39 ?b2.
+  ?a3 ex:rel39 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel40 ?b1.
+  ?a2 ex:rel40 ?b2.
+  ?a3 ex:rel40 ?b3.
+}.
+
+{
+  ?a1 ex:rel40 ?b1.
+  ?a2 ex:rel40 ?b2.
+  ?a3 ex:rel40 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel41 ?b1.
+  ?a2 ex:rel41 ?b2.
+  ?a3 ex:rel41 ?b3.
+}.
+
+{
+  ?a1 ex:rel41 ?b1.
+  ?a2 ex:rel41 ?b2.
+  ?a3 ex:rel41 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel42 ?b1.
+  ?a2 ex:rel42 ?b2.
+  ?a3 ex:rel42 ?b3.
+}.
+
+{
+  ?a1 ex:rel42 ?b1.
+  ?a2 ex:rel42 ?b2.
+  ?a3 ex:rel42 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel43 ?b1.
+  ?a2 ex:rel43 ?b2.
+  ?a3 ex:rel43 ?b3.
+}.
+
+{
+  ?a1 ex:rel43 ?b1.
+  ?a2 ex:rel43 ?b2.
+  ?a3 ex:rel43 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel44 ?b1.
+  ?a2 ex:rel44 ?b2.
+  ?a3 ex:rel44 ?b3.
+}.
+
+{
+  ?a1 ex:rel44 ?b1.
+  ?a2 ex:rel44 ?b2.
+  ?a3 ex:rel44 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel45 ?b1.
+  ?a2 ex:rel45 ?b2.
+  ?a3 ex:rel45 ?b3.
+}.
+
+{
+  ?a1 ex:rel45 ?b1.
+  ?a2 ex:rel45 ?b2.
+  ?a3 ex:rel45 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel46 ?b1.
+  ?a2 ex:rel46 ?b2.
+  ?a3 ex:rel46 ?b3.
+}.
+
+{
+  ?a1 ex:rel46 ?b1.
+  ?a2 ex:rel46 ?b2.
+  ?a3 ex:rel46 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel47 ?b1.
+  ?a2 ex:rel47 ?b2.
+  ?a3 ex:rel47 ?b3.
+}.
+
+{
+  ?a1 ex:rel47 ?b1.
+  ?a2 ex:rel47 ?b2.
+  ?a3 ex:rel47 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel48 ?b1.
+  ?a2 ex:rel48 ?b2.
+  ?a3 ex:rel48 ?b3.
+}.
+
+{
+  ?a1 ex:rel48 ?b1.
+  ?a2 ex:rel48 ?b2.
+  ?a3 ex:rel48 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel49 ?b1.
+  ?a2 ex:rel49 ?b2.
+  ?a3 ex:rel49 ?b3.
+}.
+
+{
+  ?a1 ex:rel49 ?b1.
+  ?a2 ex:rel49 ?b2.
+  ?a3 ex:rel49 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel50 ?b1.
+  ?a2 ex:rel50 ?b2.
+  ?a3 ex:rel50 ?b3.
+}.
+
+{
+  ?a1 ex:rel50 ?b1.
+  ?a2 ex:rel50 ?b2.
+  ?a3 ex:rel50 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel51 ?b1.
+  ?a2 ex:rel51 ?b2.
+  ?a3 ex:rel51 ?b3.
+}.
+
+{
+  ?a1 ex:rel51 ?b1.
+  ?a2 ex:rel51 ?b2.
+  ?a3 ex:rel51 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel52 ?b1.
+  ?a2 ex:rel52 ?b2.
+  ?a3 ex:rel52 ?b3.
+}.
+
+{
+  ?a1 ex:rel52 ?b1.
+  ?a2 ex:rel52 ?b2.
+  ?a3 ex:rel52 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel53 ?b1.
+  ?a2 ex:rel53 ?b2.
+  ?a3 ex:rel53 ?b3.
+}.
+
+{
+  ?a1 ex:rel53 ?b1.
+  ?a2 ex:rel53 ?b2.
+  ?a3 ex:rel53 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel54 ?b1.
+  ?a2 ex:rel54 ?b2.
+  ?a3 ex:rel54 ?b3.
+}.
+
+{
+  ?a1 ex:rel54 ?b1.
+  ?a2 ex:rel54 ?b2.
+  ?a3 ex:rel54 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel55 ?b1.
+  ?a2 ex:rel55 ?b2.
+  ?a3 ex:rel55 ?b3.
+}.
+
+{
+  ?a1 ex:rel55 ?b1.
+  ?a2 ex:rel55 ?b2.
+  ?a3 ex:rel55 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel56 ?b1.
+  ?a2 ex:rel56 ?b2.
+  ?a3 ex:rel56 ?b3.
+}.
+
+{
+  ?a1 ex:rel56 ?b1.
+  ?a2 ex:rel56 ?b2.
+  ?a3 ex:rel56 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel57 ?b1.
+  ?a2 ex:rel57 ?b2.
+  ?a3 ex:rel57 ?b3.
+}.
+
+{
+  ?a1 ex:rel57 ?b1.
+  ?a2 ex:rel57 ?b2.
+  ?a3 ex:rel57 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel58 ?b1.
+  ?a2 ex:rel58 ?b2.
+  ?a3 ex:rel58 ?b3.
+}.
+
+{
+  ?a1 ex:rel58 ?b1.
+  ?a2 ex:rel58 ?b2.
+  ?a3 ex:rel58 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel59 ?b1.
+  ?a2 ex:rel59 ?b2.
+  ?a3 ex:rel59 ?b3.
+}.
+
+{
+  ?a1 ex:rel59 ?b1.
+  ?a2 ex:rel59 ?b2.
+  ?a3 ex:rel59 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel60 ?b1.
+  ?a2 ex:rel60 ?b2.
+  ?a3 ex:rel60 ?b3.
+}.
+
+{
+  ?a1 ex:rel60 ?b1.
+  ?a2 ex:rel60 ?b2.
+  ?a3 ex:rel60 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel61 ?b1.
+  ?a2 ex:rel61 ?b2.
+  ?a3 ex:rel61 ?b3.
+}.
+
+{
+  ?a1 ex:rel61 ?b1.
+  ?a2 ex:rel61 ?b2.
+  ?a3 ex:rel61 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel62 ?b1.
+  ?a2 ex:rel62 ?b2.
+  ?a3 ex:rel62 ?b3.
+}.
+
+{
+  ?a1 ex:rel62 ?b1.
+  ?a2 ex:rel62 ?b2.
+  ?a3 ex:rel62 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel63 ?b1.
+  ?a2 ex:rel63 ?b2.
+  ?a3 ex:rel63 ?b3.
+}.
+
+{
+  ?a1 ex:rel63 ?b1.
+  ?a2 ex:rel63 ?b2.
+  ?a3 ex:rel63 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel64 ?b1.
+  ?a2 ex:rel64 ?b2.
+  ?a3 ex:rel64 ?b3.
+}.
+
+{
+  ?a1 ex:rel64 ?b1.
+  ?a2 ex:rel64 ?b2.
+  ?a3 ex:rel64 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel65 ?b1.
+  ?a2 ex:rel65 ?b2.
+  ?a3 ex:rel65 ?b3.
+  ?a1 ex:relGoal ?b1.
+}.

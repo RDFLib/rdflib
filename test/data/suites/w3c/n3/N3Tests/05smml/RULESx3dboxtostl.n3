@@ -1,0 +1,170 @@
+@prefix : <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/ifctox3d#>.
+@prefix x3d: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologyx3d20091015#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix list: <http://www.co-ode.org/ontologies/lists/2008/09/11/list.owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix inst: <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> . 
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix stl:     <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101#> .
+@prefix matrix: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/matrix#>.
+
+
+  # Search for an x3d:Box, collect its parameters and use them to calculate the vertices of the box.
+	{
+    ?Box a x3d:Box.
+    ?Box x3d:sizeX ?sizeX.
+    ?Box x3d:sizeY ?sizeY.
+    ?Box x3d:sizeZ ?sizeZ.
+    ?Box x3d:translation ?Transmatrix.
+      ?Transmatrix a matrix:matrix3x1.
+      ?Transmatrix matrix:elements (?transX ?transY ?transZ).
+    ?Box x3d:rotationmatrix ?Rotmatrix.
+      ?Rotmatrix a matrix:matrix3x3.
+      ?Rotmatrix matrix:elements (?rotX1 ?rotX2 ?Blanco1 ?rotY1 ?rotY2 ?Blanco2 ?Blanco3 ?Blanco4 ?Blanco5).
+    
+    (?sizeX 2) math:quotient ?sizeXDiv2.
+    (?sizeY 2) math:quotient ?sizeYDiv2.
+    #(?sizeZ 2) math:quotient ?sizeZDiv2.
+    
+    (0 ?sizeXDiv2) math:difference ?MinSizeX.
+    (0 ?sizeXDiv2) math:sum ?PlusSizeX.
+    (0 ?sizeYDiv2) math:difference ?MinSizeY.
+    (0 ?sizeYDiv2) math:sum ?PlusSizeY.
+    #(0 ?sizeZDiv2) math:difference ?MinSizeZ.
+    #(0 ?sizeZ) math:sum ?PlusSizeZ 
+  }
+  =>
+  {
+    ?Box stl:triangles (?t1 ?t2 ?t3 ?t4 ?t5 ?t6 ?t7 ?t8 ?t9 ?t10 ?t11 ?t12).
+    ?t1 stl:ntemp (0 -1 0).
+    ?t1 stl:v1temp (?MinSizeX ?MinSizeY 0).
+    ?t1 stl:v2temp (?PlusSizeX ?MinSizeY 0).
+    ?t1 stl:v3temp (?PlusSizeX ?MinSizeY ?sizeZ).
+    ?t1 stl:translation (?transX ?transY ?transZ).
+    ?t1 stl:rotation (?rotX1 ?rotX2 ?rotY1 ?rotY2).
+    ?t2 stl:ntemp (0 -1 0).
+    ?t2 stl:v1temp (?MinSizeX ?MinSizeY 0).
+    ?t2 stl:v2temp (?PlusSizeX ?MinSizeY ?sizeZ).
+    ?t2 stl:v3temp (?MinSizeX ?MinSizeY ?sizeZ).
+    ?t2 stl:translation (?transX ?transY ?transZ).
+    ?t2 stl:rotation (?rotX1 ?rotX2 ?rotY1 ?rotY2).
+    ?t3 stl:ntemp (1 0 0).
+    ?t3 stl:v1temp (?PlusSizeX ?MinSizeY 0).
+    ?t3 stl:v2temp (?PlusSizeX ?PlusSizeY 0).
+    ?t3 stl:v3temp (?PlusSizeX ?PlusSizeY ?sizeZ).
+    ?t3 stl:translation (?transX ?transY ?transZ).
+    ?t3 stl:rotation (?rotX1 ?rotX2 ?rotY1 ?rotY2).
+    ?t4 stl:ntemp (1 0 0).
+    ?t4 stl:v1temp (?PlusSizeX ?MinSizeY 0).
+    ?t4 stl:v2temp (?PlusSizeX ?PlusSizeY ?sizeZ).
+    ?t4 stl:v3temp (?PlusSizeX ?MinSizeY ?sizeZ).
+    ?t4 stl:translation (?transX ?transY ?transZ).
+    ?t4 stl:rotation (?rotX1 ?rotX2 ?rotY1 ?rotY2).
+    ?t5 stl:ntemp (0 1 0).
+    ?t5 stl:v1temp (?PlusSizeX ?PlusSizeY 0).
+    ?t5 stl:v2temp (?MinSizeX ?PlusSizeY 0).
+    ?t5 stl:v3temp (?MinSizeX ?PlusSizeY ?sizeZ).
+    ?t5 stl:translation (?transX ?transY ?transZ).
+    ?t5 stl:rotation (?rotX1 ?rotX2 ?rotY1 ?rotY2).
+    ?t6 stl:ntemp (0 1 0).
+    ?t6 stl:v1temp (?PlusSizeX ?PlusSizeY 0).   
+    ?t6 stl:v2temp (?MinSizeX ?PlusSizeY ?sizeZ).
+    ?t6 stl:v3temp (?PlusSizeX ?PlusSizeY ?sizeZ).
+    ?t6 stl:translation (?transX ?transY ?transZ).
+    ?t6 stl:rotation (?rotX1 ?rotX2 ?rotY1 ?rotY2).
+    ?t7 stl:ntemp (-1 0 0).
+    ?t7 stl:v1temp (?MinSizeX ?PlusSizeY 0).
+    ?t7 stl:v2temp (?MinSizeX ?MinSizeY 0).
+    ?t7 stl:v3temp (?MinSizeX ?MinSizeY ?sizeZ).
+    ?t7 stl:translation (?transX ?transY ?transZ).
+    ?t7 stl:rotation (?rotX1 ?rotX2 ?rotY1 ?rotY2).
+    ?t8 stl:ntemp (-1 0 0).
+    ?t8 stl:v1temp (?MinSizeX ?PlusSizeY 0).
+    ?t8 stl:v2temp (?MinSizeX ?MinSizeY ?sizeZ).
+    ?t8 stl:v3temp (?MinSizeX ?PlusSizeY ?sizeZ).
+    ?t8 stl:translation (?transX ?transY ?transZ).
+    ?t8 stl:rotation (?rotX1 ?rotX2 ?rotY1 ?rotY2).
+    ?t9 stl:ntemp (0 0 1).
+    ?t9 stl:v1temp (?MinSizeX ?MinSizeY ?sizeZ).
+    ?t9 stl:v2temp (?PlusSizeX ?MinSizeY ?sizeZ).
+    ?t9 stl:v3temp (?PlusSizeX ?PlusSizeY ?sizeZ).
+    ?t9 stl:translation (?transX ?transY ?transZ).
+    ?t9 stl:rotation (?rotX1 ?rotX2 ?rotY1 ?rotY2).
+    ?t10 stl:ntemp (0 0 1).
+    ?t10 stl:v1temp (?MinSizeX ?MinSizeY ?sizeZ).
+    ?t10 stl:v2temp (?PlusSizeX ?PlusSizeY ?sizeZ).
+    ?t10 stl:v3temp (?MinSizeX ?PlusSizeY ?sizeZ).
+    ?t10 stl:translation (?transX ?transY ?transZ).
+    ?t10 stl:rotation (?rotX1 ?rotX2 ?rotY1 ?rotY2).
+    ?t11 stl:ntemp (0 0 -1).
+    ?t11 stl:v1temp (?MinSizeX ?MinSizeY 0).
+    ?t11 stl:v2temp (?PlusSizeX ?PlusSizeY 0).
+    ?t11 stl:v3temp (?PlusSizeX ?MinSizeY 0).
+    ?t11 stl:translation (?transX ?transY ?transZ).
+    ?t11 stl:rotation (?rotX1 ?rotX2 ?rotY1 ?rotY2).
+    ?t12 stl:ntemp (0 0 -1).
+    ?t12 stl:v1temp (?MinSizeX ?MinSizeY 0).
+    ?t12 stl:v2temp (?MinSizeX ?PlusSizeY 0).
+    ?t12 stl:v3temp (?PlusSizeX ?PlusSizeY 0).
+    ?t12 stl:translation (?transX ?transY ?transZ).
+    ?t12 stl:rotation (?rotX1 ?rotX2 ?rotY1 ?rotY2)
+  }.
+  
+  {
+    ?triangle stl:ntemp (?nx ?ny ?nz).
+    ?triangle stl:v1temp (?v1x ?v1y ?v1z).
+    ?triangle stl:v2temp (?v2x ?v2y ?v2z).
+    ?triangle stl:v3temp (?v3x ?v3y ?v3z).
+    ?triangle stl:translation (?transX ?transY ?transZ).
+    ?triangle stl:rotation (?rotX1 ?rotX2 ?rotY1 ?rotY2).
+    
+    (?nx ?rotX1) math:product ?rotmatrixprodnX1.
+    (?ny ?rotX2) math:product ?rotmatrixprodnX2.
+    (?nx ?rotY1) math:product ?rotmatrixprodnY1.
+    (?ny ?rotY2) math:product ?rotmatrixprodnY2.
+    (?rotmatrixprodnX1 ?rotmatrixprodnX2) math:sum ?nxnew.
+    (?rotmatrixprodnY1 ?rotmatrixprodnY2) math:sum ?nynew.
+    
+    (?v1x ?rotX1) math:product ?rotmatrixprod1X1.
+    (?v1y ?rotX2) math:product ?rotmatrixprod1X2.
+    (?v1x ?rotY1) math:product ?rotmatrixprod1Y1.
+    (?v1y ?rotY2) math:product ?rotmatrixprod1Y2.
+    (?rotmatrixprod1X1 ?rotmatrixprod1X2) math:sum ?rotmatrixprod1X.
+    (?rotmatrixprod1Y1 ?rotmatrixprod1Y2) math:sum ?rotmatrixprod1Y.
+    (?rotmatrixprod1X ?transX) math:sum ?v1xnew.
+    (?rotmatrixprod1Y ?transY) math:sum ?v1ynew.
+    (?v1z ?transZ) math:sum ?v1znew.
+    
+    (?v2x ?rotX1) math:product ?rotmatrixprod2X1.
+    (?v2y ?rotX2) math:product ?rotmatrixprod2X2.
+    (?v2x ?rotY1) math:product ?rotmatrixprod2Y1.
+    (?v2y ?rotY2) math:product ?rotmatrixprod2Y2.
+    (?rotmatrixprod2X1 ?rotmatrixprod2X2) math:sum ?rotmatrixprod2X.
+    (?rotmatrixprod2Y1 ?rotmatrixprod2Y2) math:sum ?rotmatrixprod2Y.
+    (?rotmatrixprod2X ?transX) math:sum ?v2xnew.
+    (?rotmatrixprod2Y ?transY) math:sum ?v2ynew.
+    (?v2z ?transZ) math:sum ?v2znew.
+    
+    (?v3x ?rotX1) math:product ?rotmatrixprod3X1.
+    (?v3y ?rotX2) math:product ?rotmatrixprod3X2.
+    (?v3x ?rotY1) math:product ?rotmatrixprod3Y1.
+    (?v3y ?rotY2) math:product ?rotmatrixprod3Y2.
+    (?rotmatrixprod3X1 ?rotmatrixprod3X2) math:sum ?rotmatrixprod3X.
+    (?rotmatrixprod3Y1 ?rotmatrixprod3Y2) math:sum ?rotmatrixprod3Y.
+    (?rotmatrixprod3X ?transX) math:sum ?v3xnew.
+    (?rotmatrixprod3Y ?transY) math:sum ?v3ynew.
+    (?v3z ?transZ) math:sum ?v3znew
+    
+  }
+  =>
+  {
+    ?triangle stl:normal (?nxnew ?nynew ?nz).
+    ?triangle stl:vertex1 (?v1xnew ?v1ynew ?v1znew).
+    ?triangle stl:vertex2 (?v2xnew ?v2ynew ?v2znew).
+    ?triangle stl:vertex3 (?v3xnew ?v3ynew ?v3znew)
+  }.

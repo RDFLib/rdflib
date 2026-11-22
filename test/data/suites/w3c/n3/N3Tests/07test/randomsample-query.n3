@@ -1,0 +1,4 @@
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+# taking a random sample of 25 triples from 1000 triples
+{(<http://eulersharp.sourceforge.net/2007/07test/graph-1000.n3> 25) :randomsample ?A} => {?A a :Result}.

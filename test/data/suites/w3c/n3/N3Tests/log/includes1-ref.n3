@@ -1,0 +1,12 @@
+@prefix : <includes1.n3#>.
+
+:test1 a :SUCCESS .
+:test2 a :SUCCESS .
+:test3i a :SUCCESS .
+:test4 a :SUCCESS .
+:test6 a :SUCCESS .
+:test7i a :SUCCESS .
+:test8 a :SUCCESS .
+:test9 a :SUCCESS .
+:test10 a :SUCCESS .
+:test11i a :SUCCESS .

@@ -1,9 +1,18 @@
+from __future__ import annotations
 
-from rdflib import URIRef, BNode, Literal
+from io import StringIO
+from typing import IO
+
+from rdflib.namespace import NamespaceManager
 from rdflib.query import ResultSerializer
+from rdflib.term import BNode, Literal, URIRef, Variable
 
-def _termString(t, namespace_manager):
-    if t == None:
+
+def _termString(
+    t: URIRef | Literal | BNode | None,
+    namespace_manager: NamespaceManager | None,
+) -> str:
+    if t is None:
         return "-"
     if namespace_manager:
         if isinstance(t, URIRef):
@@ -18,15 +27,20 @@ def _termString(t, namespace_manager):
 
 class TXTResultSerializer(ResultSerializer):
     """
-    A write only QueryResult serializer for text/ascii tables
+    A write-only QueryResult serializer for text/ascii tables
     """
 
-    def serialize(self, stream, encoding, namespace_manager = None):
-
+    def serialize(
+        self,
+        stream: IO,
+        encoding: str = "utf-8",
+        *,
+        namespace_manager: NamespaceManager | None = None,
+        **kwargs,
+    ) -> None:
         """
         return a text table of query results
         """
-
 
         def c(s, w):
             """
@@ -34,27 +48,39 @@ class TXTResultSerializer(ResultSerializer):
             """
             w -= len(s)
             h1 = h2 = w // 2
-            if w % 2: h2 += 1
+            if w % 2:
+                h2 += 1
             return " " * h1 + s + " " * h2
 
-        if self.result.type!='SELECT':
+        if self.result.type != "SELECT":
             raise Exception("Can only pretty print SELECT results!")
-
+        string_stream = StringIO()
         if not self.result:
-            return "(no results)\n"
+            string_stream.write("(no results)\n")
         else:
-
-            keys = sorted(self.result.vars)
+            keys: list[Variable] = self.result.vars  # type: ignore[assignment]
             maxlen = [0] * len(keys)
-            b = [[_termString(r[k], namespace_manager) for k in keys] for r in self.result]
+            b = [
+                # type error: Value of type "Union[tuple[Node, Node, Node], bool, ResultRow]" is not indexable
+                # type error: Argument 1 to "_termString" has incompatible type "Union[Node, Any]"; expected "Union[URIRef, Literal, BNode, None]"  [arg-type]
+                # type error: No overload variant of "__getitem__" of "tuple" matches argument type "Variable"
+                # NOTE on type error: The problem here is that r can be more types than _termString expects because result can be a result of multiple types.
+                [_termString(r[k], namespace_manager) for k in keys]  # type: ignore[index, arg-type, call-overload]
+                for r in self.result
+            ]
             for r in b:
                 for i in range(len(keys)):
                     maxlen[i] = max(maxlen[i], len(r[i]))
-
-            stream.write(
-                "|".join([c(k, maxlen[i]) for i, k in enumerate(keys)]) + "\n")
-            stream.write("-" * (len(maxlen)+sum(maxlen)) + "\n")
+            string_stream.write(
+                "|".join([c(k, maxlen[i]) for i, k in enumerate(keys)]) + "\n"
+            )
+            string_stream.write("-" * (len(maxlen) + sum(maxlen)) + "\n")
             for r in sorted(b):
-                stream.write("|".join(
-                    [t + " " * (i - len(t)) for i, t in zip(maxlen, r)]) + "\n")
-
+                string_stream.write(
+                    "|".join([t + " " * (i - len(t)) for i, t in zip(maxlen, r)]) + "\n"
+                )
+        text_val = string_stream.getvalue()
+        try:
+            stream.write(text_val.encode(encoding))
+        except (TypeError, ValueError):
+            stream.write(text_val)

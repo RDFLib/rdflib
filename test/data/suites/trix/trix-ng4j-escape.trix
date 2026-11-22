@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TriX xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+  <graph>
+    <triple>
+      <uri>http://example.org/#foo</uri>
+      <uri>http://example.org/#bar</uri>
+      <plainLiteral>&lt;&quot;&amp;</plainLiteral>
+    </triple>
+  </graph>
+</TriX>

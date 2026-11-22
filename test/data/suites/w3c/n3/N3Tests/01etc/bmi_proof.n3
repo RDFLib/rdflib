@@ -1,0 +1,1347 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/bmi/bmi_instances.n3 http://josd.github.io/brain/bmi/bmi_rules.n3 http://josd.github.io/brain/bmi/weightStatus_rules.n3 http://josd.github.io/brain/bmi/age_rules_backward.n3 --query http://josd.github.io/brain/bmi/bmi_query.n3
+
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix organism: <http://eulersharp.sourceforge.net/2003/03swap/organism#>.
+@prefix humanbody: <http://eulersharp.sourceforge.net/2003/03swap/humanBody#>.
+@prefix human: <http://eulersharp.sourceforge.net/2003/03swap/human#>.
+@prefix units: <http://eulersharp.sourceforge.net/2003/03swap/units#>.
+@prefix quant: <http://eulersharp.sourceforge.net/2003/03swap/quantities#>.
+@prefix physical: <http://eulersharp.sourceforge.net/2003/03swap/physicalResource#>.
+@prefix event: <http://eulersharp.sourceforge.net/2003/03swap/event#>.
+@prefix time: <http://eulersharp.sourceforge.net/2003/03swap/time#>.
+@prefix i: <http://josd.github.io/brain/bmi/bmi_instances.n3#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix dce: <http://purl.org/dc/elements/1.1/>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix func: <http://www.w3.org/2007/rif-builtin-function#>.
+@prefix schema: <http://schema.org/>.
+@prefix fos: <http://eulersharp.sourceforge.net/2003/03swap/foster#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:component <#lemma3>;
+  r:component <#lemma4>;
+  r:component <#lemma5>;
+  r:gives {
+    i:adult3 human:hasBodyMassIndex _:sk_0.
+    i:adult3 human:hasWeightStatus _:sk_3.
+    _:sk_0 time:hasDateTime "2010-01-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_0 quant:hasUnit units:kilogramPerMeterSquare.
+    _:sk_0 quant:hasValue 15.299747554165355 .
+    _:sk_0 event:basedOn i:weightMeasurement3.
+    _:sk_0 event:basedOn i:lengthMeasurement3.
+    _:sk_3 a humanbody:SeverelyUnderweight.
+    _:sk_3 time:hasDateTime "2010-01-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_3 event:basedOn _:sk_0.
+    i:adult4 human:hasBodyMassIndex _:sk_1.
+    i:adult4 human:hasWeightStatus _:sk_5.
+    _:sk_1 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_1 quant:hasUnit units:kilogramPerMeterSquare.
+    _:sk_1 quant:hasValue 24.535123966942148 .
+    _:sk_1 event:basedOn i:weightMeasurement4.
+    _:sk_1 event:basedOn i:lengthMeasurement4.
+    _:sk_5 a humanbody:NormalWeight.
+    _:sk_5 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_5 event:basedOn _:sk_1.
+    i:adult5 human:hasBodyMassIndex _:sk_2.
+    i:adult5 human:hasWeightStatus _:sk_4.
+    _:sk_2 time:hasDateTime "2011-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_2 quant:hasUnit units:kilogramPerMeterSquare.
+    _:sk_2 quant:hasValue 18.359697064998425 .
+    _:sk_2 event:basedOn i:weightMeasurement5.
+    _:sk_2 event:basedOn i:lengthMeasurement5.
+    _:sk_4 a humanbody:Underweight.
+    _:sk_4 time:hasDateTime "2011-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_4 event:basedOn _:sk_2.
+    i:adult1 human:hasBodyMassIndex _:sk_7.
+    i:adult1 human:hasWeightStatus _:sk_11.
+    _:sk_7 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_7 quant:hasUnit units:kilogramPerMeterSquare.
+    _:sk_7 quant:hasValue 55.4016620498615 .
+    _:sk_7 event:basedOn i:weightMeasurement1.
+    _:sk_7 event:basedOn i:lengthMeasurement1.
+    _:sk_11 a humanbody:SuperObese.
+    _:sk_11 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_11 event:basedOn _:sk_7.
+    i:adult2 human:hasBodyMassIndex _:sk_9.
+    i:adult2 human:hasWeightStatus _:sk_10.
+    _:sk_9 time:hasDateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_9 quant:hasUnit units:kilogramPerMeterSquare.
+    _:sk_9 quant:hasValue 26.17489589530042 .
+    _:sk_9 event:basedOn i:weightMeasurement2.
+    _:sk_9 event:basedOn i:lengthMeasurement2.
+    _:sk_10 a humanbody:Overweight.
+    _:sk_10 time:hasDateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_10 event:basedOn _:sk_9.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    i:adult3 human:hasBodyMassIndex _:sk_0.
+    i:adult3 human:hasWeightStatus _:sk_3.
+    _:sk_0 time:hasDateTime "2010-01-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_0 quant:hasUnit units:kilogramPerMeterSquare.
+    _:sk_0 quant:hasValue 15.299747554165355 .
+    _:sk_0 event:basedOn i:weightMeasurement3.
+    _:sk_0 event:basedOn i:lengthMeasurement3.
+    _:sk_3 a humanbody:SeverelyUnderweight.
+    _:sk_3 time:hasDateTime "2010-01-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_3 event:basedOn _:sk_0.
+  };
+  r:evidence (
+    <#lemma6>
+    <#lemma7>
+    <#lemma6>
+    <#lemma6>
+    <#lemma6>
+    <#lemma6>
+    <#lemma6>
+    <#lemma8>
+    <#lemma9>
+    <#lemma7>
+    <#lemma7>
+    <#lemma7>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "2010-01-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 15.299747554165355];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#weightMeasurement3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#lengthMeasurement3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2003/03swap/humanBody#SeverelyUnderweight"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo "2010-01-20T00:00:00+01:00"^^xsd:dateTime];
+  r:rule <#lemma10>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    i:adult4 human:hasBodyMassIndex _:sk_1.
+    i:adult4 human:hasWeightStatus _:sk_5.
+    _:sk_1 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_1 quant:hasUnit units:kilogramPerMeterSquare.
+    _:sk_1 quant:hasValue 24.535123966942148 .
+    _:sk_1 event:basedOn i:weightMeasurement4.
+    _:sk_1 event:basedOn i:lengthMeasurement4.
+    _:sk_5 a humanbody:NormalWeight.
+    _:sk_5 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_5 event:basedOn _:sk_1.
+  };
+  r:evidence (
+    <#lemma11>
+    <#lemma12>
+    <#lemma11>
+    <#lemma11>
+    <#lemma11>
+    <#lemma11>
+    <#lemma11>
+    <#lemma13>
+    <#lemma14>
+    <#lemma12>
+    <#lemma12>
+    <#lemma12>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "2010-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 24.535123966942148];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#weightMeasurement4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#lengthMeasurement4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2003/03swap/humanBody#NormalWeight"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo "2010-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:rule <#lemma10>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    i:adult5 human:hasBodyMassIndex _:sk_2.
+    i:adult5 human:hasWeightStatus _:sk_4.
+    _:sk_2 time:hasDateTime "2011-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_2 quant:hasUnit units:kilogramPerMeterSquare.
+    _:sk_2 quant:hasValue 18.359697064998425 .
+    _:sk_2 event:basedOn i:weightMeasurement5.
+    _:sk_2 event:basedOn i:lengthMeasurement5.
+    _:sk_4 a humanbody:Underweight.
+    _:sk_4 time:hasDateTime "2011-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_4 event:basedOn _:sk_2.
+  };
+  r:evidence (
+    <#lemma15>
+    <#lemma16>
+    <#lemma15>
+    <#lemma15>
+    <#lemma15>
+    <#lemma15>
+    <#lemma15>
+    <#lemma17>
+    <#lemma18>
+    <#lemma16>
+    <#lemma16>
+    <#lemma16>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "2011-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 18.359697064998425];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#weightMeasurement5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#lengthMeasurement5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2003/03swap/humanBody#Underweight"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo "2011-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:rule <#lemma10>.
+
+<#lemma4> a r:Inference;
+  r:gives {
+    i:adult1 human:hasBodyMassIndex _:sk_7.
+    i:adult1 human:hasWeightStatus _:sk_11.
+    _:sk_7 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_7 quant:hasUnit units:kilogramPerMeterSquare.
+    _:sk_7 quant:hasValue 55.4016620498615 .
+    _:sk_7 event:basedOn i:weightMeasurement1.
+    _:sk_7 event:basedOn i:lengthMeasurement1.
+    _:sk_11 a humanbody:SuperObese.
+    _:sk_11 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_11 event:basedOn _:sk_7.
+  };
+  r:evidence (
+    <#lemma19>
+    <#lemma20>
+    <#lemma19>
+    <#lemma19>
+    <#lemma19>
+    <#lemma19>
+    <#lemma19>
+    <#lemma21>
+    <#lemma22>
+    <#lemma20>
+    <#lemma20>
+    <#lemma20>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_11"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "2010-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 55.4016620498615];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#weightMeasurement1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#lengthMeasurement1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2003/03swap/humanBody#SuperObese"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo "2010-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:rule <#lemma10>.
+
+<#lemma5> a r:Inference;
+  r:gives {
+    i:adult2 human:hasBodyMassIndex _:sk_9.
+    i:adult2 human:hasWeightStatus _:sk_10.
+    _:sk_9 time:hasDateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_9 quant:hasUnit units:kilogramPerMeterSquare.
+    _:sk_9 quant:hasValue 26.17489589530042 .
+    _:sk_9 event:basedOn i:weightMeasurement2.
+    _:sk_9 event:basedOn i:lengthMeasurement2.
+    _:sk_10 a humanbody:Overweight.
+    _:sk_10 time:hasDateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_10 event:basedOn _:sk_9.
+  };
+  r:evidence (
+    <#lemma23>
+    <#lemma24>
+    <#lemma23>
+    <#lemma23>
+    <#lemma23>
+    <#lemma23>
+    <#lemma23>
+    <#lemma25>
+    <#lemma26>
+    <#lemma24>
+    <#lemma24>
+    <#lemma24>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_9"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_10"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "2010-02-25T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 26.17489589530042];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#weightMeasurement2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#lengthMeasurement2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2003/03swap/humanBody#Overweight"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo "2010-02-25T00:00:00+01:00"^^xsd:dateTime];
+  r:rule <#lemma10>.
+
+<#lemma6> a r:Inference;
+  r:gives {
+    i:adult3 human:hasBodyMassIndex _:sk_0.
+    _:sk_0 quant:hasUnit units:kilogramPerMeterSquare.
+    _:sk_0 quant:hasValue 15.299747554165355 .
+    _:sk_0 time:hasDateTime "2010-01-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_0 event:basedOn i:weightMeasurement3.
+    _:sk_0 event:basedOn i:lengthMeasurement3.
+  };
+  r:evidence (
+    <#lemma27>
+    <#lemma28>
+    <#lemma29>
+    <#lemma30>
+    <#lemma31>
+    <#lemma32>
+    <#lemma9>
+    <#lemma33>
+    <#lemma34>
+    <#lemma35>
+    <#lemma36>
+    <#lemma8>
+    <#lemma37>
+    <#lemma38>
+    [ a r:Fact; r:gives {("2010-01-20T00:00:00+01:00"^^xsd:dateTime "2010-01-20T00:00:00+01:00"^^xsd:dateTime) math:difference 0}]
+    [ a r:Fact; r:gives {0 math:notGreaterThan "P10Y"^^xsd:duration}]
+    [ a r:Fact; r:gives {0 math:notLessThan "-P7D"^^xsd:duration}]
+    [ a r:Fact; r:gives {("2010-01-20T00:00:00+01:00"^^xsd:dateTime "2010-01-20T00:00:00+01:00"^^xsd:dateTime) e:max "2010-01-20T00:00:00+01:00"^^xsd:dateTime}]
+    [ a r:Fact; r:gives {("2010-01-20T00:00:00+01:00" xsd:dateTime) log:dtlit "2010-01-20T00:00:00+01:00"^^xsd:dateTime}]
+    [ a r:Fact; r:gives {("2010-01-20T00:00:00+01:00" xsd:dateTime) log:dtlit "2010-01-20T00:00:00+01:00"^^xsd:dateTime}]
+    <#lemma39>
+    [ a r:Fact; r:gives {23 math:notLessThan 15}]
+    [ a r:Fact; r:gives {(1.715 2) math:exponentiation 2.941225}]
+    [ a r:Fact; r:gives {(45 2.941225) math:quotient 15.299747554165355}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#body1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#length1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#weight1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#lengthMeasurement3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 1.715];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo "2010-01-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#weightMeasurement3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 45];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo "2010-01-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo "2010-01-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_12"]; r:boundTo "2010-01-20T00:00:00+01:00"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_13"]; r:boundTo "2010-01-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_14"]; r:boundTo 23];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_15"]; r:boundTo 2.941225];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_16"]; r:boundTo 15.299747554165355];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_17"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma40>.
+
+<#lemma7> a r:Inference;
+  r:gives {
+    i:adult3 human:hasWeightStatus _:sk_3.
+    _:sk_3 a humanbody:SeverelyUnderweight.
+    _:sk_3 time:hasDateTime "2010-01-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_3 event:basedOn _:sk_0.
+  };
+  r:evidence (
+    <#lemma6>
+    <#lemma6>
+    <#lemma6>
+    [ a r:Fact; r:gives {15.299747554165355 math:lessThan 16}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 15.299747554165355];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "2010-01-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:rule <#lemma41>.
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    i:weightMeasurement3 quant:hasUnit units:kilogram.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma9> a r:Extraction;
+  r:gives {
+    i:lengthMeasurement3 quant:hasUnit units:meter.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma10> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5, var:x_6, var:x_7, var:x_8. {var:x_0 human:hasBodyMassIndex var:x_1.
+     var:x_0 human:hasWeightStatus var:x_2.
+     var:x_1 time:hasDateTime var:x_3.
+     var:x_1 quant:hasUnit units:kilogramPerMeterSquare.
+     var:x_1 quant:hasValue var:x_4.
+     var:x_1 event:basedOn var:x_5.
+     var:x_1 event:basedOn var:x_6.
+     var:x_5 quant:hasUnit units:kilogram.
+     var:x_6 quant:hasUnit units:meter.
+     var:x_2 a var:x_7.
+     var:x_2 time:hasDateTime var:x_8.
+     var:x_2 event:basedOn var:x_1} => {var:x_0 human:hasBodyMassIndex var:x_1.
+     var:x_0 human:hasWeightStatus var:x_2.
+     var:x_1 time:hasDateTime var:x_3.
+     var:x_1 quant:hasUnit units:kilogramPerMeterSquare.
+     var:x_1 quant:hasValue var:x_4.
+     var:x_1 event:basedOn var:x_5.
+     var:x_1 event:basedOn var:x_6.
+     var:x_2 a var:x_7.
+     var:x_2 time:hasDateTime var:x_8.
+     var:x_2 event:basedOn var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_query.n3>].
+
+<#lemma11> a r:Inference;
+  r:gives {
+    i:adult4 human:hasBodyMassIndex _:sk_1.
+    _:sk_1 quant:hasUnit units:kilogramPerMeterSquare.
+    _:sk_1 quant:hasValue 24.535123966942148 .
+    _:sk_1 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_1 event:basedOn i:weightMeasurement4.
+    _:sk_1 event:basedOn i:lengthMeasurement4.
+  };
+  r:evidence (
+    <#lemma42>
+    <#lemma43>
+    <#lemma44>
+    <#lemma45>
+    <#lemma46>
+    <#lemma47>
+    <#lemma14>
+    <#lemma48>
+    <#lemma49>
+    <#lemma50>
+    <#lemma51>
+    <#lemma13>
+    <#lemma52>
+    <#lemma53>
+    [ a r:Fact; r:gives {("2010-02-20T00:00:00+01:00"^^xsd:dateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime) math:difference 0}]
+    [ a r:Fact; r:gives {0 math:notGreaterThan "P10Y"^^xsd:duration}]
+    [ a r:Fact; r:gives {0 math:notLessThan "-P7D"^^xsd:duration}]
+    [ a r:Fact; r:gives {("2010-02-20T00:00:00+01:00"^^xsd:dateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime) e:max "2010-02-20T00:00:00+01:00"^^xsd:dateTime}]
+    [ a r:Fact; r:gives {("2010-02-20T00:00:00+01:00" xsd:dateTime) log:dtlit "2010-02-20T00:00:00+01:00"^^xsd:dateTime}]
+    [ a r:Fact; r:gives {("2010-02-20T00:00:00+01:00" xsd:dateTime) log:dtlit "2010-02-20T00:00:00+01:00"^^xsd:dateTime}]
+    <#lemma54>
+    [ a r:Fact; r:gives {35 math:notLessThan 15}]
+    [ a r:Fact; r:gives {(1.76 2) math:exponentiation 3.0976}]
+    [ a r:Fact; r:gives {(76 3.0976) math:quotient 24.535123966942148}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#body2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#length2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#weight2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#lengthMeasurement4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 1.76];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo "2010-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#weightMeasurement4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 76];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo "2010-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo "2010-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_12"]; r:boundTo "2010-02-20T00:00:00+01:00"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_13"]; r:boundTo "2010-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_14"]; r:boundTo 35];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_15"]; r:boundTo 3.0976];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_16"]; r:boundTo 24.535123966942148];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_17"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:rule <#lemma40>.
+
+<#lemma12> a r:Inference;
+  r:gives {
+    i:adult4 human:hasWeightStatus _:sk_5.
+    _:sk_5 a humanbody:NormalWeight.
+    _:sk_5 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_5 event:basedOn _:sk_1.
+  };
+  r:evidence (
+    <#lemma11>
+    <#lemma11>
+    <#lemma11>
+    [ a r:Fact; r:gives {24.535123966942148 math:notLessThan 18.5}]
+    [ a r:Fact; r:gives {24.535123966942148 math:notGreaterThan 24.9}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 24.535123966942148];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "2010-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:rule <#lemma55>.
+
+<#lemma13> a r:Extraction;
+  r:gives {
+    i:weightMeasurement4 quant:hasUnit units:kilogram.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma14> a r:Extraction;
+  r:gives {
+    i:lengthMeasurement4 quant:hasUnit units:meter.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma15> a r:Inference;
+  r:gives {
+    i:adult5 human:hasBodyMassIndex _:sk_2.
+    _:sk_2 quant:hasUnit units:kilogramPerMeterSquare.
+    _:sk_2 quant:hasValue 18.359697064998425 .
+    _:sk_2 time:hasDateTime "2011-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_2 event:basedOn i:weightMeasurement5.
+    _:sk_2 event:basedOn i:lengthMeasurement5.
+  };
+  r:evidence (
+    <#lemma56>
+    <#lemma57>
+    <#lemma58>
+    <#lemma59>
+    <#lemma60>
+    <#lemma61>
+    <#lemma18>
+    <#lemma62>
+    <#lemma63>
+    <#lemma64>
+    <#lemma65>
+    <#lemma17>
+    <#lemma66>
+    <#lemma67>
+    [ a r:Fact; r:gives {("2011-02-20T00:00:00+01:00"^^xsd:dateTime "2011-02-20T00:00:00+01:00"^^xsd:dateTime) math:difference 0}]
+    [ a r:Fact; r:gives {0 math:notGreaterThan "P10Y"^^xsd:duration}]
+    [ a r:Fact; r:gives {0 math:notLessThan "-P7D"^^xsd:duration}]
+    [ a r:Fact; r:gives {("2011-02-20T00:00:00+01:00"^^xsd:dateTime "2011-02-20T00:00:00+01:00"^^xsd:dateTime) e:max "2011-02-20T00:00:00+01:00"^^xsd:dateTime}]
+    [ a r:Fact; r:gives {("2011-02-20T00:00:00+01:00" xsd:dateTime) log:dtlit "2011-02-20T00:00:00+01:00"^^xsd:dateTime}]
+    [ a r:Fact; r:gives {("2011-02-20T00:00:00+01:00" xsd:dateTime) log:dtlit "2011-02-20T00:00:00+01:00"^^xsd:dateTime}]
+    <#lemma68>
+    [ a r:Fact; r:gives {15 math:notLessThan 15}]
+    [ a r:Fact; r:gives {(1.715 2) math:exponentiation 2.941225}]
+    [ a r:Fact; r:gives {(54 2.941225) math:quotient 18.359697064998425}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#body3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#length3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#weight3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#lengthMeasurement5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 1.715];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo "2011-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#weightMeasurement5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 54];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo "2011-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo "2011-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_12"]; r:boundTo "2011-02-20T00:00:00+01:00"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_13"]; r:boundTo "2011-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_14"]; r:boundTo 15];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_15"]; r:boundTo 2.941225];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_16"]; r:boundTo 18.359697064998425];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_17"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:rule <#lemma40>.
+
+<#lemma16> a r:Inference;
+  r:gives {
+    i:adult5 human:hasWeightStatus _:sk_4.
+    _:sk_4 a humanbody:Underweight.
+    _:sk_4 time:hasDateTime "2011-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_4 event:basedOn _:sk_2.
+  };
+  r:evidence (
+    <#lemma15>
+    <#lemma15>
+    <#lemma15>
+    [ a r:Fact; r:gives {18.359697064998425 math:notLessThan 16}]
+    [ a r:Fact; r:gives {18.359697064998425 math:notGreaterThan 18.4}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 18.359697064998425];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "2011-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:rule <#lemma69>.
+
+<#lemma17> a r:Extraction;
+  r:gives {
+    i:weightMeasurement5 quant:hasUnit units:kilogram.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma18> a r:Extraction;
+  r:gives {
+    i:lengthMeasurement5 quant:hasUnit units:meter.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma19> a r:Inference;
+  r:gives {
+    i:adult1 human:hasBodyMassIndex _:sk_7.
+    _:sk_7 quant:hasUnit units:kilogramPerMeterSquare.
+    _:sk_7 quant:hasValue 55.4016620498615 .
+    _:sk_7 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_7 event:basedOn i:weightMeasurement1.
+    _:sk_7 event:basedOn i:lengthMeasurement1.
+  };
+  r:evidence (
+    <#lemma70>
+    <#lemma21>
+    <#lemma71>
+    <#lemma72>
+    <#lemma73>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/bmi/bmi_instances.n3> <http://josd.github.io/brain/bmi/bmi_rules.n3> <http://josd.github.io/brain/bmi/weightStatus_rules.n3> <http://josd.github.io/brain/bmi/age_rules_backward.n3>) 1) e:optional {i:adult1 human:hasLength i:lengthMeasurement1.
+     i:lengthMeasurement1 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+     i:lengthMeasurement1 quant:convertedTo _:sk_6.
+     _:sk_6 quant:hasUnit units:meter.
+     _:sk_6 quant:hasValue 1.9}}]
+    [ a r:Fact; r:gives {("2010-02-20T00:00:00+01:00"^^xsd:dateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime) math:difference 0}]
+    [ a r:Fact; r:gives {0 math:notGreaterThan "P0M"^^xsd:duration}]
+    [ a r:Fact; r:gives {0 math:notLessThan "-P0M"^^xsd:duration}]
+    [ a r:Fact; r:gives {("2010-02-20T00:00:00+01:00"^^xsd:dateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime) e:max "2010-02-20T00:00:00+01:00"^^xsd:dateTime}]
+    [ a r:Fact; r:gives {("2010-02-20T00:00:00+01:00" xsd:dateTime) log:dtlit "2010-02-20T00:00:00+01:00"^^xsd:dateTime}]
+    [ a r:Fact; r:gives {("2010-02-20T00:00:00+01:00" xsd:dateTime) log:dtlit "2010-02-20T00:00:00+01:00"^^xsd:dateTime}]
+    <#lemma74>
+    [ a r:Fact; r:gives {67 math:notLessThan 15}]
+    [ a r:Fact; r:gives {("_weightValue/_lengthValue**2" 200 1.9) e:calculate 55.4016620498615}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#weightMeasurement1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 200];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "2010-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo ((<http://josd.github.io/brain/bmi/bmi_instances.n3> <http://josd.github.io/brain/bmi/bmi_rules.n3> <http://josd.github.io/brain/bmi/weightStatus_rules.n3> <http://josd.github.io/brain/bmi/age_rules_backward.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#lengthMeasurement1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 1.9];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo "2010-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_6"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo "2010-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo "2010-02-20T00:00:00+01:00"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_12"]; r:boundTo "2010-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_13"]; r:boundTo 67];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_14"]; r:boundTo 55.4016620498615];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_15"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:rule <#lemma75>.
+
+<#lemma20> a r:Inference;
+  r:gives {
+    i:adult1 human:hasWeightStatus _:sk_11.
+    _:sk_11 a humanbody:SuperObese.
+    _:sk_11 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_11 event:basedOn _:sk_7.
+  };
+  r:evidence (
+    <#lemma19>
+    <#lemma19>
+    <#lemma19>
+    [ a r:Fact; r:gives {55.4016620498615 math:notLessThan 45}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_7"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 55.4016620498615];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "2010-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_11"]];
+  r:rule <#lemma76>.
+
+<#lemma21> a r:Extraction;
+  r:gives {
+    i:weightMeasurement1 quant:hasUnit units:kilogram.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma22> a r:Extraction;
+  r:gives {
+    i:lengthMeasurement1 quant:hasUnit units:meter.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma23> a r:Inference;
+  r:gives {
+    i:adult2 human:hasBodyMassIndex _:sk_9.
+    _:sk_9 quant:hasUnit units:kilogramPerMeterSquare.
+    _:sk_9 quant:hasValue 26.17489589530042 .
+    _:sk_9 time:hasDateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_9 event:basedOn i:weightMeasurement2.
+    _:sk_9 event:basedOn i:lengthMeasurement2.
+  };
+  r:evidence (
+    <#lemma77>
+    <#lemma25>
+    <#lemma78>
+    <#lemma79>
+    <#lemma80>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/bmi/bmi_instances.n3> <http://josd.github.io/brain/bmi/bmi_rules.n3> <http://josd.github.io/brain/bmi/weightStatus_rules.n3> <http://josd.github.io/brain/bmi/age_rules_backward.n3>) 1) e:optional {i:adult2 human:hasLength i:lengthMeasurement2.
+     i:lengthMeasurement2 time:hasDateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime.
+     i:lengthMeasurement2 quant:convertedTo _:sk_8.
+     _:sk_8 quant:hasUnit units:meter.
+     _:sk_8 quant:hasValue 2.05}}]
+    [ a r:Fact; r:gives {("2010-02-25T00:00:00+01:00"^^xsd:dateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime) math:difference 0}]
+    [ a r:Fact; r:gives {0 math:notGreaterThan "P0M"^^xsd:duration}]
+    [ a r:Fact; r:gives {0 math:notLessThan "-P0M"^^xsd:duration}]
+    [ a r:Fact; r:gives {("2010-02-25T00:00:00+01:00"^^xsd:dateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime) e:max "2010-02-25T00:00:00+01:00"^^xsd:dateTime}]
+    [ a r:Fact; r:gives {("2010-02-25T00:00:00+01:00" xsd:dateTime) log:dtlit "2010-02-25T00:00:00+01:00"^^xsd:dateTime}]
+    [ a r:Fact; r:gives {("2010-02-25T00:00:00+01:00" xsd:dateTime) log:dtlit "2010-02-25T00:00:00+01:00"^^xsd:dateTime}]
+    <#lemma81>
+    [ a r:Fact; r:gives {44 math:notLessThan 15}]
+    [ a r:Fact; r:gives {("_weightValue/_lengthValue**2" 110 2.05) e:calculate 26.17489589530042}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#weightMeasurement2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 110];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "2010-02-25T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo ((<http://josd.github.io/brain/bmi/bmi_instances.n3> <http://josd.github.io/brain/bmi/bmi_rules.n3> <http://josd.github.io/brain/bmi/weightStatus_rules.n3> <http://josd.github.io/brain/bmi/age_rules_backward.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#lengthMeasurement2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 2.05];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo "2010-02-25T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_8"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo "2010-02-25T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo "2010-02-25T00:00:00+01:00"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_12"]; r:boundTo "2010-02-25T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_13"]; r:boundTo 44];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_14"]; r:boundTo 26.17489589530042];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_15"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_9"]];
+  r:rule <#lemma75>.
+
+<#lemma24> a r:Inference;
+  r:gives {
+    i:adult2 human:hasWeightStatus _:sk_10.
+    _:sk_10 a humanbody:Overweight.
+    _:sk_10 time:hasDateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime.
+    _:sk_10 event:basedOn _:sk_9.
+  };
+  r:evidence (
+    <#lemma23>
+    <#lemma23>
+    <#lemma23>
+    [ a r:Fact; r:gives {26.17489589530042 math:notLessThan 25}]
+    [ a r:Fact; r:gives {26.17489589530042 math:notGreaterThan 29.9}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_9"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 26.17489589530042];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "2010-02-25T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_10"]];
+  r:rule <#lemma82>.
+
+<#lemma25> a r:Extraction;
+  r:gives {
+    i:weightMeasurement2 quant:hasUnit units:kilogram.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma26> a r:Extraction;
+  r:gives {
+    i:lengthMeasurement2 quant:hasUnit units:meter.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma27> a r:Extraction;
+  r:gives {
+    i:adult3 physical:hasComplexity i:body1.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma28> a r:Extraction;
+  r:gives {
+    i:body1 a humanbody:Body.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma29> a r:Extraction;
+  r:gives {
+    i:body1 humanbody:hasLength i:length1.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma30> a r:Extraction;
+  r:gives {
+    i:body1 humanbody:hasWeight i:weight1.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma31> a r:Extraction;
+  r:gives {
+    i:length1 a humanbody:Length.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma32> a r:Extraction;
+  r:gives {
+    i:length1 quant:hasMeasurement i:lengthMeasurement3.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma33> a r:Extraction;
+  r:gives {
+    i:lengthMeasurement3 quant:hasValue 1.715 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma34> a r:Extraction;
+  r:gives {
+    i:lengthMeasurement3 time:hasDateTime "2010-01-20T00:00:00+01:00"^^xsd:dateTime.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma35> a r:Extraction;
+  r:gives {
+    i:weight1 a humanbody:Weight.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma36> a r:Extraction;
+  r:gives {
+    i:weight1 quant:hasMeasurement i:weightMeasurement3.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma37> a r:Extraction;
+  r:gives {
+    i:weightMeasurement3 quant:hasValue 45 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma38> a r:Extraction;
+  r:gives {
+    i:weightMeasurement3 time:hasDateTime "2010-01-20T00:00:00+01:00"^^xsd:dateTime.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma39> a r:Inference;
+  r:gives {
+    (i:adult3 "2010-01-20T00:00:00+01:00"^^xsd:dateTime) time:calculatingAge 23 .
+  };
+  r:evidence (
+    <#lemma83>
+    [ a r:Fact; r:gives {("2010-01-20T00:00:00+01:00"^^xsd:dateTime "1987-01-01T00:00:00+01:00"^^xsd:dateTime) math:difference 727488000}]
+    [ a r:Fact; r:gives {727488000 math:greaterThan 0}]
+    [ a r:Fact; r:gives {(727488000 "P1M"^^xsd:duration) math:integerQuotient 276}]
+    [ a r:Fact; r:gives {("P23Y0M" xsd:yearMonthDuration) log:dtlit 276}]
+    [ a r:Fact; r:gives {("P23Y0M" xsd:yearMonthDuration) log:dtlit "P23Y0M"^^xsd:yearMonthDuration}]
+    [ a r:Fact; r:gives {("P23Y0M"^^xsd:yearMonthDuration) func:years-from-duration 23}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo "1987-01-01T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 727488000];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "2010-01-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 276];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo "P23Y0M"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo "P23Y0M"^^xsd:yearMonthDuration];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 23];
+  r:rule <#lemma84>.
+
+<#lemma40> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5, var:x_6, var:x_7, var:x_8, var:x_9, var:x_10, var:x_11, var:x_12, var:x_13, var:x_14, var:x_15, var:x_16. @forSome var:x_17. {var:x_0 physical:hasComplexity var:x_1.
+     var:x_1 a humanbody:Body.
+     var:x_1 humanbody:hasLength var:x_2.
+     var:x_1 humanbody:hasWeight var:x_3.
+     var:x_2 a humanbody:Length.
+     var:x_2 quant:hasMeasurement var:x_4.
+     var:x_4 quant:hasUnit units:meter.
+     var:x_4 quant:hasValue var:x_5.
+     var:x_4 time:hasDateTime var:x_6.
+     var:x_3 a humanbody:Weight.
+     var:x_3 quant:hasMeasurement var:x_7.
+     var:x_7 quant:hasUnit units:kilogram.
+     var:x_7 quant:hasValue var:x_8.
+     var:x_7 time:hasDateTime var:x_9.
+     (var:x_9 var:x_6) math:difference var:x_10.
+     var:x_10 math:notGreaterThan "P10Y"^^xsd:duration.
+     var:x_10 math:notLessThan "-P7D"^^xsd:duration.
+     (var:x_9 var:x_6) e:max var:x_11.
+     (var:x_12 xsd:dateTime) log:dtlit var:x_11.
+     (var:x_12 xsd:dateTime) log:dtlit var:x_13.
+     (var:x_0 var:x_13) time:calculatingAge var:x_14.
+     var:x_14 math:notLessThan 15 .
+     (var:x_5 2) math:exponentiation var:x_15.
+     (var:x_8 var:x_15) math:quotient var:x_16} => {var:x_0 human:hasBodyMassIndex var:x_17.
+     var:x_17 quant:hasUnit units:kilogramPerMeterSquare.
+     var:x_17 quant:hasValue var:x_16.
+     var:x_17 time:hasDateTime var:x_13.
+     var:x_17 event:basedOn var:x_7.
+     var:x_17 event:basedOn var:x_4}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_rules.n3>].
+
+<#lemma41> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3. @forSome var:x_4. {var:x_0 human:hasBodyMassIndex var:x_1.
+     var:x_1 quant:hasValue var:x_2.
+     var:x_1 time:hasDateTime var:x_3.
+     var:x_2 math:lessThan 16} => {var:x_0 human:hasWeightStatus var:x_4.
+     var:x_4 a humanbody:SeverelyUnderweight.
+     var:x_4 time:hasDateTime var:x_3.
+     var:x_4 event:basedOn var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/weightStatus_rules.n3>].
+
+<#lemma42> a r:Extraction;
+  r:gives {
+    i:adult4 physical:hasComplexity i:body2.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma43> a r:Extraction;
+  r:gives {
+    i:body2 a humanbody:Body.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma44> a r:Extraction;
+  r:gives {
+    i:body2 humanbody:hasLength i:length2.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma45> a r:Extraction;
+  r:gives {
+    i:body2 humanbody:hasWeight i:weight2.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma46> a r:Extraction;
+  r:gives {
+    i:length2 a humanbody:Length.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma47> a r:Extraction;
+  r:gives {
+    i:length2 quant:hasMeasurement i:lengthMeasurement4.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma48> a r:Extraction;
+  r:gives {
+    i:lengthMeasurement4 quant:hasValue 1.76 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma49> a r:Extraction;
+  r:gives {
+    i:lengthMeasurement4 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma50> a r:Extraction;
+  r:gives {
+    i:weight2 a humanbody:Weight.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma51> a r:Extraction;
+  r:gives {
+    i:weight2 quant:hasMeasurement i:weightMeasurement4.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma52> a r:Extraction;
+  r:gives {
+    i:weightMeasurement4 quant:hasValue 76 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma53> a r:Extraction;
+  r:gives {
+    i:weightMeasurement4 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma54> a r:Inference;
+  r:gives {
+    (i:adult4 "2010-02-20T00:00:00+01:00"^^xsd:dateTime) time:calculatingAge 35 .
+  };
+  r:evidence (
+    <#lemma85>
+    [ a r:Fact; r:gives {("2010-02-20T00:00:00+01:00"^^xsd:dateTime "1975-01-01T00:00:00+01:00"^^xsd:dateTime) math:difference 1108857600}]
+    [ a r:Fact; r:gives {1108857600 math:greaterThan 0}]
+    [ a r:Fact; r:gives {(1108857600 "P1M"^^xsd:duration) math:integerQuotient 421}]
+    [ a r:Fact; r:gives {("P35Y1M" xsd:yearMonthDuration) log:dtlit 421}]
+    [ a r:Fact; r:gives {("P35Y1M" xsd:yearMonthDuration) log:dtlit "P35Y1M"^^xsd:yearMonthDuration}]
+    [ a r:Fact; r:gives {("P35Y1M"^^xsd:yearMonthDuration) func:years-from-duration 35}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo "1975-01-01T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 1108857600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "2010-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 421];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo "P35Y1M"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo "P35Y1M"^^xsd:yearMonthDuration];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 35];
+  r:rule <#lemma84>.
+
+<#lemma55> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3. @forSome var:x_4. {var:x_0 human:hasBodyMassIndex var:x_1.
+     var:x_1 quant:hasValue var:x_2.
+     var:x_1 time:hasDateTime var:x_3.
+     var:x_2 math:notLessThan 18.5 .
+     var:x_2 math:notGreaterThan 24.9} => {var:x_0 human:hasWeightStatus var:x_4.
+     var:x_4 a humanbody:NormalWeight.
+     var:x_4 time:hasDateTime var:x_3.
+     var:x_4 event:basedOn var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/weightStatus_rules.n3>].
+
+<#lemma56> a r:Extraction;
+  r:gives {
+    i:adult5 physical:hasComplexity i:body3.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma57> a r:Extraction;
+  r:gives {
+    i:body3 a humanbody:Body.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma58> a r:Extraction;
+  r:gives {
+    i:body3 humanbody:hasLength i:length3.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma59> a r:Extraction;
+  r:gives {
+    i:body3 humanbody:hasWeight i:weight3.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma60> a r:Extraction;
+  r:gives {
+    i:length3 a humanbody:Length.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma61> a r:Extraction;
+  r:gives {
+    i:length3 quant:hasMeasurement i:lengthMeasurement5.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma62> a r:Extraction;
+  r:gives {
+    i:lengthMeasurement5 quant:hasValue 1.715 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma63> a r:Extraction;
+  r:gives {
+    i:lengthMeasurement5 time:hasDateTime "2011-02-20T00:00:00+01:00"^^xsd:dateTime.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma64> a r:Extraction;
+  r:gives {
+    i:weight3 a humanbody:Weight.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma65> a r:Extraction;
+  r:gives {
+    i:weight3 quant:hasMeasurement i:weightMeasurement5.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma66> a r:Extraction;
+  r:gives {
+    i:weightMeasurement5 quant:hasValue 54 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma67> a r:Extraction;
+  r:gives {
+    i:weightMeasurement5 time:hasDateTime "2011-02-20T00:00:00+01:00"^^xsd:dateTime.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma68> a r:Inference;
+  r:gives {
+    (i:adult5 "2011-02-20T00:00:00+01:00"^^xsd:dateTime) time:calculatingAge 15 .
+  };
+  r:evidence (
+    <#lemma86>
+    [ a r:Fact; r:gives {("2011-02-20T00:00:00+01:00"^^xsd:dateTime "1995-08-07T00:00:00+01:00"^^xsd:dateTime) math:difference 490406400}]
+    [ a r:Fact; r:gives {490406400 math:greaterThan 0}]
+    [ a r:Fact; r:gives {(490406400 "P1M"^^xsd:duration) math:integerQuotient 186}]
+    [ a r:Fact; r:gives {("P15Y6M" xsd:yearMonthDuration) log:dtlit 186}]
+    [ a r:Fact; r:gives {("P15Y6M" xsd:yearMonthDuration) log:dtlit "P15Y6M"^^xsd:yearMonthDuration}]
+    [ a r:Fact; r:gives {("P15Y6M"^^xsd:yearMonthDuration) func:years-from-duration 15}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo "1995-08-07T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 490406400];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "2011-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 186];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo "P15Y6M"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo "P15Y6M"^^xsd:yearMonthDuration];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 15];
+  r:rule <#lemma84>.
+
+<#lemma69> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3. @forSome var:x_4. {var:x_0 human:hasBodyMassIndex var:x_1.
+     var:x_1 quant:hasValue var:x_2.
+     var:x_1 time:hasDateTime var:x_3.
+     var:x_2 math:notLessThan 16 .
+     var:x_2 math:notGreaterThan 18.4} => {var:x_0 human:hasWeightStatus var:x_4.
+     var:x_4 a humanbody:Underweight.
+     var:x_4 time:hasDateTime var:x_3.
+     var:x_4 event:basedOn var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/weightStatus_rules.n3>].
+
+<#lemma70> a r:Extraction;
+  r:gives {
+    i:adult1 human:weighs i:weightMeasurement1.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma71> a r:Extraction;
+  r:gives {
+    i:weightMeasurement1 quant:hasValue 200 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma72> a r:Extraction;
+  r:gives {
+    i:weightMeasurement1 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma73> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bmi/bmi_instances.n3> <http://josd.github.io/brain/bmi/bmi_rules.n3> <http://josd.github.io/brain/bmi/weightStatus_rules.n3> <http://josd.github.io/brain/bmi/age_rules_backward.n3>) 1) e:optional {i:adult1 human:hasLength i:lengthMeasurement1.
+     i:lengthMeasurement1 quant:hasUnit units:meter.
+     i:lengthMeasurement1 quant:hasValue 1.9 .
+     i:lengthMeasurement1 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime}.
+  };
+  r:evidence (
+    <#lemma87>
+    <#lemma22>
+    <#lemma88>
+    <#lemma89>
+  );
+  r:rule [ a r:Fact; r:gives {{i:adult1 human:hasLength i:lengthMeasurement1.
+    i:lengthMeasurement1 quant:hasUnit units:meter.
+    i:lengthMeasurement1 quant:hasValue 1.9 .
+    i:lengthMeasurement1 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime} => {((<http://josd.github.io/brain/bmi/bmi_instances.n3> <http://josd.github.io/brain/bmi/bmi_rules.n3> <http://josd.github.io/brain/bmi/weightStatus_rules.n3> <http://josd.github.io/brain/bmi/age_rules_backward.n3>) 1) e:optional {i:adult1 human:hasLength i:lengthMeasurement1.
+     i:lengthMeasurement1 quant:hasUnit units:meter.
+     i:lengthMeasurement1 quant:hasValue 1.9 .
+     i:lengthMeasurement1 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime}}}].
+
+<#lemma74> a r:Inference;
+  r:gives {
+    (i:adult1 "2010-02-20T00:00:00+01:00"^^xsd:dateTime) time:calculatingAge 67 .
+  };
+  r:evidence (
+    <#lemma90>
+    [ a r:Fact; r:gives {("2010-02-20T00:00:00+01:00"^^xsd:dateTime "1943-01-01T00:00:00+01:00"^^xsd:dateTime) math:difference 2118700800}]
+    [ a r:Fact; r:gives {2118700800 math:greaterThan 0}]
+    [ a r:Fact; r:gives {(2118700800 "P1M"^^xsd:duration) math:integerQuotient 805}]
+    [ a r:Fact; r:gives {("P67Y1M" xsd:yearMonthDuration) log:dtlit 805}]
+    [ a r:Fact; r:gives {("P67Y1M" xsd:yearMonthDuration) log:dtlit "P67Y1M"^^xsd:yearMonthDuration}]
+    [ a r:Fact; r:gives {("P67Y1M"^^xsd:yearMonthDuration) func:years-from-duration 67}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo "1943-01-01T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 2118700800];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "2010-02-20T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 805];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo "P67Y1M"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo "P67Y1M"^^xsd:yearMonthDuration];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 67];
+  r:rule <#lemma84>.
+
+<#lemma75> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5, var:x_6, var:x_7, var:x_8, var:x_9, var:x_10, var:x_11, var:x_12, var:x_13, var:x_14. @forSome var:x_15. {var:x_0 human:weighs var:x_1.
+     var:x_1 quant:hasUnit units:kilogram.
+     var:x_1 quant:hasValue var:x_2.
+     var:x_1 time:hasDateTime var:x_3.
+     var:x_4 e:optional {var:x_0 human:hasLength var:x_5.
+      var:x_5 quant:hasUnit units:meter.
+      var:x_5 quant:hasValue var:x_6.
+      var:x_5 time:hasDateTime var:x_7}.
+     var:x_4 e:optional {var:x_0 human:hasLength var:x_5.
+      var:x_5 time:hasDateTime var:x_7.
+      var:x_5 quant:convertedTo var:x_8.
+      var:x_8 quant:hasUnit units:meter.
+      var:x_8 quant:hasValue var:x_6}.
+     (var:x_3 var:x_7) math:difference var:x_9.
+     var:x_9 math:notGreaterThan "P0M"^^xsd:duration.
+     var:x_9 math:notLessThan "-P0M"^^xsd:duration.
+     (var:x_3 var:x_7) e:max var:x_10.
+     (var:x_11 xsd:dateTime) log:dtlit var:x_10.
+     (var:x_11 xsd:dateTime) log:dtlit var:x_12.
+     (var:x_0 var:x_12) time:calculatingAge var:x_13.
+     var:x_13 math:notLessThan 15 .
+     ("_weightValue/_lengthValue**2" var:x_2 var:x_6) e:calculate var:x_14} => {var:x_0 human:hasBodyMassIndex var:x_15.
+     var:x_15 quant:hasUnit units:kilogramPerMeterSquare.
+     var:x_15 quant:hasValue var:x_14.
+     var:x_15 time:hasDateTime var:x_12.
+     var:x_15 event:basedOn var:x_1.
+     var:x_15 event:basedOn var:x_5}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_rules.n3>].
+
+<#lemma76> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3. @forSome var:x_4. {var:x_0 human:hasBodyMassIndex var:x_1.
+     var:x_1 quant:hasValue var:x_2.
+     var:x_1 time:hasDateTime var:x_3.
+     var:x_2 math:notLessThan 45} => {var:x_0 human:hasWeightStatus var:x_4.
+     var:x_4 a humanbody:SuperObese.
+     var:x_4 time:hasDateTime var:x_3.
+     var:x_4 event:basedOn var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/weightStatus_rules.n3>].
+
+<#lemma77> a r:Extraction;
+  r:gives {
+    i:adult2 human:weighs i:weightMeasurement2.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma78> a r:Extraction;
+  r:gives {
+    i:weightMeasurement2 quant:hasValue 110 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma79> a r:Extraction;
+  r:gives {
+    i:weightMeasurement2 time:hasDateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma80> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/bmi/bmi_instances.n3> <http://josd.github.io/brain/bmi/bmi_rules.n3> <http://josd.github.io/brain/bmi/weightStatus_rules.n3> <http://josd.github.io/brain/bmi/age_rules_backward.n3>) 1) e:optional {i:adult2 human:hasLength i:lengthMeasurement2.
+     i:lengthMeasurement2 quant:hasUnit units:meter.
+     i:lengthMeasurement2 quant:hasValue 2.05 .
+     i:lengthMeasurement2 time:hasDateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime}.
+  };
+  r:evidence (
+    <#lemma91>
+    <#lemma26>
+    <#lemma92>
+    <#lemma93>
+  );
+  r:rule [ a r:Fact; r:gives {{i:adult2 human:hasLength i:lengthMeasurement2.
+    i:lengthMeasurement2 quant:hasUnit units:meter.
+    i:lengthMeasurement2 quant:hasValue 2.05 .
+    i:lengthMeasurement2 time:hasDateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime} => {((<http://josd.github.io/brain/bmi/bmi_instances.n3> <http://josd.github.io/brain/bmi/bmi_rules.n3> <http://josd.github.io/brain/bmi/weightStatus_rules.n3> <http://josd.github.io/brain/bmi/age_rules_backward.n3>) 1) e:optional {i:adult2 human:hasLength i:lengthMeasurement2.
+     i:lengthMeasurement2 quant:hasUnit units:meter.
+     i:lengthMeasurement2 quant:hasValue 2.05 .
+     i:lengthMeasurement2 time:hasDateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime}}}].
+
+<#lemma81> a r:Inference;
+  r:gives {
+    (i:adult2 "2010-02-25T00:00:00+01:00"^^xsd:dateTime) time:calculatingAge 44 .
+  };
+  r:evidence (
+    <#lemma94>
+    [ a r:Fact; r:gives {("2010-02-25T00:00:00+01:00"^^xsd:dateTime "1966-01-01T00:00:00+01:00"^^xsd:dateTime) math:difference 1393286400}]
+    [ a r:Fact; r:gives {1393286400 math:greaterThan 0}]
+    [ a r:Fact; r:gives {(1393286400 "P1M"^^xsd:duration) math:integerQuotient 529}]
+    [ a r:Fact; r:gives {("P44Y1M" xsd:yearMonthDuration) log:dtlit 529}]
+    [ a r:Fact; r:gives {("P44Y1M" xsd:yearMonthDuration) log:dtlit "P44Y1M"^^xsd:yearMonthDuration}]
+    [ a r:Fact; r:gives {("P44Y1M"^^xsd:yearMonthDuration) func:years-from-duration 44}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/bmi/bmi_instances.n3#adult2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo "1966-01-01T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 1393286400];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "2010-02-25T00:00:00+01:00"^^xsd:dateTime];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 529];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo "P44Y1M"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo "P44Y1M"^^xsd:yearMonthDuration];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 44];
+  r:rule <#lemma84>.
+
+<#lemma82> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3. @forSome var:x_4. {var:x_0 human:hasBodyMassIndex var:x_1.
+     var:x_1 quant:hasValue var:x_2.
+     var:x_1 time:hasDateTime var:x_3.
+     var:x_2 math:notLessThan 25 .
+     var:x_2 math:notGreaterThan 29.9} => {var:x_0 human:hasWeightStatus var:x_4.
+     var:x_4 a humanbody:Overweight.
+     var:x_4 time:hasDateTime var:x_3.
+     var:x_4 event:basedOn var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/weightStatus_rules.n3>].
+
+<#lemma83> a r:Extraction;
+  r:gives {
+    i:adult3 organism:hasBirthDateTime "1987-01-01T00:00:00+01:00"^^xsd:dateTime.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma84> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5, var:x_6, var:x_7. {(var:x_0 var:x_2) time:calculatingAge var:x_7} <= {var:x_0 organism:hasBirthDateTime var:x_1.
+     (var:x_2 var:x_1) math:difference var:x_3.
+     var:x_3 math:greaterThan 0 .
+     (var:x_3 "P1M"^^xsd:duration) math:integerQuotient var:x_4.
+     (var:x_5 xsd:yearMonthDuration) log:dtlit var:x_4.
+     (var:x_5 xsd:yearMonthDuration) log:dtlit var:x_6.
+     (var:x_6) func:years-from-duration var:x_7}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/age_rules_backward.n3>].
+
+<#lemma85> a r:Extraction;
+  r:gives {
+    i:adult4 organism:hasBirthDateTime "1975-01-01T00:00:00+01:00"^^xsd:dateTime.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma86> a r:Extraction;
+  r:gives {
+    i:adult5 organism:hasBirthDateTime "1995-08-07T00:00:00+01:00"^^xsd:dateTime.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma87> a r:Extraction;
+  r:gives {
+    i:adult1 human:hasLength i:lengthMeasurement1.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma88> a r:Extraction;
+  r:gives {
+    i:lengthMeasurement1 quant:hasValue 1.9 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma89> a r:Extraction;
+  r:gives {
+    i:lengthMeasurement1 time:hasDateTime "2010-02-20T00:00:00+01:00"^^xsd:dateTime.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma90> a r:Extraction;
+  r:gives {
+    i:adult1 organism:hasBirthDateTime "1943-01-01T00:00:00+01:00"^^xsd:dateTime.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma91> a r:Extraction;
+  r:gives {
+    i:adult2 human:hasLength i:lengthMeasurement2.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma92> a r:Extraction;
+  r:gives {
+    i:lengthMeasurement2 quant:hasValue 2.05 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma93> a r:Extraction;
+  r:gives {
+    i:lengthMeasurement2 time:hasDateTime "2010-02-25T00:00:00+01:00"^^xsd:dateTime.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+<#lemma94> a r:Extraction;
+  r:gives {
+    i:adult2 organism:hasBirthDateTime "1966-01-01T00:00:00+01:00"^^xsd:dateTime.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/bmi/bmi_instances.n3>].
+
+#2020-02-22T21:50:17.852Z in=97 out=50 ent=100 step=48 brake=4 inf=399465 sec=0.310 inf/sec=1288597
+#ENDS
+

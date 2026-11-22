@@ -1,0 +1,23 @@
+[
+  {
+    "@id": "http://example.com/subdir/id/1",
+    "@type": [ "http://example.com/subdir/vocab/types/Test" ],
+    "http://example.com/subdir/vocab/date": [
+      {
+        "@value": "2011-01-25T00:00:00Z",
+        "@type": "http://example.com/subdir/vocab/types/dateTime"
+      }
+    ],
+    "http://example.com/subdir/vocab/embed": [
+      {
+        "@id": "http://example.com/subdir/id/2",
+        "http://example.com/subdir/vocab/expandedDate": [
+          {
+            "@value": "2012-08-01T00:00:00Z",
+            "@type": "http://example.com/subdir/vocab/types/dateTime"
+          }
+        ]
+      }
+    ]
+  }
+]

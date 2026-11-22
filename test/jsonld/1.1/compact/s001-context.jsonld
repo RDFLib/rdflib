@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "mylist": {"@id": "http://example.com/mylist", "@container": ["@list"]},
+    "myset": {"@id": "http://example.com/myset", "@container": ["@set"]},
+    "myid": {"@id": "http://example.com/myid", "@container": ["@id"]},
+    "mytype": {"@id": "http://example.com/mytype", "@container": ["@type"]},
+    "mylanguage": {"@id": "http://example.com/mylanguage", "@container": ["@language"]},
+    "myindex": {"@id": "http://example.com/myindex", "@container": ["@index"]}
+  }
+}

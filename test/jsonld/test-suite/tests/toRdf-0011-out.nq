@@ -1,0 +1,2 @@
+<http://greggkellogg.net/foaf#me> <http://xmlns.com/foaf/0.1/knows> _:b0 .
+_:b0 <http://xmlns.com/foaf/0.1/name> "Dave Longley" .

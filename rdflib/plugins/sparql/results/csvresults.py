@@ -1,34 +1,40 @@
 """
-
 This module implements a parser and serializer for the CSV SPARQL result
 formats
 
 http://www.w3.org/TR/sparql11-results-csv-tsv/
-
 """
+
+from __future__ import annotations
 
 import codecs
 import csv
+from io import BufferedIOBase, TextIOBase
+from typing import IO, Union, cast
 
-from rdflib import Variable, BNode, URIRef, Literal, py3compat
-
-from rdflib.query import Result, ResultSerializer, ResultParser
+from rdflib.plugins.sparql.processor import SPARQLResult
+from rdflib.query import Result, ResultParser, ResultSerializer
+from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
 
 class CSVResultParser(ResultParser):
+    """Parses SPARQL CSV results into a Result object."""
+
     def __init__(self):
         self.delim = ","
 
-    def parse(self, source):
+    # type error: Signature of "parse" incompatible with supertype "ResultParser"
+    def parse(self, source: IO, content_type: str | None = None) -> Result:  # type: ignore[override]
+        r = Result("SELECT")
 
-        r = Result('SELECT')
-
-        if isinstance(source.read(0), py3compat.bytestype):
+        # type error: Incompatible types in assignment (expression has type "StreamReader", variable has type "IO[Any]")
+        if isinstance(source.read(0), bytes):
             # if reading from source returns bytes do utf-8 decoding
-            source = codecs.getreader('utf-8')(source)
+            # type error: Incompatible types in assignment (expression has type "StreamReader", variable has type "IO[Any]")
+            source = codecs.getreader("utf-8")(source)  # type: ignore[assignment]
 
         reader = csv.reader(source, delimiter=self.delim)
-        r.vars = [Variable(x) for x in reader.next()]
+        r.vars = [Variable(x) for x in next(reader)]
         r.bindings = []
 
         for row in reader:
@@ -36,12 +42,16 @@ class CSVResultParser(ResultParser):
 
         return r
 
-    def parseRow(self, row, v):
-        return dict((var, val)
-                    for var, val in zip(v, [self.convertTerm(t)
-                                            for t in row]) if val is not None)
+    def parseRow(
+        self, row: list[str], v: list[Variable]
+    ) -> dict[Variable, Union[BNode, URIRef, Literal]]:
+        return dict(
+            (var, val)
+            for var, val in zip(v, [self.convertTerm(t) for t in row])
+            if val is not None
+        )
 
-    def convertTerm(self, t):
+    def convertTerm(self, t: str) -> BNode | URIRef | Literal | None:
         if t == "":
             return None
         if t.startswith("_:"):
@@ -52,39 +62,45 @@ class CSVResultParser(ResultParser):
 
 
 class CSVResultSerializer(ResultSerializer):
+    """Serializes SPARQL results into CSV format."""
 
-    def __init__(self, result):
+    def __init__(self, result: SPARQLResult):
         ResultSerializer.__init__(self, result)
 
         self.delim = ","
         if result.type != "SELECT":
-            raise Exception(
-                "CSVSerializer can only serialize select query results")
+            raise Exception("CSVSerializer can only serialize select query results")
 
-    def serialize(self, stream, encoding='utf-8'):
+    def serialize(self, stream: IO, encoding: str = "utf-8", **kwargs) -> None:
+        # the serialiser writes bytes in the given encoding
+        # in py3 csv.writer is unicode aware and writes STRINGS,
+        # so we encode afterward
 
-        if py3compat.PY3:
-            # the serialiser writes bytes in the given encoding
-            # in py3 csv.writer is unicode aware and writes STRINGS,
-            # so we encode afterwards
-            # in py2 it breaks when passed unicode strings,
-            # and must be passed utf8, so we encode before
+        import codecs
 
-            import codecs
-            stream = codecs.getwriter(encoding)(stream)
+        # TODO: Find a better solution for all this casting
+        writable_stream = cast(Union[TextIOBase, BufferedIOBase], stream)
+        if isinstance(writable_stream, TextIOBase):
+            string_stream: TextIOBase = writable_stream
+        else:
+            byte_stream = cast(BufferedIOBase, writable_stream)
+            string_stream = cast(TextIOBase, codecs.getwriter(encoding)(byte_stream))
 
-        out = csv.writer(stream, delimiter=self.delim)
+        out = csv.writer(string_stream, delimiter=self.delim)
 
-        vs = [self.serializeTerm(v, encoding) for v in self.result.vars]
+        vs = [self.serializeTerm(v, encoding) for v in self.result.vars]  # type: ignore[union-attr]
         out.writerow(vs)
         for row in self.result.bindings:
-            out.writerow([self.serializeTerm(
-                row.get(v), encoding) for v in self.result.vars])
+            out.writerow(
+                [self.serializeTerm(row.get(v), encoding) for v in self.result.vars]  # type: ignore[union-attr]
+            )
 
-    def serializeTerm(self, term, encoding):
+    def serializeTerm(
+        self, term: Identifier | None, encoding: str
+    ) -> Union[str, Identifier]:
         if term is None:
             return ""
-        if not py3compat.PY3:
-            return term.encode(encoding)
+        elif isinstance(term, BNode):
+            return f"_:{term}"
         else:
             return term

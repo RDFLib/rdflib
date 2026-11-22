@@ -1,0 +1,332 @@
+{
+  "@context": {
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "dc11": "http://purl.org/dc/elements/1.1/",
+    "mf": "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "jld": "https://w3c.github.io/json-ld-api/tests/vocab#",
+    "jld:Test": {
+      "@type": "@id"
+    },
+    "dc11:identifier": {
+      "@type": "@id"
+    },
+    "requires": {
+      "@id": "mf:requires",
+      "@type": "@vocab",
+      "@container": "@set"
+    },
+    "rdfs:subClassOf": {
+      "@type": "@id"
+    },
+    "rdfs:domain": {
+      "@type": "@id"
+    },
+    "rdfs:range": {
+      "@type": "@id"
+    }
+  },
+  "@graph": [
+    {
+      "@id": "https://w3c.github.io/json-ld-api/tests/vocab#",
+      "dc11:identifier": "https://w3c.github.io/json-ld-api/tests/vocab#",
+      "dc11:creator": "Gregg Kellogg",
+      "rdfs:comment": "Manifest vocabulary for JSON-LD test cases",
+      "dc11:publisher": "W3C Linked JSON Community Group",
+      "dc11:date": "2013-09-23",
+      "dc11:description": "Test case manifest vocabulary extensions",
+      "dc11:title": "Test case manifest vocabulary extensions"
+    },
+    {
+      "@id": "jld:FlattenTest",
+      "@type": "rdfs:Class",
+      "rdfs:label": "Flatten Evaluation Test",
+      "rdfs:subClassOf": "jld:Test",
+      "rdfs:comment": "A `FlattenTest` modifies either a `PositiveEvaluationTest`, `NegativeEvaluationTest`, `PositiveSyntaxTest` or `NegativeSyntaxTest`."
+    },
+    {
+      "@id": "jld:Test",
+      "@type": "rdfs:Class",
+      "rdfs:label": "Superclass of all JSON-LD tests",
+      "rdfs:comment": "All JSON-LD tests have an input file referenced using `mf:action` (aliased as \"input\" in test manifest). Positive and Negative Evaluation Tests also have a result file referenced using `mf:result` (aliased as \"expect\" and \"expectErrorCode\" for respectively Positive and Negative Evaluation Tests in test manifest). Other tests may take different inputs and options as defined for each test class. Tests should be run with the processingMode option set to \"json-ld-1.1\", unless specified explicitly as a test option."
+    },
+    {
+      "@id": "jld:FrameTest",
+      "@type": "rdfs:Class",
+      "rdfs:label": "Frame Evaluation Test",
+      "rdfs:subClassOf": "jld:Test",
+      "rdfs:comment": "A `FrameTest` modifies either a `PositiveEvaluationTest`, `NegativeEvaluationTest`, `PositiveSyntaxTest` or `NegativeSyntaxTest`."
+    },
+    {
+      "@id": "jld:HtmlTest",
+      "@type": "rdfs:Class",
+      "rdfs:label": "HTML Evaluation Test",
+      "rdfs:subClassOf": "jld:Test",
+      "rdfs:comment": "An `HtmlTest` modifies either a `PositiveEvaluationTest` or `NegativeEvaluationTest` indicating that the source is of type text/html, which requires optional _HTML script extraction_ support."
+    },
+    {
+      "@id": "jld:httpStatus",
+      "@type": "rdf:Property",
+      "rdfs:label": "HTTP status",
+      "rdfs:range": "xsd:integer",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "The HTTP status code that must be returned when the input file is requested. This is typically used along with the `redirectTo` property."
+    },
+    {
+      "@id": "jld:Option",
+      "@type": "rdfs:Class",
+      "rdfs:label": "Processor Options",
+      "rdfs:comment": "Options passed to the test runner to affect invocation of the appropriate API method."
+    },
+    {
+      "@id": "jld:GeneralizedRdf",
+      "@type": "mf:Requirement",
+      "rdfs:label": "GeneralizedRdf",
+      "rdfs:comment": "Test generates Generalized RDF"
+    },
+    {
+      "@id": "jld:PositiveSyntaxTest",
+      "@type": "rdfs:Class",
+      "rdfs:label": "Positive Syntax Test",
+      "rdfs:subClassOf": "jld:Test",
+      "rdfs:comment": "A type of test specifically for syntax testing. Syntax tests are not required to have an associated result, only an action."
+    },
+    {
+      "@id": "jld:useJCS",
+      "@type": "rdf:Property",
+      "rdfs:label": "use JCS",
+      "rdfs:range": "xsd:boolean",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "Requires the use of JSON Canonicalization Scheme when generating RDF literals from JSON literal values."
+    },
+    {
+      "@id": "jld:PositiveEvaluationTest",
+      "@type": "rdfs:Class",
+      "rdfs:label": "Positive Evaluation Test",
+      "rdfs:subClassOf": "jld:Test",
+      "rdfs:comment": "A Positive Evaluation test is successful when the result of processing the input file specified as `mf:action` (aliased as \"input\" in test manifest) exactly matches the output file specified as `mf:result` (aliased as \"expect\" in test manifest) using the comparison defined in another class. The specifics of invoking test, including the interpretation of options (`:option`) and other input files are specified through another class."
+    },
+    {
+      "@id": "jld:NegativeEvaluationTest",
+      "@type": "rdfs:Class",
+      "rdfs:label": "Negative Evaluation Test",
+      "rdfs:subClassOf": "jld:Test",
+      "rdfs:comment": "A Negative Evaluation test is successful when the result of processing the input file specified as `mf:action` (aliased as \"input\" in test manifest) results in the error identified by the literal value of `mf:result` (aliased as \"expectErrorCode\" in test manifest). The specifics of invoking test, including the interpretation of options (`:option`) and other input files are specified through another class. See the [README](https://w3c.github.io/json-ld-api/tests/) for more details on running tests."
+    },
+    {
+      "@id": "jld:ExpandTest",
+      "@type": "rdfs:Class",
+      "rdfs:label": "Expand Evaluation Test",
+      "rdfs:subClassOf": "jld:Test",
+      "rdfs:comment": "A `ExpandTest` modifies either a `PositiveEvaluationTest`, `NegativeEvaluationTest`, `PositiveSyntaxTest` or `NegativeSyntaxTest`."
+    },
+    {
+      "@id": "jld:FromRDFTest",
+      "@type": "rdfs:Class",
+      "rdfs:label": "From RDF Evaluation Test",
+      "rdfs:subClassOf": "jld:Test",
+      "rdfs:comment": "A `FromRDFTest` modifies either a `PositiveEvaluationTest`, `NegativeEvaluationTest`, `PositiveSyntaxTest` or `NegativeSyntaxTest`."
+    },
+    {
+      "@id": "jld:HttpTest",
+      "@type": "rdfs:Class",
+      "rdfs:label": "HTTP Evaluation Test",
+      "rdfs:subClassOf": "jld:Test",
+      "rdfs:comment": "An `HttpTest` modifies either a `PositiveEvaluationTest` or `NegativeEvaluationTest`."
+    },
+    {
+      "@id": "jld:I18nDatatype",
+      "@type": "mf:Requirement",
+      "rdfs:label": "I18nDatatype",
+      "rdfs:comment": "Optional test to serialize text direction using `i18n-datatype`"
+    },
+    {
+      "@id": "jld:CompactTest",
+      "@type": "rdfs:Class",
+      "rdfs:label": "Compact Evaluation Test",
+      "rdfs:subClassOf": "jld:Test",
+      "rdfs:comment": "A `CompactTest` modifies either a `PositiveEvaluationTest`, `NegativeEvaluationTest`, `PositiveSyntaxTest` or `NegativeSyntaxTest`."
+    },
+    {
+      "@id": "jld:httpLink",
+      "@type": "rdf:Property",
+      "rdfs:label": "HTTP link",
+      "rdfs:range": "xsd:string",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "An HTTP Link header to be added to the result of requesting the input file."
+    },
+    {
+      "@id": "jld:input",
+      "@type": "rdf:Property",
+      "rdfs:label": "input",
+      "rdfs:range": "rdfs:Resource",
+      "rdfs:domain": "jld:Test",
+      "rdfs:comment": "Secondary input file"
+    },
+    {
+      "@id": "jld:redirectTo",
+      "@type": "rdf:Property",
+      "rdfs:label": "redirect to",
+      "rdfs:range": "xsd:string",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "The location of a URL for redirection. A request made of the input file must be redirected to the designated URL."
+    },
+    {
+      "@id": "jld:ToRDFTest",
+      "@type": "rdfs:Class",
+      "rdfs:label": "To RDF Evaluation Test",
+      "rdfs:subClassOf": "jld:Test",
+      "rdfs:comment": "A `ToRDFTest` modifies either a `PositiveEvaluationTest`, `NegativeEvaluationTest`, `PositiveSyntaxTest` or `NegativeSyntaxTest`."
+    },
+    {
+      "@id": "jld:context",
+      "@type": "rdf:Property",
+      "rdfs:label": "context",
+      "rdfs:range": "rdfs:Resource",
+      "rdfs:domain": "jld:Test",
+      "rdfs:comment": "A context that is used for transforming the input document."
+    },
+    {
+      "@id": "jld:specVersion",
+      "@type": "rdf:Property",
+      "rdfs:label": "spec version",
+      "rdfs:range": "xsd:string",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "Indicates the JSON-LD version to which the test applies, rather than the specific processing mode. Values are \"json-ld-1.0\", and \"json-ld-1.1\". If not set, the test is presumed to be valid for all versions of JSON-LD. In cases where results differ between spec versions for the same test, the test will have both a \"1.0\" and \"1.1\" version, for example."
+    },
+    {
+      "@id": "jld:contentType",
+      "@type": "rdf:Property",
+      "rdfs:label": "content type",
+      "rdfs:range": "xsd:string",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "The HTTP Content-Type used for the input file, in case it is a non-registered type."
+    },
+    {
+      "@id": "jld:NegativeSyntaxTest",
+      "@type": "rdfs:Class",
+      "rdfs:label": "Negative Syntax Test",
+      "rdfs:subClassOf": "jld:Test",
+      "rdfs:comment": "A type of test specifically for syntax testing. Syntax tests are not required to have an associated result, only an action. Negative syntax tests are tests of which the result should be a parser error."
+    },
+    {
+      "@id": "jld:useRdfType",
+      "@type": "rdf:Property",
+      "rdfs:label": "use RDF types",
+      "rdfs:range": "xsd:boolean",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "If the _use rdf type_ flag is set to `true`, statements with an `rdf:type` predicate will not use `@type`, but will be transformed as a normal property."
+    },
+    {
+      "@id": "jld:compactArrays",
+      "@type": "rdf:Property",
+      "rdfs:label": "compact arrays",
+      "rdfs:range": "xsd:boolean",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "If set to `true`, the JSON-LD processor replaces arrays with just one element with that element during compaction. If set to false, all arrays will remain arrays even if they have just one element."
+    },
+    {
+      "@id": "jld:normative",
+      "@type": "rdf:Property",
+      "rdfs:label": "normative",
+      "rdfs:range": "xsd:boolean",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "Indicates that this is or is not a test of a normative requirement. Tests without this option are treated as being normative."
+    },
+    {
+      "@id": "jld:httpAccept",
+      "@type": "rdf:Property",
+      "rdfs:label": "HTTP Accept",
+      "rdfs:range": "xsd:string",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "An HTTP Accept header."
+    },
+    {
+      "@id": "jld:useNativeTypes",
+      "@type": "rdf:Property",
+      "rdfs:label": "use native types",
+      "rdfs:range": "xsd:boolean",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "If the _use native types_ flag is set to `true`, RDF literals with a datatype IRI that equal `xsd:integer` or `xsd:double` are converted to a JSON numbers and RDF literals with a datatype IRI that equals `xsd:boolean` are converted to `true` or `false` based on their lexical form."
+    },
+    {
+      "@id": "jld:compactToRelative",
+      "@type": "rdf:Property",
+      "rdfs:label": "compact to relative",
+      "rdfs:range": "xsd:boolean",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "If set to `false`, the JSON-LD processor will not attempt to compact using document-relative IRIs."
+    },
+    {
+      "@id": "jld:option",
+      "@type": "rdf:Property",
+      "rdfs:label": "option",
+      "rdfs:range": "jld:Option",
+      "rdfs:domain": "jld:Test",
+      "rdfs:comment": "Options affecting processing"
+    },
+    {
+      "@id": "jld:produceGeneralizedRdf",
+      "@type": "rdf:Property",
+      "rdfs:label": "produce generalized RDF",
+      "rdfs:range": "xsd:boolean",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "Unless the produce generalized RDF flag is set to true, RDF triples containing a blank node predicate are excluded from output."
+    },
+    {
+      "@id": "jld:processingMode",
+      "@type": "rdf:Property",
+      "rdfs:label": "processing mode",
+      "rdfs:range": "xsd:string",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "If set to \"json-ld-1.1\", the JSON-LD processor must produce exactly the same results as the algorithms defined in this specification. If set to another value, the JSON-LD processor is allowed to extend or modify the algorithms defined in this specification to enable application-specific optimizations. The definition of such optimizations is beyond the scope of this specification and thus not defined. Consequently, different implementations may implement different optimizations. Developers must not define modes beginning with json-ld as they are reserved for future versions of this specification."
+    },
+    {
+      "@id": "jld:base",
+      "@type": "rdf:Property",
+      "rdfs:label": "base",
+      "rdfs:range": "rdfs:Resource",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "The base IRI to use when expanding or compacting the document. If set, this overrides the input document's IRI."
+    },
+    {
+      "@id": "jld:CompoundLiteral",
+      "@type": "mf:Requirement",
+      "rdfs:label": "CompoundLiteral",
+      "rdfs:comment": "Optional test to serialize text direction using `compound-literal`"
+    },
+    {
+      "@id": "jld:processorFeature",
+      "@type": "rdf:Property",
+      "rdfs:label": "processor feature",
+      "rdfs:range": "xsd:string",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "A particular processor feature that may be supported by some implementations."
+    },
+    {
+      "@id": "jld:extractAllScripts",
+      "@type": "rdf:Property",
+      "rdfs:label": "extract all scripts",
+      "rdfs:range": "xsd:boolean",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "Whether to extract all script elements from HTML, or just the first encountered."
+    },
+    {
+      "@id": "jld:expandContext",
+      "@type": "rdf:Property",
+      "rdfs:label": "expand context",
+      "rdfs:range": "rdfs:Resource",
+      "rdfs:domain": "jld:Option",
+      "rdfs:comment": "A context that is used to initialize the active context when expanding a document."
+    },
+    {
+      "@id": "jld:frame",
+      "@type": "rdf:Property",
+      "rdfs:label": "input",
+      "rdfs:range": "rdfs:Resource",
+      "rdfs:domain": "jld:Test",
+      "rdfs:comment": "A frame that is used for transforming the input document."
+    }
+  ]
+}

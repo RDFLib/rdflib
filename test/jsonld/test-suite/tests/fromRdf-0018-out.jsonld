@@ -1,0 +1,27 @@
+[
+    {
+        "@id": "http://example.com/Subj1",
+        "http://example.com/prop": [
+            {
+		"@type": "http://www.w3.org/2001/XMLSchema#boolean",
+		"@value": true
+            },
+            {
+		"@type": "http://www.w3.org/2001/XMLSchema#boolean",
+		"@value": false
+            },
+            {
+		"@type": "http://www.w3.org/2001/XMLSchema#integer",
+		"@value": 1
+            },
+            {
+		"@type": "http://www.w3.org/2001/XMLSchema#decimal",
+		"@value": "1.1"
+            },
+            {
+		"@type": "http://www.w3.org/2001/XMLSchema#double",
+		"@value": 0.11
+            }
+        ]
+    }
+]

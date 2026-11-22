@@ -1,0 +1,32 @@
+# http://clarkparsia.com/weblog/2007/01/02/burn-the-witch/
+# http://www.netfunny.com/rhf/jokes/90q4/burnher.html
+
+@prefix : <witch#>.
+
+#[1] 	BURNS(x) /\ WOMAN(x)	 	=>	WITCH(x)
+
+{ ?x a :BURNS. ?x a :WOMAN } => { ?x a :WITCH }.
+
+#[2]	WOMAN(GIRL)
+:GIRL a :WOMAN.
+
+#[3]	\forall x, ISMADEOFWOOD(x)	=>	BURNS(x)
+{ ?x a :ISMADEOFWOOD. } => { ?x a :BURNS. }.
+
+#[4]	\forall x, FLOATS(x) 		=>	ISMADEOFWOOD(x)
+{ ?x a :FLOATS } => { ?x a :ISMADEOFWOOD }.
+
+#[5]	FLOATS(DUCK)
+
+:DUCK a :FLOATS.
+
+#[6]	\forall x,y FLOATS(x) /\ SAMEWEIGHT(x,y) =>	FLOATS(y)
+
+{ ?x a :FLOATS. ?x :SAMEWEIGHT ?y } => { ?y a :FLOATS }.
+
+# and, by experiment
+# [7]	SAMEWEIGHT(DUCK,GIRL)
+
+:DUCK :SAMEWEIGHT :GIRL.
+
+

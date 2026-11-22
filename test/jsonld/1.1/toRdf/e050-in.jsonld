@@ -1,0 +1,8 @@
+{
+  "@context": {
+    "issue": { "@id": "http://example.com/issue/", "@type": "@id" },
+    "issue:raisedBy": { "@container": "@set" }
+  },
+  "issue": "/issue/1",
+  "issue:raisedBy": "Markus"
+}

@@ -1,0 +1,38 @@
+#Processed by Id: euler.yap 7292 2014-06-13 12:27:29Z josd
+#eye --nope --quiet --quick-possible http://eulersharp.sourceforge.net/2007/07test/alpP001.n3 http://eulersharp.sourceforge.net/2007/07test/alpA010.n3 --query http://eulersharp.sourceforge.net/2007/07test/alpQ002.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/mona#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+
+
+[ e:counterModel {:Peter :ascribed :smokes}
+].
+
+[ e:counterModel {:Peter :ascribed :nonsmoker}
+].
+
+[ e:possibleModel {:Peter :ascribed :influenza}
+; e:gives {
+    :Peter :ascribed :wheezing.
+    :Peter :ascribed :fever.
+  }
+].
+
+[ e:possibleModel {:Peter :ascribed :influenza. :Peter :ascribed :smokes}
+; e:gives {
+    :Peter :ascribed :wheezing.
+    :Peter :ascribed :fever.
+  }
+].
+
+[ e:possibleModel {:Peter :ascribed :influenza. :Peter :ascribed :nonsmoker}
+; e:gives {
+    :Peter :ascribed :wheezing.
+    :Peter :ascribed :fever.
+  }
+].
+
+[ e:inductivity 0.6; e:evidentiality 1; e:applicability 0.6; e:possibleModels 3; e:counterModels 2; e:falseModels 0; e:allModels 5].
+
+#ENDS 0.841 [sec] TC=0 TP=0 BC=26 BP=100 PM=3 CM=2 FM=0 AM=5
+

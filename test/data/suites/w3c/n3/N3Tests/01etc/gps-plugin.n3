@@ -1,0 +1,56 @@
+# EYE Components for GPS -- Jos De Roo
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix gps: <http://josd.github.io/brain/gps/gps-schema#>.
+
+# find paths in the state space from initial state to goal state within limits
+{?SCOPE gps:findpath (?Goal ?Path ?Duration ?Cost ?Belief ?Comfort (?MaxDuration ?MaxCost ?MinBelief ?MinComfort))} <= {
+    ?SCOPE gps:findpaths (() ?Goal () 0.0 0.0 1.0 1.0 ?Path ?Duration ?Cost ?Belief ?Comfort (?MaxDuration ?MaxCost ?MinBelief ?MinComfort 1)).
+}.
+{?SCOPE gps:findpath (?Goal ?Path ?Duration ?Cost ?Belief ?Comfort (?MaxDuration ?MaxCost ?MinBelief ?MinComfort ?MaxStagecount))} <= {
+    ?SCOPE gps:findpaths (() ?Goal () 0.0 0.0 1.0 1.0 ?Path ?Duration ?Cost ?Belief ?Comfort (?MaxDuration ?MaxCost ?MinBelief ?MinComfort ?MaxStagecount)).
+}.
+
+{?SCOPE gps:findpaths (?Maps ?Goal ?Path ?Duration ?Cost ?Belief ?Comfort ?Path ?Duration ?Cost ?Belief ?Comfort (?MaxDuration ?MaxCost ?MinBelief ?MinComfort ?MaxStagecount))} <= {
+    ?SCOPE e:call ?Goal.
+    ("!") e:derive true.
+}.
+{?SCOPE gps:findpaths (?Maps_s ?Goal ?Path_s ?Duration_s ?Cost_s ?Belief_s ?Comfort_s ?Path ?Duration ?Cost ?Belief ?Comfort (?MaxDuration ?MaxCost ?MinBelief ?MinComfort ?MaxStagecount))} <= {
+    {?Map gps:description (?From ?Transition ?To ?Action ?Duration_n ?Cost_n ?Belief_n ?Comfort_n)} <= ?Where.
+    ?SCOPE e:call ?From.
+    ?SCOPE e:call ?Where.
+    ?Map gps:description (?From ?Transition ?To ?Action ?Duration_n ?Cost_n ?Belief_n ?Comfort_n).
+    (?Maps_s (?Map)) list:append ?Maps_t.
+    ?Maps_t gps:stagecount ?Stagecount.
+    ?Stagecount math:notGreaterThan ?MaxStagecount.
+    (?Duration_s ?Duration_n) math:sum ?Duration_t.
+    ?Duration_t math:notGreaterThan ?MaxDuration.
+    (?Cost_s ?Cost_n) math:sum ?Cost_t.
+    ?Cost_t math:notGreaterThan ?MaxCost.
+    (?Belief_s ?Belief_n) math:product ?Belief_t.
+    ?Belief_t math:notLessThan ?MinBelief.
+    (?Comfort_s ?Comfort_n) math:product ?Comfort_t.
+    ?Comfort_t math:notLessThan ?MinComfort.
+    (?Path_s (?Action)) list:append ?Path_t.
+    ?From e:becomes ?To.
+    {?SCOPE gps:findpaths (?Maps_t ?Goal ?Path_t ?Duration_t ?Cost_t ?Belief_t ?Comfort_t ?Path ?Duration ?Cost ?Belief ?Comfort (?MaxDuration ?MaxCost ?MinBelief ?MinComfort ?MaxStagecount))} e:finalize {?To e:becomes ?From}.
+}.
+
+# counting the number of stages (a stage is a sequence of steps in the same map)
+{() gps:stagecount 1} <= {
+}.
+{?A gps:stagecount ?B} <= {
+    ?A e:firstRest (?C ?D).
+    ?D e:firstRest (?E ?F).
+    ?C log:notEqualTo ?E.
+    ("!") e:derive true.
+    ?D gps:stagecount ?G.
+    (?G 1) math:sum ?B.
+}.
+{?A gps:stagecount ?B} <= {
+    ?A e:firstRest (?C ?D).
+    ?D gps:stagecount ?B.
+}.

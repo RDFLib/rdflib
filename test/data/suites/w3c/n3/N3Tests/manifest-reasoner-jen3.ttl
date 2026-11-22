@@ -1,0 +1,1358 @@
+@prefix :        <file:///home/william-vw/projects/n3/N3/tests/N3Tests/manifest-reasoner.ttl#> .
+@prefix test:    <https://w3c.github.io/N3/tests/test.n3#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix log:     <http://www.w3.org/2000/10/swap/log#> .
+@prefix in:      <http://n3.w3c.org/builtin/input#> .
+@prefix rdft:    <http://www.w3.org/ns/rdftest#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix mf:      <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix math:    <http://www.w3.org/2000/10/swap/math#> .
+@prefix list:    <http://www.w3.org/2000/10/swap/list#> .
+
+_:b1  test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+:math_corners
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Various math builtins corner cases." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/corners.n3> ;
+    mf:name "corners.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/corners-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b2 .
+
+:math_quotient
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Test math:quotient" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/quotient.n3> ;
+    mf:name "quotient.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/quotient-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b3 .
+
+:cwm_list_unify5
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "List unification 5 - multiple values" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/unify5.n3> ;
+    mf:name "list-unify5.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/unify5-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b4 .
+
+:math_absoluteValue
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Test math:absoluteValue" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/absoluteValue.n3> ;
+    mf:name "absoluteValue.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/absoluteValue-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b5 .
+
+:log_content
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Builtins for log:content." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/log/content.n3> ;
+    mf:name "log-content.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/log/content-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b6 .
+
+_:b7  test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+_:b8  test:think "true"^^xsd:boolean .
+
+_:b9  test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+_:b10
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:cwm_includes_builtins
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Builtins and log:includes." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/builtins.n3> ;
+    mf:name "includes-builtins.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/builtins-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b11 .
+
+_:b12
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+:cwm_string_endsWith
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:endsWith" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_string/endsWith.n3> ;
+    mf:name "string-endsWith.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_string/endsWith-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b13 .
+
+:cwm_includes_xsd
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Cwm builtins should support most xsd datatypes." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/xsd.n3> ;
+    mf:name "includes-xsd.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/xsd-ref.txt> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b14 .
+
+:math_sum
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Test math:sum" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/sum.n3> ;
+    mf:name "sum.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/sum-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b15 .
+
+:cwm_includes_t8
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Simple use of string built-ins." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t8.n3> ;
+    mf:name "includes-t8.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t8-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b16 .
+
+_:b11
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b6  test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b17
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:math_difference
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Test math:difference" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/difference.n3> ;
+    mf:name "difference.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/difference-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b18 .
+
+:math_remainder
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Test math:remainder" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/remainder.n3> ;
+    mf:name "remainder.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/remainder-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b19 .
+
+_:b20
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:cwm_time_t1
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "basic ISo time handling functions" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_time/t1.n3> ;
+    mf:name "time-t1.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_time/time1.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b21 .
+
+_:b22
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:cwm_includes_bnode
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Builtins for list membership, binding multiple values." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/bnodeConclude.n3> ;
+    mf:name "list membership" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/bnode-conclude-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b23 .
+
+:cwm_string_roughly
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:containsRoughly ignores case smart whitespace" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_string/roughly.n3> ;
+    mf:name "string-roughly.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_string/roughly-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b24 .
+
+:string_equalIgnoringCase
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:equalIgnoringCase" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/equalIgnoringCase.n3> ;
+    mf:name "string-equalIgnoringCase.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/equalIgnoringCase-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b25 .
+
+:cwm_list_unify4
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "List unification 4 - nested lists" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/unify4.n3> ;
+    mf:name "list-unify4.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/unify4-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b7 .
+
+_:b24
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b26
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b27
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:cwm_string_uriEncode
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:encodeForURI and encodeForFragID" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_string/uriEncode.n3> ;
+    mf:name "string-uriEncode.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_string/uriEncode-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b28 .
+
+:list_member
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "list:member" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/list/member.n3> ;
+    mf:name "li-member.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/list/member-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b29 .
+
+_:b30
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+_:b31
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+_:b32
+    test:think "true"^^xsd:boolean .
+
+:math_big
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Big math builtin test." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/big.n3> ;
+    mf:name "big.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/big-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b33 .
+
+:cwm_list_bug2
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "List processing bug check 2" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/list-bug2.n3> ;
+    mf:name "list-bug2.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/list-bug2-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b34 .
+
+_:b28
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b35
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:cwm_reason_t8
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Proof for a little inference, --n3=B to name BNodes" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/t8.n3> ;
+    mf:name "reason-t8.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/t8-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b36 .
+
+:cwm_list_first
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "first, in builtins on lists" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/first.n3> ;
+    mf:name "list-first.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/first-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b37 .
+
+test:TestN3PositiveSyntax
+    rdfs:subClassOf test:TestN3Positive ;
+    rdfs:subClassOf test:TestN3Syntax .
+
+_:b13
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:cwm_includes_concat
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Builtins for list concatenation." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/concat.n3> ;
+    mf:name "list concatenation" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/concat-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b38 .
+
+_:b21
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+:cwm_reason_t1
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Proof for just loading a file" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/t1.n3> ;
+    mf:name "reason-t1.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/t1-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b39 .
+
+:cwm_list_unify3
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "List unification 3 - nested lists" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/unify3.n3> ;
+    mf:name "list-unify3.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/unify3-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b40 .
+
+test:TestN3Reason
+    rdfs:subClassOf test:TestN3Positive ;
+    rdfs:subClassOf test:TestN3 .
+
+_:b41
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:cwm_includes_conclusion_simple
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Builtins for log:conclusion." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/conclusion-simple.n3> ;
+    mf:name "includes-conclusion-simple.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/conclusion-simple-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b8 .
+
+_:b42
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+_:b43
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+test:TestN3Positive
+    rdfs:subClassOf test:TestN3 .
+
+_:b15
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:list_length
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "list-:length" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/list/length.n3> ;
+    mf:name "li-length.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/list/length-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b44 .
+
+:cwm_reason_double
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Proof for a little inference - binding Bnode to symbol" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/double.n3> ;
+    mf:name "reason-double.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/double-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b30 .
+
+:string_lessThan
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:lessThan" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/lessThan.n3> ;
+    mf:name "string-lessThan.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/lessThan-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b45 .
+
+_:b46
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b47
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+:cwm_includes_t6
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Simple use of log:includes." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t6.n3> ;
+    mf:name "includes-t6.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t6-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b48 .
+
+:math_combo
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Math builtin combinatorial test." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/combo.n3> ;
+    mf:name "combo.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/combo-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b49 .
+
+:cwm_includes_quant-implies
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "log:implies handling of quantifiers." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/quant-implies.n3> ;
+    mf:name "includes-quant-implies.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/quant-implies-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b50 .
+
+_:b51
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+:cwm_reason_t9
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Proof for a little inference - binding Bnode to symbol" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/t9.n3> ;
+    mf:name "reason-t9.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/t9-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b52 .
+
+<file:///home/william-vw/projects/n3/N3/tests/N3Tests/manifest-reasoner.ttl>
+    a   mf:Manifest ;
+    mf:name "Notation3 Reasoner tests" ;
+    mf:entries ( :cwm_includes_listin :cwm_includes_bnode :cwm_includes_concat :cwm_includes_conclusion_simple :cwm_includes_conclusion :cwm_includes_conjunction :cwm_includes_t1 :cwm_includes_t2 :cwm_includes_t3 <file:///home/william-vw/projects/n3/N3/tests/N3Tests/manifest-reasoner.ttl#cwm_includes_t4:cwm_includes_t6> :cwm_includes_t8 :cwm_includes_builtins :cwm_includes_t9br :cwm_includes_t10 :cwm_includes_t11 :cwm_includes_quantifiers_limited :cwm_includes_quant-implies :cwm_includes_xsd :log_content :log_dtlit :log_langlit :log_parsedAsN3 :math_absoluteValue :math_big :math_ceiling :math_combo :math_corners :math_difference :math_exponentiation :math_floor :math_inf :math_numbers :math_product :math_quotient :math_remainder :math_rounded :math_strings :math_sum :math_trig :cwm_norm_av1 :list_in :list_iterate :list_length :list_member :cwm_list_bug1 :cwm_list_bug2 :cwm_list_r1 :cwm_list_unify2 :cwm_list_unify3 :cwm_list_unify4 :cwm_list_unify5 :cwm_list_append :cwm_list_first :cwm_list_last :cwm_list_builtin_generated_match :cwm_reason_t1 :cwm_reason_t2 :cwm_reason_t3 :cwm_reason_t4 :cwm_reason_t5 :cwm_reason_t6 :cwm_reason_socrates :cwm_reason_t8 :cwm_reason_t9 :cwm_reason_double :string_startsWith :string_contains :string_concatenation :string_containsIgnoringCase :string_equalIgnoringCase :string_format :string_notEqualIgnoringCase :string_greaterThan :string_lessThan :string_notGreaterThan :string_notLessThan :string_matches :string_notMatches :string_replace :string_scrape :cwm_string_endsWith :cwm_string_roughly :cwm_string_uriEncode :cwm_supports_simple :cwm_time_t1 :cwm_unify_unify1 :cwm_unify_unify2 :cwm_unify_reflexive ) .
+
+_:b53
+    test:think "true"^^xsd:boolean ;
+    test:conclusions "true"^^xsd:boolean .
+
+_:b54
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:string_format
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:format" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/format.n3> ;
+    mf:name "string-format.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/format-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b27 .
+
+:string_containsIgnoringCase
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:containsIgnoringCase" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/containsIgnoringCase.n3> ;
+    mf:name "string-containsIgnoringCase.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/containsIgnoringCase-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b10 .
+
+_:b55
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:cwm_reason_t2
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Proof for just loading a file" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/t2.n3> ;
+    mf:name "reason-t2.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/t2-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b56 .
+
+:string_startsWith
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:startsWith" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/startsWith.n3> ;
+    mf:name "string-startsWith.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/startsWith-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b57 .
+
+_:b58
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:math_rounded
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Test math:rounded" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/rounded.n3> ;
+    mf:name "rounded.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/rounded-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b43 .
+
+_:b59
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:cwm_list_unify2
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "List unification 2 - variable in list" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/unify2.n3> ;
+    mf:name "list-unify2.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/unify2-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b1 .
+
+_:b60
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+_:b3  test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:log_parsedAsN3
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Builtins for log:parsedAsN3." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/log/parsedAsN3.n3> ;
+    mf:name "log-parsedAsN3.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/log/parsedAsN3-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b61 .
+
+:math_inf
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Test infinities and NaN" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/inf.n3> ;
+    mf:name "inf.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/inf-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b62 .
+
+_:b62
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:string_concatenation
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:concatenation with type casting." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/concatenation.n3> ;
+    mf:name "string-concatenation.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/concatenation-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b35 .
+
+:cwm_unify_unify1
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "log:includes looking for @forAll" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_unify/unify1.n3> ;
+    mf:name "unify-unify1.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_unify/unify1-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b41 .
+
+_:b25
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:math_ceiling
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Test math:ceiling" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/ceiling.n3> ;
+    mf:name "ceiling.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/ceiling-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b63 .
+
+_:b52
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+_:b64
+    test:think "true"^^xsd:boolean .
+
+:cwm_list_last
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "last, in builtins on lists" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/last.n3> ;
+    mf:name "list-last.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/last-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b65 .
+
+:list_iterate
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "list:iterate" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/list/iterate.n3> ;
+    mf:name "li-iterate.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/list/iterate-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b66 .
+
+_:b49
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+:cwm_list_builtin_generated_match
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "last, in builtins on lists" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/builtin_generated_match.n3> ;
+    mf:name "list-builtin_generated_match.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/builtin_generated_match-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b67 .
+
+:math_trig
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Various trig builtins." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/trig.n3> ;
+    mf:name "math-trig.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/trig-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b59 .
+
+_:b68
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:cwm_list_append
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Iterative ops on lists" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/append.n3> ;
+    mf:name "append-out.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/append-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b53 .
+
+:cwm_includes_t10
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "log:resolvesTo and log:includes." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t10.n3> ;
+    mf:name "includes-t10.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t10-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b20 .
+
+:log_dtlit
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Builtins for log:dtlit." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/log/dtlit.n3> ;
+    mf:name "log-dtlit.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/log/dtlit-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b69 .
+
+_:b4  test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+_:b70
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:cwm_reason_t3
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Proof for just loading a file" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/t3.n3> ;
+    mf:name "reason-t3.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/t3-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b60 .
+
+_:b66
+    test:conclusions "true"^^xsd:boolean .
+
+:cwm_includes_quantifiers_limited
+    a   test:TestN3Positive ;
+    a   test:TestN3 ;
+    a   test:TestN3Reason ;
+    rdfs:comment "log:includes handling of univ./exist. quantifiers." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/quantifiers_limited.n3> ;
+    mf:name "includes-quantifiers_limited.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/quantifiers_limited-ref.n3> ;
+    rdft:approval rdft:Rejected ;
+    test:options _:b54 .
+
+:math_product
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Test math:product" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/product.n3> ;
+    mf:name "product.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/product-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b71 .
+
+:cwm_unify_unify2
+    a   test:TestN3Reason ;
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_unify/unify2.n3> ;
+    rdfs:comment "Query looking for @forAll" ;
+    mf:name "unify-unify2.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_unify/unify2-ref.n3> ;
+    rdft:approval rdft:Rejected ;
+    test:options _:b22 .
+
+:math_floor
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Test math:floor" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/floor.n3> ;
+    mf:name "floor.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/floor-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b51 .
+
+_:b50
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b72
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b73
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+:list_in
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "list:in" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/list/in.n3> ;
+    mf:name "li-in.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/list/in-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b74 .
+
+:cwm_includes_listin
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Builtins for list membership, binding multiple values." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/list-in.n3> ;
+    mf:name "list membership" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/list-in-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b75 .
+
+:string_notLessThan
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:notLessThan" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/notLessThan.n3> ;
+    mf:name "string-notLessThan.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/notLessThan-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b76 .
+
+_:b67
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+_:b77
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b44
+    test:think "true"^^xsd:boolean ;
+    test:conclusions "true"^^xsd:boolean .
+
+_:b78
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b48
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:cwm_includes_t4
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Simple use of log:notIncludes." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t4.n3> ;
+    mf:name "includes-t4.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t4-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b79 .
+
+_:b65
+    test:think "true"^^xsd:boolean ;
+    test:conclusions "true"^^xsd:boolean .
+
+_:b80
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:cwm_includes_t9br
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Filter event by date using strcmp BI's." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t9br.n3> ;
+    mf:name "includes-t9br.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t9br-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b64 .
+
+:cwm_reason_t4
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Proof for just loading a file" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/t4.n3> ;
+    mf:name "reason-t4.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/t4-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b12 .
+
+_:b76
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b39
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+:string_scrape
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:scrape" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/scrape.n3> ;
+    mf:name "string-scrape.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/scrape-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b77 .
+
+_:b57
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b38
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+:math_strings
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Various math builtins with string inputs." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/strings.n3> ;
+    mf:name "strings.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/strings-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b9 .
+
+_:b37
+    test:think "true"^^xsd:boolean ;
+    test:conclusions "true"^^xsd:boolean .
+
+_:b79
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:string_notMatches
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:notMatches" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/notMatches.n3> ;
+    mf:name "string-notMatches.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/notMatches-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b78 .
+
+:string_greaterThan
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:greaterThan" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/greaterThan.n3> ;
+    mf:name "string-greaterThan.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/greaterThan-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b70 .
+
+test:TestN3Syntax
+    rdfs:subClassOf test:TestN3 .
+
+_:b19
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:cwm_norm_av1
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Bug with RDF output in bySubject mode" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_norm/av.n3> ;
+    mf:name "norm-av1.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_norm/av-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b81 .
+
+:string_matches
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:matches" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/matches.n3> ;
+    mf:name "string-matches.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/matches-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b82 .
+
+_:b83
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+:cwm_includes_t3
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Simple use of log:includes." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t3.n3> ;
+    mf:name "includes-t3.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t3-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b84 .
+
+_:b63
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+:cwm_reason_t5
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Proof for a little inference" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/t5.n3> ;
+    mf:name "reason-t5.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/t5-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b85 .
+
+_:b29
+    test:think "true"^^xsd:boolean ;
+    test:conclusions "true"^^xsd:boolean .
+
+_:b75
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+_:b86
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b16
+    test:rules "true"^^xsd:boolean .
+
+_:b33
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+_:b36
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+_:b87
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b18
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b71
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:string_notGreaterThan
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:notGreaterThan" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/notGreaterThan.n3> ;
+    mf:name "string-notGreaterThan.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/notGreaterThan-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b17 .
+
+:cwm_list_bug1
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "List processing bug check 1" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/list-bug1.n3> ;
+    mf:name "list-bug1.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/list-bug1-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b42 .
+
+_:b40
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+_:b84
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:string_contains
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:contains" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/contains.n3> ;
+    mf:name "string-contains.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/contains-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b26 .
+
+:string_notEqualIgnoringCase
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:notEqualIgnoringCase" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/notEqualIgnoringCase.n3> ;
+    mf:name "string-notEqualIgnoringCase.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/notEqualIgnoringCase-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b87 .
+
+_:b85
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+_:b2  test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+:cwm_includes_t2
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Simple use of log:includes." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t2.n3> ;
+    mf:name "includes-t2.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t2-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b46 .
+
+:cwm_supports_simple
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "A very simple use of log:supports" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_supports/simple.n3> ;
+    mf:name "supports-simple.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_supports/simple-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b68 .
+
+:cwm_unify_reflexive
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Include using the same var twice" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_unify/reflexive.n3> ;
+    mf:name "unify-reflexive.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_unify/reflexive-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b80 .
+
+test:TestN3NegativeSyntax
+    rdfs:subClassOf test:TestN3Negative ;
+    rdfs:subClassOf test:TestN3Syntax .
+
+:string_replace
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "string:replace" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/replace.n3> ;
+    mf:name "string-replace.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/string/replace-out.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b72 .
+
+:cwm_includes_t11
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "log:resolvesTo and log:includes - schema checking." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t11.n3> ;
+    mf:name "includes-t11.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t11-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b58 .
+
+:cwm_reason_t6
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Proof for a little inference" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/t6.n3> ;
+    mf:name "reason-t6.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/t6-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b88 .
+
+_:b88
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+:cwm_includes_conjunction
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Builtins for log:conjunction." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/conjunction.n3> ;
+    mf:name "includes-conjunction.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/conjunction-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b55 .
+
+_:b14
+    test:strings "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:cwm_includes_conclusion
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "log:conclusion deductive closure." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/conclusion.n3> ;
+    mf:name "includes-conclusion.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/conclusion-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b32 .
+
+:math_exponentiation
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Test math:exponentiation" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/exponentiation.n3> ;
+    mf:name "exponentiation.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/exponentiation-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b83 .
+
+:cwm_list_r1
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Inference using lists" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/r1.n3> ;
+    mf:name "li-r1.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_list/r1-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b73 .
+
+:cwm_reason_socrates
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Proof for a little inference" ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/socrates.n3> ;
+    mf:name "reason-socrates.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_reason/socrates-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b47 .
+
+_:b56
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+_:b82
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b5  test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+_:b89
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b61
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+test:TestN3Negative
+    rdfs:subClassOf test:TestN3 .
+
+_:b69
+    test:data "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+:math_numbers
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Various math builtins with numbers inputs." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/numbers.n3> ;
+    mf:name "numbers.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/math/numbers-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b31 .
+
+_:b34
+    test:think "true"^^xsd:boolean ;
+    test:conclusions "true"^^xsd:boolean .
+
+_:b74
+    test:think "true"^^xsd:boolean ;
+    test:conclusions "true"^^xsd:boolean .
+
+:cwm_includes_t1
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Simple use of log:includes." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t1.n3> ;
+    mf:name "includes-t1.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/cwm_includes/t1-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b86 .
+
+:log_langlit
+    a   test:TestN3 ;
+    a   test:TestN3Positive ;
+    a   test:TestN3Reason ;
+    rdfs:comment "Builtins for log:langlit." ;
+    mf:action <file:///home/william-vw/projects/n3/N3/tests/N3Tests/log/langlit.n3> ;
+    mf:name "log-langlit.n3" ;
+    mf:result <file:///home/william-vw/projects/n3/N3/tests/N3Tests/log/langlit-ref.n3> ;
+    rdft:approval rdft:Approved ;
+    test:options _:b89 .
+
+_:b45
+    test:conclusions "true"^^xsd:boolean ;
+    test:rules "true"^^xsd:boolean .
+
+_:b23
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
+
+_:b81
+    test:think "true"^^xsd:boolean ;
+    test:data "true"^^xsd:boolean .
