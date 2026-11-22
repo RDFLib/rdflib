@@ -5,10 +5,11 @@ from __future__ import annotations
 import contextlib
 import io
 import typing as t
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Any, BinaryIO, Iterable
+from typing import Any, BinaryIO
 
-import httpx
+import httpx2 as httpx
 
 from rdflib import BNode
 from rdflib.contrib.rdf4j.exceptions import (
@@ -16,9 +17,9 @@ from rdflib.contrib.rdf4j.exceptions import (
     RDFLibParserError,
     RepositoryAlreadyExistsError,
     RepositoryError,
-    RepositoryFormatError,
     RepositoryNotFoundError,
     RepositoryNotHealthyError,
+    RepositoryResponseFormatError,
     TransactionClosedError,
     TransactionCommitError,
     TransactionPingError,
@@ -40,6 +41,20 @@ from rdflib.term import IdentifiedNode, Literal, URIRef
 SubjectType = t.Union[URIRef, None]
 PredicateType = t.Union[URIRef, None]
 ObjectType = t.Union[URIRef, Literal, None]
+
+
+def _size_context_params(
+    graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None,
+) -> dict[str, str | list[str]]:
+    """Encode graph selectors as repeated RDF4J size context parameters."""
+    if graph_name is None:
+        return {}
+    contexts = []
+    for name in (graph_name,) if isinstance(graph_name, str) else graph_name:
+        params: dict[str, str] = {}
+        build_context_param(params, name)
+        contexts.append(params["context"])
+    return {"context": contexts[0] if isinstance(graph_name, str) else contexts}
 
 
 @dataclass(frozen=True)
@@ -78,7 +93,7 @@ class RDF4JNamespaceManager:
             list[NamespaceListingResult]: List of namespace and prefix name results.
 
         Raises:
-            RepositoryFormatError: If the response format is unrecognized.
+            RepositoryResponseFormatError: If the response format is unrecognized.
         """
         headers = {
             "Accept": "application/sparql-results+json",
@@ -99,7 +114,7 @@ class RDF4JNamespaceManager:
                 for row in results
             ]
         except (KeyError, ValueError) as err:
-            raise RepositoryFormatError(f"Unrecognised response format: {err}")
+            raise RepositoryResponseFormatError(f"Unrecognised response format: {err}")
 
     def clear(self):
         """Clear all namespace declarations in the repository."""
@@ -424,11 +439,14 @@ class Repository:
                 f"Repository {self._identifier} is not healthy. {err.response.status_code} - {err.response.text}"
             )
 
-    def size(self, graph_name: URIRef | Iterable[URIRef] | str | None = None) -> int:
+    def size(
+        self,
+        graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None,
+    ) -> int:
         """The number of statements in the repository or in the specified graph name.
 
         Parameters:
-            graph_name: Graph name(s) to restrict to.
+            graph_name: Graph name(s) to restrict to, including blank nodes.
 
                 The default value `None` queries all graphs.
 
@@ -439,11 +457,9 @@ class Repository:
             The number of statements.
 
         Raises:
-            RepositoryFormatError: Fails to parse the repository size.
+            RepositoryResponseFormatError: Fails to parse the repository size.
         """
-        validate_graph_name(graph_name)
-        params: dict[str, str] = {}
-        build_context_param(params, graph_name)
+        params = _size_context_params(graph_name)
         response = self.http_client.get(
             f"/repositories/{self.identifier}/size", params=params
         )
@@ -458,7 +474,7 @@ class Repository:
                 return value
             raise ValueError(f"Invalid repository size: {value}")
         except ValueError as err:
-            raise RepositoryFormatError(
+            raise RepositoryResponseFormatError(
                 f"Failed to parse repository size: {err}"
             ) from err
 
@@ -521,7 +537,7 @@ class Repository:
             A list of graph names.
 
         Raises:
-            RepositoryFormatError: Fails to parse the repository graph names.
+            RepositoryResponseFormatError: Fails to parse the repository graph names.
         """
         headers = {
             "Accept": "application/sparql-results+json",
@@ -543,7 +559,7 @@ class Repository:
                     raise ValueError(f"Invalid graph name type: {value_type}")
             return values
         except Exception as err:
-            raise RepositoryFormatError(
+            raise RepositoryResponseFormatError(
                 f"Failed to parse repository graph names: {err}"
             ) from err
 
@@ -723,24 +739,39 @@ class Repository:
 
     @contextlib.contextmanager
     def transaction(self):
-        """Create a new transaction for the repository."""
-        with Transaction(self) as txn:
+        """Create a new transaction for the repository.
+
+        !!! warning
+
+        Transaction instances are not thread-safe. Do not share a single
+        Transaction instance across multiple threads. Each thread should create
+        its own transaction, or use appropriate synchronization if sharing is
+        required.
+        """
+        with Transaction.create(self) as txn:
             yield txn
 
 
 class Transaction:
     """An RDF4J transaction.
 
+    !!! warning
+
+        Transaction instances are not thread-safe. Do not share a single
+        Transaction instance across multiple threads. Each thread should create
+        its own transaction, or use appropriate synchronization if sharing is
+        required.
+
     Parameters:
         repo: The repository instance.
     """
 
-    def __init__(self, repo: Repository):
+    def __init__(self, repo: Repository, url: str):
         self._repo = repo
-        self._url: str | None = None
+        self._url: str = url
+        self._closed: bool = False
 
     def __enter__(self):
-        self._url = self._start_transaction()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -769,25 +800,28 @@ class Transaction:
     @property
     def is_closed(self) -> bool:
         """Whether the transaction is closed."""
-        return self._url is None
+        return self._closed
 
     def _raise_for_closed(self):
         if self.is_closed:
             raise TransactionClosedError("The transaction has been closed.")
 
-    def _start_transaction(self) -> str:
-        response = self.repo.http_client.post(
-            f"/repositories/{self.repo.identifier}/transactions"
+    @classmethod
+    def create(cls, repo: Repository) -> Transaction:
+        """Create a new transaction for the repository.
+
+        Parameters:
+            repo: The repository instance.
+
+        Returns:
+            A new Transaction instance.
+        """
+        response = repo.http_client.post(
+            f"/repositories/{repo.identifier}/transactions"
         )
         response.raise_for_status()
-        return response.headers["Location"]
-
-    def _close_transaction(self):
-        self._url = None
-
-    def open(self):
-        """Opens a transaction."""
-        self._url = self._start_transaction()
+        url = response.headers["Location"]
+        return cls(repo, url)
 
     def commit(self):
         """Commit the transaction.
@@ -803,16 +837,22 @@ class Transaction:
             raise TransactionCommitError(
                 f"Transaction commit failed: {response.status_code} - {response.text}"
             )
-        self._close_transaction()
+        self._closed = True
 
     def rollback(self):
-        """Roll back the transaction."""
+        """Roll back the transaction.
+
+        Raises:
+            TransactionRollbackError: If the transaction rollback fails.
+            TransactionClosedError: If the transaction is closed.
+        """
+        self._raise_for_closed()
         response = self.repo.http_client.delete(self.url)
         if response.status_code != 204:
             raise TransactionRollbackError(
                 f"Transaction rollback failed: {response.status_code} - {response.text}"
             )
-        self._close_transaction()
+        self._closed = True
 
     def ping(self):
         """Ping the transaction.
@@ -829,11 +869,14 @@ class Transaction:
                 f"Transaction ping failed: {response.status_code} - {response.text}"
             )
 
-    def size(self, graph_name: URIRef | Iterable[URIRef] | str | None = None):
+    def size(
+        self,
+        graph_name: IdentifiedNode | Iterable[IdentifiedNode] | str | None = None,
+    ) -> int:
         """The number of statements in the repository or in the specified graph name.
 
         Parameters:
-            graph_name: Graph name(s) to restrict to.
+            graph_name: Graph name(s) to restrict to, including blank nodes.
 
                 The default value `None` queries all graphs.
 
@@ -844,12 +887,11 @@ class Transaction:
             The number of statements.
 
         Raises:
-            RepositoryFormatError: Fails to parse the repository size.
+            RepositoryResponseFormatError: Fails to parse the repository size.
         """
         self._raise_for_closed()
-        validate_graph_name(graph_name)
-        params = {"action": "SIZE"}
-        build_context_param(params, graph_name)
+        params = _size_context_params(graph_name)
+        params["action"] = "SIZE"
         response = self.repo.http_client.put(self.url, params=params)
         response.raise_for_status()
         return self.repo._to_size(response.text)
@@ -864,6 +906,7 @@ class Transaction:
                 [RDF4J REST API - Execute SPARQL query](https://rdf4j.org/documentation/reference/rest-api/#tag/SPARQL/paths/~1repositories~1%7BrepositoryID%7D/get)
                 for the list of supported query parameters.
         """
+        self._raise_for_closed()
         headers: dict[str, str] = {}
         build_sparql_query_accept_header(query, headers)
         params = {"action": "QUERY", "query": query}
@@ -890,6 +933,7 @@ class Transaction:
                 See [RDF4J REST API - Execute a transaction action](https://rdf4j.org/documentation/reference/rest-api/#tag/Transactions/paths/~1repositories~1%7BrepositoryID%7D~1transactions~1%7BtransactionID%7D/put)
                 for the list of supported query parameters.
         """
+        self._raise_for_closed()
         params = {"action": "UPDATE", "update": query}
         response = self.repo.http_client.put(
             self.url,
@@ -911,6 +955,7 @@ class Transaction:
             content_type: The content type of the data. Defaults to
                 `application/n-quads` when the value is `None`.
         """
+        self._raise_for_closed()
         stream, should_close = rdf_payload_to_stream(data)
         headers = {"Content-Type": content_type or "application/n-quads"}
         params = {"action": "ADD"}
@@ -964,6 +1009,7 @@ class Transaction:
             A [`Graph`][rdflib.graph.Graph] or [`Dataset`][rdflib.graph.Dataset] object
                 with the repository namespace prefixes bound to it.
         """
+        self._raise_for_closed()
         validate_no_bnodes(subj, pred, obj, graph_name)
         if content_type is None:
             content_type = "application/n-quads"
@@ -1004,9 +1050,11 @@ class Transaction:
         """Delete statements from the repository.
 
         !!! Note
-            This function operates differently to [`Repository.delete`][] as it does
-            not use filter parameters. Instead, it expects a data payload.
-            See the notes from [graphdb.js#Deleting](https://github.com/Ontotext-AD/graphdb.js?tab=readme-ov-file#deleting-1)
+            This function operates differently to
+            [`Repository.delete`][rdflib.contrib.rdf4j.client.Repository.delete]
+            as it does not use filter parameters. Instead, it expects a data payload.
+            See the notes from
+            [graphdb.js#Deleting](https://github.com/Ontotext-AD/graphdb.js?tab=readme-ov-file#deleting-1)
             for more information.
 
         Parameters:
@@ -1015,6 +1063,7 @@ class Transaction:
             content_type: The content type of the data. Defaults to
                 `application/n-quads` when the value is `None`.
         """
+        self._raise_for_closed()
         params: dict[str, str] = {"action": "DELETE"}
         stream, should_close = rdf_payload_to_stream(data)
         headers = {"Content-Type": content_type or "application/n-quads"}
@@ -1054,7 +1103,7 @@ class RepositoryManager:
             list[RepositoryListingResult]: List of repository results.
 
         Raises:
-            RepositoryFormatError: If the response format is unrecognized.
+            RepositoryResponseFormatError: If the response format is unrecognized.
         """
         headers = {
             "Accept": "application/sparql-results+json",
@@ -1076,7 +1125,7 @@ class RepositoryManager:
                 for repo in results
             ]
         except (KeyError, ValueError) as err:
-            raise RepositoryFormatError(f"Unrecognised response format: {err}")
+            raise RepositoryResponseFormatError(f"Unrecognised response format: {err}")
 
     def get(self, repository_id: str) -> Repository:
         """Get a repository by ID.
@@ -1152,26 +1201,44 @@ class RepositoryManager:
 class RDF4JClient:
     """RDF4J client.
 
+    This client and its inner management objects perform HTTP requests via
+    httpx and may raise httpx-specific exceptions. Errors documented by RDF4J
+    in its protocol specification are mapped to specific exceptions in this
+    library where applicable. Error mappings are documented on each management
+    method. The underlying httpx client is reused across requests, and
+    connection pooling is handled automatically by httpx.
+
     Parameters:
         base_url: The base URL of the RDF4J server.
-        auth: Authentication tuple (username, password).
-        timeout: Request timeout in seconds (default: 30.0).
+        auth: Authentication credentials. Can be a tuple (username, password) for
+            basic auth, or a string for token-based auth (e.g., "GDB <token>")
+            which is added as the Authorization header.
+        timeout: Request timeout in seconds or an httpx.Timeout for fine-grained control (default: 30.0).
         kwargs: Additional keyword arguments to pass to the httpx.Client.
     """
 
     def __init__(
         self,
         base_url: str,
-        auth: tuple[str, str] | None = None,
-        timeout: float = 30.0,
+        auth: tuple[str, str] | str | None = None,
+        timeout: float | httpx.Timeout = 30.0,
         **kwargs: Any,
     ):
         if not base_url.endswith("/"):
             base_url += "/"
+
+        httpx_auth: tuple[str, str] | None = None
+        if isinstance(auth, tuple):
+            httpx_auth = auth
+        elif isinstance(auth, str):
+            headers = kwargs.get("headers", {})
+            headers["Authorization"] = auth
+            kwargs["headers"] = headers
+
         self._http_client = httpx.Client(
-            base_url=base_url, auth=auth, timeout=timeout, **kwargs
+            base_url=base_url, auth=httpx_auth, timeout=timeout, **kwargs
         )
-        self._repository_manager: RepositoryManager | None = None
+        self._repository_manager = RepositoryManager(self.http_client)
         try:
             protocol_version = self.protocol
         except httpx.RequestError as err:
@@ -1198,8 +1265,6 @@ class RDF4JClient:
     @property
     def repositories(self) -> RepositoryManager:
         """Server-level repository management operations."""
-        if self._repository_manager is None:
-            self._repository_manager = RepositoryManager(self.http_client)
         return self._repository_manager
 
     @property

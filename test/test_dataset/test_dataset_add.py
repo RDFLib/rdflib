@@ -93,6 +93,55 @@ def test_adding_appends_to_dataset_graph():
     assert len(ds) == 3
 
 
+def test_dataset_add_with_graph_context_does_not_copy_statements():
+    ds = Dataset()
+    graph_name = URIRef("urn:graph")
+    source_graph = Graph(identifier=graph_name)
+
+    triples = [
+        (URIRef("urn:s1"), RDF.type, URIRef("urn:c1")),
+        (URIRef("urn:s2"), RDF.type, URIRef("urn:c1")),
+        (URIRef("urn:s3"), RDF.type, URIRef("urn:c1")),
+    ]
+    for triple in triples:
+        source_graph.add(triple)
+
+    # Adding with a graph context should add only the supplied triple.
+    ds.add((*triples[0], source_graph))
+    dataset_graph = ds.get_graph(graph_name)
+    assert len(dataset_graph) == 1
+    assert triples[0] in dataset_graph
+    assert triples[1] not in dataset_graph
+    assert triples[2] not in dataset_graph
+
+    ds.add((*triples[1], source_graph))
+    assert len(dataset_graph) == 2
+    assert triples[1] in dataset_graph
+    assert triples[2] not in dataset_graph
+
+
+def test_dataset_addn_with_graph_context_does_not_copy_statements():
+    ds = Dataset()
+    graph_name = URIRef("urn:graph")
+    source_graph = Graph(identifier=graph_name)
+
+    triples = [
+        (URIRef("urn:s1"), RDF.type, URIRef("urn:c1")),
+        (URIRef("urn:s2"), RDF.type, URIRef("urn:c1")),
+        (URIRef("urn:s3"), RDF.type, URIRef("urn:c1")),
+    ]
+    for triple in triples:
+        source_graph.add(triple)
+
+    # addN should keep the same non-copy semantics as add for graph contexts.
+    ds.addN([(*triples[0], source_graph)])
+    dataset_graph = ds.get_graph(graph_name)
+    assert len(dataset_graph) == 1
+    assert triples[0] in dataset_graph
+    assert triples[1] not in dataset_graph
+    assert triples[2] not in dataset_graph
+
+
 def test_dataset_parse_return_value():
     """
     Test that the return value of ds.parse has the same reference as ds.
@@ -144,39 +193,36 @@ def test_dataset_iadd():
     # Combine the datasets
     ds += ds2 + ds3
 
-    expected_default_graph_data = dedent(
-        """
+    expected_default_graph_data = dedent("""
         @prefix ns2: <https://example.com/> .
         @prefix ns3: <https://example.com/p/> .
         ns2:subject2 ns3:predicate2 "object2" .
         ns2:subject ns3:predicate "object" .
-    """
-    )
+        """)
     expected_default_graph = Graph(identifier=DATASET_DEFAULT_GRAPH_ID).parse(
         data=expected_default_graph_data, format="turtle"
     )
 
-    expected_graph1_data = dedent(
-        """
+    expected_graph1_data = dedent("""
         @prefix ns2: <https://example.com/> .
         @prefix ns3: <https://example.com/p/> .
         ns2:subject ns3:predicate "object" .
         ns2:subject-other ns3:predicate-other "Triple-Other" .
-    """
-    )
+        """)
     expected_graph1 = Graph(identifier=URIRef("https://example.com/graph")).parse(
         data=expected_graph1_data, format="turtle"
     )
 
-    expected_graph2 = dedent(
-        """
+    expected_graph2 = dedent("""
         @prefix ns2: <https://example.com/> .
         ns2:subject-y ns2:predicate-y "Triple Y" .
-    """
-    )
+        """)
     expected_graph2 = Graph(identifier=URIRef("https://example.com/graph2")).parse(
         data=expected_graph2, format="turtle"
     )
+
+    for graph in ds.graphs():
+        print(graph.identifier, len(graph))
 
     assert isomorphic(expected_default_graph, ds.default_graph)
     assert isomorphic(

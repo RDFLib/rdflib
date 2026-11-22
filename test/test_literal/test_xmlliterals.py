@@ -1,7 +1,7 @@
 import logging
 import textwrap
 import xml.dom.minidom
-from typing import Callable, Sequence
+from collections.abc import Callable, Sequence
 
 import pytest
 
@@ -123,23 +123,19 @@ def testHTML():  # noqa: N802
             [
                 lambda: Literal(
                     xml.dom.minidom.parseString(
-                        textwrap.dedent(
-                            """\
+                        textwrap.dedent("""\
                     <!DOCTYPE example>
                     <something2/>
-                    """
-                        )
+                    """)
                     ),
                     datatype=RDF.XMLLiteral,
                 ),
                 lambda: Literal(
                     xml.dom.minidom.parseString(
-                        textwrap.dedent(
-                            """\
+                        textwrap.dedent("""\
                     <!DOCTYPE example>
                     <something2 />
-                    """
-                        )
+                    """)
                     ),
                     datatype=RDF.XMLLiteral,
                 ),
@@ -155,10 +151,10 @@ def test_eq(values: Sequence[Callable[[], Literal]], equals: bool) -> None:
         current_value = value()
         logging.debug("current_value = \n%r", current_value)
         if equals:
-            assert first_value.eq(
-                current_value
-            ), f"{current_value} must be equal to {first_value}"
+            assert first_value.eq(current_value), (
+                f"{current_value} must be equal to {first_value}"
+            )
         else:
-            assert not first_value.eq(
-                current_value
-            ), f"{current_value} must be not be equal to {first_value}"
+            assert not first_value.eq(current_value), (
+                f"{current_value} must be not be equal to {first_value}"
+            )

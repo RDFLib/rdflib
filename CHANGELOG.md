@@ -1,3 +1,49 @@
+## Unreleased
+
+- feat: add SPARQL Result TSV serializer (`TSVResultSerializer`) implementing the W3C SPARQL 1.1 Query Results TSV Format. Users can now call `result.serialize(format="tsv")` to produce tab-separated output.
+
+## 2026-02-13 RELEASE 7.6.0
+
+This release introduces a new major feature: GraphDB integration via the Python GraphDB Client. Users can now manage GraphDB instances and perform administrative tasks directly from Python. As GraphDB also supports the RDF4J REST API, users may utilize the recently released RDF4J Client and Store with GraphDB instances. For more details, see the new RDFLib GraphDB documentation under the extras section of the [RDFLib documentation](https://rdflib.readthedocs.io/en/stable/).
+
+This release also includes a number of fixes to `Graph.cbd()` and Turtle-related serializers. Thanks to @mgberg and @lisat-dstg, the affected code is now more standards-compliant.
+
+At the request of users, the recently introduced CLI tool `sq` has been renamed to `sparqlquery` to avoid conflicts with existing well-known packages.
+
+Other maintenance tasks include updating all CI actions to the latest versions and adding a compatibility layer for pyparsing v3 to remove deprecation warnings.
+
+Pull requests merged:
+
+- chore: rename sq to sparqlquery by @edmondchuc in [#3396](https://github.com/RDFLib/rdflib/pull/3396)
+- ci: update actions to the latest versions + bump ruff by @edmondchuc in [#3395](https://github.com/RDFLib/rdflib/pull/3395)
+- fix: Dataset.add() perf issues by @edmondchuc in [#3394](https://github.com/RDFLib/rdflib/pull/3394)
+- docs: improve docs generation for the file in the `examples` to show … by @nicholascar in [#3393](https://github.com/RDFLib/rdflib/pull/3393)
+- docs: GraphDB Client by @edmondchuc in [#3383](https://github.com/RDFLib/rdflib/pull/3383)
+- feat: GraphDB Client by @edmondchuc in [#3372](https://github.com/RDFLib/rdflib/pull/3372)
+- Improve Graph.cbd by @mgberg in [#3367](https://github.com/RDFLib/rdflib/pull/3367)
+- fix serialiser makes invalid turtle curis by @lisat-dstg in [#3364](https://github.com/RDFLib/rdflib/pull/3364)
+- Use non-deprecated pyparsing methods by @rafguns in [#3362](https://github.com/RDFLib/rdflib/pull/3362)
+- chore: post 7.5.0 tasks by @edmondchuc in [#3336](https://github.com/RDFLib/rdflib/pull/3336)
+
+## 2025-11-28 RELEASE 7.5.0
+
+This release introduces a new major feature to RDFLib: RDF4J Store integration and RDF4J Client. Users can use this to connect to RDF4J database servers through RDFLib's Graph and Dataset classes, as well as manage repositories and transactions using the RDF4J Client. A comprehensive user guide for the new RDF4J features is available under the extras section of the [RDFLib documentation](https://rdflib.readthedocs.io/en/stable/).
+
+We've also added a new CLI tool, `sq` (the script is [rdflib/tools/sparqlquery.py](https://github.com/RDFLib/rdflib/blob/main/rdflib/tools/sparqlquery.py)), for executing SPARQL queries against local files or remote SPARQL endpoints with custom serialization. This provides a convenient way to query RDF data straight from the command line.
+
+Other enhancements include documentation improvements that fix crosslinking issues between modules, and new documentation content for RDFLib plugins, parsers, and serializers.
+
+For RDFLib developers, this release introduces [httpx](https://www.python-httpx.org/) as an optional dependency to support the new RDF4J functionality. The RDF4J test suite now also uses [testcontainers](https://testcontainers-python.readthedocs.io/en/latest/) on Linux environments running Python 3.9.2 or later.
+
+Pull requests merged:
+
+- Documentation rework that plugins usage and modules are crosslinked by @WhiteGobo in [#3320](https://github.com/RDFLib/rdflib/pull/3320)
+- formatting: black conforming sparqlquery.py by @WhiteGobo in [#3318](https://github.com/RDFLib/rdflib/pull/3318)
+- chore: delete merged_prs.json by @edmondchuc in [#3313](https://github.com/RDFLib/rdflib/pull/3313)
+- feat: RDF4J Client by @edmondchuc in [#3306](https://github.com/RDFLib/rdflib/pull/3306)
+- test: fix dbpedia webtests by @edmondchuc in [#3304](https://github.com/RDFLib/rdflib/pull/3304)
+- Created script sparqlquery. by @WhiteGobo in [#3290](https://github.com/RDFLib/rdflib/pull/3290)
+
 ## 2025-10-30 RELEASE 7.4.0
 
 This release addresses a couple of bugs and improves the testing matrix by adding python 3.12, 3.13 and 3.14 to the test matrix.
@@ -3586,7 +3632,7 @@ This release includes several major changes:
   * SPARQL paths are exposed as operators on ```URIRefs```, these can
     then be be used with graph.triples and friends:
 
-    ```python
+    ```
     from rdflib import Graph, URIRef
     from rdflib.namespace import FOAF, RDFS
     
@@ -3624,7 +3670,7 @@ This release includes several major changes:
   these allow access to variable bindings as attributes or as a
   dict. I.e.
 
-  ```py
+  ```
   for row in g.query('select ... ') :
      print row.age, row["name"]
   ```
@@ -3632,10 +3678,7 @@ This release includes several major changes:
 * "Slicing" of Graphs and Resources as syntactic sugar:
   ([#271](https://github.com/RDFLib/rdflib/issues/271))
 
-  ```py
-  graph[bob : FOAF.knows/FOAF.name]
-            -> generator over the names of Bobs friends
-  ```
+  `graph[bob : FOAF.knows/FOAF.name]` -> generator over the names of Bobs friends
 
 * The ```SPARQLStore``` and ```SPARQLUpdateStore``` are now included
   in the RDFLib core
@@ -3647,10 +3690,7 @@ This release includes several major changes:
 ### Minor Changes:
 
 * String operations on URIRefs return new URIRefs: ([#258](https://github.com/RDFLib/rdflib/issues/258))
-  ```py
-  >>> URIRef('http://example.org/')+'test
-  rdflib.term.URIRef('http://example.org/test')
-  ```
+  `URIRef('http://example.org/')+'test'` -> `URIRef('http://example.org/test')`
 
 * Parser/Serializer plugins are also found by mime-type, not just
   by plugin name:  ([#277](https://github.com/RDFLib/rdflib/issues/277))

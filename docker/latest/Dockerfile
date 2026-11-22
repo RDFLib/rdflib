@@ -1,4 +1,4 @@
-FROM docker.io/library/python:3.13.2-slim@sha256:ae9f9ac89467077ed1efefb6d9042132d28134ba201b2820227d46c9effd3174
+FROM docker.io/library/python:3.16.0a1-slim@sha256:df293ba3b89f458e1aad6051b62ff1c4fad7b3b52b8147ae9cc4b667f9cf2741
 
 COPY docker/latest/requirements.txt /var/tmp/build/
 

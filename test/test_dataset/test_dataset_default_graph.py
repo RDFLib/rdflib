@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import itertools
 import logging
-from typing import Iterable, Type, Union
+from collections.abc import Iterable
+from typing import Union
 
 import pytest
 from _pytest.mark.structures import ParameterSet
@@ -35,10 +36,10 @@ EXTENSION_FORMATS = {
 
 
 @pytest.mark.parametrize(
-    ["container_type", "file_extension"], make_load_default_and_named()
+    ["container_type", "file_extension"], list(make_load_default_and_named())
 )
 def test_load_default_and_named(
-    container_type: Union[Type[Dataset], Type[ConjunctiveGraph]], file_extension: str
+    container_type: Union[type[Dataset], type[ConjunctiveGraph]], file_extension: str
 ) -> None:
     logging.debug("container_type = %s", container_type)
     container = container_type()
@@ -59,35 +60,35 @@ def test_load_default_and_named(
     source = TEST_DATA_DIR / "variants" / f"more_quads.{file_extension}"
     container.parse(source=source, format=format)
 
-    context_identifiers = set(context.identifier for context in container.contexts())
+    context_identifiers = set(context.identifier for context in container.graphs())
 
     logging.info("context_identifiers = %s", context_identifiers)
     logging.info(
-        "container.default_context.triples(...) = %s",
-        set(container.default_context.triples((None, None, None))),
+        "container.default_graph.triples(...) = %s",
+        set(container.default_graph.triples((None, None, None))),
     )
 
-    all_contexts = set(container.contexts())
+    all_contexts = set(container.graphs())
     logging.info(
         "all_contexts = %s", set(context.identifier for context in all_contexts)
     )
 
-    non_default_contexts = set(container.contexts()) - {container.default_context}
+    non_default_graphs = set(container.graphs()) - {container.default_graph}
     # There should now be two graphs in the container that are not the default graph.
     logging.info(
         "non_default_graphs = %s",
-        set(context.identifier for context in non_default_contexts),
+        set(context.identifier for context in non_default_graphs),
     )
-    assert 2 == len(non_default_contexts)
+    assert 2 == len(non_default_graphs)
 
     # The identifiers of the the non-default graphs should be the ones from the document.
     assert {
         URIRef("http://example.org/g2"),
         URIRef("http://example.org/g3"),
-    } == set(context.identifier for context in non_default_contexts)
+    } == set(context.identifier for context in non_default_graphs)
 
     # The default graph should have 4 triples.
-    assert 4 == len(container.default_context)
+    assert 4 == len(container.default_graph)
 
 
 def make_load_default_only_cases() -> Iterable[ParameterSet]:
@@ -102,10 +103,10 @@ def make_load_default_only_cases() -> Iterable[ParameterSet]:
 
 
 @pytest.mark.parametrize(
-    ["container_type", "file_extension"], make_load_default_only_cases()
+    ["container_type", "file_extension"], list(make_load_default_only_cases())
 )
 def test_load_default_only(
-    container_type: Union[Type[Dataset], Type[ConjunctiveGraph]], file_extension: str
+    container_type: Union[type[Dataset], type[ConjunctiveGraph]], file_extension: str
 ) -> None:
     logging.debug("container_type = %s", container_type)
     container = container_type()
@@ -126,29 +127,29 @@ def test_load_default_only(
     source = TEST_DATA_DIR / "variants" / f"simple_triple.{file_extension}"
     container.parse(source=source, format=format)
 
-    context_identifiers = set(context.identifier for context in container.contexts())
+    context_identifiers = set(graph.identifier for graph in container.graphs())
 
     logging.info("context_identifiers = %s", context_identifiers)
     logging.info(
-        "container.default_context.triples(...) = %s",
-        set(container.default_context.triples((None, None, None))),
+        "container.default_graph.triples(...) = %s",
+        set(container.default_graph.triples((None, None, None))),
     )
 
-    all_contexts = set(container.contexts())
+    all_contexts = set(container.graphs())
     logging.info(
         "all_contexts = %s", set(context.identifier for context in all_contexts)
     )
 
-    non_default_contexts = set(container.contexts()) - {container.default_context}
+    non_default_graphs = set(container.graphs()) - {container.default_graph}
     # There should now be no graphs in the container that are not the default graph.
     logging.info(
         "non_default_graphs = %s",
-        set(context.identifier for context in non_default_contexts),
+        set(context.identifier for context in non_default_graphs),
     )
-    assert 0 == len(non_default_contexts)
+    assert 0 == len(non_default_graphs)
 
-    # The identifiers of the the non-default graphs should be an empty set.
-    assert set() == set(context.identifier for context in non_default_contexts)
+    # The identifiers of the non-default graphs should be an empty set.
+    assert set() == set(context.identifier for context in non_default_graphs)
 
     # The default graph should have 3 triples.
-    assert 1 == len(container.default_context)
+    assert 1 == len(container.default_graph)

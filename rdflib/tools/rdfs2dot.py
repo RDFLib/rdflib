@@ -14,7 +14,6 @@ from __future__ import annotations
 import collections
 import itertools
 import sys
-from typing import Dict
 
 import rdflib.extras.cmdlineutils
 from rdflib import RDF, RDFS, XSD
@@ -79,7 +78,7 @@ def rdfs2dot(g, stream, opts={}):
     """
 
     fields = collections.defaultdict(set)
-    nodes: Dict[Identifier, str] = {}
+    nodes: dict[Identifier, str] = {}
 
     def node(nd):
         if nd not in nodes:
@@ -139,15 +138,13 @@ def rdfs2dot(g, stream, opts={}):
 
 
 def _help():
-    sys.stderr.write(
-        """
+    sys.stderr.write("""
 rdfs2dot.py [-f <format>] files...
 Read RDF files given on STDOUT, writes a graph of the RDFS schema in
 DOT language to stdout
 -f specifies parser to use, if not given,
 
-"""
-    )
+""")
 
 
 def main():

@@ -1,8 +1,11 @@
-from datetime import datetime, timezone
+import logging
+from datetime import UTC, datetime
+
+import pytest
 
 from rdflib.namespace import XSD
 from rdflib.term import Literal, URIRef
-from rdflib.xsd_datetime import xsd_datetime_isoformat
+from rdflib.xsd_datetime import XSDDate, xsd_datetime_isoformat
 
 
 class TestRelativeBase:
@@ -59,7 +62,7 @@ class TestRelativeBase:
             dt, datatype=URIRef("http://www.w3.org/2001/XMLSchema#dateTime")
         )
 
-        utc_dt = l.toPython().astimezone(timezone.utc)
+        utc_dt = l.toPython().astimezone(UTC)
         assert xsd_datetime_isoformat(utc_dt) == "2010-02-10T09:36:00Z"
 
     def test_timezone_offset_millisecond(self):
@@ -70,3 +73,44 @@ class TestRelativeBase:
 
         assert isinstance(l.toPython(), datetime)
         assert l.toPython().isoformat() == dt
+
+    def test_bce_xsd_date(self, caplog):
+        caplog.set_level(logging.WARNING, logger="rdflib.term")
+
+        lit = Literal("-0002-04-12", datatype=XSD.date)
+
+        assert str(lit) == "-0002-04-12"
+        assert lit.ill_typed is False
+        assert lit.value == XSDDate(-2, 4, 12)
+        assert lit.toPython() == XSDDate(-2, 4, 12)
+        assert not any(
+            "Failed to convert Literal lexical form" in r.message
+            for r in caplog.records
+        )
+
+    @pytest.mark.parametrize(
+        "lexical",
+        [
+            "-0001",
+            "-0500",
+            "-12000",
+            # Year zero is a valid xsd:gYear in XML Schema 1.1.
+            "0000",
+        ],
+    )
+    def test_bce_xsd_gyear(self, lexical, caplog):
+        """
+        xsd:gYear literals for BCE years and year zero are not ill-typed.
+
+        See https://github.com/RDFLib/rdflib/issues/2321.
+        """
+        caplog.set_level(logging.WARNING, logger="rdflib.term")
+
+        lit = Literal(lexical, datatype=XSD.gYear)
+
+        assert str(lit) == lexical
+        assert lit.ill_typed is not True
+        assert not any(
+            "Failed to convert Literal lexical form" in r.message
+            for r in caplog.records
+        )

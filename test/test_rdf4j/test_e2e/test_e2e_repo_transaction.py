@@ -28,11 +28,9 @@ def test_e2e_repo_transaction(repo: Repository):
         assert txn.size("urn:graph:a") == 1
 
     # Open a transaction without a context manager
-    txn = Transaction(repo)
-    txn.open()
+    txn = Transaction.create(repo)
     assert txn.size() == 2
     txn.rollback()
-    assert txn.url is None
 
     # Raises an error as the transaction is closed.
     with pytest.raises(TransactionClosedError):

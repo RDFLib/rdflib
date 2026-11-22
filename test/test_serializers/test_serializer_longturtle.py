@@ -1,14 +1,30 @@
 import difflib
+from io import BytesIO
 from pathlib import Path
 from textwrap import dedent
 
-from rdflib import Graph, Namespace
+import pytest
+
+from rdflib import RDF, BNode, Dataset, Graph, Literal, Namespace, URIRef
+from rdflib.compare import isomorphic
 from rdflib.namespace import GEO, SDO
+from rdflib.plugins.serializers.turtle import TurtleSerializer
+
+
+@pytest.mark.parametrize("canon", [False, True])
+def test_turtle_serializer_construction(canon: bool) -> None:
+    graph = Graph()
+    graph.add((BNode(), RDF.type, SDO.Person))
+    serializer = TurtleSerializer(graph)
+    stream = BytesIO()
+    serializer.serialize(stream, canon=canon)
+    parsed = Graph().parse(data=stream.getvalue(), format="turtle")
+    assert isomorphic(graph, parsed)
 
 
 def test_longturtle():
     """Compares the output of a longturtle graph serialization to a fixed, hand-typed, target
-    to test most of the longtertle differences to regular turtle
+    to test most of the longturtle differences to regular turtle
 
     Includes basic triples, Blank Nodes - 2-levels deep - Collections and so on"""
     # load graph with data
@@ -168,7 +184,7 @@ def test_longturtle():
     g.bind("sdo", SDO)
 
     # run the long turtle serializer
-    output = g.serialize(format="longturtle", canon=True)
+    output = g.serialize(canon=True)
 
     # fix the target
     current_dir = Path.cwd()  # Get the current directory
@@ -198,15 +214,68 @@ def test_longturtle_undeclared_prefix_when_using_base():
             Literal("object"),
         )
     )
-    output = g.serialize(format="longturtle", base="https://example.com/")
-    expected = dedent(
-        """
+    output = g.serialize(base="https://example.com/")
+    expected = dedent("""
         BASE <https://example.com/>
         PREFIX ns1: <https://example.com/p/>
 
         <subject>
             ns1:predicate "object" ;
         .
-    """
-    )
+    """)
     assert output.strip() == expected.strip()
+
+
+def test_longturtle_shared_list_tail_round_trips():
+    """
+    A list cell that is pointed to from more than one place (here, the tail of
+    one list is also referenced directly by another subject) cannot be safely
+    written with ``( … )`` collection syntax: the inline form only defines the
+    cell once, at whichever reference happens to consume it, leaving the other
+    reference dangling in the output.
+
+    Same regression as the turtle serializer's
+    ``test_turtle_shared_list_tail_round_trips``; ``longturtle`` duplicates
+    ``TurtleSerializer.isValidList`` rather than inheriting it, so it needs
+    the same fix.
+    """
+    ns = Namespace("http://example.org/ns/")
+    g = Graph()
+    tail = BNode()
+    head = BNode()
+    g.add((tail, RDF.first, Literal("b")))
+    g.add((tail, RDF.rest, RDF.nil))
+    g.add((head, RDF.first, Literal("a")))
+    g.add((head, RDF.rest, tail))
+    g.add((ns.s1, ns.p, head))
+    g.add((ns.s2, ns.p, tail))
+
+    serializer = TurtleSerializer(g)
+    assert serializer.is_valid_list(head) is False
+    assert serializer.is_valid_list(tail) is False
+
+    ttl_dump = g.serialize(format="origturtle")
+    g2 = Graph()
+    g2.parse(data=ttl_dump, format="turtle")
+    assert len(g2) == len(g)
+    assert isomorphic(g, g2)
+
+
+def test_longturtle_canon_works_for_a_dataset():
+    """
+    A ``Dataset`` iterates quads, which the canonicalizer does not accept, so
+    ``canon=True`` raised ``ValueError``. Like the output without ``canon``,
+    the canonical output holds the default graph only.
+    """
+    ns = Namespace("http://example.org/ns/")
+    ds = Dataset()
+    ds.add((ns.s, ns.p, BNode()))
+    ds.graph(URIRef("http://example.org/g")).add((ns.a, ns.b, ns.c))
+
+    ttl_dump = ds.serialize(format="longturtle", canon=True)
+    g = Graph()
+    g.parse(data=ttl_dump, format="turtle")
+    expected = Graph()
+    expected.parse(data=ds.serialize(format="longturtle"), format="turtle")
+    assert len(g) == 1
+    assert isomorphic(g, expected)

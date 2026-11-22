@@ -1,14 +1,17 @@
+from __future__ import annotations
+
 import os
 import shutil
 import tempfile
 import warnings
+from typing import Tuple
 
 import pytest
 
-from rdflib import BNode, Namespace, URIRef, plugin
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
+from rdflib import BNode, Namespace, Node, URIRef, plugin
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph, QuotedGraph
 from rdflib.store import Store
-from test.data import CONTEXT1, LIKES, PIZZA, TAREK
+from test.data import CHEESE, CONTEXT1, CONTEXT2, LIKES, PIZZA, TAREK
 
 # Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
 # available. This assumes SPARQL1.1 query/update endpoints running locally at
@@ -116,6 +119,12 @@ def get_dataset(request):
                 pass
 
 
+@pytest.mark.parametrize("store", ["Memory", "SPARQLStore"])
+def test_repr_without_store_access(store: str) -> None:
+    dataset = Dataset(store=store)
+    assert "Dataset" in repr(dataset)
+
+
 def test_graph_aware(get_dataset):
     store, dataset = get_dataset
 
@@ -180,7 +189,7 @@ def test_default_graph(get_dataset):
     dataset.add((TAREK, LIKES, PIZZA))
     assert len(dataset) == 1
     # only default exists
-    assert list(dataset.graphs()) == [dataset.default_context]
+    assert list(dataset.graphs()) == [dataset.default_graph]
 
     # removing default graph removes triples but not actual graph
     dataset.remove_graph(DATASET_DEFAULT_GRAPH_ID)
@@ -188,7 +197,152 @@ def test_default_graph(get_dataset):
     assert len(dataset) == 0
 
     # default still exists
-    assert set(dataset.graphs()) == set([dataset.default_context])
+    assert set(dataset.graphs()) == set([dataset.default_graph])
+
+
+def test_len_counts_quads() -> None:
+    dataset = Dataset()
+    dataset.graph(URIRef("https://example.com/g1")).add((TAREK, LIKES, PIZZA))
+    dataset.graph(URIRef("https://example.com/g2")).add((TAREK, LIKES, PIZZA))
+
+    assert len(dataset) == 2
+
+
+def test_len_excludes_quoted_formulas() -> None:
+    dataset = Dataset().parse(
+        data="@prefix : <urn:test:> . { :a :b :c } => { :d :e :f } .",
+        format="n3",
+    )
+
+    assert len(dataset) == 1
+    assert sum(1 for _ in dataset.quads()) == 1
+
+
+@pytest.mark.parametrize("quoted_first", [True, False])
+@pytest.mark.parametrize(
+    "identifier",
+    [URIRef("urn:shared"), DATASET_DEFAULT_GRAPH_ID],
+    ids=["named", "default"],
+)
+def test_len_counts_asserted_memberships(
+    identifier: URIRef, quoted_first: bool
+) -> None:
+    dataset = Dataset()
+    additions = [
+        (
+            QuotedGraph(dataset.store, identifier),
+            (URIRef("urn:quoted"), LIKES, PIZZA),
+        ),
+        (
+            Graph(dataset.store, identifier),
+            (URIRef("urn:asserted"), LIKES, PIZZA),
+        ),
+    ]
+    for graph, triple in additions if quoted_first else reversed(additions):
+        graph.add(triple)
+
+    assert len(dataset) == 1
+    assert bool(dataset) is True
+    assert sum(1 for _ in dataset.quads()) == 1
+
+
+@pytest.mark.parametrize("context_kind", ["self", "shared-store", "separate-store"])
+def test_len_counts_dataset_context(context_kind: str) -> None:
+    dataset = Dataset()
+    if context_kind == "self":
+        context = dataset
+    elif context_kind == "shared-store":
+        context = Dataset(store=dataset.store)
+    else:
+        context = Dataset()
+    dataset.add((TAREK, LIKES, PIZZA, context))
+    dataset.graph(URIRef("urn:other")).add((TAREK, LIKES, PIZZA))
+
+    assert len(dataset) == 2
+    assert sum(1 for _ in dataset.quads()) == 2
+
+
+def test_dataset_default_context_public_access_warns() -> None:
+    dataset = Dataset()
+
+    with pytest.warns(
+        DeprecationWarning,
+        match="Dataset.default_context is deprecated, use Dataset.default_graph instead.",
+    ):
+        assert dataset.default_context is dataset.default_graph
+
+
+def test_dataset_internal_default_graph_operations_do_not_warn() -> None:
+    dataset = Dataset()
+    triple: Tuple[Node, Node, Node] = (
+        URIRef("urn:s"),
+        URIRef("urn:p"),
+        URIRef("urn:o"),
+    )
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "error",
+            message="Dataset.default_context is deprecated, use Dataset.default_graph instead.",
+            category=DeprecationWarning,
+        )
+
+        dataset.add(triple)
+        assert list(dataset.triples((None, None, None))) == [triple]
+        assert list(dataset.quads((None, None, None, None))) == [
+            (*triple, DATASET_DEFAULT_GRAPH_ID)
+        ]
+        assert list(dataset.triples_choices(([triple[0]], triple[1], triple[2]))) == [
+            triple
+        ]
+        assert bool(dataset.query("ASK WHERE { <urn:s> <urn:p> <urn:o> }"))
+
+
+def test_dataset_parse_default_graph_does_not_warn() -> None:
+    dataset = Dataset()
+    triple: Tuple[Node, Node, Node] = (
+        URIRef("urn:s"),
+        URIRef("urn:p"),
+        URIRef("urn:o"),
+    )
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "error",
+            message=(
+                r"^Dataset\.default_context is deprecated, "
+                r"use Dataset\.default_graph instead\.$"
+            ),
+            category=DeprecationWarning,
+        )
+
+        dataset.parse(data="<urn:s> <urn:p> <urn:o> .", format="turtle")
+
+    assert triple in dataset.default_graph
+
+
+def test_dataset_update_default_graph_does_not_warn() -> None:
+    dataset = Dataset()
+    triple: Tuple[Node, Node, Node] = (
+        URIRef("urn:s"),
+        URIRef("urn:p"),
+        URIRef("urn:o"),
+    )
+    dataset.default_graph.add(triple)
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "error",
+            message=(
+                r"^Dataset\.default_context is deprecated, "
+                r"use Dataset\.default_graph instead\.$"
+            ),
+            category=DeprecationWarning,
+        )
+
+        dataset.update("DELETE DATA { <urn:s> <urn:p> <urn:o> }")
+
+    assert triple not in dataset.default_graph
 
 
 def test_not_union(get_dataset):
@@ -210,6 +364,9 @@ def test_not_union(get_dataset):
 def test_iter(get_dataset):
     store, d = get_dataset
     """PR 1382: adds __iter__ to Dataset"""
+    if store == "SPARQLUpdateStore":
+        pytest.skip("SPARQLUpdateStore does not expose contexts through triples()")
+
     uri_a = URIRef("https://example.com/a")
     uri_b = URIRef("https://example.com/b")
     uri_c = URIRef("https://example.com/c")
@@ -237,15 +394,51 @@ def test_iter(get_dataset):
         i_new += 1
 
     assert i_new == i_trad  # both should be 3
+    assert len(d) == i_new
+
+
+@pytest.mark.parametrize(
+    "graph_name, expected_quads",
+    [
+        (
+            CONTEXT1,
+            {
+                (TAREK, LIKES, PIZZA, CONTEXT1),
+                (TAREK, LIKES, CHEESE, CONTEXT1),
+            },
+        ),
+        (
+            CONTEXT2,
+            {
+                (TAREK, LIKES, PIZZA, CONTEXT2),
+            },
+        ),
+        (
+            DATASET_DEFAULT_GRAPH_ID,
+            {
+                (TAREK, LIKES, CHEESE, DATASET_DEFAULT_GRAPH_ID),
+            },
+        ),
+    ],
+)
+def test_quads_restricted_to_requested_graph(get_dataset, graph_name, expected_quads):
+    """A quad shared by several graphs must only be reported for the graph asked for."""
+    store, d = get_dataset
+
+    d.add((TAREK, LIKES, PIZZA, CONTEXT1))
+    d.add((TAREK, LIKES, CHEESE, CONTEXT1))
+    d.add((TAREK, LIKES, PIZZA, CONTEXT2))
+    d.add((TAREK, LIKES, CHEESE))
+
+    quads = set(d.quads((None, None, None, graph_name)))
+
+    assert quads == expected_quads
 
 
 def test_graph_without_identifier() -> None:
     """
-    Graphs with no identifies assigned are identified by Skolem IRIs with a
-    prefix that is bound to `genid`.
-
-    TODO: This is somewhat questionable and arbitrary behaviour and should be
-    reviewed at some point.
+    Graphs with no identifier assigned are identified by Skolem IRIs without
+    binding a `genid` prefix in the dataset's namespace manager.
     """
 
     d = Dataset()
@@ -254,20 +447,14 @@ def test_graph_without_identifier() -> None:
 
     genid_prefix = URIRef("https://rdflib.github.io/.well-known/genid/rdflib/")
 
-    namespaces = set(nman.namespaces())
-    assert (
-        next((namespace for namespace in namespaces if namespace[0] == "genid"), None)
-        is None
-    )
+    namespaces = dict(nman.namespaces())
+    assert "genid" not in namespaces
 
     ex = Namespace("http://example.com/")
     g1: Graph = d.graph()
     g1.add((ex.subject, ex.predicate, ex.object))
 
-    namespaces = set(nman.namespaces())
-    assert next(
-        (namespace for namespace in namespaces if namespace[0] == "genid"), None
-    ) == ("genid", genid_prefix)
+    assert dict(nman.namespaces()) == namespaces
 
     assert f"{g1.identifier}".startswith(genid_prefix)
 
@@ -290,6 +477,14 @@ def test_graph_without_identifier() -> None:
     assert iris == 2
     assert bns == 1
     assert others == 0
+
+    custom_genid = URIRef("http://example.com/genid/")
+    d.bind("genid", custom_genid)
+    namespaces_with_custom_genid = dict(nman.namespaces())
+    assert namespaces_with_custom_genid["genid"] == custom_genid
+
+    d.graph()
+    assert dict(nman.namespaces()) == namespaces_with_custom_genid
 
 
 def test_not_deprecated():

@@ -13,7 +13,7 @@ has_testcontainers = find_spec("testcontainers") is not None
 
 pytestmark = pytest.mark.skipif(
     not (has_httpx and has_testcontainers),
-    reason="skipping rdf4j tests, httpx or testcontainers not available",
+    reason="skipping rdf4j tests, httpx or testcontainers is not available",
 )
 
 if has_httpx and has_testcontainers:
@@ -21,13 +21,16 @@ if has_httpx and has_testcontainers:
     from testcontainers.core.image import DockerImage
     from testcontainers.core.waiting_utils import wait_for_logs
 
+    from rdflib.contrib.graphdb import GraphDBClient
     from rdflib.contrib.rdf4j import RDF4JClient
 
     GRAPHDB_PORT = 7200
 
     @pytest.fixture(scope="package")
     def graphdb_container():
-        with DockerImage(str(pathlib.Path(__file__).parent / "docker")) as image:
+        with DockerImage(
+            str(pathlib.Path(__file__).parent / "docker"), clean_up=False
+        ) as image:
             container = DockerContainer(str(image))
             container.with_exposed_ports(GRAPHDB_PORT)
             container.start()
@@ -35,10 +38,10 @@ if has_httpx and has_testcontainers:
             yield container
             container.stop()
 
-    @pytest.fixture(scope="function")
-    def client(graphdb_container: DockerContainer):
+    @pytest.fixture(scope="function", params=[RDF4JClient, GraphDBClient])
+    def client(graphdb_container: DockerContainer, request):
         port = graphdb_container.get_exposed_port(7200)
-        with RDF4JClient(
+        with request.param(
             f"http://localhost:{port}/", auth=("admin", "admin")
         ) as client:
             yield client

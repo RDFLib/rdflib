@@ -146,9 +146,9 @@ def test_definednamespace_creator_multiple_comments():
         text=True,
     )
     assert completed.returncode == 0, "subprocess exited incorrectly"
-    assert Path.is_file(
-        Path("_MULTILINESTRINGEXAMPLE.py")
-    ), "_MULTILINESTRINGEXAMPLE.py file not created"
+    assert Path.is_file(Path("_MULTILINESTRINGEXAMPLE.py")), (
+        "_MULTILINESTRINGEXAMPLE.py file not created"
+    )
 
     some_class_count = 0
     with open(Path("_MULTILINESTRINGEXAMPLE.py")) as f:
@@ -156,9 +156,9 @@ def test_definednamespace_creator_multiple_comments():
             if "SomeClass: URIRef" in line:
                 some_class_count += 1
 
-    assert (
-        some_class_count == 1
-    ), f"found {some_class_count} SomeClass definitions instead of 1."
+    assert some_class_count == 1, (
+        f"found {some_class_count} SomeClass definitions instead of 1."
+    )
 
     # cleanup
     Path.unlink(Path("_MULTILINESTRINGEXAMPLE.py"))

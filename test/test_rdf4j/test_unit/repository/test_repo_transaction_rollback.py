@@ -12,7 +12,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 if has_httpx:
-    import httpx
+    import httpx2 as httpx
 
     from rdflib.contrib.rdf4j.client import (
         Repository,
@@ -34,7 +34,7 @@ def test_repo_transaction_rollback(
         mock_httpx_delete = Mock(return_value=mock_rollback_response)
         monkeypatch.setattr(httpx.Client, "delete", mock_httpx_delete)
         txn.rollback()
-        assert txn.url is None
+        assert txn.is_closed
         mock_httpx_delete.assert_called_once_with(
             transaction_url,
         )

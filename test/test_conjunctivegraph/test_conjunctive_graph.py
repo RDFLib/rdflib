@@ -80,6 +80,6 @@ def get_graph_ids_tests():
     yield check, dict(source=source, format="turtle")
 
 
-@pytest.mark.parametrize("checker, kws", get_graph_ids_tests())
+@pytest.mark.parametrize("checker, kws", list(get_graph_ids_tests()))
 def test_graph_ids(checker, kws):
     checker(kws)

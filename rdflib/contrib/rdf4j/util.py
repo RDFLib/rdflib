@@ -38,7 +38,7 @@ def build_context_param(
         params["context"] = URIRef(graph_name).n3()
     elif graph_name is not None and isinstance(graph_name, t.Iterable):
         # type error: "str" has no attribute "n3"
-        graph_names = ",".join([x.n3() for x in graph_name])  # type: ignore[attr-defined]
+        graph_names = ",".join([x.n3() for x in graph_name])
         params["context"] = graph_names
 
 
@@ -176,7 +176,6 @@ def validate_no_bnodes(
         or isinstance(graph_name, BNode)
     ):
         raise ValueError(
-            "Subject, predicate, and object must not be a BNode: "
-            f"{subj}, {pred}, {obj}"
+            f"Subject, predicate, and object must not be a BNode: {subj}, {pred}, {obj}"
         )
     validate_graph_name(graph_name)

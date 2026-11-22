@@ -12,7 +12,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 if has_httpx:
-    import httpx
+    import httpx2 as httpx
 
     from rdflib.contrib.rdf4j.client import (
         Repository,
@@ -47,7 +47,7 @@ def test_repo_transaction_commit(
             params={"action": "COMMIT"},
         )
         # Ensure it is closed.
-        assert txn.url is None
+        assert txn.is_closed
         with pytest.raises(TransactionClosedError):
             txn.ping()
 

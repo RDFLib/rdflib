@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import logging
 from contextlib import ExitStack
-from typing import Optional
 
 import pytest
 
@@ -45,7 +44,7 @@ def check_entry(entry: ManifestEntry) -> None:
         logger.debug(
             "action = %s\n%s", action_path, action_path.read_text(encoding=ENCODING)
         )
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
     graph = Graph()
     with ExitStack() as xstack:
         if entry.type in (RDFT.TestTurtleNegativeSyntax, RDFT.TestTurtleNegativeEval):
@@ -151,20 +150,19 @@ MARK_DICT = {
     f"{REMOTE_BASE_IRI}#turtle-eval-bad-04": pytest.mark.xfail(
         reason="accepts invalid IRI"
     ),
-    f"{REMOTE_BASE_IRI}#turtle-syntax-bad-ln-dash-start": pytest.mark.xfail(
-        reason="accepts dash at the start of local name production"
-    ),
 }
 
 
 @pytest.mark.parametrize(
     ["manifest_entry"],
-    params_from_sources(
-        MAPPER,
-        ManifestEntry,
-        LOCAL_BASE_DIR / "manifest.ttl",
-        mark_dict=MARK_DICT,
-        report_prefix="rdflib_w3c_turtle",
+    list(
+        params_from_sources(
+            MAPPER,
+            ManifestEntry,
+            LOCAL_BASE_DIR / "manifest.ttl",
+            mark_dict=MARK_DICT,
+            report_prefix="rdflib_w3c_turtle",
+        )
     ),
 )
 def test_entry(manifest_entry: ManifestEntry) -> None:

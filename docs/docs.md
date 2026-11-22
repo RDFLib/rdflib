@@ -1,24 +1,25 @@
 # Writing RDFLib Documentation
 
-These docs are generated with [Material for MkDocs](https://squidfunk.github.io/mkdocs-material).
+These docs are generated with [Zensical](https://zensical.org/).
 
 - When writing doc-strings use markdown and google style.
 - API Docs are automatically generated with [`mkdocstring`](https://mkdocstrings.github.io).
-- See the [supported admonitions here](https://squidfunk.github.io/mkdocs-material/reference/admonitions/#supported-types)
+- See the [supported admonitions here](https://zensical.org/docs/authoring/admonitions/)
 
 ## Building
 
-To build the documentation you can use `mkdocs` from within the poetry environment. To do this, run the following commands:
+To build the documentation you can use `zensical` from within the uv environment. To do this, run the following commands:
 
 ```bash
-# Install poetry venv
-poetry install
+# Install the docs dependencies
+uv sync --group docs
 
 # Build the docs
-poetry run mkdocs build
+uv run python docs/gen_ref_pages.py
+uv run zensical build
 ```
 
-Built HTML docs will be generated in `site/` and API documentation, generated as markdown from doc-strings, will be placed in `docs/apidocs/`.
+Built HTML docs will be generated in `site/` and API documentation, generated as Markdown from doc-strings, will be placed in `docs/apidocs/`.
 
 API Docs are automatically generated with `mkdocstring`
 
@@ -39,7 +40,8 @@ npx -p live-server live-server site/
 Run development server with auto-reload on change to code:
 
 ```bash
-poetry run mkdocs serve
+uv run python docs/gen_ref_pages.py
+uv run zensical serve
 ```
 
 ## Tables

@@ -1,8 +1,11 @@
-import warnings
-from random import randint
+from __future__ import annotations
 
+from random import randint
+from typing import Iterable, Iterator, Optional
+
+from rdflib.graph import Graph
 from rdflib.namespace import RDF
-from rdflib.term import BNode, URIRef
+from rdflib.term import BNode, IdentifiedNode, Node, URIRef
 
 __all__ = ["Container", "Bag", "Seq", "Alt", "NoElementException"]
 
@@ -16,14 +19,14 @@ class Container:
     >>> from rdflib import Graph, BNode, Literal, Bag
     >>> g = Graph()
     >>> b = Bag(g, BNode(), [Literal("One"), Literal("Two"), Literal("Three")])
-    >>> print(g.serialize(format="turtle"))
-    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    >>> print(g.serialize())
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     <BLANKLINE>
-    [] a rdf:Bag ;
+    []    a rdf:Bag ;
         rdf:_1 "One" ;
         rdf:_2 "Two" ;
-        rdf:_3 "Three" .
-    <BLANKLINE>
+        rdf:_3 "Three" ;
+    .
     <BLANKLINE>
 
     >>> # print out an item using an index reference
@@ -33,21 +36,27 @@ class Container:
     >>> # add a new item
     >>> b.append(Literal("Hello")) # doctest: +ELLIPSIS
     <rdflib.container.Bag object at ...>
-    >>> print(g.serialize(format="turtle"))
-    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    >>> print(g.serialize())
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     <BLANKLINE>
-    [] a rdf:Bag ;
+    []    a rdf:Bag ;
         rdf:_1 "One" ;
         rdf:_2 "Two" ;
         rdf:_3 "Three" ;
-        rdf:_4 "Hello" .
-    <BLANKLINE>
+        rdf:_4 "Hello" ;
+    .
     <BLANKLINE>
 
     ```
     """
 
-    def __init__(self, graph, uri, seq=[], rtype="Bag"):
+    def __init__(
+        self,
+        graph: Graph,
+        uri: Optional[IdentifiedNode],
+        seq: Optional[Iterable[Node]] = None,
+        rtype: str = "Bag",
+    ) -> None:
         """Creates a Container
 
         Args:
@@ -62,7 +71,7 @@ class Container:
         self._len = 0
         self._rtype = rtype  # rdf:Bag or rdf:Seq or rdf:Alt
 
-        self.append_multiple(seq)
+        self.append_multiple(seq or ())
 
         # adding triple corresponding to container type
         self.graph.add((self.uri, RDF.type, RDF[self._rtype]))
@@ -85,15 +94,6 @@ class Container:
 
         return self._len
 
-    def type_of_conatiner(self):
-        warnings.warn(
-            "rdflib.container.Container.type_of_conatiner is deprecated. "
-            "Use type_of_container method instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self._rtype
-
     def type_of_container(self):
         return self._rtype
 
@@ -107,7 +107,7 @@ class Container:
 
         i = None
         for p in pred:
-            i = int(p.replace(li_index, ""))
+            i = int(str(p).replace(str(li_index), ""))
         return i
 
     def __getitem__(self, key):
@@ -151,6 +151,8 @@ class Container:
         for j in range(key + 1, len(self) + 1):
             elem_uri = str(RDF) + "_" + str(j)
             v = graph.value(container, URIRef(elem_uri))
+            if v is None:
+                raise KeyError(j)
             graph.remove((container, URIRef(elem_uri), v))
             elem_uri = str(RDF) + "_" + str(j - 1)
             graph.add((container, URIRef(elem_uri), v))
@@ -172,6 +174,10 @@ class Container:
             else:
                 break
         return l_
+
+    def __iter__(self) -> Iterator[Optional[Node]]:
+        """Returns an iterator over the items in the container"""
+        return iter(self.items())
 
     def end(self):  #
         # find end index (1-based) of container

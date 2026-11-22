@@ -53,11 +53,64 @@ print(len(g))
 # prints: 86
 ```
 
-[`parse()`][rdflib.Graph.parse] can process local files, remote data via a URL, as in this example, or RDF data in a string (using the `data` parameter).
+[`parse()`][rdflib.graph.Graph.parse] can process local files, remote data via a URL, as in this example, or RDF data in a string (using the `data` parameter).
+
+## Processing RDF without storing a graph
+
+Sometimes you might want to parse large RDF sources and incrementally feed triples into an RDFLib graph. To do this 
+use [`Sink`][rdflib.sink.Sink] to process statements as they are parsed. Its callback receives a triple and a graph name
+(`None` for the default graph). It can count, filter, transform or forward statements without storing the whole graph at
+one time:
+
+```python
+from rdflib.sink import Sink
+
+count = 0
+
+def accept(triple, graph_name):
+    global count
+    count += 1
+    # Process or forward the statement here; avoid accumulating it in a list.
+
+with open("large.nt", "rb") as source:
+    Sink(accept).parse(source, format="nt")
+
+print(f"Processed {count} statements")
+```
+
+An explicit format is required. Supported formats are N-Triples (`nt`, `nt11`, `ntriples`, `application/n-triples`),
+N-Quads (`nquads`, `application/n-quads`) and RDF/XML (`xml`, `application/rdf+xml`). The existing parsers read these
+formats incrementally. Turtle, TriG, N3 and JSON-LD are rejected because this interface does not provide bounded-input
+streaming for those formats yet. Existing `Graph.parse()` and `Dataset.parse()` behavior is unchanged.
+
+Callbacks run synchronously, so the parser waits for each callback to finish before delivering another statement.
+Duplicates are delivered repeatedly, in parser emission order; unlike a graph, a sink does not deduplicate them.
+Named graphs are passed as RDF identifiers, including blank nodes. The `publicID` argument controls the base URI,
+not the default graph name.
+
+Use a file, stream or URL to avoid holding the entire source string in memory. Parser buffers, the current statement,
+namespace bindings and blank-node label mappings still consume memory. Documents with many distinct blank-node labels
+can therefore require increasing memory even when statements are discarded. Callbacks that accumulate data add their
+own memory requirements.
+
+Borrowed streams remain open after parsing, including when a callback raises. Sources opened by the sink, and explicit
+`InputSource` objects with `auto_close=True`, are closed on success or failure. Exceptions stop parsing and propagate to
+the caller. Already delivered statements cannot be rolled back, so callbacks must allow for partial results on failure.
+
+Parsing URLs and XML can access external resources. The same
+[security considerations](security_considerations.md) as for graph parsing apply.
+
+For a complete conversion example, run:
+
+```bash
+python -m examples.streaming_parse input.rdf --format xml > output.nq
+```
+
+The example writes each statement immediately as N-Quads and reports its statement count on standard error.
 
 ## Saving RDF
 
-To store a graph in a file, use the [`serialize()`][rdflib.Graph.serialize] function:
+To store a graph in a file, use the [`serialize()`][rdflib.graph.Graph.serialize] function:
 
 ```python
 from rdflib import Graph
@@ -90,7 +143,7 @@ The following table lists the RDF formats you can serialize data to with rdflib,
 | Notation-3 | n3 | N3 is a superset of Turtle that also caters for rules and a few other things |
 | Trig | trig | Turtle-like format for RDF triples + context (RDF quads) and thus multiple graphs |
 | Trix | trix | RDF/XML-like format for RDF quads |
-| N-Quads | nquads | N-Triples-like format for RDF quads |
+| N-Quads | nquads or nq | N-Triples-like format for RDF quads |
 
 ## Working with multi-graphs
 

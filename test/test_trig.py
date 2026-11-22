@@ -1,6 +1,9 @@
 import re
 
+import pytest
+
 import rdflib
+from test.utils import GraphHelper
 
 TRIPLE = (
     rdflib.URIRef("http://example.com/s"),
@@ -9,10 +12,21 @@ TRIPLE = (
 )
 
 
-def test_empty():
-    g = rdflib.Graph()
+@pytest.mark.parametrize("graph_type", [rdflib.Graph, rdflib.Dataset])
+def test_empty(graph_type):
+    g = graph_type()
     s = g.serialize(format="trig")
     assert s is not None
+
+
+def test_default_and_named_graph_roundtrip():
+    dataset = rdflib.Dataset()
+    dataset.default_graph.add(TRIPLE)
+    dataset.graph(rdflib.URIRef("urn:named")).add(TRIPLE)
+
+    data = dataset.serialize(format="trig")
+    parsed = rdflib.Dataset().parse(data=data, format="trig")
+    GraphHelper.assert_quad_sets_equals(dataset, parsed)
 
 
 def test_repeat_triples():
@@ -73,7 +87,7 @@ def test_graph_qname_syntax():
 
 def test_graph_uri_syntax():
     g = rdflib.Dataset()
-    # getQName will not abbreviate this, so it should serialize as
+    # get_pname will not abbreviate this, so it should serialize as
     # a '<...>' term.
     g.add(TRIPLE + (rdflib.URIRef("http://example.com/foo."),))
     out = g.serialize(format="trig", encoding="latin-1")
@@ -84,9 +98,31 @@ def test_blank_graph_identifier():
     g = rdflib.Dataset()
     g.add(TRIPLE + (rdflib.BNode(),))
     out = g.serialize(format="trig", encoding="latin-1")
-    graph_label_line = out.splitlines()[-4]
+    graph_label_line = out.splitlines()[2]
 
     assert re.match(rb"^_:[a-zA-Z0-9]+ \{", graph_label_line)
+
+
+def test_blank_graph_identifier_used_once_as_an_object_keeps_its_label():
+    # A statement that names the graph must still refer to it after a round trip.
+    dataset = rdflib.Dataset()
+    dataset.parse(
+        data="""
+        <http://ex/a> <http://ex/p> <http://ex/b> _:g .
+        <http://ex/doc> <http://ex/hasGraph> _:g <http://ex/meta> .
+        """,
+        format="nquads",
+    )
+    data = dataset.serialize(format="trig")
+
+    parsed = rdflib.Dataset().parse(data=data, format="trig")
+    (graph_name,) = {
+        g for _s, _p, _o, g in parsed.quads() if isinstance(g, rdflib.BNode)
+    }
+    has_graph = rdflib.URIRef("http://ex/hasGraph")
+    assert [o for _s, _p, o, _g in parsed.quads((None, has_graph, None, None))] == [
+        graph_name
+    ]
 
 
 def test_graph_parsing():

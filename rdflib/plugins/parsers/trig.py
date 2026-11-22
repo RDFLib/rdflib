@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, MutableSequence
+from collections.abc import MutableSequence
+from typing import Any
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.parser import InputSource, Parser
@@ -63,7 +64,7 @@ class TrigSinkParser(SinkParser):
         """
         Parse trig graph, i.e.
 
-           <urn:graphname> = { .. triples .. }
+           <urn:graphname> = { ... triples ... }
 
         return -1 if it doesn't look like a graph-decl
         raise Exception if it looks like a graph, but isn't.
@@ -144,7 +145,7 @@ class TrigParser(Parser):
     def parse(self, source: InputSource, graph: Graph, encoding: str = "utf-8") -> None:
         if encoding not in [None, "utf-8"]:
             raise Exception(
-                # type error: Unsupported left operand type for % ("Tuple[str, str]")
+                # type error: Unsupported left operand type for % ("tuple[str, str]")
                 ("TriG files are always utf-8 encoded, ", "I was passed: %s")  # type: ignore[operator]
                 % encoding
             )
@@ -153,7 +154,7 @@ class TrigParser(Parser):
         assert graph.store.context_aware, "TriG Parser needs a context-aware store!"
 
         conj_graph = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
-        conj_graph.default_context = graph  # TODO: CG __init__ should have a
+        conj_graph.default_graph = graph  # TODO: CG __init__ should have a
         # default_context arg
         # TODO: update N3Processor so that it can use conj_graph as the sink
         conj_graph.namespace_manager = graph.namespace_manager
@@ -168,8 +169,8 @@ class TrigParser(Parser):
         stream = source.getCharacterStream()  # try to get str stream first
         if not stream:
             # fallback to get the bytes stream
-            stream = source.getByteStream()
-        p.loadStream(stream)
+            stream = source.getByteStream()  # type: ignore[assignment]
+        p.loadStream(stream)  # type: ignore[arg-type]
 
         for prefix, namespace in p._bindings.items():
             conj_graph.bind(prefix, namespace)

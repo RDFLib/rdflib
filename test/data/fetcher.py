@@ -11,12 +11,14 @@ import shutil
 import string
 import sys
 import tarfile
+from collections.abc import Generator
 from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
+from re import Pattern
 from tarfile import TarFile, TarInfo
 from tempfile import TemporaryDirectory, mkdtemp
-from typing import IO, Generator, List, Pattern, Union
+from typing import IO, Union
 from urllib.request import Request, urlopen
 from zipfile import ZipFile, ZipInfo
 
@@ -149,7 +151,7 @@ class ArchiveResource(Resource):
     @classmethod
     def _member_list(
         cls, archive: Union[ZipFile, TarFile]
-    ) -> Union[List[ZipInfo], List[TarInfo]]:
+    ) -> Union[list[ZipInfo], list[TarInfo]]:
         if isinstance(archive, ZipFile):
             return archive.infolist()
         return archive.getmembers()
@@ -182,7 +184,7 @@ class ArchiveResource(Resource):
             yield opt_io
 
 
-RESOURCES: List[Resource] = [
+RESOURCES: list[Resource] = [
     ArchiveResource(
         remote="https://github.com/w3c/N3/archive/c44d123c5958ca04117e28ca3769e2c0820f72e6.zip",
         local_path=(DATA_PATH / "suites" / "w3c" / "n3"),
@@ -317,7 +319,7 @@ class Application:
         parser.add_argument("paths", nargs="*", type=str)
         parser.set_defaults(handler=self.handle)
 
-    def run(self, args: List[str]) -> None:
+    def run(self, args: list[str]) -> None:
         parse_result = self.parser.parse_args(args)
 
         verbosity = parse_result.verbosity

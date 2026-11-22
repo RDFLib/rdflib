@@ -1,0 +1,131 @@
+from __future__ import annotations
+
+import pytest
+
+from rdflib.contrib.rdf4j import has_httpx
+
+pytestmark = pytest.mark.skipif(
+    not has_httpx, reason="skipping graphdb tests, httpx not available"
+)
+
+if has_httpx:
+    from rdflib.contrib.graphdb import GraphDBClient
+    from rdflib.contrib.graphdb.models import ImportSettings, ParserSettings
+
+
+@pytest.mark.testcontainer
+def test_get_server_import_files_returns_list(client: GraphDBClient):
+    """Test that get_server_import_files returns a list."""
+    repo = client.repositories.get("test-repo")
+    result = repo.get_server_import_files()
+
+    assert isinstance(result, list)
+    # Verify we get the 3 mounted test files (quads-1.nq, quads-2.nq, quads-3.nq)
+    assert len(result) == 3
+
+
+@pytest.mark.testcontainer
+def test_get_server_import_files_returns_import_settings_instances(
+    client: GraphDBClient,
+):
+    """Test that get_server_import_files returns ImportSettings instances when files exist."""
+    repo = client.repositories.get("test-repo")
+    result = repo.get_server_import_files()
+
+    # Should return 3 ImportSettings instances for the mounted test files
+    assert isinstance(result, list)
+    assert len(result) == 3
+    for item in result:
+        assert isinstance(item, ImportSettings)
+
+
+@pytest.mark.testcontainer
+def test_get_server_import_files_import_settings_have_required_fields(
+    client: GraphDBClient,
+):
+    """Test that ImportSettings instances have all required fields."""
+    repo = client.repositories.get("test-repo")
+    result = repo.get_server_import_files()
+
+    assert len(result) == 3
+    for item in result:
+        # Check required fields exist and have correct types
+        assert isinstance(item.name, str)
+        assert item.status in {
+            "PENDING",
+            "IMPORTING",
+            "DONE",
+            "ERROR",
+            "NONE",
+            "INTERRUPTING",
+        }
+        assert isinstance(item.size, str)
+        assert isinstance(item.lastModified, int)
+        assert isinstance(item.imported, int)
+        assert isinstance(item.addedStatements, int)
+        assert isinstance(item.removedStatements, int)
+        assert isinstance(item.numReplacedGraphs, int)
+        # Verify parserSettings is correctly converted to ParserSettings instance
+        assert isinstance(item.parserSettings, ParserSettings)
+
+
+@pytest.mark.testcontainer
+def test_get_server_import_files_returns_expected_file_names(
+    client: GraphDBClient,
+):
+    """Test that get_server_import_files returns the expected mounted file names."""
+    repo = client.repositories.get("test-repo")
+    result = repo.get_server_import_files()
+
+    # Extract file names from the results
+    file_names = {item.name for item in result}
+    expected_files = {"quads-1.nq", "quads-2.nq", "quads-3.nq"}
+
+    assert file_names == expected_files
+
+
+@pytest.mark.testcontainer
+def test_import_server_import_file_success(client: GraphDBClient):
+    """Test that import_server_import_file successfully imports a server file."""
+    from rdflib.contrib.graphdb.models import ServerImportBody
+
+    repo = client.repositories.get("test-repo")
+
+    # Import one of the mounted test files
+    body = ServerImportBody(fileNames=["quads-1.nq"])
+    repo.import_server_import_file(body)
+
+    # Verify the file status changes (import is triggered)
+    import_files = repo.get_server_import_files()
+    quads_1_file = next(f for f in import_files if f.name == "quads-1.nq")
+    # Status should be DONE, IMPORTING, or PENDING after triggering import
+    assert quads_1_file.status in {"DONE", "IMPORTING", "PENDING"}
+
+
+@pytest.mark.testcontainer
+def test_cancel_server_import_file_success(client: GraphDBClient):
+    """Test that cancel_server_import_file successfully cancels an import operation."""
+    from rdflib.contrib.graphdb.models import ServerImportBody
+
+    repo = client.repositories.get("test-repo")
+
+    # First, trigger an import so there's something to potentially cancel
+    body = ServerImportBody(fileNames=["quads-2.nq"])
+    repo.import_server_import_file(body)
+
+    # Attempt to cancel the import (even if it's already done, this shouldn't raise)
+    repo.cancel_server_import_file("quads-2.nq")
+
+
+@pytest.mark.testcontainer
+def test_cancel_server_import_file_raises_bad_request_when_no_running_task(
+    client: GraphDBClient,
+):
+    """Test that cancel_server_import_file raises BadRequestError when no task is running."""
+    from rdflib.contrib.graphdb.exceptions import BadRequestError
+
+    repo = client.repositories.get("test-repo")
+
+    # Attempting to cancel a file that isn't currently importing should raise BadRequestError
+    with pytest.raises(BadRequestError, match="No running task for quads-3.nq"):
+        repo.cancel_server_import_file("quads-3.nq")

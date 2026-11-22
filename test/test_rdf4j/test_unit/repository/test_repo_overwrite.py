@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import io
 import pathlib
-from typing import Iterable
+from collections.abc import Iterable
 from unittest.mock import ANY, Mock
 
 import pytest
@@ -16,7 +16,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 if has_httpx:
-    import httpx
+    import httpx2 as httpx
 
     from rdflib.contrib.rdf4j.client import Repository
 
