@@ -17,7 +17,10 @@ def test_bad_syntax_exposes_error_message() -> None:
             data="<urn:subject> missing:predicate <urn:object> .", format="turtle"
         )
 
-    assert raised.value.msg == 'Prefix "missing:" not bound'
+    error = raised.value
+    assert error.msg is not None
+    assert 'Prefix "missing:" not bound' in error.msg
+    assert error.msg == str(error)
 
 
 test_data = """
