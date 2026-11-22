@@ -11,12 +11,15 @@ from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from typing import Any, cast
 
+import pytest
+
 import rdflib.plugin
 import rdflib.plugins.sparql
 import rdflib.plugins.sparql.evaluate
-from rdflib import Graph
+from rdflib import Dataset, Graph, Literal, URIRef
 from rdflib.parser import Parser
 from rdflib.query import ResultRow
+from rdflib.serializer import Serializer
 
 TEST_DIR = Path(__file__).parent.parent
 TEST_PLUGINS_DIR = TEST_DIR / "plugins"
@@ -76,7 +79,7 @@ def test_sparqleval(tmp_path: Path, no_cover: None) -> None:
         cleaners = stack.enter_context(ctx_cleaners())
 
         ep_name = "example.rdflib.plugin.sparqleval"
-        ep_ns = f'{ep_name.replace(".", ":")}:'
+        ep_ns = f"{ep_name.replace('.', ':')}:"
         plugin_module = importlib.import_module(ep_name)
         assert plugin_module.namespace == ep_ns
 
@@ -113,7 +116,7 @@ def test_parser(tmp_path: Path, no_cover: None) -> None:
         cleaners = stack.enter_context(ctx_cleaners())
 
         ep_name = "example.rdflib.plugin.parser"
-        ep_ns = f'{ep_name.replace(".", ":")}:'
+        ep_ns = f"{ep_name.replace('.', ':')}:"
         plugin_module = importlib.import_module(ep_name)
         assert plugin_module.ExampleParser.namespace() == ep_ns
 
@@ -129,3 +132,26 @@ def test_parser(tmp_path: Path, no_cover: None) -> None:
         logging.debug("triples = %s", triples)
         assert triples == plugin_module.ExampleParser.constant_output()
         assert [str(msg) for msg in warnings_record] == []
+
+
+@pytest.mark.parametrize("kind", [Parser, Serializer])
+@pytest.mark.parametrize("name", ["nq", "application/n-quads"])
+def test_nquads_aliases(name: str, kind: type[Parser] | type[Serializer]) -> None:
+    """The short and media type names resolve to the same plugin as `nquads`."""
+    assert rdflib.plugin.get(name, kind) is rdflib.plugin.get("nquads", kind)
+
+
+def test_nq_format_parse_and_serialize() -> None:
+    """`nq` can be used as a format name to both serialize and parse N-Quads."""
+    dataset = Dataset()
+    dataset.graph(URIRef("urn:example:graph")).add(
+        (URIRef("urn:example:s"), URIRef("urn:example:p"), Literal("o"))
+    )
+
+    data = dataset.serialize(format="nq")
+    assert data == dataset.serialize(format="nquads")
+
+    parsed = Dataset()
+    parsed.parse(data=data, format="nq")
+    assert set(parsed.quads()) == set(dataset.quads())
+    assert len(set(parsed.quads())) == 1

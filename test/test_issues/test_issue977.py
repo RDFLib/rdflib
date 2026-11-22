@@ -30,5 +30,5 @@ def test_turtle_serialization(graph: Graph):
     serialization = graph.serialize(None, format="turtle")
     print(f"Test Issue 977, serialization output:\n---\n{serialization}---")
     # Test serialization.
-    assert "@prefix webn:" in serialization, "Prefix webn not found in serialization!"
-    assert "@prefix isbn:" in serialization, "Prefix isbn not found in serialization!"
+    assert "PREFIX webn:" in serialization, "Prefix webn not found in serialization!"
+    assert "PREFIX isbn:" in serialization, "Prefix isbn not found in serialization!"

@@ -240,7 +240,7 @@ class Color:
     def key(self):
         return (len(self.nodes), self.hash_color())
 
-    def hash_color(self, color: Optional[tuple[ColorItem, ...]] = None) -> str:
+    def hash_color(self, color: tuple[ColorItem, ...] | None = None) -> str:
         if color is None:
             color = self.color
         if color in self._hash_cache:
@@ -389,7 +389,7 @@ class _TripleCanonicalizer:
         return combined_colors
 
     @_runtime("to_hash_runtime")
-    def to_hash(self, stats: Optional[Stats] = None):
+    def to_hash(self, stats: Stats | None = None):
         result = 0
         for triple in self.canonical_triples(stats=stats):
             result += self.hashfunc(" ".join([x.n3() for x in triple]))
@@ -410,7 +410,7 @@ class _TripleCanonicalizer:
     def _create_generator(
         self,
         colorings: list[list[Color]],
-        groupings: Optional[dict[Node, set[Node]]] = None,
+        groupings: dict[Node, set[Node]] | None = None,
     ) -> dict[Node, set[Node]]:
         if not groupings:
             groupings = defaultdict(set)
@@ -426,7 +426,7 @@ class _TripleCanonicalizer:
     def _traces(
         self,
         coloring: list[Color],
-        stats: Optional[Stats] = None,
+        stats: Stats | None = None,
         depth: list[int] = [0],
     ) -> list[Color]:
         if stats is not None and "prunings" not in stats:
@@ -494,7 +494,7 @@ class _TripleCanonicalizer:
             depth[0] = best_depth  # type: ignore[assignment]
         return discrete[0]
 
-    def canonical_triples(self, stats: Optional[Stats] = None):
+    def canonical_triples(self, stats: Stats | None = None):
         if stats is not None:
             start_coloring = datetime.now()
         coloring = self._initial_color()
@@ -589,9 +589,7 @@ def isomorphic(graph1: Graph, graph2: Graph) -> bool:
     return gd1 == gd2
 
 
-def to_canonical_graph(
-    g1: Graph, stats: Optional[Stats] = None
-) -> ReadOnlyGraphAggregate:
+def to_canonical_graph(g1: Graph, stats: Stats | None = None) -> ReadOnlyGraphAggregate:
     """Creates a canonical, read-only graph.
 
     Creates a canonical, read-only graph where all bnode id:s are based on

@@ -27,7 +27,7 @@ import logging
 import os.path
 from collections.abc import Callable, Iterable
 from pathlib import Path
-from typing import Optional, Union
+from typing import Union
 from xml.sax import SAXParseException
 
 import pytest
@@ -102,18 +102,6 @@ XFAILS = {
     ("xml", "strquot.n3"): pytest.mark.xfail(
         reason="contains characters forbidden by the xml spec",
         raises=SAXParseException,
-    ),
-    ("json-ld", "keywords-04.nt"): pytest.mark.xfail(
-        reason="known NT->JSONLD problem",
-        raises=AssertionError,
-    ),
-    ("json-ld", "example-misc.n3"): pytest.mark.xfail(
-        reason="known N3->JSONLD problem",
-        raises=AssertionError,
-    ),
-    ("json-ld", "rdf-test-11.n3"): pytest.mark.xfail(
-        reason="known N3->JSONLD problem",
-        raises=AssertionError,
     ),
     ("json-ld", "rdf-test-28.n3"): pytest.mark.xfail(
         reason="known N3->JSONLD problem",
@@ -197,10 +185,6 @@ XFAILS = {
         "n3",
         "data/suites/w3c/n3/N3Tests/cwm_syntax/neg-single-quote.n3",
     ): pytest.mark.xfail(raises=BadSyntax, reason="no support for single quotes"),
-    ("json-ld", "bnode_refs.trig"): pytest.mark.xfail(
-        reason="a whole bunch of triples with bnode as subject is not in the reconstituted graph",
-        raises=AssertionError,
-    ),
 }
 
 # This is for files which can only be represented properly in one format
@@ -210,7 +194,7 @@ CONSTRAINED_FORMAT_MAP = {
 
 
 def collect_files(
-    directory: Path, exclude_names: Optional[set[str]] = None, pattern: str = "**/*"
+    directory: Path, exclude_names: set[str] | None = None, pattern: str = "**/*"
 ) -> list[tuple[Path, str]]:
     result = []
     for path in directory.glob(pattern):
@@ -236,7 +220,7 @@ def roundtrip(
     testfmt: str,
     source: Path,
     graph_type: type[Graph] = ConjunctiveGraph,
-    checks: Optional[set[Check]] = None,
+    checks: set[Check] | None = None,
     same_public_id: bool = False,
 ) -> None:
     g1 = graph_type()
@@ -301,7 +285,7 @@ def roundtrip(
         logger.debug("OK")
 
 
-_formats: Optional[set[str]] = None
+_formats: set[str] | None = None
 
 
 def get_formats() -> set[str]:
@@ -317,9 +301,9 @@ def get_formats() -> set[str]:
 
 def make_cases(
     files: Iterable[tuple[Path, str]],
-    formats: Optional[set[str]] = None,
+    formats: set[str] | None = None,
     hext_okay: bool = False,
-    checks: Optional[set[Check]] = None,
+    checks: set[Check] | None = None,
     graph_type: type[Graph] = ConjunctiveGraph,
     same_public_id: bool = False,
 ) -> Iterable[ParameterSet]:
@@ -368,13 +352,13 @@ def test_formats() -> None:
 
 
 @pytest.mark.parametrize(
-    "checker, args", make_cases(collect_files(NT_DATA_DIR, INVALID_NT_FILES))
+    "checker, args", list(make_cases(collect_files(NT_DATA_DIR, INVALID_NT_FILES)))
 )
 def test_nt(checker: Callable[[str, str, Path], None], args: tuple[str, str, Path]):
     checker(*args)
 
 
-@pytest.mark.parametrize("checker, args", make_cases(collect_files(N3_DATA_DIR)))
+@pytest.mark.parametrize("checker, args", list(make_cases(collect_files(N3_DATA_DIR))))
 def test_n3(checker: Callable[[str, str, Path], None], args: tuple[str, str, Path]):
     checker(*args)
 
@@ -502,13 +486,15 @@ N3_W3C_SUITE_FILES = [
 
 @pytest.mark.parametrize(
     "checker, args",
-    make_cases(
-        N3_W3C_SUITE_FILES,
-        formats={"n3"},
-        # NOTE: Isomomorphic check does not work on Quoted Graphs
-        checks={Check.SET_EQUALS_WITHOUT_BLANKS},
-        graph_type=Graph,
-        same_public_id=True,
+    list(
+        make_cases(
+            N3_W3C_SUITE_FILES,
+            formats={"n3"},
+            # NOTE: Isomomorphic check does not work on Quoted Graphs
+            checks={Check.SET_EQUALS_WITHOUT_BLANKS},
+            graph_type=Graph,
+            same_public_id=True,
+        )
     ),
 )
 def test_n3_suite(
@@ -533,7 +519,7 @@ EXTRA_FILES = [
 ]
 
 
-@pytest.mark.parametrize("checker, args", make_cases(EXTRA_FILES, hext_okay=True))
+@pytest.mark.parametrize("checker, args", list(make_cases(EXTRA_FILES, hext_okay=True)))
 def test_extra(checker: Callable[[str, str, Path], None], args: tuple[str, str, Path]):
     """
     Round tripping works correctly for selected extra files.

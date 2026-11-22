@@ -31,7 +31,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Generic,
-    Optional,
     TypeVar,
     overload,
 )
@@ -89,7 +88,7 @@ class Plugin(Generic[PluginT]):
         self.kind = kind
         self.module_path = module_path
         self.class_name = class_name
-        self._class: Optional[type[PluginT]] = None
+        self._class: type[PluginT] | None = None
 
     def getClass(self) -> type[PluginT]:  # noqa: N802
         if self._class is None:
@@ -103,7 +102,7 @@ class PKGPlugin(Plugin[PluginT]):
         self.name = name
         self.kind = kind
         self.ep = ep
-        self._class: Optional[type[PluginT]] = None
+        self._class: type[PluginT] | None = None
 
     def getClass(self) -> type[PluginT]:  # noqa: N802
         if self._class is None:
@@ -148,16 +147,16 @@ else:
 
 @overload
 def plugins(
-    name: Optional[str] = ..., kind: type[PluginT] = ...
+    name: str | None = ..., kind: type[PluginT] = ...
 ) -> Iterator[Plugin[PluginT]]: ...
 
 
 @overload
-def plugins(name: Optional[str] = ..., kind: None = ...) -> Iterator[Plugin]: ...
+def plugins(name: str | None = ..., kind: None = ...) -> Iterator[Plugin]: ...
 
 
 def plugins(
-    name: Optional[str] = None, kind: Optional[type[PluginT]] = None
+    name: str | None = None, kind: type[PluginT] | None = None
 ) -> Iterator[Plugin[PluginT]]:
     """
     A generator of the plugins.
@@ -275,8 +274,14 @@ register(
 register(
     "longturtle",
     Serializer,
-    "rdflib.plugins.serializers.longturtle",
-    "LongTurtleSerializer",
+    "rdflib.plugins.serializers.turtle",
+    "TurtleSerializer",
+)
+register(
+    "origturtle",
+    Serializer,
+    "rdflib.plugins.serializers.origturtle",
+    "OrigTurtleSerializer",
 )
 register(
     "application/n-triples",
@@ -324,6 +329,12 @@ register(
 )
 register(
     "nquads",
+    Serializer,
+    "rdflib.plugins.serializers.nquads",
+    "NQuadsSerializer",
+)
+register(
+    "nq",
     Serializer,
     "rdflib.plugins.serializers.nquads",
     "NQuadsSerializer",
@@ -459,6 +470,12 @@ register(
     "NQuadsParser",
 )
 register(
+    "nq",
+    Parser,
+    "rdflib.plugins.parsers.nquads",
+    "NQuadsParser",
+)
+register(
     "application/trix",
     Parser,
     "rdflib.plugins.parsers.trix",
@@ -559,6 +576,18 @@ register(
     ResultSerializer,
     "rdflib.plugins.sparql.results.csvresults",
     "CSVResultSerializer",
+)
+register(
+    "tsv",
+    ResultSerializer,
+    "rdflib.plugins.sparql.results.tsvresults",
+    "TSVResultSerializer",
+)
+register(
+    "text/tab-separated-values",
+    ResultSerializer,
+    "rdflib.plugins.sparql.results.tsvresults",
+    "TSVResultSerializer",
 )
 
 # Register SPARQL Result Parsers

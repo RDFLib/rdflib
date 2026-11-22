@@ -176,7 +176,7 @@ def negative_graph_match_test():
         yield fn, inputs[0], inputs[1], inputs[2]
 
 
-@pytest.mark.parametrize("fn, rdf1, rdf2, identical", negative_graph_match_test())
+@pytest.mark.parametrize("fn, rdf1, rdf2, identical", list(negative_graph_match_test()))
 def test_negative_graph_match(fn, rdf1, rdf2, identical):
     fn(rdf1, rdf2, identical)
 
@@ -235,9 +235,9 @@ def test_issue494_collapsing_bnodes():
     # print(cg_node_degs)
 
     assert len(g) == len(cg), "canonicalization changed number of triples in graph"
-    assert len(g.all_nodes()) == len(
-        cg.all_nodes()
-    ), "canonicalization changed number of nodes in graph"
+    assert len(g.all_nodes()) == len(cg.all_nodes()), (
+        "canonicalization changed number of nodes in graph"
+    )
     assert len(list(g.subjects(RDF["type"], RDF["Statement"]))) == len(
         list(cg.subjects(RDF["type"], RDF["Statement"]))
     ), "canonicalization changed number of statements"
@@ -257,9 +257,9 @@ def test_issue494_collapsing_bnodes():
             cg_pos_counts[i][t] += 1
     cg_count_signature = [sorted(c.values()) for c in cg_pos_counts]
 
-    assert (
-        g_count_signature == cg_count_signature
-    ), "canonicalization changed node position counts"
+    assert g_count_signature == cg_count_signature, (
+        "canonicalization changed node position counts"
+    )
 
 
 def test_issue682_signing_named_graphs():
@@ -464,9 +464,9 @@ def test_issue725_collapsing_bnodes_2():
 
     cg = to_canonical_graph(g)
     assert len(g) == len(cg), "canonicalization changed number of triples in graph"
-    assert len(g.all_nodes()) == len(
-        cg.all_nodes()
-    ), "canonicalization changed number of nodes in graph"
+    assert len(g.all_nodes()) == len(cg.all_nodes()), (
+        "canonicalization changed number of nodes in graph"
+    )
     assert len(list(g.subjects(RDF["type"], RDF["Statement"]))) == len(
         list(cg.subjects(RDF["type"], RDF["Statement"]))
     ), "canonicalization changed number of statements"
@@ -484,9 +484,9 @@ def test_issue725_collapsing_bnodes_2():
             cg_pos_counts[i][t] += 1
     cg_count_signature = [sorted(c.values()) for c in cg_pos_counts]
 
-    assert (
-        g_count_signature == cg_count_signature
-    ), "canonicalization changed node position counts"
+    assert g_count_signature == cg_count_signature, (
+        "canonicalization changed node position counts"
+    )
 
 
 _TripleSet = set["_TripleType"]
@@ -532,6 +532,6 @@ class TestConsistency:
         cg1 = to_canonical_graph(g1)
         cg1_ts = GraphHelper.triple_set(cg1)
 
-        assert cg0_ts.issubset(
-            cg1_ts
-        ), "canonical triple set cg0_ts should be a subset of canonical triple set cg1_ts"
+        assert cg0_ts.issubset(cg1_ts), (
+            "canonical triple set cg0_ts should be a subset of canonical triple set cg1_ts"
+        )

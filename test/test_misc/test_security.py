@@ -72,7 +72,9 @@ def generate_make_block_file_cases() -> Iterable[ParameterSet]:
         yield pytest.param(defence, uri_kind)
 
 
-@pytest.mark.parametrize(["defence", "uri_kind"], generate_make_block_file_cases())
+@pytest.mark.parametrize(
+    ["defence", "uri_kind"], list(generate_make_block_file_cases())
+)
 def test_block_file(
     tmp_path: Path,
     audit_hook_dispatcher: AuditHookDispatcher,

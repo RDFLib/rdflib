@@ -18,7 +18,7 @@ import re
 import sys
 import time
 import warnings
-from typing import Any, Optional, Union
+from typing import Any, Union
 from urllib.parse import quote
 
 import rdflib
@@ -90,7 +90,7 @@ col4=date("%Y-%b-%d %H:%M:%S")
 """
 
 # bah - ugly global
-uris: dict[Any, tuple[URIRef, Optional[URIRef]]] = {}
+uris: dict[Any, tuple[URIRef, URIRef | None]] = {}
 
 
 def toProperty(label: str):  # noqa: N802
@@ -130,9 +130,9 @@ def csv_reader(csv_data, dialect=csv.excel, **kwargs):
         yield row
 
 
-def prefixuri(x, prefix, class_: Optional[URIRef] = None):
+def prefixuri(x, prefix, class_: URIRef | None = None):
     if prefix:
-        r = rdflib.URIRef(prefix + quote(x.encode("utf8").replace(" ", "_"), safe=""))
+        r = rdflib.URIRef(prefix + quote(x.replace(" ", "_"), safe=""))
     else:
         r = rdflib.URIRef(x)
     uris[x] = (r, class_)
@@ -152,7 +152,7 @@ class NodeMaker:
 
 class NodeUri(NodeMaker):
     def __init__(self, prefix, class_):
-        self.class_: Optional[URIRef] = None
+        self.class_: URIRef | None = None
         self.prefix = prefix
         if class_:
             self.class_ = rdflib.URIRef(class_)
@@ -377,8 +377,8 @@ class CSV2RDF:
                     uri = self.BASE[
                         "_".join(
                             [
-                                # type error: "int" has no attribute "encode"
-                                quote(x.encode("utf8").replace(" ", "_"), safe="")  # type: ignore[attr-defined]
+                                # type error: "int" has no attribute "replace"
+                                quote(x.replace(" ", "_"), safe="")  # type: ignore[attr-defined]
                                 # type error: Argument 2 to "index" has incompatible type "Union[tuple[str, ...], str]"; expected "tuple[int, ...]"
                                 for x in index(l_, self.IDENT)  # type: ignore[arg-type]
                             ]
@@ -457,6 +457,13 @@ def main():
     csv2rdf = CSV2RDF()
 
     opts: Union[dict[str, str], list[tuple[str, str]]]
+    # --col<N> and --prop<N> take a different name per column, so declare the
+    # ones that were actually given
+    column_opts = [
+        m.group(1) + "="
+        for m in (re.match(r"--((?:col|prop)\d+)", str(a)) for a in sys.argv[1:])
+        if m
+    ]
     opts, files = getopt.getopt(
         sys.argv[1:],
         "hc:b:p:i:o:Cf:l:s:d:D:",
@@ -466,11 +473,13 @@ def main():
             "delim=",
             "propbase=",
             "class=",
-            "default=" "ident=",
+            "default=",
+            "ident=",
             "label=",
             "skip=",
             "defineclass",
             "help",
+            *column_opts,
         ],
     )
     opts = dict(opts)

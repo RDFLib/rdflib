@@ -20,7 +20,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 if has_httpx:
-    import httpx
+    import httpx2 as httpx
 
     from rdflib.contrib.graphdb.client import GraphDBClient
 
@@ -250,7 +250,8 @@ def test_cloud_restore_raises_value_error_for_non_string_repository_ids(
 ):
     with pytest.raises(ValueError, match="repositories must be a list of strings"):
         client.recovery.cloud_restore(
-            "gs://bucket/backup", repositories=["repo1", 123]  # type: ignore[list-item]
+            "gs://bucket/backup",
+            repositories=["repo1", 123],  # type: ignore[list-item]
         )
 
 

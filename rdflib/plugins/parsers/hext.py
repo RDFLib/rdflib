@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import warnings
 from io import TextIOWrapper
-from typing import TYPE_CHECKING, Any, BinaryIO, Callable, Optional, TextIO, Union, cast
+from typing import TYPE_CHECKING, Any, BinaryIO, Callable, TextIO, Union, cast
 
 from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from rdflib.parser import InputSource, Parser
@@ -36,7 +36,7 @@ class HextuplesParser(Parser):
 
     def __init__(self):
         super(HextuplesParser, self).__init__()
-        self.default_context: Optional[Graph] = None
+        self.default_graph: Graph | None = None
         self.skolemize = False
 
     def _parse_hextuple(
@@ -87,13 +87,15 @@ class HextuplesParser(Parser):
                 c = c.skolemize()
 
             ds.get_context(c).add((s, p, o))
-        elif self.default_context is not None:
-            self.default_context.add((s, p, o))
+        elif self.default_graph is not None:
+            self.default_graph.add((s, p, o))
         else:
             raise Exception("No context to parse into!")
 
     # type error: Signature of "parse" incompatible with supertype "Parser"
-    def parse(self, source: InputSource, graph: Graph, skolemize: bool = False, **kwargs: Any) -> None:  # type: ignore[override]
+    def parse(  # type: ignore[override]
+        self, source: InputSource, graph: Graph, skolemize: bool = False, **kwargs: Any
+    ) -> None:
         if kwargs.get("encoding") not in [None, "utf-8"]:
             warnings.warn(
                 f"Hextuples files are always utf-8 encoded, "
@@ -101,26 +103,26 @@ class HextuplesParser(Parser):
                 "but I'm still going to use utf-8"
             )
 
-        assert (
-            graph.store.context_aware
-        ), "Hextuples Parser needs a context-aware store!"
+        assert graph.store.context_aware, (
+            "Hextuples Parser needs a context-aware store!"
+        )
 
         self.skolemize = skolemize
         # Set default_union to True to mimic ConjunctiveGraph behavior
         ds = Dataset(store=graph.store, default_union=True)
-        ds_default = ds.default_context  # the DEFAULT_DATASET_GRAPH_ID
+        ds_default = ds.default_graph  # the DEFAULT_DATASET_GRAPH_ID
         if isinstance(graph, (Dataset, ConjunctiveGraph)):
-            self.default_context = graph.default_context
+            self.default_graph = graph.default_graph
         elif graph.identifier is not None:
             if graph.identifier == ds_default.identifier:
-                self.default_context = graph
+                self.default_graph = graph
             else:
-                self.default_context = ds.get_context(graph.identifier)
+                self.default_graph = ds.get_context(graph.identifier)
         else:
             # mypy thinks this is unreachable, but graph.identifier can be None
-            self.default_context = ds_default  # type: ignore[unreachable]
-        if self.default_context is not ds_default:
-            ds.default_context = self.default_context
+            self.default_graph = ds_default  # type: ignore[unreachable]
+        if self.default_graph is not ds_default:
+            ds.default_graph = self.default_graph
             ds.remove_graph(ds_default)  # remove the original unused default graph
 
         try:

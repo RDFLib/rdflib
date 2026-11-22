@@ -4,14 +4,12 @@ import logging
 import os
 from collections.abc import Callable
 from pathlib import Path
-from typing import Optional
-from urllib.error import HTTPError, URLError
 
 import pytest
 
 from rdflib import Graph, URIRef
 from rdflib.exceptions import ParserError
-from rdflib.namespace import Namespace, NamespaceManager
+from rdflib.namespace import OWL, RDF, Namespace, NamespaceManager
 from rdflib.plugin import PluginException
 from rdflib.store import Store
 from rdflib.term import BNode
@@ -64,8 +62,8 @@ def test_property_namespace_manager() -> None:
     assert ("test", URIRef("example:test:")) in nss
 
 
-def get_store_names() -> set[Optional[str]]:
-    names: set[Optional[str]] = {*get_unique_plugin_names(Store)}
+def get_store_names() -> set[str | None]:
+    names: set[str | None] = {*get_unique_plugin_names(Store)}
     names.difference_update(
         {
             "default",
@@ -88,7 +86,7 @@ GraphFactory = Callable[[], Graph]
 
 @pytest.fixture(scope="function", params=get_store_names())
 def make_graph(tmp_path: Path, request) -> GraphFactory:
-    store_name: Optional[str] = request.param
+    store_name: str | None = request.param
 
     def make_graph() -> Graph:
         if store_name is None:
@@ -345,12 +343,15 @@ def test_guess_format_for_parse(
     # only getting HTML
     with pytest.raises(PluginException):
         graph.parse(location=file_info.request_url)
-    try:
-        # persistent Australian Government online RDF resource without a file-like ending
-        graph.parse(location="https://linked.data.gov.au/def/agrif?_format=text/turtle")
-    except (URLError, HTTPError):
-        # this endpoint is currently not available, ignore this test.
-        pass
+    # An RDF resource without a file extension uses its HTTP content type.
+    file_info = http_file_server.add_file_with_caching(
+        ProtoFileResource(
+            (("Content-Type", "text/turtle"),),
+            TEST_DATA_DIR / "defined_namespaces/adms.ttl",
+        ),
+    )
+    graph.parse(location=file_info.request_url)
+    assert (URIRef("http://www.w3.org/ns/adms#Asset"), RDF.type, OWL.Class) in graph
 
 
 @pytest.mark.parametrize(
@@ -373,7 +374,7 @@ def test_guess_format_for_parse_http(
     make_graph: GraphFactory,
     http_file_server: HTTPFileServer,
     file: Path,
-    content_type: Optional[str],
+    content_type: str | None,
     expected_result: OutcomePrimitive[int],
 ) -> None:
     graph = make_graph()

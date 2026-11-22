@@ -29,9 +29,11 @@ def test_bnode_id_differs_in_fork():
         w.write(cb)
         w.close()
         os._exit(0)
-    assert txt != str(
-        pb1
-    ), "Parent process BNode id: " + "%s, child process BNode id: %s" % (
-        txt,
-        str(pb1),
+    assert txt != str(pb1), (
+        "Parent process BNode id: "
+        + "%s, child process BNode id: %s"
+        % (
+            txt,
+            str(pb1),
+        )
     )

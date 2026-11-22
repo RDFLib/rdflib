@@ -30,7 +30,7 @@ from __future__ import annotations
 
 from codecs import getreader
 from collections.abc import MutableMapping
-from typing import IO, Any, Optional, cast
+from typing import IO, Any, cast
 
 from rdflib.exceptions import ParserError as ParseError
 from rdflib.graph import ConjunctiveGraph, Dataset, Graph
@@ -46,13 +46,12 @@ _BNodeContextType = MutableMapping[str, BNode]
 
 
 class NQuadsParser(W3CNTriplesParser):
-
     # type error: Signature of "parse" incompatible with supertype "W3CNTriplesParser"
     def parse(  # type: ignore[override]
         self,
         inputsource: InputSource,
         sink: Graph,
-        bnode_context: Optional[_BNodeContextType] = None,
+        bnode_context: _BNodeContextType | None = None,
         skolemize: bool = False,
         **kwargs: Any,
     ):
@@ -73,23 +72,23 @@ class NQuadsParser(W3CNTriplesParser):
             AssertionError: If the sink store is not context-aware.
             ParseError: If the input is not a file-like object or contains invalid lines.
         """
-        assert (
-            sink.store.context_aware
-        ), "NQuadsParser must be given a context-aware store."
+        assert sink.store.context_aware, (
+            "NQuadsParser must be given a context-aware store."
+        )
         # Set default_union to True to mimic ConjunctiveGraph behavior
         ds = Dataset(store=sink.store, default_union=True)
-        ds_default = ds.default_context  # the DEFAULT_DATASET_GRAPH_ID
-        new_default_context = None
+        ds_default = ds.default_graph  # the DEFAULT_DATASET_GRAPH_ID
+        new_default_graph = None
         if isinstance(sink, (Dataset, ConjunctiveGraph)):
-            new_default_context = sink.default_context
+            new_default_graph = sink.default_graph
         elif sink.identifier is not None:
             if sink.identifier == ds_default.identifier:
-                new_default_context = sink
+                new_default_graph = sink
             else:
-                new_default_context = ds.get_context(sink.identifier)
+                new_default_graph = ds.get_context(sink.identifier)
 
-        if new_default_context is not None:
-            ds.default_context = new_default_context
+        if new_default_graph is not None:
+            ds.default_graph = new_default_graph
             ds.remove_graph(ds_default)  # remove the original unused default graph
         # type error: Incompatible types in assignment (expression has type "ConjunctiveGraph", base class "W3CNTriplesParser" defined the type as "Union[DummySink, NTGraphSink]")
         self.sink: Dataset = ds  # type: ignore[assignment]
@@ -116,7 +115,7 @@ class NQuadsParser(W3CNTriplesParser):
 
         return self.sink
 
-    def parseline(self, bnode_context: Optional[_BNodeContextType] = None) -> None:
+    def parseline(self, bnode_context: _BNodeContextType | None = None) -> None:
         self.eat(r_wspace)
         if (not self.line) or self.line.startswith("#"):
             return  # The line is empty or a comment
@@ -140,4 +139,4 @@ class NQuadsParser(W3CNTriplesParser):
         if context:
             self.sink.get_context(context).add((subject, predicate, obj))
         else:
-            self.sink.default_context.add((subject, predicate, obj))
+            self.sink.default_graph.add((subject, predicate, obj))

@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 import logging
 from decimal import Decimal
-from typing import Union
 
 import pytest
 
@@ -39,6 +40,13 @@ EG = Namespace("https://example.com/")
         (r"STRUUID()", Literal),
         (r'STRLEN("chat")', Literal(4)),
         (r'SUBSTR("foobar", 4)', Literal("bar")),
+        (r'SUBSTR("foobar", 4, 1)', Literal("b")),
+        (r'SUBSTR("foobar", 0)', Literal("foobar")),
+        (r'SUBSTR("foobar", -1)', Literal("foobar")),
+        (r'SUBSTR("foobar", 0, 2)', Literal("f")),
+        (r'SUBSTR("foobar", -1, 3)', Literal("f")),
+        (r'SUBSTR("foobar", -3, 2)', Literal("")),
+        (r'SUBSTR("foobar", 2, -1)', Literal("")),
         (r'UCASE("foo")', Literal("FOO")),
         (r'LCASE("BAR")', Literal("bar")),
         (r'strStarts("foobar", "foo")', Literal(True)),
@@ -151,7 +159,7 @@ EG = Namespace("https://example.com/")
         ),
     ],
 )
-def test_function(expression: str, expected_result: Union[Identifier, type]) -> None:
+def test_function(expression: str, expected_result: Identifier | type) -> None:
     graph = Graph()
     query_string = """
     PREFIX eg: <https://example.com/>
@@ -160,9 +168,7 @@ def test_function(expression: str, expected_result: Union[Identifier, type]) -> 
     WHERE {
         BIND(???EXPRESSION_PLACEHOLDER??? AS ?o)
     }
-    """.replace(
-        "???EXPRESSION_PLACEHOLDER???", expression
-    )
+    """.replace("???EXPRESSION_PLACEHOLDER???", expression)
     result = graph.query(query_string)
     assert result.type == "CONSTRUCT"
     assert isinstance(result.graph, Graph)

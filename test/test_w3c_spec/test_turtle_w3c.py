@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import logging
 from contextlib import ExitStack
-from typing import Optional
 
 import pytest
 
@@ -45,7 +44,7 @@ def check_entry(entry: ManifestEntry) -> None:
         logger.debug(
             "action = %s\n%s", action_path, action_path.read_text(encoding=ENCODING)
         )
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
     graph = Graph()
     with ExitStack() as xstack:
         if entry.type in (RDFT.TestTurtleNegativeSyntax, RDFT.TestTurtleNegativeEval):
@@ -156,12 +155,14 @@ MARK_DICT = {
 
 @pytest.mark.parametrize(
     ["manifest_entry"],
-    params_from_sources(
-        MAPPER,
-        ManifestEntry,
-        LOCAL_BASE_DIR / "manifest.ttl",
-        mark_dict=MARK_DICT,
-        report_prefix="rdflib_w3c_turtle",
+    list(
+        params_from_sources(
+            MAPPER,
+            ManifestEntry,
+            LOCAL_BASE_DIR / "manifest.ttl",
+            mark_dict=MARK_DICT,
+            report_prefix="rdflib_w3c_turtle",
+        )
     ),
 )
 def test_entry(manifest_entry: ManifestEntry) -> None:

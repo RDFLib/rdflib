@@ -33,6 +33,7 @@ nav:
 
     - Changes:
       - Changelog: changelog.md
+      - Upgrading v7 to 8: upgrade7to8.md
       - Upgrading v6 to 7: upgrade6to7.md
       - Upgrading v5 to 6: upgrade5to6.md
       - Upgrading v4 to 5: upgrade4to5.md

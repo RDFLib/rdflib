@@ -44,6 +44,7 @@ Help with maintenance of all of the RDFLib family of packages is always welcome 
 
 ## Versions & Releases
 
+* `8.0.0` is in development and requires Python 3.11 or later. Users who need Python 3.10 must remain on RDFLib 7.x.
 * `main` branch in this repository is the current major release development branch for backwards-compatible fixes and features
 * `next` branch in this repository is the next major release development branch
 * `7.6.0` GraphDB Client, and many improvements and fixes. See changelog for details

@@ -92,9 +92,7 @@ def get_target_namespace_elements(
             FILTER (STR(?s) != "xxx")
         }
         GROUP BY ?s
-        """.replace(
-        "xxx", target_namespace
-    )
+        """.replace("xxx", target_namespace)
     elements: list[tuple[str, str]] = []
     for r in g.query(q, initNs=namespaces):
         if TYPE_CHECKING:

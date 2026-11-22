@@ -36,18 +36,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from __future__ import annotations
 
 import re
-import sys
 from datetime import date, datetime, time, timedelta
 from decimal import ROUND_FLOOR, Decimal
 from typing import Optional, Union, cast
 
-if sys.version_info[:3] < (3, 11, 0):
-    from isodate import parse_date, parse_datetime, parse_time
-else:
-    # On python 3.11, use the built-in parsers
-    parse_date = date.fromisoformat
-    parse_datetime = datetime.fromisoformat
-    parse_time = time.fromisoformat
+parse_date = date.fromisoformat
+parse_datetime = datetime.fromisoformat
+parse_time = time.fromisoformat
 
 
 def fquotmod(
@@ -648,14 +643,3 @@ def _parse_non_python_xsd_date(date_string: str) -> Optional[XSDDate]:
     if year > 0:
         return None
     return XSDDate(year, int(match.group("month")), int(match.group("day")))
-
-
-# Parse XSD Datetime is the same as ISO8601 Datetime
-# It uses datetime.fromisoformat for python 3.11 and above
-# or isodate.parse_datetime for older versions
-# parse_xsd_datetime = parse_datetime
-
-# Parse XSD Time is the same as ISO8601 Time
-# It uses time.fromisoformat for python 3.11 and above
-# or isodate.parse_time for older versions
-# parse_xsd_time = parse_time

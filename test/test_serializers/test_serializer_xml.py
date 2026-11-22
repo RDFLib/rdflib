@@ -1,6 +1,8 @@
 from io import BytesIO
 
-from rdflib.graph import Dataset
+import pytest
+
+from rdflib.graph import Dataset, Graph
 from rdflib.namespace import RDFS
 from rdflib.plugins.serializers.rdfxml import XMLSerializer
 from rdflib.term import BNode, URIRef
@@ -143,9 +145,9 @@ class TestXMLSerializer(SerializerTestBase):
             )
             in rdf_xml
         )
-        assert (
-            '<rdf:Description rdf:nodeID="'.encode("latin-1") in rdf_xml
-        ), "expected one identified bnode in serialized graph"
+        assert '<rdf:Description rdf:nodeID="'.encode("latin-1") in rdf_xml, (
+            "expected one identified bnode in serialized graph"
+        )
 
     def test_result_fragments_with_base(self):
         rdf_xml = serialize(
@@ -169,9 +171,9 @@ class TestXMLSerializer(SerializerTestBase):
             )
             in rdf_xml
         )
-        assert (
-            '<rdf:Description rdf:nodeID="'.encode("latin-1") in rdf_xml
-        ), "expected one identified bnode in serialized graph"
+        assert '<rdf:Description rdf:nodeID="'.encode("latin-1") in rdf_xml, (
+            "expected one identified bnode in serialized graph"
+        )
 
     def test_subclass_of_objects(self):
         reparsed_graph = serialize_and_load(self.source_graph, self.serializer)
@@ -184,6 +186,13 @@ def _assert_expected_object_types_for_predicates(graph, predicates, types):
     for s, p, o, c in graph:
         if p in predicates:
             some_true = [isinstance(o, t) for t in types]
-            assert (
-                True in some_true
-            ), "Bad type %s for object when predicate is <%s>." % (type(o), p)
+            assert True in some_true, (
+                "Bad type %s for object when predicate is <%s>." % (type(o), p)
+            )
+
+
+def test_unprefixable_predicate_raises_clear_error():
+    """A predicate equal to a bound namespace/prefix cannot be shortened, and should raise a clear error (regression test for issue #2409)."""
+    g = Graph().parse(data='<a> <> "test"@en .', publicID="http://example.org/")
+    with pytest.raises(ValueError, match="Cannot serialize predicate"):
+        g.serialize(format="xml")

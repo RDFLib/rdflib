@@ -3,10 +3,11 @@ from __future__ import annotations
 import base64
 import copy
 import logging
+from collections.abc import Mapping
 from io import BytesIO
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional
 from urllib.error import HTTPError
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
 from rdflib.plugin import plugins
@@ -24,6 +25,13 @@ class SPARQLConnectorException(Exception):  # noqa: N818
     pass
 
 
+def _add_query_params(url: str, params: Mapping[str, Any]) -> str:
+    """Add `params` to the query string of `url`, after any params it already has."""
+    parts = urlsplit(url)
+    query = "&".join(q for q in (parts.query, urlencode(params)) if q)
+    return urlunsplit(parts._replace(query=query))
+
+
 class SPARQLConnector:
     """
     this class deals with nitty gritty details of talking to a SPARQL server
@@ -31,11 +39,11 @@ class SPARQLConnector:
 
     def __init__(
         self,
-        query_endpoint: Optional[str] = None,
-        update_endpoint: Optional[str] = None,
+        query_endpoint: str | None = None,
+        update_endpoint: str | None = None,
         returnFormat: Optional[str] = "xml",  # noqa: N803
         method: te.Literal["GET", "POST", "POST_FORM"] = "GET",
-        auth: Optional[tuple[str, str]] = None,
+        auth: tuple[str, str] | None = None,
         **kwargs,
     ):
         """
@@ -76,8 +84,8 @@ class SPARQLConnector:
     def query(
         self,
         query: str,
-        default_graph: Optional[str] = None,
-        named_graph: Optional[str] = None,
+        default_graph: str | None = None,
+        named_graph: str | None = None,
     ) -> Result:
         if not self.query_endpoint:
             raise SPARQLConnectorException("Query endpoint not set!")
@@ -100,11 +108,9 @@ class SPARQLConnector:
         if self.method == "GET":
             params["query"] = query
             args["params"].update(params)
-            qsa = "?" + urlencode(args["params"])
+            url = _add_query_params(self.query_endpoint, args["params"])
             try:
-                res = urlopen(
-                    Request(self.query_endpoint + qsa, headers=args["headers"])
-                )
+                res = urlopen(Request(url, headers=args["headers"]))
             except Exception as e:  # noqa: F841
                 raise ValueError(
                     "You did something wrong formulating either the URI or your SPARQL query"
@@ -112,11 +118,11 @@ class SPARQLConnector:
         elif self.method == "POST":
             args["headers"].update({"Content-Type": "application/sparql-query"})
             args["params"].update(params)
-            qsa = "?" + urlencode(args["params"])
+            url = _add_query_params(self.query_endpoint, args["params"])
             try:
                 res = urlopen(
                     Request(
-                        self.query_endpoint + qsa,
+                        url,
                         data=query.encode(),
                         headers=args["headers"],
                     )
@@ -147,8 +153,8 @@ class SPARQLConnector:
     def update(
         self,
         query: str,
-        default_graph: Optional[str] = None,
-        named_graph: Optional[str] = None,
+        default_graph: str | None = None,
+        named_graph: str | None = None,
     ) -> None:
         if not self.update_endpoint:
             raise SPARQLConnectorException("Query endpoint not set!")
@@ -173,11 +179,9 @@ class SPARQLConnector:
         args.setdefault("headers", {})
         args["headers"].update(headers)
 
-        qsa = "?" + urlencode(args["params"])
+        url = _add_query_params(self.update_endpoint, args["params"])
         res = urlopen(  # noqa: F841
-            Request(
-                self.update_endpoint + qsa, data=query.encode(), headers=args["headers"]
-            )
+            Request(url, data=query.encode(), headers=args["headers"])
         )
 
     def response_mime_types(self) -> str:

@@ -111,11 +111,13 @@ def test_aggregate2():
     g = Dataset(store=mem_store, default_union=True)
     assert g is not None
     assert len(list(g.quads((None, None, None, None)))) == 11
-    assert len(list(g.contexts())) == 5
-    logger.debug(list(g.contexts()))
+    assert len(list(g.graphs())) == 5
+    logger.debug(list(g.graphs()))
     assert (
         len(list(g.quads((None, None, None, URIRef("http://example.com/graph2"))))) == 4
     )
+    # graph4 holds the same 3 triples as graph1; only graph4's own quads are
+    # reported for it.
     assert (
         len(
             list(
@@ -124,5 +126,5 @@ def test_aggregate2():
                 )
             )
         )
-        == 6
+        == 3
     )

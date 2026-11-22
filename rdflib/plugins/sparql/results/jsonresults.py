@@ -30,7 +30,7 @@ class JSONResultParser(ResultParser):
     """Parses SPARQL JSON results into a Result object."""
 
     # type error: Signature of "parse" incompatible with supertype "ResultParser"
-    def parse(self, source: IO, content_type: Optional[str] = None) -> Result:  # type: ignore[override]
+    def parse(self, source: IO, content_type: str | None = None) -> Result:  # type: ignore[override]
         inp = source.read()
         if _HAS_ORJSON:
             try:
@@ -151,7 +151,7 @@ def parseJsonTerm(d: dict[str, str]) -> Identifier:
 
 def termToJSON(
     self: JSONResultSerializer, term: Optional[Identifier]
-) -> Optional[dict[str, str]]:
+) -> dict[str, str] | None:
     if isinstance(term, URIRef):
         return {"type": "uri", "value": str(term)}
     elif isinstance(term, Literal):

@@ -48,7 +48,7 @@ def test_individual_type_settergetter(graph):
 
     b.type = [OWL.Class, OWL.Restriction]
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "\n"
         "owl:Restriction a owl:Class,\n"
@@ -58,7 +58,7 @@ def test_individual_type_settergetter(graph):
 
     b.replace(Class(identifier=CONTEXT0))
 
-    assert graph.serialize(format="ttl") == (
+    assert graph.serialize(format="origturtle") == (
         "@prefix ns1: <urn:example:> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "\n"

@@ -52,9 +52,7 @@ from types import GeneratorType
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
     TypeVar,
-    Union,
 )
 from urllib.parse import urldefrag, urljoin, urlparse
 from uuid import uuid4
@@ -63,7 +61,7 @@ import rdflib
 import rdflib.util
 from rdflib.compat import long_type
 
-from .xsd_datetime import (  # type: ignore[attr-defined]
+from .xsd_datetime import (
     Duration,
     duration_isoformat,
     parse_datetime,
@@ -73,8 +71,9 @@ from .xsd_datetime import (  # type: ignore[attr-defined]
 )
 
 if TYPE_CHECKING:
+    import rdflib.paths
+
     from .namespace import NamespaceManager
-    from .paths import AlternativePath, InvPath, NegatedPath, Path, SequencePath
 
 _HAS_HTML5RDF = False
 
@@ -114,7 +113,7 @@ def _is_valid_langtag(tag: str) -> bool:
     return bool(_lang_tag_regex.match(tag))
 
 
-def _is_valid_unicode(value: Union[str, bytes]) -> bool:
+def _is_valid_unicode(value: str | bytes) -> bool:
     """
     Verify that the provided value can be converted into a Python
     unicode object.
@@ -138,7 +137,7 @@ class Node(abc.ABC):
     __slots__ = ()
 
     @abc.abstractmethod
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str: ...
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str: ...
 
 
 class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
@@ -255,7 +254,7 @@ class IdentifiedNode(Identifier):
     def __getnewargs__(self) -> tuple[str]:
         return (str(self),)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         raise NotImplementedError()
 
     def toPython(self) -> str:  # noqa: N802
@@ -277,12 +276,15 @@ class URIRef(IdentifiedNode):
 
     __slots__ = ()
 
-    __or__: Callable[[URIRef, Union[URIRef, Path]], AlternativePath]
-    __invert__: Callable[[URIRef], InvPath]
-    __neg__: Callable[[URIRef], NegatedPath]
-    __truediv__: Callable[[URIRef, Union[URIRef, Path]], SequencePath]
+    # Resolve path types through the package after its circular imports complete.
+    __or__: Callable[[URIRef, URIRef | rdflib.paths.Path], rdflib.paths.AlternativePath]
+    __invert__: Callable[[URIRef], rdflib.paths.InvPath]
+    __neg__: Callable[[URIRef], rdflib.paths.NegatedPath]
+    __truediv__: Callable[
+        [URIRef, URIRef | rdflib.paths.Path], rdflib.paths.SequencePath
+    ]
 
-    def __new__(cls, value: str, base: Optional[str] = None):
+    def __new__(cls, value: str, base: str | None = None):
         if base is not None:
             ends_in_hash = value.endswith("#")
             # type error: Argument "allow_fragments" to "urljoin" has incompatible type "int"; expected "bool"
@@ -303,7 +305,7 @@ class URIRef(IdentifiedNode):
             rt = str.__new__(cls, value, "utf-8")  # type: ignore[call-overload]
         return rt
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         """This will do a limited check for valid URIs,
         essentially just making sure that the string includes no illegal
         characters (`<, >, ", {, }, |, \\, `, ^`)
@@ -456,8 +458,8 @@ class BNode(IdentifiedNode):
 
     def __new__(
         cls,
-        value: Optional[str] = None,
-        _sn_gen: Optional[Union[Callable[[], str], Generator]] = None,
+        value: str | None = None,
+        _sn_gen: Callable[[], str] | Generator | None = None,
         _prefix: str = _unique_id(),
     ):
         """
@@ -468,7 +470,7 @@ class BNode(IdentifiedNode):
             # a different instance of this module at some other time.
             if _sn_gen is not None:
                 if callable(_sn_gen):
-                    sn_result: Union[str, Generator] = _sn_gen()
+                    sn_result: str | Generator = _sn_gen()
                 else:
                     sn_result = _sn_gen
                 if isinstance(sn_result, GeneratorType):
@@ -491,7 +493,7 @@ class BNode(IdentifiedNode):
         # type error: Incompatible return value type (got "Identifier", expected "BNode")
         return Identifier.__new__(cls, value)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         # note - for two strings, concat with + is faster than f"{x}{y}"
         return "_:" + self
 
@@ -506,7 +508,7 @@ class BNode(IdentifiedNode):
         return f"{clsName}({str.__repr__(self)})"
 
     def skolemize(
-        self, authority: Optional[str] = None, basepath: Optional[str] = None
+        self, authority: str | None = None, basepath: str | None = None
     ) -> URIRef:
         """Create a URIRef "skolem" representation of the BNode, in accordance
         with http://www.w3.org/TR/rdf11-concepts/#section-skolemization
@@ -631,18 +633,18 @@ class Literal(Identifier):
     """
 
     _value: Any
-    _language: Optional[str]
+    _language: str | None
     # NOTE: _datatype should maybe be of type URIRef, and not optional.
-    _datatype: Optional[URIRef]
-    _ill_typed: Optional[bool]
+    _datatype: URIRef | None
+    _ill_typed: bool | None
     __slots__ = ("_language", "_datatype", "_value", "_ill_typed")
 
     def __new__(
         cls,
         lexical_or_value: Any,
-        lang: Optional[str] = None,
-        datatype: Optional[str] = None,
-        normalize: Optional[bool] = None,
+        lang: str | None = None,
+        datatype: str | None = None,
+        normalize: bool | None = None,
     ):
         """Create a new Literal instance."""
         if lang == "":
@@ -663,7 +665,7 @@ class Literal(Identifier):
             datatype = URIRef(datatype)
 
         value = None
-        ill_typed: Optional[bool] = None
+        ill_typed: bool | None = None
         if isinstance(lexical_or_value, Literal):
             # create from another Literal instance
 
@@ -752,7 +754,7 @@ class Literal(Identifier):
             return self
 
     @property
-    def ill_typed(self) -> Optional[bool]:
+    def ill_typed(self) -> bool | None:
         """
         For `recognized datatype IRIs
         <https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris>`_,
@@ -769,22 +771,22 @@ class Literal(Identifier):
         return self._value
 
     @property
-    def language(self) -> Optional[str]:
+    def language(self) -> str | None:
         return self._language
 
     @property
-    def datatype(self) -> Optional[URIRef]:
+    def datatype(self) -> URIRef | None:
         return self._datatype
 
     def __reduce__(
         self,
-    ) -> tuple[type[Literal], tuple[str, Union[str, None], Union[str, None]]]:
+    ) -> tuple[type[Literal], tuple[str, str | None, str | None]]:
         return (
             Literal,
             (str(self), self.language, self.datatype),
         )
 
-    def __getstate__(self) -> tuple[None, dict[str, Union[str, None]]]:
+    def __getstate__(self) -> tuple[None, dict[str, str | None]]:
         return (None, dict(language=self.language, datatype=self.datatype))
 
     def __setstate__(self, arg: tuple[Any, dict[str, Any]]) -> None:
@@ -828,15 +830,15 @@ class Literal(Identifier):
             self.datatype in (_XSD_DATETIME, _XSD_DATE)
             and val.datatype in _TIME_DELTA_TYPES
         ):
-            date1: Union[datetime, date] = self.toPython()
-            duration: Union[Duration, timedelta] = val.toPython()
+            date1: datetime | date = self.toPython()
+            duration: Duration | timedelta = val.toPython()
             difference = date1 + duration
             return Literal(difference, datatype=self.datatype)
 
         # if self is time based and value is duration
         elif self.datatype == _XSD_TIME and val.datatype in _TIME_DELTA_TYPES:
             selfv: time = self.toPython()
-            valv: Union[Duration, timedelta] = val.toPython()
+            valv: Duration | timedelta = val.toPython()
             sdt = datetime.combine(date(2000, 1, 1), selfv) + valv
             return Literal(sdt.time(), datatype=self.datatype)
 
@@ -877,9 +879,7 @@ class Literal(Identifier):
                 Decimal(
                     f"{round(Decimal(self.toPython()) + Decimal(val.toPython()), 15):f}".rstrip(
                         "0"
-                    ).rstrip(
-                        "."
-                    )
+                    ).rstrip(".")
                 ),
                 datatype=_XSD_DECIMAL,
             )
@@ -961,15 +961,15 @@ class Literal(Identifier):
             self.datatype in (_XSD_DATETIME, _XSD_DATE)
             and val.datatype in _TIME_DELTA_TYPES
         ):
-            date1: Union[datetime, date] = self.toPython()
-            duration: Union[Duration, timedelta] = val.toPython()
+            date1: datetime | date = self.toPython()
+            duration: Duration | timedelta = val.toPython()
             difference = date1 - duration
             return Literal(difference, datatype=self.datatype)
 
         # if self is time based and value is duration
         elif self.datatype == _XSD_TIME and val.datatype in _TIME_DELTA_TYPES:
             selfv: time = self.toPython()
-            valv: Union[Duration, timedelta] = val.toPython()
+            valv: Duration | timedelta = val.toPython()
             sdt = datetime.combine(date(2000, 1, 1), selfv) - valv
             return Literal(sdt.time(), datatype=self.datatype)
 
@@ -1000,9 +1000,7 @@ class Literal(Identifier):
                 Decimal(
                     f"{round(Decimal(self.toPython()) - Decimal(val.toPython()), 15):f}".rstrip(
                         "0"
-                    ).rstrip(
-                        "."
-                    )
+                    ).rstrip(".")
                 ),
                 datatype=_XSD_DECIMAL,
             )
@@ -1034,6 +1032,11 @@ class Literal(Identifier):
             -Literal(10.5)
             # rdflib.term.Literal('-10.5', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#double'))
 
+            # Negating a decimal Literal
+            from decimal import Decimal
+            -Literal(Decimal("2.5"))
+            # rdflib.term.Literal('-2.5', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#decimal'))
+
             # Using a string with a datatype
             from rdflib.namespace import XSD
             -Literal("1", datatype=XSD.integer)
@@ -1045,7 +1048,11 @@ class Literal(Identifier):
             ```
         """
 
-        if isinstance(self.value, (int, long_type, float)):
+        if isinstance(self.value, Decimal):
+            # unlike Decimal.__neg__, copy_negate() is exact: it ignores the
+            # decimal context's precision and never signals
+            return Literal(self.value.copy_negate())
+        elif isinstance(self.value, (int, long_type, float)):
             return Literal(self.value.__neg__())
         else:
             raise TypeError(f"Not a number; {self!r}")
@@ -1073,7 +1080,10 @@ class Literal(Identifier):
             # TypeError: Not a number; rdflib.term.Literal('1')
             ```
         """
-        if isinstance(self.value, (int, long_type, float)):
+        if isinstance(self.value, Decimal):
+            # Decimal.__pos__ would round to the decimal context's precision
+            return Literal(self.value)
+        elif isinstance(self.value, (int, long_type, float)):
             return Literal(self.value.__pos__())
         else:
             raise TypeError(f"Not a number; {self!r}")
@@ -1097,7 +1107,11 @@ class Literal(Identifier):
             # TypeError: Not a number; rdflib.term.Literal('1')
             ```
         """
-        if isinstance(self.value, (int, long_type, float)):
+        if isinstance(self.value, Decimal):
+            # unlike Decimal.__abs__, copy_abs() is exact: it ignores the
+            # decimal context's precision and never signals
+            return Literal(self.value.copy_abs())
+        elif isinstance(self.value, (int, long_type, float)):
             return Literal(self.value.__abs__())
         else:
             raise TypeError(f"Not a number; {self!r}")
@@ -1244,7 +1258,10 @@ class Literal(Identifier):
             return False  # Nothing is less than None
         if isinstance(other, Literal):
             try:
-                return not self.__gt__(other) and not self.eq(other)
+                gt = self.__gt__(other)
+                if gt is NotImplemented:
+                    return False
+                return not gt and not self.eq(other)
             except TypeError:
                 return NotImplemented
         if isinstance(other, Node):
@@ -1263,7 +1280,7 @@ class Literal(Identifier):
             ```
         """
         r = self.__lt__(other)
-        if r:
+        if r is NotImplemented or r:
             return True
         try:
             return self.eq(other)
@@ -1272,7 +1289,7 @@ class Literal(Identifier):
 
     def __ge__(self, other: Any) -> bool:
         r = self.__gt__(other)
-        if r:
+        if r is NotImplemented or r:
             return True
         try:
             return self.eq(other)
@@ -1527,7 +1544,7 @@ class Literal(Identifier):
     def neq(self, other: Any) -> bool:
         return not self.eq(other)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         r'''Returns a representation in the N3 format.
 
         ```python
@@ -1602,7 +1619,7 @@ class Literal(Identifier):
     def _literal_n3(
         self,
         use_plain: bool = False,
-        qname_callback: Optional[Callable[[URIRef], Optional[str]]] = None,
+        qname_callback: Callable[[URIRef], str | None] | None = None,
     ) -> str:
         """Internal method for N3 serialization with more options.
 
@@ -1700,14 +1717,16 @@ class Literal(Identifier):
             if datatype in _NUMERIC_INF_NAN_LITERAL_TYPES:
                 try:
                     v = float(self)
-                    if math.isinf(v):
-                        # py string reps: float: 'inf', Decimal: 'Infinity"
-                        # both need to become "INF" in xsd datatypes
-                        encoded = encoded.replace("inf", "INF").replace(
-                            "Infinity", "INF"
-                        )
-                    if math.isnan(v):
-                        encoded = encoded.replace("nan", "NaN")
+                    # A special value spelled as Python does, such as "inf",
+                    # "Infinity" (also a Decimal's lexical form) or "nan", is
+                    # written in its XSD form. A numeral that overflows to
+                    # infinity is kept as it is.
+                    if (
+                        (math.isinf(v) or math.isnan(v))
+                        and not _XSD_DOUBLE_LEXICAL.fullmatch(self)
+                        and not any(c.isdigit() for c in self)
+                    ):
+                        encoded = f'"{_float_lexical(v)}"'
                 except ValueError:
                     # if we can't cast to float something is wrong, but we can
                     # still serialize. Warn user about it
@@ -1742,11 +1761,14 @@ class Literal(Identifier):
             # TODO: Replace usage of %s here with fstrings
             # when we have ability to escape \r and \n inside
             # f-string inline function calls
-            return '"""%s"""' % encoded.replace("\r", "\\r")
+            return '"""%s"""' % _escape_surrogates(encoded.replace("\r", "\\r"))
         else:
-            return '"%s"' % self.replace("\n", "\\n").replace("\\", "\\\\").replace(
-                '"', '\\"'
-            ).replace("\r", "\\r")
+            return '"%s"' % _escape_surrogates(
+                self.replace("\n", "\\n")
+                .replace("\\", "\\\\")
+                .replace('"', '\\"')
+                .replace("\r", "\\r")
+            )
 
     def __repr__(self) -> str:
         args = [str.__repr__(self)]
@@ -1768,6 +1790,16 @@ class Literal(Identifier):
         if self.value is not None:
             return self.value
         return self
+
+
+_surrogate_regex = compile("[\ud800-\udfff]")
+
+
+def _escape_surrogates(value: str) -> str:
+    """Escape surrogate code points as \\uXXXX, since they cannot be encoded as UTF-8."""
+    if value.isascii():
+        return value
+    return _surrogate_regex.sub(lambda match: f"\\u{ord(match[0]):04X}", value)
 
 
 def _parseXML(xmlstring: str) -> xml.dom.minidom.Document:  # noqa: N802
@@ -1820,7 +1852,7 @@ def _write_html(value: xml.dom.minidom.DocumentFragment) -> bytes:
 
 
 def _writeXML(  # noqa: N802
-    xmlnode: Union[xml.dom.minidom.Document, xml.dom.minidom.DocumentFragment]
+    xmlnode: xml.dom.minidom.Document | xml.dom.minidom.DocumentFragment,
 ) -> bytes:
     if isinstance(xmlnode, xml.dom.minidom.DocumentFragment):
         d = xml.dom.minidom.Document()
@@ -1839,14 +1871,44 @@ def _writeXML(  # noqa: N802
     return s
 
 
-def _unhexlify(value: Union[str, bytes, Literal]) -> bytes:
+# The lexical space of xsd:double and xsd:float (XML Schema 1.1 Part 2,
+# sections 3.3.4.2 and 3.3.5.2). _literal_n3 also uses it for xsd:decimal,
+# whose lexical space has no special values, to keep valid forms as they are.
+_XSD_DOUBLE_LEXICAL = compile(
+    r"(\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)?|(\+|-)?INF|NaN"
+)
+
+
+def _float_lexical(value: float) -> str:
+    """The lexical form of a float as an `xsd:double` or `xsd:float`.
+
+    The special values are written in their canonical forms, `INF`, `-INF` and
+    `NaN` (XML Schema 1.1 Part 2, appendix E.1, `specialRepCanonicalMap`).
+    Python's `inf` and `nan` are not in the lexical space of these types
+    (sections 3.3.4.2 and 3.3.5.2). Other values keep the form that `str()`
+    gives them.
+
+    Args:
+        value: The float.
+
+    Returns:
+        The lexical form.
+    """
+    if math.isnan(value):
+        return "NaN"
+    if math.isinf(value):
+        return "INF" if value > 0 else "-INF"
+    return str(value)
+
+
+def _unhexlify(value: str | bytes | Literal) -> bytes:
     # In Python 3.2, unhexlify does not support str (only bytes)
     if isinstance(value, str):
         value = value.encode()
     return unhexlify(value)
 
 
-def _parseBoolean(value: Union[str, bytes]) -> bool:  # noqa: N802
+def _parseBoolean(value: str | bytes) -> bool:  # noqa: N802
     """
     Boolean is a datatype with value space {true,false},
     lexical space {"true", "false","1","0"} and
@@ -1865,7 +1927,7 @@ def _parseBoolean(value: Union[str, bytes]) -> bool:  # noqa: N802
     return False
 
 
-def _well_formed_by_value(lexical: Union[str, bytes], value: Any) -> bool:
+def _well_formed_by_value(lexical: str | bytes, value: Any) -> bool:
     """
     This function is used as the fallback for detecting ill-typed/ill-formed
     literals and operates on the asumption that if a value (i.e.
@@ -1877,14 +1939,14 @@ def _well_formed_by_value(lexical: Union[str, bytes], value: Any) -> bool:
     return value is not None
 
 
-def _well_formed_unsignedlong(lexical: Union[str, bytes], value: Any) -> bool:
+def _well_formed_unsignedlong(lexical: str | bytes, value: Any) -> bool:
     """
     xsd:unsignedInteger and xsd:unsignedLong must not be negative
     """
     return len(lexical) > 0 and isinstance(value, long_type) and value >= 0
 
 
-def _well_formed_boolean(lexical: Union[str, bytes], value: Any) -> bool:
+def _well_formed_boolean(lexical: str | bytes, value: Any) -> bool:
     """
     Boolean is a datatype with value space {true,false},
     lexical space {"true", "false","1","0"} and
@@ -1893,7 +1955,7 @@ def _well_formed_boolean(lexical: Union[str, bytes], value: Any) -> bool:
     return lexical in ("true", b"true", "false", b"false", "1", b"1", "0", b"0")
 
 
-def _well_formed_int(lexical: Union[str, bytes], value: Any) -> bool:
+def _well_formed_int(lexical: str | bytes, value: Any) -> bool:
     """
     The value space of xs:int is the set of common single size integers (32 bits),
     i.e., the integers between -2147483648 and 2147483647,
@@ -1906,14 +1968,14 @@ def _well_formed_int(lexical: Union[str, bytes], value: Any) -> bool:
     )
 
 
-def _well_formed_unsignedint(lexical: Union[str, bytes], value: Any) -> bool:
+def _well_formed_unsignedint(lexical: str | bytes, value: Any) -> bool:
     """
     xsd:unsignedInt has a 32bit value of between 0 and 4294967295
     """
     return len(lexical) > 0 and isinstance(value, int) and (0 <= value <= 4294967295)
 
 
-def _well_formed_short(lexical: Union[str, bytes], value: Any) -> bool:
+def _well_formed_short(lexical: str | bytes, value: Any) -> bool:
     """
     The value space of xs:short is the set of common short integers (16 bits),
     i.e., the integers between -32768 and 32767,
@@ -1922,14 +1984,14 @@ def _well_formed_short(lexical: Union[str, bytes], value: Any) -> bool:
     return len(lexical) > 0 and isinstance(value, int) and (-32768 <= value <= 32767)
 
 
-def _well_formed_unsignedshort(lexical: Union[str, bytes], value: Any) -> bool:
+def _well_formed_unsignedshort(lexical: str | bytes, value: Any) -> bool:
     """
     xsd:unsignedShort has a 16bit value of between 0 and 65535
     """
     return len(lexical) > 0 and isinstance(value, int) and (0 <= value <= 65535)
 
 
-def _well_formed_byte(lexical: Union[str, bytes], value: Any) -> bool:
+def _well_formed_byte(lexical: str | bytes, value: Any) -> bool:
     """
     The value space of xs:byte is the set of common single byte integers (8 bits),
     i.e., the integers between -128 and 127,
@@ -1938,26 +2000,26 @@ def _well_formed_byte(lexical: Union[str, bytes], value: Any) -> bool:
     return len(lexical) > 0 and isinstance(value, int) and (-128 <= value <= 127)
 
 
-def _well_formed_unsignedbyte(lexical: Union[str, bytes], value: Any) -> bool:
+def _well_formed_unsignedbyte(lexical: str | bytes, value: Any) -> bool:
     """
     xsd:unsignedByte has a 8bit value of between 0 and 255
     """
     return len(lexical) > 0 and isinstance(value, int) and (0 <= value <= 255)
 
 
-def _well_formed_non_negative_integer(lexical: Union[str, bytes], value: Any) -> bool:
+def _well_formed_non_negative_integer(lexical: str | bytes, value: Any) -> bool:
     return isinstance(value, int) and value >= 0
 
 
-def _well_formed_positive_integer(lexical: Union[str, bytes], value: Any) -> bool:
+def _well_formed_positive_integer(lexical: str | bytes, value: Any) -> bool:
     return isinstance(value, int) and value > 0
 
 
-def _well_formed_non_positive_integer(lexical: Union[str, bytes], value: Any) -> bool:
+def _well_formed_non_positive_integer(lexical: str | bytes, value: Any) -> bool:
     return isinstance(value, int) and value <= 0
 
 
-def _well_formed_negative_integer(lexical: Union[str, bytes], value: Any) -> bool:
+def _well_formed_negative_integer(lexical: str | bytes, value: Any) -> bool:
     return isinstance(value, int) and value < 0
 
 
@@ -2076,9 +2138,9 @@ _StrT = TypeVar("_StrT", bound=str)
 def _py2literal(
     obj: Any,
     pType: Any,  # noqa: N803
-    castFunc: Optional[Callable[[Any], Any]],  # noqa: N803
-    dType: Optional[_StrT],  # noqa: N803
-) -> tuple[Any, Optional[_StrT]]:
+    castFunc: Callable[[Any], Any] | None,  # noqa: N803
+    dType: _StrT | None,  # noqa: N803
+) -> tuple[Any, _StrT | None]:
     if castFunc is not None:
         return castFunc(obj), dType
     elif dType is not None:
@@ -2088,14 +2150,14 @@ def _py2literal(
 
 
 def _castPythonToLiteral(  # noqa: N802
-    obj: Any, datatype: Optional[str]
-) -> tuple[Any, Optional[str]]:
+    obj: Any, datatype: str | None
+) -> tuple[Any, str | None]:
     """
     Casts a tuple of a python type and a special datatype URI to a tuple of the lexical value and a
     datatype URI (or None)
     """
-    castFunc: Optional[Callable[[Any], Union[str, bytes]]]  # noqa: N806
-    dType: Optional[str]  # noqa: N806
+    castFunc: Callable[[Any], str | bytes] | None  # noqa: N806
+    dType: str | None  # noqa: N806
     for (pType, dType), castFunc in _SpecificPythonToXSDRules:  # noqa: N806
         if isinstance(obj, pType) and dType == datatype:
             return _py2literal(obj, pType, castFunc, dType)
@@ -2118,10 +2180,10 @@ def _castPythonToLiteral(  # noqa: N802
 # both map to the abstract integer type,
 # rather than some concrete bit-limited datatype
 _GenericPythonToXSDRules: list[
-    tuple[type[Any], tuple[Optional[Callable[[Any], Union[str, bytes]]], Optional[str]]]
+    tuple[type[Any], tuple[Callable[[Any], str | bytes] | None, str | None]]
 ] = [
     (str, (None, None)),
-    (float, (None, _XSD_DOUBLE)),
+    (float, (_float_lexical, _XSD_DOUBLE)),
     (bool, (lambda i: str(i).lower(), _XSD_BOOLEAN)),
     (int, (None, _XSD_INTEGER)),
     (long_type, (None, _XSD_INTEGER)),
@@ -2150,7 +2212,7 @@ if html5rdf is not None:
 _OriginalGenericPythonToXSDRules = list(_GenericPythonToXSDRules)
 
 _SpecificPythonToXSDRules: list[
-    tuple[tuple[type[Any], str], Optional[Callable[[Any], Union[str, bytes]]]]
+    tuple[tuple[type[Any], str], Callable[[Any], str | bytes] | None]
 ] = [
     ((date, _XSD_GYEAR), lambda val: val.strftime("%Y").zfill(4)),
     ((date, _XSD_GYEARMONTH), lambda val: val.strftime("%Y-%m").zfill(7)),
@@ -2162,7 +2224,7 @@ _SpecificPythonToXSDRules: list[
 
 _OriginalSpecificPythonToXSDRules = list(_SpecificPythonToXSDRules)
 
-XSDToPython: dict[Optional[str], Optional[Callable[[str], Any]]] = {
+XSDToPython: dict[str | None, Callable[[str], Any] | None] = {
     None: None,  # plain literals map directly to value space
     URIRef(_XSD_PFX + "time"): parse_time,
     URIRef(_XSD_PFX + "date"): parse_xsd_date,
@@ -2205,7 +2267,7 @@ if html5rdf is not None:
 else:
     _XML_COMPARABLE = (_RDF_XMLLITERAL,)
 
-_check_well_formed_types: dict[URIRef, Callable[[Union[str, bytes], Any], bool]] = {
+_check_well_formed_types: dict[URIRef, Callable[[str | bytes, Any], bool]] = {
     URIRef(_XSD_PFX + "boolean"): _well_formed_boolean,
     URIRef(_XSD_PFX + "nonPositiveInteger"): _well_formed_non_positive_integer,
     URIRef(_XSD_PFX + "nonNegativeInteger"): _well_formed_non_negative_integer,
@@ -2220,7 +2282,7 @@ _check_well_formed_types: dict[URIRef, Callable[[Union[str, bytes], Any], bool]]
     URIRef(_XSD_PFX + "unsignedByte"): _well_formed_unsignedbyte,
 }
 
-_toPythonMapping: dict[Optional[str], Optional[Callable[[str], Any]]] = {}  # noqa: N816
+_toPythonMapping: dict[str | None, Callable[[str], Any] | None] = {}  # noqa: N816
 
 _toPythonMapping.update(XSDToPython)
 
@@ -2238,7 +2300,7 @@ def _reset_bindings() -> None:
 
 
 def _castLexicalToPython(  # noqa: N802
-    lexical: Union[str, bytes], datatype: Optional[URIRef]
+    lexical: str | bytes, datatype: URIRef | None
 ) -> Any:
     """Map a lexical form to the value-space for the given datatype.
 
@@ -2301,8 +2363,8 @@ def _strip_and_collapse_whitespace(lexical_or_value: _AnyT) -> _AnyT:
 def bind(
     datatype: str,
     pythontype: type[Any],
-    constructor: Optional[Callable[[str], Any]] = None,
-    lexicalizer: Optional[Callable[[Any], Union[str, bytes]]] = None,
+    constructor: Callable[[str], Any] | None = None,
+    lexicalizer: Callable[[Any], str | bytes] | None = None,
     datatype_specific: bool = False,
 ) -> None:
     """
@@ -2359,7 +2421,7 @@ class Variable(Identifier):
     def toPython(self) -> str:  # noqa: N802
         return "?" + self
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         return "?" + self
 
     def __reduce__(self) -> tuple[type[Variable], tuple[str]]:
@@ -2375,32 +2437,32 @@ _ORDERING.update({BNode: 10, Variable: 20, URIRef: 30, Literal: 40})
 
 
 def _isEqualXMLNode(  # noqa: N802
-    node: Union[
-        None,
-        xml.dom.minidom.Attr,
-        xml.dom.minidom.Comment,
-        xml.dom.minidom.Document,
-        xml.dom.minidom.DocumentFragment,
-        xml.dom.minidom.DocumentType,
-        xml.dom.minidom.Element,
-        xml.dom.minidom.Entity,
-        xml.dom.minidom.Notation,
-        xml.dom.minidom.ProcessingInstruction,
-        xml.dom.minidom.Text,
-    ],
-    other: Union[
-        None,
-        xml.dom.minidom.Attr,
-        xml.dom.minidom.Comment,
-        xml.dom.minidom.Document,
-        xml.dom.minidom.DocumentFragment,
-        xml.dom.minidom.DocumentType,
-        xml.dom.minidom.Element,
-        xml.dom.minidom.Entity,
-        xml.dom.minidom.Notation,
-        xml.dom.minidom.ProcessingInstruction,
-        xml.dom.minidom.Text,
-    ],
+    node: (
+        None
+        | xml.dom.minidom.Attr
+        | xml.dom.minidom.Comment
+        | xml.dom.minidom.Document
+        | xml.dom.minidom.DocumentFragment
+        | xml.dom.minidom.DocumentType
+        | xml.dom.minidom.Element
+        | xml.dom.minidom.Entity
+        | xml.dom.minidom.Notation
+        | xml.dom.minidom.ProcessingInstruction
+        | xml.dom.minidom.Text
+    ),
+    other: (
+        None
+        | xml.dom.minidom.Attr
+        | xml.dom.minidom.Comment
+        | xml.dom.minidom.Document
+        | xml.dom.minidom.DocumentFragment
+        | xml.dom.minidom.DocumentType
+        | xml.dom.minidom.Element
+        | xml.dom.minidom.Entity
+        | xml.dom.minidom.Notation
+        | xml.dom.minidom.ProcessingInstruction
+        | xml.dom.minidom.Text
+    ),
 ) -> bool:
     # importing xml.dom.minidom.Node as XMLNode to avoid confusion with
     # rdflib.term.Node
