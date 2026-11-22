@@ -44,7 +44,7 @@ from __future__ import annotations
 import math
 import warnings
 from collections import Counter
-from typing import IO, Any, Dict, Optional, Tuple
+from typing import IO, Any, Optional
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph, _ObjectType
 from rdflib.namespace import RDF, XSD
@@ -75,14 +75,14 @@ class JsonLDSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = "utf-8",
-        context: Optional[Dict[str, str] | Context] = None,
+        base: str | None = None,
+        encoding: str | None = "utf-8",
+        context: dict[str, str] | Context | None = None,
         use_native_types: bool = False,
         use_rdf_type: bool = False,
         auto_compact: bool = False,
         indent: int = 2,
-        separators: Optional[Tuple[str, str]] = (",", ": "),
+        separators: tuple[str, str] | None = (",", ": "),
         sort_keys: bool = True,
         ensure_ascii: bool = False,
         **kwargs: Any,
@@ -153,8 +153,8 @@ class JsonLDSerializer(Serializer):
 
 def from_rdf(
     graph: Graph,
-    context_data: Optional[Dict[str, str] | Context] = None,
-    base: Optional[str] = None,
+    context_data: dict[str, str] | Context | None = None,
+    base: str | None = None,
     use_native_types: bool = False,
     use_rdf_type: bool = False,
     auto_compact: bool = False,

@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import logging
 import pprint
-from typing import Any, Union
+from typing import Any
 
 import pytest
 
@@ -26,7 +26,7 @@ from test.utils.namespace import EGDO
         ({"eg": f"{EGDO}"},),
     ],
 )
-def test_serialize_context(input: Union[dict[str, Any], Context]) -> None:
+def test_serialize_context(input: dict[str, Any] | Context) -> None:
     """
     The JSON-LD serializer accepts and correctly serializes the context argument to the output.
     """
