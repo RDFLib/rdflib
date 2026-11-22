@@ -57,8 +57,10 @@ print(len(g))
 
 ## Processing RDF without storing a graph
 
-Use [`Sink`][rdflib.sink.Sink] to process statements as they are parsed. Its callback receives a triple and a graph name
-(`None` for the default graph). It can count, filter, transform or forward statements without storing the whole graph:
+Sometimes you might want to parse large RDF sources and incrementally feed triples into an RDFLib graph. To do this 
+use [`Sink`][rdflib.sink.Sink] to process statements as they are parsed. Its callback receives a triple and a graph name
+(`None` for the default graph). It can count, filter, transform or forward statements without storing the whole graph at
+one time:
 
 ```python
 from rdflib.sink import Sink
