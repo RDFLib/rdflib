@@ -2,8 +2,12 @@
 
 from __future__ import annotations
 
+import os
+import subprocess
+import sys
 import tracemalloc
 from io import BytesIO, RawIOBase, StringIO
+from pathlib import Path
 
 import pytest
 
@@ -305,3 +309,85 @@ def test_streaming_conversion_example_preserves_quads(tmp_path):
         URIRef("urn:g"),
         URIRef("urn:g"),
     ]
+
+
+def _run_streaming_cli(
+    arguments: list[str], directory: Path, module: bool = False
+) -> subprocess.CompletedProcess[str]:
+    root = Path(__file__).resolve().parents[2]
+    command = (
+        [sys.executable, "-m", "examples.streaming_parse"]
+        if module
+        else [sys.executable, str(root / "examples" / "streaming_parse.py")]
+    )
+    return subprocess.run(
+        command + arguments,
+        cwd=root if module else directory,
+        env={**os.environ, "PYTHONIOENCODING": "utf-8"},
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=False,
+    )
+
+
+@pytest.mark.parametrize("module", [False, True], ids=["script", "module"])
+@pytest.mark.parametrize("format", ["nt", "nquads", "xml"])
+def test_streaming_cli_without_source_runs_bundled_demo(tmp_path, module, format):
+    # For the default format, invoke with no arguments, just like test_examples.
+    arguments = [] if format == "nt" else ["--format", format]
+    result = _run_streaming_cli(arguments, tmp_path, module)
+    assert result.returncode == 0, result.stderr
+    assert result.stderr.strip() == "Processed 1 statements"
+    statements = []
+    Sink(lambda triple, graph: statements.append((triple, graph))).parse(
+        data=result.stdout, format="nquads"
+    )
+    assert statements == [
+        (
+            (
+                URIRef("urn:example:s"),
+                URIRef("urn:example:p"),
+                Literal("Hello streaming"),
+            ),
+            URIRef("urn:example:graph") if format == "nquads" else None,
+        )
+    ]
+
+
+@pytest.mark.parametrize(
+    ("format", "data", "predicate", "context"),
+    [
+        ("nt", NT * 2, URIRef("urn:p"), None),
+        ("nquads", NQ * 2, URIRef("urn:p"), URIRef("urn:g")),
+        (
+            "xml",
+            XML_START + XML_TRIPLE * 2 + b"</rdf:RDF>",
+            URIRef("urn:example:p"),
+            None,
+        ),
+    ],
+)
+def test_streaming_cli_converts_explicit_source(
+    tmp_path, format, data, predicate, context
+):
+    path = tmp_path / "input.rdf"
+    path.write_bytes(data)
+    result = _run_streaming_cli([str(path), "--format", format], tmp_path)
+    assert result.returncode == 0, result.stderr
+    assert result.stderr.strip() == "Processed 2 statements"
+    statements = []
+    Sink(lambda triple, graph: statements.append((triple, graph))).parse(
+        data=result.stdout, format="nquads"
+    )
+    assert (
+        statements
+        == [((URIRef("urn:s"), predicate, Literal("caf\u00e9")), context)] * 2
+    )
+
+
+def test_streaming_cli_rejects_unsupported_format(tmp_path):
+    result = _run_streaming_cli(["--format", "turtle"], tmp_path)
+    assert result.returncode == 2
+    assert "invalid choice" in result.stderr
+    assert not result.stdout
