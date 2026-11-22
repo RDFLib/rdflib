@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import pathlib
 from collections.abc import Callable
-from typing import IO, Any, BinaryIO, TextIO
+from typing import IO, Any, BinaryIO, TextIO, cast
 
 from rdflib.graph import (
     DATASET_DEFAULT_GRAPH_ID,
@@ -18,9 +18,11 @@ from rdflib.graph import (
     _ContextType,
     _TripleType,
 )
-from rdflib.parser import InputSource
+from rdflib.parser import InputSource, create_input_source
 from rdflib.plugins.stores.memory import Memory
 from rdflib.term import Identifier
+
+__all__ = ["Sink"]
 
 _StatementHandler = Callable[[_TripleType, Identifier | None], None]
 
@@ -36,6 +38,32 @@ _STREAMING_FORMATS = frozenset(
         "application/rdf+xml",
     }
 )
+
+
+class _BorrowedStream:
+    """Let parsers close their view of a stream without closing the owner."""
+
+    def __init__(self, stream: object):
+        self._stream = stream
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._stream, name)
+
+    def close(self) -> None:
+        pass
+
+
+def _parser_source(source: InputSource) -> InputSource:
+    result = InputSource(source.getSystemId())
+    result.setPublicId(source.getPublicId())
+    result.setEncoding(source.getEncoding())
+    binary = source.getByteStream()
+    text = source.getCharacterStream()
+    if binary is not None:
+        result.setByteStream(cast(BinaryIO, _BorrowedStream(binary)))
+    if text is not None:
+        result.setCharacterStream(cast(TextIO, _BorrowedStream(text)))
+    return result
 
 
 class _SinkStore(Memory):
@@ -110,6 +138,8 @@ class Sink:
         Source arguments have the same meaning as in :meth:`Graph.parse`.
         An explicit supported format is required. Use a file or stream, rather
         than ``data``, to avoid holding the input document in memory.
+        Borrowed streams remain open. Sources opened by this method are closed
+        on success or failure, as are InputSources with ``auto_close=True``.
 
         Memory usage includes parser buffers, namespace bindings and blank-node
         label mappings; it is not independent of the number of distinct labels.
@@ -123,14 +153,18 @@ class Sink:
                 f"Format {format!r} is not supported for streaming; "
                 "use N-Triples, N-Quads, or RDF/XML"
             )
-        graph = Dataset(store=_SinkStore(self.triple))
-        graph.parse(
+        input_source = create_input_source(
             source=source,
             publicID=publicID,
             format=format,
             location=location,
             file=file,
             data=data,
-            **args,
         )
+        try:
+            graph = Dataset(store=_SinkStore(self.triple))
+            graph.parse(source=_parser_source(input_source), format=format, **args)
+        finally:
+            if input_source.auto_close:
+                input_source.close()
         return self
