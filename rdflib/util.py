@@ -84,6 +84,7 @@ SUFFIX_FORMAT_MAP = {
     "json": "json-ld",
     "jsonld": "json-ld",
     "json-ld": "json-ld",
+    "jelly": "jelly",
 }
 
 
@@ -97,6 +98,7 @@ FORMAT_MIMETYPE_MAP = {
     "nquads": ["application/n-quads"],
     "trig": ["application/trig"],
     "json-ld": ["application/ld+json"],
+    "jelly": ["application/x-jelly-rdf"],
 }
 
 
@@ -105,6 +107,7 @@ RESPONSE_TABLE_FORMAT_MIMETYPE_MAP = {
     "json": ["application/sparql-results+json"],
     "csv": ["text/csv"],
     "tsv": ["text/tab-separated-values"],
+    "jelly": ["application/x-jelly-sparql"],
 }
 
 

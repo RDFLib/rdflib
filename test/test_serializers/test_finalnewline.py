@@ -24,4 +24,6 @@ def test_finalnewline():
             failed.add(p.name)
     # JSON-LD does not require a final newline (because JSON doesn't)
     failed = failed.difference({"json-ld", "application/ld+json"})
+    # Jelly is binary, so it has no lines
+    failed = failed.difference({"jelly", "application/x-jelly-rdf"})
     assert len(failed) == 0, "No final newline for formats: '%s'" % failed

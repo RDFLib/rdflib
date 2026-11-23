@@ -376,6 +376,20 @@ register(
     "PatchSerializer",
 )
 
+# Register Jelly-RDF Serializers, from pyjelly
+register(
+    "application/x-jelly-rdf",
+    Serializer,
+    "pyjelly.integrations.rdflib.serialize",
+    "RDFLibJellySerializer",
+)
+register(
+    "jelly",
+    Serializer,
+    "pyjelly.integrations.rdflib.serialize",
+    "RDFLibJellySerializer",
+)
+
 # Register Triple Parsers
 register(
     "application/rdf+xml",
@@ -514,6 +528,20 @@ register(
     "RDFPatchParser",
 )
 
+# Register Jelly-RDF Parsers, from pyjelly
+register(
+    "application/x-jelly-rdf",
+    Parser,
+    "pyjelly.integrations.rdflib.parse",
+    "RDFLibJellyParser",
+)
+register(
+    "jelly",
+    Parser,
+    "pyjelly.integrations.rdflib.parse",
+    "RDFLibJellyParser",
+)
+
 # Register SPARQL Processors
 register(
     "sparql",
@@ -590,6 +618,26 @@ register(
     "TSVResultSerializer",
 )
 
+# Register Jelly-SPARQL Result Serializers, from pyjelly
+register(
+    "jelly",
+    ResultSerializer,
+    "pyjelly.integrations.rdflib.sparql",
+    "RDFLibJellySparqlSerializer",
+)
+register(
+    "jellys",
+    ResultSerializer,
+    "pyjelly.integrations.rdflib.sparql",
+    "RDFLibJellySparqlSerializer",
+)
+register(
+    "application/x-jelly-sparql",
+    ResultSerializer,
+    "pyjelly.integrations.rdflib.sparql",
+    "RDFLibJellySparqlSerializer",
+)
+
 # Register SPARQL Result Parsers
 register(
     "xml",
@@ -638,6 +686,26 @@ register(
     ResultParser,
     "rdflib.plugins.sparql.results.tsvresults",
     "TSVResultParser",
+)
+
+# Register Jelly-SPARQL Result Parsers, from pyjelly
+register(
+    "jelly",
+    ResultParser,
+    "pyjelly.integrations.rdflib.sparql",
+    "RDFLibJellySparqlParser",
+)
+register(
+    "jellys",
+    ResultParser,
+    "pyjelly.integrations.rdflib.sparql",
+    "RDFLibJellySparqlParser",
+)
+register(
+    "application/x-jelly-sparql",
+    ResultParser,
+    "pyjelly.integrations.rdflib.sparql",
+    "RDFLibJellySparqlParser",
 )
 
 graph_parsers = {parser.name for parser in plugins(kind=Parser)}

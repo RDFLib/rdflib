@@ -1463,7 +1463,7 @@ class Graph(Node):
                 See also [serialize module][rdflib.plugins.parsers].
             base: The base IRI for formats that support it. For the turtle format this
                 will be used as the @base directive.
-            encoding: Encoding of output.
+            encoding: Encoding of output. Binary formats, like Jelly, ignore it.
             args: Additional arguments to pass to the Serializer that will be used.
 
         Returns:
@@ -1471,6 +1471,10 @@ class Graph(Node):
             as str if no encoding is specified, and as bytes if an encoding is specified.
 
             self (i.e. the Graph instance) if `destination` is not None.
+
+        Raises:
+            ValueError: If `destination` and `encoding` are None, but the format
+                is binary, like Jelly, so the output can't be returned as str.
         """
 
         # if base is not given as attribute use the base set for the graph
@@ -1483,7 +1487,15 @@ class Graph(Node):
             stream = BytesIO()
             if encoding is None:
                 serializer.serialize(stream, base=base, encoding="utf-8", **args)
-                return stream.getvalue().decode("utf-8")
+                try:
+                    return stream.getvalue().decode("utf-8")
+                except UnicodeDecodeError as error:
+                    # Binary formats, like Jelly, can't be returned as str
+                    raise ValueError(
+                        f"the output of the {format!r} format is not UTF-8 text, so"
+                        " it can't be returned as str. Pass a destination, or an"
+                        " encoding to get bytes."
+                    ) from error
             else:
                 serializer.serialize(stream, base=base, encoding=encoding, **args)
                 return stream.getvalue()
