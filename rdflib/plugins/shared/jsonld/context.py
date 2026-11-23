@@ -407,9 +407,12 @@ class Context:
         ns, name = split_iri(str(iri))
         pfx = self._prefixes.get(ns)
         if pfx:
-            # type error: Argument 1 to "join" of "str" has incompatible type "tuple[Any, Optional[str]]"; expected "Iterable[str]"
-            return ":".join((pfx, name))  # type: ignore[arg-type]
-        elif self._base:
+            compact = f"{pfx}:{name}"
+            # Like a name from to_symbol, a compact IRI is only right if it
+            # expands back to the IRI: the prefix may have been redefined.
+            if self.expand(compact, use_vocab=False) == str(iri):
+                return compact
+        if self._base:
             if str(iri) == self._base:
                 return ""
             # type error: Argument 1 to "startswith" of "str" has incompatible type "Optional[str]"; expected "Union[str, tuple[str, ...]]"
@@ -418,18 +421,30 @@ class Context:
                 return iri[len(self._basedomain) :]  # type: ignore[arg-type]
         return iri
 
-    def to_symbol(self, iri: str) -> str | None:
+    def to_symbol(self, iri: str) -> str:
         iri = str(iri)
         term = self.find_term(iri)
         if term:
             return term.name
         ns, name = split_iri(iri)
+        # An IRI equal to the vocabulary mapping or a prefix is not shortened
+        # (IRI Compaction, section 6.2.2, steps 5 and 7: the IRI must be
+        # longer). A keyword-shaped name would be read as that keyword.
+        if not name or name.startswith("@"):
+            return iri
+        candidates = []
         if ns == self.vocab:
-            return name
+            candidates.append(name)
         pfx = self._prefixes.get(ns)
         if pfx:
-            # type error: Argument 1 to "join" of "str" has incompatible type "tuple[Any, Optional[str]]"; expected "Iterable[str]"
-            return ":".join((pfx, name))  # type: ignore[arg-type]
+            candidates.append(f"{pfx}:{name}")
+        # A vocabulary-relative name or a compact IRI is only right if it
+        # expands back to the IRI: the context can define it as a term for a
+        # different IRI (IRI Compaction, JSON-LD 1.1 Processing Algorithms and
+        # API, section 6.2.2, steps 5.1 and 7.3).
+        for candidate in candidates:
+            if self.expand(candidate) == iri:
+                return candidate
         return iri
 
     def load(
