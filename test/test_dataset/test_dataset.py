@@ -437,11 +437,8 @@ def test_quads_restricted_to_requested_graph(get_dataset, graph_name, expected_q
 
 def test_graph_without_identifier() -> None:
     """
-    Graphs with no identifies assigned are identified by Skolem IRIs with a
-    prefix that is bound to `genid`.
-
-    TODO: This is somewhat questionable and arbitrary behaviour and should be
-    reviewed at some point.
+    Graphs with no identifier assigned are identified by Skolem IRIs without
+    binding a `genid` prefix in the dataset's namespace manager.
     """
 
     d = Dataset()
@@ -450,20 +447,14 @@ def test_graph_without_identifier() -> None:
 
     genid_prefix = URIRef("https://rdflib.github.io/.well-known/genid/rdflib/")
 
-    namespaces = set(nman.namespaces())
-    assert (
-        next((namespace for namespace in namespaces if namespace[0] == "genid"), None)
-        is None
-    )
+    namespaces = dict(nman.namespaces())
+    assert "genid" not in namespaces
 
     ex = Namespace("http://example.com/")
     g1: Graph = d.graph()
     g1.add((ex.subject, ex.predicate, ex.object))
 
-    namespaces = set(nman.namespaces())
-    assert next(
-        (namespace for namespace in namespaces if namespace[0] == "genid"), None
-    ) == ("genid", genid_prefix)
+    assert dict(nman.namespaces()) == namespaces
 
     assert f"{g1.identifier}".startswith(genid_prefix)
 
@@ -486,6 +477,14 @@ def test_graph_without_identifier() -> None:
     assert iris == 2
     assert bns == 1
     assert others == 0
+
+    custom_genid = URIRef("http://example.com/genid/")
+    d.bind("genid", custom_genid)
+    namespaces_with_custom_genid = dict(nman.namespaces())
+    assert namespaces_with_custom_genid["genid"] == custom_genid
+
+    d.graph()
+    assert dict(nman.namespaces()) == namespaces_with_custom_genid
 
 
 def test_not_deprecated():

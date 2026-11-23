@@ -1,9 +1,10 @@
 """
 The JSON-LD serializer joins a further value for a property to the value it
 has already written. Whether one is present is a question about the key, not
-about the truth of the value: with an active context ``0``, ``0.0``, ``""``
-and ``false`` are written as bare JSON values, and testing them for truth made
+about the truth of the value: with an active context ``0``, ``""`` and
+``false`` are written as bare JSON values, and testing them for truth made
 the next value for the same property replace them, so one triple was lost.
+The double ``0.0`` is written as a typed value to preserve its datatype.
 """
 
 from __future__ import annotations
@@ -24,6 +25,12 @@ LANGUAGE_MAP_CONTEXT = {"p": {"@id": str(NS.p), "@container": "@language"}}
 LANGUAGE_SET_CONTEXT = {"p": {"@id": str(NS.p), "@container": ["@language", "@set"]}}
 
 FALSY_VALUES = [Literal(0), Literal(0.0), Literal(""), Literal(False)]
+FALSY_JSON_VALUES = [
+    0,
+    {"@type": str(XSD.double), "@value": "0.0"},
+    "",
+    False,
+]
 FALSY_IDS = ["0", "0.0", "empty-string", "false"]
 
 
@@ -43,12 +50,16 @@ def _round_trip(
     return json.loads(data), g2
 
 
-@pytest.mark.parametrize("falsy", FALSY_VALUES, ids=FALSY_IDS)
+@pytest.mark.parametrize(
+    ("falsy", "expected"),
+    list(zip(FALSY_VALUES, FALSY_JSON_VALUES, strict=True)),
+    ids=FALSY_IDS,
+)
 @pytest.mark.parametrize(
     "falsy_first", [True, False], ids=["falsy-first", "falsy-second"]
 )
 def test_a_falsy_value_beside_another_value_round_trips(
-    falsy: Literal, falsy_first: bool
+    falsy: Literal, expected: Any, falsy_first: bool
 ) -> None:
     """The falsy value was lost when the store yielded it first."""
     other = Literal("a")
@@ -56,10 +67,8 @@ def test_a_falsy_value_beside_another_value_round_trips(
 
     doc, g2 = _round_trip(g, VOCAB_CONTEXT)
 
-    # Compared as JSON text, so that 0, 0.0, false and "" stay apart.
-    assert sorted(map(json.dumps, doc["p"])) == sorted(
-        map(json.dumps, [falsy.toPython(), "a"])
-    )
+    # Compare JSON text to distinguish 0 from false and preserve typed values.
+    assert sorted(map(json.dumps, doc["p"])) == sorted(map(json.dumps, [expected, "a"]))
     assert isomorphic(g, g2)
 
 

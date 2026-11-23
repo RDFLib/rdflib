@@ -101,8 +101,8 @@ def rdf2dot(g: Graph, stream: TextIO, opts: dict[str, Any] = {}):
             if l_:
                 return l_
         try:
-            # type error: Argument 1 to "compute_qname" of "NamespaceManager" has incompatible type "Node"; expected "str"
-            return g.namespace_manager.compute_qname(x)[2]  # type: ignore[arg-type]
+            # type error: Argument 1 to "qname" of "NamespaceManager" has incompatible type "Node"; expected "str"
+            return g.namespace_manager.qname(x)  # type: ignore[arg-type]
         except Exception:
             return x
 
