@@ -1046,3 +1046,26 @@ def test_sparql_blank_node_comma():
     triples = parse_results[1]["where"].part[0].triples[0]
     s_count = sum(1 for i in range(0, len(triples), 3) if triples[i] == Variable("s"))
     assert s_count == 2, f"Found ?s as subject {s_count} times, expected 2"
+
+
+def test_blank_node_before_triple_separator() -> None:
+    """A blank node at the end of a triple is separated from the "." that
+    ends the triple, so that its label does not run on into the next triple:
+    a blank node label may contain a "."."""
+    graph = Graph().parse(
+        format="turtle",
+        data="""
+        @prefix : <http://example.org/> .
+        :x :p [ :q 1 ] , [ :q 2 ] .
+        """,
+    )
+    query_text = """
+    PREFIX : <http://example.org/>
+    SELECT ?y ?z WHERE { :x :p [ :q ?y ] , [ :q ?z ] }
+    """
+
+    query_from_algebra = translateAlgebra(
+        algebra.translateQuery(parser.parseQuery(query_text))
+    )
+
+    assert sorted(graph.query(query_from_algebra)) == sorted(graph.query(query_text))
