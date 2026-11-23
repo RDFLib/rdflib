@@ -1436,7 +1436,13 @@ class _AlgebraTranslator:
                 arg3 = self.convert_node_arg(node.arg3)
 
                 if_expression = (
-                    "IF(" + "{" + node.arg1.name + "}, " + arg2 + ", " + arg3 + ")"
+                    "IF("
+                    + self.convert_node_arg(node.arg1)
+                    + ", "
+                    + arg2
+                    + ", "
+                    + arg3
+                    + ")"
                 )
                 self._replace("{Builtin_IF}", if_expression)
             elif node.name.endswith("COALESCE"):
@@ -1545,9 +1551,12 @@ class _AlgebraTranslator:
                     "STRLEN(" + self.convert_node_arg(node.arg) + ")",
                 )
             elif node.name.endswith("Builtin_SUBSTR"):
-                args = [self.convert_node_arg(node.arg), node.start]
+                args = [
+                    self.convert_node_arg(node.arg),
+                    self.convert_node_arg(node.start),
+                ]
                 if node.length:
-                    args.append(node.length)
+                    args.append(self.convert_node_arg(node.length))
                 expr = "SUBSTR(" + ", ".join(args) + ")"
                 self._replace("{Builtin_SUBSTR}", expr)
             elif node.name.endswith("Builtin_UCASE"):
