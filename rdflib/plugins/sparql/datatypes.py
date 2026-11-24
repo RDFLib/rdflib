@@ -34,6 +34,9 @@ XSD_DTs: set[URIRef] = set(
         XSD.unsignedByte,
         XSD.positiveInteger,
         XSD.date,
+        XSD.duration,
+        XSD.dayTimeDuration,
+        XSD.yearMonthDuration,
     )
 )
 

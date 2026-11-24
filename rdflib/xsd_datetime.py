@@ -379,6 +379,53 @@ class Duration:
             return self.tdelta != other
         return True
 
+    def _compare(
+        self, other: object
+    ) -> tuple[Decimal, timedelta, Decimal, timedelta] | None:
+        """Normalize two durations for partial-order comparison, or return None if incomparable."""
+        if isinstance(other, Duration):
+            other_months = other.years * 12 + other.months
+            other_tdelta = other.tdelta
+        elif isinstance(other, timedelta):
+            other_months = Decimal(0)
+            other_tdelta = other
+        else:
+            return None
+        self_months = self.years * 12 + self.months
+        if (self_months > other_months and self.tdelta < other_tdelta) or (
+            self_months < other_months and self.tdelta > other_tdelta
+        ):
+            return None
+        return (self_months, self.tdelta, other_months, other_tdelta)
+
+    def __lt__(self, other: object) -> bool:
+        cmp = self._compare(other)
+        if cmp is None:
+            return NotImplemented
+        sm, st, om, ot = cmp
+        return (sm, st) < (om, ot)
+
+    def __le__(self, other: object) -> bool:
+        cmp = self._compare(other)
+        if cmp is None:
+            return NotImplemented
+        sm, st, om, ot = cmp
+        return sm <= om and st <= ot
+
+    def __gt__(self, other: object) -> bool:
+        cmp = self._compare(other)
+        if cmp is None:
+            return NotImplemented
+        sm, st, om, ot = cmp
+        return (sm, st) > (om, ot)
+
+    def __ge__(self, other: object) -> bool:
+        cmp = self._compare(other)
+        if cmp is None:
+            return NotImplemented
+        sm, st, om, ot = cmp
+        return sm >= om and st >= ot
+
     def totimedelta(self, start=None, end=None):
         """Convert this duration into a timedelta object.
 
