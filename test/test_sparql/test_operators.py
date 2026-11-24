@@ -57,6 +57,26 @@ def test_logical_connectives_error_tolerance(expression, expected):
     assert row[0].toPython() is expected
 
 
+def test_decimal_and_double_compare_as_the_same_number():
+    # 0.1 is an xsd:decimal and 0.1e0 is an xsd:double. After promotion
+    # to double they are the same number, so < is false.
+    graph = rdflib.Graph()
+
+    def ask(query: str) -> bool:
+        answer = graph.query(query).askAnswer
+        assert isinstance(answer, bool)
+        return answer
+
+    assert ask("ASK { FILTER(0.1 = 0.1e0) }") is True
+    assert ask("ASK { FILTER(0.1 < 0.1e0) }") is False
+    assert ask("ASK { FILTER(0.1 > 0.1e0) }") is False
+    assert ask("ASK { FILTER(0.1 != 0.1e0) }") is False
+    assert ask("ASK { FILTER(1.1 = 1.1e0) }") is True
+    assert ask("ASK { FILTER(0.5 = 0.5e0) }") is True
+    assert ask("ASK { FILTER(0.1 < 0.2e0) }") is True
+    assert ask("ASK { FILTER(2 = 2.0e0) }") is True
+
+
 @pytest.mark.parametrize(
     "expression",
     [
