@@ -8,9 +8,39 @@ import pytest
 from rdflib.graph import Graph
 from rdflib.namespace import XSD, Namespace
 from rdflib.plugins.sparql.operators import _lang_range_check
+from rdflib.query import ResultRow
 from rdflib.term import BNode, Identifier, Literal, URIRef
 
 EG = Namespace("https://example.com/")
+
+
+def _one(graph: Graph, query: str) -> Literal | None:
+    for row in graph.query(query):
+        if not isinstance(row, ResultRow):
+            continue
+        value = row[0]
+        assert isinstance(value, Literal)
+        return value
+    return None
+
+
+def test_replace_whole_match_and_literal_dollar() -> None:
+    graph = Graph()
+    assert _one(
+        graph, 'SELECT (REPLACE("ab12cd", "[0-9]+", "[$0]") AS ?x) WHERE {}'
+    ) == Literal("ab[12]cd")
+    assert _one(graph, r'SELECT (REPLACE("a", "a", "\\$") AS ?x) WHERE {}') == Literal(
+        "$"
+    )
+    assert _one(
+        graph, 'SELECT (REPLACE("ab", "(a)(b)", "$2$1") AS ?x) WHERE {}'
+    ) == Literal("ba")
+    # $12 with one group: the group, then the extra digit.
+    assert _one(
+        graph, 'SELECT (REPLACE("ab", "(a)b", "$12") AS ?x) WHERE {}'
+    ) == Literal("a2")
+    # $$ is not a way to write a dollar. The query fails closed.
+    assert _one(graph, 'SELECT (REPLACE("a", "a", "$$") AS ?x) WHERE {}') is None
 
 
 @pytest.mark.parametrize(

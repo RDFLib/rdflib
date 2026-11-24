@@ -232,18 +232,59 @@ def Builtin_REGEX(expr: Expr, ctx) -> Literal:
     return Literal(bool(re.search(str(pattern), text, cFlag)))
 
 
+def _xpath_capture(digits: str, match: re.Match[str], group_count: int) -> str:
+    """Resolve one `$` number from an XPath fn:replace replacement."""
+    number = int(digits)
+    if number == 0:
+        return match.group(0)
+    if 1 <= number <= group_count:
+        return match.group(number) or ""
+    if group_count < number <= 9:
+        return ""
+    # More than one digit, and too big for a group: the last digit is literal.
+    return _xpath_capture(digits[:-1], match, group_count) + digits[-1]
+
+
+def _xpath_replace(replacement: str, match: re.Match[str]) -> str:
+    """Apply an XPath fn:replace replacement to one match.
+
+    `$0` is the whole match and `$1` upwards are capture groups. A literal
+    dollar is `\\$` and a literal backslash is `\\\\`.
+    """
+    group_count = len(match.groups())
+    out: list[str] = []
+    index = 0
+    size = len(replacement)
+    while index < size:
+        char = replacement[index]
+        if char == "\\":
+            if index + 1 < size and replacement[index + 1] in "\\$":
+                out.append(replacement[index + 1])
+                index += 2
+                continue
+            raise SPARQLError("Invalid replacement string")
+        if char == "$":
+            end = index + 1
+            if end >= size or not replacement[end].isdigit():
+                raise SPARQLError("Invalid replacement string")
+            while end < size and replacement[end].isdigit():
+                end += 1
+            out.append(_xpath_capture(replacement[index + 1 : end], match, group_count))
+            index = end
+            continue
+        out.append(char)
+        index += 1
+    return "".join(out)
+
+
 def Builtin_REPLACE(expr: Expr, ctx) -> Literal:
     """
-    http://www.w3.org/TR/sparql11-query/#func-substr
+    http://www.w3.org/TR/sparql11-query/#func-replace
     """
     text = string(expr.arg)
     pattern = string(expr.pattern)
-    replacement = string(expr.replacement)
+    replacement = str(string(expr.replacement))
     flags = expr.flags
-
-    # python uses \1, xpath/sparql uses $1
-    # type error: Incompatible types in assignment (expression has type "str", variable has type "Literal")
-    replacement = re.sub("\\$([0-9]*)", r"\\\1", replacement)  # type: ignore[assignment]
 
     cFlag = 0
     if flags:
@@ -255,7 +296,12 @@ def Builtin_REPLACE(expr: Expr, ctx) -> Literal:
         # @@FIXME@@ either datatype OR lang, NOT both
 
     return Literal(
-        re.sub(str(pattern), replacement, text, flags=cFlag),
+        re.sub(
+            str(pattern),
+            lambda match: _xpath_replace(replacement, match),
+            text,
+            flags=cFlag,
+        ),
         datatype=text.datatype,
         lang=text.language,
     )
