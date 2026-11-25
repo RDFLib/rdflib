@@ -143,15 +143,15 @@ def test_resolving_iris():
         ),
         ("http://example.org/ns/doc", "http://example.org/a?q=1#f", "/a?q=1#f"),
         ("http://example.org/ns/doc", "http://example.org/x%20y", "/x%20y"),
-        # rdflib reads these back without the empty query, or with "//"
-        # collapsed, so they stay whole.
-        ("http://example.org/ns/doc", "http://example.org/x?", None),
-        ("http://example.org/ns/doc", "http://example.org/a//b", None),
-        # The resolver lowercases the scheme, and joins no paths for these
-        # schemes: a path would not resolve back.
+        # Resolving keeps an empty query and empty path segments (RFC 3986,
+        # section 5.2), and joins a path for any scheme with an authority.
+        ("http://example.org/ns/doc", "http://example.org/x?", "/x?"),
+        ("http://example.org/ns/doc", "http://example.org/a//b", "/a//b"),
+        ("s3://bucket/doc", "s3://bucket/x", "/x"),
+        # A path takes the base's scheme as written, and "file:/tmp" has no
+        # authority for it to take: neither would resolve back.
         ("HTTP://example.org/ns/doc", "http://example.org/other", None),
         ("file:/tmp/doc.jsonld", "file:///x", None),
-        ("s3://bucket/doc", "s3://bucket/x", None),
     ],
 )
 def test_shrinking_iris_against_the_base(
@@ -163,10 +163,28 @@ def test_shrinking_iris_against_the_base(
     shrunk = ctx.shrink_iri(URIRef(iri))
 
     assert shrunk == (URIRef(iri) if expected is None else expected)
-    # rdflib's resolver, and for a shortened IRI urllib's too, give it back.
     assert str(ctx.resolve_iri(shrunk)) == iri
-    if expected is not None:
+    # urllib's resolver gives a shortened IRI back too, where it follows RFC
+    # 3986: it drops an empty query, and joins paths only for the schemes in
+    # urllib.parse.uses_relative.
+    if expected is not None and iri not in {
+        "http://example.org/x?",
+        "s3://bucket/x",
+    }:
         assert urljoin(base, expected) == iri
+
+
+def test_a_compact_iri_that_expands_elsewhere_gives_way_to_a_path() -> None:
+    """A redefined prefix is not used, and the base can still shorten the IRI."""
+    ctx = Context(
+        [
+            {"@base": "http://example.org/ns/doc"},
+            {"ex": "http://example.org/"},
+            {"ex": "http://other.org/"},
+        ]
+    )
+
+    assert ctx.shrink_iri(URIRef("http://example.org/s")) == "/s"
 
 
 @pytest.mark.parametrize(

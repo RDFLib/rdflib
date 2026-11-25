@@ -151,9 +151,10 @@ class Context:
             else base
         )
         self._basedomain = "%s://%s" % urlsplit(base)[0:2] if base else None
-        # Whether an absolute path resolves against the base by taking its
-        # scheme and authority. The resolver does not join paths for every
-        # scheme (e.g. "s3:"), and shrink_iri may skip resolving only if so.
+        # Whether an absolute path resolves against the base by taking the
+        # scheme and authority that urlsplit reads from it. urlsplit drops
+        # tabs and newlines, which the resolver keeps, and shrink_iri may skip
+        # resolving only if both agree.
         self._base_joins_paths = bool(
             self._base
             and self._basedomain
@@ -423,9 +424,12 @@ class Context:
         ns, name = split_iri(str(iri))
         pfx = self._prefixes.get(ns)
         if pfx:
-            # type error: Argument 1 to "join" of "str" has incompatible type "tuple[Any, Optional[str]]"; expected "Iterable[str]"
-            return ":".join((pfx, name))  # type: ignore[arg-type]
-        elif (
+            compact = f"{pfx}:{name}"
+            # Like a name from to_symbol, a compact IRI is only right if it
+            # expands back to the IRI: the prefix may have been redefined.
+            if self.expand(compact, use_vocab=False) == str(iri):
+                return compact
+        if (
             self._base
             and self._basedomain
             # The base's scheme and authority as written: urlsplit lowercases
