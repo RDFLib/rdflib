@@ -138,6 +138,106 @@ def test_prefix_like_vocab():
     assert term.id == "ex:term"
 
 
+@pytest.mark.parametrize(
+    ("vocab", "term", "value", "expected_id", "expected_property"),
+    [
+        # A term without ":" and "/" whose IRI ends with a gen-delim is a prefix.
+        ("http://other.org/", "a", "a:b", *["http://other.org/a/b"] * 2),
+        # A term with a "/" is not. As an @id, the value is then resolved
+        # against the base; as a property or type, it is relative to @vocab.
+        # Each context is valid: the term expands to its IRI through @vocab
+        # (step 14.2.4.2).
+        (
+            "http://other.org",
+            "/a/",
+            "/a/:b",
+            "http://example.org/a/:b",
+            "http://other.org/a/:b",
+        ),
+        (
+            "http://other.org/",
+            "a/",
+            "a/:b",
+            "http://example.org/ns/a/:b",
+            "http://other.org/a/:b",
+        ),
+    ],
+)
+def test_only_a_term_without_a_slash_is_a_prefix(
+    vocab: str, term: str, value: str, expected_id: str, expected_property: str
+) -> None:
+    """JSON-LD 1.1 API, Create Term Definition, step 14.2.5."""
+    ctx = Context(
+        {
+            "@base": "http://example.org/ns/doc",
+            "@vocab": vocab,
+            term: "http://other.org/a/",
+            "t": value,
+        }
+    )
+
+    assert ctx.expand(value, use_vocab=False) == expected_id
+    assert ctx.expand(value) == expected_property
+    # A value in the context is expanded as a property is.
+    assert ctx.terms["t"].id == expected_property
+
+
+def test_a_term_name_with_a_colon_takes_the_iri_of_its_prefix_term() -> None:
+    """Create Term Definition, step 15: no prefix flag is needed for a name."""
+    ctx = Context(
+        {
+            "@vocab": "http://other.org",
+            "/a/": "http://other.org/a/",
+            # No @id, and an @id equal to the term, which step 14 leaves to 15.
+            "/a/:b": {"@type": "@id"},
+            "/a/:c": "/a/:c",
+        }
+    )
+
+    assert ctx.terms["/a/:b"].id == "http://other.org/a/b"
+    assert ctx.terms["/a/:c"].id == "http://other.org/a/c"
+
+
+def test_a_term_with_a_colon_is_not_a_prefix() -> None:
+    ctx = Context({"ex": "http://example.org/", "ex:a/": "http://example.org/a/"})
+
+    assert ctx.terms["ex"].prefix is True
+    assert ctx.terms["ex:a/"].prefix is False
+
+
+@pytest.mark.parametrize("other", ["ex2/", "ex2:"])
+def test_the_serializer_uses_a_prefix_without_a_slash_or_colon(other: str) -> None:
+    g = Graph()
+    g.add(
+        (
+            URIRef("http://example.org/s"),
+            URIRef("http://example.org/p"),
+            URIRef("http://example.org/o"),
+        )
+    )
+    context = {"ex": "http://example.org/", other: "http://example.org/"}
+
+    data = json.loads(g.serialize(format="json-ld", context=context))
+
+    assert data["@id"] == "ex:s"
+    assert data["ex:p"] == {"@id": "ex:o"}
+
+
+def test_a_reference_like_a_compact_iri_with_a_slash_round_trips() -> None:
+    iri = URIRef("http://example.org/a/:b")
+    context = {
+        "@base": "http://example.org/ns/doc",
+        "@vocab": "http://other.org",
+        "/a/": "http://other.org/a/",
+    }
+    g = Graph()
+    g.add((URIRef("http://example.org/s"), URIRef("http://example.org/p"), iri))
+
+    data = g.serialize(format="json-ld", context=context)
+
+    assert list(Graph().parse(data=data, format="json-ld").objects()) == [iri]
+
+
 # Mock external sources loading
 SOURCES: dict[str, dict[str, Any]] = {}
 # type error: Module "rdflib.plugins.shared.jsonld.context" does not explicitly export attribute "source_to_json"
