@@ -369,13 +369,19 @@ class MulPath(Path):
         obj: Optional[_ObjectType] = None,
         first: bool = True,
     ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
+        # Record the zero-length pair here. The walk below can reach the
+        # same node by going around a cycle, and that pair has to be dropped.
+        done = set()  # the spec does, by defn, not allow duplicates
         if self.zero and first:
             if subj and obj:
                 if subj == obj:
+                    done.add((subj, obj))
                     yield subj, obj
             elif subj:
+                done.add((subj, subj))
                 yield subj, subj
             elif obj:
+                done.add((obj, obj))
                 yield obj, obj
 
         def _fwd(
@@ -445,7 +451,6 @@ class MulPath(Path):
                             assert s1 == s
                             yield s1, o1
 
-        done = set()  # the spec does, by defn, not allow duplicates
         if subj:
             for x in _fwd(subj, obj, set()):
                 if x not in done:
