@@ -173,6 +173,34 @@ def test_ill_typed_literals(
 
 
 @pytest.mark.parametrize(
+    "lexical, datatype, is_ill_typed",
+    [
+        ("x", XSD.integer, True),
+        ("1200", XSD.byte, True),
+        ("12", XSD.byte, False),
+        ("01", XSD.integer, False),
+    ],
+)
+def test_ill_typed_when_built_from_another_literal(
+    lexical: str,
+    datatype: URIRef,
+    is_ill_typed: bool,
+) -> None:
+    """A datatype override on an existing Literal still sets ill_typed.
+
+    SPARQL parses "x"^^xsd:integer as Literal(Literal("x"), datatype=...).
+    """
+    lit = Literal(Literal(lexical), datatype=datatype)
+    direct = Literal(lexical, datatype=datatype)
+    assert lit.ill_typed is is_ill_typed
+    assert lit.ill_typed == direct.ill_typed
+    assert str(lit) == lexical
+
+    copied = Literal(direct)
+    assert copied.ill_typed == direct.ill_typed
+
+
+@pytest.mark.parametrize(
     "a, b, op, expected_result",
     [
         pytest.param(
