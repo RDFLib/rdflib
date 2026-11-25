@@ -118,6 +118,10 @@ def test_resolving_iris():
     ("base", "iri", "expected"),
     [
         ("http://example.org/ns/doc", "http://example.org/ns/doc", ""),
+        # The base itself is the empty reference, whatever the form of the base.
+        ("urn:x:doc", "urn:x:doc", ""),
+        ("file:/tmp/doc.jsonld", "file:/tmp/doc.jsonld", ""),
+        ("HTTP://example.org/ns/doc", "HTTP://example.org/ns/doc", ""),
         ("http://example.org/ns/doc", "http://example.org/other", "/other"),
         ("http://example.org/ns/doc", "http://example.org/", "/"),
         # These share the base's "scheme://host" as a string only, or keep a

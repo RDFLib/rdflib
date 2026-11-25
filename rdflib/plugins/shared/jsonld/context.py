@@ -72,8 +72,8 @@ UNDEF = Defined.UNDEF
 URI_GEN_DELIMS = (":", "/", "?", "#", "[", "]", "@")
 
 # An absolute path without empty, "." or ".." segments, with an optional
-# non-empty query and fragment. Every resolver gives such a reference back
-# unchanged, so it needs no resolving to check (see Context.shrink_iri).
+# non-empty query and fragment. An RFC 3986 resolver gives such a reference
+# back unchanged, so it needs no resolving to check (see Context.shrink_iri).
 _PLAIN_ABSOLUTE_PATH = re.compile(
     r"(?:/(?!\.\.?(?:[/?#]|$))[^/?#]+)*/?(?:\?[^#]+)?(?:#.+)?"
 )
@@ -429,34 +429,31 @@ class Context:
             # expands back to the IRI: the prefix may have been redefined.
             if self.expand(compact, use_vocab=False) == str(iri):
                 return compact
+        value = str(iri)
+        if self._base and value == self._base:
+            # The empty reference resolves to the base (RFC 3986, section
+            # 5.2.2), which the base setter keeps without a fragment.
+            return ""
         if (
             self._base
             and self._basedomain
             # The base's scheme and authority as written: urlsplit lowercases
             # the scheme, which resolving does not undo.
             and self._base.startswith(self._basedomain)
+            # An absolute-path reference keeps the base's scheme and authority.
+            and value.startswith(self._basedomain + "/")
+            and not value.startswith(self._basedomain + "//")
         ):
-            value = str(iri)
-            if value == self._base:
-                relative = ""
-            elif value.startswith(self._basedomain + "/") and not value.startswith(
-                self._basedomain + "//"
-            ):
-                # An absolute-path reference keeps the base's scheme and
-                # authority.
-                relative = value[len(self._basedomain) :]
-            else:
-                return iri
+            relative = value[len(self._basedomain) :]
             # A relative reference is only right if it resolves back to the IRI
             # (IRI Compaction, JSON-LD 1.1 Processing Algorithms and API,
             # section 6.2.2, step 10). A plain absolute path does; anything
             # else is resolved with this context's resolver, the one the
-            # JSON-LD parser uses, to check.
+            # JSON-LD parser uses for relative references, to check.
             if (
                 self._base_joins_paths
                 and "://" not in relative
                 and _PLAIN_ABSOLUTE_PATH.fullmatch(relative)
-                and relative
             ) or self.resolve_iri(relative) == value:
                 return relative
         return iri
