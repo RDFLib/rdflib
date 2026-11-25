@@ -4,8 +4,8 @@ Code for carrying out Update Operations
 
 from __future__ import annotations
 
-from collections.abc import Iterator, Mapping, Sequence
-from typing import TYPE_CHECKING
+from collections.abc import Iterable, Iterator, Mapping, Sequence
+from typing import TYPE_CHECKING, Any
 
 from rdflib.graph import Graph
 from rdflib.plugins.sparql.evaluate import evalBGP, evalPart
@@ -15,11 +15,29 @@ from rdflib.plugins.sparql.sparql import FrozenDict, QueryContext, Update
 from rdflib.term import Identifier, URIRef, Variable
 
 
+def _resolve_term(ctx: QueryContext, term: Any) -> Any:
+    if isinstance(term, Variable):
+        val = ctx[term]
+        if val is not None:
+            return val
+    return term
+
+
+def _resolve_triples(
+    ctx: QueryContext,
+    triples: Iterable[tuple[Identifier, Identifier, Identifier]],
+) -> list[tuple[Identifier, Identifier, Identifier]]:
+    return [
+        (_resolve_term(ctx, s), _resolve_term(ctx, p), _resolve_term(ctx, o))
+        for s, p, o in triples
+    ]
+
+
 def _graphOrDefault(ctx: QueryContext, g: str) -> Graph | None:
     if g == "DEFAULT":
         return ctx.graph
     else:
-        return ctx.dataset.get_context(g)
+        return ctx.dataset.get_context(_resolve_term(ctx, g))
 
 
 def _graphAll(ctx: QueryContext, g: str) -> Sequence[Graph]:
@@ -39,28 +57,28 @@ def _graphAll(ctx: QueryContext, g: str) -> Sequence[Graph]:
     elif g == "ALL":
         return list(ctx.dataset.contexts())
     else:
-        return [ctx.dataset.get_context(g)]
+        return [ctx.dataset.get_context(_resolve_term(ctx, g))]
 
 
 def evalLoad(ctx: QueryContext, u: CompValue) -> None:
     """
     http://www.w3.org/TR/sparql11-update/#load
     """
-
+    iri = _resolve_term(ctx, u.iri)
     if TYPE_CHECKING:
-        assert isinstance(u.iri, URIRef)
+        assert isinstance(iri, URIRef)
 
     if u.graphiri:
-        ctx.load(u.iri, default=False, into=u.graphiri)
+        ctx.load(iri, default=False, into=_resolve_term(ctx, u.graphiri))
     else:
-        ctx.load(u.iri, default=True)
+        ctx.load(iri, default=True)
 
 
 def evalCreate(ctx: QueryContext, u: CompValue) -> None:
     """
     http://www.w3.org/TR/sparql11-update/#create
     """
-    g = ctx.dataset.get_context(u.graphiri)
+    g = ctx.dataset.get_context(_resolve_term(ctx, u.graphiri))
     if len(g) > 0:
         raise Exception("Graph %s already exists." % g.identifier)
     raise Exception("Create not implemented!")
@@ -91,13 +109,15 @@ def evalInsertData(ctx: QueryContext, u: CompValue) -> None:
     """
     # add triples
     g = ctx.graph
-    g += u.triples
+    # type error: Unsupported left operand type for + ("None")
+    # type error: Unsupported operand types for + ("Graph" and "list[tuple[Identifier, Identifier, Identifier]]")
+    g += _resolve_triples(ctx, u.triples)  # type: ignore[operator]
     # add quads
     # u.quads is a dict of graphURI=>[triples]
     for g in u.quads:
         # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Optional[Graph]"; expected "Union[IdentifiedNode, str, None]"
-        cg = ctx.dataset.get_context(g)
-        cg += u.quads[g]
+        cg = ctx.dataset.get_context(_resolve_term(ctx, g))
+        cg += _resolve_triples(ctx, u.quads[g])
 
 
 def evalDeleteData(ctx: QueryContext, u: CompValue) -> None:
@@ -106,14 +126,16 @@ def evalDeleteData(ctx: QueryContext, u: CompValue) -> None:
     """
     # remove triples
     g = ctx.graph
-    g -= u.triples
+    # type error: Unsupported left operand type for - ("None")
+    # type error: Unsupported operand types for - ("Graph" and "list[tuple[Identifier, Identifier, Identifier]]")
+    g -= _resolve_triples(ctx, u.triples)  # type: ignore[operator]
 
     # remove quads
     # u.quads is a dict of graphURI=>[triples]
     for g in u.quads:
         # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Optional[Graph]"; expected "Union[IdentifiedNode, str, None]"
-        cg = ctx.dataset.get_context(g)
-        cg -= u.quads[g]
+        cg = ctx.dataset.get_context(_resolve_term(ctx, g))
+        cg -= _resolve_triples(ctx, u.quads[g])
 
 
 def evalDeleteWhere(ctx: QueryContext, u: CompValue) -> None:
@@ -123,7 +145,7 @@ def evalDeleteWhere(ctx: QueryContext, u: CompValue) -> None:
 
     res: Iterator[FrozenDict] = evalBGP(ctx, u.triples)
     for g in u.quads:
-        cg = ctx.dataset.get_context(g)
+        cg = ctx.dataset.get_context(_resolve_term(ctx, g))
         c = ctx.pushGraph(cg)
         res = _join(res, list(evalBGP(c, u.quads[g])))
 
@@ -152,10 +174,10 @@ def evalModify(ctx: QueryContext, u: CompValue) -> None:
                     ctx = ctx.pushGraph(dg)
                     otherDefault = True
 
-                ctx.load(d.default, default=True)
+                ctx.load(_resolve_term(ctx, d.default), default=True)
 
             elif d.named:
-                g = d.named
+                g = _resolve_term(ctx, d.named)
                 ctx.load(g, default=False)
 
     # "The WITH clause provides a convenience for when an operation
@@ -168,7 +190,7 @@ def evalModify(ctx: QueryContext, u: CompValue) -> None:
     # the WITH clause will be ignored while evaluating the WHERE
     # clause."
     if not u.using and u.withClause:
-        g = ctx.dataset.get_context(u.withClause)
+        g = ctx.dataset.get_context(_resolve_term(ctx, u.withClause))
         ctx = ctx.pushGraph(g)
 
     res = evalPart(ctx, u.where)
@@ -177,7 +199,7 @@ def evalModify(ctx: QueryContext, u: CompValue) -> None:
         if otherDefault:
             ctx = originalctx  # restore original default graph
         if u.withClause:
-            g = ctx.dataset.get_context(u.withClause)
+            g = ctx.dataset.get_context(_resolve_term(ctx, u.withClause))
             ctx = ctx.pushGraph(g)
 
     for c in list(res):

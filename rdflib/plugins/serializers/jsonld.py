@@ -1,5 +1,10 @@
-"""
-This serialiser will output an RDF Graph as a JSON-LD formatted document. See http://json-ld.org/
+"""This serialiser will output an RDF Graph as a JSON-LD formatted document.
+
+Implements serialization for [JSON-LD version 1.1](https://www.w3.org/TR/json-ld11/).
+For more information, see [json-ld.org](http://json-ld.org/).
+Additional `args` supported by [`Graph.serialize`][rdflib.graph.Graph.serialize]
+are described by
+[`JsonLDSerializer.serialize`][rdflib.plugins.serializers.jsonld.JsonLDSerializer.serialize].
 
 Example:
     ```python
@@ -36,6 +41,7 @@ Example:
 
 from __future__ import annotations
 
+import math
 import warnings
 from collections import Counter
 from typing import IO, Any, Optional
@@ -47,12 +53,17 @@ from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, URIRef
 
 from ..shared.jsonld.context import UNDEF, Context, Term
 from ..shared.jsonld.keys import CONTEXT, GRAPH, ID, LANG, LIST, SET, VOCAB
-from ..shared.jsonld.util import _HAS_ORJSON, json, orjson
+from ..shared.jsonld.util import _HAS_ORJSON, json, number_datatype, orjson
 
 __all__ = ["JsonLDSerializer", "from_rdf"]
 
 
 PLAIN_LITERAL_TYPES = {XSD.boolean, XSD.integer, XSD.double, XSD.string}
+
+"""List of RDF types, which correspond to a native JSON type."""
+
+# The largest integer that JSON parsers agree on (RFC 8259, section 6).
+_MAX_INTEROPERABLE_INTEGER = 2**53 - 1
 
 
 class JsonLDSerializer(Serializer):
@@ -65,29 +76,55 @@ class JsonLDSerializer(Serializer):
         self,
         stream: IO[bytes],
         base: str | None = None,
-        encoding: str | None = None,
+        encoding: str | None = "utf-8",
+        context: dict[str, str] | Context | None = None,
+        use_native_types: bool = False,
+        use_rdf_type: bool = False,
+        auto_compact: bool = False,
+        indent: int = 2,
+        separators: tuple[str, str] | None = (",", ": "),
+        sort_keys: bool = True,
+        ensure_ascii: bool = False,
         **kwargs: Any,
     ) -> None:
-        # TODO: docstring w. args and return value
-        encoding = encoding or "utf-8"
-        if encoding not in ("utf-8", "utf-16"):
+        """Serialize data from connected store as JSON-LD and print it to stream.
+
+        Conforms to JSON-LD version 1.1
+
+        Args:
+            stream: Print data to this stream.
+            base: Base used for relative IRIs.
+                See [w3.org](https://www.w3.org/TR/json-ld11/#base-iri)
+                for detailed description.
+            encoding: Encoding used for stream. Use only "utf-8" or "utf-16",
+                because JSON should be encoded as unicode.
+            context: context data
+            use_native_types: Use JSON's native types instead of rdf types.
+                Transforms all Literal with one of the types
+                from [`PLAIN_LITERAL_TYPES`][rdflib.plugins.serializers.jsonld.PLAIN_LITERAL_TYPES]
+                to a native type from JSON.
+                If `context` is given as `Context`, will always be `true`, when
+                `context.active`.
+            use_rdf_type: Don't translate triples `(?x rdf:type ?class)`
+                to JSON's `@type` key.
+            auto_compact: Generate context if not given.
+            indent: Indent used for JSON document
+            separators: Separators used for JSON document.
+                Same as separators used in `json.dumps`.
+            sort_keys: Sort dictionaries by keys.
+            ensure_ascii: Escape non-ASCII characters in JSON strings.
+                Doesnt work with `orjson`.
+        """
+        if encoding is None:
+            encoding = "utf-8"
+        elif encoding not in ("utf-8", "utf-16"):
             warnings.warn(
                 f"JSON should be encoded as unicode. Given encoding was: {encoding}"
             )
 
-        context_data = kwargs.get("context")
-        use_native_types = (kwargs.get("use_native_types", False),)
-        use_rdf_type = kwargs.get("use_rdf_type", False)
-        auto_compact = kwargs.get("auto_compact", False)
-
-        indent = kwargs.get("indent", 2)
-        separators = kwargs.get("separators", (",", ": "))
-        sort_keys = kwargs.get("sort_keys", True)
-        ensure_ascii = kwargs.get("ensure_ascii", False)
-
         obj = from_rdf(
             self.store,
-            context_data,
+            context,
             base,
             use_native_types,
             use_rdf_type,
@@ -115,12 +152,12 @@ class JsonLDSerializer(Serializer):
 
 
 def from_rdf(
-    graph,
-    context_data=None,
-    base=None,
-    use_native_types=False,
-    use_rdf_type=False,
-    auto_compact=False,
+    graph: Graph,
+    context_data: dict[str, str] | Context | None = None,
+    base: str | None = None,
+    use_native_types: bool = False,
+    use_rdf_type: bool = False,
+    auto_compact: bool = False,
     startnode=None,
     index=False,
 ):
@@ -552,7 +589,11 @@ class Converter:
             return {context.id_key: context.shrink_iri(o)}
         elif isinstance(o, Literal):
             # TODO: if compact
-            native = self.use_native_types and o.datatype in PLAIN_LITERAL_TYPES
+            native = (
+                self.use_native_types
+                and o.datatype in PLAIN_LITERAL_TYPES
+                and self._reads_back_as_itself(o)
+            )
             if native:
                 v = o.toPython()
             else:
@@ -571,6 +612,30 @@ class Converter:
                 return {context.value_key: v}
             else:
                 return v
+
+    @staticmethod
+    def _reads_back_as_itself(o: Literal) -> bool:
+        """Whether `o`, written as a native JSON value, is read back unchanged.
+
+        A reader types a JSON number by its value (see `number_datatype`): the
+        double 1.0 would come back as the integer 1. Many JSON parsers read
+        numbers as doubles, so an integer beyond 2^53 - 1 in magnitude would
+        lose digits (RFC 8259, section 6). An ill-typed literal, or a number
+        that is not finite, has no such JSON form. Any of these is written
+        with its lexical form instead.
+        """
+        if o.ill_typed:
+            return False
+        if o.datatype in (XSD.integer, XSD.double):
+            value = o.toPython()
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                return False
+            if number_datatype(value) != o.datatype:
+                return False
+            if isinstance(value, int):
+                return abs(value) <= _MAX_INTEROPERABLE_INTEGER
+            return math.isfinite(value)
+        return True
 
     def _list_object(
         self,

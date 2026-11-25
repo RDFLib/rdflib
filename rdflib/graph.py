@@ -2789,13 +2789,6 @@ class Dataset(ConjunctiveGraph):
         base: str | None = None,
     ) -> Graph:
         if identifier is None:
-            from rdflib.term import _SKOLEM_DEFAULT_AUTHORITY, rdflib_skolem_genid
-
-            self.bind(
-                "genid",
-                _SKOLEM_DEFAULT_AUTHORITY + rdflib_skolem_genid,
-                override=False,
-            )
             identifier = BNode().skolemize()
 
         graph_to_copy: Optional[Graph] = None
