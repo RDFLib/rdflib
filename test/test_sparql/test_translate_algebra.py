@@ -16,7 +16,7 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib.plugins.sparql.algebra as algebra
 import rdflib.plugins.sparql.parser as parser
-from rdflib import Dataset, Graph, Literal, URIRef, Variable
+from rdflib import Dataset, Graph, Literal, Namespace, URIRef, Variable
 from rdflib.plugins.sparql.algebra import translateAlgebra
 from rdflib.query import Result
 from test.data import TEST_DATA_DIR
@@ -714,6 +714,91 @@ def test_translation_returns_same_results(query: str) -> None:
     expected = _rows(graph.query(query))
     assert _rows(graph.query(query_from_algebra)) == expected
     assert expected
+
+
+@pytest.mark.parametrize(
+    ["query", "expected"],
+    [
+        pytest.param(
+            "SELECT ?o FROM :g1 WHERE { ?s :p ?o }",
+            [("g1",)],
+            id="from",
+        ),
+        pytest.param(
+            "SELECT ?g ?o FROM NAMED :g2 WHERE { GRAPH ?g { ?s :p ?o } }",
+            [("http://example.org/g2", "g2")],
+            id="from_named",
+        ),
+        pytest.param(
+            "SELECT ?o ?n FROM :g1 FROM NAMED :g2 "
+            "WHERE { ?s :p ?o GRAPH ?g { ?t :p ?n } }",
+            [("g1", "g2")],
+            id="from_and_from_named",
+        ),
+        pytest.param(
+            "SELECT DISTINCT ?o FROM :g1 FROM :g2 WHERE { ?s :p ?o } ORDER BY ?o",
+            [("g1",), ("g2",)],
+            id="distinct_from_two_graphs",
+        ),
+        pytest.param(
+            "SELECT ?o FROM :g2 WHERE { { SELECT ?o WHERE { ?s :p ?o } } }",
+            [("g2",)],
+            id="from_with_subquery",
+        ),
+        pytest.param(
+            "SELECT ?o FROM :g1 WHERE { ?s :p ?o "
+            "FILTER EXISTS { SELECT ?s WHERE { ?s :p ?x } } }",
+            [("g1",)],
+            id="from_with_exists_subquery",
+        ),
+    ],
+)
+def test_dataset_clause_is_kept(query: str, expected: list[tuple[str, ...]]) -> None:
+    """FROM and FROM NAMED select the graphs the translated query reads."""
+    query = "PREFIX : <http://example.org/>\n" + query
+    EX = Namespace("http://example.org/")  # noqa: N806
+    dataset = Dataset()
+    dataset.add((EX.s, EX.p, Literal("default")))
+    dataset.graph(EX.g1).add((EX.s, EX.p, Literal("g1")))
+    dataset.graph(EX.g2).add((EX.s, EX.p, Literal("g2")))
+
+    query_from_algebra = translateAlgebra(
+        algebra.translateQuery(parser.parseQuery(query))
+    )
+
+    for text in (query, query_from_algebra):
+        result = dataset.query(text)
+        rows = [
+            tuple(str(row[var]) for var in result.vars or []) for row in result.bindings
+        ]
+        assert rows == expected
+    # A subquery cannot have a dataset clause, so FROM is written once.
+    assert query_from_algebra.count(" FROM ") == query.count(" FROM ")
+
+
+@pytest.mark.parametrize(
+    "query",
+    [
+        "SELECT ?s WHERE { ?s ?p ?o }",
+        "SELECT ?s FROM <http://example.org/g1> WHERE { ?s ?p ?o }",
+        "SELECT ?s FROM NAMED <http://example.org/g2> FROM <http://example.org/g1> "
+        "FROM NAMED <http://example.org/g3> WHERE { ?s ?p ?o }",
+        "PREFIX : <http://example.org/a%20b/> SELECT ?s FROM :g FROM NAMED :h "
+        "WHERE { ?s ?p ?o }",
+    ],
+    ids=["none", "from", "mixed_order", "prefixed_escaped"],
+)
+def test_dataset_clause_round_trips(query: str) -> None:
+    """The translated query parses to the same dataset clauses, in order."""
+
+    def dataset(text: str) -> list[tuple[object, object]]:
+        clauses = algebra.translateQuery(parser.parseQuery(text)).algebra.datasetClause
+        return [(clause.default, clause.named) for clause in clauses or []]
+
+    query_from_algebra = translateAlgebra(
+        algebra.translateQuery(parser.parseQuery(query))
+    )
+    assert dataset(query_from_algebra) == dataset(query)
 
 
 def test_group_by_stays_on_its_subquery_after_service() -> None:
