@@ -167,6 +167,23 @@ def test_reevaluation_between_updates_insert() -> None:
     assert values == {Literal(3), Literal(4), Literal(14)}
 
 
+def test_insert_data_into_default_graph_of_dataset() -> None:
+    """INSERT DATA on a Dataset puts triples without GRAPH in the default graph.
+
+    See https://github.com/RDFLib/rdflib/issues/2019
+    """
+    ds = Dataset()
+    ds.update(
+        "INSERT DATA { <urn:s> <urn:p> <urn:o> . GRAPH <urn:g> { <urn:s> <urn:p> <urn:o2> } }"
+    )
+    assert set(ds.default_graph) == {
+        (URIRef("urn:s"), URIRef("urn:p"), URIRef("urn:o"))
+    }
+    assert set(ds.graph(URIRef("urn:g"))) == {
+        (URIRef("urn:s"), URIRef("urn:p"), URIRef("urn:o2"))
+    }
+
+
 def test_inserts_in_named_graph():
     trig_data = """
     @prefix ex: <http://example.org/> .
