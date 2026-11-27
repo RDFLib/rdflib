@@ -608,7 +608,7 @@ def translateValues(
     if not v.var:
         return res
     if not v.value:
-        return res
+        return Values(res)
     if not isinstance(v.value[0], list):
         for val in v.value:
             res.append({v.var[0]: val})
