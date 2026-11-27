@@ -49,6 +49,7 @@ from rdflib.term import (
     _XSD_TIME,
     Literal,
     URIRef,
+    Variable,
     _reset_bindings,
     bind,
 )
@@ -89,6 +90,27 @@ xmlns:foo="http://example.org/foo#">
     a = rdflib.Literal("a\\b")
     b = list(g.objects())[0]
     assert a == b
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        'x\n"',
+        'x\n""',
+        'x\n\\"',
+        'x\n\\\\"',
+        'x\n\\"""',
+        "x\n\\",
+    ],
+)
+def test_n3_long_literal_ending_in_quote(value: str) -> None:
+    """
+    A multi-line literal is written in triple quotes, so a quote at the end
+    has to be escaped, also when a backslash comes right before it.
+    """
+    literal = rdflib.Literal(value)
+    result = rdflib.Graph().query(f"SELECT ?x WHERE {{ BIND({literal.n3()} AS ?x) }}")
+    assert [b[Variable("x")] for b in result.bindings] == [literal]
 
 
 def test_literal_from_bool() -> None:
