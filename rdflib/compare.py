@@ -360,7 +360,7 @@ class _TripleCanonicalizer:
     def _refine(self, coloring: list[Color], sequence: list[Color]) -> list[Color]:
         sequence = sorted(sequence, key=lambda x: x.key(), reverse=True)
         coloring = coloring[:]
-        while len(sequence) > 0 and not self._discrete(coloring):
+        while len(sequence) > 0:
             W = sequence.pop()  # noqa: N806
             for c in coloring[:]:
                 if len(c.nodes) > 1 or isinstance(c.nodes[0], BNode):
