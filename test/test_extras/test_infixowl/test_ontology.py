@@ -53,13 +53,12 @@ def test_ontology_instantiation(graph):
     assert graph.serialize(format="origturtle") == (
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
         "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n"
-        "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
         "\n"
         '"TestOntology"@en a owl:Ontology ;\n'
         '    rdfs:comment "Test Ontology" ;\n'
         "    owl:imports <http://example.org/ontologies/pizza.owl>,\n"
         "        <http://example.org/ontologies/wine.owl> ;\n"
-        '    owl:versionInfo "1.0"^^xsd:string .\n'
+        '    owl:versionInfo "1.0" .\n'
         "\n"
     )
 

@@ -261,8 +261,9 @@ def test_tsv_quote_encode(input_str: str, expected: str) -> None:
             id="typed_xsd_date",
         ),
         pytest.param(
+            # An xsd:string literal is written as a simple literal.
             Literal("foo", datatype=XSD.string),
-            '"foo"^^<http://www.w3.org/2001/XMLSchema#string>',
+            '"foo"',
             id="typed_xsd_string",
         ),
         pytest.param(

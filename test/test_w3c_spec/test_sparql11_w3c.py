@@ -166,8 +166,9 @@ MARK_DICT: MarksDictType = {
     f"{REMOTE_BASE_IRI}functions/manifest#strdt01": pytest.mark.xfail(
         reason="Reason for test failure is not clear."
     ),
-    f"{REMOTE_BASE_IRI}functions/manifest#strdt03": pytest.mark.xfail(
-        reason="Reason for test failure is not clear."
+    f"{REMOTE_BASE_IRI}functions/manifest#strdt03-rdf11": pytest.mark.xfail(
+        reason="STRDT does not check that its first argument is a simple literal, "
+        "so it gives a result for numbers, dates and language-tagged strings."
     ),
     f"{REMOTE_BASE_IRI}grouping/manifest#group06": pytest.mark.xfail(
         reason="Accepts invalid query."

@@ -147,7 +147,8 @@ def test_cant_pass_invalid_lang(
         ("2147483648", XSD.integer, False),
         ("valid ASCII", XSD.string, False),
         pytest.param("هذا رجل ثلج⛄", XSD.string, False, id="snowman-ar"),
-        ("More ASCII", None, None),
+        # A literal without a datatype is an xsd:string literal.
+        ("More ASCII", None, False),
         ("Not a valid time", XSD.time, True),
         ("Not a valid date", XSD.date, True),
         ("7264666c6962", XSD.hexBinary, False),
@@ -492,8 +493,9 @@ def test_ill_typed_literals(
             Literal("5"),
             Literal("10", datatype=_XSD_INTEGER),
             "aminusb",
+            # A literal without a datatype is an xsd:string literal.
             TypeError(
-                "Minuend Literal must have Numeric, Date, Datetime or Time datatype."
+                "Cannot subtract a Literal of datatype http://www.w3.org/2001/XMLSchema#integer from a Literal of datatype http://www.w3.org/2001/XMLSchema#string"
             ),
         ),
         (
@@ -501,7 +503,7 @@ def test_ill_typed_literals(
             Literal("10", datatype=_XSD_INTEGER),
             "bminusa",
             TypeError(
-                "Subtrahend Literal must have Numeric, Date, Datetime or Time datatype."
+                "Cannot subtract a Literal of datatype http://www.w3.org/2001/XMLSchema#string from a Literal of datatype http://www.w3.org/2001/XMLSchema#integer"
             ),
         ),
         *affix_tuples(
@@ -879,7 +881,7 @@ def test_specific_binding(clear_bindings: None) -> None:
     normal_l = Literal(s)
     assert str(normal_l) == s
     assert normal_l.toPython() == s
-    assert normal_l.datatype is None
+    assert normal_l.datatype == XSD.string
 
     specific_l = Literal("--%s--" % s, datatype=datatype)
     assert str(specific_l) == lexify(s)
@@ -1004,7 +1006,7 @@ class _UnknownType:
     [
         (
             lambda: Literal("foo"),
-            LiteralChecker("foo", None, None, None, "foo"),
+            LiteralChecker("foo", None, XSD.string, False, "foo"),
         ),
         (
             lambda: Literal("foo", None, ""),

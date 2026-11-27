@@ -66,6 +66,17 @@ PLAIN_LITERAL_TYPES = {XSD.boolean, XSD.integer, XSD.double, XSD.string}
 _MAX_INTEROPERABLE_INTEGER = 2**53 - 1
 
 
+def _written_datatype(o: Literal) -> str | None:
+    """Return the datatype JSON-LD writes for a literal, if any.
+
+    RDF to Object Conversion (JSON-LD 1.1 Processing Algorithms and API,
+    section 8.5.2) gives a language-tagged string an `@language` and an
+    `xsd:string` literal no `@type`; only other datatypes are written.
+    """
+    dt = o._written_datatype
+    return None if dt is None else str(dt)
+
+
 class JsonLDSerializer(Serializer):
     """JSON-LD RDF graph serializer."""
 
@@ -376,7 +387,7 @@ class Converter:
 
         collection = None
         if isinstance(o, Literal):
-            datatype = str(o.datatype) if o.datatype else None
+            datatype = _written_datatype(o)
             language = o.language
             term = context.find_term(str(p), datatype, language=language)
         else:
@@ -569,7 +580,7 @@ class Converter:
                 return o
         elif coerce_type == VOCAB and isinstance(o, URIRef):
             return self.context.to_symbol(o)
-        elif isinstance(o, Literal) and str(o.datatype) == coerce_type:
+        elif isinstance(o, Literal) and _written_datatype(o) == coerce_type:
             return o
         else:
             return None
@@ -598,7 +609,7 @@ class Converter:
                 v = o.toPython()
             else:
                 v = str(o)
-            if o.datatype:
+            if _written_datatype(o):
                 if native and self.context.active:
                     return v
                 return {

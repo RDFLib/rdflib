@@ -74,3 +74,67 @@ N-Triples, N-Quads, RDF/XML, TriX, HexT, Patch and SPARQL results change.
   RDFLib 8 reads such data back as `INF` and `NaN`, but can't find or remove
   it by value. To migrate such a store, export its data with RDFLib 8 and load
   it into a new store.
+
+## Literals always have a datatype
+
+Every RDF 1.1 literal has a datatype ([RDF 1.1 Concepts and Abstract Syntax,
+§3.3](https://www.w3.org/TR/rdf11-concepts/#section-Graph-Literal)), and
+[`Literal.datatype`][rdflib.term.Literal.datatype] is no longer `None`:
+
+- A literal with a language tag has the datatype `rdf:langString`.
+- A literal without a datatype or a language tag has the datatype
+  `xsd:string`: a simple literal is syntactic sugar for an `xsd:string`
+  literal.
+
+So `Literal("a")` and `Literal("a", datatype=XSD.string)` are now the same
+literal: they are equal, have the same hash, and a graph holds one triple for
+`"a"` and `"a"^^xsd:string`. In SPARQL, the triple pattern `?s ?p "a"`,
+`sameTerm`, `DISTINCT` and `GROUP BY` treat them as one. RDFLib 7 kept them
+apart, so data whose JSON-LD context or store typed a string `xsd:string` did
+not match a simple literal in a query or in a SHACL `sh:in` list.
+
+What changes for code:
+
+- Code that tests `literal.datatype is None` to find a string must test
+  `literal.datatype == XSD.string`, or `literal.language` for a
+  language-tagged one. Code that tests `if literal.datatype:` before
+  `elif literal.language:` now always takes the first branch; test the
+  language first.
+- Code that writes literals, such as a serializer plugin, leaves out an
+  implied datatype: `rdf:langString` when the literal has a language tag, and
+  `xsd:string`.
+- `ill_typed` is `False` for simple and language-tagged literals, as for any
+  `xsd:string` literal, where it was `None`.
+- A language tag together with a datatype other than `rdf:langString` raises
+  `TypeError`; `Literal("a", lang="en", datatype=RDF.langString)` is accepted.
+- `Literal(literal, datatype=...)` no longer keeps the language tag of
+  `literal`, and `Literal(literal, lang=...)` no longer keeps its datatype, as a
+  literal has only the datatype its language tag implies. So the SPARQL cast
+  `xsd:string("a"@en)` gives `"a"`.
+- A simple or language-tagged literal pickles as before, so pickles and
+  persistent stores that index literals by their pickle, such as the BerkeleyDB
+  store, find it under the same key. A literal stored with an explicit
+  `^^xsd:string` by RDFLib 7 has a different key, so RDFLib 8 can't find or
+  remove it by value, and a store that holds both `"a"` and `"a"^^xsd:string`
+  holds the same triple twice. To migrate such a store, export its data with
+  RDFLib 8 and load it into a new store.
+
+Output is unchanged for simple and language-tagged literals, including their
+order. A literal given the datatype `xsd:string` explicitly is now written as a
+simple literal, `"a"` rather than `"a"^^xsd:string`, by `n3()`, `repr()` and
+the N-Triples, N-Quads, Turtle, N3, TriG, RDF/XML, TriX, JSON-LD and SPARQL
+results serializers, as canonical N-Triples requires; no `xsd:` prefix is
+declared for it. The SPARQL stores send it the same way, so an endpoint that
+still keeps `"a"` and `"a"^^xsd:string` apart no longer matches data it holds
+as `"a"^^xsd:string`.
+
+The JSON-LD serializer writes an `xsd:string` literal without `@type`, as RDF
+to Object Conversion does ([JSON-LD 1.1 Processing Algorithms and API,
+§8.5.2](https://www.w3.org/TR/json-ld11-api/#rdf-to-object-conversion)). So it
+no longer uses a context term with `"@type": "xsd:string"` for it, and writes
+the property's IRI instead, unless the context has a term for it without a
+type. JSON-LD compaction, as in pyld, chooses the same.
+
+In SPARQL, `STRLANG` accepts an `xsd:string` literal. The W3C tests
+`strlang03-rdf11`, `distinct-2` and `distinct-9`, which were updated for
+RDF 1.1, pass.

@@ -139,13 +139,12 @@ class HextuplesSerializer(Serializer):
                 # datatype = "http://www.w3.org/1999/02/22-rdf-syntax-ns#blankNode"
                 datatype = self.str_local_id
             elif isinstance(triple[2], Literal):
-                if triple[2].datatype is not None:
-                    datatype = f"{triple[2].datatype}"
+                if triple[2].language is not None:  # rdf:langString
+                    datatype = self.lang_str
+                elif triple[2].datatype == XSD.string:
+                    datatype = self.xsd_string
                 else:
-                    if triple[2].language is not None:  # language
-                        datatype = self.lang_str
-                    else:
-                        datatype = self.xsd_string
+                    datatype = f"{triple[2].datatype}"
             else:
                 return None  # can't handle non URI, BN or Literal Object (QuotedGraph)
 

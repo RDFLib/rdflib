@@ -73,17 +73,17 @@ class TriXSerializer(Serializer):
             elif isinstance(component, BNode):
                 self.writer.element(TRIXNS["id"], content=str(component))
             elif isinstance(component, Literal):
-                if component.datatype:
-                    self.writer.element(
-                        TRIXNS["typedLiteral"],
-                        content=str(component),
-                        attributes={TRIXNS["datatype"]: str(component.datatype)},
-                    )
-                elif component.language:
+                if component.language:
                     self.writer.element(
                         TRIXNS["plainLiteral"],
                         content=str(component),
                         attributes={XMLNS["lang"]: str(component.language)},
+                    )
+                elif component._written_datatype:
+                    self.writer.element(
+                        TRIXNS["typedLiteral"],
+                        content=str(component),
+                        attributes={TRIXNS["datatype"]: str(component.datatype)},
                     )
                 else:
                     self.writer.element(TRIXNS["plainLiteral"], content=str(component))

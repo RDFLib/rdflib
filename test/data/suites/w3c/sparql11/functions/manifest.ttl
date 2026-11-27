@@ -12,10 +12,10 @@
     ( 
 	:strdt01
 	:strdt02
-	:strdt03
+	:strdt03-rdf11
 	:strlang01
 	:strlang02
-	:strlang03
+	:strlang03-rdf11
 	:isnumeric01
 	:abs01
 	:ceil01
@@ -96,15 +96,13 @@
     mf:result  <strdt02.srx> ;
 	.
 
-:strdt03 rdf:type mf:QueryEvaluationTest ;
-	mf:name    "STRDT() TypeErrors" ;
+:strdt03-rdf11 rdf:type mf:QueryEvaluationTest ;
+	mf:name    "STRDT() TypeErrors (updated for RDF 1.1)" ;
 	mf:feature sparql:strdt ;
-    dawgt:approval dawgt:Approved ;
-    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
     mf:action
          [ qt:query  <strdt03.rq> ;
            qt:data   <data.ttl> ] ;
-    mf:result  <strdt03.srx> ;
+    mf:result  <strdt03-rdf11.srx> ;
 	.
 
 :strlang01 rdf:type mf:QueryEvaluationTest ;
@@ -129,15 +127,13 @@
     mf:result  <strlang02.srx> ;
 	.
 
-:strlang03 rdf:type mf:QueryEvaluationTest ;
-	mf:name    "STRLANG() TypeErrors" ;
+:strlang03-rdf11 rdf:type mf:QueryEvaluationTest ;
+	mf:name    "STRLANG() TypeErrors (updated for RDF 1.1)" ;
 	mf:feature sparql:strlang ;
-    dawgt:approval dawgt:Approved ;
-    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
     mf:action
          [ qt:query  <strlang03.rq> ;
            qt:data   <data.ttl> ] ;
-    mf:result  <strlang03.srx> ;
+    mf:result  <strlang03-rdf11.srx> ;
 	.
 
 :isnumeric01 rdf:type mf:QueryEvaluationTest ;

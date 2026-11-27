@@ -19,7 +19,6 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 import rdflib.compare
 import rdflib.util
 from rdflib.graph import Dataset, _GraphT
-from rdflib.namespace import XSD
 from rdflib.term import URIRef
 from test.data import TEST_DATA_DIR
 from test.utils import GraphHelper
@@ -233,22 +232,6 @@ EXPECTED_FAILURES: dict[tuple[str, str | None], MarkDecorator] = {
         """,
         raises=AssertionError,
     ),
-    ("variants/diverse_quads", ".nq"): pytest.mark.xfail(
-        reason="""
-        Problems with default/implicit datatype of strings. It should be
-        xsd:string, but for some parsers it is not. See
-        <https://github.com/RDFLib/rdflib/issues/1326> for more info.
-        """,
-        raises=AssertionError,
-    ),
-    ("variants/diverse_quads", ".jsonld"): pytest.mark.xfail(
-        reason="""
-        Problems with default/implicit datatype of strings. It should be
-        xsd:string, but for some parsers it is not. See
-        <https://github.com/RDFLib/rdflib/issues/1326> for more info.
-        """,
-        raises=AssertionError,
-    ),
 }
 
 
@@ -271,7 +254,6 @@ def load_preferred(graph_variants: GraphVariants) -> Dataset:
         return _PREFERRED_GRAPHS[graph_variants.key]
     preferred_variant = graph_variants.preferred_variant
     preferred_graph = graph_variants.load(preferred_variant[0], Dataset)
-    GraphHelper.strip_literal_datatypes(preferred_graph, {XSD.string})
     _PREFERRED_GRAPHS[graph_variants.key] = preferred_graph
     return preferred_graph
 
@@ -312,7 +294,6 @@ def test_variant_source(graph_variants: GraphVariants, variant_key: str | None) 
     else:
         variant_path = graph_variants.variants[variant_key].path
         variant_graph = graph_variants.load(variant_key, Dataset)
-        GraphHelper.strip_literal_datatypes(variant_graph, {XSD.string})
 
         if graph_variants.meta.exact_match:
             GraphHelper.assert_quad_sets_equals(preferred_graph, variant_graph)

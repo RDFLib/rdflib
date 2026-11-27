@@ -276,8 +276,8 @@ class SPARQLXMLWriter:
             if val.language:
                 attr_vals[(XML_NAMESPACE, "lang")] = val.language
                 attr_qnames[(XML_NAMESPACE, "lang")] = "xml:lang"
-            elif val.datatype:
-                attr_vals[(None, "datatype")] = val.datatype
+            elif val._written_datatype:
+                attr_vals[(None, "datatype")] = val._written_datatype
                 attr_qnames[(None, "datatype")] = "datatype"
 
             self.writer.startElementNS(

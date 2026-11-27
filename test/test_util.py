@@ -241,7 +241,8 @@ class TestUtilTermConvert:
         s = '"trailing\\\\"^^<http://www.w3.org/2001/XMLSchema#string>'
         res = util.from_n3(s)
         assert res == Literal("trailing\\", datatype=XSD["string"])
-        assert res.n3() == s
+        # An xsd:string literal is written as a simple literal.
+        assert res.n3() == '"trailing\\\\"'
 
     def test_util_from_n3_expectpartialidempotencewithn3(self):
         for n3 in (

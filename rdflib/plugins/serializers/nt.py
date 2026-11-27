@@ -98,12 +98,12 @@ def _quoteLiteral(l_: Literal) -> str:  # noqa: N802
     encoded = _quote_encode(l_)
 
     if l_.language:
-        if l_.datatype:
-            raise Exception("Literal has datatype AND language!")
         return "%s@%s" % (encoded, l_.language)
-    elif l_.datatype:
-        return "%s^^<%s>" % (encoded, l_.datatype)
+    elif l_._written_datatype:
+        return "%s^^<%s>" % (encoded, l_._written_datatype)
     else:
+        # An xsd:string literal is written as a simple literal (N-Triples
+        # 1.1, section 4, canonical N-Triples).
         return "%s" % encoded
 
 

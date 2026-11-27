@@ -191,11 +191,10 @@ def _serialize_literal(literal: RDFLiteral) -> str:
 
     if literal.language:
         return f"{encoded}@{literal.language}"
-    elif literal.datatype:
-        # Always include the datatype annotation if present.  Even xsd:string
-        # is included explicitly to ensure round-trip fidelity -- the TSV parser
-        # distinguishes "foo" (datatype=None) from "foo"^^<xsd:string>.
-        return f"{encoded}^^<{literal.datatype}>"
+    elif literal._written_datatype:
+        # An xsd:string literal is written as a simple literal, which reads
+        # back as the same literal.
+        return f"{encoded}^^<{literal._written_datatype}>"
     else:
         return encoded
 

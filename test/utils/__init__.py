@@ -26,7 +26,7 @@ import rdflib.plugin
 from rdflib import BNode, ConjunctiveGraph, Graph
 from rdflib.graph import Dataset
 from rdflib.plugin import Plugin
-from rdflib.term import IdentifiedNode, Identifier, Literal, Node, URIRef
+from rdflib.term import IdentifiedNode, Identifier, Node, URIRef
 
 PluginT = TypeVar("PluginT")
 
@@ -375,19 +375,6 @@ class GraphHelper:
         )
         for id, lhs_context in lhs_contexts.items():
             cls.assert_isomorphic(lhs_context, rhs_contexts[id], message)
-
-    @classmethod
-    def strip_literal_datatypes(cls, graph: Graph, datatypes: set[URIRef]) -> None:
-        """
-        Strips datatypes in the provided set from literals in the graph.
-        """
-        for object in graph.objects():
-            if not isinstance(object, Literal):
-                continue
-            if object.datatype is None:
-                continue
-            if object.datatype in datatypes:
-                object._datatype = None
 
     @classmethod
     def non_default_graph_names(
