@@ -464,7 +464,14 @@ def _buildQueryStringForServiceCall(ctx: QueryContext, service_query: str) -> st
     sol = [v for v in ctx.solution() if isinstance(v, Variable)]
     if len(sol) > 0:
         variables = " ".join([v.n3() for v in sol])
-        variables_bound = " ".join([ctx.get(v).n3() for v in sol])
+        variables_bound = " ".join(
+            [
+                "UNDEF"
+                if (val := ctx.get(v)) is None or isinstance(val, BNode)
+                else val.n3()
+                for v in sol
+            ]
+        )
         service_query = (
             service_query + "VALUES (" + variables + ") {(" + variables_bound + ")}"
         )
@@ -500,12 +507,13 @@ def _yieldBindingsFromServiceCallResult(
     res_dict: dict[Variable, Identifier] = {}
     for var in variables:
         if var in r and r[var]:
+            var_obj = Variable(var)
             var_binding = r[var]
             var_type = var_binding["type"]
             if var_type == "uri":
-                res_dict[Variable(var)] = URIRef(var_binding["value"])
+                res_dict[var_obj] = URIRef(var_binding["value"])
             elif var_type == "literal":
-                res_dict[Variable(var)] = Literal(
+                res_dict[var_obj] = Literal(
                     var_binding["value"],
                     datatype=var_binding.get("datatype"),
                     lang=var_binding.get("xml:lang"),
@@ -513,13 +521,18 @@ def _yieldBindingsFromServiceCallResult(
             # This is here because of
             # https://www.w3.org/TR/2006/NOTE-rdf-sparql-json-res-20061004/#variable-binding-results
             elif var_type == "typed-literal":
-                res_dict[Variable(var)] = Literal(
+                res_dict[var_obj] = Literal(
                     var_binding["value"], datatype=URIRef(var_binding["datatype"])
                 )
             elif var_type == "bnode":
-                res_dict[Variable(var)] = BNode(var_binding["value"])
+                res_dict[var_obj] = BNode(var_binding["value"])
             else:
                 raise ValueError(f"invalid type {var_type!r} for variable {var!r}")
+            existing = ctx.get(var_obj)
+            if existing is not None and (
+                isinstance(existing, BNode) or res_dict[var_obj] != existing
+            ):
+                return
     yield FrozenBindings(ctx, res_dict)
 
 

@@ -20,7 +20,7 @@ from urllib.response import addinfourl
 import pytest
 
 from rdflib import Graph, Literal, URIRef, Variable, __version__
-from rdflib.namespace import XSD
+from rdflib.namespace import RDFS, XSD
 from rdflib.plugins.sparql import evaluate, prepareQuery
 from rdflib.plugins.sparql.algebra import traverse
 from rdflib.plugins.sparql.parserutils import CompValue
@@ -1257,6 +1257,94 @@ def test_service_pattern_without_text_raises() -> None:
 
     with pytest.raises(ValueError, match="no usable service_string"):
         next(evaluate.evalServiceQuery(QueryContext(Graph()), part))
+
+
+def test_service_values_with_local_bnode_unbound_in_service(
+    function_httpmock: ServedBaseHTTPServerMock,
+) -> None:
+    # A blank node in a prior binding cannot appear in SPARQL VALUES; it must
+    # be serialized as UNDEF so the federated query stays syntactically valid.
+    graph = Graph()
+    bnode = BNode("local_b0")
+    iri = URIRef("http://example.org/item")
+    graph.add((bnode, URIRef("http://example.org/iri"), iri))
+
+    query = f"""
+    PREFIX ex: <http://example.org/>
+    SELECT ?b ?iri ?label WHERE {{
+        ?b ex:iri ?iri .
+        SERVICE <{function_httpmock.url}> {{
+            ?iri ex:label ?label .
+        }}
+    }}
+    """
+    function_httpmock.responses[MethodName.GET].append(
+        make_select_response({"label": "Item Label"})
+    )
+
+    bindings = graph.query(query).bindings
+    assert bindings == [
+        {
+            Variable("b"): bnode,
+            Variable("iri"): iri,
+            Variable("label"): Literal("Item Label"),
+        }
+    ]
+    (request,) = function_httpmock.requests[MethodName.GET]
+    sent_query = request.path_query["query"][0]
+    assert "_:" not in sent_query
+    assert "UNDEF" in sent_query
+    prepareQuery(sent_query)
+
+
+def test_service_values_with_local_bnode_in_service_pattern(
+    function_httpmock: ServedBaseHTTPServerMock,
+) -> None:
+    # A local blank node also referenced inside SERVICE cannot match a remote
+    # endpoint's URI or blank node, even when UNDEF is emitted in VALUES.
+    graph = Graph()
+    graph.add((BNode("local_b0"), RDFS.label, Literal("a blank node")))
+
+    query = f"""
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    SELECT * WHERE {{
+        ?s rdfs:label ?o .
+        SERVICE <{function_httpmock.url}> {{
+            ?s a ?type .
+        }}
+    }}
+    """
+    response_payload = {
+        "head": {"vars": ["s", "type"]},
+        "results": {
+            "bindings": [
+                {
+                    "s": {"type": "uri", "value": "http://example.org/Thing"},
+                    "type": {"type": "uri", "value": "http://example.org/Class"},
+                },
+                {
+                    "s": {"type": "bnode", "value": "remote_b0"},
+                    "type": {"type": "uri", "value": "http://example.org/Class"},
+                },
+            ]
+        },
+    }
+    function_httpmock.responses[MethodName.GET].append(
+        MockHTTPResponse(
+            200,
+            "OK",
+            json.dumps(response_payload).encode("utf-8"),
+            {"Content-Type": ["application/sparql-results+json"]},
+        )
+    )
+
+    bindings = graph.query(query).bindings
+    assert bindings == []
+    (request,) = function_httpmock.requests[MethodName.GET]
+    sent_query = request.path_query["query"][0]
+    assert "_:" not in sent_query
+    assert "UNDEF" in sent_query
+    prepareQuery(sent_query)
 
 
 if __name__ == "__main__":
