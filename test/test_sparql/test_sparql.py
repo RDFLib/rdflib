@@ -402,14 +402,7 @@ def test_custom_eval() -> None:
     "result_consumer, exception_type, ",
     [
         pytest.param(lambda result: len(result), TypeError, id="len+TypeError"),
-        pytest.param(
-            lambda result: list(result),
-            TypeError,
-            id="list+TypeError",
-            marks=pytest.mark.xfail(
-                reason="TypeError does not propagate through list constructor"
-            ),
-        ),
+        pytest.param(lambda result: list(result), TypeError, id="list+TypeError"),
         pytest.param(lambda result: len(result), RuntimeError, id="len+RuntimeError"),
         pytest.param(lambda result: list(result), RuntimeError, id="list+RuntimeError"),
     ],
@@ -469,14 +462,7 @@ def test_custom_eval_exception(
     "result_consumer, exception_type, ",
     [
         pytest.param(lambda result: len(result), TypeError, id="len+TypeError"),
-        pytest.param(
-            lambda result: list(result),
-            TypeError,
-            id="list+TypeError",
-            marks=pytest.mark.xfail(
-                reason="TypeError does not propagate through list constructor"
-            ),
-        ),
+        pytest.param(lambda result: list(result), TypeError, id="list+TypeError"),
         pytest.param(lambda result: len(result), RuntimeError, id="len+RuntimeError"),
         pytest.param(lambda result: list(result), RuntimeError, id="list+RuntimeError"),
     ],
@@ -1246,3 +1232,26 @@ def test_order_by_expression_erroring_for_every_solution(order_by: str) -> None:
     query = f"SELECT ?o WHERE {{ VALUES ?o {{ 1 2 }} }} ORDER BY {order_by}"
     rows = [row for row in Graph().query(query)]
     assert sorted(rows) == [(Literal(1),), (Literal(2),)]
+
+
+def test_issue_1524_partial_result_type_error_propagates() -> None:
+    """TypeError after yielding partial bindings still propagates on list() and subsequent calls."""
+
+    def gen() -> Any:
+        yield {Variable("x"): Literal(1)}
+        raise TypeError("boom")
+
+    result = Result("SELECT")
+    result.vars = [Variable("x")]
+    result.bindings = gen()
+
+    with pytest.raises(TypeError, match="boom"):
+        list(result)
+
+    with pytest.raises(TypeError, match="boom"):
+        list(result)
+
+    with pytest.raises(TypeError, match="boom"):
+        len(result)
+
+    assert result._bindings == [{Variable("x"): Literal(1)}]

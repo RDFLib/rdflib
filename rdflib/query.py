@@ -187,6 +187,30 @@ class ResultRow(tuple[rdflib.term.Identifier, ...]):
         return dict((v, self[v]) for v in self.labels if self[v] is not None)
 
 
+class _ReRaisingIterator(
+    Iterator[Mapping[rdflib.term.Variable, rdflib.term.Identifier]]
+):
+    """Iterator wrapper that re-raises any exception raised by the underlying iterator."""
+
+    def __init__(self, iterator: Iterator[Mapping[Variable, Identifier]]) -> None:
+        self._iterator = iterator
+        self._exception: BaseException | None = None
+
+    def __iter__(self) -> _ReRaisingIterator:
+        return self
+
+    def __next__(self) -> Mapping[Variable, Identifier]:
+        if self._exception is not None:
+            raise self._exception
+        try:
+            return next(self._iterator)
+        except StopIteration:
+            raise
+        except BaseException as exc:
+            self._exception = exc
+            raise
+
+
 class Result:
     """
     A common class for representing query result.
@@ -223,8 +247,9 @@ class Result:
         """
         a list of variable bindings as dicts
         """
-        if self._genbindings:
-            self._bindings += list(self._genbindings)
+        if self._genbindings is not None:
+            for b in self._genbindings:
+                self._bindings.append(b)
             self._genbindings = None
 
         return self._bindings
@@ -238,11 +263,12 @@ class Result:
         ],
     ) -> None:
         if isinstance(b, (types.GeneratorType, itertools.islice)):
-            self._genbindings = b
+            self._genbindings = _ReRaisingIterator(b)
             self._bindings = []
         else:
             # type error: Incompatible types in assignment (expression has type "Union[MutableSequence[Mapping[Variable, Identifier]], Iterator[Mapping[Variable, Identifier]]]", variable has type "MutableSequence[Mapping[Variable, Identifier]]")
             self._bindings = b  # type: ignore[assignment]
+            self._genbindings = None
 
     @staticmethod
     def parse(
@@ -366,7 +392,11 @@ class Result:
         elif self.type == "SELECT":
             # this iterates over ResultRows of variable bindings
 
-            if self._genbindings:
+            if self._genbindings is not None:
+                for b in self._bindings:
+                    if b:  # don't add a result row in case of empty binding {}
+                        # type error: Argument 2 to "ResultRow" has incompatible type "Optional[list[Variable]]"; expected "list[Variable]"
+                        yield ResultRow(b, self.vars)  # type: ignore[arg-type]
                 for b in self._genbindings:
                     if b:  # don't add a result row in case of empty binding {}
                         self._bindings.append(b)
