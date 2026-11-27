@@ -7,7 +7,7 @@ from __future__ import annotations
 from collections.abc import Iterable, Iterator, Mapping, Sequence
 from typing import TYPE_CHECKING, Any
 
-from rdflib.graph import Graph
+from rdflib.graph import Dataset, Graph
 from rdflib.plugins.sparql.evaluate import evalBGP, evalPart
 from rdflib.plugins.sparql.evalutils import _fillTemplate, _join
 from rdflib.plugins.sparql.parserutils import CompValue
@@ -108,7 +108,9 @@ def evalInsertData(ctx: QueryContext, u: CompValue) -> None:
     http://www.w3.org/TR/sparql11-update/#insertData
     """
     # add triples
-    g = ctx.graph
+    # On a Dataset, ctx.graph can be the union view of the whole dataset, which
+    # only accepts quads, so triples without a GRAPH go to its default graph.
+    g = ctx.dataset.default_graph if isinstance(ctx.graph, Dataset) else ctx.graph
     # type error: Unsupported left operand type for + ("None")
     # type error: Unsupported operand types for + ("Graph" and "list[tuple[Identifier, Identifier, Identifier]]")
     g += _resolve_triples(ctx, u.triples)  # type: ignore[operator]
