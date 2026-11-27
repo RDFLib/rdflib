@@ -815,8 +815,7 @@ def _float_divide(dividend: float, divisor: float) -> float:
         return math.copysign(math.inf, dividend) * math.copysign(1.0, divisor)
 
 
-# type error: Missing return statement
-def AdditiveExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> Literal:  # type: ignore[return]
+def AdditiveExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> Literal:
     expr = e.expr
     other = e.other
 
@@ -834,6 +833,9 @@ def AdditiveExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> Lit
         dt = expr.datatype
 
         for op, term in zip(e.op, other):
+            if not isinstance(term, Literal):
+                raise SPARQLError("Invalid DateTime Operations")
+
             # check if operation is datetime,date,time operation over
             # another datetime,date,time datatype
             if dt in XSD_DateTime_DTs and dt == term.datatype and op == "-":
@@ -862,9 +864,30 @@ def AdditiveExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> Lit
                     res = calculateFinalDateTime(res, dt, n, term.datatype, op)
                     return res
 
+            # duration +/- duration
+            elif dt in XSD_Duration_DTs and term.datatype in XSD_Duration_DTs:
+                if not isinstance(res, (Duration, py_datetime.timedelta)):
+                    raise SPARQLError("Invalid DateTime Operations")
+                n = dateTimeObjects(term)
+                if not isinstance(n, (Duration, py_datetime.timedelta)):
+                    raise SPARQLError("Invalid DateTime Operations")
+                if dt == term.datatype:
+                    result_dt = dt
+                elif dt == XSD.duration or term.datatype == XSD.duration:
+                    result_dt = XSD.duration
+                else:
+                    raise SPARQLError("Invalid DateTime Operations")
+                res = res + n if op == "+" else res - n
+                dt = result_dt
+
             # rest are invalid types
             else:
                 raise SPARQLError("Invalid DateTime Operations")
+
+        try:
+            return Literal(res, datatype=dt)
+        except ValueError as err:
+            raise SPARQLError("Invalid DateTime Operations") from err
 
     # handling arithmetic(addition/subtraction) of numeric datatypes (if any)
     else:
