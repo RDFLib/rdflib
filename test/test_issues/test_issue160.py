@@ -1,4 +1,4 @@
-from rdflib import ConjunctiveGraph, Literal, Namespace
+from rdflib import RDF, BNode, ConjunctiveGraph, Graph, Literal, Namespace
 from rdflib.collection import Collection
 
 target1xml = """\
@@ -50,8 +50,6 @@ def test_collection_render():
 
     target1 = ConjunctiveGraph()
     target1.parse(data=target1xml, format="xml")
-    target2 = ConjunctiveGraph()
-    target2.parse(data=target2xml, format="xml")
 
     g = ConjunctiveGraph()
     bits = [ex["a"], ex["b"], ex["c"]]
@@ -65,10 +63,44 @@ def test_collection_render():
         g.add(triple)
     assert g.isomorphic(target1) is True
 
-    # g.add((ex['wrapper'], rdf['type'], foo['Wrapper']))
-    # g.add((ex['wrapper'], foo['wraps'], ex['thing']))
-    # # resn3 = g.serialize(format="n3")
-    # # print(resn3)
-    # resxml = g.serialize(format="pretty-xml")
-    # # print(resxml)
-    # self.assertEqual(g.isomorphic(target2), True)
+    g.add((ex["wrapper"], rdf["type"], foo["Wrapper"]))
+    g.add((ex["wrapper"], foo["wraps"], ex["thing"]))
+    resxml = g.serialize(format="pretty-xml")
+    roundtrip = Graph()
+    roundtrip.parse(data=resxml, format="xml")
+    assert roundtrip.isomorphic(g) is True
+
+
+def test_bnode_list_with_extra_predicates_and_shared_tail() -> None:
+    foo = Namespace("http://www.example.org/foo/ns/")
+    ex = Namespace("http://www.example.org/example/foo/")
+
+    g = Graph()
+    tail = BNode()
+    head = BNode()
+    g.add((tail, RDF.first, ex["b"]))
+    g.add((tail, RDF.rest, RDF.nil))
+    g.add((head, RDF.first, ex["a"]))
+    g.add((head, RDF.rest, tail))
+    g.add((head, foo["extra"], Literal("keep")))
+    g.add((ex["holder"], foo["wraps"], head))
+    g.add((ex["other"], foo["tail"], tail))
+
+    resxml = g.serialize(format="pretty-xml")
+    roundtrip = Graph().parse(data=resxml, format="xml")
+    assert roundtrip.isomorphic(g) is True
+
+
+def test_pure_bnode_list_uses_collection_parsetype() -> None:
+    foo = Namespace("http://www.example.org/foo/ns/")
+    ex = Namespace("http://www.example.org/example/foo/")
+
+    g = Graph()
+    head = BNode()
+    Collection(g, head, [ex["a"], ex["b"]])
+    g.add((ex["holder"], foo["wraps"], head))
+
+    resxml = g.serialize(format="pretty-xml")
+    assert 'rdf:parseType="Collection"' in resxml
+    roundtrip = Graph().parse(data=resxml, format="xml")
+    assert roundtrip.isomorphic(g) is True
