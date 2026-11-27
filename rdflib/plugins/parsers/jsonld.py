@@ -43,7 +43,7 @@ import rdflib.parser
 from rdflib.graph import Dataset, Graph
 from rdflib.namespace import RDF, XSD
 from rdflib.parser import InputSource, URLInputSource
-from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef
+from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef, _float_lexical
 
 from ..shared.jsonld.context import UNDEF, Context, Term
 from ..shared.jsonld.keys import (
@@ -94,6 +94,37 @@ def _number_literal(value: int | float) -> Literal:
         # An integer beyond the range of a double, which a JavaScript reader
         # would also read as infinity.
         return Literal(math.inf if value > 0 else -math.inf, datatype=XSD.double)
+
+
+def _typed_literal(value: Any, datatype: str | None) -> Literal:
+    """Return the literal for a JSON-LD value with a datatype.
+
+    Object to RDF Conversion (JSON-LD 1.1 Processing Algorithms and API,
+    section 8.2.2) turns a native value into a string before it applies the
+    datatype: a boolean into `true` or `false` (step 9); a number with a
+    non-zero fractional part or an absolute value of 10^21 or more, or any
+    number under `xsd:double`, into an `xsd:double` (step 10); and any other
+    number into an `xsd:integer` (step 11). The literal is built from that
+    string, so its value follows the datatype: `1` under `xsd:float` is the
+    float 1.0, not the integer 1.
+    """
+    if datatype is None:
+        # The datatype did not expand to an IRI; keep the literal as before.
+        return Literal(value)
+    if isinstance(value, bool):
+        return Literal("true" if value else "false", datatype=datatype)
+    if isinstance(value, (int, float)):
+        # context.expand() gives a str, and a URIRef never equals a str.
+        if URIRef(datatype) == XSD.double or number_datatype(value) == XSD.double:
+            try:
+                lexical = _float_lexical(float(value))
+            except OverflowError:
+                # An integer beyond the range of a double, as in _number_literal.
+                lexical = "INF" if value > 0 else "-INF"
+        else:
+            lexical = str(int(value))
+        return Literal(lexical, datatype=datatype)
+    return Literal(value, datatype=datatype)
 
 
 class _ContextAwareGraph(Graph):
@@ -662,7 +693,7 @@ class Parser:
                     return  # type: ignore[return-value]
                 return Literal(value, lang=lang)
             elif datatype:
-                return Literal(value, datatype=context.expand(datatype))
+                return _typed_literal(value, context.expand(datatype))
             elif isinstance(value, (int, float)) and not isinstance(value, bool):
                 return _number_literal(value)
             else:
