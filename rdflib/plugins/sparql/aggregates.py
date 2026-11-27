@@ -111,8 +111,11 @@ class Sum(Accumulator):
         super(Sum, self).__init__(aggregation)
         self.value = 0
         self.datatype: str | None = None
+        self.error = False
 
     def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
+        if self.error:
+            return
         try:
             value = _eval(self.expr, row)
             dt = self.datatype
@@ -128,6 +131,13 @@ class Sum(Accumulator):
         except NotBoundError:
             # skip UNDEF
             pass
+        except SPARQLTypeError:
+            # a non-numeric value makes the sum an error, which leaves it unbound
+            self.error = True
+
+    def set_value(self, bindings: MutableMapping[Variable, Identifier]) -> None:
+        if not self.error:
+            super().set_value(bindings)
 
     def get_value(self) -> Literal:
         return Literal(self.value, datatype=self.datatype)
