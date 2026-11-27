@@ -74,3 +74,48 @@ N-Triples, N-Quads, RDF/XML, TriX, HexT, Patch and SPARQL results change.
   RDFLib 8 reads such data back as `INF` and `NaN`, but can't find or remove
   it by value. To migrate such a store, export its data with RDFLib 8 and load
   it into a new store.
+
+## Turtle serialization
+
+`format="turtle"`, and its aliases `ttl` and `text/turtle`, now select the
+serializer RDFLib 7 called `longturtle`. It writes `PREFIX` rather than
+`@prefix`, and prefers new lines to compactness, so that changes to a file
+show as small diffs. `longturtle` remains a name for it. The RDFLib 7 layout is
+available as `origturtle`. TriG output uses the new layout; N3 output keeps the
+previous one.
+
+[`TurtleSerializer`][rdflib.plugins.serializers.turtle.TurtleSerializer] is now
+that serializer, and the RDFLib 7 `TurtleSerializer` is
+[`OrigTurtleSerializer`][rdflib.plugins.serializers.origturtle.OrigTurtleSerializer].
+The module `rdflib.plugins.serializers.longturtle` is removed. A subclass that
+relies on the RDFLib 7 layout or its methods should extend
+`OrigTurtleSerializer`.
+
+The methods and attributes of `OrigTurtleSerializer`, `N3Serializer`,
+`TrigSerializer` and their base `RecursiveSerializer` now have snake_case
+names. A subclass that overrides a method or attribute under its old name is
+no longer used, and nothing reports it, so rename such overrides:
+
+| RDFLib 7 | RDFLib 8 |
+| --- | --- |
+| `addNamespace` | `add_namespace` |
+| `buildPredicateHash` | `build_predicate_hash` |
+| `checkSubject` | `check_subject` |
+| `doList` | `do_list` |
+| `endDocument` | `end_document` |
+| `indentString` | `indent_string` |
+| `isDone` | `is_done` |
+| `isValidList` | `is_valid_list` |
+| `maxDepth` | `max_depth` |
+| `objectList` | `object_list` |
+| `orderSubjects` | `order_subjects` |
+| `predicateList` | `predicate_list` |
+| `predicateOrder` | `predicate_order` |
+| `preprocessTriple` | `preprocess_triple` |
+| `sortProperties` | `sort_properties` |
+| `startDocument` | `start_document` |
+| `subjectDone` | `subject_done` |
+| `topClasses` | `top_classes` |
+
+`getQName` keeps its name. It was already deprecated in RDFLib 7 and still
+warns; use `get_pname` instead.
