@@ -630,8 +630,7 @@ class Literal(Identifier):
 
     _value: Any
     _language: str | None
-    # NOTE: _datatype should maybe be of type URIRef, and not optional.
-    _datatype: URIRef | None
+    _datatype: URIRef
     _ill_typed: bool | None
     __slots__ = ("_language", "_datatype", "_value", "_ill_typed")
 
@@ -649,10 +648,13 @@ class Literal(Identifier):
         normalize = normalize if normalize is not None else rdflib.NORMALIZE_LITERALS
 
         if lang is not None and datatype is not None:
-            raise TypeError(
-                "A Literal can only have one of lang or datatype, "
-                "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal"
-            )
+            if URIRef(datatype) != _RDF_LANGSTRING:
+                raise TypeError(
+                    "A Literal with a language tag has the datatype rdf:langString, "
+                    "per https://www.w3.org/TR/rdf11-concepts/#section-Graph-Literal"
+                )
+            # The datatype a language tag implies; set again below.
+            datatype = None
 
         if lang is not None and not _is_valid_langtag(lang):
             raise ValueError(f"'{str(lang)}' is not a valid language tag!")
@@ -664,14 +666,16 @@ class Literal(Identifier):
         ill_typed: bool | None = None
         if isinstance(lexical_or_value, Literal):
             # create from another Literal instance
-
-            lang = lang or lexical_or_value.language
-            if datatype is not None:
-                # override datatype
-                value = _castLexicalToPython(lexical_or_value, datatype)
-            else:
+            if datatype is None and lang is None:
+                lang = lexical_or_value.language
                 datatype = lexical_or_value.datatype
                 value = lexical_or_value.value
+                ill_typed = lexical_or_value.ill_typed
+            else:
+                # A datatype or language tag given here replaces the
+                # literal's datatype and language tag, as a literal has only
+                # the datatype its tag implies.
+                value = _castLexicalToPython(lexical_or_value, datatype)
 
         elif isinstance(lexical_or_value, str) or isinstance(lexical_or_value, bytes):
             # passed a string
@@ -710,6 +714,16 @@ class Literal(Identifier):
 
         if datatype in (_XSD_TOKEN,):
             lexical_or_value = _strip_and_collapse_whitespace(lexical_or_value)
+
+        # Every RDF 1.1 literal has a datatype (RDF 1.1 Concepts, section 3.3):
+        # rdf:langString with a language tag, otherwise xsd:string unless
+        # given. A simple literal is an xsd:string literal, so "a" and
+        # "a"^^xsd:string are the same literal. Both datatypes are recognized
+        # and take any string (RDF 1.1 Semantics, section 7).
+        if lang is not None or datatype is None:
+            datatype = _XSD_STRING if lang is None else _RDF_LANGSTRING
+            if ill_typed is None:
+                ill_typed = False
 
         try:
             inst = str.__new__(cls, lexical_or_value)
@@ -757,7 +771,7 @@ class Literal(Identifier):
         this value will be `True` if the literal is ill formed, otherwise it
         will be `False`. `Literal.value` (i.e. the `literal value <https://www.w3.org/TR/rdf11-concepts/#dfn-literal-value>`_) should always be defined if this property is `False`, but should not be considered reliable if this property is `True`.
 
-        If the literal's datatype is `None` or not in the set of `recognized datatype IRIs
+        If the literal's datatype is not in the set of `recognized datatype IRIs
         <https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris>`_ this value will be `None`.
         """
         return self._ill_typed
@@ -771,24 +785,41 @@ class Literal(Identifier):
         return self._language
 
     @property
-    def datatype(self) -> URIRef | None:
+    def datatype(self) -> URIRef:
+        return self._datatype
+
+    @property
+    def _written_datatype(self) -> URIRef | None:
+        """The datatype a serialization writes, or `None` when it is implied.
+
+        A language tag implies `rdf:langString`, and a literal written without
+        a datatype is an `xsd:string` literal, so neither is written.
+        """
+        if self._language or self._datatype == _XSD_STRING:
+            return None
         return self._datatype
 
     def __reduce__(
         self,
     ) -> tuple[type[Literal], tuple[str, str | None, str | None]]:
+        # An implied datatype is left out, so a simple or language-tagged
+        # literal pickles as it did before every literal had a datatype, and
+        # stores that key terms by their pickle find it under the same key.
         return (
             Literal,
-            (str(self), self.language, self.datatype),
+            (str(self), self.language, self._written_datatype),
         )
 
     def __getstate__(self) -> tuple[None, dict[str, str | None]]:
-        return (None, dict(language=self.language, datatype=self.datatype))
+        return (None, dict(language=self.language, datatype=self._written_datatype))
 
     def __setstate__(self, arg: tuple[Any, dict[str, Any]]) -> None:
         _, d = arg
         self._language = d["language"]
-        self._datatype = d["datatype"]
+        # The state leaves out an implied datatype, as RDFLib 7 did.
+        self._datatype = d["datatype"] or (
+            _RDF_LANGSTRING if self._language else _XSD_STRING
+        )
 
     def __add__(self, val: Any) -> Literal:
         """
@@ -886,8 +917,9 @@ class Literal(Identifier):
             except TypeError:
                 s = str(self.value) + str(val)
 
-            # if the original datatype is string-like, use that
-            if self.datatype in _STRING_LITERAL_TYPES:
+            # if the original datatype is string-like, use that, and keep a
+            # language tag
+            if self.language or self.datatype in _STRING_LITERAL_TYPES:
                 new_datatype = self.datatype
             # if not, use string
             else:
@@ -943,15 +975,6 @@ class Literal(Identifier):
         # convert the val to a Literal, if it isn't already one
         if not isinstance(val, Literal):
             val = Literal(val)
-
-        if not getattr(self, "datatype"):
-            raise TypeError(
-                "Minuend Literal must have Numeric, Date, Datetime or Time datatype."
-            )
-        elif not getattr(val, "datatype"):
-            raise TypeError(
-                "Subtrahend Literal must have Numeric, Date, Datetime or Time datatype."
-            )
 
         if (
             self.datatype in (_XSD_DATETIME, _XSD_DATE)
@@ -1147,8 +1170,9 @@ class Literal(Identifier):
         In summary:
         1. Literals with compatible data-types are ordered in value space
         2. Incompatible datatypes are ordered by their datatype URIs
-        3. Literals with language tags are ordered by their language tags
-        4. Plain literals come before xsd:string literals
+        3. Literals with language tags come after the xsd:string literals and
+           are ordered by their language tags
+        4. A literal without a datatype is the xsd:string literal it abbreviates
         5. In the node order: None < BNode < URIRef < Literal
 
         Example:
@@ -1200,10 +1224,10 @@ class Literal(Identifier):
             ):
                 return self.value > other.value
 
-            # plain-literals and xsd:string literals
-            # are "the same"
-            dtself = rdflib.util._coalesce(self.datatype, default=_XSD_STRING)
-            dtother = rdflib.util._coalesce(other.datatype, default=_XSD_STRING)
+            # Language-tagged literals are ordered with the xsd:string
+            # literals, after those without a language tag.
+            dtself = _XSD_STRING if self.language else self.datatype
+            dtother = _XSD_STRING if other.language else other.datatype
 
             if dtself != dtother:
                 if rdflib.DAWG_LITERAL_COLLATION:
@@ -1231,16 +1255,6 @@ class Literal(Identifier):
 
             if str(self) != str(other):
                 return str(self) > str(other)
-
-            # same language, same lexical form, check real dt
-            # plain-literals come before xsd:string!
-            if self.datatype != other.datatype:
-                if self.datatype is None:
-                    return False
-                elif other.datatype is None:
-                    return True
-                else:
-                    return self.datatype > other.datatype
 
             return False  # they are the same
 
@@ -1295,26 +1309,14 @@ class Literal(Identifier):
     def _comparable_to(self, other: Any) -> bool:
         """Helper method to decide which things are meaningful to rich-compare with this literal."""
         if isinstance(other, Literal):
-            if self.datatype is not None and other.datatype is not None:
-                # two datatyped literals
-                if (
-                    self.datatype not in XSDToPython
-                    or other.datatype not in XSDToPython
-                ):
-                    # non XSD DTs must match
-                    if self.datatype != other.datatype:
-                        return False
-
-            else:
-                # xsd:string may be compared with plain literals
-                if not (self.datatype == _XSD_STRING and not other.datatype) or (
-                    other.datatype == _XSD_STRING and not self.datatype
-                ):
+            if self.datatype not in XSDToPython or other.datatype not in XSDToPython:
+                # non XSD DTs, such as rdf:langString, must match
+                if self.datatype != other.datatype:
                     return False
 
-                # if given lang-tag has to be case insensitive equal
-                if (self.language or "").lower() != (other.language or "").lower():
-                    return False
+            # if given lang-tag has to be case insensitive equal
+            if (self.language or "").lower() != (other.language or "").lower():
+                return False
 
         return True
 
@@ -1459,11 +1461,11 @@ class Literal(Identifier):
             if (self.language or "").lower() != (other.language or "").lower():
                 return False
 
-            dtself = rdflib.util._coalesce(self.datatype, default=_XSD_STRING)
-            dtother = rdflib.util._coalesce(other.datatype, default=_XSD_STRING)
+            dtself = self.datatype
+            dtother = other.datatype
 
-            if dtself == _XSD_STRING and dtother == _XSD_STRING:
-                # string/plain literals, compare on lexical form
+            if dtself == dtother and dtself in (_XSD_STRING, _RDF_LANGSTRING):
+                # strings, compare on lexical form (the languages already match)
                 return str.__eq__(self, other)
 
             # XML can be compared to HTML, only if html5rdf is enabled
@@ -1508,13 +1510,13 @@ class Literal(Identifier):
             return False  # no non-Literal nodes are equal to a literal
 
         elif isinstance(other, str):
-            # only plain-literals can be directly compared to strings
+            # only xsd:string literals can be directly compared to strings
 
             # TODO: Is "blah"@en eq "blah" ?
             if self.language is not None:
                 return False
 
-            if self.datatype == _XSD_STRING or self.datatype is None:
+            if self.datatype == _XSD_STRING:
                 return str(self) == other
 
         elif isinstance(other, (int, long_type, float)):
@@ -1641,8 +1643,10 @@ class Literal(Identifier):
             >>> Literal(1.0, datatype=XSD.float)._literal_n3(use_plain=True)
             '"1.0"^^<http://www.w3.org/2001/XMLSchema#float>'
 
+            An `xsd:string` literal is written as a simple literal:
+
             >>> Literal("foo", datatype=XSD.string)._literal_n3(use_plain=True)
-            '"foo"^^<http://www.w3.org/2001/XMLSchema#string>'
+            '"foo"'
 
             >>> Literal(True)._literal_n3(use_plain=True)
             'true'
@@ -1703,7 +1707,10 @@ class Literal(Identifier):
 
         encoded: str = self._quote_encode()
 
-        datatype = self.datatype
+        # An implied datatype is not written, and not looked up either, as
+        # qname_callback may bind a prefix for it.
+        datatype = self._written_datatype
+        language = self.language
         quoted_dt = None
         if datatype is not None:
             if qname_callback:
@@ -1728,7 +1735,6 @@ class Literal(Identifier):
                     # still serialize. Warn user about it
                     warnings.warn(f"Serializing weird numerical {self!r}")
 
-        language = self.language
         if language:
             return f"{encoded}@{language}"
         elif datatype:
@@ -1769,8 +1775,9 @@ class Literal(Identifier):
     def __repr__(self) -> str:
         args = [str.__repr__(self)]
         if self.language is not None:
+            # The datatype is rdf:langString, which the language tag implies.
             args.append("lang=" + repr(self.language))
-        if self.datatype is not None:
+        elif self.datatype != _XSD_STRING:
             args.append("datatype=" + repr(self.datatype))
         if self.__class__ == Literal:
             clsName = "rdflib.term.Literal"  # noqa: N806
@@ -2025,6 +2032,7 @@ _RDF_PFX = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 
 _RDF_XMLLITERAL = URIRef(_RDF_PFX + "XMLLiteral")
 _RDF_HTMLLITERAL = URIRef(_RDF_PFX + "HTML")
+_RDF_LANGSTRING = URIRef(_RDF_PFX + "langString")
 
 _XSD_STRING = URIRef(_XSD_PFX + "string")
 _XSD_NORMALISED_STRING = URIRef(_XSD_PFX + "normalizedString")

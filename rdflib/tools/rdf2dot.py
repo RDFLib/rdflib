@@ -108,10 +108,10 @@ def rdf2dot(g: Graph, stream: TextIO, opts: dict[str, Any] = {}):
 
     def formatliteral(l: Literal, g):  # noqa: E741
         v = html.escape(l)
-        if l.datatype:
-            return "&quot;%s&quot;^^%s" % (v, qname(l.datatype, g))
-        elif l.language:
+        if l.language:
             return "&quot;%s&quot;@%s" % (v, l.language)
+        elif l._written_datatype:
+            return "&quot;%s&quot;^^%s" % (v, qname(l._written_datatype, g))
         return "&quot;%s&quot;" % v
 
     def qname(x: URIRef, g: Graph) -> str:

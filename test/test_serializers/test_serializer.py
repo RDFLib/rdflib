@@ -393,24 +393,6 @@ def make_serialize_parse_tests() -> Generator[ParameterSet, None, None]:
         node graph name which breaks round tripping.
                         """,
                     )
-                if serializer_name in ("json-ld"):
-                    xfail = pytest.mark.xfail(
-                        raises=AssertionError,
-                        reason="""
-    JSON-LD is dropping datatype:
-    -   rdflib.term.Literal('XSD string'),
-    +   rdflib.term.Literal('XSD string', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#string')),
-                        """,
-                    )
-                elif serializer_name in ("hext") and graph_type is GraphType.QUAD:
-                    xfail = pytest.mark.xfail(
-                        raises=AssertionError,
-                        reason="""
-    hext is injecting datatype:
-    -   rdflib.term.Literal('typeless', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#string')),
-    +   rdflib.term.Literal('typeless'),
-    """,
-                    )
             marks = (xfail,) if xfail is not None else ()
             yield pytest.param(
                 (serializer_name, graph_type, destination_type, encoding),
@@ -747,7 +729,7 @@ def test_default_serializer():
 
         <urn:example:subject> ex:predicate ex:subject .
 
-        ex:object eg:predicate "XSD string"^^xsd:string .
+        ex:object eg:predicate "XSD string" .
 
         ex:subject ex:predicate ex:object,
                 12 .
@@ -767,7 +749,7 @@ def test_default_serializer():
         .
 
         ex:object
-            eg:predicate "XSD string"^^xsd:string ;
+            eg:predicate "XSD string" ;
         .
 
         ex:subject

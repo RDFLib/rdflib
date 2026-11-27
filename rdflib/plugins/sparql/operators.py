@@ -275,7 +275,7 @@ def Builtin_STRLANG(expr: Expr, ctx) -> Literal:
     """
 
     s = string(expr.arg1)
-    if s.language or s.datatype:
+    if s.language:
         raise SPARQLError("STRLANG expects a simple literal")
 
     # TODO: normalisation of lang tag to lower-case
@@ -290,18 +290,14 @@ def Builtin_CONCAT(expr: Expr, ctx) -> Literal:
 
     # dt/lang passed on only if they all match
 
-    dt = set(x.datatype for x in expr.arg if isinstance(x, Literal))
-    # type error: Incompatible types in assignment (expression has type "Optional[str]", variable has type "set[Optional[str]]")
-    dt = dt.pop() if len(dt) == 1 else None  # type: ignore[assignment]
-
-    lang = set(x.language for x in expr.arg if isinstance(x, Literal))
-    # type error: error: Incompatible types in assignment (expression has type "Optional[str]", variable has type "set[Optional[str]]")
-    lang = lang.pop() if len(lang) == 1 else None  # type: ignore[assignment]
-
-    # NOTE on type errors: this is because same variable is used for two incompatibel types
-    # type error: Argument "datatype" to "Literal" has incompatible type "set[Any]"; expected "Optional[str]"  [arg-type]
-    # type error: Argument "lang" to "Literal" has incompatible type "set[Any]"; expected "Optional[str]"
-    return Literal("".join(string(x) for x in expr.arg), datatype=dt, lang=lang)  # type: ignore[arg-type]
+    datatypes = {x.datatype for x in expr.arg if isinstance(x, Literal)}
+    languages = {x.language for x in expr.arg if isinstance(x, Literal)}
+    dt = datatypes.pop() if len(datatypes) == 1 else None
+    lang = languages.pop() if len(languages) == 1 else None
+    if lang is None and dt == RDF.langString:
+        # The arguments have different languages, so the result has none.
+        dt = None
+    return Literal("".join(string(x) for x in expr.arg), datatype=dt, lang=lang)
 
 
 def _compatibleStrings(a: Literal, b: Literal) -> None:
@@ -560,10 +556,6 @@ def Builtin_DATATYPE(e: Expr, ctx) -> str | None:
     l_ = e.arg
     if not isinstance(l_, Literal):
         raise SPARQLError("Can only get datatype of literal: %r" % l_)
-    if l_.language:
-        return RDF.langString
-    if not l_.datatype and not l_.language:
-        return XSD.string
     return l_.datatype
 
 
@@ -690,11 +682,11 @@ def default_cast(e: Expr, ctx: FrozenBindings) -> Literal:  # type: ignore[retur
     if not isinstance(x, Literal):
         raise SPARQLError("Can only cast Literals to non-string data-types")
 
-    if x.datatype and not x.datatype in XSD_DTs:  # noqa: E713
+    if not x.language and x.datatype not in XSD_DTs:
         raise SPARQLError("Cannot cast literal with unknown datatype: %r" % x.datatype)
 
     if e.iri == XSD.dateTime:
-        if x.datatype and x.datatype not in (XSD.dateTime, XSD.string):
+        if not x.language and x.datatype not in (XSD.dateTime, XSD.string):
             raise SPARQLError("Cannot cast %r to XSD:dateTime" % x.datatype)
         try:
             return Literal(parse_datetime(x), datatype=e.iri)
@@ -968,9 +960,9 @@ def RelationalExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> L
 
     if isinstance(expr, Literal) and isinstance(other, Literal):
         if (
-            expr.datatype is not None
+            not expr.language
             and expr.datatype not in XSD_DTs
-            and other.datatype is not None
+            and not other.language
             and other.datatype not in XSD_DTs
         ):
             # in SPARQL for non-XSD DT Literals we can only do =,!=
@@ -1106,7 +1098,7 @@ def string(s: Literal) -> Literal:
     """
     if not isinstance(s, Literal):
         raise SPARQLError("Non-literal passes as string: %r" % s)
-    if s.datatype and s.datatype != XSD.string:
+    if not s.language and s.datatype != XSD.string:
         raise SPARQLError("Non-string datatype-literal passes as string: %r" % s)
     return s
 
@@ -1261,7 +1253,7 @@ def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> bool:
         if rt.datatype == XSD.boolean:
             return rt.toPython()
 
-        elif rt.datatype == XSD.string or rt.datatype is None:
+        elif rt.datatype == XSD.string or rt.language:
             return len(rt) > 0
 
         else:

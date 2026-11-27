@@ -11,10 +11,9 @@ python test/test_roundtrip.py xml nt test/nt/literals-02.nt
 
 tests roundtripping through rdf/xml with only the literals-02 file
 
-HexTuples format, "hext", cannot be used in all roundtrips due to its
-addition of xsd:string to literals of no declared type as this breaks
-(rdflib) graph isomorphism, and given that its JSON serialization is
-simple (lacking), so hext has been excluded from roundtripping here
+HexTuples format, "hext", cannot be used in all roundtrips, given that
+its JSON serialization is simple (lacking), so hext has been excluded
+from roundtripping here
 but provides some roundtrip test functions of its own (see test_parser_hext.py
 & test_serializer_hext.py)
 
@@ -36,7 +35,6 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 import rdflib
 import rdflib.compare
 from rdflib.graph import ConjunctiveGraph, Graph
-from rdflib.namespace import XSD
 from rdflib.parser import Parser, create_input_source
 from rdflib.plugins.parsers.notation3 import BadSyntax
 from rdflib.serializer import Serializer
@@ -127,14 +125,6 @@ XFAILS = {
         reason="rdflib.compare.isomorphic does not work for quoted graphs.",
         raises=AssertionError,
     ),
-    ("hext", "n3-writer-test-22.n3"): pytest.mark.xfail(
-        reason='HexTuples conflates "" and ""^^xsd:string strings',
-        raises=AssertionError,
-    ),
-    ("hext", "rdf-test-21.n3"): pytest.mark.xfail(
-        reason='HexTuples conflates "" and ""^^xsd:string strings',
-        raises=AssertionError,
-    ),
     ("xml", "special_chars.nt"): pytest.mark.xfail(
         reason="missing escaping: PCDATA invalid Char value 12 and 8",
         raises=SAXParseException,
@@ -146,26 +136,6 @@ XFAILS = {
     ("xml", "rdflibtest-pnamebrackets.nt"): pytest.mark.xfail(
         reason="results in invalid xml element name: <ns1:name(s)/>",
         raises=SAXParseException,
-    ),
-    ("json-ld", "diverse_quads.trig"): pytest.mark.xfail(
-        reason="""
-    jsonld serializer is dropping datatype:
-        only in first:
-            (rdflib.term.URIRef('example:subject'), rdflib.term.URIRef('http://example.com/predicate'), rdflib.term.Literal('XSD string', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#string')))
-        only in second:
-            (rdflib.term.URIRef('example:subject'), rdflib.term.URIRef('http://example.com/predicate'), rdflib.term.Literal('XSD string'))
-    """,
-        raises=AssertionError,
-    ),
-    ("hext", "diverse_quads.trig"): pytest.mark.xfail(
-        reason="""
-    hext serializer is dropping datatype:
-        only in first:
-            (rdflib.term.URIRef('example:subject'), rdflib.term.URIRef('http://example.com/predicate'), rdflib.term.Literal('XSD string', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#string')))
-        only in second:
-            (rdflib.term.URIRef('example:subject'), rdflib.term.URIRef('http://example.com/predicate'), rdflib.term.Literal('XSD string'))
-    """,
-        raises=AssertionError,
     ),
     ("n3", "data/suites/w3c/n3/N3Tests/cwm_syntax/decimal.n3"): pytest.mark.xfail(
         raises=AssertionError,
@@ -247,21 +217,6 @@ def roundtrip(
         g2.parse(data=s, publicID=input_source.getPublicId(), format=testfmt)
     else:
         g2.parse(data=s, format=testfmt)
-
-    if testfmt == "hext" and isinstance(g2, ConjunctiveGraph):
-        # Hextuples always sets Literal("abc") -> Literal("abc", datatype=XSD.string)
-        # and this prevents roundtripping since most other formats don't equate "" with
-        # ""^^xsd:string, at least not in these tests
-        #
-        # So we have to scrub the literals' string datatype declarations...
-        for c in g2.contexts():
-            # type error: Incompatible types in assignment (expression has type "Node", variable has type "str")
-            for s, p, o in c.triples((None, None, None)):  # type: ignore[assignment]
-                if type(o) is rdflib.Literal and o.datatype == XSD.string:
-                    # type error: Argument 1 to "remove" of "Graph" has incompatible type "tuple[str, Node, Literal]"; expected "tuple[Optional[Node], Optional[Node], Optional[Node]]"
-                    c.remove((s, p, o))  # type: ignore[arg-type]
-                    # type error: Argument 1 to "add" of "Graph" has incompatible type "tuple[str, Node, Literal]"; expected "tuple[Node, Node, Node]"
-                    c.add((s, p, rdflib.Literal(str(o))))  # type: ignore[arg-type]
 
     if logger.isEnabledFor(logging.DEBUG):
         both, first, second = rdflib.compare.graph_diff(g1, g2)

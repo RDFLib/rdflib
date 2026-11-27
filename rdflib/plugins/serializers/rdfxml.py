@@ -155,8 +155,8 @@ class XMLSerializer(Serializer):
             if object.language:
                 attributes += ' xml:lang="%s"' % object.language
 
-            if object.datatype:
-                attributes += ' rdf:datatype="%s"' % object.datatype
+            if object._written_datatype:
+                attributes += ' rdf:datatype="%s"' % object._written_datatype
 
             write(
                 "%s<%s%s>%s</%s>\n"
@@ -350,8 +350,8 @@ class PrettyXMLSerializer(Serializer):
                 writer.text("")
                 writer.stream.write(object)
             else:
-                if object.datatype:
-                    writer.attribute(RDFVOC.datatype, object.datatype)
+                if object._written_datatype:
+                    writer.attribute(RDFVOC.datatype, object._written_datatype)
                 writer.text(object)
 
         elif (

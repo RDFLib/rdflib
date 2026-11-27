@@ -157,10 +157,10 @@ def termToJSON(
     elif isinstance(term, Literal):
         r = {"type": "literal", "value": str(term)}
 
-        if term.datatype is not None:
-            r["datatype"] = str(term.datatype)
         if term.language is not None:
             r["xml:lang"] = term.language
+        elif term._written_datatype:
+            r["datatype"] = str(term._written_datatype)
         return r
 
     elif isinstance(term, BNode):
