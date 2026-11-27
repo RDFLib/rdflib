@@ -2338,7 +2338,7 @@ class ConjunctiveGraph(Graph):
         """
 
         s, p, o, c = self._spoc(triple_or_quad)
-        context = self._graph(context or c)
+        context = self._graph(context if context is not None else c)
 
         if self.default_union:
             if context == self._default_context:
