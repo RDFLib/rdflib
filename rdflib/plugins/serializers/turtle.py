@@ -194,7 +194,7 @@ class TurtleSerializer(RecursiveSerializer):
 
         return "%s:%s" % (prefix, local)
 
-    def get_q_name(self, uri, gen_prefix=True):
+    def getQName(self, uri, gen_prefix=True):
         warnings.warn(
             "TurtleSerializer.getQName is deprecated, use TurtleSerializer.get_pname instead.",
             DeprecationWarning,

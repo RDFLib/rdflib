@@ -345,9 +345,11 @@ class OrigTurtleSerializer(RecursiveSerializer):
 
         return "%s:%s" % (prefix, local)
 
-    def get_q_name(self, uri: Node, gen_prefix: bool = True) -> Optional[str]:
+    def getQName(  # noqa: N802
+        self, uri: Node, gen_prefix: bool = True
+    ) -> Optional[str]:
         warnings.warn(
-            "TurtleSerializer.get_q_name is deprecated, use TurtleSerializer.get_pname instead.",
+            "OrigTurtleSerializer.getQName is deprecated, use OrigTurtleSerializer.get_pname instead.",
             DeprecationWarning,
             stacklevel=2,
         )
