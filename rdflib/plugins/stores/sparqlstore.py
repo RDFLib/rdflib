@@ -26,6 +26,7 @@ if TYPE_CHECKING:
     from rdflib.graph import (
         _TripleType,
         _ContextType,
+        _OptionalQuadType,
         _QuadType,
         _TripleChoiceType,
         _TriplePatternType,
@@ -90,11 +91,15 @@ class SPARQLStore(SPARQLConnector, Store):
         Check out the [test suite on public endpoints](https://github.com/RDFLib/rdflib/blob/main/test/test_store/test_store_sparqlstore_public.py)
         for more details on how to successfully query different types of endpoints.
 
-    For ConjunctiveGraphs, reading is done from the "default graph". Exactly
+    For ConjunctiveGraphs, triple iteration reads the "default graph". Exactly
     what this means depends on your endpoint, because SPARQL does not offer a
     simple way to query the union of all graphs as it would be expected for a
     ConjuntiveGraph. This is why we recommend using Dataset instead, which is
     motivated by the SPARQL 1.1.
+
+    Quad iteration reads memberships in both the endpoint's default graph and
+    its named graphs. The endpoint determines whether its default graph is a
+    separate graph or a union of named graphs.
 
     Fuseki/TDB has a flag for specifying that the default graph
     is the union of all graphs (`tdb:unionDefaultGraph` in the Fuseki config).
@@ -397,6 +402,81 @@ class SPARQLStore(SPARQLConnector, Store):
             if result.askAnswer:
                 yield (s, p, o), None
 
+    def quads(
+        self, triple_pattern: _TriplePatternType, context: _ContextType | None = None
+    ) -> Iterator[_OptionalQuadType]:
+        """Read default and named graph memberships in one result set.
+
+        The default graph is the endpoint's configured default graph, which
+        may itself be a union. Explicit contexts and custom `triples()`
+        implementations retain their existing behavior.
+        """
+        if (
+            context is not None
+            or getattr(self.triples, "__func__", None) is not SPARQLStore.triples
+        ):
+            yield from Store.quads(self, triple_pattern, context)
+        else:
+            yield from self._query_quads(triple_pattern)
+
+    def _query_quads(self, triple_pattern: _TriplePatternType) -> Iterator[_QuadType]:
+        # Keep generated variables distinct from variables supplied in the pattern.
+        used = {term for term in triple_pattern if isinstance(term, Variable)}
+
+        def variable(name: str) -> Variable:
+            result = Variable(name)
+            while result in used:
+                result = Variable(str(result) + "_")
+            used.add(result)
+            return result
+
+        terms = [
+            variable(name) if term is None else term
+            for name, term in zip(("s", "p", "o"), triple_pattern)
+        ]
+        graph_variable = variable("g")
+        projected = list(dict.fromkeys(t for t in terms if isinstance(t, Variable)))
+        constraint = ""
+        if not projected:
+            # A fully bound default-graph match must not produce an empty
+            # binding, which Result.__iter__ omits. This also works in SPARQL 1.0.
+            subject = self.node_to_sparql(terms[0])
+            subject_variable = variable("s")
+            terms[0] = subject_variable
+            projected.append(subject_variable)
+            constraint = f"FILTER(sameTerm({terms[0].n3()}, {subject}))"
+
+        pattern = " ".join(self.node_to_sparql(term) for term in terms)
+        projection = " ".join(term.n3() for term in (*projected, graph_variable))
+        query = (
+            f"SELECT {projection} WHERE {{ {{ {pattern} }} UNION "
+            f"{{ GRAPH {graph_variable.n3()} {{ {pattern} }} }} {constraint} }}"
+        )
+        # Use the public query path so update stores flush pending writes
+        # according to their autocommit/dirty_reads settings.
+        result = self.query(query, {}, {}, None)
+        if type(result) is tuple:
+            if result[0] == 401:  # type: ignore[unreachable]
+                raise ValueError(
+                    "It looks like you need to authenticate with this SPARQL Store. HTTP unauthorized"
+                )
+        for row in result:
+            if TYPE_CHECKING:
+                assert isinstance(row, ResultRow)
+            values = [
+                row[term]
+                if original is None or isinstance(original, Variable)
+                else original
+                for original, term in zip(triple_pattern, terms)
+            ]
+            context = row[graph_variable]
+            yield (
+                values[0],
+                values[1],
+                values[2],
+                Graph(self, DATASET_DEFAULT_GRAPH_ID if context is None else context),
+            )
+
     def triples_choices(
         self,
         _: _TripleChoiceType,
@@ -571,7 +651,7 @@ class SPARQLUpdateStore(SPARQLStore):
     graph only.
 
     In favor of the SPARQL 1.1 motivated Dataset, we advise against using this
-    with ConjunctiveGraphs, as it reads and writes from and to the
+    with ConjunctiveGraphs, as triple reads and writes use the
     "default graph". Exactly what this means depends on the endpoint and can
     result in confusion.
 
@@ -683,6 +763,17 @@ class SPARQLUpdateStore(SPARQLStore):
         if not self.autocommit and not self.dirty_reads:
             self.commit()
         return SPARQLStore.triples(self, *args, **kwargs)
+
+    def quads(
+        self, triple_pattern: _TriplePatternType, context: _ContextType | None = None
+    ) -> Iterator[_OptionalQuadType]:
+        if (
+            context is not None
+            or getattr(self.triples, "__func__", None) is not SPARQLUpdateStore.triples
+        ):
+            yield from Store.quads(self, triple_pattern, context)
+        else:
+            yield from self._query_quads(triple_pattern)
 
     # type error: Signature of "contexts" incompatible with supertype "Store"
     def contexts(  # type: ignore[override]
