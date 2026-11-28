@@ -628,6 +628,12 @@ def translate(q: CompValue) -> tuple[CompValue | None, list[Variable]]:
 
     q.where = traverse(q.where, visitPost=translatePath)
 
+    # (NOT) EXISTS can also be used in expressions outside the WHERE clause.
+    # Translate their graph patterns the same way as for FILTER and BIND.
+    for clause in ("projection", "groupby", "having", "orderby"):
+        if clause in q:
+            q[clause] = translateExists(traverse(q[clause], visitPost=translatePath))
+
     # TODO: Var scope test
     VS: set[Variable] = set()
 
