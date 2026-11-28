@@ -57,6 +57,22 @@ def test_nquads_serializes_plain_graph():
     assert len(parsed) == 1
 
 
+def test_nquads_serializes_lone_surrogate_escaped():
+    """N-Quads must escape a lone surrogate instead of replacing it (issue #2590)."""
+    g = Graph()
+    g.add(
+        (
+            URIRef("foo"),
+            URIRef("foo"),
+            Literal("\ud800"),
+        )
+    )
+    s = g.serialize(format="nquads")
+    assert "\ud800" not in s
+    assert "\\ud800" in s.lower()
+    assert '"?"' not in s
+
+
 def test_trix_serializes_plain_graph():
     """TriX must accept a non-context-aware Graph (issue #1892)."""
     g = Graph()
