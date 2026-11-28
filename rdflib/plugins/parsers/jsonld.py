@@ -34,6 +34,7 @@ Example:
 from __future__ import annotations
 
 import math
+import re
 import secrets
 import warnings
 from collections.abc import Iterable
@@ -76,6 +77,9 @@ from ..shared.jsonld.util import (
 __all__ = ["JsonLDParser", "to_rdf"]
 
 TYPE_TERM = Term(str(RDF.type), TYPE, VOCAB)
+
+# A keyword, or a string with the form of one: "@" followed by ASCII letters.
+_KEYWORD_FORM = re.compile(r"@[a-zA-Z]+")
 
 ALLOW_LISTS_OF_LISTS = True  # NOTE: Not allowed in JSON-LD 1.0
 
@@ -628,6 +632,11 @@ class Parser:
             elif term and term.type == ID and isinstance(node, str):
                 node = {ID: context.resolve(node)}
             elif term and term.type == VOCAB and isinstance(node, str):
+                # IRI expansion returns a keyword as is and drops a
+                # keyword-shaped string (JSON-LD 1.1 API, section 5.2.2,
+                # steps 1 and 2); neither is an IRI, so no triple follows.
+                if _KEYWORD_FORM.fullmatch(node):
+                    return None
                 node = {ID: context.expand(node) or context.resolve_iri(node)}
             elif term and term.type and term.type not in (ID, VOCAB, NONE):
                 node = {TYPE: term.type, VALUE: node}
